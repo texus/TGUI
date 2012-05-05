@@ -1,0 +1,119 @@
+
+TGUI v0.4
+---------
+
+- Many internal changes were made.
+- Panel can now be used.
+- You can now move objects to the front or to the back.
+- Bug fix: The size returned by the labels were too small.
+
+
+TGUI Object Files v0.2
+----------------------
+
+- Object Files v0.2 can by used to store Panels (even inside another Panel).
+- Object Files v0.2 can contain multiline comments.
+
+
+TGUI Form Builder v0.2
+----------------------
+
+- You can now load objects from a file.
+- You can now scale objects simply by dragging its corner.
+- Bug fix: The delete button didn't always work like it should.
+- Bug fix: The Form Builder didn't save some of the object properly.
+
+
+
+v0.3.7
+------
+
+- Mac OS X is now supported (no libraries yet, but the source code can be used)
+- Changing the global font no longer changes the font of already existing objects.
+- You can now change the global font directly, the setGlobalFont function was removed.
+- All objects now have a getSize and getScaledSize function.
+- Label now sends a callback on click.
+- You have an option too keep the scrollbar visible, even if you can't scroll.
+
+- Bug fix: The getText function of EditBox returned a sf::String instead of an std::string.
+- Bug fix: Arrow keys were not repeated in EditBox.
+- Bug fix: Texture rect was not updated when calling the load function again.
+- Bug fix: Callback from Picture didn't work with scaling.
+- Bug fix: EditBox and ListBox hanged on cropping text when image was too small.
+- Bug fix: Alpha value in colors was sometimes wrong.
+- Bug fix: The displayed text in EditBox was wrong when calling setMaximumCharacters.
+- Bug fix: ComboBox crashed when image was too small.
+
+
+
+v0.3.6
+------
+
+- A new object: Label.
+- Bug fix: The draw function was overriding the one from sfml, it is now called drawGUI.
+
+
+
+v0.3.5
+------
+
+- The 'm_' was dropped on public members.
+- Picture now has a click callback.
+- The background color of the selected text is now different when the EditBox is not focused.
+- EditBox can now also sends a callback when the return key was pressed.
+
+- Bug fix: The text on the button was sometimes blurry.
+- Bug fix: The arrow of ComboBox kept pointing down when the list was shown.
+
+
+
+v0.3.4
+------
+
+- setSize function added to all gui objects. It is recommended over the SetScale function.
+- You can now change the font of EditBox, ListBox and ComboBox.
+- A setGlobalFont function was added to Panel (also to Window) to set the font of all the objects.
+- You can now add CallbackID to any object that is loaded from a file.
+- A horizontal scrollbar has been added.
+
+- Bug fix: Objects behind a picture still received events.
+- Bug fix: Thumb position of Scrollbar was wrong while scaling.
+- Bug fix: The program crashed after calling removeAllObjects.
+
+
+
+v0.3.3
+------
+
+  - Scrolling was added in EditBox, there is no more text width limit by default.
+  - You can now get the colors that are used in EditBox, Listbox and ComboBox.
+  - You can now select an item in ListBox with the new setSelectedItem function.
+  - You can now use the scrollbar.
+  - Panels can now be used, which means that you can create multiple groups of linked radio buttons.
+  - You can now load all the objects (except Panel) from a file.
+  - Except for the .lib and .so files, I have included .a files.
+
+  - Bug fix: You couldn't call setBorders after setText in EditBox.
+  - Bug fix: Changing the maximum items and the item height in ListBox didn't work properly.
+  - Bug fix: Scrollbar didn't receive the mouse up event when releasing the mouse on ListBox.
+  - Bug fix: Calling a load function with an empty string made the program crash.
+
+
+
+v0.3.2
+------
+
+  - ComboBox was added
+  - Bug fixes in EditBox, ListBox and Scrollbar
+
+
+
+v0.3.1
+------
+
+  - Namespace was changed to lowercase.
+  - A setVerticalScroll function for changing m_VerticalScroll indirectly.
+  - Changed the name from setTextColors to changeColors inside EditBox to conform with the ListBox.
+  - Small bug fixes in EditBox and Listbox.
+  - Fixed wrong behavior of scrollbar.
+  - Colors of objects were changed to fit better with each other.

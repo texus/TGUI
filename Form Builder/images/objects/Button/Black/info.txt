@@ -1,0 +1,4 @@
+Phases     = Hover, Focus, Down
+Extension  = png
+TextColor  = (200, 200, 200)
+SplitImage = false

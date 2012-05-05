@@ -1,0 +1,517 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus's Graphical User Interface
+// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#include <TGUI/TGUI.hpp>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui
+{
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Checkbox::Checkbox() :
+    allowTextClick    (true),
+    m_Checked           (false),
+    m_TextSize          (0),
+    m_TextureUnchecked  (NULL),
+    m_TextureChecked    (NULL),
+    m_TextureMouseHover (NULL),
+    m_TextureFocused    (NULL)
+    {
+        m_ObjectType = checkbox;
+
+        m_Text.setColor(sf::Color::Black);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Checkbox::Checkbox(const Checkbox& copy) :
+    OBJECT        (copy),
+    allowTextClick(copy.allowTextClick),
+    m_Checked     (copy.m_Checked),
+    m_Text        (copy.m_Text),
+    m_TextSize    (copy.m_TextSize)
+    {
+        // Copy the textures
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked))   m_SpriteUnchecked.setTexture(*m_TextureUnchecked);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureChecked, m_TextureChecked))       m_SpriteChecked.setTexture(*m_TextureChecked);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseHover, m_TextureMouseHover)) m_SpriteMouseHover.setTexture(*m_TextureMouseHover);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused, m_TextureFocused))       m_SpriteFocused.setTexture(*m_TextureFocused);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Checkbox::~Checkbox()
+    {
+        if (m_TextureUnchecked != NULL)   TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked != NULL)     TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureMouseHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseHover);
+        if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Checkbox& Checkbox::operator= (const Checkbox& right)
+    {
+        if (this != &right)
+        {
+            Checkbox temp(right);
+            this->OBJECT::operator=(right);
+            
+            std::swap(allowTextClick,      temp.allowTextClick);
+            std::swap(m_Checked,           temp.m_Checked);
+            std::swap(m_Text,              temp.m_Text);
+            std::swap(m_TextSize,          temp.m_TextSize);
+            std::swap(m_TextureUnchecked,  temp.m_TextureUnchecked);
+            std::swap(m_TextureChecked,    temp.m_TextureChecked);
+            std::swap(m_TextureMouseHover, temp.m_TextureMouseHover);
+            std::swap(m_TextureFocused,    temp.m_TextureFocused);
+            std::swap(m_SpriteUnchecked,   temp.m_SpriteUnchecked);
+            std::swap(m_SpriteChecked,     temp.m_SpriteChecked);
+            std::swap(m_SpriteMouseHover,  temp.m_SpriteMouseHover);
+            std::swap(m_SpriteFocused,     temp.m_SpriteFocused);
+        }
+        
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Checkbox::load(const std::string pathname)
+    {
+        // When everything is loaded successfully, this will become true.
+        m_Loaded = false;
+
+        // Make sure that the pathname isn't empty
+        if (pathname.empty())
+            return false;
+
+        // Make a copy of the pathname (in order to edit it)
+        std::string pathnameCopy = pathname;
+
+        // When the pathname does not end with a "/" then we will add it
+        if (pathnameCopy.at(pathnameCopy.length()-1) != '/')
+            pathnameCopy.push_back('/');
+
+        // Open the info file
+        InfoFileParser infoFile;
+        if (infoFile.openFile(pathnameCopy + "info.txt") == false)
+        {
+            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(pathnameCopy)).append("info.txt")).c_str());
+            return false;
+        }
+
+        std::string property;
+        std::string value;
+
+        std::string imageExtension = "png";
+
+        // Read untill the end of the file
+        while (infoFile.readProperty(property, value))
+        {
+            // Check what the property is
+            if (property.compare("phases") == 0)
+            {
+                // Get and store the different phases
+                extractPhases(value);
+            }
+            else if (property.compare("textcolor") == 0)
+            {
+                m_Text.setColor(extractColor(value));
+            }
+            else if (property.compare("extension") == 0)
+            {
+                imageExtension = value;
+            }
+        }
+
+        // Close the info file
+        infoFile.closeFile();
+
+        // If the checkbox was loaded before then remove the old textures
+        if (m_TextureUnchecked != NULL)   TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked != NULL)     TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureMouseHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseHover);
+        if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
+
+        // load the required textures
+        if ((TGUI_TextureManager.getTexture(pathnameCopy + "Checked." + imageExtension, m_TextureChecked))
+         && (TGUI_TextureManager.getTexture(pathnameCopy + "Unchecked." + imageExtension, m_TextureUnchecked)))
+        {
+            m_SpriteChecked.setTexture(*m_TextureChecked, true);
+            m_SpriteUnchecked.setTexture(*m_TextureUnchecked, true);
+        }
+        else
+            return false;
+
+        bool error = false;
+
+        // load the optional textures
+        if (m_ObjectPhase & objectPhase::focused)
+        {
+            if (TGUI_TextureManager.getTexture(pathnameCopy + "Focus." + imageExtension, m_TextureFocused))
+            {
+                m_SpriteFocused.setTexture(*m_TextureFocused, true);
+                m_AllowFocus = true;
+            }
+            else
+                error = true;
+        }
+
+        if (m_ObjectPhase & objectPhase::hover)
+        {
+            if (TGUI_TextureManager.getTexture(pathnameCopy + "Hover." + imageExtension, m_TextureMouseHover))
+                m_SpriteMouseHover.setTexture(*m_TextureMouseHover, true);
+            else
+                error = true;
+        }
+
+        // When there is no error we will return true
+        m_Loaded = !error;
+        return !error;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::setSize(float width, float height)
+    {
+        // Don't do anything when the checkbox wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Set the new scale factors
+        setScale(width / m_TextureUnchecked->getSize().x, height / m_TextureUnchecked->getSize().y);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Vector2u Checkbox::getSize() const
+    {
+        if (m_Loaded)
+            return Vector2u(m_TextureUnchecked->getSize().x, m_TextureUnchecked->getSize().y);
+        else
+            return Vector2u(0, 0);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Vector2f Checkbox::getScaledSize() const
+    {
+        if (m_Loaded)
+            return Vector2f(m_TextureUnchecked->getSize().x * getScale().x, m_TextureUnchecked->getSize().y * getScale().y);
+        else
+            return Vector2f(0, 0);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::check()
+    {
+        m_Checked = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::uncheck()
+    {
+        m_Checked = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Checkbox::isChecked()
+    {
+        return m_Checked;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::setText(const std::string text)
+    {
+        // Don't do anything when the checkbox wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Set the new text
+        m_Text.setString(text);
+
+        // Check if the text is auto sized
+        if (m_TextSize == 0)
+        {
+            // Set the text size
+            m_Text.setCharacterSize(m_TextureUnchecked->getSize().y);
+        }
+        else // When the text has a fixed size
+        {
+            // Set the text size
+            m_Text.setCharacterSize(m_TextSize);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string Checkbox::getText()
+    {
+        return m_Text.getString().toAnsiString();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::setTextFont(const sf::Font& font)
+    {
+        m_Text.setFont(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Font& Checkbox::getTextFont()
+    {
+        return m_Text.getFont();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::setTextColor(const sf::Color& Color)
+    {
+        m_Text.setColor(Color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& Checkbox::getTextColor()
+    {
+        return m_Text.getColor();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::setTextSize(const unsigned int size)
+    {
+        // Change the text size
+        m_TextSize = size;
+
+        // Call setText to reposition the text
+        setText(m_Text.getString().toAnsiString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Checkbox::getTextSize()
+    {
+        return m_TextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Checkbox::mouseOnObject(float x, float y)
+    {
+        // Don't do anything when the checkbox wasn't loaded correctly
+        if (m_Loaded == false)
+            return false;
+
+        // get the current position and scale
+        Vector2f position = getPosition();
+        Vector2f curScale = getScale();
+
+        // Check if the mouse is on top of the image
+        if ((x > position.x) && (x < (position.x + (m_TextureUnchecked->getSize().x * curScale.x)))
+         && (y > position.y) && (y < (position.y + (m_TextureUnchecked->getSize().y * curScale.y))))
+        {
+            return true;
+        }
+        else // It is not on top of the image
+        {
+            // Check if clicking on the text is allowed
+            if (allowTextClick)
+            {
+                // Get the text area
+                sf::FloatRect textBounds = m_Text.getGlobalBounds();
+
+                // Change the x and y values to make the check easier
+                x -= (position.x + (m_TextureUnchecked->getSize().x * 11.0f / 10.0f * curScale.x));
+                y -= position.y;
+
+                // Check if the click occured on the text
+                if ((x > textBounds.left) && (x < (textBounds.left + (textBounds.width * curScale.y)))
+                 && (y > textBounds.top) && (y < textBounds.top + (textBounds.height * curScale.y)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        // The mouse is not on top of the checkox
+        m_MouseHover = false;
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::leftMousePressed(float x, float y)
+    {
+        TGUI_UNUSED_PARAM(x);
+        TGUI_UNUSED_PARAM(y);
+
+        // Set the mouse down flag
+        m_MouseDown = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::leftMouseReleased(float x, float y)
+    {
+        TGUI_UNUSED_PARAM(x);
+        TGUI_UNUSED_PARAM(y);
+
+        // Check if we clicked on the button (not just mouse release)
+        if (m_MouseDown == true)
+        {
+            // Check or uncheck the checkbox
+            if (m_Checked)
+                uncheck();
+            else
+                check();
+
+            // Add the callback (if the user requested it)
+            if (callbackID > 0)
+            {
+                Callback callback;
+                callback.callbackID = callbackID;
+                callback.trigger    = Callback::mouseClick;
+                callback.checked    = m_Checked;
+                m_Parent->addCallback(callback);
+            }
+
+            m_MouseDown = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::mouseMoved(float x, float y)
+    {
+        TGUI_UNUSED_PARAM(x);
+        TGUI_UNUSED_PARAM(y);
+
+        m_MouseHover = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::keyPressed(sf::Keyboard::Key key)
+    {
+        // Check if the space key or the return key was pressed
+        if (key == sf::Keyboard::Space)
+        {
+            // Check or uncheck the checkbox
+            if (m_Checked)
+                uncheck();
+            else
+                check();
+
+            // Add the callback (if the user requested it)
+            if (callbackID > 0)
+            {
+                Callback callback;
+                callback.callbackID = callbackID;
+                callback.trigger    = Callback::keyPress_Space;
+                callback.checked    = m_Checked;
+                m_Parent->addCallback(callback);
+            }
+        }
+        else if (key == sf::Keyboard::Return)
+        {
+            // Check or uncheck the checkbox
+            if (m_Checked)
+                uncheck();
+            else
+                check();
+
+            // Add the callback (if the user requested it)
+            if (callbackID > 0)
+            {
+                Callback callback;
+                callback.callbackID = callbackID;
+                callback.trigger    = Callback::keyPress_Return;
+                callback.checked    = m_Checked;
+                m_Parent->addCallback(callback);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::objectFocused()
+    {
+        // We can't be focused when we don't have a focus image
+        if ((m_ObjectPhase & objectPhase::focused) == 0)
+            m_Parent->unfocus(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Don't do draw when the checkbox wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Adjust the transformation
+        states.transform *= getTransform();
+
+        // Draw the checkbox
+        if (m_Checked)
+            target.draw(m_SpriteChecked, states);
+        else
+            target.draw(m_SpriteUnchecked, states);
+
+        // When the checkbox is focused then draw an extra image
+        if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+            target.draw(m_SpriteFocused, states);
+
+        // When the mouse is on top of the checkbox then draw an extra image
+        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            target.draw(m_SpriteMouseHover, states);
+
+
+        sf::FloatRect textBounds = m_Text.getGlobalBounds();
+
+        // Set the position of the text
+        states.transform.translate(m_TextureUnchecked->getSize().x * 11.0f / 10.0f,
+                                   ((m_TextureUnchecked->getSize().y - textBounds.height) / 2.0f) - textBounds.top);
+
+        // Change the scale to draw the text
+        states.transform.scale(getScale().y / getScale().x, 1);
+
+        // Draw the text
+        target.draw(m_Text, states);
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

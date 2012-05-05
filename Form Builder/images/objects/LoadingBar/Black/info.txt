@@ -1,0 +1,3 @@
+# Images are provided for both (with SplitImage and without SplitImage)
+# The code to draw the loading bar when the images are split is not yet written, so changing this value to true won't do anything yet.
+SplitImage = true

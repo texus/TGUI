@@ -1,0 +1,2 @@
+Phases    = Hover, Focus
+TextColor = (200, 200, 200)
