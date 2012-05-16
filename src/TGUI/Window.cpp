@@ -205,6 +205,9 @@ namespace tgui
         unsigned int objectID = 0;
         void* extraPtr = NULL;
         bool multilineComment = false;
+        
+        std::vector<std::string> defineTokens;
+        std::vector<std::string> defineValues;
 
         // Create a file object
         std::ifstream m_File;
@@ -410,6 +413,25 @@ namespace tgui
             // Only continue when the line is not empty
             if (!line.empty())
             {
+                // Check if something was defined
+                if (defineTokens.empty() == false)
+                {
+                    // Loop through all tokens
+                    for (unsigned int i=0; i<defineTokens.size(); ++i)
+                    {
+                        // Search for every token in the line
+                        std::string::size_type tokenPos = line.find(defineTokens[i]);
+                        
+                        // Check if a token was found
+                        if (tokenPos != std::string::npos)
+                        {
+                            // Replace the token with the corresponding value
+                            line.erase(tokenPos, defineTokens[i].length());
+                            line.insert(tokenPos, defineValues[i]);
+                        }
+                    }
+                }
+                
                 // What happens now depends on the process
                 switch (objectID)
                 {
@@ -418,11 +440,26 @@ namespace tgui
                         // Check if this is the first line
                         if (progress.empty())
                         {
-                            // The first line should contain "window"
+                            // The first line should contain 'window' or 'define'
                             if (line.substr(0, 7).compare("window:") == 0)
                             {
                                 objectID = 0;
                                 progress.push(1);
+                            }
+                            else if (line.substr(0, 7).compare("define:") == 0)
+                            {
+                                line.erase(0, 7);
+                                
+                                // Search the equals sign
+                                std::string::size_type equalsSignPos = line.find('=');
+                                if (equalsSignPos != std::string::npos)
+                                {
+                                    // Store the define
+                                    defineTokens.push_back(line.substr(0, equalsSignPos));
+                                    defineValues.push_back(line.erase(0, equalsSignPos + 1));
+                                }
+                                else // The equals sign is missing
+                                    goto LoadingFailed;
                             }
                             else // The second line is wrong
                                 goto LoadingFailed;
