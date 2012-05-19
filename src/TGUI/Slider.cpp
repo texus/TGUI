@@ -117,18 +117,18 @@ namespace tgui
         if (pathname.empty())
             return false;
 
-        // Make a copy of the pathname (in order to edit it)
-        std::string pathnameCopy = pathname;
+        // Store the pathname
+        m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (pathnameCopy.at(pathnameCopy.length()-1) != '/')
-            pathnameCopy.push_back('/');
+        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+            m_LoadedPathname.push_back('/');
 
         // Open the info file
         InfoFileParser infoFile;
-        if (infoFile.openFile(pathnameCopy + "info.txt") == false)
+        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(pathnameCopy)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -167,8 +167,8 @@ namespace tgui
         if (m_TextureThumbHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
         // load the required textures
-        if ((TGUI_TextureManager.getTexture(pathnameCopy + "Track_Normal." + imageExtension, m_TextureTrackNormal))
-        && (TGUI_TextureManager.getTexture(pathnameCopy + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
+        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal))
+        && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
         {
             m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal, true);
             m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
@@ -182,8 +182,8 @@ namespace tgui
 
         if (m_ObjectPhase & objectPhase::hover)
         {
-            if ((TGUI_TextureManager.getTexture(pathnameCopy + "Track_Hover." + imageExtension, m_TextureTrackHover))
-             && (TGUI_TextureManager.getTexture(pathnameCopy + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
+            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover))
+             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
              {
                  m_SpriteTrackHover.setTexture(*m_TextureTrackHover, true);
                  m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
@@ -240,6 +240,13 @@ namespace tgui
             return Vector2f(m_TextureTrackNormal->getSize().x * getScale().x, m_TextureTrackNormal->getSize().y * getScale().y);
         else
             return Vector2f(m_TextureTrackNormal->getSize().y * getScale().x, m_TextureTrackNormal->getSize().x * getScale().y);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string Slider::getLoadedPathname()
+    {
+        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

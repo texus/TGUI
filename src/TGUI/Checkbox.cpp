@@ -108,18 +108,18 @@ namespace tgui
         if (pathname.empty())
             return false;
 
-        // Make a copy of the pathname (in order to edit it)
-        std::string pathnameCopy = pathname;
+        // Store the pathname
+        m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (pathnameCopy.at(pathnameCopy.length()-1) != '/')
-            pathnameCopy.push_back('/');
+        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+            m_LoadedPathname.push_back('/');
 
         // Open the info file
         InfoFileParser infoFile;
-        if (infoFile.openFile(pathnameCopy + "info.txt") == false)
+        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(pathnameCopy)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -157,8 +157,8 @@ namespace tgui
         if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
 
         // load the required textures
-        if ((TGUI_TextureManager.getTexture(pathnameCopy + "Checked." + imageExtension, m_TextureChecked))
-         && (TGUI_TextureManager.getTexture(pathnameCopy + "Unchecked." + imageExtension, m_TextureUnchecked)))
+        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Checked." + imageExtension, m_TextureChecked))
+         && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Unchecked." + imageExtension, m_TextureUnchecked)))
         {
             m_SpriteChecked.setTexture(*m_TextureChecked, true);
             m_SpriteUnchecked.setTexture(*m_TextureUnchecked, true);
@@ -171,7 +171,7 @@ namespace tgui
         // load the optional textures
         if (m_ObjectPhase & objectPhase::focused)
         {
-            if (TGUI_TextureManager.getTexture(pathnameCopy + "Focus." + imageExtension, m_TextureFocused))
+            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused))
             {
                 m_SpriteFocused.setTexture(*m_TextureFocused, true);
                 m_AllowFocus = true;
@@ -182,7 +182,7 @@ namespace tgui
 
         if (m_ObjectPhase & objectPhase::hover)
         {
-            if (TGUI_TextureManager.getTexture(pathnameCopy + "Hover." + imageExtension, m_TextureMouseHover))
+            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover))
                 m_SpriteMouseHover.setTexture(*m_TextureMouseHover, true);
             else
                 error = true;
@@ -223,6 +223,13 @@ namespace tgui
             return Vector2f(m_TextureUnchecked->getSize().x * getScale().x, m_TextureUnchecked->getSize().y * getScale().y);
         else
             return Vector2f(0, 0);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string Checkbox::getLoadedPathname()
+    {
+        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

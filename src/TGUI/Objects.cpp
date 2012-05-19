@@ -306,6 +306,13 @@ namespace tgui
 	m_BottomBorder(0)
     {
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Vector4u OBJECT_BORDERS::getBorders()
+    {
+        return Vector4u(m_LeftBorder, m_TopBorder, m_RightBorder, m_BottomBorder);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,6 +379,24 @@ namespace tgui
 
         // If you pass here then something is wrong about the line, the color will be black
         return sf::Color::Black;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string convertColorToString(const sf::Color& color)
+    {
+        // Return the color as a string
+        if (color.a < 255)
+            return "(" + tgui::to_string((unsigned int)color.r)
+                 + "," + tgui::to_string((unsigned int)color.g)
+                 + "," + tgui::to_string((unsigned int)color.b)
+                 + "," + tgui::to_string((unsigned int)color.a)
+                 + ")";
+        else
+            return "(" + tgui::to_string((unsigned int)color.r)
+                 + "," + tgui::to_string((unsigned int)color.g)
+                 + "," + tgui::to_string((unsigned int)color.b)
+                 + ")";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

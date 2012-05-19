@@ -103,18 +103,18 @@ namespace tgui
         if (pathname.empty())
             return false;
 
-        // Make a copy of the pathname (in order to edit it)
-        std::string pathnameCopy = pathname;
+        // Store the pathname
+        m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (pathnameCopy.at(pathnameCopy.length()-1) != '/')
-            pathnameCopy.push_back('/');
+        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+            m_LoadedPathname.push_back('/');
 
         // Open the info file
         InfoFileParser infoFile;
-        if (infoFile.openFile(pathnameCopy + "info.txt") == false)
+        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(pathnameCopy)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -143,7 +143,7 @@ namespace tgui
         if (m_TextureHover != NULL) TGUI_TextureManager.removeTexture(m_TextureHover);
 
         // load the required texture
-        if (TGUI_TextureManager.getTexture(pathnameCopy + "Normal." + imageExtension, m_TextureNormal))
+        if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal))
             m_SpriteNormal.setTexture(*m_TextureNormal, true);
         else
             return false;
@@ -151,7 +151,7 @@ namespace tgui
         // load the optional texture
         if (m_ObjectPhase & objectPhase::hover)
         {
-            if (TGUI_TextureManager.getTexture(pathnameCopy + "Hover." + imageExtension, m_TextureHover))
+            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover))
                 m_SpriteHover.setTexture(*m_TextureHover, true);
             else
                 return false;
@@ -169,6 +169,9 @@ namespace tgui
         if (nrOfItemsInList < 1)
             nrOfItemsInList = 1;
 
+        // Remember the scrollbar pathname
+        m_LoadedScrollbarPathname = scrollbarPathname;
+        
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
         m_Listbox.load(width,
@@ -226,6 +229,20 @@ namespace tgui
             return Vector2f(m_Listbox.getSize().x * getScale().x, m_TextureNormal->getSize().y * getScale().y);
         else
             return Vector2f(0, 0);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string ComboBox::getLoadedPathname()
+    {
+        return m_LoadedPathname;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string ComboBox::getLoadedScrollbarPathname()
+    {
+        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,6 +471,10 @@ namespace tgui
 
     bool ComboBox::setScrollbar(const std::string scrollbarPathname)
     {
+        // Remember the scrollbar pathname
+        m_LoadedScrollbarPathname = scrollbarPathname;
+        
+        // Set the new scrollbar
         return m_Listbox.setScrollbar(scrollbarPathname);
     }
 
@@ -461,6 +482,10 @@ namespace tgui
 
     void ComboBox::removeScrollbar()
     {
+        // There is no scrollbar loaded so the string should be empty
+        m_LoadedScrollbarPathname = "";
+        
+        // Remove the scrollbar
         m_Listbox.removeScrollbar();
     }
 

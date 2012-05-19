@@ -208,6 +208,7 @@ namespace tgui
         m_Size.y = height;
         m_TextSize = textSize;
         m_ItemHeight = itemHeight;
+        m_LoadedScrollbarPathname = scrollbarPathname;
 
         // If there is a scrollbar then load it
         if (scrollbarPathname.empty() == false)
@@ -318,6 +319,13 @@ namespace tgui
     Vector2f Listbox::getScaledSize() const
     {
         return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string Listbox::getLoadedScrollbarPathname()
+    {
+        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -621,13 +629,19 @@ namespace tgui
 
     bool Listbox::setScrollbar(const std::string scrollbarPathname)
     {
-        // Do nothing when the string is empty
+        // Calling setScrollbar with an empty string does the same as removeScrollbar
         if (scrollbarPathname.empty() == true)
-            return false;
+        {
+            removeScrollbar();
+            return true;
+        }
 
         // If the scrollbar was already created then delete it first
         if (m_Scroll != NULL)
             delete m_Scroll;
+        
+        // Remember the scrollbar pathname
+        m_LoadedScrollbarPathname = "";
 
         // load the scrollbar and check if it failed
         m_Scroll = new Scrollbar();
@@ -658,6 +672,9 @@ namespace tgui
 
     void Listbox::removeScrollbar()
     {
+        // There is no more scrollbar, so the string should be empty
+        m_LoadedScrollbarPathname = "";
+        
         // Delete the scrollbar
         delete m_Scroll;
         m_Scroll = NULL;

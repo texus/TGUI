@@ -187,18 +187,18 @@ namespace tgui
         if (pathname.empty())
             return false;
 
-        // Make a copy of the pathname (in order to edit it)
-        std::string pathnameCopy = pathname;
+        // Store the pathname
+        m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (pathnameCopy.at(pathnameCopy.length()-1) != '/')
-            pathnameCopy.push_back('/');
+        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+            m_LoadedPathname.push_back('/');
 
         // Open the info file
         InfoFileParser infoFile;
-        if (infoFile.openFile(pathnameCopy + "info.txt") == false)
+        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(pathnameCopy)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -281,9 +281,9 @@ namespace tgui
         if (m_SplitImage)
         {
             // load the required texture
-            if ((TGUI_TextureManager.getTexture(pathnameCopy + "L_Normal." + imageExtension, m_TextureNormal_L))
-             && (TGUI_TextureManager.getTexture(pathnameCopy + "M_Normal." + imageExtension, m_TextureNormal_M))
-             && (TGUI_TextureManager.getTexture(pathnameCopy + "R_Normal." + imageExtension, m_TextureNormal_R)))
+            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Normal." + imageExtension, m_TextureNormal_L))
+             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Normal." + imageExtension, m_TextureNormal_M))
+             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Normal." + imageExtension, m_TextureNormal_R)))
             {
                 m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
@@ -295,9 +295,9 @@ namespace tgui
             // load the optional textures
             if (m_ObjectPhase & objectPhase::focused)
             {
-                if ((TGUI_TextureManager.getTexture(pathnameCopy + "L_Focus." + imageExtension, m_TextureFocused_L))
-                    && (TGUI_TextureManager.getTexture(pathnameCopy + "M_Focus." + imageExtension, m_TextureFocused_M))
-                    && (TGUI_TextureManager.getTexture(pathnameCopy + "R_Focus." + imageExtension, m_TextureFocused_R)))
+                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Focus." + imageExtension, m_TextureFocused_L))
+                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Focus." + imageExtension, m_TextureFocused_M))
+                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Focus." + imageExtension, m_TextureFocused_R)))
                 {
                     m_SpriteFocused_L.setTexture(*m_TextureFocused_L, true);
                     m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
@@ -311,9 +311,9 @@ namespace tgui
 
             if (m_ObjectPhase & objectPhase::hover)
             {
-                if ((TGUI_TextureManager.getTexture(pathnameCopy + "L_Hover." + imageExtension, m_TextureHover_L))
-                    && (TGUI_TextureManager.getTexture(pathnameCopy + "M_Hover." + imageExtension, m_TextureHover_M))
-                    && (TGUI_TextureManager.getTexture(pathnameCopy + "R_Hover." + imageExtension, m_TextureHover_R)))
+                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Hover." + imageExtension, m_TextureHover_L))
+                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Hover." + imageExtension, m_TextureHover_M))
+                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Hover." + imageExtension, m_TextureHover_R)))
                 {
                     m_SpriteHover_L.setTexture(*m_TextureHover_L, true);
                     m_SpriteHover_M.setTexture(*m_TextureHover_M, true);
@@ -326,7 +326,7 @@ namespace tgui
         else // The image isn't split
         {
             // load the required texture
-            if (TGUI_TextureManager.getTexture(pathnameCopy + "Normal." + imageExtension, m_TextureNormal_M))
+            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
             else
                 return false;
@@ -334,7 +334,7 @@ namespace tgui
             // load the optional textures
             if (m_ObjectPhase & objectPhase::focused)
             {
-                if (TGUI_TextureManager.getTexture(pathnameCopy + "Focus." + imageExtension, m_TextureFocused_M))
+                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused_M))
                 {
                     m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
                     m_AllowFocus = true;
@@ -345,7 +345,7 @@ namespace tgui
 
             if (m_ObjectPhase & objectPhase::hover)
             {
-                if (TGUI_TextureManager.getTexture(pathnameCopy + "Hover." + imageExtension, m_TextureHover_M))
+                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover_M))
                     m_SpriteHover_M.setTexture(*m_TextureHover_M, true);
                 else
                     error = true;
@@ -506,6 +506,13 @@ namespace tgui
             // Return the size of the image
             return Vector2f(m_TextureNormal_M->getSize().x * getScale().x, m_TextureNormal_M->getSize().y * getScale().y);
         }
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string EditBox::getLoadedPathname()
+    {
+        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

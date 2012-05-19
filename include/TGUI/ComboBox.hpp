@@ -97,6 +97,20 @@ namespace tgui
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
         
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the pathname that was used to load the combo box.
+        // When the combo box has not been loaded yet then this function will return an empty string.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedPathname();
+        
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the pathname that was used to load the scrollbar.
+        // When no scrollbar was loaded then this function will return an empty string.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedScrollbarPathname();
+        
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the width of the combo box (without scaling).
@@ -286,6 +300,9 @@ namespace tgui
         // Internally a listbox is used to store all items
         Listbox      m_Listbox;
         
+        // The pathname of the loaded scrollbar (if there is one)
+        std::string  m_LoadedScrollbarPathname;
+        
         // The textures for the arrow image
         sf::Texture* m_TextureNormal;
         sf::Texture* m_TextureHover;
@@ -293,6 +310,9 @@ namespace tgui
         // The sprites for the arrow image
         sf::Sprite   m_SpriteNormal;
         sf::Sprite   m_SpriteHover;
+        
+        // The pathname that was used to load the combo box
+        std::string  m_LoadedPathname;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

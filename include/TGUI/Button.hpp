@@ -83,6 +83,13 @@ namespace tgui
         // Returns the size of the button, after the scaling transformation.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
+        
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the pathname that was used to load the button.
+        // When the button has not been loaded yet then this function will return an empty string.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedPathname();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +199,9 @@ namespace tgui
         sf::Sprite  m_SpriteMouseHover_R;
         sf::Sprite  m_SpriteMouseDown_R;
         sf::Sprite  m_SpriteFocused_R;
+        
+        // The pathname used to load the button
+        std::string m_LoadedPathname;
 
         // If this is true then the L, M and R images will be used.
         // If it is false then the button is just one big image that will be stored in the M image.

@@ -83,6 +83,9 @@ namespace tgui
         // Make sure that the filename isn't empty
         if (filename.empty())
             return false;
+        
+        // Store the filename
+        m_LoadedFilename = filename;
 
         // If we have already loaded a texture then first delete it
         if (m_Texture != NULL)
@@ -132,6 +135,13 @@ namespace tgui
             return Vector2f(m_Texture->getSize().x * getScale().x, m_Texture->getSize().y * getScale().y);
         else
             return Vector2f(0, 0);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    std::string Picture::getLoadedFilename()
+    {
+        return m_LoadedFilename;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

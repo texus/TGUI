@@ -93,6 +93,13 @@ namespace tgui
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getScaledSize() const;
 
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the pathname that was used to load the scrollbar.
+        // When no scrollbar was loaded then this function will return an empty string.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedScrollbarPathname();
+        
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the colors of the listbox.
@@ -297,6 +304,9 @@ namespace tgui
 
         // When there are too many items a scrollbar will be shown
         Scrollbar* m_Scroll;
+        
+        // The pathname of the loaded scrollbar (if there is one)
+        std::string m_LoadedScrollbarPathname;
 
         // These colors are used to draw the listbox
         sf::Color m_BackgroundColor;
