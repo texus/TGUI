@@ -832,1349 +832,409 @@ bool Builder::loadForm()
     sliders.clear();
     scrollbars.clear();
     loadingBars.clear();
-
-    // Select the window again
+    
+    // Make sure the window is selected when it goes wrong
     currentID = 1;
-
-    // I wrote these defines to avoid having the same code over and over again
-    #define CHECK_SHARED_PROPERTIES(name, objects) \
-        if (line.substr(0, 5).compare("size=") == 0) \
-        { \
-            tgui::Vector2f size; \
-            if (tgui::extractVector2f(line.erase(0, 5), size) == false) \
-                goto LoadingFailed; \
-          \
-            name->setSize(size.x, size.y); \
-            objects.back().width.value = size.x; \
-            objects.back().height.value = size.y; \
-        } \
-        else if (line.substr(0, 6).compare("width=") == 0) \
-        { \
-            line.erase(0, 6); \
-            name->setSize(static_cast<float>(atoi(line.c_str())), name->getScaledSize().y); \
-            objects.back().width.value = atoi(line.c_str()); \
-        } \
-        else if (line.substr(0, 7).compare("height=") == 0) \
-        { \
-            line.erase(0, 7); \
-            name->setSize(name->getScaledSize().x, static_cast<float>(atoi(line.c_str()))); \
-            objects.back().height.value = atoi(line.c_str()); \
-        } \
-        else if (line.substr(0, 6).compare("scale=") == 0) \
-        { \
-            line.erase(0, 6); \
-            tgui::Vector2f objScale; \
-            if (tgui::extractVector2f(line, objScale) == false) \
-                goto LoadingFailed; \
-          \
-            name->setScale(objScale); \
-            objects.back().width.value = name->getScaledSize().x; \
-            objects.back().height.value = name->getScaledSize().y; \
-        } \
-        else if (line.substr(0, 9).compare("position=") == 0) \
-        { \
-            line.erase(0, 9); \
-            tgui::Vector2f position; \
-            if (tgui::extractVector2f(line, position) == false) \
-                goto LoadingFailed; \
-          \
-            name->setPosition(position); \
-            objects.back().left.value = position.x; \
-            objects.back().top.value = position.y; \
-        } \
-        else if (line.substr(0, 5).compare("left=") == 0) \
-        { \
-            line.erase(0, 5); \
-            name->setPosition(static_cast<float>(atoi(line.c_str())), name->getPosition().y); \
-            objects.back().left.value = atoi(line.c_str()); \
-        } \
-        else if (line.substr(0, 4).compare("top=") == 0) \
-        { \
-            line.erase(0, 4); \
-            name->setPosition(name->getPosition().x, static_cast<float>(atoi(line.c_str()))); \
-            objects.back().top.value = atoi(line.c_str()); \
-        } \
-        else if (line.substr(0, 11).compare("callbackid=") == 0) \
-        { \
-            line.erase(0, 11); \
-            name->callbackID = atoi(line.c_str()); \
-            objects.back().callbackID.value = atoi(line.c_str()); \
-        }
-
-    #define CHECK_FOR_QUOTES \
-        if (line.empty() == true) \
-            goto LoadingFailed; \
-         \
-        if ((line[0] == '"') && (line[line.length()-1] == '"')) \
-        { \
-            line.erase(0, 1); \
-            line.erase(line.length()-1, 1); \
-        } \
-        else \
-            goto LoadingFailed;
-
-    #define CHECK_BOOL(boolean) \
-        if (line.compare("true") == 0) \
-            boolean = true; \
-        else if (line.compare("false") == 0) \
-            boolean = false; \
-        else \
-        { \
-            if (atoi(line.c_str())) \
-                boolean = true; \
-            else \
-                boolean = false; \
-        }
-
-    /// TODO: newObject doesn't support panels
-    #define COMPARE_OBJECT(length, name, objectName, id) \
-        if (line.substr(0, length).compare(name) == 0) \
-        { \
-            line.erase(0, length); \
-          \
-            if (line.empty() == false) \
-            { \
-                CHECK_FOR_QUOTES \
-            } \
-          \
-            unsigned int newObjectID = newObject(id, line); \
-            extraPtr = static_cast<void*>(parentPtr.top()->get##objectName(tgui::to_string(newObjectID))); \
-            objectID = id + 1; \
-            progress.push(0); \
-        }
-
-    #define START_LOADING_OBJECT \
-        if (progress.top() == 0) \
-        { \
-            if (line.compare("{") == 0) \
-            { \
-                progress.pop(); \
-                progress.push(1); \
-                break; \
-            } \
-            else \
-                goto LoadingFailed; \
-        } \
-        else \
-        { \
-            if (line.compare("}") == 0) \
-            { \
-                objectID = parentID.top(); \
-                parentID.pop(); \
-                parentPtr.pop(); \
-                progress.pop(); \
-                break; \
-            } \
-        }
-
-    // During the process some variables are needed to store what exactly was going on.
-    std::stack<tgui::Group*> parentPtr;
-    std::stack<unsigned int> parentID;
-    std::stack<unsigned int> progress;
-    unsigned int objectID = 0;
-    void* extraPtr = NULL;
-    bool multilineComment = false;
     
-    std::vector<std::string> defineTokens;
-    std::vector<std::string> defineValues;
+    // Create a temporary window
+    tgui::Window tempWindow;
     
-    // Create a file object
-    std::ifstream m_File;
-
-    // Open the file
-    m_File.open("form.txt", std::ifstream::in);
-
-    // Check if the file was not opened
-    if (m_File.is_open() == false)
-        return false;
-
-    // Stop reading when we reach the end of the file
-    while (!m_File.eof())
+    // Load all the objects in the temporary window
+    if (tempWindow.loadObjectsFromFile("form.txt"))
     {
-        // Get the next line
-        std::string line;
-        std::getline(m_File, line);
-
-        // Check if there is a multiline comment
-        if (multilineComment)
+        // Get a list of all the loaded objects
+        std::vector<tgui::OBJECT*> objects = tempWindow.getObjects();
+        std::vector<std::string> objectNames = tempWindow.getObjectNames();
+        
+        tgui::Checkbox c = *tempWindow.getCheckbox("t");
+        
+        // Loop through all objects
+        for (unsigned int i=0; i<objects.size(); ++i)
         {
-            // Search for an asterisk
-            std::string::size_type commentPos = line.find('*');
-
-            // Check if there is an asterisk
-            if (commentPos != std::string::npos)
+            // Check what the object type is
+            if (objects[i]->getObjectType() == tgui::label)
             {
-                // Make sure the asterisk is not the last character on the line
-                if (line.length() > commentPos + 1)
-                {
-                    // Check if the next character is a slash
-                    if (line[commentPos+1] == '/')
-                    {
-                        // Erase the first part of the line
-                        line.erase(0, commentPos + 2);
-
-                        // The multiline comment has been processed
-                        multilineComment = false;
-
-                        // Continue like normal
-                        goto multilineCommentProcessed;
-                    }
-                }
-                else // There is no end of the comment in this line
-                    line = "";
+                // Convert the object to a label (which it is)
+                tgui::Label* object = static_cast<tgui::Label*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::label, objectNames[i]);
+                labels.back().left.value = object->getPosition().x;
+                labels.back().top.value = object->getPosition().y;
+                labels.back().width.value = object->getScaledSize().x;
+                labels.back().height.value = object->getScaledSize().y;
+                labels.back().text.value = object->getText();
+                labels.back().textSize.value = object->getTextSize();
+                labels.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                labels.back().textFont.value = "Global";
+                labels.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Label* realObject = mainWindow.getLabel(tgui::to_string(id));
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextColor(object->getTextColor());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
             }
-            else // There is no end of the comment in this line
-                line = "";
-        }
-        else // There is no multiline comment
-        {
-          multilineCommentProcessed:
-
-            // Search for a quote
-            std::string::size_type quotePos1 = line.find('"');
-
-            // Check if the quote was found or not
-            if (quotePos1 == std::string::npos)
+            else if (objects[i]->getObjectType() == tgui::picture)
             {
-                // Remove all spaces and tabs from the whole line
-                line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
-                line.erase(std::remove(line.begin(), line.end(), '\t'), line.end());
-                line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
-
-                // Search for comments
-                std::string::size_type commentPos = line.find('/');
-
-                // Check if a slash was found
-                if (commentPos != std::string::npos)
-                {
-                    // Make sure the slash is not the last character on the line
-                    if (line.length() > commentPos + 1)
-                    {
-                        // Erase the comment (if there is one)
-                        if (line[commentPos+1] == '/')
-                            line.erase(commentPos);
-                        else if (line[commentPos+1] == '*')
-                        {
-                            // Remove the rest of the line
-                            line.erase(commentPos);
-
-                            // From now on, everything is comment
-                            multilineComment = true;
-                        }
-                        else // There is a slash in the middle of nowhere. It shouldn't be there.
-                            goto LoadingFailed;
-                    }
-                    else // There is a slash on the end of the line. It shouldn't be there.
-                        goto LoadingFailed;
-                }
-
-                // Convert the whole line to lowercase
-                for (unsigned int i = 0; i < line.length(); i++)
-                {
-                    if ((line[i] > 64) && (line[i] < 91))
-                        line[i] += 32;
-                }
+                // Convert the object to a picture (which it is)
+                tgui::Picture* object = static_cast<tgui::Picture*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::picture, objectNames[i]);
+                pictures.back().filename.value = object->getLoadedFilename();
+                pictures.back().left.value = object->getPosition().x;
+                pictures.back().top.value = object->getPosition().y;
+                pictures.back().width.value = object->getScaledSize().x;
+                pictures.back().height.value = object->getScaledSize().y;
+                pictures.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Picture* realObject = mainWindow.getPicture(tgui::to_string(id));
+                realObject->load(object->getLoadedFilename());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->callbackID = object->callbackID;
             }
-            else
+            else if (objects[i]->getObjectType() == tgui::button)
             {
-                // Only remove spaces until the quote
-                line.erase(std::remove(line.begin(), line.begin() + quotePos1, ' '), line.begin() + quotePos1);
-
-                // Search for the quote again, because the position might have changed
-                quotePos1 = line.find('"');
-
-                // Only remove tabs until the quote
-                line.erase(std::remove(line.begin(), line.begin() + quotePos1, '\t'), line.begin() + quotePos1);
-
-                // Search for the quote again, because the position might have changed
-                quotePos1 = line.find('"');
-
-                // Search for comments
-                std::string::size_type commentPos = line.substr(0, quotePos1).find('/');
-
-                // Check if a slash was found
-                if (commentPos != std::string::npos)
-                {
-                    // Erase the comment (if there is one)
-                    if (line[commentPos+1] == '/')
-                        line.erase(commentPos);
-                    else if (line[commentPos+1] == '*')
-                    {
-                        // Remove the rest of the line
-                        line.erase(commentPos);
-
-                        // From now on, everything is comment
-                        multilineComment = true;
-                    }
-                    else // There is a slash in the middle of nowhere. It shouldn't be there.
-                        goto LoadingFailed;
-                }
-
-                // Search for the quote again, because the position might have changed
-                quotePos1 = line.find('"');
-
-                // The quote might have been behind the comment
-                if (quotePos1 != std::string::npos)
-                {
-                    // Convert the part before the quote to lowercase
-                    for (unsigned int i = 0; i < quotePos1; i++)
-                    {
-                        if ((line[i] > 64) && (line[i] < 91))
-                            line[i] += 32;
-                    }
-
-                    // Search for a second quote
-                    std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
-
-                    // There must always be a second quote
-                    if (quotePos2 == std::string::npos)
-                        goto LoadingFailed;
-
-                    // Remove all spaces and tabs after the quote
-                    line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
-                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
-                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
-
-                    // Search for comments
-                    std::string::size_type commentPos = line.find('/', quotePos2 + 1);
-
-                    // Check if a slash was found
-                    if (commentPos != std::string::npos)
-                    {
-                        // Make sure the slash is not the last character on the line
-                        if (line.length() > commentPos + 1)
-                        {
-                            // Erase the comment (if there is one)
-                            if (line[commentPos+1] == '/')
-                                line.erase(commentPos);
-                            else if (line[commentPos+1] == '*')
-                            {
-                                // Remove the rest of the line
-                                line.erase(commentPos);
-
-                                // From now on, everything is comment
-                                multilineComment = true;
-                            }
-                            else // There is a slash in the middle of nowhere. It shouldn't be there.
-                                goto LoadingFailed;
-                        }
-                        else // There is a slash on the end of the line. It shouldn't be there.
-                            goto LoadingFailed;
-                    }
-
-                    // Search for the quote again, because the position might have changed
-                    quotePos2 = line.find('"', quotePos1 + 1);
-
-                    // There may never be more than two quotes
-                    if (line.find('"', quotePos2 + 1) != std::string::npos)
-                        goto LoadingFailed;
-
-                    // Convert the part behind the quote to lowercase
-                    for (unsigned int i = quotePos2; i < line.length(); i++)
-                    {
-                        if ((line[i] > 64) && (line[i] < 91))
-                            line[i] += 32;
-                    }
-                }
+                // Convert the object to a button (which it is)
+                tgui::Button* object = static_cast<tgui::Button*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::button, objectNames[i]);
+                buttons.back().pathname.value = object->getLoadedPathname();
+                buttons.back().left.value = object->getPosition().x;
+                buttons.back().top.value = object->getPosition().y;
+                buttons.back().width.value = object->getScaledSize().x;
+                buttons.back().height.value = object->getScaledSize().y;
+                buttons.back().text.value = object->getText();
+                buttons.back().textSize.value = object->getTextSize();
+                buttons.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                buttons.back().textFont.value = "Global";
+                buttons.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Button* realObject = mainWindow.getButton(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextColor(object->getTextColor());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
             }
-        }
-
-        // Only continue when the line is not empty
-        if (!line.empty())
-        {
-            // Check if something was defined
-            if (defineTokens.empty() == false)
+            else if (objects[i]->getObjectType() == tgui::checkbox)
             {
-                // Loop through all tokens
-                for (unsigned int i=0; i<defineTokens.size(); ++i)
+                // Convert the object to a checkbox (which it is)
+                tgui::Checkbox* object = static_cast<tgui::Checkbox*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::checkbox, objectNames[i]);
+                checkboxes.back().pathname.value = object->getLoadedPathname();
+                checkboxes.back().left.value = object->getPosition().x;
+                checkboxes.back().top.value = object->getPosition().y;
+                checkboxes.back().width.value = object->getScaledSize().x;
+                checkboxes.back().height.value = object->getScaledSize().y;
+                checkboxes.back().checked.value = object->isChecked();
+                checkboxes.back().text.value = object->getText();
+                checkboxes.back().textSize.value = object->getTextSize();
+                checkboxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                checkboxes.back().textFont.value = "Global";
+                checkboxes.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Checkbox* realObject = mainWindow.getCheckbox(tgui::to_string(id));
+                //realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextColor(object->getTextColor());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
+                
+                if (object->isChecked())
+                    realObject->check();
+                else
+                    realObject->uncheck();
+            }
+            else if (objects[i]->getObjectType() == tgui::radioButton)
+            {
+                // Convert the object to a radio button (which it is)
+                tgui::RadioButton* object = static_cast<tgui::RadioButton*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::radioButton, objectNames[i]);
+                radioButtons.back().pathname.value = object->getLoadedPathname();
+                radioButtons.back().left.value = object->getPosition().x;
+                radioButtons.back().top.value = object->getPosition().y;
+                radioButtons.back().width.value = object->getScaledSize().x;
+                radioButtons.back().height.value = object->getScaledSize().y;
+                radioButtons.back().checked.value = object->isChecked();
+                radioButtons.back().text.value = object->getText();
+                radioButtons.back().textSize.value = object->getTextSize();
+                radioButtons.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                radioButtons.back().textFont.value = "Global";
+                radioButtons.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::RadioButton* realObject = mainWindow.getRadioButton(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextColor(object->getTextColor());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
+                
+                if (object->isChecked())
+                    realObject->check();
+                else
+                    realObject->uncheck();
+            }
+            else if (objects[i]->getObjectType() == tgui::editBox)
+            {
+                // Convert the object to an edit box (which it is)
+                tgui::EditBox* object = static_cast<tgui::EditBox*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::editBox, objectNames[i]);
+                editBoxes.back().pathname.value = object->getLoadedPathname();
+                editBoxes.back().left.value = object->getPosition().x;
+                editBoxes.back().top.value = object->getPosition().y;
+                editBoxes.back().width.value = object->getScaledSize().x;
+                editBoxes.back().height.value = object->getScaledSize().y;
+                editBoxes.back().text.value = object->getText();
+                editBoxes.back().textSize.value = object->getTextSize();
+                editBoxes.back().textFont.value = "Global";
+                editBoxes.back().passwordChar.value = object->getPasswordChar();
+                editBoxes.back().maximumCharacters.value = object->getMaximumCharacters();
+                editBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                editBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                editBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
+                editBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(object->getSelectedTextBackgroundColor());
+                editBoxes.back().unfocusedSelectedTextBackgroundColor.value = tgui::convertColorToString(object->getUnfocusedSelectedTextBackgroundColor());
+                editBoxes.back().selectionPointColor.value = tgui::convertColorToString(object->selectionPointColor);
+                editBoxes.back().selectionPointWidth.value = object->selectionPointWidth;
+                editBoxes.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::EditBox* realObject = mainWindow.getEditBox(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->setPasswordChar(object->getPasswordChar());
+                realObject->setMaximumCharacters(object->getMaximumCharacters());
+                realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
+                realObject->changeColors(object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor());
+                realObject->selectionPointColor = object->selectionPointColor;
+                realObject->selectionPointWidth = object->selectionPointWidth;
+                realObject->callbackID = object->callbackID;
+            }
+            else if (objects[i]->getObjectType() == tgui::slider)
+            {
+                // Convert the object to a slider (which it is)
+                tgui::Slider* object = static_cast<tgui::Slider*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::slider, objectNames[i]);
+                sliders.back().pathname.value = object->getLoadedPathname();
+                sliders.back().left.value = object->getPosition().x;
+                sliders.back().top.value = object->getPosition().y;
+                sliders.back().width.value = object->getScaledSize().x;
+                sliders.back().height.value = object->getScaledSize().y;
+                sliders.back().verticalScroll.value = object->getVerticalScroll();
+                sliders.back().value.value = object->getValue();
+                sliders.back().minimum.value = object->getMinimum();
+                sliders.back().maximum.value = object->getMaximum();
+                sliders.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Slider* realObject = mainWindow.getSlider(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setVerticalScroll(object->getVerticalScroll());
+                realObject->setValue(object->getValue());
+                realObject->setMinimum(object->getMinimum());
+                realObject->setMaximum(object->getMaximum());
+                realObject->callbackID = object->callbackID;
+            }
+            else if (objects[i]->getObjectType() == tgui::scrollbar)
+            {
+                // Convert the object to a scrollbar (which it is)
+                tgui::Scrollbar* object = static_cast<tgui::Scrollbar*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::scrollbar, objectNames[i]);
+                scrollbars.back().pathname.value = object->getLoadedPathname();
+                scrollbars.back().left.value = object->getPosition().x;
+                scrollbars.back().top.value = object->getPosition().y;
+                scrollbars.back().width.value = object->getScaledSize().x;
+                scrollbars.back().height.value = object->getScaledSize().y;
+                scrollbars.back().verticalScroll.value = object->getVerticalScroll();
+                scrollbars.back().value.value = object->getValue();
+                scrollbars.back().lowValue.value = object->getLowValue();
+                scrollbars.back().maximum.value = object->getMaximum();
+                scrollbars.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::Scrollbar* realObject = mainWindow.getScrollbar(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setVerticalScroll(object->getVerticalScroll());
+                realObject->setValue(object->getValue());
+                realObject->setLowValue(object->getLowValue());
+                realObject->setMaximum(object->getMaximum());
+                realObject->callbackID = object->callbackID;
+            }
+            else if (objects[i]->getObjectType() == tgui::listbox)
+            {
+                // Convert the object to a listbox (which it is)
+                tgui::Listbox* object = static_cast<tgui::Listbox*>(objects[i]);
+                
+                // Get a list of the items
+                std::vector<std::string> items = object->getItems();
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::listbox, objectNames[i]);
+                listboxes.back().left.value = object->getPosition().x;
+                listboxes.back().top.value = object->getPosition().y;
+                listboxes.back().width.value = object->getScaledSize().x;
+                listboxes.back().height.value = object->getScaledSize().y;
+                listboxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
+                listboxes.back().itemHeight.value = object->getItemHeight();
+                listboxes.back().maximumItems.value = object->getMaximumItems();
+                listboxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                listboxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
+                listboxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                listboxes.back().selectedBackgroundColor.value = tgui::convertColorToString(object->getSelectedBackgroundColor());
+                listboxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
+                listboxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
+                listboxes.back().textFont.value = "Global";
+                listboxes.back().callbackID.value = object->callbackID;
+                
+                // If there is an item then add it to the listbox
+                if (items.empty() == false)
                 {
-                    // Search for every token in the line
-                    std::string::size_type tokenPos = line.find(defineTokens[i]);
+                    listboxes.back().items.value = items[0];
                     
-                    // Check if a token was found
-                    if (tokenPos != std::string::npos)
-                    {
-                        // Replace the token with the corresponding value
-                        line.erase(tokenPos, defineTokens[i].length());
-                        line.insert(tokenPos, defineValues[i]);
-                    }
+                    // Add the other items
+                    for (unsigned int i=1; i<items.size(); ++i)
+                        listboxes.back().items.value += "," + items[i];
                 }
+                listboxes.back().selectedItem.value = object->getSelectedItemID();
+                
+                // Draw the object in the correct way
+                tgui::Listbox* realObject = mainWindow.getListbox(tgui::to_string(id));
+                realObject->load(object->getScaledSize().x, object->getScaledSize().y, object->getLoadedScrollbarPathname(), object->getItemHeight());
+                realObject->setPosition(object->getPosition());
+                realObject->setMaximumItems(object->getMaximumItems());
+                realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
+                realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedBackgroundColor(), object->getSelectedTextColor(), object->getBorderColor());
+                for (unsigned int i=0; i<items.size(); ++i) realObject->addItem(items[i]);
+                realObject->setSelectedItem(object->getSelectedItem());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
             }
-
-            // What happens now depends on the process
-            switch (objectID)
+            else if (objects[i]->getObjectType() == tgui::comboBox)
             {
-                case 0: // Done nothing yet
+                // Convert the object to a combo box (which it is)
+                tgui::ComboBox* object = static_cast<tgui::ComboBox*>(objects[i]);
+                
+                // Get a list of the items
+                std::vector<std::string> items = object->getItems();
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::comboBox, objectNames[i]);
+                comboBoxes.back().pathname.value = object->getLoadedPathname();
+                comboBoxes.back().left.value = object->getPosition().x;
+                comboBoxes.back().top.value = object->getPosition().y;
+                comboBoxes.back().width.value = object->getScaledSize().x;
+                comboBoxes.back().height.value = object->getScaledSize().y;
+                comboBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
+                comboBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                comboBoxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
+                comboBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                comboBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(object->getSelectedBackgroundColor());
+                comboBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
+                comboBoxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
+                comboBoxes.back().itemsToDisplay.value = object->getItemsToDisplay();
+                comboBoxes.back().textFont.value = "Global";
+                comboBoxes.back().callbackID.value = object->callbackID;
+                
+                // If there is an item then add it to the listbox
+                if (items.empty() == false)
                 {
-                    // Check if this is the first line
-                    if (progress.empty())
-                    {
-                        // The first line should contain 'window' or 'define'
-                        if (line.substr(0, 7).compare("window:") == 0)
-                        {
-                            objectID = 0;
-                            progress.push(1);
-                        }
-                        else // The second line is wrong
-                            goto LoadingFailed;
-                    }
-                    else if (line.substr(0, 7).compare("define:") == 0)
-                    {
-                        line.erase(0, 7);
-                        
-                        // Search the equals sign
-                        std::string::size_type equalsSignPos = line.find('=');
-                        if (equalsSignPos != std::string::npos)
-                        {
-                            // Store the define
-                            defineTokens.push_back(line.substr(0, equalsSignPos));
-                            defineValues.push_back(line.erase(0, equalsSignPos + 1));
-                        }
-                        else // The equals sign is missing
-                            goto LoadingFailed;
-                    }
-                    else // This is the second line
-                    {
-                        // The second line should contain "{"
-                        if (line.compare("{") == 0)
-                        {
-                            objectID = tgui::window + 1;
-                            progress.pop();
-                        }
-                        else // The second line is wrong
-                            goto LoadingFailed;
-                    }
-
-                    break;
+                    comboBoxes.back().items.value = items[0];
+                    
+                    // Add the other items
+                    for (unsigned int i=1; i<items.size(); ++i)
+                        listboxes.back().items.value += "," + items[i];
                 }
-                case tgui::window + 1: // The window was found
-                {
-                    // Find out if the loading is done
-                    if (line.compare("}") == 0)
-                        goto LoadingSucceeded;
-
-                    // The next object will have the window as its parent
-                    parentID.push(tgui::window + 1);
-                    parentPtr.push(&mainWindow);
-
-                    // The line doesn't contain a '}', so check what object it contains
-/*                    COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
-                    else*/ COMPARE_OBJECT(6, "label:", Label, tgui::label)
-                    else COMPARE_OBJECT(7, "button:", Button, tgui::button)
-                    else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
-                    else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                    else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
-                    else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
-                    else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
-                    else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
-                    else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
-                    else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
-                    else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
-                    else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
-
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-/*                case tgui::panel + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the panel back
-                    tgui::Panel* panel = static_cast<tgui::Panel*>(extraPtr);
-
-                    CHECK_SHARED_PROPERTIES(panel, panels)
-                    else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
-                    {
-                        // Change the background color (black on error)
-                        panel->backgroundColor = tgui::extractColor(line.erase(0, 16));
-                    }
-                    else
-                    {
-                        // All newly created objects must be part of the panel
-                        parentID.push(tgui::panel + 1);
-                        parentPtr.push(panel);
-
-                        COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
-                        else COMPARE_OBJECT(6, "label:", Label, tgui::label)
-                        else COMPARE_OBJECT(7, "button:", Button, tgui::button)
-                        else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
-                        else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                        else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
-                        else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
-                        else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
-                        else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
-                        else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
-                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
-                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
-                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
-                        else // The line was wrong
-                            goto LoadingFailed;
-                    }
-
-                    break;
-                }
-*/                case tgui::label + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the label back
-                    tgui::Label* label = static_cast<tgui::Label*>(extraPtr);
-
-                    if (line.substr(0, 5).compare("text=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Change the text
-                        label->setText(line);
-                        labels.back().text.value = line;
-                    }
-                    else if (line.substr(0, 9).compare("textsize=") == 0)
-                    {
-                        // Change the text size
-                        unsigned int textSize = atoi(line.erase(0, 9).c_str());
-                        label->setTextSize(textSize);
-                        labels.back().textSize.value = textSize;
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        // Change the text color (black on error)
-                        label->setTextColor(tgui::extractColor(line.erase(0, 10)));
-                        labels.back().textColor.value = line;
-                    }
-                    else CHECK_SHARED_PROPERTIES(label, labels)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::button + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the button back
-                    tgui::Button* button = static_cast<tgui::Button*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the button
-                        button->load(line);
-                        buttons.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 5).compare("text=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Change the caption
-                        button->setText(line);
-                        buttons.back().text.value = line;
-                    }
-                    else if (line.substr(0, 9).compare("textsize=") == 0)
-                    {
-                        // Change the text size
-                        unsigned int textSize = atoi(line.erase(0, 9).c_str());
-                        button->setTextSize(textSize);
-                        buttons.back().textSize.value = textSize;
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        // Change the text color (black on error)
-                        button->setTextColor(tgui::extractColor(line.erase(0, 10)));
-                        buttons.back().textColor.value = line;
-                    }
-                    else CHECK_SHARED_PROPERTIES(button, buttons)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::slider + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the slider back
-                    tgui::Slider* slider = static_cast<tgui::Slider*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the slider
-                        slider->load(line);
-                        sliders.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 6).compare("value=") == 0)
-                    {
-                        slider->setValue(atoi(line.erase(0, 6).c_str()));
-                        sliders.back().value.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 8).compare("minimum=") == 0)
-                    {
-                        slider->setMinimum(atoi(line.erase(0, 8).c_str()));
-                        sliders.back().minimum.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 8).compare("maximum=") == 0)
-                    {
-                        slider->setMaximum(atoi(line.erase(0, 8).c_str()));
-                        sliders.back().maximum.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 15).compare("verticalscroll=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 15);
-
-                        // Check if the value is true or false
-                        bool vericalScroll;
-                        CHECK_BOOL(vericalScroll)
-
-                        slider->setVerticalScroll(vericalScroll);
-                        sliders.back().verticalScroll.value = atoi(line.c_str());
-                    }
-                    else CHECK_SHARED_PROPERTIES(slider, sliders)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::picture + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the picture back
-                    tgui::Picture* picture = static_cast<tgui::Picture*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("filename=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the picture
-                        picture->load(line);
-                        pictures.back().filename.value = line;
-                    }
-                    else CHECK_SHARED_PROPERTIES(picture, pictures)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::listbox + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the listbox back
-                    tgui::Listbox* listbox = static_cast<tgui::Listbox*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 11).compare("itemheight=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 11);
-
-                        // Set the width
-                        listbox->setItemHeight(atoi(line.c_str()));
-                        listboxes.back().itemHeight.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 18);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the scrollbar
-                        listbox->setScrollbar(line);
-                        listboxes.back().scrollbarPathname.value = line;
-                    }
-                    else if (line.substr(0, 8).compare("borders=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 8);
-
-                        // Get the borders
-                        tgui::Vector4u borders;
-                        if (extractVector4u(line, borders) == false)
-                            goto LoadingFailed;
-
-                        listbox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
-                        listboxes.back().borders.value = line;
-                    }
-                    else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
-                    {
-                        listbox->changeColors(tgui::extractColor(line.erase(0, 16)),
-                                              listbox->getTextColor(),
-                                              listbox->getSelectedBackgroundColor(),
-                                              listbox->getSelectedTextColor(),
-                                              listbox->getBorderColor());
-                        listboxes.back().backgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        listbox->changeColors(listbox->getBackgroundColor(),
-                                              tgui::extractColor(line.erase(0, 10)),
-                                              listbox->getSelectedBackgroundColor(),
-                                              listbox->getSelectedTextColor(),
-                                              listbox->getBorderColor());
-                        listboxes.back().textColor.value = line;
-                    }
-                    else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
-                    {
-                        listbox->changeColors(listbox->getBackgroundColor(),
-                                              listbox->getTextColor(),
-                                              tgui::extractColor(line.erase(0, 24)),
-                                              listbox->getSelectedTextColor(),
-                                              listbox->getBorderColor());
-                        listboxes.back().selectedBackgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
-                    {
-                        listbox->changeColors(listbox->getBackgroundColor(),
-                                              listbox->getTextColor(),
-                                              listbox->getSelectedBackgroundColor(),
-                                              tgui::extractColor(line.erase(0, 18)),
-                                              listbox->getBorderColor());
-                        listboxes.back().selectedTextColor.value = line;
-                    }
-                    else if (line.substr(0, 12).compare("bordercolor=") == 0)
-                    {
-                        listbox->changeColors(listbox->getBackgroundColor(),
-                                              listbox->getTextColor(),
-                                              listbox->getSelectedBackgroundColor(),
-                                              listbox->getSelectedTextColor(),
-                                              tgui::extractColor(line.erase(0, 12)));
-                        listboxes.back().borderColor.value = line;
-                    }
-                    else if (line.substr(0, 13).compare("maximumitems=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 13);
-
-                        // Set the maximum items
-                        listbox->setMaximumItems(atoi(line.c_str()));
-                        listboxes.back().maximumItems.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 5).compare("item=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Add the item to the listbox
-                        listbox->addItem(line);
-
-                        std::string items = listboxes.back().items.value;
-
-                        if (items.empty() == false)
-                            items.push_back(',');
-
-                        listboxes.back().items.value = items.append(line);
-                    }
-                    else if (line.substr(0, 13).compare("selecteditem=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 13);
-
-                        // The line must contain something
-                        if (line.empty() == true)
-                            goto LoadingFailed;
-
-                        // Check if there are quotes
-                        if ((line[0] == '"') && (line[line.length()-1] == '"'))
-                        {
-                            line.erase(0, 1);
-                            line.erase(line.length()-1, 1);
-
-                            // Select the item
-                            listbox->setSelectedItem(line);
-                            listboxes.back().selectedItem.value = listbox->getSelectedItemID();
-                        }
-                        else // There were no quotes
-                        {
-                            // Select the item
-                            listbox->setSelectedItem(atoi(line.c_str()));
-                            listboxes.back().selectedItem.value = atoi(line.c_str());
-                        }
-                    }
-                    else CHECK_SHARED_PROPERTIES(listbox, listboxes)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::editBox + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the edit box back
-                    tgui::EditBox* editBox = static_cast<tgui::EditBox*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the edit box
-                        editBox->load(line);
-                        editBoxes.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 8).compare("borders=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 8);
-
-                        // Get the borders
-                        tgui::Vector4u borders;
-                        if (extractVector4u(line, borders) == false)
-                            goto LoadingFailed;
-
-                        // Change the borders
-                        editBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
-                        editBoxes.back().borders.value = line;
-                    }
-                    else if (line.substr(0, 5).compare("text=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Change the text
-                        editBox->setText(line);
-                        editBoxes.back().text.value = line;
-                    }
-                    else if (line.substr(0, 9).compare("textsize=") == 0)
-                    {
-                        // Change the text size
-                        editBox->setTextSize(atoi(line.erase(0, 9).c_str()));
-                        editBoxes.back().textSize.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        // Change the text color (black on error)
-                        editBox->changeColors(tgui::extractColor(line.erase(0, 10)),
-                                              editBox->getSelectedTextColor(),
-                                              editBox->getSelectedTextBackgroundColor(),
-                                              editBox->getUnfocusedSelectedTextBackgroundColor());
-                        editBoxes.back().textColor.value = line;
-                    }
-                    else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
-                    {
-                        // Change the selected text color (black on error)
-                        editBox->changeColors(editBox->getTextColor(),
-                                              tgui::extractColor(line.erase(0, 18)),
-                                              editBox->getSelectedTextBackgroundColor(),
-                                              editBox->getUnfocusedSelectedTextBackgroundColor());
-                        editBoxes.back().selectedTextColor.value = line;
-                    }
-                    else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
-                    {
-                        // Change the selected text background color (black on error)
-                        editBox->changeColors(editBox->getTextColor(),
-                                              editBox->getSelectedTextColor(),
-                                              tgui::extractColor(line.erase(0, 28)),
-                                              editBox->getUnfocusedSelectedTextBackgroundColor());
-                        editBoxes.back().selectedTextBackgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
-                    {
-                        // Change the selected text background color (black on error)
-                        editBox->changeColors(editBox->getTextColor(),
-                                              editBox->getSelectedTextColor(),
-                                              editBox->getSelectedTextBackgroundColor(),
-                                              tgui::extractColor(line.erase(0, 37)));
-                        editBoxes.back().unfocusedSelectedTextBackgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
-                    {
-                        // Change the selection pointer color (black on error)
-                        editBox->selectionPointColor = tgui::extractColor(line.erase(0, 20));
-                        editBoxes.back().selectionPointColor.value = line;
-                    }
-                    else if (line.substr(0, 13).compare("passwordchar=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 13);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Make sure that the string is not empty
-                        if (line.empty() == false)
-                        {
-                            // Set the password character
-                            editBox->setPasswordChar(line[0]);
-                            editBoxes.back().passwordChar.value = line[0];
-                        }
-                        else // The string is empty
-                        {
-                            editBox->setPasswordChar('\0');
-                            editBoxes.back().passwordChar.value = '\0';
-                        }
-                    }
-                    else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 20);
-
-                        // Read the selection point width (0 and thus no selection point when it goes wrong)
-                        editBox->selectionPointWidth = atoi(line.c_str());
-                        editBoxes.back().selectionPointWidth.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 18);
-
-                        // Read the maximum characters (0 and thus no limit when it goes wrong)
-                        editBox->setMaximumCharacters(atoi(line.c_str()));
-                        editBoxes.back().maximumCharacters.value = atoi(line.c_str());
-                    }
-                    else CHECK_SHARED_PROPERTIES(editBox, editBoxes)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::textBox + 1:
-                {
-                    break;
-                }
-                case tgui::checkbox + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the checkbox back
-                    tgui::Checkbox* checkbox = static_cast<tgui::Checkbox*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the checkbox
-                        checkbox->load(line);
-                        checkboxes.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 5).compare("text=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Change the caption
-                        checkbox->setText(line);
-                        checkboxes.back().text.value = line;
-                    }
-                    else if (line.substr(0, 8).compare("checked=") == 0)
-                    {
-                        // Remove the first part of the string
-                        line.erase(0, 8);
-
-                        // Check if the value is true or false
-                        bool checked;
-                        CHECK_BOOL(checked)
-
-                        // Check or uncheck the checkbox
-                        if (checked)
-                            checkbox->check();
-                        else
-                            checkbox->uncheck();
-
-                        checkboxes.back().checked.value = checked;
-                    }
-                    else if (line.substr(0, 9).compare("textsize=") == 0)
-                    {
-                        // Change the text size
-                        checkbox->setTextSize(atoi(line.erase(0, 9).c_str()));
-                        checkboxes.back().textSize.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        // Change the text color (black on error)
-                        checkbox->setTextColor(tgui::extractColor(line.erase(0, 10)));
-                        checkboxes.back().textColor.value = line;
-                    }
-                    else CHECK_SHARED_PROPERTIES(checkbox, checkboxes)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::comboBox + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the combo box back
-                    tgui::ComboBox* comboBox = static_cast<tgui::ComboBox*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the combo box
-                        comboBox->load(line, comboBox->getSize().x);
-                        comboBoxes.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 6).compare("width=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 6);
-
-                        // Set the width
-                        comboBox->setWidth(atoi(line.c_str()));
-                        comboBoxes.back().width.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 18);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the scrollbar
-                        comboBox->setScrollbar(line);
-                        comboBoxes.back().scrollbarPathname.value = line;
-                    }
-                    else if (line.substr(0, 8).compare("borders=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 8);
-
-                        // Get the borders
-                        tgui::Vector4u borders;
-                        if (extractVector4u(line, borders) == false)
-                            goto LoadingFailed;
-
-                        // Set the borders
-                        comboBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
-                        comboBoxes.back().borders.value = line;
-                    }
-                    else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
-                    {
-                        comboBox->changeColors(tgui::extractColor(line.erase(0, 16)),
-                                               comboBox->getTextColor(),
-                                               comboBox->getSelectedBackgroundColor(),
-                                               comboBox->getSelectedTextColor(),
-                                               comboBox->getBorderColor());
-                        comboBoxes.back().backgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        comboBox->changeColors(comboBox->getBackgroundColor(),
-                                               tgui::extractColor(line.erase(0, 10)),
-                                               comboBox->getSelectedBackgroundColor(),
-                                               comboBox->getSelectedTextColor(),
-                                               comboBox->getBorderColor());
-                        comboBoxes.back().textColor.value = line;
-                    }
-                    else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
-                    {
-                        comboBox->changeColors(comboBox->getBackgroundColor(),
-                                               comboBox->getTextColor(),
-                                               tgui::extractColor(line.erase(0, 24)),
-                                               comboBox->getSelectedTextColor(),
-                                               comboBox->getBorderColor());
-                        comboBoxes.back().selectedBackgroundColor.value = line;
-                    }
-                    else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
-                    {
-                        comboBox->changeColors(comboBox->getBackgroundColor(),
-                                               comboBox->getTextColor(),
-                                               comboBox->getSelectedBackgroundColor(),
-                                               tgui::extractColor(line.erase(0, 18)),
-                                               comboBox->getBorderColor());
-                        comboBoxes.back().selectedTextColor.value = line;
-                    }
-                    else if (line.substr(0, 12).compare("bordercolor=") == 0)
-                    {
-                        comboBox->changeColors(comboBox->getBackgroundColor(),
-                                               comboBox->getTextColor(),
-                                               comboBox->getSelectedBackgroundColor(),
-                                               comboBox->getSelectedTextColor(),
-                                               tgui::extractColor(line.erase(0, 12)));
-                        comboBoxes.back().borderColor.value = line;
-                    }
-                    else if (line.substr(0, 15).compare("itemstodisplay=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 15);
-
-                        // Set the nr of items to display
-                        comboBox->setItemsToDisplay(atoi(line.c_str()));
-                        comboBoxes.back().itemsToDisplay.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 5).compare("item=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Add the item to the combo box
-                        comboBox->addItem(line);
-
-                        std::string items = comboBoxes.back().items.value;
-
-                        if (items.empty() == false)
-                            items.push_back(',');
-
-                        comboBoxes.back().items.value = items.append(line);
-                    }
-                    else if (line.substr(0, 13).compare("selecteditem=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 13);
-
-                        // The line must contain something
-                        if (line.empty() == true)
-                            goto LoadingFailed;
-
-                        // Check if there are quotes
-                        if ((line[0] == '"') && (line[line.length()-1] == '"'))
-                        {
-                            line.erase(0, 1);
-                            line.erase(line.length()-1, 1);
-
-                            // Select the item
-                            comboBox->setSelectedItem(line);
-                            comboBoxes.back().selectedItem.value = comboBox->getSelectedItemID();
-                        }
-                        else // There were no quotes
-                        {
-                            // Select the item
-                            comboBox->setSelectedItem(atoi(line.c_str()));
-                            comboBoxes.back().selectedItem.value = atoi(line.c_str());
-                        }
-                    }
-                    else CHECK_SHARED_PROPERTIES(comboBox, comboBoxes)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::scrollbar + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the scrollbar back
-                    tgui::Scrollbar* scrollbar = static_cast<tgui::Scrollbar*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the scrollbar
-                        scrollbar->load(line);
-                        scrollbars.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 6).compare("value=") == 0)
-                    {
-                        scrollbar->setValue(atoi(line.erase(0, 6).c_str()));
-                        scrollbars.back().value.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 8).compare("maximum=") == 0)
-                    {
-                        scrollbar->setMaximum(atoi(line.erase(0, 8).c_str()));
-                        scrollbars.back().maximum.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 9).compare("lowvalue=") == 0)
-                    {
-                        scrollbar->setLowValue(atoi(line.erase(0, 9).c_str()));
-                        scrollbars.back().lowValue.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 15).compare("verticalscroll=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 15);
-
-                        // Check if the value is true or false
-                        bool vericalScroll;
-                        CHECK_BOOL(vericalScroll)
-
-                        scrollbar->setVerticalScroll(vericalScroll);
-                        scrollbars.back().verticalScroll.value = vericalScroll;
-                    }
-                    else CHECK_SHARED_PROPERTIES(scrollbar, scrollbars)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::loadingBar + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the loading bar back
-                    tgui::LoadingBar* loadingBar = static_cast<tgui::LoadingBar*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the loading bar
-                        loadingBar->load(line);
-                        loadingBars.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 6).compare("value=") == 0)
-                    {
-                        loadingBar->setValue(atoi(line.erase(0, 6).c_str()));
-                        loadingBars.back().value.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 8).compare("minimum=") == 0)
-                    {
-                        loadingBar->setMinimum(atoi(line.erase(0, 8).c_str()));
-                        loadingBars.back().minimum.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 8).compare("maximum=") == 0)
-                    {
-                        loadingBar->setMaximum(atoi(line.erase(0, 8).c_str()));
-                        loadingBars.back().maximum.value = atoi(line.c_str());
-                    }
-                    else CHECK_SHARED_PROPERTIES(loadingBar, loadingBars)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-                case tgui::radioButton + 1:
-                {
-                    START_LOADING_OBJECT
-
-                    // Get the pointer to the radio button back
-                    tgui::RadioButton* radioButton = static_cast<tgui::RadioButton*>(extraPtr);
-
-                    // Find out what the next property is
-                    if (line.substr(0, 9).compare("pathname=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 9);
-
-                        // The pathname must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Load the radio button
-                        radioButton->load(line);
-                        radioButtons.back().pathname.value = line;
-                    }
-                    else if (line.substr(0, 5).compare("text=") == 0)
-                    {
-                        // Remove the first part of the line
-                        line.erase(0, 5);
-
-                        // The text must start and end with quotes
-                        CHECK_FOR_QUOTES
-
-                        // Change the caption
-                        radioButton->setText(line);
-                        radioButtons.back().text.value = line;
-                    }
-                    else if (line.substr(0, 8).compare("checked=") == 0)
-                    {
-                        // Remove the first part of the string
-                        line.erase(0, 8);
-
-                        // Check if the value is true or false
-                        bool checked;
-                        CHECK_BOOL(checked)
-
-                        // Check or uncheck the radio button
-                        if (checked)
-                            radioButton->check();
-                        else
-                            radioButton->uncheck();
-
-                        radioButtons.back().checked.value = checked;
-                    }
-                    else if (line.substr(0, 9).compare("textsize=") == 0)
-                    {
-                        // Change the text size
-                        radioButton->setTextSize(atoi(line.erase(0, 9).c_str()));
-                        radioButtons.back().textSize.value = atoi(line.c_str());
-                    }
-                    else if (line.substr(0, 10).compare("textcolor=") == 0)
-                    {
-                        // Change the text color (black on error)
-                        radioButton->setTextColor(tgui::extractColor(line.erase(0, 10)));
-                        radioButtons.back().textColor.value = atoi(line.c_str());
-                    }
-                    else CHECK_SHARED_PROPERTIES(radioButton, radioButtons)
-                    else // The line was wrong
-                        goto LoadingFailed;
-
-                    break;
-                }
-            };
+                comboBoxes.back().selectedItem.value = object->getSelectedItemID();
+                
+                // Draw the object in the correct way
+                tgui::ComboBox* realObject = mainWindow.getComboBox(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname(), object->getScaledSize().x, object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
+                realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedBackgroundColor(), object->getSelectedTextColor(), object->getBorderColor());
+                for (unsigned int i=0; i<items.size(); ++i) realObject->addItem(items[i]);
+                realObject->setSelectedItem(object->getSelectedItem());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->callbackID = object->callbackID;
+            }
+            else if (objects[i]->getObjectType() == tgui::loadingBar)
+            {
+                // Convert the object to a loading bar (which it is)
+                tgui::LoadingBar* object = static_cast<tgui::LoadingBar*>(objects[i]);
+                
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::loadingBar, objectNames[i]);
+                loadingBars.back().pathname.value = object->getLoadedPathname();
+                loadingBars.back().left.value = object->getPosition().x;
+                loadingBars.back().top.value = object->getPosition().y;
+                loadingBars.back().width.value = object->getScaledSize().x;
+                loadingBars.back().height.value = object->getScaledSize().y;
+                loadingBars.back().value.value = object->getValue();
+                loadingBars.back().minimum.value = object->getMinimum();
+                loadingBars.back().maximum.value = object->getMaximum();
+                loadingBars.back().callbackID.value = object->callbackID;
+                
+                // Draw the object in the correct way
+                tgui::LoadingBar* realObject = mainWindow.getLoadingBar(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setValue(object->getValue());
+                realObject->setMinimum(object->getMinimum());
+                realObject->setMaximum(object->getMaximum());
+                realObject->callbackID = object->callbackID;
+            }
         }
+        
+        // Select the window
+        currentID = 1;
+        resizePropertyWindow();
+        
+        // The file has been loaded successfully.
+        return true;
     }
-
-
-  LoadingSucceeded:
-
-    m_File.close();
-    changeVisibleProperties();
-    return true;
-
-  LoadingFailed:
-
-    m_File.close();
-    changeVisibleProperties();
-    return false;
+    else // Loading failed
+        return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
