@@ -819,6 +819,16 @@ bool Builder::loadForm()
 {
     // Remove all existing objects from the form
     mainWindow.removeAllObjects();
+    
+    // Recreate the scale squares pictures
+    mainWindow.addButton("Square_TopLeft")->load("images/Square");
+    mainWindow.copyButton("Square_TopLeft", "Square_Top");
+    mainWindow.copyButton("Square_TopLeft", "Square_TopRight");
+    mainWindow.copyButton("Square_TopLeft", "Square_Right");
+    mainWindow.copyButton("Square_TopLeft", "Square_BottomRight");
+    mainWindow.copyButton("Square_TopLeft", "Square_Bottom");
+    mainWindow.copyButton("Square_TopLeft", "Square_BottomLeft");
+    mainWindow.copyButton("Square_TopLeft", "Square_Left");
 
     // Remove all properties
     pictures.clear();
