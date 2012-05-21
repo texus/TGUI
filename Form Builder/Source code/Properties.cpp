@@ -3048,6 +3048,9 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
         // Change the height
         height.value = temp;
         propertyHeight->setText(strTemp);
+        
+        // Set the slider to the correct size
+        slider->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Slider_Value)
     {
@@ -3093,7 +3096,7 @@ PropertiesScrollbar::PropertiesScrollbar()
     left.value = 0;
     top.value = 0;
     width.value = 20;
-    height.value = 64;
+    height.value = 256;
     verticalScroll.value = true;
     value.value = 0;
     lowValue.value = 4;
@@ -3210,7 +3213,8 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
         tgui::EditBox* propertyHeight = propertyWindow.getEditBox("text_Height");
 
         // Change the direction
-        formWindow.getScrollbar(tgui::to_string(id))->verticalScroll = verticalScroll.value;
+        tgui::Scrollbar* scrollbar = formWindow.getScrollbar(tgui::to_string(id));
+        scrollbar->verticalScroll = verticalScroll.value;
 
         // Make temp buffers to switch the width and height
         unsigned int temp = width.value;
@@ -3223,6 +3227,9 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
         // Change the height
         height.value = temp;
         propertyHeight->setText(strTemp);
+        
+        // Set the scrollbar to the correct size
+        scrollbar->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Scrollbar_Value)
     {
