@@ -599,6 +599,13 @@ namespace tgui
                     // Check if the mouse went down on top of the listbox
                     if (m_Listbox.m_MouseDown == true)
                     {
+                        // Make sure the mouse didn't went down on the scrollbar
+                        if ((m_Listbox.m_Scroll == NULL) || ((m_Listbox.m_Scroll != NULL) && (m_Listbox.m_Scroll->m_MouseDown == false)))
+                        {
+                            // Stop showing the list
+                            m_ShowList = false;
+                        }
+                        
                         // Temporarily set a position for the listbox
                         m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
 
@@ -607,9 +614,6 @@ namespace tgui
 
                         // Reset the position
                         m_Listbox.setPosition(0, 0);
-                        
-                        // Stop showing the list
-                        m_ShowList = false;
                     }
                 }
                 else // The mouse is not on top of the listbox

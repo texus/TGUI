@@ -128,8 +128,9 @@ namespace tgui
         sf::Sprite   m_SpriteArrowHover;
 
 
-        // Listbox and TextBox can access the scrollbar directly
+        // Listbox, ComboBox and TextBox can access the scrollbar directly
         friend struct Listbox;
+        friend struct ComboBox;
         friend struct TextBox;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
