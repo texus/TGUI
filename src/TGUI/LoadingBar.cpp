@@ -137,7 +137,6 @@ namespace tgui
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
         {
-/*
             if (property.compare("splitimage") == 0)
             {
                 // Find out if it is split or not
@@ -146,7 +145,7 @@ namespace tgui
                 else if (value.compare("false") == 0)
                     m_SplitImage = false;
             }
-            else */if (property.compare("extension") == 0)
+            else if (property.compare("extension") == 0)
             {
                 imageExtension = value;
             }
@@ -166,8 +165,6 @@ namespace tgui
         // Load multiple images when the image is split
         if (m_SplitImage)
         {
-            return false;
-/*
             // load the required textures
             if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Back." + imageExtension, m_TextureBack_L))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Back." + imageExtension, m_TextureBack_M))
@@ -189,7 +186,6 @@ namespace tgui
             }
             else
                 return false;
-*/
         }
         else // The image is not split
         {
@@ -220,17 +216,11 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Check if the image is split
+        // Change the scale
         if (m_SplitImage)
-        {
-//            setScale(width / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x),
-//                     height / m_TextureBack_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            setScale(width / m_TextureBack_M->getSize().x,
-                     height / m_TextureBack_M->getSize().y);
-        }
+            setScale(width / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), height / m_TextureBack_M->getSize().y);
+        else
+            setScale(width / m_TextureBack_M->getSize().x, height / m_TextureBack_M->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,89 +434,78 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the size of the back sprite
-        sf::FloatRect BackBounds = m_SpriteBack_M.getGlobalBounds();
-
         // Check if the image is split
         if (m_SplitImage)
         {
-/*
-            float middleSpriteWidth = m_SpriteBack_M.getGlobalBounds().width;
-
-            // Adjust the width of the back sprite because it is wrong when the image is split
-            BackBounds.Width = m_SpriteBack_L.getGlobalBounds().width
-                                + middleSpriteWidth
-                                + m_SpriteBack_R.getGlobalBounds().width;
-
-            // Calculate the width of the front image
-            float width;
-
+            // Get the bounds of the sprites
+            sf::FloatRect backBounds_L = m_SpriteBack_L.getGlobalBounds();
+            sf::FloatRect backBounds_M = m_SpriteBack_M.getGlobalBounds();
+            sf::FloatRect backBounds_R = m_SpriteBack_R.getGlobalBounds();
+            
+            // Calculate the necessary sizes
+            float totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * getScale().x;
+            float middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * getScale().y);
+            float frontSize;
+            
+            // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                width = BackBounds.Width * (m_Value / static_cast<float>(m_Maximum - m_Minimum));
+                frontSize = totalWidth * (m_Value / static_cast<float>(m_Maximum - m_Minimum));
             else
-                width = static_cast<int>(BackBounds.Width);
-
-
-            // Create the rect that will store the bounds of our sprite
-            sf::IntRect FrontBounds(0, 0, 0, m_TextureFront_M->getSize().y);
-
-            // Check if the value is so small that only the left piece may be drawn
-            if (width < m_TextureFront_L->getSize().x)
+                frontSize = totalWidth;
+            
+            // Check if a part of the left piece should be visible
+            if (frontSize > 0)
             {
-                // The middle and right image are not drawn
-                m_SpriteFront_M.SetTextureRect(FrontBounds);
-                m_SpriteFront_R.SetTextureRect(FrontBounds);
-
-                // A piece of the left image must be drawn
-                FrontBounds.Width = width;
-                m_SpriteFront_L.SetTextureRect(FrontBounds);
-            }
-            else // We also need to draw the middle image
-            {
-                // Check if the right image must be drawn
-                if (width > m_TextureFront_L->getSize().x + m_TextureFront_M->getSize().x)
+                // Check if a piece of the middle part should be drawn
+                if (frontSize > m_TextureBack_L->getSize().x * getScale().y)
                 {
-                    // The left image is drawn completely
-                    FrontBounds.Width = m_SpriteBack_L.getGlobalBounds().width;
-                    m_SpriteFront_L.SetTextureRect(FrontBounds);
-
-                    // The middle image is drawn completely
-                    FrontBounds.Width = middleSpriteWidth;
-                    m_SpriteFront_M.SetTextureRect(FrontBounds);
-
-                    // A piece of the right image must be drawn
-                    FrontBounds.Width = width - m_SpriteBack_L.getGlobalBounds().width - middleSpriteWidth;
-                    m_SpriteFront_R.SetTextureRect(FrontBounds);
+                    // Check if a piece of the right part should be drawn
+                    if (frontSize > (m_TextureBack_L->getSize().x * getScale().y) + middleTextureWidth)
+                    {
+                        // Check if the bar is not full
+                        if (frontSize < totalWidth)
+                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * getScale().y) + middleTextureWidth);
+                    }
+                    else // Only a part of the middle image should be drawn
+                    {
+                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * getScale().y)) / middleTextureWidth * m_TextureBack_M->getSize().x;
+                        backBounds_R.width = 0;
+                    }
                 }
-                else // Don't draw the right image
+                else // Only a part of the left piece should be drawn
                 {
-                    // The right image is not drawn
-                    m_SpriteFront_R.SetTextureRect(FrontBounds);
-
-                    // The left image is drawn completely
-                    FrontBounds.Width = m_SpriteBack_L.getGlobalBounds().width;
-                    m_SpriteFront_L.SetTextureRect(FrontBounds);
-
-                    // A piece of the middle image must be drawn
-                    FrontBounds.Width = width - m_SpriteBack_L.getGlobalBounds().width;
-                    m_SpriteFront_M.SetTextureRect(FrontBounds);
+                    backBounds_L.width = frontSize;
+                    backBounds_M.width = 0;
+                    backBounds_R.width = 0;
                 }
             }
-*/
+            else // Nothing should be drawn
+            {
+                backBounds_L.width = 0;
+                backBounds_M.width = 0;
+                backBounds_R.width = 0;
+            }
+            
+            m_SpriteFront_L.setTextureRect(sf::IntRect(backBounds_L));
+            m_SpriteFront_M.setTextureRect(sf::IntRect(backBounds_M));
+            m_SpriteFront_R.setTextureRect(sf::IntRect(backBounds_R));
         }
         else // The image is not split
         {
+            // Get the size of the back sprite
+            sf::FloatRect backBounds = m_SpriteBack_M.getGlobalBounds();
+            
             // Calculate the size of the front sprite
-            sf::IntRect FrontBounds(BackBounds);
+            sf::IntRect frontBounds(backBounds);
 
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                FrontBounds.width = static_cast<int>(BackBounds.width * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
+                frontBounds.width = static_cast<int>(backBounds.width * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
             else
-                FrontBounds.width = static_cast<int>(BackBounds.width);
+                frontBounds.width = static_cast<int>(backBounds.width);
 
             // Set the size of the front image
-            m_SpriteFront_M.setTextureRect(FrontBounds);
+            m_SpriteFront_M.setTextureRect(frontBounds);
         }
     }
 
@@ -541,15 +520,14 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-/*
             // Get the current scale
-            Vector2f scale = getScale();
+            Vector2f curScale = getScale();
 
             // Set the position of the image
             states.transform.translate(getPosition());
 
             // Draw the loading bar
-            states.transform.scale(scale.y, scale.y);
+            states.transform.scale(curScale.y, curScale.y);
             target.draw(m_SpriteBack_L, states);
             target.draw(m_SpriteFront_L, states);
 
@@ -559,21 +537,20 @@ namespace tgui
 
 
             // Calculate the scale for our middle image
-            float scaleX = (((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)  * scale.x)
-                            - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scale.y))
+            float scaleX = (((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)  * curScale.x)
+                            - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y))
                             / m_TextureBack_M->getSize().x;
 
             // Set the scale for the middle image
-            states.transform.scale(scaleX / scale.y, 1);
+            states.transform.scale(scaleX / curScale.y, 1);
 
             target.draw(m_SpriteBack_M, states);
             target.draw(m_SpriteFront_M, states);
 
             states.transform.translate(m_SpriteBack_M.getGlobalBounds().width, 0);
-            states.transform.scale(scale.y / scaleX, 1);
+            states.transform.scale(curScale.y / scaleX, 1);
             target.draw(m_SpriteBack_R, states);
             target.draw(m_SpriteFront_R, states);
-*/
         }
         else // The image is not split
         {
