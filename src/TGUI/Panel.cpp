@@ -32,12 +32,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     Panel::Panel() :
-    backgroundColor(sf::Color::Transparent),
-    renderTexture  (NULL)
+    backgroundColor(sf::Color::Transparent)
     {
         m_ObjectType = panel;
-        
         m_EventManager.m_Parent = this;
+        m_RenderTexture = new sf::RenderTexture();
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,14 +46,9 @@ namespace tgui
     Group          (copy),
     backgroundColor(copy.backgroundColor)
     {
-        // Copy the render texture if there is one
-        if (copy.renderTexture != NULL)
-        {
-            renderTexture = new sf::RenderTexture();
-            renderTexture->create(copy.renderTexture->getSize().x, copy.renderTexture->getSize().y);
-        }
-        else
-            renderTexture = NULL;
+        // Copy the render texture
+        if (m_RenderTexture->create(copy.m_RenderTexture->getSize().x, copy.m_RenderTexture->getSize().y) == false)
+            m_Loaded = false;
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,16 +61,9 @@ namespace tgui
             Panel temp(right);
             this->OBJECT::operator=(right);
             this->Group::operator=(right);
-            
-            // If there already was a render texture then delete it now
-            if (renderTexture != NULL)
-            {
-                delete renderTexture;
-                renderTexture = NULL;
-            }
-            
+
             std::swap(backgroundColor, temp.backgroundColor);
-            std::swap(renderTexture,   temp.renderTexture);
+            std::swap(m_RenderTexture, temp.m_RenderTexture);
         }
         
         return *this;
@@ -91,17 +78,9 @@ namespace tgui
         
         // Set the background color of the panel
         backgroundColor = bkgColor;
-        
-        // If there already is a render texture then delete it first
-        if (renderTexture == NULL)
-        {
-            delete renderTexture;
-            renderTexture = NULL;
-        }
-        
+
         // Create the render texture
-        renderTexture = new sf::RenderTexture();
-        if (renderTexture->create(width, height))
+        if (m_RenderTexture->create(width, height))
         {
             m_Loaded = true;
             return true;
@@ -113,17 +92,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     void Panel::setSize(float width, float height)
-    {
-        // If there already is a render texture then delete it first
-        if (renderTexture == NULL)
-        {
-            delete renderTexture;
-            renderTexture = NULL;
-        }
-        
+    {        
         // Recreate the render texture
-        renderTexture = new sf::RenderTexture();
-        if (renderTexture->create(static_cast<unsigned int>(width), static_cast<unsigned int>(height)))
+        if (m_RenderTexture->create(static_cast<unsigned int>(width), static_cast<unsigned int>(height)))
             m_Loaded = true;
         else
             m_Loaded = false;
@@ -176,7 +147,7 @@ namespace tgui
     Vector2u Panel::getSize() const
     {
         if (m_Loaded == true)
-            return renderTexture->getSize();
+            return m_RenderTexture->getSize();
         else
             return Vector2u(0, 0);
     }
@@ -186,7 +157,7 @@ namespace tgui
     Vector2f Panel::getScaledSize() const
     {
         if (m_Loaded == true)
-            return Vector2f(renderTexture->getSize().x * getScale().x, renderTexture->getSize().y * getScale().y);
+            return Vector2f(m_RenderTexture->getSize().x * getScale().x, m_RenderTexture->getSize().y * getScale().y);
         else
             return Vector2f(0, 0);
     }
@@ -203,7 +174,7 @@ namespace tgui
         Vector2f position = getPosition();
         
         // Check if the mouse is inside the panel
-        if ((x > position.x) && (x < position.x + renderTexture->getSize().x) && (y > position.y) && (y < position.y + renderTexture->getSize().y))
+        if ((x > position.x) && (x < position.x + m_RenderTexture->getSize().x) && (y > position.y) && (y < position.y + m_RenderTexture->getSize().y))
             return true;
         else
             return false;
@@ -215,67 +186,9 @@ namespace tgui
     {
         m_EventManager.unfocusAllObjects();
     }
-/*
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::mouseMoved(float x, float y)
-    {
-        m_EventManager.spreadEventMouseMoved(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::leftMousePressed(float x, float y)
-    {
-        m_EventManager.spreadEventLeftMousePressed(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::leftMouseReleased(float x, float y)
-    {
-        m_EventManager.spreadEventLeftMouseReleased(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::keyPressed(sf::Keyboard::Key key)
-    {
-        m_EventManager.spreadEventKeyPressed(key);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::textEntered(char key)
-    {
-        m_EventManager.spreadEventTextEntered(key);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::objectFocused()
-    {
-        m_EventManager.spreadEventObjectFocused();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::mouseNotOnObject()
-    {
-        m_EventManager.spreadEventMouseNotOnObject();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::mouseNoLongerDown()
-    {
-        m_EventManager.spreadEventMouseNoLongerDown();
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-//    void Panel::drawObjects(sf::RenderTarget* target, const sf::RenderStates& states)
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the texture wasn't created
@@ -283,13 +196,13 @@ namespace tgui
             return;
 
         // Clear the texture
-        renderTexture->clear(backgroundColor);
+        m_RenderTexture->clear(backgroundColor);
 
         // Draw the objects on the texture
-        drawObjectGroup(renderTexture, sf::RenderStates::Default);
+        drawObjectGroup(m_RenderTexture, sf::RenderStates::Default);
         
         // Display the texture
-        renderTexture->display();
+        m_RenderTexture->display();
         
         // Make a copy of the render states
         sf::RenderStates statesCopy = states;
@@ -298,7 +211,7 @@ namespace tgui
         statesCopy.transform *= getTransform();
             
         // Draw the panel on the window
-        sf::Sprite sprite(renderTexture->getTexture());
+        sf::Sprite sprite(m_RenderTexture->getTexture());
         target.draw(sprite, statesCopy);
     }
 

@@ -317,6 +317,9 @@ namespace tgui
 
         // The font used to draw the text
         sf::Font m_TextFont;
+        
+        // The render texture, used to draw the text on (this allows to display only a part of the text)
+        sf::RenderTexture* m_RenderTexture;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend struct ComboBox;
