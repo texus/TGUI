@@ -924,7 +924,7 @@ namespace tgui
             if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
-                if ((y - getPosition().y - m_TopBorder) <= (m_Scroll->m_Value % m_ItemHeight))
+                if ((y - getPosition().y - m_TopBorder) <= (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight)))
                 {
                     // We clicked on the first visible item
                     m_SelectedItem = m_Scroll->m_Value / m_ItemHeight + 1;
@@ -932,7 +932,17 @@ namespace tgui
                 else // We didn't click on the first visible item
                 {
                     // Calculate on what item we clicked
-                    m_SelectedItem = ((y - getPosition().y - m_TopBorder - (m_Scroll->m_Value % m_ItemHeight)) / m_ItemHeight) + m_Scroll->m_Value / m_ItemHeight + 2;
+                    if ((m_Scroll->m_Value % m_ItemHeight) == 0)
+                        m_SelectedItem = ((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1;
+                    else
+                        m_SelectedItem = ((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2;
+
+                    unsigned int t1=(y - getPosition().y - m_TopBorder - (m_Scroll->m_Value % m_ItemHeight));
+                    unsigned int t2=(y - getPosition().y - m_TopBorder - (m_Scroll->m_Value % m_ItemHeight)) / m_ItemHeight;
+
+                    unsigned int t3=(m_Scroll->m_Value / m_ItemHeight);
+
+                    unsigned int t4 = 0;
                 }
             }
             else // There is no scrollbar or it is not displayed
@@ -1113,29 +1123,6 @@ namespace tgui
                 // Set the next item
                 text.setString(m_Items[x]);
 
-                // Check if we are drawing the selected item
-                if ((m_SelectedItem - 1) == x)
-                {
-                    // Draw a background for the selected item
-                    {
-                        // Set a new transformation
-                        states.transform.translate(0, static_cast<float>(x * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
-
-                        // Create and draw the background
-                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
-                        Back.setFillColor(m_SelectedBackgroundColor);
-                        target.draw(Back, states);
-
-                        // Restore the transformation
-                        states.transform = storedTransform;
-                    }
-
-                    // Change the text color
-                    text.setColor(m_SelectedTextColor);
-                }
-                else // Set the normal text color
-                    text.setColor(m_TextColor);
-
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
 
@@ -1154,8 +1141,31 @@ namespace tgui
                     bounds = text.getGlobalBounds();
                 }
 
+                // Check if we are drawing the selected item
+                if ((m_SelectedItem - 1) == x)
+                {
+                    // Draw a background for the selected item
+                    {
+                        // Set a new transformation
+                        states.transform.translate(0, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
+
+                        // Create and draw the background
+                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        Back.setFillColor(m_SelectedBackgroundColor);
+                        m_RenderTexture->draw(Back, states);
+
+                        // Restore the transformation
+                        states.transform = storedTransform;
+                    }
+
+                    // Change the text color
+                    text.setColor(m_SelectedTextColor);
+                }
+                else // Set the normal text color
+                    text.setColor(m_TextColor);
+
                 // Set the translation for the text
-                states.transform.translate(4 + bounds.left, (static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)));
+                states.transform.translate(4 + bounds.left, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
 
                 // Draw the text on the render texture
                 m_RenderTexture->draw(text, states);
@@ -1213,12 +1223,7 @@ namespace tgui
                 sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth;
-
-                if (m_Scroll == NULL)
-                    maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder) * curScale.x / curScale.y;
-                else
-                    maximumTextWidth = ((m_Size.x - m_LeftBorder - m_RightBorder) * (curScale.x / curScale.y)) - (m_Scroll->getSize().x / curScale.y);
+                float maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder) * curScale.x / curScale.y;
 
                 // Check if the text is too long to fit inside the listbox
                 while (bounds.width > maximumTextWidth)
