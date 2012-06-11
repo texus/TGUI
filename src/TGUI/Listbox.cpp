@@ -936,13 +936,6 @@ namespace tgui
                         m_SelectedItem = ((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1;
                     else
                         m_SelectedItem = ((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2;
-
-                    unsigned int t1=(y - getPosition().y - m_TopBorder - (m_Scroll->m_Value % m_ItemHeight));
-                    unsigned int t2=(y - getPosition().y - m_TopBorder - (m_Scroll->m_Value % m_ItemHeight)) / m_ItemHeight;
-
-                    unsigned int t3=(m_Scroll->m_Value / m_ItemHeight);
-
-                    unsigned int t4 = 0;
                 }
             }
             else // There is no scrollbar or it is not displayed
