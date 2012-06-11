@@ -205,7 +205,7 @@ namespace tgui
         unsigned int objectID = 0;
         void* extraPtr = NULL;
         bool multilineComment = false;
-        
+
         std::vector<std::string> defineTokens;
         std::vector<std::string> defineValues;
 
@@ -396,6 +396,43 @@ namespace tgui
                         // Search for the quote again, because the position might have changed
                         quotePos2 = line.find('"', quotePos1 + 1);
 
+                        // Search for backslashes between the quotes
+                        std::string::size_type backslashPos = line.find('\\', quotePos1);
+
+                        // Check if a backlash was found before the second quote
+                        if (backslashPos < quotePos2)
+                        {
+                            // Check for special characters
+                            if (line[backslashPos + 1] == 'n')
+                            {
+                                line[backslashPos] = '\n';
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == 't')
+                            {
+                                line[backslashPos] = '\t';
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == '\\')
+                            {
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == '"')
+                            {
+                                line[backslashPos] = '"';
+                                line.erase(backslashPos + 1, 1);
+
+                                // Find the next quote
+                                quotePos2 = line.find('"', backslashPos + 1);
+
+                                if (quotePos2 == std::string::npos)
+                                    goto LoadingFailed;
+                            }
+                        }
+
                         // There may never be more than two quotes
                         if (line.find('"', quotePos2 + 1) != std::string::npos)
                             goto LoadingFailed;
@@ -421,7 +458,7 @@ namespace tgui
                     {
                         // Search for every token in the line
                         std::string::size_type tokenPos = line.find(defineTokens[i]);
-                        
+
                         // Check if a token was found
                         if (tokenPos != std::string::npos)
                         {
@@ -431,7 +468,7 @@ namespace tgui
                         }
                     }
                 }
-                
+
                 // What happens now depends on the process
                 switch (objectID)
                 {
@@ -449,7 +486,7 @@ namespace tgui
                             else if (line.substr(0, 7).compare("define:") == 0)
                             {
                                 line.erase(0, 7);
-                                
+
                                 // Search the equals sign
                                 std::string::size_type equalsSignPos = line.find('=');
                                 if (equalsSignPos != std::string::npos)
