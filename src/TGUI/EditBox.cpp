@@ -63,9 +63,9 @@ namespace tgui
 
         changeColors();
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     EditBox::EditBox(const EditBox& copy) :
     OBJECT                         (copy),
     selectionPointColor            (copy.selectionPointColor),
@@ -121,16 +121,16 @@ namespace tgui
         if (m_TextureFocused_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_M);
         if (m_TextureFocused_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_R);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     EditBox& EditBox::operator= (const EditBox& right)
     {
         if (this != &right)
         {
             EditBox temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(selectionPointColor,             temp.selectionPointColor);
             std::swap(selectionPointWidth,             temp.selectionPointWidth);
             std::swap(m_SelectionPointVisible,         temp.m_SelectionPointVisible);
@@ -172,7 +172,7 @@ namespace tgui
             std::swap(m_SpriteFocused_M,               temp.m_SpriteFocused_M);
             std::swap(m_SpriteFocused_R,               temp.m_SpriteFocused_R);
         }
-        
+
         return *this;
     }
 
@@ -231,7 +231,7 @@ namespace tgui
                 imageExtension = value;
             }
             else if (property.compare("borders") == 0)
-            {                
+            {
                 // Get the borders
                 Vector4u borders;
                 if (extractVector4u(value, borders))
@@ -464,15 +464,15 @@ namespace tgui
             m_RightTextCrop = length;
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u EditBox::getSize() const
     {
         // Don't continue when the edit box wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2u(0, 0);
-        
+
         // Check if the image is split
         if (m_SplitImage)
         {
@@ -485,15 +485,15 @@ namespace tgui
             return Vector2u(m_TextureNormal_M->getSize().x, m_TextureNormal_M->getSize().y);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f EditBox::getScaledSize() const
     {
         // Don't continue when the edit box wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2f(0, 0);
-        
+
         // Check if the image is split
         if (m_SplitImage)
         {
@@ -507,9 +507,9 @@ namespace tgui
             return Vector2f(m_TextureNormal_M->getSize().x * getScale().x, m_TextureNormal_M->getSize().y * getScale().y);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string EditBox::getLoadedPathname()
     {
         return m_LoadedPathname;
@@ -1537,7 +1537,7 @@ namespace tgui
                 m_Parent->addCallback(callback);
             }
         }
-        else if (key == sf::Keyboard::Back)
+        else if (key == sf::Keyboard::BackSpace)
         {
             // Make sure that we didn't select any characters
             if (m_SelChars == 0)
@@ -1545,30 +1545,30 @@ namespace tgui
                 // We can't delete any characters when you are at the beginning of the string
                 if (m_SelEnd == 0)
                     return;
-                
+
                 // Erase the character
                 m_Text.erase(m_SelEnd-1, 1);
                 m_DisplayedText.erase(m_SelEnd-1, 1);
-                
+
                 // Check if scrolling is enabled
                 if (m_LimitTextWidth == false)
                 {
                     float width;
-                    
+
                     // Calculate the width of the edit box
                     if (m_SplitImage)
                         width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     else
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-                    
+
                     // Check if the right crop position was the end of the text
                     if (m_RightTextCrop == (m_DisplayedText.length() + 1))
                         --m_RightTextCrop;
-                    
+
                     // Adjust the text before the selection, it has to be changed before the calculations
                     m_TextBeforeSelection.setString(m_DisplayedText);
-                    
+
                     // Check if you can still scroll left
                     while (m_LeftTextCrop > 0)
                     {
@@ -1582,43 +1582,43 @@ namespace tgui
                             break;
                     }
                 }
-                
+
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
             }
             else // When you did select some characters
             {
             deleteSelectedCharacters:
-                
+
                 // Check if they were selected from left to right
                 if (m_SelStart < m_SelEnd)
                 {
                     // Erase the characters
                     m_Text.erase(m_SelStart, m_SelChars);
                     m_DisplayedText.erase(m_SelStart, m_SelChars);
-                    
+
                     // Check if scrolling is enabled
                     if (m_LimitTextWidth == false)
                     {
                         float width;
-                        
+
                         // Calculate the width of the edit box
                         if (m_SplitImage)
                             width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
                         else
                             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-                        
+
                         // Check if the right crop position was the end of the text
                         if (m_RightTextCrop > m_DisplayedText.length())
                             m_RightTextCrop = m_DisplayedText.length();
-                        
+
                         // reset the left crop position
                         m_LeftTextCrop = m_RightTextCrop;
-                        
+
                         // Adjust the text before the selection, it has to be changed before the calculations
                         m_TextBeforeSelection.setString(m_DisplayedText);
-                        
+
                         // Check if you can still scroll left
                         while (m_LeftTextCrop > 0)
                         {
@@ -1632,7 +1632,7 @@ namespace tgui
                                 break;
                         }
                     }
-                    
+
                     // Set the selection point back on the correct position
                     setSelectionPointPosition(m_SelStart);
                 }
@@ -1641,25 +1641,25 @@ namespace tgui
                     // Erase the characters
                     m_Text.erase(m_SelEnd, m_SelChars);
                     m_DisplayedText.erase(m_SelEnd, m_SelChars);
-                    
+
                     // Check if scrolling is enabled
                     if (m_LimitTextWidth == false)
                     {
                         float width;
-                        
+
                         // Calculate the width of the edit box
                         if (m_SplitImage)
                             width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
                         else
                             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-                        
+
                         // reset the right crop position
                         m_RightTextCrop = m_LeftTextCrop;
-                        
+
                         // Adjust the text before the selection, it has to be changed before the calculations
                         m_TextBeforeSelection.setString(m_DisplayedText);
-                        
+
                         // Check if you can still scroll right
                         while (m_RightTextCrop < m_DisplayedText.length())
                         {
@@ -1673,16 +1673,16 @@ namespace tgui
                                 break;
                         }
                     }
-                    
+
                     // Set the selection point back on the correct position
                     setSelectionPointPosition(m_SelEnd);
                 }
             }
-            
+
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
-            
+
             // Add the callback (if the user requested it)
             if (callbackID > 0)
             {
@@ -1701,29 +1701,29 @@ namespace tgui
                 // When the selection point is at the end of the line then you can't delete anything
                 if (m_SelEnd == m_Text.length())
                     return;
-                
+
                 // Erase the character
                 m_Text.erase(m_SelEnd, 1);
                 m_DisplayedText.erase(m_SelEnd, 1);
-                
+
                 // Check if scrolling is enabled
                 if (m_LimitTextWidth == false)
                 {
                     float width;
-                    
+
                     // Calculate the width of the edit box
                     if (m_SplitImage)
                         width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     else
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-                    
+
                     // Reset the right crop position
                     m_RightTextCrop = m_LeftTextCrop;
-                    
+
                     // Adjust the text before the selection, it has to be changed before the calculations
                     m_TextBeforeSelection.setString(m_DisplayedText);
-                    
+
                     // Make sure that there is still space after the right crop position
                     while (m_RightTextCrop < m_DisplayedText.length())
                     {
@@ -1737,7 +1737,7 @@ namespace tgui
                             break;
                     }
                 }
-                
+
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd);
             }
@@ -1746,11 +1746,11 @@ namespace tgui
                 // This code is exactly the same as when pressing backspace
                 goto deleteSelectedCharacters;
             }
-            
+
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
-            
+
             // Add the callback (if the user requested it)
             if (callbackID > 0)
             {
@@ -1762,7 +1762,7 @@ namespace tgui
             }
         }
     }
-    
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1856,7 +1856,7 @@ namespace tgui
         else // You did select some characters
         {
             // Fist we delete the selected characters
-            keyPressed(sf::Keyboard::Back);
+            keyPressed(sf::Keyboard::BackSpace);
 
             // And then we add our typed character
             goto addCharacter;

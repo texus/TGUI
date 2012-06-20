@@ -72,7 +72,7 @@ namespace tgui
                         m_Objects[i]->mouseMoved(mouseX, mouseY);
                         return;
                     }
-                    
+
                     // Groups also need a different treatment
                     else if (m_Objects[i]->m_ObjectType == panel)
                     {
@@ -121,7 +121,7 @@ namespace tgui
                         dynamic_cast<Group*>(m_Objects[objectNr])->handleEvent(event);
                     }
                     else // The event has to be sent to an object
-                    {                       
+                    {
                         // Check if the object is not directly linked to the main window
                         if (m_Parent != NULL)
                         {
@@ -132,10 +132,10 @@ namespace tgui
                                 m_Parent->m_Parent->focus(m_Parent);
                             }
                         }
-                        
+
                         // Focus the object
-                        setFocus(m_Objects[objectNr]->m_ObjectID);    
-                        
+                        setFocus(m_Objects[objectNr]->m_ObjectID);
+
                         // Send the event to the object
                         m_Objects[objectNr]->leftMousePressed(mouseX, mouseY);
                     }
@@ -202,11 +202,11 @@ namespace tgui
         {
             // Mark the key as down
             m_KeyPress[event.key.code] = true;
-            
+
             // Some keys may be repeated
             if ((event.key.code == sf::Keyboard::Left)
              || (event.key.code == sf::Keyboard::Right)
-             || (event.key.code == sf::Keyboard::Back)
+             || (event.key.code == sf::Keyboard::BackSpace)
              || (event.key.code == sf::Keyboard::Delete))
             {
                 // Loop through all the object
@@ -214,7 +214,7 @@ namespace tgui
                 {
                     // Check if the object is focused
                     if (m_Objects[i]->m_Focused == true)
-                    {   
+                    {
                         // Check if the object is a group
                         if (m_Objects[i]->m_ObjectType == panel)
                         {
@@ -227,7 +227,7 @@ namespace tgui
                 }
             }
         }
-        
+
         // Check if a key was released
         else if (event.type == sf::Event::KeyReleased)
         {
@@ -243,7 +243,7 @@ namespace tgui
                     // Avoid double callback with keys that can be repeated
                     if ((event.key.code != sf::Keyboard::Left)
                      && (event.key.code != sf::Keyboard::Right)
-                     && (event.key.code != sf::Keyboard::Back)
+                     && (event.key.code != sf::Keyboard::BackSpace)
                      && (event.key.code != sf::Keyboard::Delete))
                     {
                         // Loop through all the object
@@ -251,7 +251,7 @@ namespace tgui
                         {
                             // Check if the object is focused
                             if (m_Objects[i]->m_Focused == true)
-                            {   
+                            {
                                 // Check if the object is a group
                                 if (m_Objects[i]->m_ObjectType == panel)
                                 {
@@ -288,7 +288,7 @@ namespace tgui
                 {
                     // Check if the object is focused
                     if (m_Objects[i]->m_Focused == true)
-                    {   
+                    {
                         // Check if the object is a group
                         if (m_Objects[i]->m_ObjectType == panel)
                         {
@@ -409,7 +409,7 @@ namespace tgui
                 currentlyFocusedObjectNr = i;
                 currentFocusedObjectFound = true;
             }
-            
+
             // Also search for the id of the object that has to be focused
             else if (m_Objects[i]->m_ObjectID == id)
             {
@@ -448,9 +448,9 @@ namespace tgui
         else
             return false;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void EventManager::unfocusObject(OBJECT* object)
     {
         // Check if the object is focused
@@ -458,18 +458,18 @@ namespace tgui
         {
             // Focus the next object
             tabkeyPressed();
-            
+
             // Make sure that the object gets unfocused
             object->m_Focused = false;
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void EventManager::unfocusAllObjects()
     {
         for (unsigned int i=0; i<m_Objects.size(); ++i)
-        { 
+        {
             // Check if the object is focused
             if (m_Objects[i]->m_Focused)
             {
@@ -479,50 +479,50 @@ namespace tgui
             }
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void EventManager::moveObjectToFront(OBJECT* object)
     {
         // Don't do anything when the id is 0
         if (object->m_ObjectID == 0)
             return;
-        
+
         unsigned int highestID = 0;
-        
+
         // Loop through all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
-        { 
+        {
             // Check if the id is higher
             if (m_Objects[i]->m_ObjectID > object->m_ObjectID)
             {
                 // Remember the highest id
                 if (highestID < m_Objects[i]->m_ObjectID)
                     highestID = m_Objects[i]->m_ObjectID;
-                
+
                 // Change the id
                 --m_Objects[i]->m_ObjectID;
             }
         }
-        
+
         // If the object can be moved forward then do so
         if (highestID > 0)
             object->m_ObjectID = highestID;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void EventManager::moveObjectToBack(OBJECT* object)
     {
         // Don't do anything when the id is 0
         if (object->m_ObjectID == 0)
             return;
-        
+
         unsigned int lowestID = 0;
-        
+
         // Loop through all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
-        { 
+        {
             // Ignore an id of 0
             if (m_Objects[i]->m_ObjectID != 0)
             {
@@ -532,20 +532,20 @@ namespace tgui
                     // Remember the lowest id
                     if (lowestID > m_Objects[i]->m_ObjectID)
                         lowestID = m_Objects[i]->m_ObjectID;
-                    
+
                     // Change the id
                     ++m_Objects[i]->m_ObjectID;
                 }
             }
         }
-        
+
         // If the object can be moved backward then do so
         if (lowestID > 0)
             object->m_ObjectID = lowestID;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void EventManager::updateTime(const sf::Time& elapsedTime)
     {
         // Loop through all objects
@@ -558,14 +558,14 @@ namespace tgui
             {
                 // Convert the object
                 OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
-                
+
                 // Update the elapsed time
                 object->m_AnimationTimeElapsed += elapsedTime;
                 object->update();
             }
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EventManager::tabkeyPressed()
@@ -712,7 +712,7 @@ namespace tgui
 
                         // Save the new highest id
                         highestID = m_Objects[x]->m_ObjectID;
-                        
+
                         // Also remember what object should receive the event
                         objectNr = x;
                     }
