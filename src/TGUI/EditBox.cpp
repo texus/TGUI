@@ -448,6 +448,10 @@ namespace tgui
             else
                 editBoxWidth = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
 
+            // If the width is negative then the editBox is too small to be displayed
+            if (editBoxWidth < 0)
+                editBoxWidth = 0;
+
             // Now check if the text fits into the EditBox
             if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x > editBoxWidth)
             {
@@ -588,6 +592,10 @@ namespace tgui
                      - ((m_LeftBorder + m_RightBorder) * curScale.y);
         else
             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * curScale.x;
+
+        // If the width is negative then the editBox is too small to be displayed
+        if (width < 0)
+            width = 0;
 
         // When there is a text width limit then we have to check that one too
         if (m_LimitTextWidth)
