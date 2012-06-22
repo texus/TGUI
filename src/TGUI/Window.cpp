@@ -400,7 +400,7 @@ namespace tgui
                         std::string::size_type backslashPos = line.find('\\', quotePos1);
 
                         // Check if a backlash was found before the second quote
-                        if (backslashPos < quotePos2)
+                        while (backslashPos < quotePos2)
                         {
                             // Check for special characters
                             if (line[backslashPos + 1] == 'n')
@@ -431,6 +431,9 @@ namespace tgui
                                 if (quotePos2 == std::string::npos)
                                     goto LoadingFailed;
                             }
+
+                            // Find the next backslash
+                            backslashPos = line.find('\\', backslashPos + 1);
                         }
 
                         // There may never be more than two quotes
