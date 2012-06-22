@@ -439,7 +439,6 @@ namespace tgui
         }
         else // Scrolling is enabled
         {
-            unsigned int length = m_DisplayedText.length();
             float editBoxWidth;
 
             // Calculate the width of the edit box
@@ -450,18 +449,24 @@ namespace tgui
                 editBoxWidth = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
 
             // Now check if the text fits into the EditBox
-            while (m_TextBeforeSelection.findCharacterPos(length).x > editBoxWidth)
+            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x > editBoxWidth)
             {
-                // The text is still too long
-                if (length > 0)
-                    --length;
-                else
-                    break;
-            }
+                // Reset the left crop position
+                m_LeftTextCrop = 0;
 
-            // Set the text crop
-            m_LeftTextCrop = 0;
-            m_RightTextCrop = length;
+                // The text is too long to fit inside the EditBox
+                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > editBoxWidth)
+                {
+                    // Check if the last character can be dropped
+                    if (m_SelEnd < m_RightTextCrop)
+                        --m_RightTextCrop;
+                    else
+                        ++m_LeftTextCrop;
+                }
+
+                // Set the selection point back on the correct position
+                setSelectionPointPosition(m_SelectionPointPosition);
+            }
         }
     }
 
@@ -605,18 +610,20 @@ namespace tgui
         }
         else // Scrolling is enabled
         {
-            unsigned int length = m_DisplayedText.length();
-
-            // Now check if the text fits into the EditBox
-            while (m_TextBeforeSelection.findCharacterPos(length).x > width)
-            {
-                // The text is still too long
-                --length;
-            }
-
             // Set the text crop
             m_LeftTextCrop = 0;
-            m_RightTextCrop = length;
+            m_RightTextCrop = m_DisplayedText.length();
+
+            // Now check if the text fits into the EditBox
+            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x > width)
+            {
+                // The text is too long to fit inside the EditBox
+                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
+                {
+                    // Drop the first character
+                    ++m_LeftTextCrop;
+                }
+            }
         }
 
         // Set the selection point behind the last character
