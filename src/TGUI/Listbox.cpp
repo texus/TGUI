@@ -1244,10 +1244,13 @@ namespace tgui
             // Reset the transformation
             states.transform = oldTransform;
             states.transform.translate(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            states.transform.scale(1, (curScale.y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setScale(1, (curScale.y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
+
+            // Reset the scale of the scrollbar
+            m_Scroll->setScale(1, 1);
         }
     }
 
