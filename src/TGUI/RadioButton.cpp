@@ -35,23 +35,23 @@ namespace tgui
     {
         m_ObjectType = radioButton;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     RadioButton::RadioButton(const RadioButton& copy) :
     Checkbox(copy)
     {
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     RadioButton& RadioButton::operator= (const RadioButton& right)
     {
         if (this != &right)
         {
             this->Checkbox::operator=(right);
         }
-        
+
         return *this;
     }
 
@@ -61,7 +61,7 @@ namespace tgui
     {
         // Tell our parent that all the radio buttons should be unchecked
         m_Parent->uncheckRadioButtons();
-        
+
         // Check this radio button
         m_Checked = true;
     }

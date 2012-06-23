@@ -45,9 +45,9 @@ namespace tgui
     {
         m_ObjectType = slider;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Slider::Slider(const Slider& copy) :
     OBJECT               (copy),
     verticalScroll       (copy.verticalScroll),
@@ -75,9 +75,9 @@ namespace tgui
         if (m_TextureThumbNormal != NULL) TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
         if (m_TextureThumbHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbHover);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Slider& Slider::operator= (const Slider& right)
     {
         // Make sure it is not the same object
@@ -85,7 +85,7 @@ namespace tgui
         {
             Slider temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(verticalScroll,        temp.verticalScroll);
             std::swap(m_MouseDownOnThumb,    temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos, temp.m_MouseDownOnThumbPos);
@@ -102,7 +102,7 @@ namespace tgui
             std::swap(m_SpriteThumbNormal,   temp.m_SpriteThumbNormal);
             std::swap(m_SpriteThumbHover,    temp.m_SpriteThumbHover);
         }
-        
+
         return *this;
     }
 
@@ -211,39 +211,39 @@ namespace tgui
         else
             setScale(width / m_TextureTrackNormal->getSize().y, height / m_TextureTrackNormal->getSize().x);
     }
-        
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u Slider::getSize() const
     {
         // Don't continue when the slider wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2u(0, 0);
-        
+
         // Return the size of the track
         if (verticalScroll == m_VerticalImage)
             return Vector2u(m_TextureTrackNormal->getSize().x, m_TextureTrackNormal->getSize().y);
         else
             return Vector2u(m_TextureTrackNormal->getSize().y, m_TextureTrackNormal->getSize().x);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f Slider::getScaledSize() const
     {
         // Don't continue when the slider wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2f(0, 0);
-        
+
         // Return the size of the track
         if (verticalScroll == m_VerticalImage)
             return Vector2f(m_TextureTrackNormal->getSize().x * getScale().x, m_TextureTrackNormal->getSize().y * getScale().y);
         else
             return Vector2f(m_TextureTrackNormal->getSize().y * getScale().x, m_TextureTrackNormal->getSize().x * getScale().y);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string Slider::getLoadedPathname()
     {
         return m_LoadedPathname;
@@ -289,9 +289,9 @@ namespace tgui
         else if (m_Value > m_Maximum)
             m_Value = m_Maximum;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Slider::setVerticalScroll( bool vertical )
     {
         verticalScroll = vertical;
@@ -317,9 +317,9 @@ namespace tgui
     {
         return m_Value;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     bool Slider::getVerticalScroll()
     {
         return verticalScroll;

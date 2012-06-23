@@ -273,9 +273,9 @@ namespace tgui
     {
         return m_Objects;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::vector<std::string>& Group::getObjectNames()
     {
         return m_ObjName;

@@ -39,7 +39,7 @@ namespace tgui
     m_TextureHover      (NULL)
     {
         m_ObjectType = comboBox;
-        
+
         m_Listbox.m_Size.x = 50;
         m_Listbox.m_ItemHeight = 24;
         m_Listbox.m_BackgroundColor         = sf::Color(255, 255, 255);
@@ -48,9 +48,9 @@ namespace tgui
         m_Listbox.m_SelectedTextColor       = sf::Color(255, 255, 255);
         m_Listbox.m_BorderColor             = sf::Color(  0,   0,   0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     ComboBox::ComboBox(const ComboBox& copy) :
     OBJECT              (copy),
     m_ShowList          (copy.m_ShowList),
@@ -69,16 +69,16 @@ namespace tgui
         if (m_TextureNormal != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal);
         if (m_TextureHover != NULL) TGUI_TextureManager.removeTexture(m_TextureHover);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     ComboBox& ComboBox::operator= (const ComboBox& right)
     {
         if (this != &right)
         {
             ComboBox temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(m_ShowList,           temp.m_ShowList);
             std::swap(m_MouseOnListbox,     temp.m_MouseOnListbox);
             std::swap(m_NrOfItemsToDisplay, temp.m_NrOfItemsToDisplay);
@@ -88,7 +88,7 @@ namespace tgui
             std::swap(m_SpriteNormal,       temp.m_SpriteNormal);
             std::swap(m_SpriteHover,        temp.m_SpriteHover);
         }
-        
+
         return *this;
     }
 
@@ -171,7 +171,7 @@ namespace tgui
 
         // Remember the scrollbar pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
-        
+
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
         m_Listbox.load(width,
@@ -212,17 +212,17 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u ComboBox::getSize() const
-    {        
+    {
         if (m_Loaded)
             return Vector2u(m_Listbox.getSize().x, m_TextureNormal->getSize().y);
         else
             return Vector2u(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f ComboBox::getScaledSize() const
     {
         if (m_Loaded)
@@ -230,16 +230,16 @@ namespace tgui
         else
             return Vector2f(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string ComboBox::getLoadedPathname()
     {
         return m_LoadedPathname;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string ComboBox::getLoadedScrollbarPathname()
     {
         return m_LoadedScrollbarPathname;
@@ -431,16 +431,16 @@ namespace tgui
     {
         m_Listbox.removeAllItems();
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string ComboBox::getItem(unsigned int id)
     {
         return m_Listbox.getItem(id);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     unsigned int ComboBox::getItemID(const std::string itemName)
     {
         return m_Listbox.getItemID(itemName);
@@ -473,7 +473,7 @@ namespace tgui
     {
         // Remember the scrollbar pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
-        
+
         // Set the new scrollbar
         return m_Listbox.setScrollbar(scrollbarPathname);
     }
@@ -484,7 +484,7 @@ namespace tgui
     {
         // There is no scrollbar loaded so the string should be empty
         m_LoadedScrollbarPathname = "";
-        
+
         // Remove the scrollbar
         m_Listbox.removeScrollbar();
     }
@@ -557,7 +557,7 @@ namespace tgui
         {
             // Store the current selected item
             unsigned int oldItem = m_Listbox.getSelectedItemID();
-            
+
             // Temporarily set a position for the listbox
             m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
 
@@ -566,7 +566,7 @@ namespace tgui
 
             // Reset the position
             m_Listbox.setPosition(0, 0);
-            
+
             // Check if the callback should be sent to the window
             if ((callbackID > 0) && (oldItem != m_Listbox.getSelectedItemID()))
             {
@@ -605,7 +605,7 @@ namespace tgui
                             // Stop showing the list
                             m_ShowList = false;
                         }
-                        
+
                         // Temporarily set a position for the listbox
                         m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
 
@@ -726,11 +726,11 @@ namespace tgui
             while (((bounds.width * curScale.y) + bounds.left) > maximumTextWidth)
             {
                 std::string tempString = tempText.getString().toAnsiString();
-                
+
                 // Make sure that the string isn't empty
                 if (tempString.size() == 0)
                     break;
-                
+
                 // Remove the last character
                 tempString.erase(tempString.length() -1);
                 tempText.setString(tempString);

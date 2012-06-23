@@ -36,9 +36,9 @@ namespace tgui
     {
         m_ObjectType = picture;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Picture::Picture(const Picture& copy) :
     OBJECT(copy)
     {
@@ -55,9 +55,9 @@ namespace tgui
         if (m_Texture != NULL)
             TGUI_TextureManager.removeTexture(m_Texture);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Picture& Picture::operator= (const Picture& right)
     {
         // Make sure it is not the same object
@@ -65,14 +65,14 @@ namespace tgui
         {
             Picture temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(m_Texture, temp.m_Texture);
             std::swap(m_Sprite,  temp.m_Sprite);
         }
-        
+
         return *this;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Picture::load(const std::string filename)
@@ -83,7 +83,7 @@ namespace tgui
         // Make sure that the filename isn't empty
         if (filename.empty())
             return false;
-        
+
         // Store the filename
         m_LoadedFilename = filename;
 
@@ -118,7 +118,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u Picture::getSize() const
     {
         if (m_Loaded)
@@ -126,9 +126,9 @@ namespace tgui
         else
             return Vector2u(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f Picture::getScaledSize() const
     {
         if (m_Loaded)
@@ -136,9 +136,9 @@ namespace tgui
         else
             return Vector2f(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string Picture::getLoadedFilename()
     {
         return m_LoadedFilename;

@@ -30,28 +30,28 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Label::Label()
     {
         m_ObjectType = label;
-        
+
         m_Loaded = true;
         text.setCharacterSize(30);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Label::setSize(float width, float height)
     {
         // Undo the scaling
         setScale(1, 1);
-        
+
         // Set the new text height
         text.setCharacterSize(static_cast<unsigned int>(height));
-        
+
         // Get the size of the text
         sf::FloatRect bounds = text.getLocalBounds();
-        
+
         // The text still has too fit inside the area
         if (bounds.width > width)
         {
@@ -59,21 +59,21 @@ namespace tgui
             text.setCharacterSize(static_cast<unsigned int>((height * width) / bounds.width));
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u Label::getSize() const
     {
         return Vector2u(static_cast<unsigned int>(text.getLocalBounds().left + text.getLocalBounds().width), static_cast<unsigned int>(text.getLocalBounds().top + text.getLocalBounds().height));
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f Label::getScaledSize() const
     {
         return Vector2f((text.getLocalBounds().left + text.getLocalBounds().width) * getScale().x, (text.getLocalBounds().top + text.getLocalBounds().height) * getScale().y);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setText(const std::string string)
@@ -129,15 +129,15 @@ namespace tgui
     {
         return text.getCharacterSize();
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     bool Label::mouseOnObject(float x, float y)
-    {        
+    {
         // Get the current position and the text bounds
         Vector2f position = getPosition();
         sf::FloatRect textBounds = text.getGlobalBounds();
-        
+
         // Check if the mouse is on top of the label
         if ((x > position.x + textBounds.left) && (x < position.x + textBounds.left + (textBounds.width * getScale().x))
             && (y > position.y + textBounds.top) && (y < position.y + textBounds.top + (textBounds.height * getScale().y)))
@@ -147,20 +147,20 @@ namespace tgui
         else // The mouse is not on top of the text
             return false;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Label::leftMousePressed(float x, float y)
     {
         TGUI_UNUSED_PARAM(x);
         TGUI_UNUSED_PARAM(y);
-        
+
         // Set the mouse down flag
         m_MouseDown = true;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Label::leftMouseReleased(float x, float y)
     {
         // Check if we clicked on the label (not just mouse release)
@@ -177,7 +177,7 @@ namespace tgui
                 callback.mouseY      = y - getPosition().y;
                 m_Parent->addCallback(callback);
             }
-            
+
             m_MouseDown = false;
         }
     }

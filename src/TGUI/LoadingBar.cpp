@@ -265,9 +265,9 @@ namespace tgui
             return Vector2f(m_TextureBack_M->getSize().x * getScale().x, m_TextureBack_M->getSize().y * getScale().y);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string LoadingBar::getLoadedPathname()
     {
         return m_LoadedPathname;
@@ -441,18 +441,18 @@ namespace tgui
             sf::FloatRect backBounds_L = m_SpriteBack_L.getGlobalBounds();
             sf::FloatRect backBounds_M = m_SpriteBack_M.getGlobalBounds();
             sf::FloatRect backBounds_R = m_SpriteBack_R.getGlobalBounds();
-            
+
             // Calculate the necessary sizes
             float totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * getScale().x;
             float middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * getScale().y);
             float frontSize;
-            
+
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
                 frontSize = totalWidth * (m_Value / static_cast<float>(m_Maximum - m_Minimum));
             else
                 frontSize = totalWidth;
-            
+
             // Check if a part of the left piece should be visible
             if (frontSize > 0)
             {
@@ -485,7 +485,7 @@ namespace tgui
                 backBounds_M.width = 0;
                 backBounds_R.width = 0;
             }
-            
+
             m_SpriteFront_L.setTextureRect(sf::IntRect(backBounds_L));
             m_SpriteFront_M.setTextureRect(sf::IntRect(backBounds_M));
             m_SpriteFront_R.setTextureRect(sf::IntRect(backBounds_R));
@@ -494,7 +494,7 @@ namespace tgui
         {
             // Get the size of the back sprite
             sf::FloatRect backBounds = m_SpriteBack_M.getGlobalBounds();
-            
+
             // Calculate the size of the front sprite
             sf::IntRect frontBounds(backBounds);
 

@@ -44,9 +44,9 @@ namespace tgui
 
         m_Text.setColor(sf::Color::Black);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Checkbox::Checkbox(const Checkbox& copy) :
     OBJECT        (copy),
     allowTextClick(copy.allowTextClick),
@@ -70,16 +70,16 @@ namespace tgui
         if (m_TextureMouseHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseHover);
         if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Checkbox& Checkbox::operator= (const Checkbox& right)
     {
         if (this != &right)
         {
             Checkbox temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(allowTextClick,      temp.allowTextClick);
             std::swap(m_Checked,           temp.m_Checked);
             std::swap(m_Text,              temp.m_Text);
@@ -93,7 +93,7 @@ namespace tgui
             std::swap(m_SpriteMouseHover,  temp.m_SpriteMouseHover);
             std::swap(m_SpriteFocused,     temp.m_SpriteFocused);
         }
-        
+
         return *this;
     }
 
@@ -204,9 +204,9 @@ namespace tgui
         // Set the new scale factors
         setScale(width / m_TextureUnchecked->getSize().x, height / m_TextureUnchecked->getSize().y);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u Checkbox::getSize() const
     {
         if (m_Loaded)
@@ -214,9 +214,9 @@ namespace tgui
         else
             return Vector2u(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f Checkbox::getScaledSize() const
     {
         if (m_Loaded)
@@ -224,9 +224,9 @@ namespace tgui
         else
             return Vector2f(0, 0);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string Checkbox::getLoadedPathname()
     {
         return m_LoadedPathname;

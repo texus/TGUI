@@ -48,12 +48,12 @@ namespace tgui
     m_TextSize              (0)
     {
         m_ObjectType = button;
-        
+
         m_Text.setColor(sf::Color::Black);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Button::Button(const Button& copy) :
     OBJECT      (copy),
     m_SplitImage(copy.m_SplitImage),
@@ -97,9 +97,9 @@ namespace tgui
         if (m_TextureFocused_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_M);
         if (m_TextureFocused_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_R);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Button& Button::operator= (const Button& right)
     {
         // Make sure it is not the same object
@@ -107,7 +107,7 @@ namespace tgui
         {
             Button temp(right);
             this->OBJECT::operator=(right);
-            
+
             std::swap(m_TextureNormal_L,     temp.m_TextureNormal_L);
             std::swap(m_TextureNormal_M,     temp.m_TextureNormal_M);
             std::swap(m_TextureNormal_R,     temp.m_TextureNormal_R);
@@ -136,7 +136,7 @@ namespace tgui
             std::swap(m_Text,                temp.m_Text);
             std::swap(m_TextSize,            temp.m_TextSize);
         }
-        
+
         return *this;
     }
 
@@ -347,15 +347,15 @@ namespace tgui
                      height / m_TextureNormal_M->getSize().y);
         }
     }
-        
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2u Button::getSize() const
     {
         // Don't continue when the button wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2u(0, 0);
-        
+
         // Check if the image is split
         if (m_SplitImage)
         {
@@ -368,15 +368,15 @@ namespace tgui
             return Vector2u(m_TextureNormal_M->getSize().x, m_TextureNormal_M->getSize().y);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     Vector2f Button::getScaledSize() const
     {
         // Don't continue when the button wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2f(0, 0);
-        
+
         // Check if the image is split
         if (m_SplitImage)
         {
@@ -390,9 +390,9 @@ namespace tgui
             return Vector2f(m_TextureNormal_M->getSize().x * getScale().x, m_TextureNormal_M->getSize().y * getScale().y);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     std::string Button::getLoadedPathname()
     {
         return m_LoadedPathname;
