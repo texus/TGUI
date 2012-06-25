@@ -32,7 +32,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TGUI_API TextBox : public OBJECT
+    struct TGUI_API TextBox : public OBJECT, OBJECT_BORDERS, OBJECT_ANIMATION
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
@@ -41,9 +41,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Copy constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TextBox(const TextBox& copy);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Desturctor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ~TextBox();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Overload of assignment operator
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TextBox& operator= (const TextBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,18 +70,25 @@ namespace tgui
         // Note that the text box has to be loaded correctly before calling this function.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(float width, float height);
-        
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size of the text box, unaffected by scaling.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2u getSize() const;
-        
-        
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size of the text box, after the scaling transformation.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the pathname that was used to load the scrollbar.
+        // When no scrollbar was loaded then this function will return an empty string.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedScrollbarPathname();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,30 +155,40 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the colors from the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& textColor                            = sf::Color(  0,   0,   0),
+        void changeColors(const sf::Color& backgroundColor                      = sf::Color( 50,  50,  50),
+                          const sf::Color& textColor                              = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
                           const sf::Color& selectedTextBackgroundColor          = sf::Color( 10, 110, 255),
                           const sf::Color& unfocusedSelectedTextBackgroundColor = sf::Color(110, 110, 255),
-                          const sf::Color& selectionPointColor                  = sf::Color(  0,   0,   0));
+                          const sf::Color& borderColor                          = sf::Color(  0,   0,   0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Get the colors that are currently used inside the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::Color& getBackgroundColor();
         const sf::Color& getTextColor();
         const sf::Color& getSelectedTextColor();
         const sf::Color& getSelectedTextBackgroundColor();
         const sf::Color& getUnfocusedSelectedTextBackgroundColor();
         const sf::Color& getSelectionPointColor();
-        
-        
+        const sf::Color& getBorderColor();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function will set the selection point somewhere, so that when you type something the changes will happen there.
+        // Normally you will not need this function.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint);
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the scrollbar of the text box.
         // Only needed when this wasn't done when creating the text box or if the scrollbar should be changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setScrollbar(const std::string scrollbarPathname);
-        
-        
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Removes the scrollbar from the text box (if there is one). When there are too many lines to fit in the text box then
         // some lines will be removed.
@@ -171,8 +200,8 @@ namespace tgui
         // This will change the width of the selection point.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectionPointWidth(const unsigned int width = 2);
-        
-        
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // These functions are used to receive callback from the EventManager.
         // You normally don't need them, but you can use them to simulate an event.
@@ -181,16 +210,47 @@ namespace tgui
         void leftMousePressed(float x, float y);
         void leftMouseReleased(float x, float y);
         void mouseMoved(float x, float y);
+        void keyPressed(sf::Keyboard::Key Key);
+        void textEntered(char Key);
+        void mouseNotOnObject();
+        void mouseNoLongerDown();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function will search where the selection point should be. It will not change the selection point.
+        // It will return after which character the selection point should be.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int findSelectionPointPosition(float posX, float posY);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// TODO: Add description
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateDisplayedText();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // When AnimationManager changes the elapsed time then this function is called.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void update();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
         // This function will be called and it will draw the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        sf::Color selectionPointColor;
+        unsigned int selectionPointWidth;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,34 +261,48 @@ namespace tgui
 
         // Some information about the text
         std::string  m_Text;
-        sf::Font     m_Font;
+        std::string  m_DisplayedText;
         unsigned int m_TextSize;
         unsigned int m_LineHeight;
+        unsigned int m_Lines;
 
         // The maximum characters (0 by default, which means no limit)
         unsigned int m_MaxChars;
 
+        // What is known about the visible lines?
+        unsigned int m_TopLine;
+        unsigned int m_VisibleLines;
+
+        // Information about the selection
+        unsigned int m_SelChars;
+        unsigned int m_SelStart;
+        unsigned int m_SelEnd;
+
+        // Information about the selection pointer
+        sf::Vector2u m_SelectionPointPosition;
+        bool m_SelectionPointVisible;
+
         // The colors that are used by the text box
+        sf::Color m_BackgroundColor;
         sf::Color m_TextColor;
         sf::Color m_SelectedTextColor;
         sf::Color m_SelectedTextBgrColor;
         sf::Color m_UnfocusedSelectedTextBgrColor;
-        sf::Color m_SelectionPointColor;
+        sf::Color m_BorderColor;
 
-        // The borders
-        unsigned int m_LeftBorder;
-        unsigned int m_TopBorder;
-        unsigned int m_RightBorder;
-        unsigned int m_BottomBorder;
+        // The sfml Text objects
+        sf::Text m_TextBeforeSelection;
+        sf::Text m_TextSelection;
+        sf::Text m_TextAfterSelection;
 
-        // The text is split up in multiple lines
-        std::vector<sf::Text> m_Lines;
-        
         // The scrollbar
         Scrollbar* m_Scroll;
 
-        // The size of the selection pointer
-        unsigned int m_SelectionPointWidth;
+        // The pathname used to load the scrollbar (if there is one)
+        std::string m_LoadedScrollbarPathname;
+
+        // The render texture, used to draw the text on (this allows to display only a part of the text)
+        sf::RenderTexture* m_RenderTexture;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

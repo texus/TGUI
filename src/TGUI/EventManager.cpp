@@ -67,7 +67,8 @@ namespace tgui
                      || (m_Objects[i]->m_ObjectType == slider)
                      || (m_Objects[i]->m_ObjectType == scrollbar)
                      || (m_Objects[i]->m_ObjectType == listbox)
-                     || (m_Objects[i]->m_ObjectType == comboBox))
+                     || (m_Objects[i]->m_ObjectType == comboBox)
+                     || (m_Objects[i]->m_ObjectType == textBox))
                     {
                         m_Objects[i]->mouseMoved(mouseX, mouseY);
                         return;
@@ -206,6 +207,8 @@ namespace tgui
             // Some keys may be repeated
             if ((event.key.code == sf::Keyboard::Left)
              || (event.key.code == sf::Keyboard::Right)
+             || (event.key.code == sf::Keyboard::Up)
+             || (event.key.code == sf::Keyboard::Down)
              || (event.key.code == sf::Keyboard::BackSpace)
              || (event.key.code == sf::Keyboard::Delete))
             {
@@ -243,6 +246,8 @@ namespace tgui
                     // Avoid double callback with keys that can be repeated
                     if ((event.key.code != sf::Keyboard::Left)
                      && (event.key.code != sf::Keyboard::Right)
+                     && (event.key.code != sf::Keyboard::Up)
+                     && (event.key.code != sf::Keyboard::Down)
                      && (event.key.code != sf::Keyboard::BackSpace)
                      && (event.key.code != sf::Keyboard::Delete))
                     {
@@ -555,6 +560,15 @@ namespace tgui
             if (m_Objects[i]->m_ObjectType == panel)
                 dynamic_cast<Group*>(m_Objects[i])->updateTime(elapsedTime);
             else if (m_Objects[i]->m_ObjectType == editBox)
+            {
+                // Convert the object
+                OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
+
+                // Update the elapsed time
+                object->m_AnimationTimeElapsed += elapsedTime;
+                object->update();
+            }
+            else if (m_Objects[i]->m_ObjectType == textBox)
             {
                 // Convert the object
                 OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
