@@ -74,6 +74,12 @@ namespace tgui
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is overridden from Slider because the value has a different maximum limit.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setValue(unsigned int value);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the 'low value'. Until the maximum is bigger than this value, no scrollbar will be drawn.
         // You can however choose to always draw the scrollbar by setting autoHide to false.
         // In e.g. a listbox, this value is the amount of items that fit inside the listbox.

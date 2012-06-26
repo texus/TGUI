@@ -190,6 +190,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::setValue(unsigned int value)
+    {
+        // Set the new value
+        m_Value = value;
+
+        // When the value is below the minimum or above the maximum then adjust it
+        if (m_Value < m_Minimum)
+            m_Value = m_Minimum;
+        else if (m_Value > m_Maximum - m_LowValue)
+            m_Value = m_Maximum - m_LowValue;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::setLowValue(unsigned int lowValue)
     {
         // Set the new value
