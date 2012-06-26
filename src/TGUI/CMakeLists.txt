@@ -32,12 +32,12 @@ if(TGUI_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${TGUI_SRC})
     set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -d )
 
-    if (WINDOWS)
+    if (NOT LINUX)
         target_link_libraries( ${PROJECT_NAME} ${SFML_LIBRARIES} )
 
         # on Windows/gcc get rid of "lib" prefix for shared libraries,
         # and transform the ".dll.a" suffix into ".a" for import libraries
-        if (COMPILER_GCC)
+        if (WINDOWS AND COMPILER_GCC)
             set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
             set_target_properties(${PROJECT_NAME} PROPERTIES IMPORT_SUFFIX ".a")
         endif()
