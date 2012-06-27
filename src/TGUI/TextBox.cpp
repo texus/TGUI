@@ -27,12 +27,12 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// TODO: Find bug: typing text makes the view go back to the top (with scrollbar)
-///       Find bug: selection point is on the wrong position when scrolling.
+/// TODO: Support selection
 ///
-///       Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
+/// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
 ///                             the selection point moves at the end of the line because it is not allowed to be in front.
 ///                             This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
+///                             This bug can thus only be solved after implementing word wrapping.
 
 namespace tgui
 {
@@ -199,10 +199,6 @@ namespace tgui
         // Create the render texture
         if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
             return false;
-
-/// The scrollbar is not fully working yet
-m_Loaded = true;
-return true;
 
         // If there is a scrollbar then load it
         if (scrollbarPathname.empty() == false)
@@ -400,7 +396,7 @@ return true;
         m_TextAfterSelection.setCharacterSize(m_TextSize);
 
         // Calculate the height of one line (a little bigger than text height)
-        m_LineHeight = m_TextSize * 10 / 8;
+        m_LineHeight = m_TextBeforeSelection.getFont().getLineSpacing(m_TextSize);
 
         // There is also a minimum height
         if (m_Size.y < (m_LineHeight + m_TopBorder + m_BottomBorder))
@@ -432,6 +428,14 @@ return true;
             else
                 m_Size.y = height2 + m_TopBorder + m_BottomBorder;
         }
+
+        // Recreate the render texture
+        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
+            m_Loaded = false;
+
+        // If there is a scrollbar then update the low value (in case the height of the text box has changed)
+        if (m_Scroll != NULL)
+            m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
 
         // The size has changed, update the text
         updateDisplayedText();
@@ -634,6 +638,59 @@ return true;
 
         // Update the text
         updateDisplayedText();
+
+        // Check if there is a scrollbar
+        if (m_Scroll != NULL)
+        {
+            unsigned int newlines = 0;
+            unsigned int newlinesAdded = 0;
+            unsigned int totalLines = 0;
+
+            // Loop through all characters
+            for (unsigned int i=0; i<m_SelEnd; ++i)
+            {
+                // Make sure there is no newline in the text
+                if (m_Text[i] != '\n')
+                {
+                    // Check if there is a newline in the displayed text
+                    if (m_DisplayedText[i + newlinesAdded] == '\n')
+                    {
+                        // A newline was added here
+                        ++newlinesAdded;
+                        ++totalLines;
+
+                        if (i < m_SelEnd)
+                            ++newlines;
+                    }
+                }
+                else // The text already contains a newline
+                {
+                    ++totalLines;
+
+                    if (i < m_SelEnd)
+                        ++newlines;
+                }
+            }
+
+            // Check if the selection point is located above the view
+            if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->m_Value % m_LineHeight > 0)))
+            {
+                m_Scroll->setValue(newlines * m_LineHeight);
+                updateDisplayedText();
+            }
+
+            // Check if the selection point is below the view
+            else if (newlines > m_TopLine + m_VisibleLines - 2)
+            {
+                m_Scroll->setValue((newlines - m_VisibleLines + 1) * m_LineHeight);
+                updateDisplayedText();
+            }
+            else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->m_Value % m_LineHeight > 0))
+            {
+                m_Scroll->setValue((newlines - m_VisibleLines + 2) * m_LineHeight);
+                updateDisplayedText();
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -748,6 +805,9 @@ return true;
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
         {
+            // Remember the old scrollbar value
+            unsigned int oldValue = m_Scroll->m_Value;
+
             // Get the current scale
             Vector2f curScale = getScale();
 
@@ -765,6 +825,10 @@ return true;
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
             m_Scroll->setScale(1, 1);
+
+            // If the value of the scrollbar has changed then update the text
+            if (oldValue != m_Scroll->m_Value)
+                updateDisplayedText();
         }
 
         // If the click occured on the text box
@@ -915,8 +979,6 @@ return true;
                 // You don't have to do anything when the selection point is at the beginning of the text
                 if (m_SelEnd > 0)
                 {
-/// TODO: Scroll up when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
                     // Move the selection point to the left
                     setSelectionPointPosition(m_SelEnd - 1);
                 }
@@ -942,8 +1004,6 @@ return true;
                 // You don't have to do anything when the selection point is at the end of the text
                 if (m_SelEnd < m_Text.length())
                 {
-/// TODO: Scroll down when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
                     // Move the selection point to the left
                     setSelectionPointPosition(m_SelEnd + 1);
                 }
@@ -955,15 +1015,16 @@ return true;
         }
         else if (key == sf::Keyboard::Up)
         {
-/// TODO: Scroll up when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
+/// TODO: Support selection
+            sf::Text tempText(m_TextBeforeSelection);
+            tempText.setString(m_DisplayedText);
 
             bool newlineAdded = false;
             unsigned int newlinesAdded = 0;
 
             unsigned int character;
             unsigned int newTopPosition;
-            sf::Vector2u newPosition;
+            sf::Vector2u newPosition(0, 0);
 
             int distanceX;
             int previousdistanceX = m_Size.x;
@@ -987,13 +1048,13 @@ return true;
             }
 
             // Get the position of the character behind the selection point
-            sf::Vector2u originalPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(m_SelEnd + newlinesAdded));
+            sf::Vector2u originalPosition = sf::Vector2u(tempText.findCharacterPos(m_SelEnd + newlinesAdded));
 
             // Try to find the line above the selection point
             for (character=m_SelEnd; character > 0; --character)
             {
                 // Get the top position of the character before it
-                newTopPosition = static_cast<unsigned int>(m_TextBeforeSelection.findCharacterPos(character+newlinesAdded-1).y);
+                newTopPosition = static_cast<unsigned int>(tempText.findCharacterPos(character+newlinesAdded-1).y);
 
                 // Check if the the character is on the line above the original one
                 if (newTopPosition < originalPosition.y)
@@ -1011,7 +1072,7 @@ return true;
                 for ( ; character > 0; --character)
                 {
                     // Get the position of the character before it
-                    newPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(character+newlinesAdded-1));
+                    newPosition = sf::Vector2u(tempText.findCharacterPos(character+newlinesAdded-1));
 
                     // The character must remain on the same line
                     if (newPosition.y < newTopPosition)
@@ -1036,21 +1097,30 @@ return true;
                     previousdistanceX = abs(distanceX);
                 }
 
+                // Check if the selection point should be behind the first character
+                if (originalPosition.x > previousdistanceX)
+                {
+                    // We have found the character that we were looking for
+                    setSelectionPointPosition(character + newlineAdded);
+                    return;
+                }
+
                 // If you pass here then the selection point should be at the beginning of the text
                 setSelectionPointPosition(0);
             }
         }
         else if (key == sf::Keyboard::Down)
         {
-/// TODO: Scroll down when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
+/// TODO: Support selection
+            sf::Text tempText(m_TextBeforeSelection);
+            tempText.setString(m_DisplayedText);
 
             bool newlineAdded = false;
             unsigned int newlinesAdded = 0;
 
             unsigned int character;
             unsigned int newTopPosition;
-            sf::Vector2u newPosition;
+            sf::Vector2u newPosition(0, 0);
 
             int distanceX;
             int previousdistanceX = m_Size.x;
@@ -1084,13 +1154,13 @@ return true;
             }
 
             // Get the position of the character behind the selection point
-            sf::Vector2u originalPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(m_SelEnd+newlinesAdded-newlineAdded));
+            sf::Vector2u originalPosition = sf::Vector2u(tempText.findCharacterPos(m_SelEnd+newlinesAdded-newlineAdded));
 
             // Try to find the line below the selection point
             for (character=m_SelEnd; character < m_Text.length(); ++character)
             {
                 // Get the top position of the character after it
-                newTopPosition = static_cast<unsigned int>(m_TextBeforeSelection.findCharacterPos(character+newlinesAdded-newlineAdded+1).y);
+                newTopPosition = static_cast<unsigned int>(tempText.findCharacterPos(character+newlinesAdded-newlineAdded+1).y);
 
                 // Check if the the character is on the line below the original one
                 if (newTopPosition > originalPosition.y)
@@ -1105,10 +1175,10 @@ return true;
             if (character < m_Text.length())
             {
                 // Try to find the closest character
-                for ( ; character < m_Text.length(); ++character)
+                for ( ; character < m_Text.length() + 1; ++character)
                 {
                     // Get the position of the character after it
-                    newPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(character+newlinesAdded-newlineAdded+1));
+                    newPosition = sf::Vector2u(tempText.findCharacterPos(character+newlinesAdded-newlineAdded+1));
 
                     // The character must remain on the same line
                     if (newPosition.y > newTopPosition)
@@ -1139,8 +1209,6 @@ return true;
         }
         else if (key == sf::Keyboard::Home)
         {
-/// TODO: Scroll up when you go to the invisible first line
-///       Maybe this should happen in setSelectionPointPosition.
             // Set the selection point to the beginning of the text
             setSelectionPointPosition(0);
 
@@ -1150,8 +1218,6 @@ return true;
         }
         else if (key == sf::Keyboard::End)
         {
-/// TODO: Scroll down when you go to the invisible first line
-///       Maybe this should happen in setSelectionPointPosition.
             // Set the selection point behind the text
             setSelectionPointPosition(m_Text.length());
 
@@ -1173,14 +1239,21 @@ return true;
                 if (m_SelEnd == 0)
                     return;
 
-/// TODO: Scroll up when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
-
                 // Erase the character
                 m_Text.erase(m_SelEnd-1, 1);
 
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
+
+                // Check if the scrollbar is behind the text
+                if (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue)
+                {
+                    // Adjust the value of the scrollbar
+                    m_Scroll->setValue(m_Scroll->m_Value);
+
+                    // The text has to be updated again
+                    updateDisplayedText();
+                }
             }
             else // When you did select some characters
             {
@@ -1189,10 +1262,6 @@ return true;
                 // Check if they were selected from left to right
                 if (m_SelStart < m_SelEnd)
                 {
-
-/// TODO: Scroll up when you go to the invisible line
-///       Maybe this should happen in setSelectionPointPosition.
-
                     // Erase the characters
                     m_Text.erase(m_SelStart, m_SelChars);
 
@@ -1237,6 +1306,16 @@ return true;
 
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd);
+
+                // Check if there is a risk that the scrollbar is going to be behind the text
+                if ((m_Scroll->m_Value == m_Scroll->m_Maximum - m_Scroll->m_LowValue) || (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue - m_LineHeight))
+                {
+                    // Reset the value of the scroll. If it is too high then it will be automatically be adjusted.
+                    m_Scroll->setValue(m_Scroll->m_Value);
+
+                    // The text has to be updated again
+                    updateDisplayedText();
+                }
             }
             else // You did select some characters
             {
@@ -1367,128 +1446,139 @@ return true;
         if (m_Text.length() == 0)
             return 0;
 
-        // Check if there is a scrollbar
-        if (m_Scroll != NULL)
-        {
-/// TODO: Support scrollbar
-        }
-        else // There is no scrollbar
-        {
-            // Find out on which line you clicked
-            unsigned int line = posY / m_LineHeight + 1;
+        // Find out on which line you clicked
+        unsigned int line;
+
+        if (m_Scroll == NULL)
+            line = posY / m_LineHeight + 1;
+        else
+            line = (posY + m_Scroll->m_Value) / m_LineHeight + 1;
 
 /// TODO: Support selection
-            // Check if you clicked behind all characters
-            if ((line > m_Lines) || ((line == m_Lines) && (posX > m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x)))
+        // Check if you clicked behind all characters
+        if ((line > m_Lines) || ((line == m_Lines) && (posX > m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x)))
+        {
+            // The selection point should be behind the last character
+            return m_Text.length();
+        }
+        else // You clicked inside the text
+        {
+            // Prepare to skip part of the text
+            std::string tempString = m_DisplayedText;
+            std::string::size_type newLinePos = 0;
+
+            // Only remove lines when there are lines to remove
+            if (line > 1)
             {
-                // The selection point should be behind the last character
-                return m_Text.length();
+                unsigned int i=1;
+
+                // If the first character is a newline then remove it if needed
+                if (m_Text[0] == '\n')
+                    ++i;
+
+                // Skip the lines above the line where you clicked
+                for ( ; i<line; ++i)
+                    newLinePos = tempString.find('\n', newLinePos + 1);
+
+                // Remove the first lines
+                tempString.erase(0, newLinePos + 1);
             }
-            else // You clicked inside the text
+
+            // Only keep one line
+            std::string::size_type newLinePos2 = tempString.find('\n');
+            if (newLinePos2 != std::string::npos)
+                tempString.erase(newLinePos2);
+
+            // Create a temporary text object
+            sf::Text tempText(m_TextBeforeSelection);
+
+            // We are going to calculate the number of newlines we have added
+            unsigned int newlinesAdded = 0;
+            unsigned int totalNewlinesAdded = 0;
+            unsigned int beginChar = 0;
+            std::string  tempString2 = m_Text;
+
+            // Calculate the maximum line width
+            float maxLineWidth;
+
+            if (m_Scroll == NULL)
+                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4;
+            else
+                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4 - m_Scroll->getScaledSize().x;
+
+            // If the width is negative then the text box is too small to be displayed
+            if (maxLineWidth < 0)
+                maxLineWidth = 0;
+
+            // Loop through every character
+            for (unsigned i=1; (i < m_Text.length() + 1) && (totalNewlinesAdded != line - 1); ++i)
             {
-                // Prepare to skip part of the text
-                std::string tempString = m_DisplayedText;
-                std::string::size_type newLinePos = 0;
-
-                // Only remove lines when there are lines to remove
-                if (line > 1)
+                // Make sure the character is not a newline
+                if (m_Text[i-1] != '\n')
                 {
-                    unsigned int i=1;
+                    // Add the next character to the text object
+                    tempText.setString(m_Text.substr(beginChar, i - beginChar));
 
-                    // If the first character is a newline then remove it if needed
-                    if (m_Text[0] == '\n')
-                        ++i;
-
-                    // Skip the lines above the line where you clicked
-                    for ( ; i<line; ++i)
-                        newLinePos = tempString.find('\n', newLinePos + 1);
-
-                    // Remove the first lines
-                    tempString.erase(0, newLinePos + 1);
-                }
-
-                // Only keep one line
-                std::string::size_type newLinePos2 = tempString.find('\n');
-                if (newLinePos2 != std::string::npos)
-                    tempString.erase(newLinePos2);
-
-                // Create a temporary text object
-                sf::Text tempText(m_TextBeforeSelection);
-
-                // We are going to calculate the number of newlines we have added
-                unsigned int newlinesAdded = 0;
-                unsigned int totalNewlinesAdded = 0;
-                unsigned int beginChar = 0;
-                std::string  tempString2 = m_DisplayedText;
-
-                // Calculate the maximum line width
-                float maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4;
-
-                // If the width is negative then the text box is too small to be displayed
-                if (maxLineWidth < 0)
-                    maxLineWidth = 0;
-
-                // Loop through every character
-                for (unsigned i=1; (i < m_Text.length() + 1) && (totalNewlinesAdded != line - 1); ++i)
-                {
-                    // Make sure the character is not a newline
-                    if (m_Text[i-1] != '\n')
+                    // Check if the string still fits on the line
+                    if (tempText.findCharacterPos(i).x > maxLineWidth)
                     {
-                        // Add the next character to the text object
-                        tempText.setString(m_Text.substr(beginChar, i - beginChar));
+                        // Insert the new line character
+                        tempString2.insert(tempString2.begin() + i + newlinesAdded - 1, '\n');
 
-                        // Check if the string still fits on the line
-                        if (tempText.findCharacterPos(i).x > maxLineWidth)
-                        {
-                            // Insert the new line character
-                            tempString2.insert(tempString2.begin() + i + newlinesAdded - 1, '\n');
-
-                            // Prepare to find the next line end
-                            beginChar = i - 1;
-                            ++newlinesAdded;
-                            ++totalNewlinesAdded;
-                        }
-                    }
-                    else // The character was a newline
-                    {
-                        beginChar = i;
+                        // Prepare to find the next line end
+                        beginChar = i - 1;
+                        ++newlinesAdded;
                         ++totalNewlinesAdded;
                     }
                 }
+                else // The character was a newline
+                {
+                    beginChar = i;
+                    ++totalNewlinesAdded;
+                }
+            }
 
-                // Store the single line that we found a while ago in the temporary text object
-                tempText.setString(tempString);
+            // Store the single line that we found a while ago in the temporary text object
+            tempText.setString(tempString);
 
-                // If the line contains nothing but a newline character then put the selction point on that line
-                if (tempString.length() == 0)
+            // If the line contains nothing but a newline character then put the selction point on that line
+            if (tempString.length() == 0)
+            {
+                if (line > 1)
+                    return newLinePos + 1;
+                else
+                    return newLinePos;
+            }
+
+            // Check if the click occured before the first character
+            if ((tempString.length() == 1) && (posX < (tempText.findCharacterPos(1).x / 2.f)))
+            {
+                if (line > 1)
+                    return newLinePos - newlinesAdded;
+                else
+                    return newLinePos - 1;
+            }
+
+            // Try to find between which characters the mouse is standing
+            for (unsigned int i=1; i<=tempString.length(); ++i)
+            {
+                if (posX < (tempText.findCharacterPos(i-1).x + tempText.findCharacterPos(i).x) / 2.f)
                 {
                     if (line > 1)
-                        return newLinePos + 1;
+                        return newLinePos + i - newlinesAdded;
                     else
-                        return newLinePos;
+                        return newLinePos + i - 1;
                 }
 
-                // Try to find between which characters the mouse is standing
-                for (unsigned int i=1; i<=tempString.length(); ++i)
-                {
-                    if (posX < (tempText.findCharacterPos(i-1).x + tempText.findCharacterPos(i).x) / 2.f)
-                    {
-                        if (line > 1)
-                            return newLinePos + i - newlinesAdded;
-                        else
-                            return newLinePos + i - 1;
-                    }
+            }
 
-                }
-
-                // Check if you clicked behind the last character on the line
-                if (tempText.findCharacterPos(tempString.length()).x - (((3.f * tempText.findCharacterPos(tempString.length()-1).x) + tempText.findCharacterPos(tempString.length()).x) / 2.f))
-                {
-                    if (line > 1)
-                        return newLinePos + tempString.length() + 1 - newlinesAdded;
-                    else
-                        return newLinePos + tempString.length();
-                }
+            // Check if you clicked behind the last character on the line
+            if (tempText.findCharacterPos(tempString.length()).x - (((3.f * tempText.findCharacterPos(tempString.length()-1).x) + tempText.findCharacterPos(tempString.length()).x) / 2.f))
+            {
+                if (line > 1)
+                    return newLinePos + tempString.length() + 1 - newlinesAdded;
+                else
+                    return newLinePos + tempString.length();
             }
         }
 
@@ -1563,7 +1653,7 @@ return true;
                 if (m_Lines > (m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight)
                 {
                     // Remove all exceeding lines
-                    m_DisplayedText.erase(i-1);
+                    m_DisplayedText.erase(i+newlinesAdded-1);
                     m_Text.erase(i-1);
 
                     // We counted one line too much
@@ -1602,64 +1692,65 @@ return true;
             m_VisibleLines = TGUI_MINIMUM((m_Size.y - m_LeftBorder - m_TopBorder) / m_LineHeight, m_Lines);
         }
 
-        // Check if there are multiple lines
-        if (m_Lines > 1)
-        {
-            std::string::size_type newLinePos;
-
-            // Create a temporary string to remove part of the text
-            std::string tempText = m_DisplayedText;
-
-            // Remove line by line
-            for (unsigned int i=1; i<m_TopLine; ++i)
-            {
-                // Where is the new line in the string?
-                newLinePos = tempText.find('\n');
-
-                // Erase the text until the new line
-                if (newLinePos != std::string::npos)
-                    tempText.erase(0, newLinePos + 1);
-                else
-                {
-                    // It should be impossible to get here. The number of lines differs from the stored number.
-                    m_Loaded = false;
-                }
-            }
-
-            // Reset the position
-            newLinePos = 0;
-
-            // Only remove the last lines if they no longer fit inside the text box
-            if (m_Lines - m_VisibleLines - m_TopLine + 1 > 0)
-            {
-                // Skip all the visible lines
-                for (unsigned int i=0; i<m_VisibleLines; ++i)
-                    newLinePos = tempText.find('\n', newLinePos + 1);
-
-                // Remove the remaining lines
-                tempText.erase(newLinePos);
-            }
-
 /// TODO: Support selection
-            // Store the remaining lines
-            m_TextBeforeSelection.setString(tempText);
-        }
-        else // There is only one line
-        {
-/// TODO: Support selection
-            // Set the text to be displayed
-            m_TextBeforeSelection.setString(m_DisplayedText);
-        }
-
         // Set the position of the selection point
+        m_TextBeforeSelection.setString(m_DisplayedText);
         m_SelectionPointPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(m_SelEnd + newlinesAddedBeforeSelection));
 
         // Only do the check when the selection point is not standing at the first character
         if ((m_SelEnd > 0) && (m_SelEnd + newlinesAddedBeforeSelection > 0))
         {
+/// TODO: Support selection
             // If you are at the end of the line then also set the selection point there, instead of at the beginning of the next line
             if ((m_Text[m_SelEnd - 1] != '\n') && (m_DisplayedText[m_SelEnd + newlinesAddedBeforeSelection - 1] == '\n'))
                 m_SelectionPointPosition = sf::Vector2u(m_TextBeforeSelection.findCharacterPos(m_SelEnd + newlinesAddedBeforeSelection - 1));
+        }
+
+        // Check if there are multiple lines
+        if (m_Lines > 1)
+        {
+            std::string::size_type newLinePos;
+            std::string::size_type newLinePos2 = 0;
+
+            // Create a temporary string to remove part of the text
+            std::string tempString = m_DisplayedText;
+
+            // Remove line by line
+            for (unsigned int i=1; i<m_TopLine; ++i)
+            {
+                // Where is the new line in the string?
+                newLinePos = tempString.find('\n');
+
+                // Erase the text until the new line
+                if (newLinePos != std::string::npos)
+                    tempString.erase(0, newLinePos + 1);
+                else
+                {
+                    // It should be impossible to get here. The number of lines differs from the stored number.
+                    m_Loaded = false;
+                    return;
+                }
+            }
+
+            // Only remove the last lines if they no longer fit inside the text box
+            if (m_Lines - m_VisibleLines - m_TopLine + 1 > 0)
+            {
+                // Skip all the visible lines
+                unsigned int i = 0;
+
+                if (tempString[0] == '\n')
+                    ++i;
+
+                for ( ; i<m_VisibleLines; ++i)
+                    newLinePos2 = tempString.find('\n', newLinePos2 + 1);
+
+                // Remove the remaining lines
+                tempString.erase(newLinePos2);
+            }
+
+/// TODO: Support selection
+            // Store the remaining lines
+            m_TextBeforeSelection.setString(tempString);
         }
     }
 
@@ -1731,7 +1822,7 @@ return true;
                 if (m_Scroll == NULL)
                     selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y));
                 else
-                    selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y) - m_Scroll->m_Value);
+                    selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y - (m_LineHeight* (m_TopLine-1))));
 
                 // Draw the selection point
                 m_RenderTexture->draw(selectionPoint, states);

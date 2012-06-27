@@ -59,7 +59,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// TODO: write a description.
+        // Creates the text box.
+        // The width and height parameters constain the size before scaling. The textSize parameter changes the text size.
+        // The ScrollbarPathname is the pathname needed to load the scrollbar. If not provided then there will be no possibility
+        // to scroll, thus no text will be added when the text box is full.
+        //
+        // The text box may resize a little bit. It might be a little bigger or smaller than the size passed to this function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(unsigned int width, unsigned int height, unsigned int textSize, const std::string scrollbarPathname = "");
 
@@ -156,7 +161,7 @@ namespace tgui
         // Changes the colors from the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& backgroundColor                      = sf::Color( 50,  50,  50),
-                          const sf::Color& textColor                              = sf::Color(  0,   0,   0),
+                          const sf::Color& textColor                            = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
                           const sf::Color& selectedTextBackgroundColor          = sf::Color( 10, 110, 255),
                           const sf::Color& unfocusedSelectedTextBackgroundColor = sf::Color(110, 110, 255),
@@ -228,7 +233,8 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// TODO: Add description
+        // To keep the drawing as fast as possible, all the calculation are done in front by this function.
+        // It is called when the text changes, when scrolling, ...
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateDisplayedText();
 
