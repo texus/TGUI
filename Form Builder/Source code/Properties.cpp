@@ -564,21 +564,29 @@ void PropertiesWindow::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     }
     else if (propertyNumber == Property_Window_Width)
     {
-//        unsigned int windowWidth = atoi(propertyWindow.getEditBox("text_Width")->getText().c_str());
-//        width.value = windowWidth;
-//        formWindow.sf::Window::setSize(sf::Vector2u(windowWidth, formWindow.getSize().y));
+        // Get the width of the window
+        unsigned int windowWidth = atoi(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = windowWidth;
 
-        // Reset the property
-        propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(formWindow.getSize().x));
+        // There is a minimum size
+        if (windowWidth < 32)
+            windowWidth = 32;
+
+        // Set the window size
+        formWindow.setSize(sf::Vector2u(windowWidth, formWindow.getSize().y));
     }
     else if (propertyNumber == Property_Window_Height)
     {
-//        unsigned int windowHeight = atoi(propertyWindow.getEditBox("text_Height")->getText().c_str());
-//        height.value = windowHeight;
-//        formWindow.sf::Window::setSize(sf::Vector2u(formWindow.getSize().x, windowHeight));
+        // Get the height of the window
+        unsigned int windowHeight = atoi(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = windowHeight;
 
-        // Reset the property
-        propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(formWindow.getSize().y));
+        // There is a minimum size
+        if (windowHeight < 32)
+            windowHeight = 32;
+
+        // Set the window size
+        formWindow.setSize(sf::Vector2u(formWindow.getSize().x, windowHeight));
     }
     else if (propertyNumber == Property_Window_GlobalFont)
     {

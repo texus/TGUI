@@ -71,26 +71,28 @@ int main()
             // Check if the window was resized
             if (event.type == sf::Event::Resized)
             {
-                // Set the viewport to the new size
-                app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
-
-                // Change the size of the transparent image
-                app.mainWindow.getPicture("1")->setSize(event.size.width, event.size.height);
-
-                // Pass the change to tgui
-                app.mainWindow.handleEvent(event);
-
-                // Store the new size
-                app.windows[0].width.value = event.size.width;
-                app.windows[0].height.value = event.size.height;
-
-                // Check if the window is selected
-                if (app.currentID == app.windows[0].id)
+                // You must use the properties to change the size of the window
+                if ((event.size.width == (TGUI_MAXIMUM(app.windows[0].width.value, 32))) && (event.size.height == (TGUI_MAXIMUM(app.windows[0].height.value, 32))))
                 {
-                    // Refresh the properties
-                    app.propertyWindow.removeAllObjects();
-                    app.changeVisibleProperties();
+                    // Set the viewport to the new size
+                    app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+
+                    // Change the size of the transparent image
+                    app.mainWindow.getPicture("1")->setSize(event.size.width, event.size.height);
+
+                    // Pass the change to tgui
+                    app.mainWindow.handleEvent(event);
+
+                    // Check if the window is selected
+                    if (app.currentID == app.windows[0].id)
+                    {
+                        // Refresh the properties
+                        app.propertyWindow.removeAllObjects();
+                        app.changeVisibleProperties();
+                    }
                 }
+                else // You tried to scale the window
+                    app.mainWindow.setSize(sf::Vector2u(TGUI_MAXIMUM(app.windows[0].width.value, 32), TGUI_MAXIMUM(app.windows[0].height.value, 32)));
             }
             else
             {
