@@ -39,8 +39,8 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::EditBox* editBox = window.addEditBox("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
-    editBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32); \
+    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
+    editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(value); \
     editBox->callbackID = propertyNumber + 1; \
 }
@@ -57,8 +57,8 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::EditBox* editBox = window.addEditBox("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
-    editBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32); \
+    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
+    editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(tgui::to_string(value)); \
     editBox->callbackID = propertyNumber + 1; \
 }
@@ -118,12 +118,12 @@ void PropertyLeft::addProperty(tgui::Window& window, unsigned int propertyNumber
     label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
     label->setTextSize(26);
 
-    
+
     tgui::EditBox* editBox = window.addEditBox("text_Left");
     editBox->load("images/objects/EditBox/" OBJECT_STYLE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    editBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32);
+    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
     editBox->setText(tgui::to_string(value));
     editBox->callbackID = propertyNumber + 1;
 }
@@ -147,8 +147,8 @@ void PropertyTop::addProperty(tgui::Window& window, unsigned int propertyNumber)
     tgui::EditBox* editBox = window.addEditBox("text_Top");
     editBox->load("images/objects/EditBox/" OBJECT_STYLE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    editBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32);
+    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
     editBox->setText(tgui::to_string(value));
     editBox->callbackID = propertyNumber + 1;
 }
@@ -282,9 +282,9 @@ void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNum
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.addComboBox("combo_Checked");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.sf::RenderWindow::getSize().x / 2.0f - 10);
-    comboBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    comboBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32);
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10);
+    comboBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 
     // Change the colors of the combo box
@@ -318,8 +318,8 @@ void PropertyPasswordChar::addProperty(tgui::Window& window, unsigned int proper
     tgui::EditBox* editBox = window.addEditBox("text_PasswordChar");
     editBox->load("images/objects/EditBox/" OBJECT_STYLE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    editBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32);
+    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
     editBox->setMaximumCharacters(1);
     editBox->callbackID = propertyNumber + 1;
 
@@ -518,9 +518,9 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.addComboBox("combo_VerticalScroll");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.sf::RenderWindow::getSize().x / 2.0f - 10);
-    comboBox->setPosition(window.sf::RenderWindow::getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    comboBox->setSize(window.sf::RenderWindow::getSize().x / 2.0f - 10, 32);
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10);
+    comboBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 
     // Change the colors of the combo box
@@ -569,16 +569,16 @@ void PropertiesWindow::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 //        formWindow.sf::Window::setSize(sf::Vector2u(windowWidth, formWindow.getSize().y));
 
         // Reset the property
-        propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(formWindow.sf::Window::getSize().x));
+        propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(formWindow.getSize().x));
     }
     else if (propertyNumber == Property_Window_Height)
     {
 //        unsigned int windowHeight = atoi(propertyWindow.getEditBox("text_Height")->getText().c_str());
 //        height.value = windowHeight;
 //        formWindow.sf::Window::setSize(sf::Vector2u(formWindow.getSize().x, windowHeight));
-        
+
         // Reset the property
-        propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(formWindow.sf::Window::getSize().y));
+        propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(formWindow.getSize().y));
     }
     else if (propertyNumber == Property_Window_GlobalFont)
     {
@@ -1381,13 +1381,13 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     {
         // Store the new size
         width.value = atoi(propertyWindow.getEditBox("text_Width")->getText().c_str());
-        
+
         // Get the pointer to the label
         tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
-        
+
         // Change the size of the label
         label->setSize(width.value, height.value);
-        
+
         // Adjust the text size property
         textSize.value = label->getTextSize();
         propertyWindow.getEditBox("text_TextSize")->setText(tgui::to_string(textSize.value));
@@ -1396,13 +1396,13 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     {
         // Store the new size
         height.value = atoi(propertyWindow.getEditBox("text_Height")->getText().c_str());
-        
+
         // Get the pointer to the label
         tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
-        
+
         // Change the size of the label
         label->setSize(width.value, height.value);
-        
+
         // Adjust the text size property
         textSize.value = label->getTextSize();
         propertyWindow.getEditBox("text_TextSize")->setText(tgui::to_string(textSize.value));
@@ -1422,17 +1422,17 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     {
         // Store the new text size
         textSize.value = atoi(propertyWindow.getEditBox("text_TextSize")->getText().c_str());
-        
+
         // Get the pointer to the label
         tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
 
         // Change the text of the label
         label->setTextSize(textSize.value);
-        
+
         // Adjust the width of the label
         width.value = label->getSize().x;
         propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
-        
+
         // Adjust the height of the label
         height.value = label->getSize().y;
         propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(height.value));
@@ -2494,23 +2494,23 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_ComboBox_Pathname)
     {
         pathname.value = propertyWindow.getEditBox("text_Pathname")->getText();
-        
+
         // Check if the info file exists
         if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
         {
             // The default combo box is no longer used
             loadedDefaultComboBox = false;
-            
+
             // Load the new combo box
             tgui::ComboBox* comboBox = formWindow.getComboBox(tgui::to_string(id));
             comboBox->load(pathname.value, comboBox->getSize().x);
-            
+
             // Reset the scaling
             comboBox->setScale(comboBox->getScale().x, 1);
-            
+
             // Change the height property
             height.value = comboBox->getSize().y;
-            
+
             // Update the height value
             propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(height.value));
         }
@@ -2521,11 +2521,11 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             {
                 // The default combo box is loaded again
                 loadedDefaultComboBox = true;
-                
+
                 // Load the default combo box
                 tgui::ComboBox* comboBox = formWindow.getComboBox(tgui::to_string(id));
                 comboBox->load("images/objects/ComboBox/Black", comboBox->getSize().x);
-                
+
                 // Adjust the scaling
                 comboBox->setSize(width.value, height.value);
             }
@@ -3048,7 +3048,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
         // Change the height
         height.value = temp;
         propertyHeight->setText(strTemp);
-        
+
         // Set the slider to the correct size
         slider->setSize(width.value, height.value);
     }
@@ -3227,7 +3227,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
         // Change the height
         height.value = temp;
         propertyHeight->setText(strTemp);
-        
+
         // Set the scrollbar to the correct size
         scrollbar->setSize(width.value, height.value);
     }

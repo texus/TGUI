@@ -106,19 +106,19 @@ int main()
                     else // None of the scale squares was clicked
                     {
                         // Get the id of the object that you clicked on
-                        unsigned int id = app.getClickedObjectID(event);
-                        
+                        id = app.getClickedObjectID(event);
+
                         // Check if the id differs from the currently selected object
                         if (app.currentID != id)
                         {
                             // Select the clicked object
                             app.currentID = id;
-                            
+
                             // Show the properties of the newly selected object
                             app.changeVisibleProperties();
                             app.resizePropertyWindow();
                         }
-                        
+
                         // Check if you clicked on an object
                         if (id != 1)
                         {
@@ -164,7 +164,7 @@ int main()
                     {
                         // Make the scale squares react on mouse hover
                         app.getScaleSquareObjectID(event.mouseMove.x, event.mouseMove.y);
-                        
+
                         // Check if you were dragging a scale square
                         if (app.draggingSquare > 0)
                         {
@@ -177,7 +177,7 @@ int main()
                                     app.dragPos.x += 10;
                                     app.resizeObject(10, 0);
                                 }
-                                
+
                                 // Check if you are pulling the right square to the left
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
@@ -194,7 +194,7 @@ int main()
                                     app.resizeObject(-10, 0);
                                     app.moveObjectX(10);
                                 }
-                                
+
                                 // Check if you are pulling the left square to the left
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
@@ -211,7 +211,7 @@ int main()
                                     app.dragPos.y += 10;
                                     app.resizeObject(0, 10);
                                 }
-                                
+
                                 // Check if you are pulling the bottom square up
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
@@ -228,7 +228,7 @@ int main()
                                     app.resizeObject(0, -10);
                                     app.moveObjectY(10);
                                 }
-                                
+
                                 // Check if you are pulling the top square up
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
@@ -248,7 +248,7 @@ int main()
                                     app.moveObjectX(-10);
                                     app.moveObjectY(-10);
                                 }
-                                
+
                                 // Check if you are pulling the top left square to the bottom right side
                                 while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y > app.dragPos.y + 10))
                                 {
@@ -269,7 +269,7 @@ int main()
                                     app.resizeObject(10, 10);
                                     app.moveObjectY(-10);
                                 }
-                                
+
                                 // Check if you are pulling the top right square to the bottom left side
                                 while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y > app.dragPos.y + 10))
                                 {
@@ -289,7 +289,7 @@ int main()
                                     app.resizeObject(10, 10);
                                     app.moveObjectX(-10);
                                 }
-                                
+
                                 // Check if you are pulling the top left square to the upper right side
                                 while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y < app.dragPos.y - 10))
                                 {
@@ -308,7 +308,7 @@ int main()
                                     app.dragPos.y += 10;
                                     app.resizeObject(10, 10);
                                 }
-                                
+
                                 // Check if you are pulling the bottom right square to the upper left side
                                 while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y < app.dragPos.y - 10))
                                 {
@@ -321,7 +321,7 @@ int main()
                     }
                 }
                 else if (event.type == sf::Event::MouseButtonReleased)
-                {  
+                {
                     if (event.mouseButton.button == sf::Mouse::Left)
                     {
                         app.draggingObject = false;
@@ -347,7 +347,7 @@ int main()
                 // Make sure that the size isn't too small and adjust the view
                 if (event.size.width < 200)
                 {
-                    app.propertyWindow.sf::Window::setSize(sf::Vector2u(200, event.size.height));
+                    app.propertyWindow.setSize(sf::Vector2u(200, event.size.height));
                     app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, 200, event.size.height)));
                 }
                 else
@@ -400,7 +400,7 @@ int main()
         app.mainWindow.display();
         app.objectsWindow.display();
         app.propertyWindow.display();
-        
+
         // Sleep for a moment
         sf::sleep(sf::milliseconds(10));
     }

@@ -73,7 +73,7 @@ struct Builder
 
     // Change the properties that are displayed, e.g. when selecting another object.
     void changeVisibleProperties();
-    
+
     // When another object is selected, the property window has to be resized
     void resizePropertyWindow();
 
@@ -82,28 +82,28 @@ struct Builder
 
     // Changes the global font, which can be used by all objects
     void setGlobalFont(const sf::Font& font);
-    
+
     // Get the id of the clicked object when you clicked on the window
     unsigned int getClickedObjectID(sf::Event& event);
-    
+
     // Get the id of the scale square below the mouse
     unsigned int getScaleSquareObjectID(float mouseX, float mouseY);
-    
+
     // Delete the currently selected object
     void deleteObject();
-    
+
     // Move the currently selected object
     void moveObjectX(int pixels);
     void moveObjectY(int pixels);
-    
+
     void resizeObject(unsigned int addToWidth, unsigned int addToHeight);
-    
+
     // Load the form
     bool loadForm();
-    
+
     // Save the form
     void saveForm();
-    
+
     // The three windows
     tgui::Window mainWindow;
     tgui::Window objectsWindow;
@@ -125,13 +125,13 @@ struct Builder
 
     // The id of the object that is currently selected.
     unsigned int currentID;
-    
+
     // True when an object is being dragged
     bool draggingObject;
-    
+
     // Greater than 0 when dragging one of the scale squares
     unsigned int draggingSquare;
-    
+
     // Where was the mouse when dragging?
     sf::Vector2i dragPos;
 };

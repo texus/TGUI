@@ -51,7 +51,7 @@ enum Properties
     Property_Button_TextColor,
     Property_Button_TextFont,
     Property_Button_CallbackID,
-    
+
     Property_Checkbox_Name = 0,
     Property_Checkbox_Pathname,
     Property_Checkbox_Left,
@@ -64,7 +64,7 @@ enum Properties
     Property_Checkbox_TextColor,
     Property_Checkbox_TextFont,
     Property_Checkbox_CallbackID,
-    
+
     Property_Label_Name = 0,
     Property_Label_Left,
     Property_Label_Top,
@@ -75,7 +75,7 @@ enum Properties
     Property_Label_TextColor,
     Property_Label_TextFont,
     Property_Label_CallbackID,
-    
+
     Property_EditBox_Name = 0,
     Property_EditBox_Pathname,
     Property_EditBox_Left,
@@ -95,7 +95,7 @@ enum Properties
     Property_EditBox_SelectionPointColor,
     Property_EditBox_SelectionPointWidth,
     Property_EditBox_CallbackID,
-    
+
     Property_Listbox_Name = 0,
     Property_Listbox_Left,
     Property_Listbox_Top,
@@ -114,7 +114,7 @@ enum Properties
     Property_Listbox_SelectedItem,
     Property_Listbox_TextFont,
     Property_Listbox_CallbackID,
-    
+
     Property_ComboBox_Name = 0,
     Property_ComboBox_Pathname,
     Property_ComboBox_Left,
@@ -133,7 +133,7 @@ enum Properties
     Property_ComboBox_ItemsToDisplay,
     Property_ComboBox_TextFont,
     Property_ComboBox_CallbackID,
-    
+
     Property_Slider_Name = 0,
     Property_Slider_Pathname,
     Property_Slider_Left,
@@ -145,7 +145,7 @@ enum Properties
     Property_Slider_Minimum,
     Property_Slider_Maximum,
     Property_Slider_CallbackID,
-    
+
     Property_Scrollbar_Name = 0,
     Property_Scrollbar_Pathname,
     Property_Scrollbar_Left,
@@ -157,7 +157,7 @@ enum Properties
     Property_Scrollbar_LowValue,
     Property_Scrollbar_Maximum,
     Property_Scrollbar_CallbackID,
-    
+
     Property_LoadingBar_Name = 0,
     Property_LoadingBar_Pathname,
     Property_LoadingBar_Left,
@@ -540,7 +540,7 @@ struct PropertiesPicture
     PropertyWidth     width;
     PropertyHeight    height;
     PropertyCallbackID callbackID;
-    
+
     // True when the default picture is already loaded
     bool loadedDefaultPicture;
 };
@@ -565,7 +565,7 @@ struct PropertiesButton
     PropertyTextColor  textColor;
     PropertyTextFont   textFont;
     PropertyCallbackID callbackID;
-    
+
     // True when the default button is already loaded
     bool loadedDefaultButton;
 };
@@ -577,7 +577,7 @@ struct PropertiesCheckbox
     PropertiesCheckbox();
     void addProperties(tgui::Window& window);
     virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int       id;
     PropertyName       name;
     PropertyPathname   pathname;
@@ -591,7 +591,7 @@ struct PropertiesCheckbox
     PropertyTextFont   textFont;
     PropertyChecked    checked;
     PropertyCallbackID callbackID;
-    
+
     // True when the default checkbox is already loaded
     bool loadedDefaultCheckbox;
 };
@@ -602,7 +602,7 @@ struct PropertiesRadioButton : PropertiesCheckbox
 {
     PropertiesRadioButton();
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     Builder* builder;
 };
 
@@ -613,7 +613,7 @@ struct PropertiesLabel
     PropertiesLabel();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int       id;
     PropertyName       name;
     PropertyLeft       left;
@@ -635,7 +635,7 @@ struct PropertiesEditBox
     PropertiesEditBox();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int                id;
     PropertyName                name;
     PropertyPathname            pathname;
@@ -656,7 +656,7 @@ struct PropertiesEditBox
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;
     PropertyCallbackID          callbackID;
-    
+
     // True when the default edit box is already loaded
     bool loadedDefaultEditBox;
 };
@@ -668,7 +668,7 @@ struct PropertiesListbox
     PropertiesListbox();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int              id;
     PropertyName              name;
     PropertyLeft              left;
@@ -681,14 +681,14 @@ struct PropertiesListbox
     PropertyBorders           borders;
     PropertyBackgroundColor   backgroundColor;
     PropertyTextColor         textColor;
-    PropertySelectedBackgroundColor selectedBackgroundColor;    
+    PropertySelectedBackgroundColor selectedBackgroundColor;
     PropertySelectedTextColor selectedTextColor;
     PropertyBorderColor       borderColor;
     PropertyItems             items;
     PropertySelectedItem      selectedItem;
     PropertyTextFont          textFont;
     PropertyCallbackID        callbackID;
-    
+
     // True when the default scrollbar is already loaded
     bool loadedDefaultScrollbar;
 };
@@ -700,7 +700,7 @@ struct PropertiesComboBox
     PropertiesComboBox();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int               id;
     PropertyName               name;
     PropertyPathname           pathname;
@@ -712,7 +712,7 @@ struct PropertiesComboBox
     PropertyBorders            borders;
     PropertyBackgroundColor    backgroundColor;
     PropertyTextColor          textColor;
-    PropertySelectedBackgroundColor selectedBackgroundColor;    
+    PropertySelectedBackgroundColor selectedBackgroundColor;
     PropertySelectedTextColor  selectedTextColor;
     PropertyBorderColor        borderColor;
     PropertyItems              items;
@@ -720,7 +720,7 @@ struct PropertiesComboBox
     PropertyItemsToDisplay     itemsToDisplay;
     PropertyTextFont           textFont;
     PropertyCallbackID         callbackID;
-    
+
     // True when the default combo box and scrollbar are already loaded
     bool loadedDefaultComboBox;
     bool loadedDefaultScrollbar;
@@ -733,7 +733,7 @@ struct PropertiesSlider
     PropertiesSlider();
     void addProperties(tgui::Window& window);
     virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int           id;
     PropertyName           name;
     PropertyPathname       pathname;
@@ -746,7 +746,7 @@ struct PropertiesSlider
     PropertyMinimum        minimum;
     PropertyMaximum        maximum;
     PropertyCallbackID    callbackID;
-    
+
     // True when the default slider is already loaded
     bool loadedDefaultSlider;
 };
@@ -758,7 +758,7 @@ struct PropertiesScrollbar
     PropertiesScrollbar();
     void addProperties(tgui::Window& window);
     virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int           id;
     PropertyName           name;
     PropertyPathname       pathname;
@@ -771,7 +771,7 @@ struct PropertiesScrollbar
     PropertyLowValue       lowValue;
     PropertyMaximum        maximum;
     PropertyCallbackID     callbackID;
-    
+
     // True when the default scrollbar is already loaded
     bool loadedDefaultScrollbar;
 };
@@ -783,7 +783,7 @@ struct PropertiesLoadingBar
     PropertiesLoadingBar();
     void addProperties(tgui::Window& window);
     virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
-    
+
     unsigned int           id;
     PropertyName           name;
     PropertyPathname       pathname;
@@ -795,7 +795,7 @@ struct PropertiesLoadingBar
     PropertyMinimum        minimum;
     PropertyMaximum        maximum;
     PropertyCallbackID     callbackID;
-    
+
     // True when the default loading bar is already loaded
     bool loadedDefaultLoadingBar;
 };
