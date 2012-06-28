@@ -233,10 +233,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called when you are selecting text.
+        // It will find out which part of the text is selected.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void selectText(float posX, float posY);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // To keep the drawing as fast as possible, all the calculation are done in front by this function.
         // It is called when the text changes, when scrolling, ...
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateDisplayedText();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called by updateDisplayedText and will split the text into five pieces so that the text can
+        // be easily drawn.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateSelectionTexts(float maxLineWidth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +302,9 @@ namespace tgui
         sf::Vector2u m_SelectionPointPosition;
         bool m_SelectionPointVisible;
 
+        // Should the text be resplit into the five texts?
+        bool m_SelectionTextsNeedUpdate;
+
         // The colors that are used by the text box
         sf::Color m_BackgroundColor;
         sf::Color m_TextColor;
@@ -298,8 +315,12 @@ namespace tgui
 
         // The sfml Text objects
         sf::Text m_TextBeforeSelection;
-        sf::Text m_TextSelection;
-        sf::Text m_TextAfterSelection;
+        sf::Text m_TextSelection1;
+        sf::Text m_TextSelection2;
+        sf::Text m_TextAfterSelection1;
+        sf::Text m_TextAfterSelection2;
+
+        std::vector<float> m_MultilineSelectionRectWidth;
 
         // The scrollbar
         Scrollbar* m_Scroll;
