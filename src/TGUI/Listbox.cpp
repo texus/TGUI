@@ -262,6 +262,10 @@ namespace tgui
 
     void Listbox::setSize(float width, float height)
     {
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Reset the scale
         setScale(1, 1);
 

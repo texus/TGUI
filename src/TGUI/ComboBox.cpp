@@ -207,6 +207,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Change the scale factors
         setScale(width / m_Listbox.getSize().x, height / m_TextureNormal->getSize().y);
     }

@@ -43,6 +43,10 @@ namespace tgui
 
     void Label::setSize(float width, float height)
     {
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Undo the scaling
         setScale(1, 1);
 

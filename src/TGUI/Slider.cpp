@@ -205,6 +205,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Set the new scale factors
         if (verticalScroll == m_VerticalImage)
             setScale(width / m_TextureTrackNormal->getSize().x, height / m_TextureTrackNormal->getSize().y);

@@ -376,6 +376,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Check if the image is split
         if (m_SplitImage)
         {

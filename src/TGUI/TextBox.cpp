@@ -247,6 +247,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Reset the scale
         setScale(1, 1);
 
@@ -335,21 +339,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setText(const std::string text)
-    {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        // Store the text
-        m_Text = text;
-
-        // Set the selection point behind the last character
-        setSelectionPointPosition(m_Text.length());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Vector2u TextBox::getSize() const
     {
         return m_Size;
@@ -367,6 +356,21 @@ namespace tgui
     std::string TextBox::getLoadedScrollbarPathname()
     {
         return m_LoadedScrollbarPathname;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::setText(const std::string text)
+    {
+        // Don't do anything when the text box wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Store the text
+        m_Text = text;
+
+        // Set the selection point behind the last character
+        setSelectionPointPosition(m_Text.length());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

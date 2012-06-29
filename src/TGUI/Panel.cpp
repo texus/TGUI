@@ -93,6 +93,10 @@ namespace tgui
 
     void Panel::setSize(float width, float height)
     {
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Recreate the render texture
         if (m_RenderTexture->create(static_cast<unsigned int>(width), static_cast<unsigned int>(height)))
             m_Loaded = true;

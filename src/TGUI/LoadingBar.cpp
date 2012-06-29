@@ -216,6 +216,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // A negative size is not allowed for this object
+        if (width  < 0) width  = -width;
+        if (height < 0) height = -height;
+
         // Change the scale
         if (m_SplitImage)
             setScale(width / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), height / m_TextureBack_M->getSize().y);
