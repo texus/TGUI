@@ -769,48 +769,69 @@ void Builder::moveObjectY(int pixels)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Builder::resizeObject(unsigned int addToWidth, unsigned int addToHeight)
+void Builder::resizeObject(int addToWidth, int addToHeight, unsigned int id, int delay)
 {
-    // Get the pointer to the properties
-    tgui::EditBox* editboxWidth = propertyWindow.getEditBox("text_Width");
-    tgui::EditBox* editboxHeight = propertyWindow.getEditBox("text_Height");
+    if (delay == 0)
+    {
+        // Get the pointer to the properties
+        tgui::EditBox* editboxWidth = propertyWindow.getEditBox("text_Width");
+        tgui::EditBox* editboxHeight = propertyWindow.getEditBox("text_Height");
 
-    // Adjust the properties
-    int width = atoi(editboxWidth->getText().c_str());
-    int height = atoi(editboxHeight->getText().c_str());
-    width += addToWidth;
-    height += addToHeight;
+        // Adjust the properties
+        int width = atoi(editboxWidth->getText().c_str());
+        int height = atoi(editboxHeight->getText().c_str());
+        width += addToWidth;
+        height += addToHeight;
 
-    // Change the contents of the edit boxes
-    editboxWidth->setText(tgui::to_string(width));
-    editboxHeight->setText(tgui::to_string(height));
+        // Change the contents of the edit boxes
+        editboxWidth->setText(tgui::to_string(width));
+        editboxHeight->setText(tgui::to_string(height));
 
-    unsigned int i;
+        unsigned int i;
 
-    #define FindObjectWithID(Object, objects) \
-    for (i=0; i<objects.size(); ++i) \
-    { \
-        if (objects[i].id == currentID) \
+        #define FindObjectWithID(Object, objects) \
+        for (i=0; i<objects.size(); ++i) \
         { \
-            updateProperty(Property_##Object##_Width); \
-            updateProperty(Property_##Object##_Height); \
-            return; \
-        } \
+            if (objects[i].id == id) \
+            { \
+                updateProperty(Property_##Object##_Width); \
+                updateProperty(Property_##Object##_Height); \
+                return; \
+            } \
+        }
+
+        FindObjectWithID(Picture, pictures)
+        FindObjectWithID(Button, buttons)
+        FindObjectWithID(Checkbox, checkboxes)
+        FindObjectWithID(Checkbox, radioButtons)
+        FindObjectWithID(Label, labels)
+        FindObjectWithID(EditBox, editBoxes)
+        FindObjectWithID(Listbox, listboxes)
+        FindObjectWithID(ComboBox, comboBoxes)
+        FindObjectWithID(Slider, sliders)
+        FindObjectWithID(Scrollbar, scrollbars)
+        FindObjectWithID(LoadingBar, loadingBars)
+
+        #undef FindObjectWithID
     }
+    else // There is a delay
+    {
+        // Check if there already was a delay
+        for (unsigned int i=0; i<resizeObjectDelays.size(); ++i)
+        {
+            if (id == resizeObjectDelays[i].m_Id)
+            {
+                // There already was a delay, so reset the timer and add the positions
+                resizeObjectDelays[i].m_Delay = DEFAULT_OBJECT_RESIZE_DELAY;
+                resizeObjectDelays[i].m_AddToWidth += addToWidth;
+                resizeObjectDelays[i].m_AddToHeight += addToHeight;
+                return;
+            }
+        }
 
-    FindObjectWithID(Picture, pictures)
-    FindObjectWithID(Button, buttons)
-    FindObjectWithID(Checkbox, checkboxes)
-    FindObjectWithID(Checkbox, radioButtons)
-    FindObjectWithID(Label, labels)
-    FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
-    FindObjectWithID(ComboBox, comboBoxes)
-    FindObjectWithID(Slider, sliders)
-    FindObjectWithID(Scrollbar, scrollbars)
-    FindObjectWithID(LoadingBar, loadingBars)
-
-    #undef FindObjectWithID
+        // There was no delay yet, so set one now
+        resizeObjectDelays.push_back(ObjectResizeDelay(addToWidth, addToHeight, id, delay));
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

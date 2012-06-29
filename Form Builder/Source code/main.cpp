@@ -41,7 +41,7 @@ int main()
     chdir(path);
 #endif
 
-    sf::Clock clock;
+    sf::Clock resizeDelayClock;
 
     Builder app;
 
@@ -177,14 +177,14 @@ int main()
                                 while (event.mouseMove.x > app.dragPos.x + 10)
                                 {
                                     app.dragPos.x += 10;
-                                    app.resizeObject(10, 0);
+                                    app.resizeObject(10, 0, app.currentID);
                                 }
 
                                 // Check if you are pulling the right square to the left
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
                                     app.dragPos.x -= 10;
-                                    app.resizeObject(-10, 0);
+                                    app.resizeObject(-10, 0, app.currentID);
                                 }
                             }
                             else if (app.draggingSquare == SQUARE_LEFT)
@@ -193,7 +193,7 @@ int main()
                                 while (event.mouseMove.x > app.dragPos.x + 10)
                                 {
                                     app.dragPos.x += 10;
-                                    app.resizeObject(-10, 0);
+                                    app.resizeObject(-10, 0, app.currentID);
                                     app.moveObjectX(10);
                                 }
 
@@ -201,7 +201,7 @@ int main()
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
                                     app.dragPos.x -= 10;
-                                    app.resizeObject(10, 0);
+                                    app.resizeObject(10, 0, app.currentID);
                                     app.moveObjectX(-10);
                                 }
                             }
@@ -211,14 +211,14 @@ int main()
                                 while (event.mouseMove.y > app.dragPos.y + 10)
                                 {
                                     app.dragPos.y += 10;
-                                    app.resizeObject(0, 10);
+                                    app.resizeObject(0, 10, app.currentID);
                                 }
 
                                 // Check if you are pulling the bottom square up
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(0, -10);
+                                    app.resizeObject(0, -10, app.currentID);
                                 }
                             }
                             else if (app.draggingSquare == SQUARE_TOP)
@@ -227,7 +227,7 @@ int main()
                                 while (event.mouseMove.y > app.dragPos.y + 10)
                                 {
                                     app.dragPos.y += 10;
-                                    app.resizeObject(0, -10);
+                                    app.resizeObject(0, -10, app.currentID);
                                     app.moveObjectY(10);
                                 }
 
@@ -235,7 +235,7 @@ int main()
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(0, 10);
+                                    app.resizeObject(0, 10, app.currentID);
                                     app.moveObjectY(-10);
                                 }
                             }
@@ -246,7 +246,7 @@ int main()
                                 {
                                     app.dragPos.x -= 10;
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(10, 10);
+                                    app.resizeObject(10, 10, app.currentID);
                                     app.moveObjectX(-10);
                                     app.moveObjectY(-10);
                                 }
@@ -256,7 +256,7 @@ int main()
                                 {
                                     app.dragPos.x += 10;
                                     app.dragPos.y += 10;
-                                    app.resizeObject(-10, -10);
+                                    app.resizeObject(-10, -10, app.currentID);
                                     app.moveObjectX(10);
                                     app.moveObjectY(10);
                                 }
@@ -268,7 +268,7 @@ int main()
                                 {
                                     app.dragPos.x += 10;
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(10, 10);
+                                    app.resizeObject(10, 10, app.currentID);
                                     app.moveObjectY(-10);
                                 }
 
@@ -277,7 +277,7 @@ int main()
                                 {
                                     app.dragPos.x -= 10;
                                     app.dragPos.y += 10;
-                                    app.resizeObject(-10, -10);
+                                    app.resizeObject(-10, -10, app.currentID);
                                     app.moveObjectY(10);
                                 }
                             }
@@ -288,7 +288,7 @@ int main()
                                 {
                                     app.dragPos.x -= 10;
                                     app.dragPos.y += 10;
-                                    app.resizeObject(10, 10);
+                                    app.resizeObject(10, 10, app.currentID);
                                     app.moveObjectX(-10);
                                 }
 
@@ -297,7 +297,7 @@ int main()
                                 {
                                     app.dragPos.x += 10;
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(-10, -10);
+                                    app.resizeObject(-10, -10, app.currentID);
                                     app.moveObjectX(10);
                                 }
                             }
@@ -308,7 +308,7 @@ int main()
                                 {
                                     app.dragPos.x += 10;
                                     app.dragPos.y += 10;
-                                    app.resizeObject(10, 10);
+                                    app.resizeObject(10, 10, app.currentID);
                                 }
 
                                 // Check if you are pulling the bottom right square to the upper left side
@@ -316,7 +316,7 @@ int main()
                                 {
                                     app.dragPos.x -= 10;
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(-10, -10);
+                                    app.resizeObject(-10, -10, app.currentID);
                                 }
                             }
                         }
@@ -387,6 +387,23 @@ int main()
             else // A property was changed
                 app.updateProperty(callback.callbackID - 1);
         }
+
+        // Check if there are resize delays
+        for (unsigned int i=0; i<app.resizeObjectDelays.size(); ++i)
+        {
+            app.resizeObjectDelays[i].m_Delay -= resizeDelayClock.getElapsedTime().asMilliseconds();
+
+            // If a delay reaches 0 then execute the resize
+            if (app.resizeObjectDelays[i].m_Delay <= 0)
+            {
+                app.resizeObject(app.resizeObjectDelays[i].m_AddToWidth, app.resizeObjectDelays[i].m_AddToHeight, app.resizeObjectDelays[i].m_Id, 0);
+                app.resizeObjectDelays.erase(app.resizeObjectDelays.begin() + i);
+                --i;
+            }
+        }
+
+        // Reset the clock
+        resizeDelayClock.restart();
 
         // Clear the windows
         app.mainWindow.clear(sf::Color(230, 230, 230));

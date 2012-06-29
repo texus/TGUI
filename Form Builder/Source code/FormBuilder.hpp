@@ -36,6 +36,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define DEFAULT_OBJECT_RESIZE_DELAY 30
+
 #define OBJECT_STYLE "Black"
 
 #define VERSION "v0.2"
@@ -56,6 +58,24 @@ enum squares
     SQUARE_BOTTOM,
     SQUARE_RIGHT,
     SQUARE_BOTTOM_RIGHT
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct ObjectResizeDelay
+{
+    ObjectResizeDelay(int addToWidth, int addToHeight, unsigned int id, int delay)
+    {
+        m_AddToWidth  = addToWidth;
+        m_AddToHeight = addToHeight;
+        m_Id          = id;
+        m_Delay       = delay;
+    }
+
+    int          m_AddToWidth;
+    int          m_AddToHeight;
+    unsigned int m_Id;
+    int          m_Delay;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +116,9 @@ struct Builder
     void moveObjectX(int pixels);
     void moveObjectY(int pixels);
 
-    void resizeObject(unsigned int addToWidth, unsigned int addToHeight);
+    // This function is called to resize an object. To avoid that the object received many resize requests,
+    // there will be a delay. If no other request is sent during the delay then the object will be resized.
+    void resizeObject(int addToWidth, int addToHeight, unsigned id, int delay = DEFAULT_OBJECT_RESIZE_DELAY);
 
     // Load the form
     bool loadForm();
@@ -134,6 +156,9 @@ struct Builder
 
     // Where was the mouse when dragging?
     sf::Vector2i dragPos;
+
+    // This will store the delays for resizing objects
+    std::vector<ObjectResizeDelay> resizeObjectDelays;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
