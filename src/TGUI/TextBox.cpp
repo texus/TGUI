@@ -788,8 +788,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if ((x > (position.x + (m_LeftBorder * curScale.x))) && (x < (position.x + ((m_Size.x - m_RightBorder) * curScale.x)))
-         && (y > (position.y + (m_TopBorder * curScale.y))) && (y < (position.y + ((m_Size.y - m_BottomBorder) * curScale.y))))
+        if (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TopBorder, getSize().x - m_LeftBorder - m_RightBorder, getSize().y - m_TopBorder - m_BottomBorder)).contains(x, y))
         {
             return true;
         }
@@ -1047,7 +1046,7 @@ namespace tgui
             unsigned int newlinesAdded = 0;
 
             unsigned int character;
-            unsigned int newTopPosition;
+            unsigned int newTopPosition = 0;
             sf::Vector2u newPosition(0, 0);
 
             int distanceX;
@@ -1142,7 +1141,7 @@ namespace tgui
             unsigned int newlinesAdded = 0;
 
             unsigned int character;
-            unsigned int newTopPosition;
+            unsigned int newTopPosition = 0;
             sf::Vector2u newPosition(0, 0);
 
             int distanceX;

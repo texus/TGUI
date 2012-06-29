@@ -170,11 +170,8 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        // Get the position
-        Vector2f position = getPosition();
-
         // Check if the mouse is inside the panel
-        if ((x > position.x) && (x < position.x + m_RenderTexture->getSize().x) && (y > position.y) && (y < position.y + m_RenderTexture->getSize().y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
         else
             return false;

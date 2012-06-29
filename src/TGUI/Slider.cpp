@@ -362,26 +362,19 @@ namespace tgui
         // The scaling depends on how the slider lies
         if (verticalScroll)
         {
-            thumbWidth *= curScale.x;
-            thumbHeight *= curScale.x;
-
             // Calculate the thumb position
-            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackHeight) - (thumbHeight * 0.5f);
-            thumbLeft = (trackWidth - thumbWidth) * 0.5f;
+            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackHeight) - (thumbHeight * curScale.x * 0.5f);
+            thumbLeft = (trackWidth - (thumbWidth * curScale.x)) * 0.5f;
         }
         else // The slider lies horizontal
         {
-            thumbWidth *= curScale.y;
-            thumbHeight *= curScale.y;
-
             // Calculate the thumb position
-            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackWidth) - (thumbWidth * 0.5f);
-            thumbTop = (trackHeight - thumbHeight) * 0.5f;
+            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackWidth) - (thumbWidth * curScale.y * 0.5f);
+            thumbTop = (trackHeight - (thumbHeight * curScale.y)) * 0.5f;
         }
 
         // Check if the mouse is on top of the thumb
-        if ((x > position.x + thumbLeft) && (x < (position.x + thumbLeft + thumbWidth))
-         && (y > position.y + thumbTop) && (y < (position.y + thumbTop + thumbHeight)))
+        if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth, thumbHeight).contains(x, y))
         {
             m_MouseDownOnThumb = true;
             m_MouseDownOnThumbPos.x = x - position.x - thumbLeft;
@@ -392,11 +385,8 @@ namespace tgui
             m_MouseDownOnThumb = false;
 
         // Check if the mouse is on top of the track
-        if ((x > position.x) && (x < (position.x + trackWidth))
-         && (y > position.y) && (y < (position.y + trackHeight)))
-        {
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
-        }
 
         // The mouse is not on top of the slider
         m_MouseHover = false;

@@ -507,41 +507,10 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        float buttonWidth;
-        float buttonHeight;
-
-        // Get the current scale
-        Vector2f curScale = getScale();
-
-        // Calculate the button size
-        if (m_SplitImage)
-        {
-            buttonHeight = m_TextureNormal_M->getSize().y * curScale.y;
-
-            // Check if the middle part will be drawn (this won't happen when the x scale is too small
-            if ((curScale.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
-            {
-                buttonWidth =(m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x + m_TextureNormal_M->getSize().x) * getScale().x;
-            }
-            else // The middle part won't be drawn
-            {
-                buttonWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y;
-            }
-        }
-        else
-        {
-            buttonWidth = m_TextureNormal_M->getSize().x * curScale.x;
-            buttonHeight = m_TextureNormal_M->getSize().y * curScale.y;
-        }
-
         // Check if the mouse is on top of the button
-        if ((x > getPosition().x) && (x < getPosition().x + buttonWidth)
-            && (y > getPosition().y) && (y < getPosition().y + buttonHeight))
-        {
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
-        }
-        else // When the mouse is not on top of the button
+        else
         {
             m_MouseHover = false;
             return false;

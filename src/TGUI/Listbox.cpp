@@ -867,11 +867,8 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if ((x > (position.x + (m_LeftBorder * curScale.x))) && (x < (position.x + ((m_Size.x - m_RightBorder) * curScale.x)))
-         && (y > (position.y + (m_TopBorder * curScale.y))) && (y < (position.y + ((m_Size.y - m_BottomBorder) * curScale.y))))
-        {
+        if (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TopBorder, getSize().x - m_LeftBorder - m_RightBorder, getSize().y - m_TopBorder - m_BottomBorder)).contains(x, y))
             return true;
-        }
         else // The mouse is not on top of the listbox
         {
             m_MouseHover = false;

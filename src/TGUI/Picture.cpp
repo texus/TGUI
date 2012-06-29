@@ -152,16 +152,10 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        // Get the current position
-        Vector2f position = getPosition();
-
         // Check if the mouse is on top of the picture
-        if ((x > position.x) && (x < position.x + (m_Texture->getSize().x * getScale().x))
-         && (y > position.y) && (y < position.y + (m_Texture->getSize().y * getScale().y)))
-        {
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
-        }
-        else // The mouse is not on top of the image
+        else
             return false;
     }
 

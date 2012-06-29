@@ -1130,42 +1130,10 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        float editBoxWidth;
-        float editBoxHeight;
-
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
-
-        // Calculate the edit box size
-        if (m_SplitImage)
-        {
-            editBoxHeight = m_TextureNormal_M->getSize().y * curScale.y;
-
-            // Check if the middle part will be drawn (this won't happen when the x scale is too small
-            if ((curScale.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
-            {
-                editBoxWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x + m_TextureNormal_M->getSize().x) * getScale().x;
-            }
-            else // The middle part won't be drawn
-            {
-                editBoxWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y;
-            }
-        }
-        else
-        {
-            editBoxWidth = m_TextureNormal_M->getSize().x * curScale.x;
-            editBoxHeight = m_TextureNormal_M->getSize().y * curScale.y;
-        }
-
         // Check if the mouse is on top of the edit box
-        if ((x > position.x) && (x < position.x + editBoxWidth)
-            && (y > position.y) && (y < position.y + editBoxHeight))
-        {
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
-        }
-        else // When the mouse is not on top of the edit box
+        else
         {
             m_MouseHover = false;
             return false;

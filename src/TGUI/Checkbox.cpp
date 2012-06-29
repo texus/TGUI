@@ -338,34 +338,16 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        // get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
-
         // Check if the mouse is on top of the image
-        if ((x > position.x) && (x < (position.x + (m_TextureUnchecked->getSize().x * curScale.x)))
-         && (y > position.y) && (y < (position.y + (m_TextureUnchecked->getSize().y * curScale.y))))
-        {
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
-        }
-        else // It is not on top of the image
+        else
         {
-            // Check if clicking on the text is allowed
+            // Check if the mouse is on top of the text
             if (allowTextClick)
             {
-                // Get the text area
-                sf::FloatRect textBounds = m_Text.getGlobalBounds();
-
-                // Change the x and y values to make the check easier
-                x -= (position.x + (m_TextureUnchecked->getSize().x * 11.0f / 10.0f * curScale.x));
-                y -= position.y;
-
-                // Check if the click occured on the text
-                if ((x > textBounds.left) && (x < (textBounds.left + (textBounds.width * curScale.y)))
-                 && (y > textBounds.top) && (y < textBounds.top + (textBounds.height * curScale.y)))
-                {
+                if (m_Text.getGlobalBounds().contains(x - (getPosition().x + (m_TextureUnchecked->getSize().x * 11.0f / 10.0f * getScale().x)), y - getPosition().y))
                     return true;
-                }
             }
         }
 

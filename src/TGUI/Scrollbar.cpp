@@ -229,32 +229,29 @@ namespace tgui
         if (m_Maximum <= m_LowValue)
             return false;
 
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
-
-        // Calculate the track size
-        float trackWidth, trackHeight;
-
-        // The size is different when the image is rotated
-        if (m_VerticalImage == verticalScroll)
-        {
-            trackWidth = m_TextureTrackNormal->getSize().x * curScale.x;
-            trackHeight = m_TextureTrackNormal->getSize().y * curScale.y;
-        }
-        else
-        {
-            trackWidth = m_TextureTrackNormal->getSize().y * curScale.x;
-            trackHeight = m_TextureTrackNormal->getSize().x * curScale.y;
-        }
-
         // Check if the mouse is on top of the scrollbar
-        if ((x > position.x) && (x < (position.x + trackWidth))
-         && (y > position.y) && (y < (position.y + trackHeight)))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
-            // Calculate the thumb size and thumb position
+            // Get the current position and scale
+            Vector2f position = getPosition();
+            Vector2f curScale = getScale();
+
+            // Calculate the track size, thumb size and thumb position
+            float trackWidth, trackHeight;
             float thumbWidth, thumbHeight;
             float thumbLeft,  thumbTop;
+
+            // The size is different when the image is rotated
+            if (m_VerticalImage == verticalScroll)
+            {
+                trackWidth = m_TextureTrackNormal->getSize().x * curScale.x;
+                trackHeight = m_TextureTrackNormal->getSize().y * curScale.y;
+            }
+            else
+            {
+                trackWidth = m_TextureTrackNormal->getSize().y * curScale.x;
+                trackHeight = m_TextureTrackNormal->getSize().x * curScale.y;
+            }
 
             // The size is different when the image is rotated
             if (m_VerticalImage == verticalScroll)
@@ -327,8 +324,7 @@ namespace tgui
             }
 
             // Check if the mouse is on top of the thumb
-            if ((x > position.x + thumbLeft) && (x < (position.x + thumbLeft + thumbWidth))
-             && (y > position.y + thumbTop) && (y < (position.y + thumbTop + thumbHeight)))
+            if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth, thumbHeight).contains(x, y))
             {
                 if (m_MouseDown == false)
                 {

@@ -501,11 +501,10 @@ namespace tgui
         Vector2f position = getPosition();
         Vector2f curScale = getScale();
 
-        if ((x > position.x) && (y > position.y))
+        if ((x > position.x) && (x < position.x + (m_Listbox.m_Size.x * curScale.x)) && (y > position.y))
         {
             // Check if the mouse is on top of the combo box
-            if ((x < position.x + (m_Listbox.m_Size.x * curScale.x))
-             && (y < position.y + (m_Listbox.m_ItemHeight * curScale.y)))
+            if (y < position.y + (m_Listbox.m_ItemHeight * curScale.y))
             {
                 m_MouseOnListbox = false;
                 m_Listbox.mouseNotOnObject();
