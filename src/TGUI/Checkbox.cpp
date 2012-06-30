@@ -38,7 +38,8 @@ namespace tgui
     m_TextureUnchecked  (NULL),
     m_TextureChecked    (NULL),
     m_TextureMouseHover (NULL),
-    m_TextureFocused    (NULL)
+    m_TextureFocused    (NULL),
+    m_LoadedPathname    ("")
     {
         m_ObjectType = checkbox;
 
@@ -48,11 +49,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox(const Checkbox& copy) :
-    OBJECT        (copy),
-    allowTextClick(copy.allowTextClick),
-    m_Checked     (copy.m_Checked),
-    m_Text        (copy.m_Text),
-    m_TextSize    (copy.m_TextSize)
+    OBJECT          (copy),
+    allowTextClick  (copy.allowTextClick),
+    m_Checked       (copy.m_Checked),
+    m_Text          (copy.m_Text),
+    m_TextSize      (copy.m_TextSize),
+    m_LoadedPathname(copy.m_LoadedPathname)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked))   m_SpriteUnchecked.setTexture(*m_TextureUnchecked);
@@ -92,6 +94,7 @@ namespace tgui
             std::swap(m_SpriteChecked,     temp.m_SpriteChecked);
             std::swap(m_SpriteMouseHover,  temp.m_SpriteMouseHover);
             std::swap(m_SpriteFocused,     temp.m_SpriteFocused);
+            std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
         }
 
         return *this;

@@ -41,7 +41,8 @@ namespace tgui
     m_TextureTrackNormal(NULL),
     m_TextureTrackHover (NULL),
     m_TextureThumbNormal(NULL),
-    m_TextureThumbHover (NULL)
+    m_TextureThumbHover (NULL),
+    m_LoadedPathname    ("")
     {
         m_ObjectType = slider;
     }
@@ -56,7 +57,8 @@ namespace tgui
     m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
-    m_VerticalImage      (copy.m_VerticalImage)
+    m_VerticalImage      (copy.m_VerticalImage),
+    m_LoadedPathname     (copy.m_LoadedPathname)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal, m_TextureTrackNormal)) m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal);
@@ -101,6 +103,7 @@ namespace tgui
             std::swap(m_SpriteTrackHover,    temp.m_SpriteTrackHover);
             std::swap(m_SpriteThumbNormal,   temp.m_SpriteThumbNormal);
             std::swap(m_SpriteThumbHover,    temp.m_SpriteThumbHover);
+            std::swap(m_LoadedPathname,      temp.m_LoadedPathname);
         }
 
         return *this;

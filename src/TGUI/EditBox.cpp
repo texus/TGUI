@@ -55,9 +55,10 @@ namespace tgui
     m_TextureHover_L        (NULL),
     m_TextureHover_M        (NULL),
     m_TextureHover_R        (NULL),
-    m_TextureFocused_L        (NULL),
-    m_TextureFocused_M        (NULL),
-    m_TextureFocused_R        (NULL)
+    m_TextureFocused_L      (NULL),
+    m_TextureFocused_M      (NULL),
+    m_TextureFocused_R      (NULL),
+    m_LoadedPathname        ("")
     {
         m_ObjectType = editBox;
 
@@ -89,7 +90,8 @@ namespace tgui
     m_UnfocusedSelectedTextBgrColor(copy.m_UnfocusedSelectedTextBgrColor),
     m_TextBeforeSelection          (copy.m_TextBeforeSelection),
     m_TextSelection                (copy.m_TextSelection),
-    m_TextAfterSelection           (copy.m_TextAfterSelection)
+    m_TextAfterSelection           (copy.m_TextAfterSelection),
+    m_LoadedPathname               (copy.m_LoadedPathname)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))       m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -171,6 +173,7 @@ namespace tgui
             std::swap(m_SpriteFocused_L,               temp.m_SpriteFocused_L);
             std::swap(m_SpriteFocused_M,               temp.m_SpriteFocused_M);
             std::swap(m_SpriteFocused_R,               temp.m_SpriteFocused_R);
+            std::swap(m_LoadedPathname,                temp.m_LoadedPathname);
         }
 
         return *this;
@@ -1040,8 +1043,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSelectionPointPosition(const unsigned int charactersBeforeSelectionPoint)
+    void EditBox::setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint)
     {
+        // The selection point position has to stay inside the string
+        if (charactersBeforeSelectionPoint > m_Text.length())
+            charactersBeforeSelectionPoint = m_Text.length();
+
         // Set the selection point to the correct position
         m_SelChars = 0;
         m_SelStart = charactersBeforeSelectionPoint;
@@ -1150,7 +1157,7 @@ namespace tgui
     {
         TGUI_UNUSED_PARAM(y);
 
-        // Check if the checkbox was already focused
+        // Check if the edit box was already focused
         if (m_Focused)
         {
             // Set the new selection point
@@ -1325,8 +1332,8 @@ namespace tgui
 
     void EditBox::keyPressed(sf::Keyboard::Key key)
     {
-        // If the editbox is invisible then ignore that the key is pressed
-        if (!m_Visible)
+        // Don't do anything when the edit box wasn't loaded correctly
+        if (m_Loaded == false)
             return;
 
         // Check if one of the correct keys was pressed
@@ -1779,75 +1786,65 @@ namespace tgui
             m_TextAfterSelection.setCharacterSize(size);
         }
 
-        // Make sure we didn't select any characters
-        if (m_SelChars == 0)
-        {
-          addCharacter:
-
-            // Make sure we don't exceed our maximum characters limit
-            if ((m_MaxChars > 0) && (m_Text.length() + 1 > m_MaxChars))
-                return;
-
-            // Insert our character
-            m_Text.insert(m_Text.begin()+m_SelEnd, key);
-
-            // Change the displayed text
-            if (m_PasswordChar != '\0')
-                m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, m_PasswordChar);
-            else
-                m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, key);
-
-            // When there is a text width limit then reverse what we just did
-            if (m_LimitTextWidth)
-            {
-                // Create a temporary SFML text object
-                sf::Text tempText(m_TextBeforeSelection);
-                tempText.setString(m_DisplayedText);
-
-                // Now check if the text fits into the EditBox
-//                    if (tempText.getGlobalBounds().width > width)
-                if (tempText.findCharacterPos(tempText.getString().getSize()).x > width)
-                {
-                    // If the text does not fit in the EditBox then delete the added character
-                    m_Text.erase(m_SelEnd, 1);
-                    m_DisplayedText.erase(m_SelEnd, 1);
-                    return;
-                }
-            }
-            else // Scrolling is enabled
-            {
-                // Change the right crop position
-                ++m_RightTextCrop;
-
-                // Adjust the text before the selection, it has to be changed before the calculations
-                m_TextBeforeSelection.setString(m_DisplayedText);
-
-                // Check if you add a character at the end of the visible text
-                if ((m_SelEnd+1) == m_RightTextCrop)
-                {
-                    // Change the left crop position (if necessary)
-                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                        ++m_LeftTextCrop;
-                }
-                else // The character was inserted
-                {
-                    // Check if the last visible character may stay visible
-                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                        --m_RightTextCrop;
-                }
-            }
-
-            // Move our selection point forward
-            setSelectionPointPosition(m_SelEnd + 1);
-        }
-        else // You did select some characters
-        {
-            // Fist we delete the selected characters
+        // If there are selected characters then delete them first
+        if (m_SelChars != 0)
             keyPressed(sf::Keyboard::BackSpace);
 
-            // And then we add our typed character
-            goto addCharacter;
+        // Make sure we don't exceed our maximum characters limit
+        if ((m_MaxChars > 0) && (m_Text.length() + 1 > m_MaxChars))
+            return;
+
+        // Insert our character
+        m_Text.insert(m_Text.begin()+m_SelEnd, key);
+
+        // Change the displayed text
+        if (m_PasswordChar != '\0')
+            m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, m_PasswordChar);
+        else
+            m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, key);
+
+        // When there is a text width limit then reverse what we just did
+        if (m_LimitTextWidth)
+        {
+            // Create a temporary SFML text object
+            sf::Text tempText(m_TextBeforeSelection);
+            tempText.setString(m_DisplayedText);
+
+            // Now check if the text fits into the EditBox
+//            if (tempText.getGlobalBounds().width > width)
+            if (tempText.findCharacterPos(tempText.getString().getSize()).x > width)
+            {
+                // If the text does not fit in the EditBox then delete the added character
+                m_Text.erase(m_SelEnd, 1);
+                m_DisplayedText.erase(m_SelEnd, 1);
+                return;
+            }
         }
+        else // Scrolling is enabled
+        {
+            // Change the right crop position
+            ++m_RightTextCrop;
+
+            // Adjust the text before the selection, it has to be changed before the calculations
+            m_TextBeforeSelection.setString(m_DisplayedText);
+
+            // Check if you add a character at the end of the visible text
+            if ((m_SelEnd+1) == m_RightTextCrop)
+            {
+                // Change the left crop position (if necessary)
+                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
+                    ++m_LeftTextCrop;
+            }
+            else // The character was inserted
+            {
+                // Check if the last visible character may stay visible
+                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
+                    --m_RightTextCrop;
+            }
+        }
+
+        // Move our selection point forward
+        setSelectionPointPosition(m_SelEnd + 1);
 
         // The selection point should be visible again
         m_SelectionPointVisible = true;

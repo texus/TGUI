@@ -41,7 +41,8 @@ namespace tgui
     m_TextureBack_R (NULL),
     m_TextureFront_L(NULL),
     m_TextureFront_M(NULL),
-    m_TextureFront_R(NULL)
+    m_TextureFront_R(NULL),
+    m_LoadedPathname("")
     {
         m_ObjectType = loadingBar;
     }
@@ -49,11 +50,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LoadingBar::LoadingBar(const LoadingBar& copy) :
-    OBJECT               (copy),
-    m_Minimum            (copy.m_Minimum),
-    m_Maximum            (copy.m_Maximum),
-    m_Value              (copy.m_Value),
-    m_SplitImage         (copy.m_SplitImage)
+    OBJECT          (copy),
+    m_Minimum       (copy.m_Minimum),
+    m_Maximum       (copy.m_Maximum),
+    m_Value         (copy.m_Value),
+    m_SplitImage    (copy.m_SplitImage),
+    m_LoadedPathname(copy.m_LoadedPathname)
     {
     }
 
@@ -96,6 +98,7 @@ namespace tgui
             std::swap(m_SpriteFront_L,  temp.m_SpriteFront_L);
             std::swap(m_SpriteFront_M,  temp.m_SpriteFront_M);
             std::swap(m_SpriteFront_R,  temp.m_SpriteFront_R);
+            std::swap(m_LoadedPathname, temp.m_LoadedPathname);
         }
 
         return *this;

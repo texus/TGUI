@@ -36,7 +36,8 @@ namespace tgui
     m_MouseOnListbox    (false),
     m_NrOfItemsToDisplay(1),
     m_TextureNormal     (NULL),
-    m_TextureHover      (NULL)
+    m_TextureHover      (NULL),
+    m_LoadedPathname    ("")
     {
         m_ObjectType = comboBox;
 
@@ -56,7 +57,8 @@ namespace tgui
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListbox    (copy.m_MouseOnListbox),
     m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),
-    m_Listbox           (copy.m_Listbox)
+    m_Listbox           (copy.m_Listbox),
+    m_LoadedPathname    (copy.m_LoadedPathname)
     {
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal, m_TextureNormal)) m_SpriteNormal.setTexture(*m_TextureNormal);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover))   m_SpriteHover.setTexture(*m_TextureHover);
@@ -87,6 +89,7 @@ namespace tgui
             std::swap(m_TextureHover,       temp.m_TextureHover);
             std::swap(m_SpriteNormal,       temp.m_SpriteNormal);
             std::swap(m_SpriteHover,        temp.m_SpriteHover);
+            std::swap(m_LoadedPathname,     temp.m_LoadedPathname);
         }
 
         return *this;

@@ -207,22 +207,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox* Group::addEditBox(const std::string objectName)
-    {
-        EditBox* newEditBox = new EditBox();
-        newEditBox->m_Parent = this;
-        newEditBox->setTextFont(globalFont);
-        m_EventManager.addObject(newEditBox);
-//        m_AnimationManager.addObject(newEditBox);
-
-        m_Objects.push_back(newEditBox);
-        m_ObjName.push_back(objectName);
-
-        return newEditBox;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Panel* Group::addPanel(const std::string objectName)
     {
         Panel* newPanel = new Panel();
@@ -247,6 +231,7 @@ namespace tgui
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Button)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Checkbox)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (RadioButton)
+    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (EditBox)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Listbox)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (ComboBox)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (TextBox)

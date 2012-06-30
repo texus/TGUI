@@ -38,10 +38,6 @@ namespace tgui
         // Reset all the key flags
         for (unsigned int x=0; x<sf::Keyboard::KeyCount; ++x)
             m_KeyPress[x] = false;
-
-        // Reset all the mouse button flags
-//        for (unsigned int x=0; x<sf::Mouse::ButtonCount; ++x)
-//            m_MouseButtonClick[x] = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +92,6 @@ namespace tgui
                 else // Send the event to the object
                     m_Objects[objectNr]->mouseMoved(mouseX, mouseY);
             }
-
-            // Store the new mouse position
-//            m_LastMousePosition.x = event.MouseMove.X;
-//            m_LastMousePosition.y = event.MouseMove.Y;
         }
 
         // Check if a mouse button was pressed
@@ -141,9 +133,6 @@ namespace tgui
                         m_Objects[objectNr]->leftMousePressed(mouseX, mouseY);
                     }
                 }
-
-                // Mark the left mouse button as pressed
-//                m_MouseButtonClick[sf::Mouse::Left] = true;
             }
         }
 
@@ -192,9 +181,6 @@ namespace tgui
                             m_Objects[i]->mouseNoLongerDown();
                     }
                 }
-
-                // Mark the left mouse button as released
-//                m_MouseButtonClick[sf::Mouse::Left] = false;
             }
         }
 
@@ -445,9 +431,6 @@ namespace tgui
             for (unsigned int x=0; x<sf::Keyboard::KeyCount; ++x)
                 m_KeyPress[x] = false;
 
-//            for (unsigned int x=0; x<sf::Mouse::ButtonCount; ++x)
-//                m_MouseButtonClick[x] = false;
-
             return true;
         }
         else
@@ -697,9 +680,6 @@ namespace tgui
         // Another object is focused. Clear all key and mouse button flags
         for (unsigned int x=0; x<sf::Keyboard::KeyCount; ++x)
             m_KeyPress[x] = false;
-
-//        for (unsigned int x=0; x<sf::Mouse::ButtonCount; ++x)
-//            m_MouseButtonClick[x] = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -241,7 +241,6 @@ namespace tgui
 
         friend struct EventManager;
         friend struct Group;
-//        friend struct ComboBox;
     };
 
 

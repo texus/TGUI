@@ -32,7 +32,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture() :
-    m_Texture(NULL)
+    m_Texture       (NULL),
+    m_LoadedFilename(NULL)
     {
         m_ObjectType = picture;
     }
@@ -40,7 +41,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
-    OBJECT(copy)
+    OBJECT          (copy),
+    m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
         if (TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture))
@@ -66,8 +68,9 @@ namespace tgui
             Picture temp(right);
             this->OBJECT::operator=(right);
 
-            std::swap(m_Texture, temp.m_Texture);
-            std::swap(m_Sprite,  temp.m_Sprite);
+            std::swap(m_Texture,        temp.m_Texture);
+            std::swap(m_Sprite,         temp.m_Sprite);
+            std::swap(m_LoadedFilename, temp.m_LoadedFilename);
         }
 
         return *this;

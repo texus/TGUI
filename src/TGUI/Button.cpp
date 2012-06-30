@@ -44,6 +44,7 @@ namespace tgui
     m_TextureMouseHover_R   (NULL),
     m_TextureMouseDown_R    (NULL),
     m_TextureFocused_R      (NULL),
+    m_LoadedPathname        (""),
     m_SplitImage            (false),
     m_TextSize              (0)
     {
@@ -55,10 +56,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button(const Button& copy) :
-    OBJECT      (copy),
-    m_SplitImage(copy.m_SplitImage),
-    m_Text      (copy.m_Text),
-    m_TextSize  (copy.m_TextSize)
+    OBJECT          (copy),
+    m_LoadedPathname(copy.m_LoadedPathname),
+    m_SplitImage    (copy.m_SplitImage),
+    m_Text          (copy.m_Text),
+    m_TextSize      (copy.m_TextSize)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))         m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -132,6 +134,7 @@ namespace tgui
             std::swap(m_SpriteFocused_L,     temp.m_SpriteFocused_L);
             std::swap(m_SpriteFocused_M,     temp.m_SpriteFocused_M);
             std::swap(m_SpriteFocused_R,     temp.m_SpriteFocused_R);
+            std::swap(m_LoadedPathname,      temp.m_LoadedPathname);
             std::swap(m_SplitImage,          temp.m_SplitImage);
             std::swap(m_Text,                temp.m_Text);
             std::swap(m_TextSize,            temp.m_TextSize);

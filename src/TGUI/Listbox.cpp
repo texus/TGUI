@@ -38,6 +38,7 @@ namespace tgui
     m_TextSize               (20),
     m_MaxItems               (0),
     m_Scroll                 (NULL),
+    m_LoadedScrollbarPathname(""),
     m_BackgroundColor        (255, 255, 255),
     m_TextColor              (  0,   0,   0),
     m_SelectedBackgroundColor( 50, 100, 200),
@@ -60,6 +61,7 @@ namespace tgui
     m_ItemHeight             (copy.m_ItemHeight),
     m_TextSize               (copy.m_TextSize),
     m_MaxItems               (copy.m_MaxItems),
+    m_LoadedScrollbarPathname(copy.m_LoadedScrollbarPathname),
     m_BackgroundColor        (copy.m_BackgroundColor),
     m_TextColor              (copy.m_TextColor),
     m_SelectedBackgroundColor(copy.m_SelectedBackgroundColor),
@@ -111,6 +113,7 @@ namespace tgui
             std::swap(m_TextSize,                temp.m_TextSize);
             std::swap(m_MaxItems,                temp.m_MaxItems);
             std::swap(m_Scroll,                  temp.m_Scroll);
+            std::swap(m_LoadedScrollbarPathname, temp.m_LoadedScrollbarPathname);
             std::swap(m_BackgroundColor,         temp.m_BackgroundColor);
             std::swap(m_TextColor,               temp.m_TextColor);
             std::swap(m_SelectedBackgroundColor, temp.m_SelectedBackgroundColor);
