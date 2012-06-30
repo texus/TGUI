@@ -33,7 +33,7 @@ namespace tgui
 
     Picture::Picture() :
     m_Texture       (NULL),
-    m_LoadedFilename(NULL)
+    m_LoadedFilename("")
     {
         m_ObjectType = picture;
     }
