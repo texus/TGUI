@@ -343,7 +343,7 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the image
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
             return true;
         else
         {

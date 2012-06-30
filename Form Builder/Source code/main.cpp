@@ -25,7 +25,6 @@
 
 #include "FormBuilder.hpp"
 
-float r;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main()
@@ -76,10 +75,10 @@ int main()
                 if ((event.size.width == (TGUI_MAXIMUM(app.windows[0].width.value, 32))) && (event.size.height == (TGUI_MAXIMUM(app.windows[0].height.value, 32))))
                 {
                     // Set the viewport to the new size
-                    app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+                    app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                     // Change the size of the transparent image
-                    app.mainWindow.getPicture("1")->setSize(event.size.width, event.size.height);
+                    app.mainWindow.getPicture("1")->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
 
                     // Pass the change to tgui
                     app.mainWindow.handleEvent(event);
@@ -100,11 +99,11 @@ int main()
                 if (event.type == sf::Event::MouseButtonPressed)
                 {
                     // Check if you start dragging one of the scale squares
-                    unsigned int id = app.getScaleSquareObjectID(event.mouseButton.x, event.mouseButton.y);
+                    unsigned int id = app.getScaleSquareObjectID(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     if (id > 0)
                     {
                         app.draggingSquare = id;
-                        app.dragPos = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+                        app.dragPos = sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // None of the scale squares was clicked
                     {
@@ -126,7 +125,7 @@ int main()
                         if (id != 1)
                         {
                             app.draggingObject = true;
-                            app.dragPos = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+                            app.dragPos = sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                         }
                     }
                 }
@@ -249,7 +248,6 @@ int main()
                                     if (size.x > size.y)
                                     {
                                         float ratio = 10.f / (size.x / size.y);
-                                        r = ratio;
 
                                         // Check which corner is being dragged
                                         if (app.draggingSquare == SQUARE_TOP_LEFT)
@@ -424,7 +422,7 @@ int main()
                         else // You are not dragging a scale square
                         {
                             // Make the scale squares react on mouse hover
-                            app.getScaleSquareObjectID(event.mouseMove.x, event.mouseMove.y);
+                            app.getScaleSquareObjectID(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         }
                     }
                 }
@@ -436,7 +434,7 @@ int main()
                         app.draggingSquare = 0;
 
                         // If the mouse is not on the scale square then don't let it be filled
-                        app.getScaleSquareObjectID(event.mouseButton.x, event.mouseButton.y);
+                        app.getScaleSquareObjectID(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                 }
             }
@@ -459,10 +457,10 @@ int main()
                 if (event.size.width < 200)
                 {
                     app.propertyWindow.setSize(sf::Vector2u(200, event.size.height));
-                    app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, 200, event.size.height)));
+                    app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, 200, static_cast<float>(event.size.height))));
                 }
                 else
-                    app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+                    app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                 // Update the properties
                 app.propertyWindow.removeAllObjects();
@@ -534,16 +532,6 @@ int main()
         app.mainWindow.drawGUI();
         app.objectsWindow.drawGUI();
         app.propertyWindow.drawGUI();
-
-        app.mainWindow.draw(sf::Text(tgui::to_string(app.dragPos.x)));
-
-        sf::Text t(tgui::to_string(app.dragPos.y));
-        t.setPosition(0, 50);
-        app.mainWindow.draw(t);
-
-        t.setString(tgui::to_string(r));
-        t.setPosition(0, 100);
-        app.mainWindow.draw(t);
 
         // Display the windows
         app.mainWindow.display();

@@ -389,7 +389,7 @@ namespace tgui
             m_MouseDownOnThumb = false;
 
         // Check if the mouse is on top of the track
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
             return true;
 
         // The mouse is not on top of the slider

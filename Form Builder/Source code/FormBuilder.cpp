@@ -304,11 +304,11 @@ void Builder::changeVisibleProperties()
 
             mainWindow.getButton("Square_TopLeft")->setPosition(-3, -3);
             mainWindow.getButton("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
-            mainWindow.getButton("Square_TopRight")->setPosition(windows[i].width.value - 3, -3);
-            mainWindow.getButton("Square_Right")->setPosition(windows[i].width.value - 3, (windows[i].height.value / 2.f) - 3);
-            mainWindow.getButton("Square_BottomRight")->setPosition(windows[i].width.value - 3, windows[i].height.value - 3);
-            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, windows[i].height.value - 3);
-            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, windows[i].height.value - 3);
+            mainWindow.getButton("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
+            mainWindow.getButton("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
+            mainWindow.getButton("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
+            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
             mainWindow.getButton("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
             return;
         }
@@ -318,7 +318,7 @@ void Builder::changeVisibleProperties()
     tgui::Button* button = propertyWindow.addButton();
     button->load("images/objects/Button/Black");
     button->setText("Delete object");
-    button->setSize(propertyWindow.getSize().x - 8, 40);
+    button->setSize(static_cast<float>(propertyWindow.getSize().x - 8), 40);
     button->callbackID = 20;
 
     // Check if a radio button is selected
@@ -440,11 +440,11 @@ void Builder::updateProperty(unsigned int propertyNumber)
             windows[i].updateProperty(mainWindow, propertyWindow, propertyNumber); \
             mainWindow.getButton("Square_TopLeft")->setPosition(-3, -3);
             mainWindow.getButton("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
-            mainWindow.getButton("Square_TopRight")->setPosition(windows[i].width.value - 3, -3);
-            mainWindow.getButton("Square_Right")->setPosition(windows[i].width.value - 3, (windows[i].height.value / 2.f) - 3);
-            mainWindow.getButton("Square_BottomRight")->setPosition(windows[i].width.value - 3, windows[i].height.value - 3);
-            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, windows[i].height.value - 3);
-            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, windows[i].height.value - 3);
+            mainWindow.getButton("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
+            mainWindow.getButton("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
+            mainWindow.getButton("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
+            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
             mainWindow.getButton("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
             return;
         }
@@ -742,7 +742,7 @@ void Builder::moveObjectX(float pixels, bool delay)
         tgui::EditBox* editbox = propertyWindow.getEditBox("text_Left");
 
         // Adjust the property
-        float left = atof(editbox->getText().c_str());
+        float left = static_cast<float>(atof(editbox->getText().c_str()));
         left += pixels;
 
         // Change the contents of the edit box
@@ -800,7 +800,7 @@ void Builder::moveObjectY(float pixels, bool delay)
         tgui::EditBox* editbox = propertyWindow.getEditBox("text_Top");
 
         // Adjust the property
-        float top = atof(editbox->getText().c_str());
+        float top = static_cast<float>(atof(editbox->getText().c_str()));
         top += pixels;
 
         // Change the contents of the edit box
@@ -845,8 +845,8 @@ void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id,
         tgui::EditBox* editboxHeight = propertyWindow.getEditBox("text_Height");
 
         // Adjust the properties
-        float width = atof(editboxWidth->getText().c_str());
-        float height = atof(editboxHeight->getText().c_str());
+        float width = static_cast<float>(atof(editboxWidth->getText().c_str()));
+        float height = static_cast<float>(atof(editboxHeight->getText().c_str()));
         width += addToWidth;
         height += addToHeight;
 
@@ -1236,7 +1236,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::Listbox* realObject = mainWindow.getListbox(tgui::to_string(id));
-                realObject->load(object->getScaledSize().x, object->getScaledSize().y, object->getLoadedScrollbarPathname(), object->getItemHeight());
+                realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getLoadedScrollbarPathname(), object->getItemHeight());
                 realObject->setPosition(object->getPosition());
                 realObject->setMaximumItems(object->getMaximumItems());
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
@@ -1285,7 +1285,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::ComboBox* realObject = mainWindow.getComboBox(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname(), object->getScaledSize().x, object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
+                realObject->load(object->getLoadedPathname(), static_cast<unsigned int>(object->getScaledSize().x), object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);

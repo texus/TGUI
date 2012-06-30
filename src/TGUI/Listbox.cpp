@@ -871,7 +871,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TopBorder, getSize().x - m_LeftBorder - m_RightBorder, getSize().y - m_TopBorder - m_BottomBorder)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(x, y))
             return true;
         else // The mouse is not on top of the listbox
         {
@@ -934,9 +934,9 @@ namespace tgui
                 {
                     // Calculate on what item we clicked
                     if ((m_Scroll->m_Value % m_ItemHeight) == 0)
-                        m_SelectedItem = ((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1;
+                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1);
                     else
-                        m_SelectedItem = ((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2;
+                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2);
                 }
             }
             else // There is no scrollbar or it is not displayed
@@ -1171,7 +1171,7 @@ namespace tgui
             // Restore the old transformation
             states.transform = oldTransform;
             states.transform *= getTransform();
-            states.transform.translate(m_LeftBorder, m_TopBorder);
+            states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
             // Draw the text on the window
             sf::Sprite sprite(m_RenderTexture->getTexture());

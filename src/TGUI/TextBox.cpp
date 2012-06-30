@@ -792,7 +792,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TopBorder, getSize().x - m_LeftBorder - m_RightBorder, getSize().y - m_TopBorder - m_BottomBorder)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(x, y))
         {
             return true;
         }
@@ -1113,7 +1113,7 @@ namespace tgui
                     distanceX = newPosition.x - originalPosition.x;
 
                     // Check if the distance is going away again
-                    if (abs(distanceX) > previousdistanceX)
+                    if (static_cast<unsigned int>(abs(distanceX)) > previousdistanceX)
                     {
                         // We have found the character that we were looking for
                         setSelectionPointPosition(character + newlineAdded);
@@ -1390,7 +1390,7 @@ namespace tgui
 
             // Calculate the maximum line width
             if (m_Scroll == NULL)
-                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4;
+                maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
             else
                 maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getScaledSize().x - 4;
 
@@ -1484,7 +1484,7 @@ namespace tgui
             if (posY < 0)
                 return 0;
             else
-                line = posY / m_LineHeight + 1;
+                line = static_cast<unsigned int>(posY / m_LineHeight + 1);
         }
         else // There is no scrollbar
         {
@@ -1492,7 +1492,7 @@ namespace tgui
             if (posY + m_Scroll->m_Value < 0)
                 return 0;
             else
-                line = (posY + m_Scroll->m_Value) / m_LineHeight + 1;
+                line = static_cast<unsigned int>((posY + m_Scroll->m_Value) / m_LineHeight + 1);
         }
 
         // Create a temporary text object that contains the full text
@@ -1546,7 +1546,7 @@ namespace tgui
             float maxLineWidth;
 
             if (m_Scroll == NULL)
-                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4;
+                maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
             else
                 maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4 - m_Scroll->getScaledSize().x;
 
@@ -1718,7 +1718,7 @@ namespace tgui
 
         // Calculate the maximum line width
         if (m_Scroll == NULL)
-            maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4;
+            maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
         else
             maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getScaledSize().x - 4;
 
@@ -2054,10 +2054,10 @@ namespace tgui
 
                 // Watch out for kerning
                 if (textBeforeSelectionLength > 1)
-                    states.transform.translate(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
                 // Create the selection background
-                sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, m_LineHeight));
+                sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
                 selectionBackground1.setFillColor(m_SelectedTextBgrColor);
 
                 // Draw the selection background
@@ -2070,11 +2070,11 @@ namespace tgui
                 if (m_TextSelection2.getString().getSize() > 0)
                 {
                     // Translate to the beginning of the next line
-                    states.transform.translate(-m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, m_LineHeight);
+                    states.transform.translate(-m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
 
                     // If there was a kerning correction then undo it now
                     if (textBeforeSelectionLength > 1)
-                        states.transform.translate(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize), 0);
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
                     // Create the second selection background
                     sf::RectangleShape selectionBackground2;
@@ -2083,9 +2083,9 @@ namespace tgui
                     // Draw the background rectangles of the selected text
                     for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
                     {
-                        selectionBackground2.setSize(sf::Vector2f(m_MultilineSelectionRectWidth[i], m_LineHeight));
+                        selectionBackground2.setSize(sf::Vector2f(m_MultilineSelectionRectWidth[i], static_cast<float>(m_LineHeight)));
                         m_RenderTexture->draw(selectionBackground2, states);
-                        selectionBackground2.move(0, m_LineHeight);
+                        selectionBackground2.move(0, static_cast<float>(m_LineHeight));
                     }
 
                     // Draw the second part of the selection
@@ -2096,7 +2096,7 @@ namespace tgui
 
                     // Watch out for kerning
                     if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2) && (textBeforeSelectionLength + textSelection1Length + textSelection2Length > 2))
-                        states.transform.translate(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize), 0);
+                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
                 }
                 else // The selection was only on one line
                 {
@@ -2105,7 +2105,7 @@ namespace tgui
 
                     // Watch out for kerning
                     if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                        states.transform.translate(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize), 0);
+                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
                 }
 
                 // Draw the first part of the text behind the selection
@@ -2118,20 +2118,20 @@ namespace tgui
                     if (m_TextSelection2.getString().getSize() > 0)
                     {
                         // Undo the last translation
-                        states.transform.translate(-m_TextSelection2.findCharacterPos(textSelection2Length).x, m_LineHeight);
+                        states.transform.translate(-m_TextSelection2.findCharacterPos(textSelection2Length).x, static_cast<float>(m_LineHeight));
 
                         // If there was a kerning correction then undo it now
                         if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2) && (textBeforeSelectionLength + textSelection1Length + textSelection2Length > 2))
-                            states.transform.translate(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize), 0);
+                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
                     }
                     else
                     {
                         // Undo the last translation
-                        states.transform.translate(-m_TextSelection1.findCharacterPos(textSelection1Length).x - m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, m_LineHeight);
+                        states.transform.translate(-m_TextSelection1.findCharacterPos(textSelection1Length).x - m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
 
                         // If there was a kerning correction then undo it now
                         if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                            states.transform.translate(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize), 0);
+                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
                     }
 
                     // Draw the second part of the text after the selection
@@ -2166,7 +2166,7 @@ namespace tgui
                 states.transform = sf::Transform();
 
                 // Create the selection point rectangle
-                sf::RectangleShape selectionPoint(sf::Vector2f(selectionPointWidth, m_LineHeight));
+                sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(selectionPointWidth), static_cast<float>(m_LineHeight)));
                 selectionPoint.setFillColor(selectionPointColor);
 
                 // Set the position of the rectangle

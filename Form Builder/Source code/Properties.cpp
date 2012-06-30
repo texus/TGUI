@@ -39,7 +39,7 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::EditBox* editBox = window.addEditBox("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
+    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber))); \
     editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(value); \
     editBox->callbackID = propertyNumber + 1; \
@@ -57,7 +57,7 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::EditBox* editBox = window.addEditBox("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber)); \
+    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber))); \
     editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(tgui::to_string(value)); \
     editBox->callbackID = propertyNumber + 1; \
@@ -68,8 +68,8 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
 
 bool checkIfFileExists(const char* filename)
 {
-  std::ifstream ifile(filename);
-  return ifile;
+    std::ifstream ifile(filename);
+    return ifile.good();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,23 +110,7 @@ PropertyLeft::PropertyLeft()
     value = 0;
 }
 
-void PropertyLeft::addProperty(tgui::Window& window, unsigned int propertyNumber)
-{
-    tgui::Label* label = window.addLabel("label_Left");
-    label->setText(description);
-    label->setTextColor(sf::Color::Black);
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
-    label->setTextSize(26);
-
-
-    tgui::EditBox* editBox = window.addEditBox("text_Left");
-    editBox->load("images/objects/EditBox/" OBJECT_STYLE);
-    editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
-    editBox->setText(tgui::to_string(value));
-    editBox->callbackID = propertyNumber + 1;
-}
+addProperty_Value(Left)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,22 +120,7 @@ PropertyTop::PropertyTop()
     value = 0;
 }
 
-void PropertyTop::addProperty(tgui::Window& window, unsigned int propertyNumber)
-{
-    tgui::Label* label = window.addLabel("label_Top");
-    label->setText(description);
-    label->setTextColor(sf::Color::Black);
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
-    label->setTextSize(26);
-
-    tgui::EditBox* editBox = window.addEditBox("text_Top");
-    editBox->load("images/objects/EditBox/" OBJECT_STYLE);
-    editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
-    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
-    editBox->setText(tgui::to_string(value));
-    editBox->callbackID = propertyNumber + 1;
-}
+addProperty_Value(Top)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -302,8 +271,8 @@ void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNum
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.addComboBox("combo_Checked");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10);
-    comboBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.f - 10));
+    comboBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 
@@ -338,7 +307,7 @@ void PropertyPasswordChar::addProperty(tgui::Window& window, unsigned int proper
     tgui::EditBox* editBox = window.addEditBox("text_PasswordChar");
     editBox->load("images/objects/EditBox/" OBJECT_STYLE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
     editBox->setSize(window.getSize().x / 2.0f - 10, 32);
     editBox->setMaximumCharacters(1);
     editBox->callbackID = propertyNumber + 1;
@@ -538,8 +507,8 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.addComboBox("combo_VerticalScroll");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10);
-    comboBox->setPosition(window.getSize().x / 2.0f, 10 + (40 * propertyNumber));
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.0f - 10));
+    comboBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 
@@ -685,8 +654,8 @@ void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& p
             picture->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = picture->getSize().x;
-            height.value = picture->getSize().y;
+            width.value = static_cast<float>(picture->getSize().x);
+            height.value = static_cast<float>(picture->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -712,7 +681,7 @@ void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Picture_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the picture
         formWindow.getPicture(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -720,7 +689,7 @@ void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Picture_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the picture
         formWindow.getPicture(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -728,7 +697,7 @@ void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Picture_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the picture
         formWindow.getPicture(tgui::to_string(id))->setSize(width.value, height.value);
@@ -736,7 +705,7 @@ void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Picture_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the picture
         formWindow.getPicture(tgui::to_string(id))->setSize(width.value, height.value);
@@ -811,8 +780,8 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             button->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = button->getSize().x;
-            height.value = button->getSize().y;
+            width.value = static_cast<float>(button->getSize().x);
+            height.value = static_cast<float>(button->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -838,7 +807,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Button_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the button
         formWindow.getButton(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -846,7 +815,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Button_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the button
         formWindow.getButton(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -854,7 +823,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Button_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the button
         formWindow.getButton(tgui::to_string(id))->setSize(width.value, height.value);
@@ -862,7 +831,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Button_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the button
         formWindow.getButton(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1013,8 +982,8 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             checkbox->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = checkbox->getSize().x;
-            height.value = checkbox->getSize().y;
+            width.value = static_cast<float>(checkbox->getSize().x);
+            height.value = static_cast<float>(checkbox->getSize().y);
 
 
             // Update the values
@@ -1041,7 +1010,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_Checkbox_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the checkbox
         formWindow.getCheckbox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1049,7 +1018,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_Checkbox_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the checkbox
         formWindow.getCheckbox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1057,7 +1026,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_Checkbox_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the checkbox
         formWindow.getCheckbox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1065,7 +1034,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_Checkbox_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the checkbox
         formWindow.getCheckbox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1197,8 +1166,8 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
             radioButton->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = radioButton->getSize().x;
-            height.value = radioButton->getSize().y;
+            width.value = static_cast<float>(radioButton->getSize().x);
+            height.value = static_cast<float>(radioButton->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -1224,7 +1193,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
     else if (propertyNumber == Property_Checkbox_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the radio button
         formWindow.getRadioButton(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1232,7 +1201,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
     else if (propertyNumber == Property_Checkbox_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the radio button
         formWindow.getRadioButton(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1240,7 +1209,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
     else if (propertyNumber == Property_Checkbox_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the radio button
         formWindow.getRadioButton(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1248,7 +1217,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
     else if (propertyNumber == Property_Checkbox_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the radio button
         formWindow.getRadioButton(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1392,7 +1361,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     else if (propertyNumber == Property_Label_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the label
         formWindow.getLabel(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1400,7 +1369,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     else if (propertyNumber == Property_Label_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the label
         formWindow.getLabel(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1408,7 +1377,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     else if (propertyNumber == Property_Label_Width)
     {
         // Store the new size
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Get the pointer to the label
         tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
@@ -1423,7 +1392,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
     else if (propertyNumber == Property_Label_Height)
     {
         // Store the new size
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Get the pointer to the label
         tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
@@ -1458,11 +1427,11 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         label->setTextSize(textSize.value);
 
         // Adjust the width of the label
-        width.value = label->getSize().x;
+        width.value = static_cast<float>(label->getSize().x);
         propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
 
         // Adjust the height of the label
-        height.value = label->getSize().y;
+        height.value = static_cast<float>(label->getSize().y);
         propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(height.value));
     }
     else if (propertyNumber == Property_Label_TextColor)
@@ -1608,8 +1577,8 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             editBox->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = editBox->getSize().x;
-            height.value = editBox->getSize().y;
+            width.value = static_cast<float>(editBox->getSize().x);
+            height.value = static_cast<float>(editBox->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -1635,7 +1604,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_EditBox_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the edit box
         formWindow.getEditBox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1643,7 +1612,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_EditBox_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the edit box
         formWindow.getEditBox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -1651,7 +1620,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_EditBox_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the edit box
         formWindow.getEditBox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -1659,7 +1628,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_EditBox_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the edit box
         formWindow.getEditBox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -2007,7 +1976,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Listbox_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the listbox
         formWindow.getListbox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -2015,7 +1984,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Listbox_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the listbox
         formWindow.getListbox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -2023,7 +1992,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Listbox_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the size of the listbox
         formWindow.getListbox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -2031,7 +2000,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
     else if (propertyNumber == Property_Listbox_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the size of the listbox
         formWindow.getListbox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -2537,7 +2506,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             comboBox->setScale(comboBox->getScale().x, 1);
 
             // Change the height property
-            height.value = comboBox->getSize().y;
+            height.value = static_cast<float>(comboBox->getSize().y);
 
             // Update the height value
             propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(height.value));
@@ -2562,7 +2531,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_ComboBox_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the combo box
         formWindow.getComboBox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -2570,7 +2539,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_ComboBox_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the combo box
         formWindow.getComboBox(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -2578,7 +2547,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_ComboBox_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the size of the combo box
         formWindow.getComboBox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -2586,7 +2555,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
     else if (propertyNumber == Property_ComboBox_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the size of the combo box
         formWindow.getComboBox(tgui::to_string(id))->setSize(width.value, height.value);
@@ -2996,8 +2965,8 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             slider->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = slider->getSize().x;
-            height.value = slider->getSize().y;
+            width.value = static_cast<float>(slider->getSize().x);
+            height.value = static_cast<float>(slider->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -3023,7 +2992,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Slider_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the slider
         formWindow.getSlider(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3031,7 +3000,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Slider_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the slider
         formWindow.getSlider(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3039,7 +3008,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Slider_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the slider
         formWindow.getSlider(tgui::to_string(id))->setSize(width.value, height.value);
@@ -3047,7 +3016,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
     else if (propertyNumber == Property_Slider_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the slider
         formWindow.getSlider(tgui::to_string(id))->setSize(width.value, height.value);
@@ -3063,10 +3032,10 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
         tgui::EditBox* propertyHeight = propertyWindow.getEditBox("text_Height");
 
         // Change the direction
-        slider->verticalScroll = verticalScroll.value;
+        slider->verticalScroll = !!verticalScroll.value;
 
         // Make temp buffers to switch the width and height
-        unsigned int temp = width.value;
+        float temp = width.value;
         std::string strTemp = propertyWidth->getText();
 
         // Change the width
@@ -3175,8 +3144,8 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
             scrollbar->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = scrollbar->getSize().x;
-            height.value = scrollbar->getSize().y;
+            width.value = static_cast<float>(scrollbar->getSize().x);
+            height.value = static_cast<float>(scrollbar->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -3202,7 +3171,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
     else if (propertyNumber == Property_Scrollbar_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the scrollbar
         formWindow.getScrollbar(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3210,7 +3179,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
     else if (propertyNumber == Property_Scrollbar_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the scrollbar
         formWindow.getScrollbar(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3218,7 +3187,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
     else if (propertyNumber == Property_Scrollbar_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the scrollbar
         formWindow.getScrollbar(tgui::to_string(id))->setSize(width.value, height.value);
@@ -3226,7 +3195,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
     else if (propertyNumber == Property_Scrollbar_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the scrollbar
         formWindow.getScrollbar(tgui::to_string(id))->setSize(width.value, height.value);
@@ -3242,10 +3211,10 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
         // Change the direction
         tgui::Scrollbar* scrollbar = formWindow.getScrollbar(tgui::to_string(id));
-        scrollbar->verticalScroll = verticalScroll.value;
+        scrollbar->verticalScroll = !!verticalScroll.value;
 
         // Make temp buffers to switch the width and height
-        unsigned int temp = width.value;
+        float temp = width.value;
         std::string strTemp = propertyWidth->getText();
 
         // Change the width
@@ -3370,8 +3339,8 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
             loadingBar->setScale(1, 1);
 
             // Change the width and height properties
-            width.value = loadingBar->getSize().x;
-            height.value = loadingBar->getSize().y;
+            width.value = static_cast<float>(loadingBar->getSize().x);
+            height.value = static_cast<float>(loadingBar->getSize().y);
 
             // Update the values
             propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
@@ -3397,7 +3366,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
     else if (propertyNumber == Property_LoadingBar_Left)
     {
         // Store the new position
-        left.value = atof(propertyWindow.getEditBox("text_Left")->getText().c_str());
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
 
         // Change the position of the loading bar
         formWindow.getLoadingBar(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3405,7 +3374,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
     else if (propertyNumber == Property_LoadingBar_Top)
     {
         // Store the new position
-        top.value = atof(propertyWindow.getEditBox("text_Top")->getText().c_str());
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
 
         // Change the position of the loading bar
         formWindow.getLoadingBar(tgui::to_string(id))->setPosition(left.value, top.value);
@@ -3413,7 +3382,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
     else if (propertyNumber == Property_LoadingBar_Width)
     {
         // Store the new width
-        width.value = atof(propertyWindow.getEditBox("text_Width")->getText().c_str());
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
 
         // Change the width of the loading bar
         formWindow.getLoadingBar(tgui::to_string(id))->setSize(width.value, height.value);
@@ -3421,7 +3390,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
     else if (propertyNumber == Property_LoadingBar_Height)
     {
         // Store the new height
-        height.value = atof(propertyWindow.getEditBox("text_Height")->getText().c_str());
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
 
         // Change the height of the loading bar
         formWindow.getLoadingBar(tgui::to_string(id))->setSize(width.value, height.value);
