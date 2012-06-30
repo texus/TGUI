@@ -685,30 +685,19 @@ void Builder::deleteObject()
 
     #undef FindObjectWithID
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Builder::moveObjectX(int pixels)
+sf::Vector2f Builder::getSelectedObjectSize()
 {
-    // Get the pointer to the property
-    tgui::EditBox* editbox = propertyWindow.getEditBox("text_Left");
-
-    // Adjust the property
-    int left = atoi(editbox->getText().c_str());
-    left += pixels;
-
-    // Change the contents of the edit box
-    editbox->setText(tgui::to_string(left));
-
     unsigned int i;
 
-    #define FindObjectWithID(Object, objects) \
-    for (i=0; i<objects.size(); ++i) \
+    // Find the size of the object
+    #define FindObjectWithID(Object, object) \
+    for (i=0; i<object.size(); ++i) \
     { \
-        if (objects[i].id == currentID) \
-        { \
-            updateProperty(Property_##Object##_Left); \
-            return; \
-        } \
+        if (object[i].id == currentID) \
+            return sf::Vector2f(mainWindow.get##Object(tgui::to_string(currentID))->getSize()); \
     }
 
     FindObjectWithID(Picture, pictures)
@@ -724,52 +713,130 @@ void Builder::moveObjectX(int pixels)
     FindObjectWithID(LoadingBar, loadingBars)
 
     #undef FindObjectWithID
+
+    // If you pass here then none of the objects was selected
+    return sf::Vector2f(0, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Builder::moveObjectY(int pixels)
+void Builder::moveObjectX(float pixels, bool delay)
 {
-    // Get the pointer to the property
-    tgui::EditBox* editbox = propertyWindow.getEditBox("text_Top");
-
-    // Adjust the property
-    int top = atoi(editbox->getText().c_str());
-    top += pixels;
-
-    // Change the contents of the edit box
-    editbox->setText(tgui::to_string(top));
-
-    unsigned int i;
-
-    #define FindObjectWithID(Object, objects) \
-    for (i=0; i<objects.size(); ++i) \
-    { \
-        if (objects[i].id == currentID) \
-        { \
-            updateProperty(Property_##Object##_Top); \
-            return; \
-        } \
+    // Check if there is a delay
+    if (delay == true)
+    {
+        // Search for the delay of the current selected object
+        for (unsigned int i=0; i<resizeObjectDelays.size(); ++i)
+        {
+            // If the resize delay is found then add the position change to it
+            if (resizeObjectDelays[i].m_Id == currentID)
+            {
+                resizeObjectDelays[i].m_AddToPositionX += pixels;
+                break;
+            }
+        }
     }
+    else // There is no delay
+    {
+        // Get the pointer to the property
+        tgui::EditBox* editbox = propertyWindow.getEditBox("text_Left");
 
-    FindObjectWithID(Picture, pictures)
-    FindObjectWithID(Button, buttons)
-    FindObjectWithID(Checkbox, checkboxes)
-    FindObjectWithID(Checkbox, radioButtons)
-    FindObjectWithID(Label, labels)
-    FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
-    FindObjectWithID(ComboBox, comboBoxes)
-    FindObjectWithID(Slider, sliders)
-    FindObjectWithID(Scrollbar, scrollbars)
-    FindObjectWithID(LoadingBar, loadingBars)
+        // Adjust the property
+        float left = atof(editbox->getText().c_str());
+        left += pixels;
 
-    #undef FindObjectWithID
+        // Change the contents of the edit box
+        editbox->setText(tgui::to_string(left));
+
+        unsigned int i;
+
+        #define FindObjectWithID(Object, objects) \
+        for (i=0; i<objects.size(); ++i) \
+        { \
+            if (objects[i].id == currentID) \
+            { \
+                updateProperty(Property_##Object##_Left); \
+                return; \
+            } \
+        }
+
+        FindObjectWithID(Picture, pictures)
+        FindObjectWithID(Button, buttons)
+        FindObjectWithID(Checkbox, checkboxes)
+        FindObjectWithID(Checkbox, radioButtons)
+        FindObjectWithID(Label, labels)
+        FindObjectWithID(EditBox, editBoxes)
+        FindObjectWithID(Listbox, listboxes)
+        FindObjectWithID(ComboBox, comboBoxes)
+        FindObjectWithID(Slider, sliders)
+        FindObjectWithID(Scrollbar, scrollbars)
+        FindObjectWithID(LoadingBar, loadingBars)
+
+        #undef FindObjectWithID
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Builder::resizeObject(int addToWidth, int addToHeight, unsigned int id, int delay)
+void Builder::moveObjectY(float pixels, bool delay)
+{
+     // Check if there is a delay
+    if (delay == true)
+    {
+        // Search for the delay of the current selected object
+        for (unsigned int i=0; i<resizeObjectDelays.size(); ++i)
+        {
+            // If the resize delay is found then add the position change to it
+            if (resizeObjectDelays[i].m_Id == currentID)
+            {
+                resizeObjectDelays[i].m_AddToPositionY += pixels;
+                break;
+            }
+        }
+    }
+    else // There is no delay
+    {
+        // Get the pointer to the property
+        tgui::EditBox* editbox = propertyWindow.getEditBox("text_Top");
+
+        // Adjust the property
+        float top = atof(editbox->getText().c_str());
+        top += pixels;
+
+        // Change the contents of the edit box
+        editbox->setText(tgui::to_string(top));
+
+        unsigned int i;
+
+        #define FindObjectWithID(Object, objects) \
+        for (i=0; i<objects.size(); ++i) \
+        { \
+            if (objects[i].id == currentID) \
+            { \
+                updateProperty(Property_##Object##_Top); \
+                return; \
+            } \
+        }
+
+        FindObjectWithID(Picture, pictures)
+        FindObjectWithID(Button, buttons)
+        FindObjectWithID(Checkbox, checkboxes)
+        FindObjectWithID(Checkbox, radioButtons)
+        FindObjectWithID(Label, labels)
+        FindObjectWithID(EditBox, editBoxes)
+        FindObjectWithID(Listbox, listboxes)
+        FindObjectWithID(ComboBox, comboBoxes)
+        FindObjectWithID(Slider, sliders)
+        FindObjectWithID(Scrollbar, scrollbars)
+        FindObjectWithID(LoadingBar, loadingBars)
+
+        #undef FindObjectWithID
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id, int delay)
 {
     if (delay == 0)
     {
@@ -778,8 +845,8 @@ void Builder::resizeObject(int addToWidth, int addToHeight, unsigned int id, int
         tgui::EditBox* editboxHeight = propertyWindow.getEditBox("text_Height");
 
         // Adjust the properties
-        int width = atoi(editboxWidth->getText().c_str());
-        int height = atoi(editboxHeight->getText().c_str());
+        float width = atof(editboxWidth->getText().c_str());
+        float height = atof(editboxHeight->getText().c_str());
         width += addToWidth;
         height += addToHeight;
 

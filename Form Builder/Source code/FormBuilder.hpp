@@ -64,18 +64,23 @@ enum squares
 
 struct ObjectResizeDelay
 {
-    ObjectResizeDelay(int addToWidth, int addToHeight, unsigned int id, int delay)
+    ObjectResizeDelay(float addToWidth, float addToHeight, unsigned int id, int delay)
     {
-        m_AddToWidth  = addToWidth;
-        m_AddToHeight = addToHeight;
-        m_Id          = id;
-        m_Delay       = delay;
+        m_AddToWidth     = addToWidth;
+        m_AddToHeight    = addToHeight;
+        m_Id             = id;
+        m_Delay          = delay;
+        m_AddToPositionX = 0;
+        m_AddToPositionY = 0;
     }
 
-    int          m_AddToWidth;
-    int          m_AddToHeight;
+    float        m_AddToWidth;
+    float        m_AddToHeight;
     unsigned int m_Id;
     int          m_Delay;
+
+    float        m_AddToPositionX;
+    float        m_AddToPositionY;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,13 +117,15 @@ struct Builder
     // Delete the currently selected object
     void deleteObject();
 
+    sf::Vector2f getSelectedObjectSize();
+
     // Move the currently selected object
-    void moveObjectX(int pixels);
-    void moveObjectY(int pixels);
+    void moveObjectX(float pixels, bool delay = false);
+    void moveObjectY(float pixels, bool delay = false);
 
     // This function is called to resize an object. To avoid that the object received many resize requests,
     // there will be a delay. If no other request is sent during the delay then the object will be resized.
-    void resizeObject(int addToWidth, int addToHeight, unsigned id, int delay = DEFAULT_OBJECT_RESIZE_DELAY);
+    void resizeObject(float addToWidth, float addToHeight, unsigned id, int delay = DEFAULT_OBJECT_RESIZE_DELAY);
 
     // Load the form
     bool loadForm();
@@ -155,7 +162,7 @@ struct Builder
     unsigned int draggingSquare;
 
     // Where was the mouse when dragging?
-    sf::Vector2i dragPos;
+    sf::Vector2f dragPos;
 
     // This will store the delays for resizing objects
     std::vector<ObjectResizeDelay> resizeObjectDelays;

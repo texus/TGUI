@@ -197,13 +197,6 @@ struct PropertyValueString : public Property
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyValueInt : public Property
-{
-    int value;
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 struct PropertyValueUnsignedInt : public Property
 {
     unsigned int value;
@@ -216,6 +209,13 @@ typedef PropertyValueUnsignedInt PropertyValueBool;
 struct PropertyValueChar : public Property
 {
     char value;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct PropertyValueFloat : public Property
+{
+    float value;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ struct PropertyPathname : public PropertyValueString
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyLeft : public PropertyValueInt
+struct PropertyLeft : public PropertyValueFloat
 {
     PropertyLeft();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
@@ -252,7 +252,7 @@ struct PropertyLeft : public PropertyValueInt
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyTop : public PropertyValueInt
+struct PropertyTop : public PropertyValueFloat
 {
     PropertyTop();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
@@ -260,7 +260,23 @@ struct PropertyTop : public PropertyValueInt
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyWidth : public PropertyValueUnsignedInt
+struct PropertyWindowWidth : public PropertyValueUnsignedInt
+{
+    PropertyWindowWidth();
+    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct PropertyWindowHeight : public PropertyValueUnsignedInt
+{
+    PropertyWindowHeight();
+    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct PropertyWidth : public PropertyValueFloat
 {
     PropertyWidth();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
@@ -268,12 +284,11 @@ struct PropertyWidth : public PropertyValueUnsignedInt
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyHeight : public PropertyValueUnsignedInt
+struct PropertyHeight : public PropertyValueFloat
 {
     PropertyHeight();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
 };
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -515,11 +530,11 @@ struct PropertiesWindow
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 
-    unsigned int       id;
-    PropertyName       name;
-    PropertyWidth      width;
-    PropertyHeight     height;
-    PropertyGlobalFont globalFont;
+    unsigned int         id;
+    PropertyName         name;
+    PropertyWindowWidth  width;
+    PropertyWindowHeight height;
+    PropertyGlobalFont   globalFont;
 
     Builder* builder;
 };
