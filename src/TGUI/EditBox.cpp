@@ -1043,6 +1043,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::limitTextWidth(bool limitWidth)
+    {
+        m_LimitTextWidth = limitWidth;
+
+        // Check if the width is being limited
+        if (m_LimitTextWidth == limitWidth)
+        {
+            float width;
+
+            // Calculate the width of the edit box
+            if (m_SplitImage)
+                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
+            else
+                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
+
+            // If the width is negative then the editBox is too small to be displayed
+            if (width < 0)
+                width = 0;
+
+            // Now check if the text fits into the EditBox
+//            while (m_TextBeforeSelection.getGlobalBounds().width > width)
+            while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
+            {
+                // Make sure that you are not trying to erase if it is already empty
+                if (m_DisplayedText.empty())
+                    break;
+
+                // The text doesn't fit inside the EditBox, so the last character must be deleted.
+                m_Text.erase(m_Text.length()-1);
+                m_DisplayedText.erase(m_DisplayedText.length()-1);
+
+                // Set the new text
+                m_TextBeforeSelection.setString(m_DisplayedText);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint)
     {
         // The selection point position has to stay inside the string
