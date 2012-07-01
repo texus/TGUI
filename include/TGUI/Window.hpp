@@ -35,72 +35,71 @@ namespace tgui
     struct TGUI_API Window : public Group, sf::RenderWindow
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Window();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The constructors are just the same as those from the sf::RenderWindow.
+        /// The constructor is just the same as the one from the sf::RenderWindow.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Window(sf::VideoMode mode, const std::string& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// The constructor is just the same as the one from the sf::RenderWindow.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         explicit Window(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Destructor
+        /// Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ~Window();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Passes the event to the objects.
-        // You should call this function in your event loop.
+        /// Passes the event to the objects.
+        /// You should call this function in your event loop.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void handleEvent(sf::Event& event);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Loads a form from a file. The objects will be loaded inside the window.
-        // Note that even when this function fails, some objects might have been loaded already.
-        //
-        // return: True on success.
-        //         False when the file couldn't be opened or when the file constains a mistake.
+        /// Loads a form from a file. The objects will be loaded inside the window.
+        /// Note that even when this function fails, some objects might have been loaded already.
+        ///
+        /// return: True on success.
+        ///         False when the file couldn't be opened or when the file constains a mistake.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         bool loadObjectsFromFile(const std::string pathname);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws all the objects that were added to the window.
-        // You can optionally pass some global render states (untested).
+        /// Draws all the objects that were added to the window.
+        /// You can optionally pass some global render states (untested).
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawGUI(const sf::RenderStates& states = sf::RenderStates::Default);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function works just like the PollEvent function from sfml.
-        // The window stores the callback of all the objects.
-        // This function will return the next callback and then remove it from the queue.
-        // Note that more than one callbacks may be present in the queue, thus you should always call this
-        // function in a loop to make sure that you process every callback.
-        //
-        // return: True when there is another callback. The callback parameter will be filled with information.
-        //         False when there was no callback. The callback parameter may not be used.
+        /// This function works just like the PollEvent function from sfml.
+        /// The window stores the callback of all the objects.
+        /// This function will return the next callback and then remove it from the queue.
+        /// Note that more than one callbacks may be present in the queue, thus you should always call this
+        /// function in a loop to make sure that you process every callback.
+        ///
+        /// return: True when there is another callback. The callback parameter will be filled with information.
+        ///         False when there was no callback. The callback parameter may not be used.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getCallback(Callback& callback);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // TGUI uses this function internally to handle object callbacks. When you allow an object to pass
-        // callbacks then this function is called to tell the window about the callback.
-        // You can use this function to fake an object callback.
+        /// TGUI uses this function internally to handle object callbacks. When you allow an object to pass
+        /// callbacks then this function is called to tell the window about the callback.
+        /// You can use this function to fake an object callback.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void addCallback(Callback& callback);
-
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

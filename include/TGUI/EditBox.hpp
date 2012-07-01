@@ -35,139 +35,139 @@ namespace tgui
     struct TGUI_API EditBox : public OBJECT, OBJECT_BORDERS, OBJECT_ANIMATION
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Copy constructor
+        /// Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox(const EditBox & copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Destructor
+        /// Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ~EditBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Overload of assignment operator
+        /// Overload of assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox& operator= (const EditBox& right);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The path to the folder that contains the images.
-        // The folder must also contain an info.txt file, which will give more information about the edit box.
+        /// The path to the folder that contains the images.
+        /// The folder must also contain an info.txt file, which will give more information about the edit box.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(const std::string pathname);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the size of the edit box. Note that this function will undo all scaling, as it just
-        // calculates the correct scale factors for you. It is an alternative to setScale.
-        // Note that the edit box has to be loaded correctly before calling this function.
+        /// Changes the size of the edit box. Note that this function will undo all scaling, as it just
+        /// calculates the correct scale factors for you. It is an alternative to setScale.
+        /// Note that the edit box has to be loaded correctly before calling this function.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(float width, float height);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the size of the edit box, unaffected by scaling.
+        /// Returns the size of the edit box, unaffected by scaling.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2u getSize() const;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the size of the edit box, after the scaling transformation.
+        /// Returns the size of the edit box, after the scaling transformation.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the pathname that was used to load the edit box.
-        // When the edit box has not been loaded yet then this function will return an empty string.
+        /// Returns the pathname that was used to load the edit box.
+        /// When the edit box has not been loaded yet then this function will return an empty string.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         std::string getLoadedPathname();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // You can change the text of the editbox with this function.
-        // The last characters of the text might be removed in the following situations:
-        //  1. The text has more characters than MaxChars (0 by default, which means unlimited characters)
-        //  2. The text does not fit inside the EditBox and LimitTextWidth is true (false by default)
+        /// You can change the text of the editbox with this function.
+        /// The last characters of the text might be removed in the following situations:
+        ///  1. The text has more characters than MaxChars (0 by default, which means unlimited characters)
+        ///  2. The text does not fit inside the EditBox and LimitTextWidth is true (false by default)
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const std::string text);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the text inside the edit box. This text is not affected by the password character.
+        /// Returns the text inside the edit box. This text is not affected by the password character.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         std::string getText();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the character size of the text.
-        // If the size is 0 (default) then the text will be scaled to fit in the edit box.
-        // Note that this text size is the size before scaling.
+        /// Changes the character size of the text.
+        /// If the size is 0 (default) then the text will be scaled to fit in the edit box.
+        /// Note that this text size is the size before scaling.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(const unsigned int textSize);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the character size of the text.
-        // It is possible that this function returns 0, which means that the text is auto-scaled.
+        /// Returns the character size of the text.
+        /// It is possible that this function returns 0, which means that the text is auto-scaled.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the font of the text. When you don't call this function then the global font will be use.
-        // This global font can be changed by calling the setGlobalFont function from Panel.
+        /// Changes the font of the text. When you don't call this function then the global font will be use.
+        /// This global font can be changed by calling the setGlobalFont function from Panel.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the font of the text.
+        /// Returns the font of the text.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font& getTextFont();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will set a password character. If NewPasswordChar is 0 then there is no password character.
-        //
-        // When the text width is limited (default) then this function might remove the last characters in the text if they no
-        // longer fit in the EditBox. You can avoid this by setting LimitTextWidth to false.
-        //
-        // The scale factors are taken into account here, so make sure that they are already set (if you use them).
+        /// This function will set a password character. If NewPasswordChar is 0 then there is no password character.
+        ///
+        /// When the text width is limited (default) then this function might remove the last characters in the text if they no
+        /// longer fit in the EditBox. You can avoid this by setting LimitTextWidth to false.
+        ///
+        /// The scale factors are taken into account here, so make sure that they are already set (if you use them).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPasswordChar(const char passwordChar = '\0');
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will return the password character. This will be 0 when there is no password character.
+        /// This function will return the password character. This will be 0 when there is no password character.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         char getPasswordChar();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will change the character limit. Set NewMaxChars to 0 to disable the limit.
+        /// This function will change the character limit. Set NewMaxChars to 0 to disable the limit.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumCharacters(const unsigned int maxChars = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the character limit. Will return 0 when there is no limit.
+        /// Returns the character limit. Will return 0 when there is no limit.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getMaximumCharacters();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the border width and border height of the edit box.
-        // When the text is autoscaled then it will be drawn within these borders.
-        // Note that these borders are scaled together with the image!
+        /// Changes the border width and border height of the edit box.
+        /// When the text is autoscaled then it will be drawn within these borders.
+        /// Note that these borders are scaled together with the image!
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorders(unsigned int leftBorder   = 0,
                         unsigned int topBorder    = 0,
@@ -176,7 +176,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the colors from the edit box.
+        /// Changes the colors from the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& textColor                            = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
@@ -185,17 +185,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Get the colors that are currently used inside the edit box.
+        /// Get the text color that is currently being used inside the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor();
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Get the text color of the selected text that is currently being used inside the edit box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextColor();
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Get the backgroun color of the selected text that is currently being used inside the edit box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextBackgroundColor();
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Get the bacground color of the selected text that is currently being used inside the edit box when the edit box is not focused.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getUnfocusedSelectedTextBackgroundColor();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will set the selection point somewhere, so that when you type something the changes will happen there.
-        // Normally you will not need this function.
+        /// This function will set the selection point somewhere, so that when you type something the changes will happen there.
+        /// Normally you will not need this function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint);
 
@@ -239,7 +251,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
+        /// The color of the flickering selection point
         sf::Color     selectionPointColor;
+
+        /// The width in pixels of the flickering selection point
         unsigned int  selectionPointWidth;
 
 

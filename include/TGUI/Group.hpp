@@ -35,172 +35,382 @@ namespace tgui
     struct TGUI_API Group
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Copy constructor
+        /// Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group(const Group& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Destructor
+        /// Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ~Group();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Overload of assignment operator
+        /// Overload of assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group& operator= (const Group& right);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Create and add an object to the panel.
-        // You can optionally pass an object name.
-        // If you want to access the object later then you must do this with the object name.
-        //
-        // return:  a pointer to the created object
+        /// Create and add a label to the group. You can optionally pass an object name.
+        /// If you want to access the label later then you must do this with the object name.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Label*       addLabel(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a picture to the group. You can optionally pass an object name.
+        /// If you want to access the picture later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture*     addPicture(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a button to the group. You can optionally pass an object name.
+        /// If you want to access the button later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Button*      addButton(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a checkbox to the group. You can optionally pass an object name.
+        /// If you want to access the checkbox later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Checkbox*    addCheckbox(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a radio button to the group. You can optionally pass an object name.
+        /// If you want to access the radio button later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         RadioButton* addRadioButton(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add an edit box to the group. You can optionally pass an object name.
+        /// If you want to access the edit box later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox*     addEditBox(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a slider to the group. You can optionally pass an object name.
+        /// If you want to access the slider later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Slider*      addSlider(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a scrollbar to the group. You can optionally pass an object name.
+        /// If you want to access the scrollbar later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Scrollbar*   addScrollbar(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a listbox to the group. You can optionally pass an object name.
+        /// If you want to access the listbox later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Listbox*     addListbox(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a loading bar to the group. You can optionally pass an object name.
+        /// If you want to access the loading bar later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         LoadingBar*  addLoadingBar(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a panel to the group. You can optionally pass an object name.
+        /// If you want to access the panel later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel*       addPanel(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a combo box to the group. You can optionally pass an object name.
+        /// If you want to access the combo box later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox*    addComboBox(const std::string objectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a text box to the group. You can optionally pass an object name.
+        /// If you want to access the text box later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     addTextBox(const std::string objectName = "");
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are used to get back the pointer to an object.
-        // The object name is the same as when you created the objects (with the addObject functions).
-        // When a wrong objectName was passed then nothing will happen. The returned object is empty and the
-        // changes done to it will have no effect whatsoever.
-        //
-        // return: a pointer to the object
+        /// This function is used to get back the pointer to the label.
+        /// The object name is the same as when you created the objects (with the addLabel function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned label will be empty and the changes done to it will have no effect whatsoever.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Label*       getLabel(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the picture.
+        /// The object name is the same as when you created the objects (with the addPicture function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned picture will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture*     getPicture(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the button.
+        /// The object name is the same as when you created the objects (with the addButton function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned button will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Button*      getButton(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the checkbox.
+        /// The object name is the same as when you created the objects (with the addCheckbox function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned checkbox will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Checkbox*    getCheckbox(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the radio button.
+        /// The object name is the same as when you created the objects (with the addRadioButton function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned radio button will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         RadioButton* getRadioButton(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the edit box.
+        /// The object name is the same as when you created the objects (with the addEditBox function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned edit box will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox*     getEditBox(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the slider.
+        /// The object name is the same as when you created the objects (with the addSlider function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned slider will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Slider*      getSlider(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the scrollbar.
+        /// The object name is the same as when you created the objects (with the addScrollbar function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned scrollbar will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Scrollbar*   getScrollbar(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the listbox.
+        /// The object name is the same as when you created the objects (with the addListbox function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned listbox will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Listbox*     getListbox(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the loading bar.
+        /// The object name is the same as when you created the objects (with the addLoadingBar function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned loading bar will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         LoadingBar*  getLoadingBar(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the panel.
+        /// The object name is the same as when you created the objects (with the addPanel function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned panel will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel*       getPanel(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the combo box.
+        /// The object name is the same as when you created the objects (with the addComboBox function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned combo box will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox*    getComboBox(const std::string objectName);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the text box.
+        /// The object name is the same as when you created the objects (with the addTextBox function).
+        /// When a wrong object name was passed then nothing will happen.
+        /// The returned text box will be empty and the changes done to it will have no effect whatsoever.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     getTextBox(const std::string objectName);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of any existing object and returns the pointer to the new object.
+        /// Makes a copy of any existing object and returns the pointer to the new object.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
         T* copyObject(T* oldObject, const std::string newObjectName = "");
 
-
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of any existing object and returns the pointer to the new object.
-        // The difference with the copyObject function is that you pass the name of the old object instead
-        // of passing a pointer to it.
+        /// Makes a copy of an existing label and returns the pointer to the new label.
+        /// The difference with the copyObject function is that you pass the name of the old label
+        /// instead of passing a pointer to it.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Label*       copyLabel(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing picture and returns the pointer to the new picture.
+        /// The difference with the copyObject function is that you pass the name of the old picture
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture*     copyPicture(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing button and returns the pointer to the new button.
+        /// The difference with the copyObject function is that you pass the name of the old button
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Button*      copyButton(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing checkbox and returns the pointer to the new checkbox.
+        /// The difference with the copyObject function is that you pass the name of the old checkbox
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Checkbox*    copyCheckbox(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing radio button and returns the pointer to the new radio button.
+        /// The difference with the copyObject function is that you pass the name of the old radio button
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         RadioButton* copyRadioButton(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing edit box and returns the pointer to the new edit box.
+        /// The difference with the copyObject function is that you pass the name of the old edit box
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox*     copyEditBox(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing slider and returns the pointer to the new slider.
+        /// The difference with the copyObject function is that you pass the name of the old slider
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Slider*      copySlider(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing scrollbar and returns the pointer to the new scrollbar.
+        /// The difference with the copyObject function is that you pass the name of the old scrollbar
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Scrollbar*   copyScrollbar(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing listbox and returns the pointer to the new listbox.
+        /// The difference with the copyObject function is that you pass the name of the old listbox
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Listbox*     copyListbox(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing loading bar and returns the pointer to the new loading bar.
+        /// The difference with the copyObject function is that you pass the name of the old loading bar
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         LoadingBar*  copyLoadingBar(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing panel and returns the pointer to the new panel.
+        /// The difference with the copyObject function is that you pass the name of the old panel
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel*       copyPanel(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing combo box and returns the pointer to the new combo box.
+        /// The difference with the copyObject function is that you pass the name of the old combo box
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox*    copyComboBox(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing text box and returns the pointer to the new text box.
+        /// The difference with the copyObject function is that you pass the name of the old text box
+        /// instead of passing a pointer to it.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     copyTextBox(const std::string oldObjectName, const std::string newObjectName = "");
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns a list of all the objects.
+        /// Returns a list of all the objects.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<OBJECT*>& getObjects();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns a list of the names of all the objects.
+        /// Returns a list of the names of all the objects.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<std::string>& getObjectNames();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Removes a single object that was added to the panel.
-        // If there are multiple objects with the same name then only the first matching object
-        // will be removed.
+        /// Removes a single object that was added to the panel.
+        /// If there are multiple objects with the same name then only the first matching object
+        /// will be removed.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeObject(const std::string objectName);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Removes all objects that were added to the panel.
+        /// Removes all objects that were added to the panel.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllObjects();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Focuses an object.
+        /// Focuses an object.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void focus(OBJECT* object);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Unfocuses an object.
+        /// Unfocuses an object.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void unfocus(OBJECT* object);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Uncheck all the radio buttons.
+        /// Uncheck all the radio buttons.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void uncheckRadioButtons();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Send the event to all underlying objects.
+        /// Send the event to all underlying objects.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void handleEvent(sf::Event& event) = 0;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Add a callback to the list in tgui::Window, which can be obtained by calling the getCallback
-        // function of the window.
+        /// Add a callback to the list in tgui::Window, which can be obtained by calling the getCallback
+        /// function of the window.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void addCallback(Callback& callback) = 0;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Update the internal clock to make animation possible.
+        /// Update the internal clock to make animation possible.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateTime(const sf::Time& elapsedTime);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Places an object before all other objects.
+        /// Places an object before all other objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void moveObjectToFront(OBJECT* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Places an object behind all other objects.
+        /// Places an object behind all other objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void moveObjectToBack(OBJECT* object);
 
@@ -217,9 +427,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        // The internal font, used by all objects by default. If not changed then this is the default SFML font.
+        /// The internal font, used by all objects by default. If not changed then this is the default SFML font.
         sf::Font globalFont;
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
 
         // There are some empty object inside the panel, because the getObject functions must always return something.
         // When the objectName was wrong then these empty objects are returned.

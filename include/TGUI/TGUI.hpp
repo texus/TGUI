@@ -84,7 +84,7 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
+/// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
 extern tgui::TextureManager     TGUI_TextureManager;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +127,16 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #define TGUI_MAX_OBJECTS     10000
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \mainpage TGUI Documentation
+ *
+ * These pages contain the description of all usable functions and members in TGUI v0.4.0.\n
+ * The private and protected ones are hidden, like a few other functions that you should not use.
+ *
+ * Tutorials can be found on the tutorial section of my page (http://tgui.weebly.com/tutorials.html).
+ *
+ * More information can be found on the TGUI home page (http://tgui.weebly.com).
+ */
 
 #endif //_TGUI_INCLUDED_
 
