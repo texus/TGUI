@@ -139,8 +139,8 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// This function is used to receive callback from the EventManager.
-        /// You normally don't need it, but you can use it to simulate an event.
+        // This function is used to receive callback from the EventManager.
+        // You normally don't need it, but you can use it to simulate an event.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool mouseOnObject(float x, float y);
 

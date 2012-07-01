@@ -250,27 +250,28 @@ namespace tgui
     struct TGUI_API OBJECT_BORDERS
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         OBJECT_BORDERS();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the size of the borders.
+        /// Changes the size of the borders.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBorders(unsigned int leftBorder = 0, unsigned int topBorder = 0,
                                 unsigned int rightBorder = 0, unsigned int bottomBorder = 0) = 0;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the size of the borders as a tgui::Vector4u.
-        // The first element will be the size of the left border, the seconds is the size of the top border,
-        // the third is the size of the right border and the the last constains the size of the bottom border.
+        /// Returns the size of the borders as a tgui::Vector4u.
+        /// The first element will be the size of the left border, the seconds is the size of the top border,
+        /// the third is the size of the right border and the the last constains the size of the bottom border.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector4u getBorders();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
 
         unsigned int m_LeftBorder;
         unsigned int m_TopBorder;
