@@ -1048,7 +1048,7 @@ namespace tgui
         m_LimitTextWidth = limitWidth;
 
         // Check if the width is being limited
-        if (m_LimitTextWidth == limitWidth)
+        if (m_LimitTextWidth == true)
         {
             float width;
 
