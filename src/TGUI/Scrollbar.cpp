@@ -195,10 +195,8 @@ namespace tgui
         // Set the new value
         m_Value = value;
 
-        // When the value is below the minimum or above the maximum then adjust it
-        if (m_Value < m_Minimum)
-            m_Value = m_Minimum;
-        else if (m_Value > m_Maximum - m_LowValue)
+        // When the value is above the maximum then adjust it
+        if (m_Value > m_Maximum - m_LowValue)
             m_Value = m_Maximum - m_LowValue;
     }
 
