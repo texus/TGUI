@@ -2058,7 +2058,12 @@ namespace tgui
 
                 // Create the selection background
                 sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
-                selectionBackground1.setFillColor(m_SelectedTextBgrColor);
+
+                // Set the correct fill color
+                if (m_Focused)
+                    selectionBackground1.setFillColor(m_SelectedTextBgrColor);
+                else
+                    selectionBackground1.setFillColor(m_UnfocusedSelectedTextBgrColor);
 
                 // Draw the selection background
                 m_RenderTexture->draw(selectionBackground1, states);
@@ -2078,7 +2083,12 @@ namespace tgui
 
                     // Create the second selection background
                     sf::RectangleShape selectionBackground2;
-                    selectionBackground2.setFillColor(m_SelectedTextBgrColor);
+
+                    // Set the correct fill color
+                    if (m_Focused)
+                        selectionBackground2.setFillColor(m_SelectedTextBgrColor);
+                    else
+                        selectionBackground2.setFillColor(m_UnfocusedSelectedTextBgrColor);
 
                     // Draw the background rectangles of the selected text
                     for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
