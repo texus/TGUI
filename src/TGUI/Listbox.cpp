@@ -984,6 +984,9 @@ namespace tgui
         // If there is a scrollbar then pass it the event
         if (m_Scroll != NULL)
         {
+            // Remember the old scrollbar value
+            unsigned int oldValue = m_Scroll->m_Value;
+
             // Get the current scale
             Vector2f curScale = getScale();
 
@@ -997,6 +1000,27 @@ namespace tgui
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
             m_Scroll->setScale(1, 1);
+
+            // Check if the scrollbar value was incremented (you have pressed on the down arrow)
+            if (m_Scroll->m_Value == oldValue + 1)
+            {
+                // Decrement the value
+                --m_Scroll->m_Value;
+
+                // Scroll down with the whole item height instead of with a single pixel
+                m_Scroll->setValue(m_Scroll->m_Value + m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight));
+            }
+            else if (m_Scroll->m_Value == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
+            {
+                // increment the value
+                ++m_Scroll->m_Value;
+
+                // Scroll up with the whole item height instead of with a single pixel
+                if (m_Scroll->m_Value % m_ItemHeight > 0)
+                    m_Scroll->setValue(m_Scroll->m_Value - (m_Scroll->m_Value % m_ItemHeight));
+                else
+                    m_Scroll->setValue(m_Scroll->m_Value - m_ItemHeight);
+            }
         }
 
         m_MouseDown = false;

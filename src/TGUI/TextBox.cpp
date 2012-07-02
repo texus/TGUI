@@ -898,7 +898,30 @@ namespace tgui
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_Scroll->m_Value)
+                {
                     updateDisplayedText();
+
+                    // Check if the scrollbar value was incremented (you have pressed on the down arrow)
+                    if (m_Scroll->m_Value == oldValue + 1)
+                    {
+                        // Decrement the value
+                        --m_Scroll->m_Value;
+
+                        // Scroll down with the whole item height instead of with a single pixel
+                        m_Scroll->setValue(m_Scroll->m_Value + m_LineHeight - (m_Scroll->m_Value % m_LineHeight));
+                    }
+                    else if (m_Scroll->m_Value == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
+                    {
+                        // increment the value
+                        ++m_Scroll->m_Value;
+
+                        // Scroll up with the whole item height instead of with a single pixel
+                        if (m_Scroll->m_Value % m_LineHeight > 0)
+                            m_Scroll->setValue(m_Scroll->m_Value - (m_Scroll->m_Value % m_LineHeight));
+                        else
+                            m_Scroll->setValue(m_Scroll->m_Value - m_LineHeight);
+                    }
+                }
             }
         }
 
