@@ -603,29 +603,33 @@ namespace tgui
                 // Check if the ObjectID is bigger than the focused one
                 if (m_Objects[x]->m_ObjectID > id)
                 {
-                    // Check if this is the first time we pass her
-                    if (id_Bigger == 0)
+                    // Make sure that the object is visible and enabled
+                    if ((m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
                     {
-                        // It is the first time so just mark this object
-                        id_Bigger = m_Objects[x]->m_ObjectID;
-                        nr_Bigger = x;
-                    }
-                    else // We already marked an object
-                    {
-                        // Check if the new object has a lower id
-                        if (m_Objects[x]->m_ObjectID < id_Bigger)
+                        // Check if this is the first time we pass her
+                        if (id_Bigger == 0)
                         {
-                            // If it has a lower id then mark this one
+                            // It is the first time so just mark this object
                             id_Bigger = m_Objects[x]->m_ObjectID;
                             nr_Bigger = x;
+                        }
+                        else // We already marked an object
+                        {
+                            // Check if the new object has a lower id
+                            if (m_Objects[x]->m_ObjectID < id_Bigger)
+                            {
+                                // If it has a lower id then mark this one
+                                id_Bigger = m_Objects[x]->m_ObjectID;
+                                nr_Bigger = x;
+                            }
                         }
                     }
                 }
                 // Check if the object has a lower id
                 else if (m_Objects[x]->m_ObjectID < id)
                 {
-                    // Make sure that the id is not 0 and that the object is visible
-                    if ((m_Objects[x]->m_ObjectID != 0) && (m_Objects[x]->m_Visible))
+                    // Make sure that the id is not 0 and that the object is visible and enabled
+                    if ((m_Objects[x]->m_ObjectID != 0) && (m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
                     {
                         // Check if this is the first time we pass here
                         if (id_Smaller == 0)
@@ -644,7 +648,7 @@ namespace tgui
                                 nr_Smaller = x;
                             }
                         } //first time?
-                    } //ObjectID=0 or invisible?
+                    } //ObjectID=0 or invisible or disabled?
                 } //Lower id?
             } //allow focus?
         } //Loop all objects
@@ -691,8 +695,8 @@ namespace tgui
         // Loop through all objects
         for (unsigned int x=0; x<m_Objects.size(); ++x)
         {
-            // Check if the object is visible
-            if (m_Objects[x]->m_Visible)
+            // Check if the object is visible and enabled
+            if ((m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
             {
                 // Ask the object if the mouse is on top of them
                 if (m_Objects[x]->mouseOnObject(X, Y))

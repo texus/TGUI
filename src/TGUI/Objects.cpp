@@ -32,7 +32,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT() :
-    callbackID (0),
+    callbackID   (0),
+    m_Enabled    (true),
     m_Visible    (true),
     m_Loaded     (false),
     m_ObjectPhase(0),
@@ -49,6 +50,7 @@ namespace tgui
 
     OBJECT::OBJECT(const OBJECT& copy) :
     callbackID   (copy.callbackID),
+    m_Enabled    (copy.m_Enabled),
     m_Visible    (copy.m_Visible),
     m_Loaded     (copy.m_Loaded),
     m_ObjectPhase(copy.m_ObjectPhase),
@@ -76,6 +78,7 @@ namespace tgui
         if (this != &right)
         {
             callbackID    = right.callbackID;
+            m_Enabled     = right.m_Enabled;
             m_Visible     = right.m_Visible;
             m_Loaded      = right.m_Loaded;
             m_ObjectPhase = right.m_ObjectPhase;
@@ -105,7 +108,7 @@ namespace tgui
     {
         m_Visible = false;
 
-        // We needed to override our parent's function to change the mouse button state.
+        // Change the mouse button state.
         // If we don't do this then we might redraw the wrong image when the object becomes visible again.
         m_MouseHover = false;
         m_MouseDown = false;
@@ -119,6 +122,35 @@ namespace tgui
     bool OBJECT::isVisible()
     {
         return m_Visible;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::enable()
+    {
+        m_Enabled = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::disable()
+    {
+        m_Enabled = false;
+
+        // Change the mouse button state.
+        // If we don't do this then we might redraw the wrong image when the object becomes visible again.
+        m_MouseHover = false;
+        m_MouseDown = false;
+
+        // If the object is focused then it must be unfocused
+        m_Parent->unfocus(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool OBJECT::isEnabled()
+    {
+        return m_Enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
