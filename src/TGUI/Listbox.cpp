@@ -1148,7 +1148,7 @@ namespace tgui
                 sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = ((m_Size.x - m_LeftBorder - m_RightBorder) * (curScale.x / curScale.y)) - (m_Scroll->getSize().x / curScale.y);
+                float maximumTextWidth = ((m_Size.x - m_LeftBorder - m_RightBorder - 4) * (curScale.x / curScale.y)) - (m_Scroll->getSize().x / curScale.y);
 
                 // Check if the text is too long to fit inside the listbox
                 while (bounds.width > maximumTextWidth)
@@ -1186,7 +1186,7 @@ namespace tgui
                     text.setColor(m_TextColor);
 
                 // Set the translation for the text
-                states.transform.translate(4 + bounds.left, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
+                states.transform.translate(2, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
 
                 // Draw the text on the render texture
                 m_RenderTexture->draw(text, states);
@@ -1244,7 +1244,7 @@ namespace tgui
                 sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder) * curScale.x / curScale.y;
+                float maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x / curScale.y;
 
                 // Check if the text is too long to fit inside the listbox
                 while (bounds.width > maximumTextWidth)
@@ -1259,7 +1259,7 @@ namespace tgui
                 }
 
                 // Set the translation for the text
-                states.transform.translate(4 + bounds.left, (x * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
+                states.transform.translate(2, (x * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
 
                 // Draw the text
                 target.draw(text, states);

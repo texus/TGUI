@@ -740,7 +740,7 @@ namespace tgui
             sf::FloatRect bounds = tempText.getGlobalBounds();
 
             // Calculate the maximum text width
-            float maximumTextWidth = ((m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder) * curScale.x) - (m_SpriteNormal.getGlobalBounds().width * curScale.y);
+            float maximumTextWidth = ((m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - (m_SpriteNormal.getGlobalBounds().width * curScale.y);
 
             // Check if the text is too long to fit inside the combo box
             while (((bounds.width * curScale.y) + bounds.left) > maximumTextWidth)
@@ -764,7 +764,7 @@ namespace tgui
         states.transform.scale(curScale.y/curScale.x, 1);
 
         // Draw the selected item
-        states.transform.translate(0, ((m_Listbox.m_ItemHeight - m_TopBorder - m_BottomBorder) * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
+        states.transform.translate(2, ((m_Listbox.m_ItemHeight - m_TopBorder - m_BottomBorder) * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
         target.draw(tempText, states);
 
         // Reset the transformation
