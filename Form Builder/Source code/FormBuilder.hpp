@@ -117,8 +117,6 @@ struct Builder
     // Delete the currently selected object
     void deleteObject();
 
-    sf::Vector2f getSelectedObjectSize();
-
     // Move the currently selected object
     void moveObjectX(float pixels, bool delay = false);
     void moveObjectY(float pixels, bool delay = false);
@@ -126,6 +124,9 @@ struct Builder
     // This function is called to resize an object. To avoid that the object received many resize requests,
     // there will be a delay. If no other request is sent during the delay then the object will be resized.
     void resizeObject(float addToWidth, float addToHeight, unsigned id, int delay = DEFAULT_OBJECT_RESIZE_DELAY);
+
+    // Calculates and stores the new aspect ratio of the object
+    void storeObjectsNewAspectRatio();
 
     // Load the form
     bool loadForm();
@@ -166,6 +167,9 @@ struct Builder
 
     // This will store the delays for resizing objects
     std::vector<ObjectResizeDelay> resizeObjectDelays;
+
+    // Hold the aspect ratios of the objects
+    std::vector<float> aspectRatios;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

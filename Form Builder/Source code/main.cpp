@@ -183,6 +183,9 @@ int main()
                                     app.dragPos.x -= 10;
                                     app.resizeObject(-10, 0, app.currentID);
                                 }
+
+                                // Store the new aspect ratio of the object
+                                app.storeObjectsNewAspectRatio();
                             }
                             else if (app.draggingSquare == SQUARE_LEFT)
                             {
@@ -201,6 +204,9 @@ int main()
                                     app.resizeObject(10, 0, app.currentID);
                                     app.moveObjectX(-10, true);
                                 }
+
+                                // Store the new aspect ratio of the object
+                                app.storeObjectsNewAspectRatio();
                             }
                             else if (app.draggingSquare == SQUARE_BOTTOM)
                             {
@@ -217,6 +223,9 @@ int main()
                                     app.dragPos.y -= 10;
                                     app.resizeObject(0, -10, app.currentID);
                                 }
+
+                                // Store the new aspect ratio of the object
+                                app.storeObjectsNewAspectRatio();
                             }
                             else if (app.draggingSquare == SQUARE_TOP)
                             {
@@ -235,185 +244,181 @@ int main()
                                     app.resizeObject(0, 10, app.currentID);
                                     app.moveObjectY(-10, true);
                                 }
+
+                                // Store the new aspect ratio of the object
+                                app.storeObjectsNewAspectRatio();
                             }
                             else // One of the corners was selected
                             {
-                                // Get the size of the currently selected object
-                                sf::Vector2f size = app.getSelectedObjectSize();
-
-                                // Only continue when an object was found
-                                if ((size.x > 1) && (size.y > 1))
+                                // Check if the object is wider than it is high
+                                if (app.aspectRatios[app.currentID-2] < 1)
                                 {
-                                    // Check if the object is wider than it is high
-                                    if (size.x > size.y)
+                                    float ratio = 10.f * app.aspectRatios[app.currentID-2];
+
+                                    // Check which corner is being dragged
+                                    if (app.draggingSquare == SQUARE_TOP_LEFT)
                                     {
-                                        float ratio = 10.f / (size.x / size.y);
-
-                                        // Check which corner is being dragged
-                                        if (app.draggingSquare == SQUARE_TOP_LEFT)
+                                        // Check if you are pulling the top left square to the upper left side
+                                        while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y < app.dragPos.y - ratio))
                                         {
-                                            // Check if you are pulling the top left square to the upper left side
-                                            while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y < app.dragPos.y - ratio))
-                                            {
-                                                app.dragPos.x -= 10;
-                                                app.dragPos.y -= ratio;
-                                                app.resizeObject(10, ratio, app.currentID);
-                                                app.moveObjectX(-10, true);
-                                                app.moveObjectY(-ratio, true);
-                                            }
-
-                                            // Check if you are pulling the top left square to the bottom right side
-                                            while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y > app.dragPos.y + ratio))
-                                            {
-                                                app.dragPos.x += 10;
-                                                app.dragPos.y += ratio;
-                                                app.resizeObject(-10, -ratio, app.currentID);
-                                                app.moveObjectX(10, true);
-                                                app.moveObjectY(ratio, true);
-                                            }
+                                            app.dragPos.x -= 10;
+                                            app.dragPos.y -= ratio;
+                                            app.resizeObject(10, ratio, app.currentID);
+                                            app.moveObjectX(-10, true);
+                                            app.moveObjectY(-ratio, true);
                                         }
-                                        else if (app.draggingSquare == SQUARE_TOP_RIGHT)
-                                        {
-                                            // Check if you are pulling the top right square to the upper right side
-                                            while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y < app.dragPos.y - ratio))
-                                            {
-                                                app.dragPos.x += 10;
-                                                app.dragPos.y -= ratio;
-                                                app.resizeObject(10, ratio, app.currentID);
-                                                app.moveObjectY(-ratio, true);
-                                            }
 
-                                            // Check if you are pulling the top right square to the bottom left side
-                                            while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y > app.dragPos.y + ratio))
-                                            {
-                                                app.dragPos.x -= 10;
-                                                app.dragPos.y += ratio;
-                                                app.resizeObject(-10, -ratio, app.currentID);
-                                                app.moveObjectY(ratio, true);
-                                            }
-                                        }
-                                        else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
+                                        // Check if you are pulling the top left square to the bottom right side
+                                        while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y > app.dragPos.y + ratio))
                                         {
-                                            // Check if you are pulling the bottom left square to the bottom left side
-                                            while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y > app.dragPos.y + ratio))
-                                            {
-                                                app.dragPos.x -= 10;
-                                                app.dragPos.y += ratio;
-                                                app.resizeObject(10, ratio, app.currentID);
-                                                app.moveObjectX(-10, true);
-                                            }
-
-                                            // Check if you are pulling the top left square to the upper right side
-                                            while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y < app.dragPos.y - ratio))
-                                            {
-                                                app.dragPos.x += 10;
-                                                app.dragPos.y -= ratio;
-                                                app.resizeObject(-10, -ratio, app.currentID);
-                                                app.moveObjectX(10, true);
-                                            }
-                                        }
-                                        else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
-                                        {
-                                            // Check if you are pulling the bottom right square to the bottom right side
-                                            while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y > app.dragPos.y + ratio))
-                                            {
-                                                app.dragPos.x += 10;
-                                                app.dragPos.y += ratio;
-                                                app.resizeObject(10, ratio, app.currentID);
-                                            }
-
-                                            // Check if you are pulling the bottom right square to the upper left side
-                                            while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y < app.dragPos.y - ratio))
-                                            {
-                                                app.dragPos.x -= 10;
-                                                app.dragPos.y -= ratio;
-                                                app.resizeObject(-10, -ratio, app.currentID);
-                                            }
+                                            app.dragPos.x += 10;
+                                            app.dragPos.y += ratio;
+                                            app.resizeObject(-10, -ratio, app.currentID);
+                                            app.moveObjectX(10, true);
+                                            app.moveObjectY(ratio, true);
                                         }
                                     }
-                                    else // The object is higher than it is wide
+                                    else if (app.draggingSquare == SQUARE_TOP_RIGHT)
                                     {
-                                        float ratio = 10.f / (size.y / size.x);
-
-                                        // Check which corner is being dragged
-                                        if (app.draggingSquare == SQUARE_TOP_LEFT)
+                                        // Check if you are pulling the top right square to the upper right side
+                                        while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y < app.dragPos.y - ratio))
                                         {
-                                            while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y < app.dragPos.y - 10))
-                                            {
-                                                app.dragPos.x -= ratio;
-                                                app.dragPos.y -= 10;
-                                                app.resizeObject(ratio, 10, app.currentID);
-                                                app.moveObjectX(-ratio, true);
-                                                app.moveObjectY(-10, true);
-                                            }
-
-                                            // Check if you are pulling the top left square to the bottom right side
-                                            while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y > app.dragPos.y + 10))
-                                            {
-                                                app.dragPos.x += ratio;
-                                                app.dragPos.y += 10;
-                                                app.resizeObject(-ratio, -10, app.currentID);
-                                                app.moveObjectX(ratio, true);
-                                                app.moveObjectY(10, true);
-                                            }
+                                            app.dragPos.x += 10;
+                                            app.dragPos.y -= ratio;
+                                            app.resizeObject(10, ratio, app.currentID);
+                                            app.moveObjectY(-ratio, true);
                                         }
-                                        else if (app.draggingSquare == SQUARE_TOP_RIGHT)
-                                        {
-                                            // Check if you are pulling the top right square to the upper right side
-                                            while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y < app.dragPos.y - 10))
-                                            {
-                                                app.dragPos.x += ratio;
-                                                app.dragPos.y -= 10;
-                                                app.resizeObject(ratio, 10, app.currentID);
-                                                app.moveObjectY(-10, true);
-                                            }
 
-                                            // Check if you are pulling the top right square to the bottom left side
-                                            while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y > app.dragPos.y + 10))
-                                            {
-                                                app.dragPos.x -= ratio;
-                                                app.dragPos.y += 10;
-                                                app.resizeObject(-ratio, -10, app.currentID);
-                                                app.moveObjectY(10, true);
-                                            }
+                                        // Check if you are pulling the top right square to the bottom left side
+                                        while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y > app.dragPos.y + ratio))
+                                        {
+                                            app.dragPos.x -= 10;
+                                            app.dragPos.y += ratio;
+                                            app.resizeObject(-10, -ratio, app.currentID);
+                                            app.moveObjectY(ratio, true);
                                         }
-                                        else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
+                                    }
+                                    else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
+                                    {
+                                        // Check if you are pulling the bottom left square to the bottom left side
+                                        while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y > app.dragPos.y + ratio))
                                         {
-                                            // Check if you are pulling the bottom left square to the bottom left side
-                                            while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y > app.dragPos.y + 10))
-                                            {
-                                                app.dragPos.x -= ratio;
-                                                app.dragPos.y += 10;
-                                                app.resizeObject(ratio, 10, app.currentID);
-                                                app.moveObjectX(-ratio, true);
-                                            }
-
-                                            // Check if you are pulling the top left square to the upper right side
-                                            while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y < app.dragPos.y - 10))
-                                            {
-                                                app.dragPos.x += ratio;
-                                                app.dragPos.y -= 10;
-                                                app.resizeObject(-ratio, -10, app.currentID);
-                                                app.moveObjectX(ratio, true);
-                                            }
+                                            app.dragPos.x -= 10;
+                                            app.dragPos.y += ratio;
+                                            app.resizeObject(10, ratio, app.currentID);
+                                            app.moveObjectX(-10, true);
                                         }
-                                        else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
-                                        {
-                                            // Check if you are pulling the bottom right square to the bottom right side
-                                            while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y > app.dragPos.y + 10))
-                                            {
-                                                app.dragPos.x += ratio;
-                                                app.dragPos.y += 10;
-                                                app.resizeObject(ratio, 10, app.currentID);
-                                            }
 
-                                            // Check if you are pulling the bottom right square to the upper left side
-                                            while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y < app.dragPos.y - 10))
-                                            {
-                                                app.dragPos.x -= ratio;
-                                                app.dragPos.y -= 10;
-                                                app.resizeObject(-ratio, -10, app.currentID);
-                                            }
+                                        // Check if you are pulling the top left square to the upper right side
+                                        while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y < app.dragPos.y - ratio))
+                                        {
+                                            app.dragPos.x += 10;
+                                            app.dragPos.y -= ratio;
+                                            app.resizeObject(-10, -ratio, app.currentID);
+                                            app.moveObjectX(10, true);
+                                        }
+                                    }
+                                    else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
+                                    {
+                                        // Check if you are pulling the bottom right square to the bottom right side
+                                        while ((event.mouseMove.x > app.dragPos.x + 10) && (event.mouseMove.y > app.dragPos.y + ratio))
+                                        {
+                                            app.dragPos.x += 10;
+                                            app.dragPos.y += ratio;
+                                            app.resizeObject(10, ratio, app.currentID);
+                                        }
+
+                                        // Check if you are pulling the bottom right square to the upper left side
+                                        while ((event.mouseMove.x < app.dragPos.x - 10) && (event.mouseMove.y < app.dragPos.y - ratio))
+                                        {
+                                            app.dragPos.x -= 10;
+                                            app.dragPos.y -= ratio;
+                                            app.resizeObject(-10, -ratio, app.currentID);
+                                        }
+                                    }
+                                }
+                                else // The object is higher than it is wide
+                                {
+                                    float ratio = 10.f / app.aspectRatios[app.currentID-2];
+
+                                    // Check which corner is being dragged
+                                    if (app.draggingSquare == SQUARE_TOP_LEFT)
+                                    {
+                                        while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y < app.dragPos.y - 10))
+                                        {
+                                            app.dragPos.x -= ratio;
+                                            app.dragPos.y -= 10;
+                                            app.resizeObject(ratio, 10, app.currentID);
+                                            app.moveObjectX(-ratio, true);
+                                            app.moveObjectY(-10, true);
+                                        }
+
+                                        // Check if you are pulling the top left square to the bottom right side
+                                        while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y > app.dragPos.y + 10))
+                                        {
+                                            app.dragPos.x += ratio;
+                                            app.dragPos.y += 10;
+                                            app.resizeObject(-ratio, -10, app.currentID);
+                                            app.moveObjectX(ratio, true);
+                                            app.moveObjectY(10, true);
+                                        }
+                                    }
+                                    else if (app.draggingSquare == SQUARE_TOP_RIGHT)
+                                    {
+                                        // Check if you are pulling the top right square to the upper right side
+                                        while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y < app.dragPos.y - 10))
+                                        {
+                                            app.dragPos.x += ratio;
+                                            app.dragPos.y -= 10;
+                                            app.resizeObject(ratio, 10, app.currentID);
+                                            app.moveObjectY(-10, true);
+                                        }
+
+                                        // Check if you are pulling the top right square to the bottom left side
+                                        while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y > app.dragPos.y + 10))
+                                        {
+                                            app.dragPos.x -= ratio;
+                                            app.dragPos.y += 10;
+                                            app.resizeObject(-ratio, -10, app.currentID);
+                                            app.moveObjectY(10, true);
+                                        }
+                                    }
+                                    else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
+                                    {
+                                        // Check if you are pulling the bottom left square to the bottom left side
+                                        while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y > app.dragPos.y + 10))
+                                        {
+                                            app.dragPos.x -= ratio;
+                                            app.dragPos.y += 10;
+                                            app.resizeObject(ratio, 10, app.currentID);
+                                            app.moveObjectX(-ratio, true);
+                                        }
+
+                                        // Check if you are pulling the top left square to the upper right side
+                                        while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y < app.dragPos.y - 10))
+                                        {
+                                            app.dragPos.x += ratio;
+                                            app.dragPos.y -= 10;
+                                            app.resizeObject(-ratio, -10, app.currentID);
+                                            app.moveObjectX(ratio, true);
+                                        }
+                                    }
+                                    else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
+                                    {
+                                        // Check if you are pulling the bottom right square to the bottom right side
+                                        while ((event.mouseMove.x > app.dragPos.x + ratio) && (event.mouseMove.y > app.dragPos.y + 10))
+                                        {
+                                            app.dragPos.x += ratio;
+                                            app.dragPos.y += 10;
+                                            app.resizeObject(ratio, 10, app.currentID);
+                                        }
+
+                                        // Check if you are pulling the bottom right square to the upper left side
+                                        while ((event.mouseMove.x < app.dragPos.x - ratio) && (event.mouseMove.y < app.dragPos.y - 10))
+                                        {
+                                            app.dragPos.x -= ratio;
+                                            app.dragPos.y -= 10;
+                                            app.resizeObject(-ratio, -10, app.currentID);
                                         }
                                     }
                                 }
@@ -492,7 +497,13 @@ int main()
             if (callback.callbackID == 20)
                 app.deleteObject();
             else // A property was changed
+            {
+                // Update the property
                 app.updateProperty(callback.callbackID - 1);
+
+                // Just in case the width of height would have changed, store the aspect ratio
+                app.storeObjectsNewAspectRatio();
+            }
         }
 
         // Get the elapsed time

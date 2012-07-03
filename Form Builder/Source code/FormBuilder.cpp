@@ -66,6 +66,11 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         propertyWindow.removeAllObjects();
         windows.back().addProperties(propertyWindow);
 
+        // Create an empty picture with the size of the window
+        tgui::Picture* picture = mainWindow.addPicture("1");
+        picture->load("images/Empty.png");
+        picture->setSize(windows.back().width.value, windows.back().height.value);
+
         // Create the scale squares pictures
         mainWindow.addButton("Square_TopLeft")->load("images/Square");
         mainWindow.copyButton("Square_TopLeft", "Square_Top");
@@ -88,6 +93,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         tgui::Picture* picture = mainWindow.addPicture(tgui::to_string(currentID));
         picture->load(pictures.back().filename.value);
 
+        // Store the aspect ratio
+        aspectRatios.push_back(picture->getScaledSize().y / picture->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         pictures.back().addProperties(propertyWindow);
@@ -104,6 +112,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         tgui::Button* button = mainWindow.addButton(tgui::to_string(currentID));
         button->load(buttons.back().pathname.value);
 
+        // Store the aspect ratio
+        aspectRatios.push_back(button->getScaledSize().y / button->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         buttons.back().addProperties(propertyWindow);
@@ -119,6 +130,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Add a checkbox to the form
         tgui::Checkbox* checkbox = mainWindow.addCheckbox(tgui::to_string(currentID));
         checkbox->load(checkboxes.back().pathname.value);
+
+        // Store the aspect ratio
+        aspectRatios.push_back(checkbox->getScaledSize().y / checkbox->getScaledSize().x);
 
         // Show the properties of the window
         propertyWindow.removeAllObjects();
@@ -137,6 +151,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         tgui::RadioButton* radioButton = mainWindow.addRadioButton(tgui::to_string(currentID));
         radioButton->load(radioButtons.back().pathname.value);
 
+        // Store the aspect ratio
+        aspectRatios.push_back(radioButton->getScaledSize().y / radioButton->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         radioButtons.back().addProperties(propertyWindow);
@@ -153,6 +170,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         tgui::Label* label = mainWindow.addLabel(tgui::to_string(currentID));
         label->setText("Label");
 
+        // Store the aspect ratio
+        aspectRatios.push_back(label->getScaledSize().y / label->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         labels.back().addProperties(propertyWindow);
@@ -168,6 +188,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Add an edit box to the form
         tgui::EditBox* editBox = mainWindow.addEditBox(tgui::to_string(currentID));
         editBox->load(editBoxes.back().pathname.value);
+
+        // Store the aspect ratio
+        aspectRatios.push_back(editBox->getScaledSize().y / editBox->getScaledSize().x);
 
         // Show the properties of the window
         propertyWindow.removeAllObjects();
@@ -191,6 +214,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                               sf::Color(255, 255, 255),
                               sf::Color::Black);
 
+        // Store the aspect ratio
+        aspectRatios.push_back(listbox->getScaledSize().y / listbox->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         listboxes.back().addProperties(propertyWindow);
@@ -213,6 +239,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                                sf::Color(255, 255, 255),
                                sf::Color::Black);
 
+        // Store the aspect ratio
+        aspectRatios.push_back(comboBox->getScaledSize().y / comboBox->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         comboBoxes.back().addProperties(propertyWindow);
@@ -229,6 +258,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         tgui::Slider* slider = mainWindow.addSlider(tgui::to_string(currentID));
         slider->load(sliders.back().pathname.value);
         slider->verticalScroll = false;
+
+        // Store the aspect ratio
+        aspectRatios.push_back(slider->getScaledSize().y / slider->getScaledSize().x);
 
         // Show the properties of the window
         propertyWindow.removeAllObjects();
@@ -249,6 +281,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         scrollbar->setLowValue(4);
         scrollbar->autoHide = false;
 
+        // Store the aspect ratio
+        aspectRatios.push_back(scrollbar->getScaledSize().y / scrollbar->getScaledSize().x);
+
         // Show the properties of the window
         propertyWindow.removeAllObjects();
         scrollbars.back().addProperties(propertyWindow);
@@ -264,6 +299,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Add a loading bar to the form
         tgui::LoadingBar* loadingBar = mainWindow.addLoadingBar(tgui::to_string(currentID));
         loadingBar->load(loadingBars.back().pathname.value);
+
+        // Store the aspect ratio
+        aspectRatios.push_back(loadingBar->getScaledSize().y / loadingBar->getScaledSize().x);
 
         // Show the properties of the window
         propertyWindow.removeAllObjects();
@@ -434,7 +472,6 @@ void Builder::updateProperty(unsigned int propertyNumber)
 
     for (i=0; i<windows.size(); ++i)
     {
-
         if (windows[i].id == currentID)
         {
             windows[i].updateProperty(mainWindow, propertyWindow, propertyNumber); \
@@ -688,38 +725,6 @@ void Builder::deleteObject()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-sf::Vector2f Builder::getSelectedObjectSize()
-{
-    unsigned int i;
-
-    // Find the size of the object
-    #define FindObjectWithID(Object, object) \
-    for (i=0; i<object.size(); ++i) \
-    { \
-        if (object[i].id == currentID) \
-            return sf::Vector2f(mainWindow.get##Object(tgui::to_string(currentID))->getSize()); \
-    }
-
-    FindObjectWithID(Picture, pictures)
-    FindObjectWithID(Button, buttons)
-    FindObjectWithID(Checkbox, checkboxes)
-    FindObjectWithID(Checkbox, radioButtons)
-    FindObjectWithID(Label, labels)
-    FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
-    FindObjectWithID(ComboBox, comboBoxes)
-    FindObjectWithID(Slider, sliders)
-    FindObjectWithID(Scrollbar, scrollbars)
-    FindObjectWithID(LoadingBar, loadingBars)
-
-    #undef FindObjectWithID
-
-    // If you pass here then none of the objects was selected
-    return sf::Vector2f(0, 0);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void Builder::moveObjectX(float pixels, bool delay)
 {
     // Check if there is a delay
@@ -899,6 +904,37 @@ void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id,
         // There was no delay yet, so set one now
         resizeObjectDelays.push_back(ObjectResizeDelay(addToWidth, addToHeight, id, delay));
     }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Builder::storeObjectsNewAspectRatio()
+{
+    unsigned int i;
+
+        #define FindObjectWithID(Object, objects) \
+        for (i=0; i<objects.size(); ++i) \
+        { \
+            if (objects[i].id == currentID) \
+            { \
+                aspectRatios[currentID-2] = objects[i].height.value / objects[i].width.value; \
+                return; \
+            } \
+        }
+
+        FindObjectWithID(Picture, pictures)
+        FindObjectWithID(Button, buttons)
+        FindObjectWithID(Checkbox, checkboxes)
+        FindObjectWithID(Checkbox, radioButtons)
+        FindObjectWithID(Label, labels)
+        FindObjectWithID(EditBox, editBoxes)
+        FindObjectWithID(Listbox, listboxes)
+        FindObjectWithID(ComboBox, comboBoxes)
+        FindObjectWithID(Slider, sliders)
+        FindObjectWithID(Scrollbar, scrollbars)
+        FindObjectWithID(LoadingBar, loadingBars)
+
+        #undef FindObjectWithID
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
