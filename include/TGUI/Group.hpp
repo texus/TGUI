@@ -140,104 +140,91 @@ namespace tgui
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the label.
         /// The object name is the same as when you created the objects (with the addLabel function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned label will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Label*       getLabel(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the picture.
         /// The object name is the same as when you created the objects (with the addPicture function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned picture will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture*     getPicture(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the button.
         /// The object name is the same as when you created the objects (with the addButton function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned button will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Button*      getButton(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the checkbox.
         /// The object name is the same as when you created the objects (with the addCheckbox function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned checkbox will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Checkbox*    getCheckbox(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the radio button.
         /// The object name is the same as when you created the objects (with the addRadioButton function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned radio button will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         RadioButton* getRadioButton(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the edit box.
         /// The object name is the same as when you created the objects (with the addEditBox function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned edit box will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox*     getEditBox(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the slider.
         /// The object name is the same as when you created the objects (with the addSlider function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned slider will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Slider*      getSlider(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the scrollbar.
         /// The object name is the same as when you created the objects (with the addScrollbar function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned scrollbar will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Scrollbar*   getScrollbar(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the listbox.
         /// The object name is the same as when you created the objects (with the addListbox function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned listbox will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Listbox*     getListbox(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the loading bar.
         /// The object name is the same as when you created the objects (with the addLoadingBar function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned loading bar will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         LoadingBar*  getLoadingBar(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the panel.
         /// The object name is the same as when you created the objects (with the addPanel function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned panel will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel*       getPanel(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the combo box.
         /// The object name is the same as when you created the objects (with the addComboBox function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned combo box will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox*    getComboBox(const std::string objectName);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the text box.
         /// The object name is the same as when you created the objects (with the addTextBox function).
-        /// When a wrong object name was passed then nothing will happen.
-        /// The returned text box will be empty and the changes done to it will have no effect whatsoever.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     getTextBox(const std::string objectName);
 
@@ -252,6 +239,7 @@ namespace tgui
         /// Makes a copy of an existing label and returns the pointer to the new label.
         /// The difference with the copyObject function is that you pass the name of the old label
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Label*       copyLabel(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -259,6 +247,7 @@ namespace tgui
         /// Makes a copy of an existing picture and returns the pointer to the new picture.
         /// The difference with the copyObject function is that you pass the name of the old picture
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture*     copyPicture(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -266,6 +255,7 @@ namespace tgui
         /// Makes a copy of an existing button and returns the pointer to the new button.
         /// The difference with the copyObject function is that you pass the name of the old button
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Button*      copyButton(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -273,6 +263,7 @@ namespace tgui
         /// Makes a copy of an existing checkbox and returns the pointer to the new checkbox.
         /// The difference with the copyObject function is that you pass the name of the old checkbox
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Checkbox*    copyCheckbox(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -280,6 +271,7 @@ namespace tgui
         /// Makes a copy of an existing radio button and returns the pointer to the new radio button.
         /// The difference with the copyObject function is that you pass the name of the old radio button
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         RadioButton* copyRadioButton(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -287,6 +279,7 @@ namespace tgui
         /// Makes a copy of an existing edit box and returns the pointer to the new edit box.
         /// The difference with the copyObject function is that you pass the name of the old edit box
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox*     copyEditBox(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -294,6 +287,7 @@ namespace tgui
         /// Makes a copy of an existing slider and returns the pointer to the new slider.
         /// The difference with the copyObject function is that you pass the name of the old slider
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Slider*      copySlider(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -301,6 +295,7 @@ namespace tgui
         /// Makes a copy of an existing scrollbar and returns the pointer to the new scrollbar.
         /// The difference with the copyObject function is that you pass the name of the old scrollbar
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Scrollbar*   copyScrollbar(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -308,6 +303,7 @@ namespace tgui
         /// Makes a copy of an existing listbox and returns the pointer to the new listbox.
         /// The difference with the copyObject function is that you pass the name of the old listbox
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Listbox*     copyListbox(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -315,6 +311,7 @@ namespace tgui
         /// Makes a copy of an existing loading bar and returns the pointer to the new loading bar.
         /// The difference with the copyObject function is that you pass the name of the old loading bar
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         LoadingBar*  copyLoadingBar(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -322,6 +319,7 @@ namespace tgui
         /// Makes a copy of an existing panel and returns the pointer to the new panel.
         /// The difference with the copyObject function is that you pass the name of the old panel
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel*       copyPanel(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -329,6 +327,7 @@ namespace tgui
         /// Makes a copy of an existing combo box and returns the pointer to the new combo box.
         /// The difference with the copyObject function is that you pass the name of the old combo box
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox*    copyComboBox(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -336,6 +335,7 @@ namespace tgui
         /// Makes a copy of an existing text box and returns the pointer to the new text box.
         /// The difference with the copyObject function is that you pass the name of the old text box
         /// instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     copyTextBox(const std::string oldObjectName, const std::string newObjectName = "");
 
@@ -433,22 +433,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-
-        // There are some empty object inside the panel, because the getObject functions must always return something.
-        // When the objectName was wrong then these empty objects are returned.
-        static Label       m_EmptyLabel;
-        static Picture     m_EmptyPicture;
-        static Button      m_EmptyButton;
-        static Checkbox    m_EmptyCheckbox;
-        static RadioButton m_EmptyRadioButton;
-        static EditBox     m_EmptyEditBox;
-        static Slider      m_EmptySlider;
-        static Scrollbar   m_EmptyScrollbar;
-        static Listbox     m_EmptyListbox;
-        static LoadingBar  m_EmptyLoadingBar;
-        static Panel       m_EmptyPanel;
-        static ComboBox    m_EmptyComboBox;
-        static TextBox     m_EmptyTextBox;
 
         std::vector<OBJECT*>      m_Objects;
         std::vector<std::string>  m_ObjName;

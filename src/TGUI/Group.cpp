@@ -66,7 +66,7 @@ StructName* Group::copy##StructName(const std::string oldObjectName, const std::
             return copyObject(static_cast<StructName*>(m_Objects[i]), newObjectName); \
     } \
   \
-    return &m_Empty##StructName; \
+    return NULL; \
 }
 
 #define TGUI_GROUP_GET_FUNCTION(StructName, EnumName, GroupName) \
@@ -78,7 +78,7 @@ StructName* Group::get##StructName(const std::string objectName) \
             return static_cast<StructName*>(m_Objects[i]); \
     } \
   \
-    return &m_Empty##StructName; \
+    return NULL; \
 }
 
 #define TGUI_GROUP_REMOVE_OBJECT(EnumName) \
@@ -93,22 +93,6 @@ if (m_Objects[i]->m_ObjectType == EnumName) \
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Label       Group::m_EmptyLabel;
-    Picture     Group::m_EmptyPicture;
-    Button      Group::m_EmptyButton;
-    Checkbox    Group::m_EmptyCheckbox;
-    RadioButton Group::m_EmptyRadioButton;
-    EditBox     Group::m_EmptyEditBox;
-    Slider      Group::m_EmptySlider;
-    Scrollbar   Group::m_EmptyScrollbar;
-    Listbox     Group::m_EmptyListbox;
-    LoadingBar  Group::m_EmptyLoadingBar;
-    Panel       Group::m_EmptyPanel;
-    ComboBox    Group::m_EmptyComboBox;
-    TextBox     Group::m_EmptyTextBox;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Group::Group()
