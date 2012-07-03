@@ -795,43 +795,23 @@ namespace tgui
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
-                            listbox->changeColors(tgui::extractColor(line.erase(0, 16)),
-                                                  listbox->getTextColor(),
-                                                  listbox->getSelectedBackgroundColor(),
-                                                  listbox->getSelectedTextColor(),
-                                                  listbox->getBorderColor());
+                            listbox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
-                            listbox->changeColors(listbox->getBackgroundColor(),
-                                                  tgui::extractColor(line.erase(0, 10)),
-                                                  listbox->getSelectedBackgroundColor(),
-                                                  listbox->getSelectedTextColor(),
-                                                  listbox->getBorderColor());
+                            listbox->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
                         {
-                            listbox->changeColors(listbox->getBackgroundColor(),
-                                                  listbox->getTextColor(),
-                                                  tgui::extractColor(line.erase(0, 24)),
-                                                  listbox->getSelectedTextColor(),
-                                                  listbox->getBorderColor());
+                            listbox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
-                            listbox->changeColors(listbox->getBackgroundColor(),
-                                                  listbox->getTextColor(),
-                                                  listbox->getSelectedBackgroundColor(),
-                                                  tgui::extractColor(line.erase(0, 18)),
-                                                  listbox->getBorderColor());
+                            listbox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
-                            listbox->changeColors(listbox->getBackgroundColor(),
-                                                  listbox->getTextColor(),
-                                                  listbox->getSelectedBackgroundColor(),
-                                                  listbox->getSelectedTextColor(),
-                                                  tgui::extractColor(line.erase(0, 12)));
+                            listbox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 13).compare("maximumitems=") == 0)
                         {
@@ -932,34 +912,22 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            editBox->changeColors(tgui::extractColor(line.erase(0, 10)),
-                                                  editBox->getSelectedTextColor(),
-                                                  editBox->getSelectedTextBackgroundColor(),
-                                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+                            editBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
                             // Change the selected text color (black on error)
-                            editBox->changeColors(editBox->getTextColor(),
-                                                  tgui::extractColor(line.erase(0, 18)),
-                                                  editBox->getSelectedTextBackgroundColor(),
-                                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+                            editBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
                         {
                             // Change the selected text background color (black on error)
-                            editBox->changeColors(editBox->getTextColor(),
-                                                  editBox->getSelectedTextColor(),
-                                                  tgui::extractColor(line.erase(0, 28)),
-                                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+                            editBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
                         }
                         else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
                         {
                             // Change the selected text background color (black on error)
-                            editBox->changeColors(editBox->getTextColor(),
-                                                  editBox->getSelectedTextColor(),
-                                                  editBox->getSelectedTextBackgroundColor(),
-                                                  tgui::extractColor(line.erase(0, 37)));
+                            editBox->setUnfocusedSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 37)));
                         }
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
@@ -1122,43 +1090,23 @@ namespace tgui
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
-                            comboBox->changeColors(tgui::extractColor(line.erase(0, 16)),
-                                                   comboBox->getTextColor(),
-                                                   comboBox->getSelectedBackgroundColor(),
-                                                   comboBox->getSelectedTextColor(),
-                                                   comboBox->getBorderColor());
+                            comboBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
-                            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                                   tgui::extractColor(line.erase(0, 10)),
-                                                   comboBox->getSelectedBackgroundColor(),
-                                                   comboBox->getSelectedTextColor(),
-                                                   comboBox->getBorderColor());
+                            comboBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
                         {
-                            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                                   comboBox->getTextColor(),
-                                                   tgui::extractColor(line.erase(0, 24)),
-                                                   comboBox->getSelectedTextColor(),
-                                                   comboBox->getBorderColor());
+                            comboBox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
-                            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                                   comboBox->getTextColor(),
-                                                   comboBox->getSelectedBackgroundColor(),
-                                                   tgui::extractColor(line.erase(0, 18)),
-                                                   comboBox->getBorderColor());
+                            comboBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
-                            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                                   comboBox->getTextColor(),
-                                                   comboBox->getSelectedBackgroundColor(),
-                                                   comboBox->getSelectedTextColor(),
-                                                   tgui::extractColor(line.erase(0, 12)));
+                            comboBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 15).compare("itemstodisplay=") == 0)
                         {

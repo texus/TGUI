@@ -38,15 +38,12 @@ namespace tgui
     m_TextSize               (20),
     m_MaxItems               (0),
     m_Scroll                 (NULL),
-    m_LoadedScrollbarPathname(""),
-    m_BackgroundColor        (255, 255, 255),
-    m_TextColor              (  0,   0,   0),
-    m_SelectedBackgroundColor( 50, 100, 200),
-    m_SelectedTextColor      (255, 255, 255),
-    m_BorderColor            (  0,   0,   0)
+    m_LoadedScrollbarPathname("")
     {
         m_ObjectType = listbox;
         m_Loaded = true;
+
+        changeColors();
 
         m_RenderTexture = new sf::RenderTexture();
     }
@@ -361,6 +358,41 @@ namespace tgui
         m_SelectedBackgroundColor = selectedBackgroundColor;
         m_SelectedTextColor       = selectedTextColor;
         m_BorderColor             = borderColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Listbox::setBackgroundColor(const sf::Color& backgroundColor)
+    {
+        m_BackgroundColor = backgroundColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Listbox::setTextColor(const sf::Color& textColor)
+    {
+        m_TextColor = textColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Listbox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
+    {
+        m_SelectedBackgroundColor = selectedBackgroundColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Listbox::setSelectedTextColor(const sf::Color& selectedTextColor)
+    {
+        m_SelectedTextColor = selectedTextColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Listbox::setBorderColor(const sf::Color& borderColor)
+    {
+        m_BorderColor = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
