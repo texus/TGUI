@@ -57,7 +57,7 @@ StructName* Group::add##StructName(const std::string objectName) \
     return new##StructName; \
 }
 
-#define TGUI_GROUP_COPY_FUNCTION_BY_NAME(StructName, EnumName, GroupName) \
+#define TGUI_GROUP_COPY_FUNCTION_BY_NAME(StructName, EnumName) \
 StructName* Group::copy##StructName(const std::string oldObjectName, const std::string newObjectName) \
 { \
     for (unsigned int i=0; i<m_ObjName.size(); ++i) \
@@ -69,7 +69,7 @@ StructName* Group::copy##StructName(const std::string oldObjectName, const std::
     return NULL; \
 }
 
-#define TGUI_GROUP_GET_FUNCTION(StructName, EnumName, GroupName) \
+#define TGUI_GROUP_GET_FUNCTION(StructName, EnumName) \
 StructName* Group::get##StructName(const std::string objectName) \
 { \
     for (unsigned int i=0; i<m_ObjName.size(); ++i) \
@@ -134,6 +134,8 @@ namespace tgui
                 copyObject(static_cast<TextBox*>(copy.m_Objects[i]));
             if (copy.m_Objects[i]->m_ObjectType == panel)
                 copyObject(static_cast<Panel*>(copy.m_Objects[i]));
+            if (copy.m_Objects[i]->m_ObjectType == spriteSheet)
+                copyObject(static_cast<SpriteSheet*>(copy.m_Objects[i]));
         }
     }
 
@@ -183,6 +185,8 @@ namespace tgui
                     copyObject(static_cast<TextBox*>(right.m_Objects[i]));
                 if (right.m_Objects[i]->m_ObjectType == panel)
                     copyObject(static_cast<Panel*>(right.m_Objects[i]));
+                if (right.m_Objects[i]->m_ObjectType == spriteSheet)
+                    copyObject(static_cast<SpriteSheet*>(right.m_Objects[i]));
             }
         }
 
@@ -210,6 +214,7 @@ namespace tgui
     TGUI_GROUP_ADD_FUNCTION (Slider)
     TGUI_GROUP_ADD_FUNCTION (Scrollbar)
     TGUI_GROUP_ADD_FUNCTION (LoadingBar)
+    TGUI_GROUP_ADD_FUNCTION (SpriteSheet)
 
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Label)
     TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Button)
@@ -222,19 +227,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_GROUP_GET_FUNCTION (Label,       label,       m_Labels)
-    TGUI_GROUP_GET_FUNCTION (Picture,     picture,     m_Pictures)
-    TGUI_GROUP_GET_FUNCTION (Button,      button,      m_Buttons)
-    TGUI_GROUP_GET_FUNCTION (Checkbox,    checkbox,    m_Checkboxes)
-    TGUI_GROUP_GET_FUNCTION (RadioButton, radioButton, m_RadioButtons)
-    TGUI_GROUP_GET_FUNCTION (EditBox,     editBox,     m_EditBoxes)
-    TGUI_GROUP_GET_FUNCTION (Slider,      slider,      m_Sliders)
-    TGUI_GROUP_GET_FUNCTION (Scrollbar,   scrollbar,   m_Scrollbars)
-    TGUI_GROUP_GET_FUNCTION (Listbox,     listbox,     m_Listboxes)
-    TGUI_GROUP_GET_FUNCTION (LoadingBar,  loadingBar,  m_LoadingBars)
-    TGUI_GROUP_GET_FUNCTION (Panel,       panel,       m_Panels)
-    TGUI_GROUP_GET_FUNCTION (ComboBox,    comboBox,    m_ComboBoxes)
-    TGUI_GROUP_GET_FUNCTION (TextBox,     textBox,     m_TextBoxes)
+    TGUI_GROUP_GET_FUNCTION (Label,       label)
+    TGUI_GROUP_GET_FUNCTION (Picture,     picture)
+    TGUI_GROUP_GET_FUNCTION (Button,      button)
+    TGUI_GROUP_GET_FUNCTION (Checkbox,    checkbox)
+    TGUI_GROUP_GET_FUNCTION (RadioButton, radioButton)
+    TGUI_GROUP_GET_FUNCTION (EditBox,     editBox)
+    TGUI_GROUP_GET_FUNCTION (Slider,      slider)
+    TGUI_GROUP_GET_FUNCTION (Scrollbar,   scrollbar)
+    TGUI_GROUP_GET_FUNCTION (Listbox,     listbox)
+    TGUI_GROUP_GET_FUNCTION (LoadingBar,  loadingBar)
+    TGUI_GROUP_GET_FUNCTION (Panel,       panel)
+    TGUI_GROUP_GET_FUNCTION (ComboBox,    comboBox)
+    TGUI_GROUP_GET_FUNCTION (TextBox,     textBox)
+    TGUI_GROUP_GET_FUNCTION (SpriteSheet, spriteSheet)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -266,19 +272,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Label,       label,       m_Labels)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Picture,     picture,     m_Pictures)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Button,      button,      m_Buttons)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Checkbox,    checkbox,    m_Checkboxes)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (RadioButton, radioButton, m_RadioButtons)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (EditBox,     editBox,     m_EditBoxes)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Slider,      slider,      m_Sliders)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Scrollbar,   scrollbar,   m_Scrollbars)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Listbox,     listbox,     m_Listboxes)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (LoadingBar,  loadingBar,  m_LoadingBars)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Panel,       panel,       m_Panels)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (ComboBox,    comboBox,    m_ComboBoxes)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (TextBox,     textBox,     m_TextBoxes)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Label,       label)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Picture,     picture)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Button,      button)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Checkbox,    checkbox)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (RadioButton, radioButton)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (EditBox,     editBox)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Slider,      slider)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Scrollbar,   scrollbar)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Listbox,     listbox)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (LoadingBar,  loadingBar)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Panel,       panel)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (ComboBox,    comboBox)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (TextBox,     textBox)
+    TGUI_GROUP_COPY_FUNCTION_BY_NAME (SpriteSheet, spriteSheet)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -310,6 +317,7 @@ namespace tgui
                 else TGUI_GROUP_REMOVE_OBJECT(panel)
                 else TGUI_GROUP_REMOVE_OBJECT(comboBox)
                 else TGUI_GROUP_REMOVE_OBJECT(textBox)
+                else TGUI_GROUP_REMOVE_OBJECT(spriteSheet)
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);

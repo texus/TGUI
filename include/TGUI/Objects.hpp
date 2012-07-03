@@ -61,7 +61,8 @@ namespace tgui
         scrollbar,
         loadingBar,
         panel,
-        textBox
+        textBox,
+        spriteSheet
     };
 
 

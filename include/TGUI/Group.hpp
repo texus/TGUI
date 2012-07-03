@@ -138,6 +138,13 @@ namespace tgui
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Create and add a sprtie sheet to the group. You can optionally pass an object name.
+        /// If you want to access the sprite sheet later then you must do this with the object name.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        SpriteSheet* addSpriteSheet(const std::string objectName = "");
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// This function is used to get back the pointer to the label.
         /// The object name is the same as when you created the objects (with the addLabel function).
         /// When a wrong object name was passed then this function will return NULL.
@@ -227,6 +234,14 @@ namespace tgui
         /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     getTextBox(const std::string objectName);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// This function is used to get back the pointer to the sprite sheet.
+        /// The object name is the same as when you created the objects (with the addSpriteSheet function).
+        /// When a wrong object name was passed then this function will return NULL.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        SpriteSheet* getSpriteSheet(const std::string objectName);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,6 +353,14 @@ namespace tgui
         /// When a wrong object name was passed then this function will return NULL.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         TextBox*     copyTextBox(const std::string oldObjectName, const std::string newObjectName = "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Makes a copy of an existing sprite sheet and returns the pointer to the new sprite sheet.
+        /// The difference with the copyObject function is that you pass the name of the old
+        /// sprite sheet instead of passing a pointer to it.
+        /// When a wrong object name was passed then this function will return NULL.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        SpriteSheet* copySpriteSheet(const std::string oldObjectName, const std::string newObjectName = "");
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////

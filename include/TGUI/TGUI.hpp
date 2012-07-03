@@ -59,6 +59,7 @@ namespace tgui
     struct LoadingBar;
     struct ComboBox;
     struct TextBox;
+    struct SpriteSheet;
 
     struct InfoFileParser;
     struct EventManager;
@@ -105,6 +106,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #include <TGUI/LoadingBar.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>
+#include <TGUI/SpriteSheet.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>
