@@ -604,7 +604,7 @@ namespace tgui
                 if (m_Objects[x]->m_ObjectID > id)
                 {
                     // Make sure that the object is visible and enabled
-                    if ((m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
+                    if ((m_Objects[x]->m_Visible) && (m_Objects[x]->m_Enabled))
                     {
                         // Check if this is the first time we pass her
                         if (id_Bigger == 0)
@@ -629,7 +629,7 @@ namespace tgui
                 else if (m_Objects[x]->m_ObjectID < id)
                 {
                     // Make sure that the id is not 0 and that the object is visible and enabled
-                    if ((m_Objects[x]->m_ObjectID != 0) && (m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
+                    if ((m_Objects[x]->m_ObjectID != 0) && (m_Objects[x]->m_Visible) && (m_Objects[x]->m_Enabled))
                     {
                         // Check if this is the first time we pass here
                         if (id_Smaller == 0)
@@ -696,7 +696,7 @@ namespace tgui
         for (unsigned int x=0; x<m_Objects.size(); ++x)
         {
             // Check if the object is visible and enabled
-            if ((m_Objects[x]->m_Visible) && (m_Objects[x]->enabled))
+            if ((m_Objects[x]->m_Visible) && (m_Objects[x]->m_Enabled))
             {
                 // Ask the object if the mouse is on top of them
                 if (m_Objects[x]->mouseOnObject(X, Y))
