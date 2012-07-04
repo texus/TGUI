@@ -1749,16 +1749,10 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            editBox->changeColors(color,
-                                  editBox->getSelectedTextColor(),
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            editBox->changeColors(sf::Color::White,
-                                  editBox->getSelectedTextColor(),
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_EditBox_SelectedTextColor)
     {
@@ -1785,16 +1779,10 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            editBox->changeColors(editBox->getTextColor(),
-                                  color,
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setSelectedTextColor(color);
         }
         else // The string is empty, so use the default color
-            editBox->changeColors(editBox->getTextColor(),
-                                  sf::Color::White,
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setSelectedTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_EditBox_SelectedTextBackgroundColor)
     {
@@ -1821,16 +1809,10 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            editBox->changeColors(editBox->getTextColor(),
-                                  editBox->getSelectedTextColor(),
-                                  color,
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setSelectedTextBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            editBox->changeColors(editBox->getTextColor(),
-                                  editBox->getSelectedTextColor(),
-                                  sf::Color::White,
-                                  editBox->getUnfocusedSelectedTextBackgroundColor());
+            editBox->setSelectedTextBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_EditBox_UnfocusedSelectedTextBackgroundColor)
     {
@@ -1857,16 +1839,10 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            editBox->changeColors(editBox->getTextColor(),
-                                  editBox->getSelectedTextColor(),
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  color);
+            editBox->setUnfocusedSelectedTextBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            editBox->changeColors(editBox->getTextColor(),
-                                  editBox->getSelectedTextColor(),
-                                  editBox->getSelectedTextBackgroundColor(),
-                                  sf::Color::White);
+            editBox->setUnfocusedSelectedTextBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_EditBox_SelectionPointColor)
     {
@@ -2143,18 +2119,10 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->changeColors(color,
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->changeColors(sf::Color::White,
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Listbox_TextColor)
     {
@@ -2181,18 +2149,10 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  color,
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  sf::Color::White,
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Listbox_SelectedBackgroundColor)
     {
@@ -2219,18 +2179,10 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  color,
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setSelectedBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  sf::Color::White,
-                                  listbox->getSelectedTextColor(),
-                                  listbox->getBorderColor());
+            listbox->setSelectedBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Listbox_SelectedTextColor)
     {
@@ -2257,18 +2209,10 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  color,
-                                  listbox->getBorderColor());
+            listbox->setSelectedTextColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  sf::Color::White,
-                                  listbox->getBorderColor());
+            listbox->setSelectedTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Listbox_BorderColor)
     {
@@ -2295,18 +2239,10 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  color);
+            listbox->setBorderColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->changeColors(listbox->getBackgroundColor(),
-                                  listbox->getTextColor(),
-                                  listbox->getSelectedBackgroundColor(),
-                                  listbox->getSelectedTextColor(),
-                                  sf::Color::White);
+            listbox->setBorderColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Listbox_Items)
     {
@@ -2633,18 +2569,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            comboBox->changeColors(color,
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            comboBox->changeColors(sf::Color::White,
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_ComboBox_TextColor)
     {
@@ -2671,18 +2599,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   color,
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   sf::Color::White,
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_ComboBox_SelectedBackgroundColor)
     {
@@ -2709,18 +2629,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   color,
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setSelectedBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   sf::Color::White,
-                                   comboBox->getSelectedTextColor(),
-                                   comboBox->getBorderColor());
+            comboBox->setSelectedBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_ComboBox_SelectedTextColor)
     {
@@ -2747,18 +2659,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   color,
-                                   comboBox->getBorderColor());
+            comboBox->setSelectedTextColor(color);
         }
         else // The string is empty, so use the default color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   sf::Color::White,
-                                   comboBox->getBorderColor());
+            comboBox->setSelectedTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_ComboBox_BorderColor)
     {
@@ -2785,18 +2689,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   color);
+            comboBox->setBorderColor(color);
         }
         else // The string is empty, so use the default color
-            comboBox->changeColors(comboBox->getBackgroundColor(),
-                                   comboBox->getTextColor(),
-                                   comboBox->getSelectedBackgroundColor(),
-                                   comboBox->getSelectedTextColor(),
-                                   sf::Color::White);
+            comboBox->setBorderColor(sf::Color::White);
     }
     else if (propertyNumber == Property_ComboBox_Items)
     {
