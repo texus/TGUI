@@ -168,6 +168,25 @@ enum Properties
     Property_LoadingBar_Minimum,
     Property_LoadingBar_Maximum,
     Property_LoadingBar_CallbackID,
+
+    Property_TextBox_Name = 0,
+    Property_TextBox_Left,
+    Property_TextBox_Top,
+    Property_TextBox_Width,
+    Property_TextBox_Height,
+    Property_TextBox_ScrollbarPathname,
+    Property_TextBox_Text,
+    Property_TextBox_TextSize,
+    Property_TextBox_TextFont,
+    Property_TextBox_MaximumCharacters,
+    Property_TextBox_Borders,
+    Property_TextBox_TextColor,
+    Property_TextBox_SelectedTextColor,
+    Property_TextBox_SelectedTextBackgroundColor,
+    Property_TextBox_UnfocusedSelectedTextBackgroundColor,
+    Property_TextBox_SelectionPointColor,
+    Property_TextBox_SelectionPointWidth,
+    Property_TextBox_CallbackID,
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -814,5 +833,38 @@ struct PropertiesLoadingBar
     // True when the default loading bar is already loaded
     bool loadedDefaultLoadingBar;
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct PropertiesTextBox
+{
+    PropertiesTextBox();
+    void addProperties(tgui::Window& window);
+    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+
+    unsigned int           id;
+    PropertyName           name;
+    PropertyLeft           left;
+    PropertyTop            top;
+    PropertyWidth          width;
+    PropertyHeight         height;
+    PropertyScrollbarPathname scrollbarPathname;
+    PropertyText                text;
+    PropertyTextSize            textSize;
+    PropertyTextFont            textFont;
+    PropertyMaximumCharacters   maximumCharacters;
+    PropertyBorders             borders;
+    PropertyTextColor           textColor;
+    PropertySelectedTextColor   selectedTextColor;
+    PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
+    PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
+    PropertySelectionPointColor selectionPointColor;
+    PropertySelectionPointWidth selectionPointWidth;
+    PropertyCallbackID          callbackID;
+
+    // True when the default scrollbar is already loaded
+    bool loadedDefaultScrollbar;
+};
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

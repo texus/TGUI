@@ -80,6 +80,13 @@ Window: "PropertyWindow"
         CallbackID = 11
     }
 
+    Picture: "PicTextBox"
+    {
+        Filename   = "images/TextBox.png"
+        Position   = (58, 274)
+        CallbackID = 13
+    }
+
     Button: "Load"
     {
         Pathname   = "images/objects/Button/Black"

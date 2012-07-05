@@ -188,6 +188,12 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Add an edit box to the form
         tgui::EditBox* editBox = mainWindow.addEditBox(tgui::to_string(currentID));
         editBox->load(editBoxes.back().pathname.value);
+        editBox->setBorders(2, 2, 2, 2);
+        editBox->selectionPointColor = sf::Color(110, 110, 255);
+        editBox->changeColors(sf::Color(200, 200, 200),
+                              sf::Color(255, 255, 255),
+                              sf::Color( 10, 110, 255),
+                              sf::Color(110, 110, 255));
 
         // Store the aspect ratio
         aspectRatios.push_back(editBox->getScaledSize().y / editBox->getScaledSize().x);
@@ -206,7 +212,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add an listbox to the form
         tgui::Listbox* listbox = mainWindow.addListbox(tgui::to_string(currentID));
-        listbox->load(200, 240, "images/objects/Scrollbar/Black", 30);
+        listbox->load(200, 240, "images/objects/Scrollbar/" OBJECT_STYLE, 30);
         listbox->setBorders(2, 2, 2, 2);
         listbox->changeColors(sf::Color( 50,  50,  50),
                               sf::Color(200, 200, 200),
@@ -231,7 +237,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add an combo box to the form
         tgui::ComboBox* comboBox = mainWindow.addComboBox(tgui::to_string(currentID));
-        comboBox->load("images/objects/ComboBox/Black", 240, 10, "images/objects/Scrollbar/Black");
+        comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, 240, 10, "images/objects/Scrollbar/" OBJECT_STYLE);
         comboBox->setBorders(2, 2, 2, 2);
         comboBox->changeColors(sf::Color( 50,  50,  50),
                                sf::Color(200, 200, 200),
@@ -307,6 +313,32 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         propertyWindow.removeAllObjects();
         loadingBars.back().addProperties(propertyWindow);
     }
+    else if (objectID == tgui::textBox)
+    {
+        // Create a new property list
+        PropertiesTextBox properties;
+        properties.id = currentID;
+        properties.name.value = objectName;
+        textBoxes.push_back(properties);
+
+        // Add a text box to the form
+        tgui::TextBox* textBox = mainWindow.addTextBox(tgui::to_string(currentID));
+        textBox->load(320, 172, 24, textBoxes.back().scrollbarPathname.value);
+        textBox->setBorders(2, 2, 2, 2);
+        textBox->selectionPointColor = sf::Color(110, 110, 255);
+        textBox->changeColors(sf::Color(200, 200, 200),
+                              sf::Color(255, 255, 255),
+                              sf::Color( 10, 110, 255),
+                              sf::Color(110, 110, 255),
+                              sf::Color::Black);
+
+        // Store the aspect ratio
+        aspectRatios.push_back(textBox->getScaledSize().y / textBox->getScaledSize().x);
+
+        // Show the properties of the window
+        propertyWindow.removeAllObjects();
+        textBoxes.back().addProperties(propertyWindow);
+    }
 
     // Bring the scale squares to front
     mainWindow.getButton("Square_TopLeft")->moveToFront();
@@ -354,7 +386,7 @@ void Builder::changeVisibleProperties()
 
     // Create the delete button
     tgui::Button* button = propertyWindow.addButton();
-    button->load("images/objects/Button/Black");
+    button->load("images/objects/Button/" OBJECT_STYLE);
     button->setText("Delete object");
     button->setSize(static_cast<float>(propertyWindow.getSize().x - 8), 40);
     button->callbackID = 20;
@@ -410,6 +442,7 @@ void Builder::changeVisibleProperties()
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
     FindObjectWithID(LoadingBar, loadingBars)
+    FindObjectWithID(TextBox, textBoxes)
 
     #undef FindObjectWithID
 }
@@ -459,6 +492,7 @@ void Builder::resizePropertyWindow()
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
     FindObjectWithID(LoadingBar, loadingBars)
+    FindObjectWithID(TextBox, textBoxes)
 
     #undef FindObjectWithID
 }
@@ -517,6 +551,7 @@ void Builder::updateProperty(unsigned int propertyNumber)
     FindObjectWithID(sliders)
     FindObjectWithID(scrollbars)
     FindObjectWithID(loadingBars)
+    FindObjectWithID(textBoxes)
 
     #undef FindObjectWithID
 }
@@ -631,6 +666,7 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
         FindObjectNr(Slider, sliders)
         FindObjectNr(Scrollbar, scrollbars)
         FindObjectNr(LoadingBar, loadingBars)
+        FindObjectNr(TextBox, textBoxes)
 
         #undef FindObjectNr
 
@@ -719,6 +755,7 @@ void Builder::deleteObject()
     FindObjectWithID(sliders)
     FindObjectWithID(scrollbars)
     FindObjectWithID(loadingBars)
+    FindObjectWithID(textBoxes)
 
     #undef FindObjectWithID
 }
@@ -776,6 +813,7 @@ void Builder::moveObjectX(float pixels, bool delay)
         FindObjectWithID(Slider, sliders)
         FindObjectWithID(Scrollbar, scrollbars)
         FindObjectWithID(LoadingBar, loadingBars)
+        FindObjectWithID(TextBox, textBoxes)
 
         #undef FindObjectWithID
     }
@@ -834,6 +872,7 @@ void Builder::moveObjectY(float pixels, bool delay)
         FindObjectWithID(Slider, sliders)
         FindObjectWithID(Scrollbar, scrollbars)
         FindObjectWithID(LoadingBar, loadingBars)
+        FindObjectWithID(TextBox, textBoxes)
 
         #undef FindObjectWithID
     }
@@ -883,6 +922,7 @@ void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id,
         FindObjectWithID(Slider, sliders)
         FindObjectWithID(Scrollbar, scrollbars)
         FindObjectWithID(LoadingBar, loadingBars)
+        FindObjectWithID(TextBox, textBoxes)
 
         #undef FindObjectWithID
     }
@@ -933,6 +973,7 @@ void Builder::storeObjectsNewAspectRatio()
         FindObjectWithID(Slider, sliders)
         FindObjectWithID(Scrollbar, scrollbars)
         FindObjectWithID(LoadingBar, loadingBars)
+        FindObjectWithID(TextBox, textBoxes)
 
         #undef FindObjectWithID
 }
@@ -1358,6 +1399,46 @@ bool Builder::loadForm()
                 realObject->setMaximum(object->getMaximum());
                 realObject->callbackID = object->callbackID;
             }
+            else if (objects[i]->getObjectType() == tgui::textBox)
+            {
+                // Convert the object to a text box (which it is)
+                tgui::TextBox* object = static_cast<tgui::TextBox*>(objects[i]);
+
+                // Create and fill the properties of the object
+                unsigned int id = newObject(tgui::textBox, objectNames[i]);
+                textBoxes.back().left.value = object->getPosition().x;
+                textBoxes.back().top.value = object->getPosition().y;
+                textBoxes.back().width.value = object->getScaledSize().x;
+                textBoxes.back().height.value = object->getScaledSize().y;
+                textBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
+                textBoxes.back().text.value = object->getText();
+                textBoxes.back().textSize.value = object->getTextSize();
+                textBoxes.back().textFont.value = "Global";
+                textBoxes.back().maximumCharacters.value = object->getMaximumCharacters();
+                textBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                textBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                textBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
+                textBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(object->getSelectedTextBackgroundColor());
+                textBoxes.back().unfocusedSelectedTextBackgroundColor.value = tgui::convertColorToString(object->getUnfocusedSelectedTextBackgroundColor());
+                textBoxes.back().selectionPointColor.value = tgui::convertColorToString(object->selectionPointColor);
+                textBoxes.back().selectionPointWidth.value = object->selectionPointWidth;
+                textBoxes.back().callbackID.value = object->callbackID;
+
+                // Draw the object in the correct way
+                tgui::TextBox* realObject = mainWindow.getTextBox(tgui::to_string(id));
+                realObject->load(object->getScaledSize().x, object->getScaledSize().y, object->getTextSize(), object->getLoadedScrollbarPathname());
+                realObject->setPosition(object->getPosition());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setText(object->getText());
+                realObject->setTextSize(object->getTextSize());
+                realObject->setTextFont(mainWindow.globalFont);
+                realObject->setMaximumCharacters(object->getMaximumCharacters());
+                realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
+                realObject->changeColors(object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor());
+                realObject->selectionPointColor = object->selectionPointColor;
+                realObject->selectionPointWidth = object->selectionPointWidth;
+                realObject->callbackID = object->callbackID;
+            }
         }
 
         // Select the window
@@ -1437,6 +1518,7 @@ void Builder::saveForm()
         FindLowestID(sliders, tgui::slider)
         FindLowestID(scrollbars, tgui::scrollbar)
         FindLowestID(loadingBars, tgui::loadingBar)
+        FindLowestID(textBoxes, tgui::textBox)
 
         // Check if you found another object
         if (objectID == 0)
@@ -2110,6 +2192,85 @@ void Builder::saveForm()
 
             line = TAB TAB "CallbackID = ";
             line.append(tgui::to_string(loadingBars[objectIndex].callbackID.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB "}\n\n";
+            fwrite(line.c_str(), 1, line.size(), pFile);
+        }
+        else if (objectID == tgui::textBox)
+        {
+            line = TAB "TextBox: \"";
+            line.append(textBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Left              = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].left.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Top               = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].top.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Width             = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].width.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Height            = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].height.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "ScrollbarPathname = \"";
+            line.append(textBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Text              = \"";
+            line.append(textBoxes[objectIndex].text.value).append("\"\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "TextSize          = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].textSize.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "MaximumCharacters = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].maximumCharacters.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Borders           = ";
+            AddBrackets(textBoxes[objectIndex].borders.value)
+            line.append(textBoxes[objectIndex].borders.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "TextColor         = ";
+            AddBrackets(textBoxes[objectIndex].textColor.value)
+            line.append(textBoxes[objectIndex].textColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "SelectedTextColor = ";
+            AddBrackets(textBoxes[objectIndex].selectedTextColor.value)
+            line.append(textBoxes[objectIndex].selectedTextColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "SelectedTextBackgroundColor = ";
+            AddBrackets(textBoxes[objectIndex].selectedTextBackgroundColor.value)
+            line.append(textBoxes[objectIndex].selectedTextBackgroundColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "UnfocusedSelectedTextBackgroundColor = ";
+            AddBrackets(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value)
+            line.append(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "SelectionPointColor = ";
+            AddBrackets(textBoxes[objectIndex].selectionPointColor.value)
+            line.append(textBoxes[objectIndex].selectionPointColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "SelectionPointWidth = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].selectionPointWidth.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "CallbackID          = ";
+            line.append(tgui::to_string(textBoxes[objectIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";

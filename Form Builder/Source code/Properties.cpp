@@ -363,7 +363,7 @@ addProperty_Value(SelectionPointWidth)
 PropertyScrollbarPathname::PropertyScrollbarPathname()
 {
     description = "Scrollbar pathname";
-    value = "items/objects/Scrollbar/Black";
+    value = "items/objects/Scrollbar/" OBJECT_STYLE;
 }
 
 addProperty_String(ScrollbarPathname)
@@ -726,7 +726,7 @@ PropertiesButton::PropertiesButton()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Button/Black";
+    pathname.value = "images/objects/Button/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
     width.value = 256;
@@ -797,7 +797,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
                 // Load the default button
                 tgui::Button* button = formWindow.getButton(tgui::to_string(id));
-                button->load("images/objects/Button/Black");
+                button->load("images/objects/Button/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 button->setSize(width.value, height.value);
@@ -925,7 +925,7 @@ PropertiesCheckbox::PropertiesCheckbox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Checkbox/Black";
+    pathname.value = "images/objects/Checkbox/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
     width.value = 32;
@@ -1000,7 +1000,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
                 // Load the default checkbox
                 tgui::Checkbox* checkbox = formWindow.getCheckbox(tgui::to_string(id));
-                checkbox->load("images/objects/Checkbox/Black");
+                checkbox->load("images/objects/Checkbox/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 checkbox->setSize(width.value, height.value);
@@ -1137,7 +1137,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
 PropertiesRadioButton::PropertiesRadioButton()
 {
-    pathname.value = "images/objects/RadioButton/Black";
+    pathname.value = "images/objects/RadioButton/" OBJECT_STYLE;
     builder = NULL;
 }
 
@@ -1183,7 +1183,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
 
                 // Load the default radio button
                 tgui::RadioButton* radioButton = formWindow.getRadioButton(tgui::to_string(id));
-                radioButton->load("images/objects/RadioButton/Black");
+                radioButton->load("images/objects/RadioButton/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 radioButton->setSize(width.value, height.value);
@@ -1507,7 +1507,7 @@ PropertiesEditBox::PropertiesEditBox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/EditBox/Black";
+    pathname.value = "images/objects/EditBox/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
     width.value = 120;
@@ -1518,7 +1518,7 @@ PropertiesEditBox::PropertiesEditBox()
     passwordChar.value = 0;
     maximumCharacters.value = 0;
     borders.value = "6, 4, 6, 4";
-    textColor.value = "200,200,200";
+    textColor.value = "200, 200, 200";
     selectedTextColor.value = "255, 255, 255";
     selectedTextBackgroundColor.value = "10, 110, 255";
     unfocusedSelectedTextBackgroundColor.value = "110, 110, 255";
@@ -1594,7 +1594,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
                 // Load the default edit box
                 tgui::EditBox* editBox = formWindow.getEditBox(tgui::to_string(id));
-                editBox->load("images/objects/EditBox/Black");
+                editBox->load("images/objects/EditBox/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 editBox->setSize(width.value, height.value);
@@ -1903,7 +1903,7 @@ PropertiesListbox::PropertiesListbox()
     top.value = 0;
     width.value = 200;
     height.value = 240;
-    scrollbarPathname.value = "images/objects/Scrollbar/Black";
+    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     itemHeight.value = 25;
     maximumItems.value = 0;
     borders.value = "2, 2, 2, 2";
@@ -2003,7 +2003,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
                 loadedDefaultScrollbar = true;
 
                 // Load the default scrollbar
-                formWindow.getListbox(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/Black");
+                formWindow.getListbox(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
             }
         }
     }
@@ -2374,12 +2374,12 @@ PropertiesComboBox::PropertiesComboBox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/ComboBox/Black";
+    pathname.value = "images/objects/ComboBox/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
-    width.value = 200;
+    width.value = 240;
     height.value = 32;
-    scrollbarPathname.value = "images/objects/Scrollbar/Black";
+    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     borders.value = "2, 2, 2, 2";
     backgroundColor.value = "50, 50, 50";
     textColor.value = "200, 200, 200";
@@ -2457,7 +2457,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
                 // Load the default combo box
                 tgui::ComboBox* comboBox = formWindow.getComboBox(tgui::to_string(id));
-                comboBox->load("images/objects/ComboBox/Black", comboBox->getSize().x);
+                comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, comboBox->getSize().x);
 
                 // Adjust the scaling
                 comboBox->setSize(width.value, height.value);
@@ -2518,7 +2518,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
                 loadedDefaultScrollbar = true;
 
                 // Load the default scrollbar
-                formWindow.getComboBox(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/Black");
+                formWindow.getComboBox(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
             }
         }
     }
@@ -2806,7 +2806,7 @@ PropertiesSlider::PropertiesSlider()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Slider/Black";
+    pathname.value = "images/objects/Slider/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
     width.value = 256;
@@ -2878,7 +2878,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
                 // Load the default slider
                 tgui::Slider* slider = formWindow.getSlider(tgui::to_string(id));
-                slider->load("images/objects/Slider/Black");
+                slider->load("images/objects/Slider/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 slider->setSize(width.value, height.value);
@@ -2985,7 +2985,7 @@ PropertiesScrollbar::PropertiesScrollbar()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Scrollbar/Black";
+    pathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
     width.value = 20;
@@ -3057,7 +3057,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
                 // Load the default scrollbar
                 tgui::Scrollbar* scrollbar = formWindow.getScrollbar(tgui::to_string(id));
-                scrollbar->load("images/objects/Slider/Black");
+                scrollbar->load("images/objects/Slider/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 scrollbar->setSize(width.value, height.value);
@@ -3183,10 +3183,10 @@ PropertiesLoadingBar::PropertiesLoadingBar()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/LoadingBar/Black";
+    pathname.value = "images/objects/LoadingBar/" OBJECT_STYLE;
     left.value = 0;
     top.value = 0;
-    width.value = 400;
+    width.value = 200;
     height.value = 40;
     value.value = 0;
     minimum.value = 0;
@@ -3252,7 +3252,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
 
                 // Load the default loading bar
                 tgui::LoadingBar* loadingBar = formWindow.getLoadingBar(tgui::to_string(id));
-                loadingBar->load("images/objects/Slider/Black");
+                loadingBar->load("images/objects/Slider/" OBJECT_STYLE);
 
                 // Adjust the scaling
                 loadingBar->setSize(width.value, height.value);
@@ -3322,6 +3322,366 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
 
         // Change the callback id
         formWindow.getLoadingBar(tgui::to_string(id))->callbackID = callbackID.value;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+PropertiesTextBox::PropertiesTextBox()
+{
+    id = 0;
+    name.value = "";
+    left.value = 0;
+    top.value = 0;
+    width.value = 320;
+    height.value = 172;
+    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
+    text.value = "";
+    textSize.value = 24;
+    textFont.value = "Global";
+    maximumCharacters.value = 0;
+    borders.value = "6, 4, 6, 4";
+    textColor.value = "200, 200, 200";
+    selectedTextColor.value = "255, 255, 255";
+    selectedTextBackgroundColor.value = "10, 110, 255";
+    unfocusedSelectedTextBackgroundColor.value = "110, 110, 255";
+    selectionPointColor.value = "110, 110, 255";
+    selectionPointWidth.value = 2;
+    callbackID.value = 0;
+
+    loadedDefaultScrollbar = true;
+}
+
+void PropertiesTextBox::addProperties(tgui::Window& window)
+{
+    name.addProperty(window, Property_TextBox_Name);
+    left.addProperty(window, Property_TextBox_Left);
+    top.addProperty(window, Property_TextBox_Top);
+    width.addProperty(window, Property_TextBox_Width);
+    height.addProperty(window, Property_TextBox_Height);
+    scrollbarPathname.addProperty(window, Property_TextBox_ScrollbarPathname);
+    text.addProperty(window, Property_TextBox_Text);
+    textSize.addProperty(window, Property_TextBox_TextSize);
+    textFont.addProperty(window, Property_TextBox_TextFont);
+    maximumCharacters.addProperty(window, Property_TextBox_MaximumCharacters);
+    borders.addProperty(window, Property_TextBox_Borders);
+    textColor.addProperty(window, Property_TextBox_TextColor);
+    selectedTextColor.addProperty(window, Property_TextBox_SelectedTextColor);
+    selectedTextBackgroundColor.addProperty(window, Property_TextBox_SelectedTextBackgroundColor);
+    unfocusedSelectedTextBackgroundColor.addProperty(window, Property_TextBox_UnfocusedSelectedTextBackgroundColor);
+    selectionPointColor.addProperty(window, Property_TextBox_SelectionPointColor);
+    selectionPointWidth.addProperty(window, Property_TextBox_SelectionPointWidth);
+    callbackID.addProperty(window, Property_TextBox_CallbackID);
+}
+
+void PropertiesTextBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+{
+    // Check what the property is
+    if (propertyNumber == Property_TextBox_Name)
+    {
+        name.value = propertyWindow.getEditBox("text_Name")->getText();
+    }
+    else if (propertyNumber == Property_TextBox_Left)
+    {
+        // Store the new position
+        left.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Left")->getText().c_str()));
+
+        // Change the position of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setPosition(left.value, top.value);
+    }
+    else if (propertyNumber == Property_TextBox_Top)
+    {
+        // Store the new position
+        top.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Top")->getText().c_str()));
+
+        // Change the position of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setPosition(left.value, top.value);
+    }
+    else if (propertyNumber == Property_TextBox_Width)
+    {
+        // Store the new width
+        width.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Width")->getText().c_str()));
+
+        // Change the width of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setSize(width.value, height.value);
+    }
+    else if (propertyNumber == Property_TextBox_Height)
+    {
+        // Store the new height
+        height.value = static_cast<float>(atof(propertyWindow.getEditBox("text_Height")->getText().c_str()));
+
+        // Change the height of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setSize(width.value, height.value);
+    }
+    else if (propertyNumber == Property_TextBox_ScrollbarPathname)
+    {
+        scrollbarPathname.value = propertyWindow.getEditBox("text_ScrollbarPathname")->getText();
+
+        // Check if the info file exists
+        if (checkIfFileExists((scrollbarPathname.value + "/info.txt").c_str()))
+        {
+            // The default scrollbar is no longer used
+            loadedDefaultScrollbar = false;
+
+            // Load the new scrollbar
+            formWindow.getTextBox(tgui::to_string(id))->setScrollbar(scrollbarPathname.value);
+        }
+        else // The file didn't exist
+        {
+            // When the default scrollbar is not loaded already then load it now
+            if (loadedDefaultScrollbar == false)
+            {
+                // The default scrollbar is loaded again
+                loadedDefaultScrollbar = true;
+
+                // Load the default scrollbar
+                formWindow.getTextBox(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
+            }
+        }
+    }
+    else if (propertyNumber == Property_TextBox_Text)
+    {
+        // Store the new text
+        text.value = propertyWindow.getEditBox("text_Text")->getText();
+
+        // Change the text of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setText(text.value);
+    }
+    else if (propertyNumber == Property_TextBox_TextSize)
+    {
+        // Store the new text size
+        textSize.value = atoi(propertyWindow.getEditBox("text_TextSize")->getText().c_str());
+
+        // Change the text of the text box
+        formWindow.getTextBox(tgui::to_string(id))->setTextSize(textSize.value);
+    }
+    else if (propertyNumber == Property_TextBox_TextFont)
+    {
+/*
+        // Store the new text font
+        textFont.value = propertyWindow.getEditBox("text_TextFont")->getText();
+
+        // Check if you are using the global font
+        if (textFont.value.compare("Global") == 0)
+        {
+            // Set the new font
+            formWindow.getTextBox(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+        }
+        else // The global font is not used
+        {
+            std::string fontName;
+
+            // If the font is not recognised then use the default font
+            if (textFont.value.compare("Default") != 0) // && (fontName.compare("fontname") != 0)
+                fontName = "Default";
+            else
+                fontName = textFont.value;
+
+            // Change the font
+            if (fontName.compare("Default"))
+                formWindow.getTextBox(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+        }
+*/
+        // You are not allowed the change the font yet
+        propertyWindow.getEditBox("text_TextFont")->setText("Global");
+    }
+    else if (propertyNumber == Property_TextBox_MaximumCharacters)
+    {
+        // Store the new maximum
+        maximumCharacters.value = atoi(propertyWindow.getEditBox("text_MaximumCharacters")->getText().c_str());
+
+        // Set the maximum characters
+        formWindow.getTextBox(tgui::to_string(id))->setMaximumCharacters(maximumCharacters.value);
+        propertyWindow.getEditBox("text_Text")->setMaximumCharacters(maximumCharacters.value);
+    }
+    else if (propertyNumber == Property_TextBox_Borders)
+    {
+        // Store the new borders
+        borders.value = propertyWindow.getEditBox("text_Borders")->getText();
+
+        std::string strBorders = borders.value;
+
+        // If there is no bracket at the beginning then add one
+        if (strBorders[0] != '(')
+            strBorders.insert(strBorders.begin(), '(');
+
+        // If there is no bracket at the end then add one
+        if (strBorders[strBorders.length()-1] != ')')
+            strBorders.insert(strBorders.end(), ')');
+
+        // Get the border size
+        tgui::Vector4u border;
+        tgui::extractVector4u(strBorders, border);
+
+        // Apply the borders
+        formWindow.getTextBox(tgui::to_string(id))->setBorders(border.x1, border.x2, border.x3, border.x4);
+    }
+    else if (propertyNumber == Property_TextBox_TextColor)
+    {
+        // Store the new text color
+        textColor.value = propertyWindow.getEditBox("text_TextColor")->getText();
+
+        // Get the pointer to the text box
+        tgui::TextBox* textBox = formWindow.getTextBox(tgui::to_string(id));
+
+        // Only continue when the string is not empty
+        if (textColor.value.empty() == false)
+        {
+            std::string strColor = textColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            textBox->setTextColor(color);
+        }
+        else // The string is empty, so use the default color
+            textBox->setTextColor(sf::Color::White);
+    }
+    else if (propertyNumber == Property_TextBox_SelectedTextColor)
+    {
+        // Store the new color
+        selectedTextColor.value = propertyWindow.getEditBox("text_SelectedTextColor")->getText();
+
+        // Get the pointer to the text box
+        tgui::TextBox* textBox = formWindow.getTextBox(tgui::to_string(id));
+
+        // Only continue when the string is not empty
+        if (selectedTextColor.value.empty() == false)
+        {
+            std::string strColor = selectedTextColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            textBox->setSelectedTextColor(color);
+        }
+        else // The string is empty, so use the default color
+            textBox->setSelectedTextColor(sf::Color::White);
+    }
+    else if (propertyNumber == Property_TextBox_SelectedTextBackgroundColor)
+    {
+        // Store the new color
+        selectedTextBackgroundColor.value = propertyWindow.getEditBox("text_SelectedTextBackgroundColor")->getText();
+
+        // Get the pointer to the text box
+        tgui::TextBox* textBox = formWindow.getTextBox(tgui::to_string(id));
+
+        // Only continue when the string is not empty
+        if (selectedTextBackgroundColor.value.empty() == false)
+        {
+            std::string strColor = selectedTextBackgroundColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            textBox->setSelectedTextBackgroundColor(color);
+        }
+        else // The string is empty, so use the default color
+            textBox->setSelectedTextBackgroundColor(sf::Color::White);
+    }
+    else if (propertyNumber == Property_TextBox_UnfocusedSelectedTextBackgroundColor)
+    {
+        // Store the new color
+        unfocusedSelectedTextBackgroundColor.value = propertyWindow.getEditBox("text_UnfocusedSelectedTextBackgroundColor")->getText();
+
+        // Get the pointer to the text box
+        tgui::TextBox* textBox = formWindow.getTextBox(tgui::to_string(id));
+
+        // Only continue when the string is not empty
+        if (unfocusedSelectedTextBackgroundColor.value.empty() == false)
+        {
+            std::string strColor = unfocusedSelectedTextBackgroundColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            textBox->setUnfocusedSelectedTextBackgroundColor(color);
+        }
+        else // The string is empty, so use the default color
+            textBox->setUnfocusedSelectedTextBackgroundColor(sf::Color::White);
+    }
+    else if (propertyNumber == Property_TextBox_SelectionPointColor)
+    {
+        // Store the new color
+        selectionPointColor.value = propertyWindow.getEditBox("text_SelectionPointColor")->getText();
+
+        // Get the pointer to the text box
+        tgui::TextBox* textBox = formWindow.getTextBox(tgui::to_string(id));
+
+        // Only continue when the string is not empty
+        if (selectionPointColor.value.empty() == false)
+        {
+            std::string strColor = selectionPointColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            textBox->selectionPointColor = color;
+        }
+        else // The string is empty, so use the default color
+            textBox->selectionPointColor = sf::Color::White;
+
+    }
+    else if (propertyNumber == Property_TextBox_SelectionPointWidth)
+    {
+        // Store the new width
+        selectionPointWidth.value = atoi(propertyWindow.getEditBox("text_SelectionPointWidth")->getText().c_str());
+
+        // Set the new width
+        formWindow.getTextBox(tgui::to_string(id))->selectionPointWidth = selectionPointWidth.value;
+    }
+    else if (propertyNumber == Property_TextBox_CallbackID)
+    {
+        // Store the new callback id
+        callbackID.value = atoi(propertyWindow.getEditBox("text_CallbackID")->getText().c_str());
+
+        // Change the callback id
+        formWindow.getTextBox(tgui::to_string(id))->callbackID = callbackID.value;
     }
 }
 

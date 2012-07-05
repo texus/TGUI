@@ -152,6 +152,7 @@ struct Builder
     std::vector<PropertiesSlider>      sliders;
     std::vector<PropertiesScrollbar>   scrollbars;
     std::vector<PropertiesLoadingBar>  loadingBars;
+    std::vector<PropertiesTextBox>     textBoxes;
 
     // The id of the object that is currently selected.
     unsigned int currentID;
