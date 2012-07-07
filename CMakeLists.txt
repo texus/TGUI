@@ -18,7 +18,7 @@ if(NOT CMAKE_MODULE_PATH)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules CACHE STRING "The path to the cmake modules. This path must contain the FindSFML.cmake file." FORCE)
 endif()
 
-project(TGUI)
+project(tgui)
 
 # include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
@@ -30,15 +30,6 @@ SET( ${PROJECT_NAME}_PATCH_VERSION 0 )
 
 # project options
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
-
-# Find sfml
-find_package( SFML 2.0 COMPONENTS system window graphics )
-
-# FindSFML couldn't find SFML.
-if( NOT SFML_FOUND )
-	set( SFMLDIR "" CACHE PATH "SFML root directory" )
-	message( FATAL_ERROR "CMake couldn't find SFML. Set the SFMLDIR entry to SFML's root directory (containing \"include\" and \"lib\" directories)." )
-endif()
 
 # Set some useful compile flags.
 if( CMAKE_COMPILER_IS_GNUCXX )
@@ -53,8 +44,24 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 	endif()
 endif()
 
+# Link to the static sfml libraries when building tgui statically
+if(NOT TGUI_SHARED_LIBS)
+    set(SFML_STATIC_LIBRARIES TRUE)
+endif()
+
+# Find sfml
+find_package( SFML 2.0 COMPONENTS graphics window system )
+
+# FindSFML couldn't find SFML.
+if( NOT SFML_FOUND )
+	set( SFMLDIR "" CACHE PATH "SFML root directory" )
+	message( FATAL_ERROR "CMake couldn't find SFML. Set the SFMLDIR entry to SFML's root directory (containing \"include\" and \"lib\" directories)." )
+endif()
+
+# Set the path for the libraries
 set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
+# Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
 
 # install include files

@@ -23,16 +23,16 @@ set(TGUI_SRC
     Window.cpp
 )
 
+# add the sfml and tgui include directories
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
-
-
 
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${TGUI_SRC})
     set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -d )
 
+    # the library should be linked to sfml, unless you are on linux
     if (NOT LINUX)
         target_link_libraries( ${PROJECT_NAME} ${SFML_LIBRARIES} )
 
@@ -51,5 +51,15 @@ else()
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
 endif()
 
-# install library
-install( TARGETS ${PROJECT_NAME} DESTINATION lib PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+# Install library (use "bin" folder for DLL, "lib" for SO files)
+if(WINDOWS)
+    install( TARGETS ${PROJECT_NAME}
+             RUNTIME DESTINATION bin
+             LIBRARY DESTINATION lib
+             ARCHIVE DESTINATION lib 
+             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+else()
+    install( TARGETS ${PROJECT_NAME}
+             DESTINATION lib
+             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+endif()
