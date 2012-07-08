@@ -110,6 +110,9 @@ namespace tgui
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_ObjectType == panel)
                     {
+                        // If an object was focused then unfocus it
+                        unfocusAllObjects();
+
                         // Make the event handler of the group do the rest
                         dynamic_cast<Group*>(m_Objects[objectNr])->handleEvent(event);
                     }
@@ -133,6 +136,8 @@ namespace tgui
                         m_Objects[objectNr]->leftMousePressed(mouseX, mouseY);
                     }
                 }
+                else // The mouse didn't went down on an object, so unfocus the focused object
+                    unfocusAllObjects();
             }
         }
 
