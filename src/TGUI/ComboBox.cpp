@@ -69,7 +69,7 @@ namespace tgui
     ComboBox::~ComboBox()
     {
         if (m_TextureNormal != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL) TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureHover != NULL)      TGUI_TextureManager.removeTexture(m_TextureHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,8 +214,11 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
+        // Set the size of the listbox (avoid the left and right border to be scaled)
+        m_Listbox.setSize(width, height);
+
         // Change the scale factors
-        setScale(width / m_Listbox.getSize().x, height / m_TextureNormal->getSize().y);
+        setScale(1, height / (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +226,7 @@ namespace tgui
     Vector2u ComboBox::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Listbox.getSize().x, m_TextureNormal->getSize().y);
+            return Vector2u(m_Listbox.getSize().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder));
         else
             return Vector2u(0, 0);
     }
@@ -233,7 +236,7 @@ namespace tgui
     Vector2f ComboBox::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Listbox.getSize().x * getScale().x, m_TextureNormal->getSize().y * getScale().y);
+            return Vector2f(m_Listbox.getSize().x * getScale().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y);
         else
             return Vector2f(0, 0);
     }

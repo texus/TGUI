@@ -2378,7 +2378,7 @@ PropertiesComboBox::PropertiesComboBox()
     left.value = 0;
     top.value = 0;
     width.value = 240;
-    height.value = 32;
+    height.value = 36;
     scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     borders.value = "2, 2, 2, 2";
     backgroundColor.value = "50, 50, 50";
