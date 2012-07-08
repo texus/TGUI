@@ -1,0 +1,11 @@
+TGUI no longer comes with an executable for the Form Builder, it will be build together with the TGUI libraries if you leave the TGUI_BUILD_FORM_BUILDER option checked in CMake.
+If all goes well then the executable will be copied to this folder (with the necessary dll files on windows).
+
+This has been tested and is working on linux and on Windows in CodeBlocks.
+
+This procedure however fails on Windows when using Visual Studio. The executable will not be copied to this folder.
+You will find it in a folder like build/src/TGUI/Release, depending on your configuration (Debug/Release or another name for your build folder).
+If you were linking dynamically (TGUI_SHARED_LIBS checked in CMake) then you must also copy the tgui(-d).dll and the dlls from sfml (main, system, window and graphics) to this folder.
+
+
+The tutorials on how to compile TGUI can be found on http://tgui.weebly.com/tutorials.html

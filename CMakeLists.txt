@@ -30,9 +30,10 @@ SET( ${PROJECT_NAME}_PATCH_VERSION 0 )
 
 # project options
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
+tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
 
 # Set some useful compile flags.
-if( CMAKE_COMPILER_IS_GNUCXX )
+if( COMPILER_GCC )
 	if( NOT CMAKE_CXX_FLAGS )
 		set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C++ compiler flags" FORCE )
 		set( CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE )
@@ -49,8 +50,12 @@ if(NOT TGUI_SHARED_LIBS)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif()
 
-# Find sfml
-find_package( SFML 2.0 COMPONENTS graphics window system )
+# Find sfml (also look for the main component when using Visual Studio)
+if (WINDOWS OR COMPILER_MSVC)
+    find_package( SFML 2.0 COMPONENTS main graphics window system )
+else()
+    find_package( SFML 2.0 COMPONENTS graphics window system )
+endif()
 
 # FindSFML couldn't find SFML.
 if( NOT SFML_FOUND )
