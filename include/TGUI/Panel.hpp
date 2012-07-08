@@ -53,11 +53,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Creates the listbox.
+        /// Creates the panel.
         /// The width and height parameters constain the size before scaling.
         /// If you want the panel to have a background color then you should also adjust the last parameter.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::White);
+        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
