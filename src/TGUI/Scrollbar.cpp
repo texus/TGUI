@@ -138,19 +138,23 @@ namespace tgui
         infoFile.closeFile();
 
         // Remove all textures when they were loaded before
-        if (m_TextureTrackNormal != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal);
-        if (m_TextureTrackHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover);
+        if (m_TextureTrackNormal_L != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+
         if (m_TextureThumbNormal != NULL) TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbHover);
         if (m_TextureArrowNormal != NULL) TGUI_TextureManager.removeTexture(m_TextureArrowNormal);
         if (m_TextureArrowHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowHover);
 
         // load the required textures
-        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal))
+        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal_M))
          && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal))
          && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Arrow_Normal." + imageExtension, m_TextureArrowNormal)))
         {
-            m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal, true);
+            m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
             m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
             m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal, true);
         }
@@ -163,11 +167,11 @@ namespace tgui
 
         if (m_ObjectPhase & objectPhase::hover)
         {
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover))
+            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover_M))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Arrow_Hover." + imageExtension, m_TextureArrowHover)))
              {
-                 m_SpriteTrackHover.setTexture(*m_TextureTrackHover, true);
+                 m_SpriteTrackHover_M.setTexture(*m_TextureTrackHover_M, true);
                  m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
                  m_SpriteArrowHover.setTexture(*m_TextureArrowHover, true);
              }
@@ -242,13 +246,13 @@ namespace tgui
             // The size is different when the image is rotated
             if (m_VerticalImage == verticalScroll)
             {
-                trackWidth = m_TextureTrackNormal->getSize().x * curScale.x;
-                trackHeight = m_TextureTrackNormal->getSize().y * curScale.y;
+                trackWidth = m_TextureTrackNormal_M->getSize().x * curScale.x;
+                trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
             }
             else
             {
-                trackWidth = m_TextureTrackNormal->getSize().y * curScale.x;
-                trackHeight = m_TextureTrackNormal->getSize().x * curScale.y;
+                trackWidth = m_TextureTrackNormal_M->getSize().y * curScale.x;
+                trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
             }
 
             // The size is different when the image is rotated
@@ -373,9 +377,9 @@ namespace tgui
                 float trackHeight;
 
                 if (m_VerticalImage == verticalScroll)
-                    trackHeight = m_TextureTrackNormal->getSize().y * getScale().y;
+                    trackHeight = m_TextureTrackNormal_M->getSize().y * getScale().y;
                 else
-                    trackHeight = m_TextureTrackNormal->getSize().x * getScale().y;
+                    trackHeight = m_TextureTrackNormal_M->getSize().x * getScale().y;
 
                 // Check if the arrows are drawn at full size
                 if (trackHeight > 2 * m_TextureArrowNormal->getSize().y * getScale().x)
@@ -417,9 +421,9 @@ namespace tgui
                 float trackWidth;
 
                 if (m_VerticalImage == verticalScroll)
-                    trackWidth = m_TextureTrackNormal->getSize().x * getScale().x;
+                    trackWidth = m_TextureTrackNormal_M->getSize().x * getScale().x;
                 else
-                    trackWidth = m_TextureTrackNormal->getSize().y * getScale().x;
+                    trackWidth = m_TextureTrackNormal_M->getSize().y * getScale().x;
 
                 // Check if the arrows are drawn at full size
                 if (trackWidth > 2 * m_TextureArrowNormal->getSize().x * getScale().y)
@@ -500,9 +504,9 @@ namespace tgui
                 float trackHeight;
 
                 if (m_VerticalImage == verticalScroll)
-                    trackHeight = m_TextureTrackNormal->getSize().y * curScale.y;
+                    trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
                 else
-                    trackHeight = m_TextureTrackNormal->getSize().x * curScale.y;
+                    trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
 
                 // Calculate the arrow height
                 float arrowHeight;
@@ -576,9 +580,9 @@ namespace tgui
                 float trackWidth;
 
                 if (m_VerticalImage == verticalScroll)
-                    trackWidth = m_TextureTrackNormal->getSize().x * curScale.x;
+                    trackWidth = m_TextureTrackNormal_M->getSize().x * curScale.x;
                 else
-                    trackWidth = m_TextureTrackNormal->getSize().y * curScale.x;
+                    trackWidth = m_TextureTrackNormal_M->getSize().y * curScale.x;
 
                 // Calculate the arrow width
                 float arrowWidth;
@@ -688,11 +692,11 @@ namespace tgui
         if ((m_VerticalImage == true) && (verticalScroll == false))
         {
             // Set the track rotation
-            states.transform.rotate(-90, m_TextureTrackNormal->getSize().x * 0.5f, m_TextureTrackNormal->getSize().x * 0.5f);
+            states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
 
             // Calculate the track size
-            trackWidth = static_cast<float>(m_TextureTrackNormal->getSize().y);
-            trackHeight = static_cast<float>(m_TextureTrackNormal->getSize().x);
+            trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
+            trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
 
             // Calculate the thumb size
             thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().y);
@@ -702,11 +706,11 @@ namespace tgui
         else if ((m_VerticalImage == false) && (verticalScroll == true))
         {
             // Set the track rotation
-            states.transform.rotate(90, m_TextureTrackNormal->getSize().y * 0.5f, m_TextureTrackNormal->getSize().y * 0.5f);
+            states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
 
             // Calculate the track size
-            trackWidth = static_cast<float>(m_TextureTrackNormal->getSize().y);
-            trackHeight = static_cast<float>(m_TextureTrackNormal->getSize().x);
+            trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
+            trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
 
             // Calculate the thumb size
             thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().y);
@@ -715,8 +719,8 @@ namespace tgui
         else
         {
             // Calculate the track size
-            trackWidth = static_cast<float>(m_TextureTrackNormal->getSize().x);
-            trackHeight = static_cast<float>(m_TextureTrackNormal->getSize().y);
+            trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
+            trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
 
             // Calculate the thumb size
             thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().x);
@@ -724,11 +728,11 @@ namespace tgui
         }
 
         // Draw the normal track image
-        target.draw(m_SpriteTrackNormal, states);
+        target.draw(m_SpriteTrackNormal_M, states);
 
         // When the mouse is on top of the scrollbar then draw the hover image
         if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
-            target.draw(m_SpriteTrackHover, states);
+            target.draw(m_SpriteTrackHover_M, states);
 
 
         // Reset the transformation (in case there was any rotation)

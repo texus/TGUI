@@ -185,13 +185,28 @@ namespace tgui
         // Is the image vertically?
         bool m_VerticalImage;
 
-        sf::Texture* m_TextureTrackNormal;
-        sf::Texture* m_TextureTrackHover;
+        // If this is true then the L, M and R images will be used.
+        // If it is false then the slider is just one big image that will be stored in the M image.
+        bool m_SplitImage;
+
+        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
+        bool m_SeparateHoverImage;
+
+        sf::Texture* m_TextureTrackNormal_L;
+        sf::Texture* m_TextureTrackHover_L;
+        sf::Texture* m_TextureTrackNormal_M;
+        sf::Texture* m_TextureTrackHover_M;
+        sf::Texture* m_TextureTrackNormal_R;
+        sf::Texture* m_TextureTrackHover_R;
         sf::Texture* m_TextureThumbNormal;
         sf::Texture* m_TextureThumbHover;
 
-        sf::Sprite   m_SpriteTrackNormal;
-        sf::Sprite   m_SpriteTrackHover;
+        sf::Sprite   m_SpriteTrackNormal_L;
+        sf::Sprite   m_SpriteTrackHover_L;
+        sf::Sprite   m_SpriteTrackNormal_M;
+        sf::Sprite   m_SpriteTrackHover_M;
+        sf::Sprite   m_SpriteTrackNormal_R;
+        sf::Sprite   m_SpriteTrackHover_R;
         sf::Sprite   m_SpriteThumbNormal;
         sf::Sprite   m_SpriteThumbHover;
 
