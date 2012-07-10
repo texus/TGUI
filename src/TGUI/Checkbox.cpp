@@ -477,10 +477,19 @@ namespace tgui
         // Adjust the transformation
         states.transform *= getTransform();
 
-        // Draw the checkbox
+        // Check if the checkbox was checked
         if (m_Checked)
+        {
+            // The checked image may be a little bigger than the unchecked one, so put it on the right position
+            states.transform.translate(0, m_SpriteUnchecked.getGlobalBounds().height - m_SpriteChecked.getGlobalBounds().height);
+
+            // Draw the image of the checked checkbox
             target.draw(m_SpriteChecked, states);
-        else
+
+            // Undo the translation
+            states.transform.translate(0, m_SpriteChecked.getGlobalBounds().height - m_SpriteUnchecked.getGlobalBounds().height);
+        }
+        else // The checkbox was unchecked, just draw it
             target.draw(m_SpriteUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
