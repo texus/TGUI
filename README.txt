@@ -19,8 +19,8 @@ Using CMake is pretty easy and you can find tutorials on my site (http://tgui.we
 Tutorials
 ---------
 
-Except for the installation tutorials there are no tutorials yet.
-You can however easily learn TGUI by the richly commented example code (http://tgui.weebly.com/example-code.html)
+Tutorials can be found on the tutorial section on my site (http://tgui.weebly.com/tutorials.html).
+You can also find richly commented example code there (http://tgui.weebly.com/example-code.html).
 
 
 
