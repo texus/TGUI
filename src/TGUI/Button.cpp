@@ -32,21 +32,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button() :
-    m_TextureNormal_L       (NULL),
-    m_TextureMouseHover_L   (NULL),
-    m_TextureMouseDown_L    (NULL),
-    m_TextureFocused_L      (NULL),
-    m_TextureNormal_M       (NULL),
-    m_TextureMouseHover_M   (NULL),
-    m_TextureMouseDown_M    (NULL),
-    m_TextureFocused_M      (NULL),
-    m_TextureNormal_R       (NULL),
-    m_TextureMouseHover_R   (NULL),
-    m_TextureMouseDown_R    (NULL),
-    m_TextureFocused_R      (NULL),
-    m_LoadedPathname        (""),
-    m_SplitImage            (false),
-    m_TextSize              (0)
+    m_TextureNormal_L    (NULL),
+    m_TextureMouseHover_L(NULL),
+    m_TextureMouseDown_L (NULL),
+    m_TextureFocused_L   (NULL),
+    m_TextureNormal_M    (NULL),
+    m_TextureMouseHover_M(NULL),
+    m_TextureMouseDown_M (NULL),
+    m_TextureFocused_M   (NULL),
+    m_TextureNormal_R    (NULL),
+    m_TextureMouseHover_R(NULL),
+    m_TextureMouseDown_R (NULL),
+    m_TextureFocused_R   (NULL),
+    m_LoadedPathname     (""),
+    m_SplitImage         (false),
+    m_SeparateHoverImage (false),
+    m_TextSize           (0)
     {
         m_ObjectType = button;
 
@@ -56,11 +57,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button(const Button& copy) :
-    OBJECT          (copy),
-    m_LoadedPathname(copy.m_LoadedPathname),
-    m_SplitImage    (copy.m_SplitImage),
-    m_Text          (copy.m_Text),
-    m_TextSize      (copy.m_TextSize)
+    OBJECT              (copy),
+    m_LoadedPathname    (copy.m_LoadedPathname),
+    m_SplitImage        (copy.m_SplitImage),
+    m_SeparateHoverImage(copy.m_SeparateHoverImage),
+    m_Text              (copy.m_Text),
+    m_TextSize          (copy.m_TextSize)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))         m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -136,6 +138,7 @@ namespace tgui
             std::swap(m_SpriteFocused_R,     temp.m_SpriteFocused_R);
             std::swap(m_LoadedPathname,      temp.m_LoadedPathname);
             std::swap(m_SplitImage,          temp.m_SplitImage);
+            std::swap(m_SeparateHoverImage,    temp.m_SeparateHoverImage);
             std::swap(m_Text,                temp.m_Text);
             std::swap(m_TextSize,            temp.m_TextSize);
         }
@@ -187,6 +190,13 @@ namespace tgui
                     m_SplitImage = true;
                 else if (value.compare("false") == 0)
                     m_SplitImage = false;
+            }
+            else if (property.compare("separatehoverimage") == 0)
+            {
+                if (value.compare("true") == 0)
+                    m_SeparateHoverImage = true;
+                else if (value.compare("false") == 0)
+                    m_SeparateHoverImage = false;
             }
             else if (property.compare("phases") == 0)
             {
@@ -627,19 +637,37 @@ namespace tgui
 
             // Draw the left image
             {
-                // When the button is down then draw another image
-                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
-                    target.draw(m_SpriteMouseDown_L, states);
+                // Check if there is a separate hover image
+                if (m_SeparateHoverImage)
+                {
+                    // Draw the correct image
+                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                    {
+                        target.draw(m_SpriteMouseDown_L, states);
+                    }
+                    else if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    {
+                        target.draw(m_SpriteMouseHover_L, states);
+                    }
+                    else
+                        target.draw(m_SpriteNormal_L, states);
+                }
                 else
-                    target.draw(m_SpriteNormal_L, states);
+                {
+                    // When the button is down then draw another image
+                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                        target.draw(m_SpriteMouseDown_L, states);
+                    else
+                        target.draw(m_SpriteNormal_L, states);
+
+                    // When the mouse is on top of the button then draw an extra image
+                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        target.draw(m_SpriteMouseHover_L, states);
+                }
 
                 // When the button is focused then draw an extra image
                 if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
                     target.draw(m_SpriteFocused_L, states);
-
-                // When the mouse is on top of the button then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
-                    target.draw(m_SpriteMouseHover_L, states);
             }
 
             // Check if the middle image may be drawn
@@ -659,19 +687,37 @@ namespace tgui
 
                 // Draw the middle image
                 {
-                    // When the button is down then draw another image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
-                        target.draw(m_SpriteMouseDown_M, states);
+                    // Check if there is a separate hover image
+                    if (m_SeparateHoverImage)
+                    {
+                        // Draw the correct image
+                        if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                        {
+                            target.draw(m_SpriteMouseDown_M, states);
+                        }
+                        else if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        {
+                            target.draw(m_SpriteMouseHover_M, states);
+                        }
+                        else
+                            target.draw(m_SpriteNormal_M, states);
+                    }
                     else
-                        target.draw(m_SpriteNormal_M, states);
+                    {
+                        // When the button is down then draw another image
+                        if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                            target.draw(m_SpriteMouseDown_M, states);
+                        else
+                            target.draw(m_SpriteNormal_M, states);
+
+                        // When the mouse is on top of the button then draw an extra image
+                        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                            target.draw(m_SpriteMouseHover_M, states);
+                    }
 
                     // When the button is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
                         target.draw(m_SpriteFocused_M, states);
-
-                    // When the mouse is on top of the button then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
-                        target.draw(m_SpriteMouseHover_M, states);
                 }
 
                 // Put the right image on the correct position
@@ -679,30 +725,28 @@ namespace tgui
 
                 // Set the scale for the right image
                 states.transform.scale(curScale.y / scaleX, 1);
-
-                // Draw the right image
-                {
-                    // When the button is down then draw another image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
-                        target.draw(m_SpriteMouseDown_R, states);
-                    else
-                        target.draw(m_SpriteNormal_R, states);
-
-                    // When the button is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
-                        target.draw(m_SpriteFocused_R, states);
-
-                    // When the mouse is on top of the button then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
-                        target.draw(m_SpriteMouseHover_R, states);
-                }
             }
-            else // The button isn't width enough, we will draw it at minimum size
-            {
-                // Put the right image on the correct position
+            else // The middle image is not drawn
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
-                // Draw the right image
+            // Draw the right image
+            {
+                // Check if there is a separate hover image
+                if (m_SeparateHoverImage)
+                {
+                    // Draw the correct image
+                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                    {
+                        target.draw(m_SpriteMouseDown_R, states);
+                    }
+                    else if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    {
+                        target.draw(m_SpriteMouseHover_R, states);
+                    }
+                    else
+                        target.draw(m_SpriteNormal_R, states);
+                }
+                else
                 {
                     // When the button is down then draw another image
                     if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
@@ -710,14 +754,14 @@ namespace tgui
                     else
                         target.draw(m_SpriteNormal_R, states);
 
-                    // When the button is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
-                        target.draw(m_SpriteFocused_R, states);
-
                     // When the mouse is on top of the button then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
                         target.draw(m_SpriteMouseHover_R, states);
                 }
+
+                // When the button is focused then draw an extra image
+                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+                    target.draw(m_SpriteFocused_R, states);
             }
         }
         else // The image is not split
@@ -725,19 +769,37 @@ namespace tgui
             // Adjust the transformation
             states.transform *= getTransform();
 
-            // Draw the button
-            if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
-                target.draw(m_SpriteMouseDown_M, states);
+            // Check if there is a separate hover image
+            if (m_SeparateHoverImage)
+            {
+                // Draw the correct image
+                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                {
+                    target.draw(m_SpriteMouseDown_M, states);
+                }
+                else if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                {
+                    target.draw(m_SpriteMouseHover_M, states);
+                }
+                else
+                    target.draw(m_SpriteNormal_M, states);
+            }
             else
-                target.draw(m_SpriteNormal_M, states);
+            {
+                // Draw the button
+                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & objectPhase::mouseDown))
+                    target.draw(m_SpriteMouseDown_M, states);
+                else
+                    target.draw(m_SpriteNormal_M, states);
+
+                // When the mouse is on top of the button then draw an extra image
+                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    target.draw(m_SpriteMouseHover_M, states);
+            }
 
             // When the button is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
                 target.draw(m_SpriteFocused_M, states);
-
-            // When the mouse is on top of the button then draw an extra image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
-                target.draw(m_SpriteMouseHover_M, states);
         }
 
         // If the button has a text then also draw the text

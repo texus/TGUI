@@ -207,6 +207,9 @@ namespace tgui
         // If it is false then the button is just one big image that will be stored in the M image.
         bool m_SplitImage;
 
+        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
+        bool m_SeparateHoverImage;
+
         // The SFML text
         sf::Text m_Text;
 
