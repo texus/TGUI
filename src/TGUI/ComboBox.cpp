@@ -136,6 +136,26 @@ namespace tgui
                 // Get and store the different phases
                 extractPhases(value);
             }
+            else if (property.compare("backgroundcolor") == 0)
+            {
+                m_Listbox.m_BackgroundColor = extractColor(value);
+            }
+            else if (property.compare("textcolor") == 0)
+            {
+                m_Listbox.m_TextColor = extractColor(value);
+            }
+            else if (property.compare("selectedbackgroundcolor") == 0)
+            {
+                m_Listbox.m_SelectedBackgroundColor = extractColor(value);
+            }
+            else if (property.compare("selectedtextcolor") == 0)
+            {
+                m_Listbox.m_SelectedTextColor = extractColor(value);
+            }
+            else if (property.compare("bordercolor") == 0)
+            {
+                m_Listbox.m_BorderColor = extractColor(value);
+            }
         }
 
         // Close the info file
