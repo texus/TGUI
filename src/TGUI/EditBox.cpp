@@ -395,6 +395,17 @@ namespace tgui
                      height / m_TextureNormal_M->getSize().y);
         }
 
+        // Check if we are auto scaling the text
+        if (m_TextSize == 0)
+        {
+            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * getScale().y);
+
+            // Set the text size
+            m_TextBeforeSelection.setCharacterSize(size);
+            m_TextSelection.setCharacterSize(size);
+            m_TextAfterSelection.setCharacterSize(size);
+        }
+
         // Store the whole string in one text object to make the calculations
         sf::Text tempText(m_TextBeforeSelection);
         tempText.setString(m_DisplayedText);
@@ -450,7 +461,7 @@ namespace tgui
 
             // Calculate the width of the edit box
             if (m_SplitImage)
-                editBoxWidth = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                editBoxWidth = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                          - ((m_LeftBorder + m_RightBorder) * getScale().y);
             else
                 editBoxWidth = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -465,14 +476,28 @@ namespace tgui
                 // Reset the left crop position
                 m_LeftTextCrop = 0;
 
-                // The text is too long to fit inside the EditBox
-                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > editBoxWidth)
+                // Check if we should try moving the right text crop position left or right
+                if (m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x > editBoxWidth)
                 {
-                    // Check if the last character can be dropped
-                    if (m_SelEnd < m_RightTextCrop)
-                        --m_RightTextCrop;
-                    else
-                        ++m_LeftTextCrop;
+                    // The text is too long to fit inside the EditBox
+                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > editBoxWidth)
+                    {
+                        // Check if the last character can be dropped
+                        if (m_SelEnd < m_RightTextCrop)
+                            --m_RightTextCrop;
+                        else
+                            ++m_LeftTextCrop;
+                    }
+                }
+                else // The edit box is now bigger than before
+                {
+                    // Try to add more visible text to the edit box
+                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < editBoxWidth)
+                    {
+                        // Move the right text crop position forward
+                        if (m_RightTextCrop < m_DisplayedText.length())
+                            ++m_RightTextCrop;
+                    }
                 }
 
                 // Set the selection point back on the correct position
@@ -595,7 +620,7 @@ namespace tgui
 
         // Calculate the width of the edit box
         if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * curScale.x)
+            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * curScale.x)
                      - ((m_LeftBorder + m_RightBorder) * curScale.y);
         else
             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * curScale.x;
@@ -715,7 +740,7 @@ namespace tgui
 
         // Calculate the width of the edit box
         if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                      - ((m_LeftBorder + m_RightBorder) * getScale().y);
         else
             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -830,7 +855,7 @@ namespace tgui
 
                     // Calculate the width of the edit box
                     if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                                  - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     else
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -927,7 +952,7 @@ namespace tgui
 
         // Calculate the width of the edit box
         if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                      - ((m_LeftBorder + m_RightBorder) * getScale().y);
         else
             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1083,7 +1108,7 @@ namespace tgui
 
             // Calculate the width of the edit box
             if (m_SplitImage)
-                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                          - ((m_LeftBorder + m_RightBorder) * getScale().y);
             else
                 width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1286,7 +1311,7 @@ namespace tgui
                 // Calculate the width of the edit box and the width of the right border
                 if (m_SplitImage)
                 {
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                              - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     rightBorderWidth = m_RightBorder * getScale().y;
                 }
@@ -1432,7 +1457,7 @@ namespace tgui
 
                             // Calculate the width of the edit box
                             if (m_SplitImage)
-                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                                          - ((m_LeftBorder + m_RightBorder) * getScale().y);
                             else
                                 width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1484,7 +1509,7 @@ namespace tgui
 
                             // Calculate the width of the edit box
                             if (m_SplitImage)
-                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                                          - ((m_LeftBorder + m_RightBorder) * getScale().y);
                             else
                                 width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1519,7 +1544,7 @@ namespace tgui
 
                 // Calculate the width of the edit box
                 if (m_SplitImage)
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                              - ((m_LeftBorder + m_RightBorder) * getScale().y);
                 else
                     width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1558,7 +1583,7 @@ namespace tgui
 
                 // Calculate the width of the edit box
                 if (m_SplitImage)
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                              - ((m_LeftBorder + m_RightBorder) * getScale().y);
                 else
                     width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1620,7 +1645,7 @@ namespace tgui
 
                     // Calculate the width of the edit box
                     if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     else
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1667,7 +1692,7 @@ namespace tgui
 
                         // Calculate the width of the edit box
                         if (m_SplitImage)
-                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
                         else
                             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1712,7 +1737,7 @@ namespace tgui
 
                         // Calculate the width of the edit box
                         if (m_SplitImage)
-                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
                         else
                             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1776,7 +1801,7 @@ namespace tgui
 
                     // Calculate the width of the edit box
                     if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
                     else
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1839,7 +1864,7 @@ namespace tgui
 
         // Calculate the width of the edit box
         if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x + m_TextureNormal_L->getSize().x) * getScale().x)
+            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
                      - ((m_LeftBorder + m_RightBorder) * getScale().y);
         else
             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
@@ -1992,14 +2017,15 @@ namespace tgui
                 < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
             {
                 // Calculate the scale for our middle image
-                float ScaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)
-                                 / m_TextureNormal_M->getSize().x) * curScale.x) - (2 * curScale.y);
+                float scaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)  * curScale.x)
+                                 - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y))
+                               / m_TextureNormal_M->getSize().x;
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(ScaleX / curScale.y, 1);
+                states.transform.scale(scaleX / curScale.y, 1);
 
                 // Draw the middle image
                 {
@@ -2019,7 +2045,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(curScale.y / ScaleX, 1);
+                states.transform.scale(curScale.y / scaleX, 1);
 
                 // Draw the right image
                 {
