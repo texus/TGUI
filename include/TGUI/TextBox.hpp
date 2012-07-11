@@ -359,8 +359,6 @@ namespace tgui
 
         // The colors that are used by the text box
         sf::Color m_BackgroundColor;
-        sf::Color m_TextColor;
-        sf::Color m_SelectedTextColor;
         sf::Color m_SelectedTextBgrColor;
         sf::Color m_UnfocusedSelectedTextBgrColor;
         sf::Color m_BorderColor;

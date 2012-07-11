@@ -86,8 +86,6 @@ namespace tgui
     m_SelectionPointVisible        (copy.m_SelectionPointVisible),
     m_SelectionTextsNeedUpdate     (copy.m_SelectionTextsNeedUpdate),
     m_BackgroundColor              (copy.m_BackgroundColor),
-    m_TextColor                    (copy.m_TextColor),
-    m_SelectedTextColor            (copy.m_SelectedTextColor),
     m_SelectedTextBgrColor         (copy.m_SelectedTextBgrColor),
     m_UnfocusedSelectedTextBgrColor(copy.m_UnfocusedSelectedTextBgrColor),
     m_BorderColor                  (copy.m_BorderColor),
@@ -154,8 +152,6 @@ namespace tgui
             std::swap(m_SelectionPointVisible,         temp.m_SelectionPointVisible);
             std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
             std::swap(m_SelectionTextsNeedUpdate,      temp.m_SelectionTextsNeedUpdate);
-            std::swap(m_TextColor,                     temp.m_TextColor);
-            std::swap(m_SelectedTextColor,             temp.m_SelectedTextColor);
             std::swap(m_SelectedTextBgrColor,          temp.m_SelectedTextBgrColor);
             std::swap(m_UnfocusedSelectedTextBgrColor, temp.m_UnfocusedSelectedTextBgrColor);
             std::swap(m_BorderColor,                   temp.m_BorderColor);
@@ -575,9 +571,13 @@ namespace tgui
                                const sf::Color& unfocusedSelectedBgrColor,
                                const sf::Color& borderColor)
     {
+        m_TextBeforeSelection.setColor(color);
+        m_TextSelection1.setColor(selectedColor);
+        m_TextSelection2.setColor(selectedColor);
+        m_TextAfterSelection1.setColor(color);
+        m_TextAfterSelection2.setColor(color);
+
         m_BackgroundColor               = backgroundColor;
-        m_TextColor                     = color;
-        m_SelectedTextColor             = selectedColor;
         m_SelectedTextBgrColor          = selectedBgrColor;
         m_UnfocusedSelectedTextBgrColor = unfocusedSelectedBgrColor;
         m_BorderColor                   = borderColor;
@@ -594,14 +594,17 @@ namespace tgui
 
     void TextBox::setTextColor(const sf::Color& textColor)
     {
-        m_TextColor = textColor;
+        m_TextBeforeSelection.setColor(textColor);
+        m_TextAfterSelection1.setColor(textColor);
+        m_TextAfterSelection2.setColor(textColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextBox::setSelectedTextColor(const sf::Color& selectedTextColor)
     {
-        m_SelectedTextColor = selectedTextColor;
+        m_TextSelection1.setColor(selectedTextColor);
+        m_TextSelection2.setColor(selectedTextColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -636,14 +639,14 @@ namespace tgui
 
     const sf::Color& TextBox::getTextColor()
     {
-        return m_TextColor;
+        return m_TextBeforeSelection.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& TextBox::getSelectedTextColor()
     {
-        return m_SelectedTextColor;
+        return m_TextSelection1.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
