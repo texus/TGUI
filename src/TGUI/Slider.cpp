@@ -700,7 +700,6 @@ namespace tgui
         float thumbWidth, thumbHeight;
 
         // Get the current position and scale
-        Vector2f position = getPosition();
         Vector2f curScale = getScale();
 
         // Remember the current transformation
