@@ -103,6 +103,10 @@ namespace tgui
 
     void SpriteSheet::setCells(unsigned int rows, unsigned int columns)
     {
+        // Make sure that the picture was already loaded
+        if (m_Loaded == false)
+            return;
+
         // You can't have 0 rows
         if (rows == 0)
             rows = 1;
@@ -126,6 +130,10 @@ namespace tgui
 
     void SpriteSheet::setRows(unsigned int rows)
     {
+        // Make sure that the picture was already loaded
+        if (m_Loaded == false)
+            return;
+
         // You can't have 0 rows
         if (rows == 0)
             rows = 1;
@@ -151,6 +159,10 @@ namespace tgui
 
     void SpriteSheet::setColumns(unsigned int columns)
     {
+        // Make sure that the picture was already loaded
+        if (m_Loaded == false)
+            return;
+
         // You can't have 0 columns
         if (columns == 0)
             columns = 1;
@@ -176,6 +188,10 @@ namespace tgui
 
     void SpriteSheet::setVisibleCell(unsigned int row, unsigned int column)
     {
+        // Make sure that the picture was already loaded
+        if (m_Loaded == false)
+            return;
+
         // You can't make a row visible that doesn't exist
         if (row > m_Rows)
             row = m_Rows;
