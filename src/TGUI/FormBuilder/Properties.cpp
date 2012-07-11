@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "FormBuilder.hpp"
+#include "../../../include/TGUI/FormBuilder/FormBuilder.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1409,11 +1409,22 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         // Store the new text
         text.value = propertyWindow.getEditBox("text_Text")->getText();
 
+        // Get the pointer to the label
+        tgui::Label* label = formWindow.getLabel(tgui::to_string(id));
+
         // Change the text of the label
         if (text.value.size())
-            formWindow.getLabel(tgui::to_string(id))->setText(text.value);
+            label->setText(text.value);
         else
-            formWindow.getLabel(tgui::to_string(id))->setText("#empty#");
+            label->setText("#empty#");
+
+        // Adjust the width of the label
+        width.value = static_cast<float>(label->getSize().x);
+        propertyWindow.getEditBox("text_Width")->setText(tgui::to_string(width.value));
+
+        // Adjust the height of the label
+        height.value = static_cast<float>(label->getSize().y);
+        propertyWindow.getEditBox("text_Height")->setText(tgui::to_string(height.value));
     }
     else if (propertyNumber == Property_Label_TextSize)
     {

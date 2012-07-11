@@ -118,8 +118,8 @@ struct Builder
     void deleteObject();
 
     // Move the currently selected object
-    void moveObjectX(float pixels, bool delay = false);
-    void moveObjectY(float pixels, bool delay = false);
+    void moveObjectX(float pixels, unsigned int id, bool delay = false);
+    void moveObjectY(float pixels, unsigned int id, bool delay = false);
 
     // This function is called to resize an object. To avoid that the object received many resize requests,
     // there will be a delay. If no other request is sent during the delay then the object will be resized.

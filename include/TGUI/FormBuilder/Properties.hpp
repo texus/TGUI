@@ -186,7 +186,7 @@ enum Properties
     Property_TextBox_UnfocusedSelectedTextBackgroundColor,
     Property_TextBox_SelectionPointColor,
     Property_TextBox_SelectionPointWidth,
-    Property_TextBox_CallbackID,
+    Property_TextBox_CallbackID
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
