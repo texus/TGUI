@@ -2112,6 +2112,10 @@ namespace tgui
         // Draw the background when a text is selected
         if (m_TextSelection.getString().getSize() > 0)
         {
+            // Watch out for the kerning
+            if (m_TextBeforeSelection.getString().getSize() > 0)
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+
             // Check if there is a text width limit
             if (m_LimitTextWidth)
             {
@@ -2176,6 +2180,10 @@ namespace tgui
                 TextBgr.setSize(rectSize);
                 target.draw(TextBgr, states);
             }
+
+            // Undo the translation that was done to fix the kerning
+            if (m_TextBeforeSelection.getString().getSize() > 0)
+                states.transform.translate(-static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
         }
 
         float textSize;
@@ -2201,10 +2209,18 @@ namespace tgui
             // Check if there is a selection
             if (m_SelChars != 0)
             {
+                // Watch out for the kerning
+                if (m_TextBeforeSelection.getString().getSize() > 0)
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+
                 // Draw the selected text
 //                states.transform.translate(m_TextBeforeSelection.getGlobalBounds().width, 0);
                 states.transform.translate(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
                 target.draw(m_TextSelection, states);
+
+                // Watch out for kerning
+                if (m_DisplayedText.length() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                 // Draw the text behind the selected text
 //                states.transform.translate(m_TextSelection.getGlobalBounds().width, 0);
@@ -2233,8 +2249,12 @@ namespace tgui
                 // Make the changes in the text
                 tempTextBeforeSelection.setString(tempString);
 
-                // Draw the text before selection
-                target.draw(tempTextBeforeSelection, states);
+                // Check if a part of the text before selection is visible
+                if (tempString.length() > 0)
+                {
+                    // Draw the text before selection
+                    target.draw(tempTextBeforeSelection, states);
+                }
             }
             else // When the text before selection shouldn't be drawn
                 tempTextBeforeSelection.setString("");
@@ -2269,10 +2289,17 @@ namespace tgui
                     // Make the changes in the text
                     tempTextSelection.setString(tempString);
 
-                    // Draw the text before selection
-//                    states.transform.translate(tempTextBeforeSelection.getGlobalBounds().width, 0);
-                    states.transform.translate(tempTextBeforeSelection.findCharacterPos(tempTextBeforeSelection.getString().getSize()).x, 0);
-                    target.draw(tempTextSelection, states);
+                    // Check if a part of the selected text is visible
+                    if (tempString.length() > 0)
+                    {
+                        // Watch out for the kerning
+                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+
+                        // Draw the text before selection
+//                       states.transform.translate(tempTextBeforeSelection.getGlobalBounds().width, 0);
+                        states.transform.translate(tempTextBeforeSelection.findCharacterPos(tempTextBeforeSelection.getString().getSize()).x, 0);
+                        target.draw(tempTextSelection, states);
+                    }
                 }
                 else // The selected text shouldn't be drawn (should be impossible)
                     tempTextSelection.setString("");
@@ -2299,6 +2326,9 @@ namespace tgui
 
                     // Make the changes in the text
                     tempTextAfterSelection.setString(tempString);
+
+                    // Watch out for kerning
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                     // Draw the text before selection
 //                    states.transform.translate(tempTextSelection.getGlobalBounds().width, 0);
