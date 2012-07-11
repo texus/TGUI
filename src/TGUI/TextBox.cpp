@@ -2166,7 +2166,7 @@ namespace tgui
                     states.transform.translate(m_TextSelection2.findCharacterPos(textSelection2Length));
 
                     // Watch out for kerning
-                    if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2) && (textBeforeSelectionLength + textSelection1Length + textSelection2Length > 2))
+                    if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
                         states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
                 }
                 else // The selection was only on one line
@@ -2192,13 +2192,17 @@ namespace tgui
                         states.transform.translate(-m_TextSelection2.findCharacterPos(textSelection2Length).x, static_cast<float>(m_LineHeight));
 
                         // If there was a kerning correction then undo it now
-                        if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2) && (textBeforeSelectionLength + textSelection1Length + textSelection2Length > 2))
+                        if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
                             states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
                     }
                     else
                     {
                         // Undo the last translation
                         states.transform.translate(-m_TextSelection1.findCharacterPos(textSelection1Length).x - m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
+
+                        // If there was a kerning correction then undo it now
+                        if (textBeforeSelectionLength > 1)
+                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
                         // If there was a kerning correction then undo it now
                         if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
