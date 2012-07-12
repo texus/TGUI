@@ -489,7 +489,7 @@ int main()
         while (app.propertyWindow.getCallback(callback))
         {
             // Check if you clicked the delete button
-            if (callback.callbackID == 20)
+            if (callback.callbackID == 50)
                 app.deleteObject();
             else // A property was changed
             {

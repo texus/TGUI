@@ -282,7 +282,8 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         textBox->load(320, 172, 24, textBoxes.back().scrollbarPathname.value);
         textBox->setBorders(2, 2, 2, 2);
         textBox->selectionPointColor = sf::Color(110, 110, 255);
-        textBox->changeColors(sf::Color(200, 200, 200),
+        textBox->changeColors(sf::Color( 50,  50,  50),
+                              sf::Color(200, 200, 200),
                               sf::Color(255, 255, 255),
                               sf::Color( 10, 110, 255),
                               sf::Color(110, 110, 255),
@@ -340,7 +341,7 @@ void Builder::changeVisibleProperties()
     button->load("images/objects/Button/" OBJECT_STYLE);
     button->setText("Delete object");
     button->setSize(static_cast<float>(propertyWindow.getSize().x - 8), 40);
-    button->callbackID = 20;
+    button->callbackID = 50;
 
     // Check if a radio button is selected
     for (i=0; i<radioButtons.size(); ++i)
@@ -1059,6 +1060,7 @@ bool Builder::loadForm()
     sliders.clear();
     scrollbars.clear();
     loadingBars.clear();
+    textBoxes.clear();
 
     // Make sure the window is selected when it goes wrong
     currentID = 1;
@@ -1466,10 +1468,12 @@ bool Builder::loadForm()
                 textBoxes.back().textFont.value = "Global";
                 textBoxes.back().maximumCharacters.value = object->getMaximumCharacters();
                 textBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                textBoxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
                 textBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
                 textBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
                 textBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(object->getSelectedTextBackgroundColor());
                 textBoxes.back().unfocusedSelectedTextBackgroundColor.value = tgui::convertColorToString(object->getUnfocusedSelectedTextBackgroundColor());
+                textBoxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
                 textBoxes.back().selectionPointColor.value = tgui::convertColorToString(object->selectionPointColor);
                 textBoxes.back().selectionPointWidth.value = object->selectionPointWidth;
                 textBoxes.back().callbackID.value = object->callbackID;
@@ -1484,7 +1488,7 @@ bool Builder::loadForm()
                 realObject->setTextFont(mainWindow.globalFont);
                 realObject->setMaximumCharacters(object->getMaximumCharacters());
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
-                realObject->changeColors(object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor());
+                realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor(), object->getBorderColor());
                 realObject->selectionPointColor = object->selectionPointColor;
                 realObject->selectionPointWidth = object->selectionPointWidth;
                 realObject->callbackID = object->callbackID;
@@ -1797,57 +1801,57 @@ void Builder::saveForm()
             line.append(editBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname          = \"";
+            line = TAB TAB "Pathname            = \"";
             line.append(editBoxes[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left              = ";
+            line = TAB TAB "Left                = ";
             line.append(tgui::to_string(editBoxes[objectIndex].left.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top               = ";
+            line = TAB TAB "Top                 = ";
             line.append(tgui::to_string(editBoxes[objectIndex].top.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Width             = ";
+            line = TAB TAB "Width               = ";
             line.append(tgui::to_string(editBoxes[objectIndex].width.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Height            = ";
+            line = TAB TAB "Height              = ";
             line.append(tgui::to_string(editBoxes[objectIndex].height.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Text              = \"";
+            line = TAB TAB "Text                = \"";
             line.append(editBoxes[objectIndex].text.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextSize          = ";
+            line = TAB TAB "TextSize            = ";
             line.append(tgui::to_string(editBoxes[objectIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             if (editBoxes[objectIndex].passwordChar.value != '\0')
             {
-                line = TAB TAB "PasswordChar      = \"";
+                line = TAB TAB "PasswordChar        = \"";
                 line.push_back(editBoxes[objectIndex].passwordChar.value);
                 line.append("\"\n");
                 fwrite(line.c_str(), 1, line.size(), pFile);
             }
 
-            line = TAB TAB "MaximumCharacters = ";
+            line = TAB TAB "MaximumCharacters   = ";
             line.append(tgui::to_string(editBoxes[objectIndex].maximumCharacters.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Borders           = ";
+            line = TAB TAB "Borders             = ";
             AddBrackets(editBoxes[objectIndex].borders.value)
             line.append(editBoxes[objectIndex].borders.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextColor         = ";
+            line = TAB TAB "TextColor           = ";
             AddBrackets(editBoxes[objectIndex].textColor.value)
             line.append(editBoxes[objectIndex].textColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "SelectedTextColor = ";
+            line = TAB TAB "SelectedTextColor   = ";
             AddBrackets(editBoxes[objectIndex].selectedTextColor.value)
             line.append(editBoxes[objectIndex].selectedTextColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
@@ -2253,49 +2257,54 @@ void Builder::saveForm()
             line.append(textBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left              = ";
+            line = TAB TAB "Left                = ";
             line.append(tgui::to_string(textBoxes[objectIndex].left.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top               = ";
+            line = TAB TAB "Top                 = ";
             line.append(tgui::to_string(textBoxes[objectIndex].top.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Width             = ";
+            line = TAB TAB "Width               = ";
             line.append(tgui::to_string(textBoxes[objectIndex].width.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Height            = ";
+            line = TAB TAB "Height              = ";
             line.append(tgui::to_string(textBoxes[objectIndex].height.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "ScrollbarPathname = \"";
+            line = TAB TAB "ScrollbarPathname   = \"";
             line.append(textBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Text              = \"";
+            line = TAB TAB "Text                = \"";
             line.append(textBoxes[objectIndex].text.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextSize          = ";
+            line = TAB TAB "TextSize            = ";
             line.append(tgui::to_string(textBoxes[objectIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "MaximumCharacters = ";
+            line = TAB TAB "MaximumCharacters   = ";
             line.append(tgui::to_string(textBoxes[objectIndex].maximumCharacters.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Borders           = ";
+            line = TAB TAB "Borders             = ";
             AddBrackets(textBoxes[objectIndex].borders.value)
             line.append(textBoxes[objectIndex].borders.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextColor         = ";
+            line = TAB TAB "BackgroundColor     = ";
+            AddBrackets(textBoxes[objectIndex].backgroundColor.value)
+            line.append(textBoxes[objectIndex].backgroundColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "TextColor           = ";
             AddBrackets(textBoxes[objectIndex].textColor.value)
             line.append(textBoxes[objectIndex].textColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "SelectedTextColor = ";
+            line = TAB TAB "SelectedTextColor   = ";
             AddBrackets(textBoxes[objectIndex].selectedTextColor.value)
             line.append(textBoxes[objectIndex].selectedTextColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
@@ -2308,6 +2317,11 @@ void Builder::saveForm()
             line = TAB TAB "UnfocusedSelectedTextBackgroundColor = ";
             AddBrackets(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value)
             line.append(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "BorderColor         = ";
+            AddBrackets(textBoxes[objectIndex].borderColor.value)
+            line.append(textBoxes[objectIndex].borderColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectionPointColor = ";

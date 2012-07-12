@@ -180,10 +180,12 @@ enum Properties
     Property_TextBox_TextFont,
     Property_TextBox_MaximumCharacters,
     Property_TextBox_Borders,
+    Property_TextBox_BackgroundColor,
     Property_TextBox_TextColor,
     Property_TextBox_SelectedTextColor,
     Property_TextBox_SelectedTextBackgroundColor,
     Property_TextBox_UnfocusedSelectedTextBackgroundColor,
+    Property_TextBox_BorderColor,
     Property_TextBox_SelectionPointColor,
     Property_TextBox_SelectionPointWidth,
     Property_TextBox_CallbackID
@@ -842,22 +844,24 @@ struct PropertiesTextBox
     void addProperties(tgui::Window& window);
     virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 
-    unsigned int           id;
-    PropertyName           name;
-    PropertyLeft           left;
-    PropertyTop            top;
-    PropertyWidth          width;
-    PropertyHeight         height;
-    PropertyScrollbarPathname scrollbarPathname;
+    unsigned int                id;
+    PropertyName                name;
+    PropertyLeft                left;
+    PropertyTop                 top;
+    PropertyWidth               width;
+    PropertyHeight              height;
+    PropertyScrollbarPathname   scrollbarPathname;
     PropertyText                text;
     PropertyTextSize            textSize;
     PropertyTextFont            textFont;
     PropertyMaximumCharacters   maximumCharacters;
     PropertyBorders             borders;
+    PropertyBackgroundColor     backgroundColor;
     PropertyTextColor           textColor;
     PropertySelectedTextColor   selectedTextColor;
     PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
     PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
+    PropertyBorderColor         borderColor;
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;
     PropertyCallbackID          callbackID;
