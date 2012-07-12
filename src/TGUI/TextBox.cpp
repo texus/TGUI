@@ -62,6 +62,10 @@ namespace tgui
         changeColors();
 
         m_RenderTexture = new sf::RenderTexture();
+
+        // Load the text box with default values
+        m_Loaded = true;
+        setTextSize(20);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
