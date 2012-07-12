@@ -759,7 +759,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 7);
 
-                            // Set the width
+                            // Set the height
                             listbox->setSize(static_cast<float>(listbox->getSize().x), static_cast<float>(atof(line.c_str())));
                         }
                         else if (line.substr(0, 11).compare("itemheight=") == 0)
@@ -767,7 +767,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 11);
 
-                            // Set the width
+                            // Set the item height
                             listbox->setItemHeight(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
@@ -975,6 +975,122 @@ namespace tgui
                     }
                     case tgui::textBox + 1:
                     {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the text box back
+                        tgui::TextBox* textBox = static_cast<tgui::TextBox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 6).compare("width=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 6);
+
+                            // Set the width
+                            textBox->setSize(static_cast<float>(atof(line.c_str())), static_cast<float>(textBox->getSize().y));
+                        }
+                        else if (line.substr(0, 7).compare("height=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 7);
+
+                            // Set the height
+                            textBox->setSize(static_cast<float>(textBox->getSize().x), static_cast<float>(atof(line.c_str())));
+                        }
+                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the scrollbar
+                            textBox->setScrollbar(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            tgui::Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                textBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the text
+                            textBox->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            textBox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            textBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            textBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
+                        {
+                            // Change the selected text color (black on error)
+                            textBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                        }
+                        else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
+                        {
+                            // Change the selected text background color (black on error)
+                            textBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
+                        }
+                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
+                        {
+                            // Change the selected text background color (black on error)
+                            textBox->setUnfocusedSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 37)));
+                        }
+                        else if (line.substr(0, 12).compare("bordercolor=") == 0)
+                        {
+                            // Change the border color (black on error)
+                            textBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
+                        {
+                            // Change the selection pointer color (black on error)
+                            textBox->selectionPointColor = tgui::extractColor(line.erase(0, 20));
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 20);
+
+                            // Read the selection point width (0 and thus no selection point when it goes wrong)
+                            textBox->selectionPointWidth = atoi(line.c_str());
+                        }
+                        else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // Read the maximum characters (0 and thus no limit when it goes wrong)
+                            textBox->setMaximumCharacters(atoi(line.c_str()));
+                        }
+                        else CHECK_SHARED_PROPERTIES(textBox)
+                            else // The line was wrong
+                                goto LoadingFailed;
+
                         break;
                     }
                     case tgui::checkbox + 1:
