@@ -2093,142 +2093,126 @@ namespace tgui
         // Clear our render texture
         m_RenderTexture->clear(m_BackgroundColor);
 
-        // Check if there is a scrollbar
+        // Set the text on the correct position
+        states.transform.translate(2, 0);
+
+        // Adjust the text position if there is a scrollbar
         if (m_Scroll != NULL)
+            states.transform.translate(0, -static_cast<float>(m_Scroll->m_Value));
+
+        // Draw the text
+        m_RenderTexture->draw(m_TextBeforeSelection, states);
+
+        // Check if there is a selection
+        if (m_SelChars > 0)
         {
-            // Check if there is a selection
-            if (m_SelChars > 0)
+            // Store the lenghts of the texts
+            unsigned int textBeforeSelectionLength = m_TextBeforeSelection.getString().getSize() + 1;
+            unsigned int textSelection1Length = m_TextSelection1.getString().getSize() + 1;
+            unsigned int textSelection2Length = m_TextSelection2.getString().getSize() + 1;
+
+            // Set the text on the correct position
+            states.transform.translate(m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).y);
+
+            // Watch out for kerning
+            if (textBeforeSelectionLength > 1)
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
+
+            // Create the selection background
+            sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
+
+            // Set the correct fill color
+            if (m_Focused)
+                selectionBackground1.setFillColor(m_SelectedTextBgrColor);
+            else
+                selectionBackground1.setFillColor(m_UnfocusedSelectedTextBgrColor);
+
+            // Draw the selection background
+            m_RenderTexture->draw(selectionBackground1, states);
+
+            // Draw the first part of the selected text
+            m_RenderTexture->draw(m_TextSelection1, states);
+
+            // Check if there is a second part in the selection
+            if (m_TextSelection2.getString().getSize() > 0)
             {
-                // Store the lenghts of the texts
-                unsigned int textBeforeSelectionLength = m_TextBeforeSelection.getString().getSize() + 1;
-                unsigned int textSelection1Length = m_TextSelection1.getString().getSize() + 1;
-                unsigned int textSelection2Length = m_TextSelection2.getString().getSize() + 1;
+                // Translate to the beginning of the next line
+                states.transform.translate(-m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
 
-                // Set the text on the correct position
-                states.transform.translate(2, - static_cast<float>(m_Scroll->m_Value));
-
-                // Draw the text before the selection
-                m_RenderTexture->draw(m_TextBeforeSelection, states);
-
-                // Set the text on the correct position
-                states.transform.translate(m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).y);
-
-                // Watch out for kerning
+                // If there was a kerning correction then undo it now
                 if (textBeforeSelectionLength > 1)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
+                    states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
-                // Create the selection background
-                sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
+                // Create the second selection background
+                sf::RectangleShape selectionBackground2;
 
                 // Set the correct fill color
                 if (m_Focused)
-                    selectionBackground1.setFillColor(m_SelectedTextBgrColor);
+                    selectionBackground2.setFillColor(m_SelectedTextBgrColor);
                 else
-                    selectionBackground1.setFillColor(m_UnfocusedSelectedTextBgrColor);
+                    selectionBackground2.setFillColor(m_UnfocusedSelectedTextBgrColor);
 
-                // Draw the selection background
-                m_RenderTexture->draw(selectionBackground1, states);
+                // Draw the background rectangles of the selected text
+                for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
+                {
+                    selectionBackground2.setSize(sf::Vector2f(m_MultilineSelectionRectWidth[i], static_cast<float>(m_LineHeight)));
+                    m_RenderTexture->draw(selectionBackground2, states);
+                    selectionBackground2.move(0, static_cast<float>(m_LineHeight));
+                }
 
-                // Draw the first part of the selected text
-                m_RenderTexture->draw(m_TextSelection1, states);
+                // Draw the second part of the selection
+                m_RenderTexture->draw(m_TextSelection2, states);
 
-                // Check if there is a second part in the selection
+                // Translate to the end of the selection
+                states.transform.translate(m_TextSelection2.findCharacterPos(textSelection2Length));
+
+                // Watch out for kerning
+                if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
+            }
+            else // The selection was only on one line
+            {
+                // Translate to the end of the selection
+                states.transform.translate(m_TextSelection1.findCharacterPos(textSelection1Length).x, 0);
+
+                // Watch out for kerning
+                if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
+            }
+
+            // Draw the first part of the text behind the selection
+            m_RenderTexture->draw(m_TextAfterSelection1, states);
+
+            // Check if there is a second part in the selection
+            if (m_TextAfterSelection2.getString().getSize() > 0)
+            {
+                // Translate to the beginning of the next line
                 if (m_TextSelection2.getString().getSize() > 0)
                 {
-                    // Translate to the beginning of the next line
-                    states.transform.translate(-m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
+                    // Undo the last translation
+                    states.transform.translate(-m_TextSelection2.findCharacterPos(textSelection2Length).x, static_cast<float>(m_LineHeight));
+
+                    // If there was a kerning correction then undo it now
+                    if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
+                }
+                else
+                {
+                    // Undo the last translation
+                    states.transform.translate(-m_TextSelection1.findCharacterPos(textSelection1Length).x - m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
 
                     // If there was a kerning correction then undo it now
                     if (textBeforeSelectionLength > 1)
                         states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
-                    // Create the second selection background
-                    sf::RectangleShape selectionBackground2;
-
-                    // Set the correct fill color
-                    if (m_Focused)
-                        selectionBackground2.setFillColor(m_SelectedTextBgrColor);
-                    else
-                        selectionBackground2.setFillColor(m_UnfocusedSelectedTextBgrColor);
-
-                    // Draw the background rectangles of the selected text
-                    for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
-                    {
-                        selectionBackground2.setSize(sf::Vector2f(m_MultilineSelectionRectWidth[i], static_cast<float>(m_LineHeight)));
-                        m_RenderTexture->draw(selectionBackground2, states);
-                        selectionBackground2.move(0, static_cast<float>(m_LineHeight));
-                    }
-
-                    // Draw the second part of the selection
-                    m_RenderTexture->draw(m_TextSelection2, states);
-
-                    // Translate to the end of the selection
-                    states.transform.translate(m_TextSelection2.findCharacterPos(textSelection2Length));
-
-                    // Watch out for kerning
-                    if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
-                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
-                }
-                else // The selection was only on one line
-                {
-                    // Translate to the end of the selection
-                    states.transform.translate(m_TextSelection1.findCharacterPos(textSelection1Length).x, 0);
-
-                    // Watch out for kerning
+                    // If there was a kerning correction then undo it now
                     if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
                 }
 
-                // Draw the first part of the text behind the selection
-                m_RenderTexture->draw(m_TextAfterSelection1, states);
-
-                // Check if there is a second part in the selection
-                if (m_TextAfterSelection2.getString().getSize() > 0)
-                {
-                    // Translate to the beginning of the next line
-                    if (m_TextSelection2.getString().getSize() > 0)
-                    {
-                        // Undo the last translation
-                        states.transform.translate(-m_TextSelection2.findCharacterPos(textSelection2Length).x, static_cast<float>(m_LineHeight));
-
-                        // If there was a kerning correction then undo it now
-                        if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
-                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
-                    }
-                    else
-                    {
-                        // Undo the last translation
-                        states.transform.translate(-m_TextSelection1.findCharacterPos(textSelection1Length).x - m_TextBeforeSelection.findCharacterPos(textBeforeSelectionLength).x, static_cast<float>(m_LineHeight));
-
-                        // If there was a kerning correction then undo it now
-                        if (textBeforeSelectionLength > 1)
-                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
-
-                        // If there was a kerning correction then undo it now
-                        if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                            states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
-                    }
-
-                    // Draw the second part of the text after the selection
-                    m_RenderTexture->draw(m_TextAfterSelection2, states);
-                }
+                // Draw the second part of the text after the selection
+                m_RenderTexture->draw(m_TextAfterSelection2, states);
             }
-            else // There is no selection
-            {
-                // Set the text on the correct position
-                states.transform.translate(2, - static_cast<float>(m_Scroll->m_Value));
-
-                // Draw the text
-                m_RenderTexture->draw(m_TextBeforeSelection, states);
-            }
-        }
-        else
-        {
-            // Set the text on the correct position
-            states.transform.translate(2, 0);
-
-            // Draw the text before the selection
-            m_RenderTexture->draw(m_TextBeforeSelection, states);
         }
 
         // Only draw the selection point if it has a width
