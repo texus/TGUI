@@ -246,7 +246,7 @@ namespace tgui
                 m_TextBeforeSelection.setColor(color);
                 m_TextAfterSelection.setColor(color);
             }
-            else if (property.compare("selecetedtextcolor") == 0)
+            else if (property.compare("selectedtextcolor") == 0)
             {
                 m_TextSelection.setColor(extractColor(value));
             }
