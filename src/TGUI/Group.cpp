@@ -81,14 +81,6 @@ StructName* Group::get##StructName(const std::string objectName) \
     return NULL; \
 }
 
-#define TGUI_GROUP_REMOVE_OBJECT(EnumName) \
-if (m_Objects[i]->m_ObjectType == EnumName) \
-{ \
-    m_EventManager.removeObject(m_Objects[i]->getObjectID()); \
-    delete m_Objects[i]; \
-    m_Objects.erase(m_Objects.begin() + i); \
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -297,27 +289,10 @@ namespace tgui
             // Check if the name matches
             if (m_ObjName[i].compare(objectName) == 0)
             {
-                // remove the object
-                if (m_Objects[i]->m_ObjectType == editBox)
-                {
-                    m_EventManager.removeObject(m_Objects[i]->getObjectID());
-//                    m_AnimationManager.removeObject(static_cast<EditBox*>(m_Objects[i]));
-                    delete m_Objects[i];
-                    m_Objects.erase(m_Objects.begin() + i);
-                }
-                else TGUI_GROUP_REMOVE_OBJECT(label)
-                else TGUI_GROUP_REMOVE_OBJECT(picture)
-                else TGUI_GROUP_REMOVE_OBJECT(button)
-                else TGUI_GROUP_REMOVE_OBJECT(checkbox)
-                else TGUI_GROUP_REMOVE_OBJECT(radioButton)
-                else TGUI_GROUP_REMOVE_OBJECT(slider)
-                else TGUI_GROUP_REMOVE_OBJECT(scrollbar)
-                else TGUI_GROUP_REMOVE_OBJECT(listbox)
-                else TGUI_GROUP_REMOVE_OBJECT(loadingBar)
-                else TGUI_GROUP_REMOVE_OBJECT(panel)
-                else TGUI_GROUP_REMOVE_OBJECT(comboBox)
-                else TGUI_GROUP_REMOVE_OBJECT(textBox)
-                else TGUI_GROUP_REMOVE_OBJECT(spriteSheet)
+                // Remove the object
+                m_EventManager.removeObject(m_Objects[i]->getObjectID());
+                delete m_Objects[i];
+                m_Objects.erase(m_Objects.begin() + i);
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);
@@ -333,7 +308,6 @@ namespace tgui
     {
         // Remove all the objects from the event and animation manager
         m_EventManager.removeAllObjects();
-//        m_AnimationManager.removeAllObjects();
 
         // Delete all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
