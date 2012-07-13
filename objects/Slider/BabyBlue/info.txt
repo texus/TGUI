@@ -1,0 +1,2 @@
+VerticalScroll = false
+SplitImage = true

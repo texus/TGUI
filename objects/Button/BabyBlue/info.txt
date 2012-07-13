@@ -1,0 +1,4 @@
+Phases             = Hover, Down
+SeparateHoverImage = true
+TextColor          = (100, 100, 100)
+SplitImage         = true
