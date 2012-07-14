@@ -485,6 +485,11 @@ namespace tgui
                 trackWidth = (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * curScale.x;
                 trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
             }
+            else
+            {
+                trackWidth = m_TextureTrackNormal_M->getSize().x * curScale.x;
+                trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
+            }
 
             thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().x);
             thumbHeight = static_cast<float>(m_TextureThumbNormal->getSize().y);
@@ -494,6 +499,11 @@ namespace tgui
             if (m_SplitImage)
             {
                 trackWidth = (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * curScale.x;
+                trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
+            }
+            else
+            {
+                trackWidth = m_TextureTrackNormal_M->getSize().y * curScale.x;
                 trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
             }
 
