@@ -69,11 +69,8 @@ namespace tgui
 
     void Window::handleEvent(sf::Event& event)
     {
-        // Get the view size
-        Vector2f viewSize = getView().getSize();
-
         // Let the event manager handle the event
-        m_EventManager.handleEvent(event, viewSize);
+        m_EventManager.handleEvent(event, getView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -42,14 +42,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::handleEvent(sf::Event& event, const Vector2f& viewSize)
+    void EventManager::handleEvent(sf::Event& event, const sf::View& view)
     {
         // Check if a mouse button has moved
         if (event.type == sf::Event::MouseMoved)
         {
             unsigned int objectNr;
-            float mouseX = event.mouseMove.x / m_WindowScale.x;
-            float mouseY = event.mouseMove.y / m_WindowScale.y;
+            float mouseX = event.mouseMove.x / m_WindowScale.x + view.getCenter().x - (view.getSize().x / 2.f);
+            float mouseY = event.mouseMove.y / m_WindowScale.y + view.getCenter().y - (view.getSize().y / 2.f);
 
             // Loop through all objects
             for (unsigned int i=0; i<m_Objects.size(); ++i)
@@ -74,7 +74,7 @@ namespace tgui
                     else if (m_Objects[i]->m_ObjectType == panel)
                     {
                         // Make the event handler of the group do the rest
-                        dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                        static_cast<Panel*>(m_Objects[i])->handleEvent(event, mouseX, mouseY);
                         return;
                     }
                 }
@@ -87,7 +87,7 @@ namespace tgui
                 if (m_Objects[objectNr]->m_ObjectType == panel)
                 {
                     // Make the event handler of the group do the rest
-                    dynamic_cast<Group*>(m_Objects[objectNr])->handleEvent(event);
+                    static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, mouseX, mouseY);
                 }
                 else // Send the event to the object
                     m_Objects[objectNr]->mouseMoved(mouseX, mouseY);
@@ -101,8 +101,8 @@ namespace tgui
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 unsigned int objectNr;
-                float mouseX = event.mouseButton.x / m_WindowScale.x;
-                float mouseY = event.mouseButton.y / m_WindowScale.y;
+                float mouseX = event.mouseButton.x / m_WindowScale.x + view.getCenter().x - (view.getSize().x / 2.f);
+                float mouseY = event.mouseButton.y / m_WindowScale.y + view.getCenter().y - (view.getSize().y / 2.f);
 
                 // Check if the mouse is on top of an object
                 if (mouseOnObject(objectNr, mouseX, mouseY))
@@ -114,7 +114,7 @@ namespace tgui
                         unfocusAllObjects();
 
                         // Make the event handler of the group do the rest
-                        dynamic_cast<Group*>(m_Objects[objectNr])->handleEvent(event);
+                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, mouseX, mouseY);
                     }
                     else // The event has to be sent to an object
                     {
@@ -148,8 +148,8 @@ namespace tgui
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 unsigned int objectNr;
-                float mouseX = event.mouseButton.x / m_WindowScale.x;
-                float mouseY = event.mouseButton.y / m_WindowScale.y;
+                float mouseX = event.mouseButton.x / m_WindowScale.x + view.getCenter().x - (view.getSize().x / 2.f);
+                float mouseY = event.mouseButton.y / m_WindowScale.y + view.getCenter().y - (view.getSize().y / 2.f);
 
                 // Check if the mouse is on top of an object
                 if (mouseOnObject(objectNr, mouseX, mouseY))
@@ -158,7 +158,7 @@ namespace tgui
                     if (m_Objects[objectNr]->m_ObjectType == panel)
                     {
                         // Make the event handler of the group do the rest
-                        dynamic_cast<Group*>(m_Objects[objectNr])->handleEvent(event);
+                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, mouseX, mouseY);
                     }
                     else // Send the event to the object
                         m_Objects[objectNr]->leftMouseReleased(mouseX, mouseY);
@@ -169,7 +169,7 @@ namespace tgui
                         if (i != objectNr)
                         {
                             if (m_Objects[i]->m_ObjectType == panel)
-                                dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                                static_cast<Panel*>(m_Objects[i])->handleEvent(event, mouseX, mouseY);
                             else
                                 m_Objects[i]->mouseNoLongerDown();
                         }
@@ -181,7 +181,7 @@ namespace tgui
                     for (unsigned int i=0; i<m_Objects.size(); ++i)
                     {
                         if (m_Objects[i]->m_ObjectType == panel)
-                            dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                            static_cast<Panel*>(m_Objects[i])->handleEvent(event, mouseX, mouseY);
                         else
                             m_Objects[i]->mouseNoLongerDown();
                     }
@@ -213,7 +213,7 @@ namespace tgui
                         if (m_Objects[i]->m_ObjectType == panel)
                         {
                             // Make the event handler of the group do the rest
-                            dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                            static_cast<Panel*>(m_Objects[i])->handleEvent(event);
                         }
                         else // Tell the object that the key was pressed
                             m_Objects[i]->keyPressed(event.key.code);
@@ -252,7 +252,7 @@ namespace tgui
                                 if (m_Objects[i]->m_ObjectType == panel)
                                 {
                                     // Make the event handler of the group do the rest
-                                    dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                                    static_cast<Panel*>(m_Objects[i])->handleEvent(event);
                                 }
                                 else // Tell the object that the key was pressed
                                     m_Objects[i]->keyPressed(event.key.code);
@@ -289,7 +289,7 @@ namespace tgui
                         if (m_Objects[i]->m_ObjectType == panel)
                         {
                             // Make the event handler of the group do the rest
-                            dynamic_cast<Group*>(m_Objects[i])->handleEvent(event);
+                            static_cast<Panel*>(m_Objects[i])->handleEvent(event);
                         }
                         else // Tell the object that the key was pressed
                             m_Objects[i]->textEntered(event.text.unicode & 255);
@@ -302,8 +302,8 @@ namespace tgui
         else if (event.type == sf::Event::Resized)
         {
             // Change the window scale
-            m_WindowScale.x = event.size.width / viewSize.x;
-            m_WindowScale.y = event.size.height / viewSize.y;
+            m_WindowScale.x = event.size.width / view.getSize().x;
+            m_WindowScale.y = event.size.height / view.getSize().y;
         }
     }
 

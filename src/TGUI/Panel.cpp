@@ -121,20 +121,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::handleEvent(sf::Event& event)
+    void Panel::handleEvent(sf::Event& event, const float mouseX, const float mouseY)
     {
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)
         {
             // Adjust the mouse position of the event
-            event.mouseMove.x -= static_cast<int>(getPosition().x);
-            event.mouseMove.y -= static_cast<int>(getPosition().y);
+            event.mouseMove.x = mouseX - static_cast<int>(getPosition().x);
+            event.mouseMove.y = mouseY - static_cast<int>(getPosition().y);
         }
         else if (event.type == sf::Event::MouseButtonPressed)
         {
             // Adjust the mouse position of the event
-            event.mouseButton.x -= static_cast<int>(getPosition().x);
-            event.mouseButton.y -= static_cast<int>(getPosition().y);
+            event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);
+            event.mouseButton.y = mouseY - static_cast<int>(getPosition().y);
 
             // Mark the mouse as down
             m_MouseDown = true;
@@ -142,8 +142,8 @@ namespace tgui
         else if (event.type == sf::Event::MouseButtonReleased)
         {
             // Adjust the mouse position of the event
-            event.mouseButton.x -= static_cast<int>(getPosition().x);
-            event.mouseButton.y -= static_cast<int>(getPosition().y);
+            event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);
+            event.mouseButton.y = mouseY - static_cast<int>(getPosition().y);
 
             // Mark the mouse as up
             m_MouseDown = false;
