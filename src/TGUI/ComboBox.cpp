@@ -234,11 +234,14 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Set the size of the listbox (avoid the left and right border to be scaled)
-        m_Listbox.setSize(width, height);
+        // Set the height of the combo box
+        if (height > m_TopBorder + m_BottomBorder)
+            m_Listbox.setItemHeight(height - m_TopBorder - m_BottomBorder);
+        else
+            m_Listbox.setItemHeight(10);
 
-        // Change the scale factors
-        setScale(1, height / (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder));
+        // Set the size of the listbox
+        m_Listbox.setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_Listbox.m_Items.size())));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,7 +586,7 @@ namespace tgui
         if ((x > position.x) && (x < position.x + (m_Listbox.m_Size.x * curScale.x)) && (y > position.y))
         {
             // Check if the mouse is on top of the combo box
-            if (y < position.y + (m_Listbox.m_ItemHeight * curScale.y))
+            if (y < position.y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y))
             {
                 m_MouseOnListbox = false;
                 m_Listbox.mouseNotOnObject();
@@ -594,7 +597,7 @@ namespace tgui
             if (m_ShowList)
             {
                 // Temporarily set a position for the listbox
-                m_Listbox.setPosition(position.x, position.y + (m_Listbox.m_ItemHeight * curScale.y));
+                m_Listbox.setPosition(position.x, position.y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y));
 
                 // Pass the event to the listbox
                 if (m_Listbox.mouseOnObject(x, y))
@@ -637,7 +640,7 @@ namespace tgui
             unsigned int oldItem = m_Listbox.getSelectedItemID();
 
             // Temporarily set a position for the listbox
-            m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
+            m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the listbox
             m_Listbox.leftMousePressed(x, y);
@@ -685,7 +688,7 @@ namespace tgui
                         }
 
                         // Temporarily set a position for the listbox
-                        m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
+                        m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
                         // Pass the event to the listbox
                         m_Listbox.leftMouseReleased(x, y);
@@ -732,7 +735,7 @@ namespace tgui
         if ((m_ShowList == true) && (m_MouseOnListbox == true))
         {
             // Temporarily set a position for the listbox
-            m_Listbox.setPosition(getPosition().x, getPosition().y + (m_Listbox.m_ItemHeight * getScale().y));
+            m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the listbox
             m_Listbox.mouseMoved(x, y);
@@ -771,7 +774,7 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Draw the borders
-        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Listbox.m_Size.x), static_cast<float>(m_Listbox.m_ItemHeight)));
+        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Listbox.m_Size.x), static_cast<float>(m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder)));
         Back.setFillColor(m_Listbox.m_BorderColor);
         target.draw(Back, states);
 
@@ -780,7 +783,7 @@ namespace tgui
 
         // Draw the combo box
         sf::RectangleShape Front(Vector2f(static_cast<float>(m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder),
-                                          static_cast<float>(m_Listbox.m_ItemHeight - m_TopBorder - m_BottomBorder)));
+                                          static_cast<float>(m_Listbox.m_ItemHeight - ((m_TopBorder - m_BottomBorder) / curScale.y))));
         Front.setFillColor(m_Listbox.m_BackgroundColor);
         target.draw(Front, states);
 
@@ -789,7 +792,7 @@ namespace tgui
 
         // Create a text object to draw it
         sf::Text tempText(selectedItem);
-        tempText.setCharacterSize(m_Listbox.m_ItemHeight - m_TopBorder - m_BottomBorder);
+        tempText.setCharacterSize(m_Listbox.m_ItemHeight);
         tempText.setColor(m_Listbox.m_TextColor);
 
         // Make sure that the text fits inside the combo box
@@ -798,7 +801,7 @@ namespace tgui
             sf::FloatRect bounds = tempText.getGlobalBounds();
 
             // Calculate the maximum text width
-            float maximumTextWidth = ((m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - (m_SpriteNormal.getGlobalBounds().width * curScale.y);
+            float maximumTextWidth = ((m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - ((m_SpriteNormal.getGlobalBounds().width * curScale.y * m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y);
 
             // Check if the text is too long to fit inside the combo box
             while (((bounds.width * curScale.y) + bounds.left) > maximumTextWidth)
@@ -822,7 +825,7 @@ namespace tgui
         states.transform.scale(curScale.y/curScale.x, 1);
 
         // Draw the selected item
-        states.transform.translate(2, ((m_Listbox.m_ItemHeight - m_TopBorder - m_BottomBorder) * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
+        states.transform.translate(2, (m_Listbox.m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
         target.draw(tempText, states);
 
         // Reset the transformation
@@ -831,13 +834,15 @@ namespace tgui
         // Set the arrow like it should (down when listbox is invisible, up when it is visible)
         if (m_ShowList)
         {
-            states.transform.scale(curScale.y, -curScale.y);
-            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - (m_SpriteNormal.getGlobalBounds().width * curScale.y), (m_TopBorder + m_TextureNormal->getSize().y) * (-curScale.y));
+            float scaleFactor =  static_cast<float>(m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y;
+            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - ((m_TextureNormal->getSize().x * scaleFactor) * curScale.y), ((m_TextureNormal->getSize().y * scaleFactor) + m_TopBorder) * curScale.y);
+            states.transform.scale(curScale.y * scaleFactor, -curScale.y * scaleFactor);
         }
         else
         {
-            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - (m_SpriteNormal.getGlobalBounds().width * curScale.y), m_TopBorder * curScale.y);
-            states.transform.scale(curScale.y, curScale.y);
+            float scaleFactor =  static_cast<float>(m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y;
+            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - (m_TextureNormal->getSize().x * curScale.y * scaleFactor), m_TopBorder * curScale.y);
+            states.transform.scale(curScale.y * scaleFactor, curScale.y * scaleFactor);
         }
 
         // Draw the arrow
@@ -850,7 +855,7 @@ namespace tgui
         // If the listbox should be visible then draw it
         if (m_ShowList)
         {
-            states.transform = oldTransform.translate(0, m_Listbox.m_ItemHeight * curScale.y);
+            states.transform = oldTransform.translate(0, (m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y);
             target.draw(m_Listbox, states);
         }
     }
