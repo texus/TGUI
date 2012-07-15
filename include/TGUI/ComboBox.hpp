@@ -371,7 +371,7 @@ namespace tgui
         unsigned int m_NrOfItemsToDisplay;
 
         // Internally a listbox is used to store all items
-        Listbox      m_Listbox;
+        Listbox*     m_Listbox;
 
         // The pathname of the loaded scrollbar (if there is one)
         std::string  m_LoadedScrollbarPathname;

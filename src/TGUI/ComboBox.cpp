@@ -41,13 +41,14 @@ namespace tgui
     {
         m_ObjectType = comboBox;
 
-        m_Listbox.m_Size.x = 50;
-        m_Listbox.m_ItemHeight = 24;
-        m_Listbox.m_BackgroundColor         = sf::Color(255, 255, 255);
-        m_Listbox.m_TextColor               = sf::Color(  0,   0,   0);
-        m_Listbox.m_SelectedBackgroundColor = sf::Color( 50, 100, 200);
-        m_Listbox.m_SelectedTextColor       = sf::Color(255, 255, 255);
-        m_Listbox.m_BorderColor             = sf::Color(  0,   0,   0);
+        m_Listbox = new Listbox();
+        m_Listbox->m_Size.x = 50;
+        m_Listbox->m_ItemHeight = 24;
+        m_Listbox->m_BackgroundColor         = sf::Color(255, 255, 255);
+        m_Listbox->m_TextColor               = sf::Color(  0,   0,   0);
+        m_Listbox->m_SelectedBackgroundColor = sf::Color( 50, 100, 200);
+        m_Listbox->m_SelectedTextColor       = sf::Color(255, 255, 255);
+        m_Listbox->m_BorderColor             = sf::Color(  0,   0,   0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +71,8 @@ namespace tgui
     {
         if (m_TextureNormal != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal);
         if (m_TextureHover != NULL)      TGUI_TextureManager.removeTexture(m_TextureHover);
+
+        delete m_Listbox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,23 +141,23 @@ namespace tgui
             }
             else if (property.compare("backgroundcolor") == 0)
             {
-                m_Listbox.m_BackgroundColor = extractColor(value);
+                m_Listbox->m_BackgroundColor = extractColor(value);
             }
             else if (property.compare("textcolor") == 0)
             {
-                m_Listbox.m_TextColor = extractColor(value);
+                m_Listbox->m_TextColor = extractColor(value);
             }
             else if (property.compare("selectedbackgroundcolor") == 0)
             {
-                m_Listbox.m_SelectedBackgroundColor = extractColor(value);
+                m_Listbox->m_SelectedBackgroundColor = extractColor(value);
             }
             else if (property.compare("selectedtextcolor") == 0)
             {
-                m_Listbox.m_SelectedTextColor = extractColor(value);
+                m_Listbox->m_SelectedTextColor = extractColor(value);
             }
             else if (property.compare("bordercolor") == 0)
             {
-                m_Listbox.m_BorderColor = extractColor(value);
+                m_Listbox->m_BorderColor = extractColor(value);
             }
         }
 
@@ -182,7 +185,7 @@ namespace tgui
 
 
         // Remove all items (in case this is the second time that the load function was called)
-        m_Listbox.removeAllItems();
+        m_Listbox->removeAllItems();
 
         // There is a minimum width
         if (width < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
@@ -197,7 +200,7 @@ namespace tgui
 
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
-        m_Listbox.load(width,
+        m_Listbox->load(width,
                        static_cast<unsigned int>((m_TextureNormal->getSize().y + m_BottomBorder) * getScale().y),
                        scrollbarPathname,
                        static_cast<unsigned int>((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y));
@@ -206,7 +209,7 @@ namespace tgui
         if (scrollbarPathname.empty() == false)
         {
             // Try to load the scrollbar
-            if (m_Listbox.setScrollbar(scrollbarPathname))
+            if (m_Listbox->setScrollbar(scrollbarPathname))
             {
                 // The scrollbar was loaded successfully
                 m_Loaded = true;
@@ -236,12 +239,12 @@ namespace tgui
 
         // Set the height of the combo box
         if (height > m_TopBorder + m_BottomBorder)
-            m_Listbox.setItemHeight(height - m_TopBorder - m_BottomBorder);
+            m_Listbox->setItemHeight(height - m_TopBorder - m_BottomBorder);
         else
-            m_Listbox.setItemHeight(10);
+            m_Listbox->setItemHeight(10);
 
         // Set the size of the listbox
-        m_Listbox.setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_Listbox.m_Items.size())));
+        m_Listbox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_Listbox->m_Items.size())));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +252,7 @@ namespace tgui
     Vector2u ComboBox::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Listbox.getSize().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder));
+            return Vector2u(m_Listbox->getSize().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder));
         else
             return Vector2u(0, 0);
     }
@@ -259,7 +262,7 @@ namespace tgui
     Vector2f ComboBox::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Listbox.getSize().x * getScale().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y);
+            return Vector2f(m_Listbox->getSize().x * getScale().x, (m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y);
         else
             return Vector2f(0, 0);
     }
@@ -297,7 +300,7 @@ namespace tgui
         }
 
         // Set the new size
-        m_Listbox.setSize(static_cast<float>(width), static_cast<float>(m_Listbox.m_Size.y));
+        m_Listbox->setSize(static_cast<float>(width), static_cast<float>(m_Listbox->m_Size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,95 +329,95 @@ namespace tgui
                                 const sf::Color& borderColor)
     {
         // Store the new colors
-        m_Listbox.m_BackgroundColor         = backgroundColor;
-        m_Listbox.m_TextColor               = textColor;
-        m_Listbox.m_SelectedBackgroundColor = selectedBackgroundColor;
-        m_Listbox.m_SelectedTextColor       = selectedTextColor;
-        m_Listbox.m_BorderColor             = borderColor;
+        m_Listbox->m_BackgroundColor         = backgroundColor;
+        m_Listbox->m_TextColor               = textColor;
+        m_Listbox->m_SelectedBackgroundColor = selectedBackgroundColor;
+        m_Listbox->m_SelectedTextColor       = selectedTextColor;
+        m_Listbox->m_BorderColor             = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        m_Listbox.m_BackgroundColor = backgroundColor;
+        m_Listbox->m_BackgroundColor = backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setTextColor(const sf::Color& textColor)
     {
-        m_Listbox.m_TextColor = textColor;
+        m_Listbox->m_TextColor = textColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
     {
-        m_Listbox.m_SelectedBackgroundColor = selectedBackgroundColor;
+        m_Listbox->m_SelectedBackgroundColor = selectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setSelectedTextColor(const sf::Color& selectedTextColor)
     {
-        m_Listbox.m_SelectedTextColor = selectedTextColor;
+        m_Listbox->m_SelectedTextColor = selectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setBorderColor(const sf::Color& borderColor)
     {
-        m_Listbox.m_BorderColor = borderColor;
+        m_Listbox->m_BorderColor = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& ComboBox::getBackgroundColor()
     {
-        return m_Listbox.m_BackgroundColor;
+        return m_Listbox->m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& ComboBox::getTextColor()
     {
-        return m_Listbox.m_TextColor;
+        return m_Listbox->m_TextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& ComboBox::getSelectedBackgroundColor()
     {
-        return m_Listbox.m_SelectedBackgroundColor;
+        return m_Listbox->m_SelectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& ComboBox::getSelectedTextColor()
     {
-        return m_Listbox.m_SelectedTextColor;
+        return m_Listbox->m_SelectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& ComboBox::getBorderColor()
     {
-        return m_Listbox.m_BorderColor;
+        return m_Listbox->m_BorderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setTextFont(const sf::Font& font)
     {
-        m_Listbox.setTextFont(font);
+        m_Listbox->setTextFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font& ComboBox::getTextFont()
     {
-        return m_Listbox.getTextFont();
+        return m_Listbox->getTextFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,21 +431,21 @@ namespace tgui
         m_BottomBorder = bottomBorder;
 
         // Also change it inside the listbox (there is no top border there)
-        m_Listbox.m_LeftBorder   = m_LeftBorder;
-        m_Listbox.m_TopBorder    = 0;
-        m_Listbox.m_RightBorder  = m_RightBorder;
-        m_Listbox.m_BottomBorder = m_BottomBorder;
+        m_Listbox->m_LeftBorder   = m_LeftBorder;
+        m_Listbox->m_TopBorder    = 0;
+        m_Listbox->m_RightBorder  = m_RightBorder;
+        m_Listbox->m_BottomBorder = m_BottomBorder;
 
         // Don't set the width and height when loading failed
         if (m_Loaded == false)
             return;
 
         // There is a minimum width
-        if (m_Listbox.m_Size.x < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
-            m_Listbox.setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x, static_cast<float>(m_Listbox.m_Size.y));
+        if (m_Listbox->m_Size.x < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
+            m_Listbox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x, static_cast<float>(m_Listbox->m_Size.y));
 
         // Set the item height again, in case the scale changed by now
-        m_Listbox.setItemHeight(m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder);
+        m_Listbox->setItemHeight(m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder);
 
     }
 
@@ -455,84 +458,84 @@ namespace tgui
             return false;
 
         // Set the item height again, in case the scale changed by now
-        m_Listbox.setItemHeight(static_cast<unsigned int>((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y));
+        m_Listbox->setItemHeight(static_cast<unsigned int>((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y));
 
         // Make room to add another item, until there are enough items
-        if (m_NrOfItemsToDisplay > m_Listbox.m_Items.size())
-            m_Listbox.setSize(static_cast<float>(m_Listbox.m_Size.x), ((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y * (m_Listbox.m_Items.size() + 1)) + (m_BottomBorder * getScale().y));
+        if (m_NrOfItemsToDisplay > m_Listbox->m_Items.size())
+            m_Listbox->setSize(static_cast<float>(m_Listbox->m_Size.x), ((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y * (m_Listbox->m_Items.size() + 1)) + (m_BottomBorder * getScale().y));
 
         // Add the item
-        return m_Listbox.addItem(item, cropText);
+        return m_Listbox->addItem(item, cropText);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ComboBox::setSelectedItem(const std::string itemName)
     {
-        return m_Listbox.setSelectedItem(itemName);
+        return m_Listbox->setSelectedItem(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ComboBox::setSelectedItem(unsigned int id)
     {
-        return m_Listbox.setSelectedItem(id);
+        return m_Listbox->setSelectedItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::removeItem(unsigned int id)
     {
-        m_Listbox.removeItem(id);
+        m_Listbox->removeItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::removeItem(const std::string itemName)
     {
-        m_Listbox.removeItem(itemName);
+        m_Listbox->removeItem(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::removeAllItems()
     {
-        m_Listbox.removeAllItems();
+        m_Listbox->removeAllItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string ComboBox::getItem(unsigned int id)
     {
-        return m_Listbox.getItem(id);
+        return m_Listbox->getItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::getItemID(const std::string itemName)
     {
-        return m_Listbox.getItemID(itemName);
+        return m_Listbox->getItemID(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::vector<std::string>& ComboBox::getItems()
     {
-        return m_Listbox.getItems();
+        return m_Listbox->getItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string ComboBox::getSelectedItem() const
     {
-        return m_Listbox.getSelectedItem();
+        return m_Listbox->getSelectedItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::getSelectedItemID()
     {
-        return m_Listbox.getSelectedItemID();
+        return m_Listbox->getSelectedItemID();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,7 +546,7 @@ namespace tgui
         m_LoadedScrollbarPathname = scrollbarPathname;
 
         // Set the new scrollbar
-        return m_Listbox.setScrollbar(scrollbarPathname);
+        return m_Listbox->setScrollbar(scrollbarPathname);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,21 +557,21 @@ namespace tgui
         m_LoadedScrollbarPathname = "";
 
         // Remove the scrollbar
-        m_Listbox.removeScrollbar();
+        m_Listbox->removeScrollbar();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::setMaximumItems(unsigned int maximumItems)
     {
-        m_Listbox.setMaximumItems(maximumItems);
+        m_Listbox->setMaximumItems(maximumItems);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::getMaximumItems()
     {
-        return m_Listbox.getMaximumItems();
+        return m_Listbox->getMaximumItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,13 +586,13 @@ namespace tgui
         Vector2f position = getPosition();
         Vector2f curScale = getScale();
 
-        if ((x > position.x) && (x < position.x + (m_Listbox.m_Size.x * curScale.x)) && (y > position.y))
+        if ((x > position.x) && (x < position.x + (m_Listbox->m_Size.x * curScale.x)) && (y > position.y))
         {
             // Check if the mouse is on top of the combo box
-            if (y < position.y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y))
+            if (y < position.y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y))
             {
                 m_MouseOnListbox = false;
-                m_Listbox.mouseNotOnObject();
+                m_Listbox->mouseNotOnObject();
                 return true;
             }
 
@@ -597,27 +600,27 @@ namespace tgui
             if (m_ShowList)
             {
                 // Temporarily set a position for the listbox
-                m_Listbox.setPosition(position.x, position.y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y));
+                m_Listbox->setPosition(position.x, position.y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y));
 
                 // Pass the event to the listbox
-                if (m_Listbox.mouseOnObject(x, y))
+                if (m_Listbox->mouseOnObject(x, y))
                 {
                     // Reset the position
-                    m_Listbox.setPosition(0, 0);
+                    m_Listbox->setPosition(0, 0);
 
                     m_MouseOnListbox = true;
                     return true;
                 }
 
                 // Reset the position
-                m_Listbox.setPosition(0, 0);
+                m_Listbox->setPosition(0, 0);
             }
         }
 
         // The mouse is not on top of the combo box
         m_MouseHover = false;
-        m_Listbox.mouseNotOnObject();
-        m_Listbox.mouseNoLongerDown();
+        m_Listbox->mouseNotOnObject();
+        m_Listbox->mouseNoLongerDown();
         return false;
     }
 
@@ -637,25 +640,25 @@ namespace tgui
         if ((m_ShowList == true) && (m_MouseOnListbox == true))
         {
             // Store the current selected item
-            unsigned int oldItem = m_Listbox.getSelectedItemID();
+            unsigned int oldItem = m_Listbox->getSelectedItemID();
 
             // Temporarily set a position for the listbox
-            m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
+            m_Listbox->setPosition(getPosition().x, getPosition().y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the listbox
-            m_Listbox.leftMousePressed(x, y);
+            m_Listbox->leftMousePressed(x, y);
 
             // Reset the position
-            m_Listbox.setPosition(0, 0);
+            m_Listbox->setPosition(0, 0);
 
             // Check if the callback should be sent to the window
-            if ((callbackID > 0) && (oldItem != m_Listbox.getSelectedItemID()))
+            if ((callbackID > 0) && (oldItem != m_Listbox->getSelectedItemID()))
             {
                 Callback callback;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::itemSelected;
-                callback.value      = m_Listbox.getSelectedItemID();
-                callback.text       = m_Listbox.getSelectedItem();
+                callback.value      = m_Listbox->getSelectedItemID();
+                callback.text       = m_Listbox->getSelectedItem();
                 m_Parent->addCallback(callback);
             }
         }
@@ -678,23 +681,23 @@ namespace tgui
                 if (m_MouseOnListbox == true)
                 {
                     // Check if the mouse went down on top of the listbox
-                    if (m_Listbox.m_MouseDown == true)
+                    if (m_Listbox->m_MouseDown == true)
                     {
                         // Make sure the mouse didn't went down on the scrollbar
-                        if ((m_Listbox.m_Scroll == NULL) || ((m_Listbox.m_Scroll != NULL) && (m_Listbox.m_Scroll->m_MouseDown == false)))
+                        if ((m_Listbox->m_Scroll == NULL) || ((m_Listbox->m_Scroll != NULL) && (m_Listbox->m_Scroll->m_MouseDown == false)))
                         {
                             // Stop showing the list
                             m_ShowList = false;
                         }
 
                         // Temporarily set a position for the listbox
-                        m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
+                        m_Listbox->setPosition(getPosition().x, getPosition().y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
                         // Pass the event to the listbox
-                        m_Listbox.leftMouseReleased(x, y);
+                        m_Listbox->leftMouseReleased(x, y);
 
                         // Reset the position
-                        m_Listbox.setPosition(0, 0);
+                        m_Listbox->setPosition(0, 0);
                     }
                 }
                 else // The mouse is not on top of the listbox
@@ -703,11 +706,11 @@ namespace tgui
             else // The list wasn't visible
             {
                 // Set the scale factors of the listbox
-                m_Listbox.setScale(getScale());
+                m_Listbox->setScale(getScale());
 
                 // Always show the beginning of the list
-                if (m_Listbox.m_Scroll != NULL)
-                    m_Listbox.m_Scroll->setValue(0);
+                if (m_Listbox->m_Scroll != NULL)
+                    m_Listbox->m_Scroll->setValue(0);
 
                 // Show the list
                 m_ShowList = true;
@@ -735,13 +738,13 @@ namespace tgui
         if ((m_ShowList == true) && (m_MouseOnListbox == true))
         {
             // Temporarily set a position for the listbox
-            m_Listbox.setPosition(getPosition().x, getPosition().y + ((m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
+            m_Listbox->setPosition(getPosition().x, getPosition().y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the listbox
-            m_Listbox.mouseMoved(x, y);
+            m_Listbox->mouseMoved(x, y);
 
             // Reset the position
-            m_Listbox.setPosition(0, 0);
+            m_Listbox->setPosition(0, 0);
         }
     }
 
@@ -750,8 +753,8 @@ namespace tgui
     void ComboBox::mouseNoLongerDown()
     {
         m_MouseDown = false;
-        m_Listbox.mouseNotOnObject();
-        m_Listbox.mouseNoLongerDown();
+        m_Listbox->mouseNotOnObject();
+        m_Listbox->mouseNoLongerDown();
 
         m_ShowList = false;
     }
@@ -774,26 +777,26 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Draw the borders
-        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Listbox.m_Size.x), static_cast<float>(m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder)));
-        Back.setFillColor(m_Listbox.m_BorderColor);
+        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Listbox->m_Size.x), static_cast<float>(m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder)));
+        Back.setFillColor(m_Listbox->m_BorderColor);
         target.draw(Back, states);
 
         // Move the front rect a little bit
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
         // Draw the combo box
-        sf::RectangleShape Front(Vector2f(static_cast<float>(m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder),
-                                          static_cast<float>(m_Listbox.m_ItemHeight - ((m_TopBorder - m_BottomBorder) / curScale.y))));
-        Front.setFillColor(m_Listbox.m_BackgroundColor);
+        sf::RectangleShape Front(Vector2f(static_cast<float>(m_Listbox->m_Size.x - m_LeftBorder - m_RightBorder),
+                                          static_cast<float>(m_Listbox->m_ItemHeight - ((m_TopBorder - m_BottomBorder) / curScale.y))));
+        Front.setFillColor(m_Listbox->m_BackgroundColor);
         target.draw(Front, states);
 
         // Get the selected item
-        std::string selectedItem = m_Listbox.getSelectedItem();
+        std::string selectedItem = m_Listbox->getSelectedItem();
 
         // Create a text object to draw it
         sf::Text tempText(selectedItem);
-        tempText.setCharacterSize(m_Listbox.m_ItemHeight);
-        tempText.setColor(m_Listbox.m_TextColor);
+        tempText.setCharacterSize(m_Listbox->m_ItemHeight);
+        tempText.setColor(m_Listbox->m_TextColor);
 
         // Make sure that the text fits inside the combo box
         {
@@ -801,7 +804,7 @@ namespace tgui
             sf::FloatRect bounds = tempText.getGlobalBounds();
 
             // Calculate the maximum text width
-            float maximumTextWidth = ((m_Listbox.m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - ((m_SpriteNormal.getGlobalBounds().width * curScale.y * m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y);
+            float maximumTextWidth = ((m_Listbox->m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - ((m_SpriteNormal.getGlobalBounds().width * curScale.y * m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y);
 
             // Check if the text is too long to fit inside the combo box
             while (((bounds.width * curScale.y) + bounds.left) > maximumTextWidth)
@@ -825,7 +828,7 @@ namespace tgui
         states.transform.scale(curScale.y/curScale.x, 1);
 
         // Draw the selected item
-        states.transform.translate(2, (m_Listbox.m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
+        states.transform.translate(2, (m_Listbox->m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
         target.draw(tempText, states);
 
         // Reset the transformation
@@ -834,14 +837,14 @@ namespace tgui
         // Set the arrow like it should (down when listbox is invisible, up when it is visible)
         if (m_ShowList)
         {
-            float scaleFactor =  static_cast<float>(m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y;
-            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - ((m_TextureNormal->getSize().x * scaleFactor) * curScale.y), ((m_TextureNormal->getSize().y * scaleFactor) + m_TopBorder) * curScale.y);
+            float scaleFactor =  static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y;
+            states.transform.translate(((m_Listbox->m_Size.x - m_RightBorder) * curScale.x) - ((m_TextureNormal->getSize().x * scaleFactor) * curScale.y), ((m_TextureNormal->getSize().y * scaleFactor) + m_TopBorder) * curScale.y);
             states.transform.scale(curScale.y * scaleFactor, -curScale.y * scaleFactor);
         }
         else
         {
-            float scaleFactor =  static_cast<float>(m_Listbox.m_ItemHeight) / m_TextureNormal->getSize().y;
-            states.transform.translate(((m_Listbox.m_Size.x - m_RightBorder) * curScale.x) - (m_TextureNormal->getSize().x * curScale.y * scaleFactor), m_TopBorder * curScale.y);
+            float scaleFactor =  static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y;
+            states.transform.translate(((m_Listbox->m_Size.x - m_RightBorder) * curScale.x) - (m_TextureNormal->getSize().x * curScale.y * scaleFactor), m_TopBorder * curScale.y);
             states.transform.scale(curScale.y * scaleFactor, curScale.y * scaleFactor);
         }
 
@@ -855,8 +858,9 @@ namespace tgui
         // If the listbox should be visible then draw it
         if (m_ShowList)
         {
-            states.transform = oldTransform.translate(0, (m_Listbox.m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y);
-            target.draw(m_Listbox, states);
+            // Set the listbox to the correct position and draw it
+            m_Listbox->setPosition(getPosition().x, getPosition().y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y));
+            target.draw(*m_Listbox);
         }
     }
 

@@ -759,6 +759,11 @@ namespace tgui
                     m_Items.erase(m_Items.begin() + x);
             }
         }
+        else // There is a scrollbar
+        {
+            // Set the maximum of the scrollbar
+            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
