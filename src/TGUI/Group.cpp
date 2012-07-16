@@ -237,6 +237,8 @@ namespace tgui
         unsigned int highestID = TGUI_MAX_OBJECTS;
         unsigned int lowestID = 0;
 
+        bool allObjectsInvisible = true;
+
         for (unsigned int i=0; i<m_Objects.size(); ++i)
         {
             // Loop through all objects
@@ -253,9 +255,16 @@ namespace tgui
 
                         // Remember the object that has to be drawn
                         objectID = j;
+
+                        // We have found an object that is visible
+                        allObjectsInvisible = false;
                     }
                 }
             }
+
+            // When none of the objects is visible then don't draw anything.
+            if (allObjectsInvisible == true)
+                break;
 
             // Draw the object if it is allowed
             if (lowestID < m_Objects[objectID]->m_ObjectID)
