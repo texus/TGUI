@@ -97,7 +97,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string pathname, unsigned int width, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
+    void ComboBox::initialize(const sf::Font& globalFont)
+    {
+        m_Listbox.setTextFont(globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::load(const std::string pathname, unsigned int width, unsigned int height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -110,7 +117,7 @@ namespace tgui
         m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
             m_LoadedPathname.push_back('/');
 
         // Open the info file
@@ -163,7 +170,7 @@ namespace tgui
 
         // If the button was loaded before then remove the old textures first
         if (m_TextureNormal != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL) TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureHover != NULL)      TGUI_TextureManager.removeTexture(m_TextureHover);
 
         // load the required texture
         if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal))
@@ -184,23 +191,20 @@ namespace tgui
         // Remove all items (in case this is the second time that the load function was called)
         m_Listbox.removeAllItems();
 
-        // There is a minimum width
-        if (width < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
-            width = static_cast<unsigned int>(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x);
-
         // At least one item must be shown
         if (nrOfItemsInList < 1)
             nrOfItemsInList = 1;
+
+        // The combo box is loaded
+        m_Loaded = true;
 
         // Remember the scrollbar pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
 
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
-        m_Listbox.load(width,
-                       static_cast<unsigned int>((m_TextureNormal->getSize().y + m_BottomBorder) * getScale().y),
-                       scrollbarPathname,
-                       static_cast<unsigned int>((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y));
+        setSize(width, height);
+        setScrollbar(scrollbarPathname);
 
         // Check if a scrollbar should be loaded
         if (scrollbarPathname.empty() == false)
@@ -209,17 +213,16 @@ namespace tgui
             if (m_Listbox.setScrollbar(scrollbarPathname))
             {
                 // The scrollbar was loaded successfully
-                m_Loaded = true;
                 return true;
             }
             else // Loading the scrollbar failed
+            {
+                m_Loaded = false;
                 return false;
+            }
         }
         else // No scrollbar is needed
-        {
-            m_Loaded = true;
             return true;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,28 +276,6 @@ namespace tgui
     std::string ComboBox::getLoadedScrollbarPathname()
     {
         return m_LoadedScrollbarPathname;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setWidth(unsigned int width)
-    {
-        // Check if the listbox was already loaded
-        if (m_Loaded)
-        {
-            // There is a minimum width
-            if (width < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
-                width = static_cast<unsigned int>(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x);
-        }
-        else // The combo box wasn't loaded yet
-        {
-            // There is a minimum width
-            if (width < (50 + (m_LeftBorder + m_RightBorder) * getScale().x))
-                width = static_cast<unsigned int>(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x);
-        }
-
-        // Set the new size
-        m_Listbox.setSize(static_cast<float>(width), static_cast<float>(m_Listbox.m_Size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -32,7 +32,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox() :
-    selectionPointColor     (110, 110, 255),
     selectionPointWidth     (2),
     m_SelectionPointVisible (true),
     m_SelectionPointPosition(0),
@@ -181,6 +180,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::initialize(const sf::Font& globalFont)
+    {
+        setTextFont(globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool EditBox::load(const std::string pathname)
     {
         // When everything is loaded successfully, this will become true.
@@ -194,7 +200,7 @@ namespace tgui
         m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
             m_LoadedPathname.push_back('/');
 
         // Open the info file
@@ -604,8 +610,8 @@ namespace tgui
         if (m_PasswordChar != '\0')
         {
             // Loop every character and change it
-            for (unsigned int x=0; x < m_Text.length(); ++x)
-                m_DisplayedText.at(x) = m_PasswordChar;
+            for (unsigned int i=0; i < m_Text.length(); ++i)
+                m_DisplayedText[i] = m_PasswordChar;
         }
 
         // Change the text that will be displayed
@@ -731,8 +737,8 @@ namespace tgui
         else
         {
             // Set the password character
-            for (unsigned int x=0; x < m_DisplayedText.length(); ++x)
-                m_DisplayedText.at(x) = m_PasswordChar;
+            for (unsigned int i=0; i < m_DisplayedText.length(); ++i)
+                m_DisplayedText[i] = m_PasswordChar;
         }
 
 
@@ -1028,12 +1034,14 @@ namespace tgui
     void EditBox::changeColors(const sf::Color& color,
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
-                               const sf::Color& unfocusedSelectedBgrColor)
+                               const sf::Color& unfocusedSelectedBgrColor,
+                               const sf::Color& newSelectionPointColor)
     {
         m_TextBeforeSelection.setColor(color);
         m_TextSelection.setColor(selectedColor);
         m_TextAfterSelection.setColor(color);
 
+        selectionPointColor = newSelectionPointColor;
         m_SelectedTextBgrColor = selectedBgrColor;
         m_UnfocusedSelectedTextBgrColor = unfocusedSelectedBgrColor;
     }
@@ -1202,25 +1210,25 @@ namespace tgui
         std::string tempString;
 
         // Add the first character to our temp string
-        tempString.push_back(m_DisplayedText.at(leftBound));
+        tempString.push_back(m_DisplayedText[leftBound]);
 
         // for all the other characters, check where you have clicked.
-        for (unsigned int x = leftBound + 1; x < rightBound; ++x)
+        for (unsigned int i = leftBound + 1; i < rightBound; ++i)
         {
             // Add the next character to the temp string
-            tempString.push_back(m_DisplayedText.at(x));
+            tempString.push_back(m_DisplayedText[i]);
 
             // Set the string
             tempText.setString(tempString);
 
             // Make some calculations
-            float textWidthWithoutLastChar = tempText.findCharacterPos(x - leftBound).x;
-            float fullTextWidth = tempText.findCharacterPos(x - leftBound + 1).x;
+            float textWidthWithoutLastChar = tempText.findCharacterPos(i - leftBound).x;
+            float fullTextWidth = tempText.findCharacterPos(i - leftBound + 1).x;
             float halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
 
             // Check if you have clicked on the first halve of that character
             if (posX < textWidthWithoutLastChar + halfOfLastCharWidth + 0.5f)
-                return x;
+                return i;
         }
 
         // If you pass here then you clicked behind all the characters

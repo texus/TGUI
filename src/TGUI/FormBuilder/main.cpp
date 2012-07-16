@@ -78,7 +78,7 @@ int main()
                     app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                     // Change the size of the transparent image
-                    app.mainWindow.getPicture("1")->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+                    app.mainWindow.get<tgui::Picture>("1")->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
 
                     // Pass the change to tgui
                     app.mainWindow.handleEvent(event);

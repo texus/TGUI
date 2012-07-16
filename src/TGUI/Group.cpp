@@ -27,62 +27,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Many functions inside the Group struct look at each other but use different types of objects.
-// These defines will avoid that there are too many copies of the code and thus will keep my code shorter.
-
-#define TGUI_GROUP_ADD_FUNCTION(StructName) \
-StructName* Group::add##StructName(const std::string objectName) \
-{ \
-    StructName* new##StructName = new StructName(); \
-    new##StructName->m_Parent = this; \
-    m_EventManager.addObject(new##StructName); \
-  \
-    m_Objects.push_back(new##StructName); \
-    m_ObjName.push_back(objectName); \
-  \
-    return new##StructName; \
-}
-
-#define TGUI_GROUP_ADD_FUNCTION_WITH_FONT(StructName) \
-StructName* Group::add##StructName(const std::string objectName) \
-{ \
-    StructName* new##StructName = new StructName(); \
-    new##StructName->m_Parent = this; \
-    new##StructName->setTextFont(globalFont); \
-    m_EventManager.addObject(new##StructName); \
-  \
-    m_Objects.push_back(new##StructName); \
-    m_ObjName.push_back(objectName); \
-  \
-    return new##StructName; \
-}
-
-#define TGUI_GROUP_COPY_FUNCTION_BY_NAME(StructName, EnumName) \
-StructName* Group::copy##StructName(const std::string oldObjectName, const std::string newObjectName) \
-{ \
-    for (unsigned int i=0; i<m_ObjName.size(); ++i) \
-    { \
-        if ((m_Objects[i]->m_ObjectType == EnumName) && (m_ObjName[i].compare(oldObjectName) == 0)) \
-            return copyObject(static_cast<StructName*>(m_Objects[i]), newObjectName); \
-    } \
-  \
-    return NULL; \
-}
-
-#define TGUI_GROUP_GET_FUNCTION(StructName, EnumName) \
-StructName* Group::get##StructName(const std::string objectName) \
-{ \
-    for (unsigned int i=0; i<m_ObjName.size(); ++i) \
-    { \
-        if ((m_Objects[i]->m_ObjectType == EnumName) && (m_ObjName[i].compare(objectName) == 0)) \
-            return static_cast<StructName*>(m_Objects[i]); \
-    } \
-  \
-    return NULL; \
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,40 +38,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group(const Group& copy) :
-    globalFont(copy.globalFont)
+    Group::Group(const Group& groupToCopy) :
+    globalFont(groupToCopy.globalFont)
     {
         // Copy all the objects
-        for (unsigned int i=0; i<copy.m_Objects.size(); ++i)
+        for (unsigned int i=0; i<groupToCopy.m_Objects.size(); ++i)
         {
-            if (copy.m_Objects[i]->m_ObjectType == picture)
-                copyObject(static_cast<Picture*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == button)
-                copyObject(static_cast<Button*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == checkbox)
-                copyObject(static_cast<Checkbox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == radioButton)
-                copyObject(static_cast<RadioButton*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == label)
-                copyObject(static_cast<Label*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == editBox)
-                copyObject(static_cast<EditBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == listbox)
-                copyObject(static_cast<Listbox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == comboBox)
-                copyObject(static_cast<ComboBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == slider)
-                copyObject(static_cast<Slider*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == scrollbar)
-                copyObject(static_cast<Scrollbar*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == loadingBar)
-                copyObject(static_cast<LoadingBar*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == textBox)
-                copyObject(static_cast<TextBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == panel)
-                copyObject(static_cast<Panel*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == spriteSheet)
-                copyObject(static_cast<SpriteSheet*>(copy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == picture)
+                copyObject(static_cast<Picture*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == button)
+                copyObject(static_cast<Button*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == checkbox)
+                copyObject(static_cast<Checkbox*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == radioButton)
+                copyObject(static_cast<RadioButton*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == label)
+                copyObject(static_cast<Label*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == editBox)
+                copyObject(static_cast<EditBox*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == listbox)
+                copyObject(static_cast<Listbox*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == comboBox)
+                copyObject(static_cast<ComboBox*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == slider)
+                copyObject(static_cast<Slider*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == scrollbar)
+                copyObject(static_cast<Scrollbar*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == loadingBar)
+                copyObject(static_cast<LoadingBar*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == textBox)
+                copyObject(static_cast<TextBox*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == panel)
+                copyObject(static_cast<Panel*>(groupToCopy.m_Objects[i]));
+            if (groupToCopy.m_Objects[i]->m_ObjectType == spriteSheet)
+                copyObject(static_cast<SpriteSheet*>(groupToCopy.m_Objects[i]));
         }
     }
 
@@ -187,55 +131,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel* Group::addPanel(const std::string objectName)
-    {
-        Panel* newPanel = new Panel();
-        newPanel->m_Parent = this;
-        newPanel->globalFont = globalFont;
-        m_EventManager.addObject(newPanel);
-
-        m_Objects.push_back(newPanel);
-        m_ObjName.push_back(objectName);
-
-        return newPanel;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_GROUP_ADD_FUNCTION (Picture)
-    TGUI_GROUP_ADD_FUNCTION (Slider)
-    TGUI_GROUP_ADD_FUNCTION (Scrollbar)
-    TGUI_GROUP_ADD_FUNCTION (LoadingBar)
-    TGUI_GROUP_ADD_FUNCTION (SpriteSheet)
-
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Label)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Button)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Checkbox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (RadioButton)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (EditBox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Listbox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (ComboBox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (TextBox)
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_GROUP_GET_FUNCTION (Label,       label)
-    TGUI_GROUP_GET_FUNCTION (Picture,     picture)
-    TGUI_GROUP_GET_FUNCTION (Button,      button)
-    TGUI_GROUP_GET_FUNCTION (Checkbox,    checkbox)
-    TGUI_GROUP_GET_FUNCTION (RadioButton, radioButton)
-    TGUI_GROUP_GET_FUNCTION (EditBox,     editBox)
-    TGUI_GROUP_GET_FUNCTION (Slider,      slider)
-    TGUI_GROUP_GET_FUNCTION (Scrollbar,   scrollbar)
-    TGUI_GROUP_GET_FUNCTION (Listbox,     listbox)
-    TGUI_GROUP_GET_FUNCTION (LoadingBar,  loadingBar)
-    TGUI_GROUP_GET_FUNCTION (Panel,       panel)
-    TGUI_GROUP_GET_FUNCTION (ComboBox,    comboBox)
-    TGUI_GROUP_GET_FUNCTION (TextBox,     textBox)
-    TGUI_GROUP_GET_FUNCTION (SpriteSheet, spriteSheet)
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::vector<OBJECT*>& Group::getObjects()
     {
         return m_Objects;
@@ -247,37 +142,6 @@ namespace tgui
     {
         return m_ObjName;
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    T* Group::copyObject(T* oldObject, const std::string newObjectName)
-    {
-        T* newObject = new T(*oldObject);
-        m_EventManager.addObject(newObject);
-
-        m_Objects.push_back(newObject);
-        m_ObjName.push_back(newObjectName);
-
-        return newObject;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Label,       label)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Picture,     picture)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Button,      button)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Checkbox,    checkbox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (RadioButton, radioButton)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (EditBox,     editBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Slider,      slider)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Scrollbar,   scrollbar)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Listbox,     listbox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (LoadingBar,  loadingBar)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Panel,       panel)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (ComboBox,    comboBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (TextBox,     textBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (SpriteSheet, spriteSheet)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

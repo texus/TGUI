@@ -37,17 +37,19 @@ namespace tgui
         m_ObjectType = panel;
         m_EventManager.m_Parent = this;
         m_RenderTexture = new sf::RenderTexture();
+
+        m_AllowFocus = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel(const Panel& copy) :
-    OBJECT         (copy),
-    Group          (copy),
-    backgroundColor(copy.backgroundColor)
+    Panel::Panel(const Panel& panelToCopy) :
+    OBJECT         (panelToCopy),
+    Group          (panelToCopy),
+    backgroundColor(panelToCopy.backgroundColor)
     {
         // Copy the render texture
-        if (m_RenderTexture->create(copy.m_RenderTexture->getSize().x, copy.m_RenderTexture->getSize().y) == false)
+        if (m_RenderTexture->create(panelToCopy.m_RenderTexture->getSize().x, panelToCopy.m_RenderTexture->getSize().y) == false)
             m_Loaded = false;
     }
 
@@ -74,6 +76,13 @@ namespace tgui
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::initialize(const sf::Font& font)
+    {
+        globalFont = font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +164,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Panel::focusNextObject()
+    {
+        return m_EventManager.focusNextObject();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Vector2u Panel::getSize() const
     {
         if (m_Loaded == true)
@@ -185,7 +201,18 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
             return true;
         else
+        {
+            // Tell the objects inside the panel that the mouse is no longer on top of them
+            m_EventManager.mouseNotOnObject();
             return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::objectFocused()
+    {
+        m_EventManager.tabKeyPressed();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

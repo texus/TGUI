@@ -166,7 +166,7 @@ namespace tgui
                     CHECK_FOR_QUOTES \
                 } \
               \
-                extraPtr = static_cast<void*>(parentPtr.top()->add##objectName(line)); \
+                extraPtr = static_cast<void*>(parentPtr.top()->add<objectName>(line)); \
                 objectID = id + 1; \
                 progress.push(0); \
             }
@@ -1168,7 +1168,7 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the combo box
-                            comboBox->load(line, comboBox->getSize().x);
+                            comboBox->load(line, comboBox->getSize().x, comboBox->getSize().y);
                         }
                         else if (line.substr(0, 6).compare("width=") == 0)
                         {
@@ -1176,7 +1176,7 @@ namespace tgui
                             line.erase(0, 6);
 
                             // Set the width
-                            comboBox->setWidth(atoi(line.c_str()));
+                            comboBox->setSize(atoi(line.c_str()), comboBox->getSize().y);
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {

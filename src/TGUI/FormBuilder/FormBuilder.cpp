@@ -67,19 +67,19 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         windows.back().addProperties(propertyWindow);
 
         // Create an empty picture with the size of the window
-        tgui::Picture* picture = mainWindow.addPicture("1");
+        tgui::Picture* picture = mainWindow.add<tgui::Picture>("1");
         picture->load("images/Empty.png");
         picture->setSize(static_cast<float>(windows.back().width.value), static_cast<float>(windows.back().height.value));
 
         // Create the scale squares pictures
-        mainWindow.addButton("Square_TopLeft")->load("images/Square");
-        mainWindow.copyButton("Square_TopLeft", "Square_Top");
-        mainWindow.copyButton("Square_TopLeft", "Square_TopRight");
-        mainWindow.copyButton("Square_TopLeft", "Square_Right");
-        mainWindow.copyButton("Square_TopLeft", "Square_BottomRight");
-        mainWindow.copyButton("Square_TopLeft", "Square_Bottom");
-        mainWindow.copyButton("Square_TopLeft", "Square_BottomLeft");
-        mainWindow.copyButton("Square_TopLeft", "Square_Left");
+        mainWindow.add<tgui::Button>("Square_TopLeft")->load("images/Square");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Top");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_TopRight");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Right");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_BottomRight");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Bottom");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_BottomLeft");
+        mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Left");
     }
     else if (objectID == tgui::picture)
     {
@@ -90,7 +90,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         pictures.push_back(properties);
 
         // Add a picture to the form
-        tgui::Picture* picture = mainWindow.addPicture(tgui::to_string(currentID));
+        tgui::Picture* picture = mainWindow.add<tgui::Picture>(tgui::to_string(currentID));
         picture->load(pictures.back().filename.value);
 
         // Store the aspect ratio
@@ -105,7 +105,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         buttons.push_back(properties);
 
         // Add a button to the form
-        tgui::Button* button = mainWindow.addButton(tgui::to_string(currentID));
+        tgui::Button* button = mainWindow.add<tgui::Button>(tgui::to_string(currentID));
         button->load(buttons.back().pathname.value);
 
         // Store the aspect ratio
@@ -120,7 +120,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         checkboxes.push_back(properties);
 
         // Add a checkbox to the form
-        tgui::Checkbox* checkbox = mainWindow.addCheckbox(tgui::to_string(currentID));
+        tgui::Checkbox* checkbox = mainWindow.add<tgui::Checkbox>(tgui::to_string(currentID));
         checkbox->load(checkboxes.back().pathname.value);
 
         // Store the aspect ratio
@@ -136,7 +136,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         radioButtons.push_back(properties);
 
         // Add a radio button to the form
-        tgui::RadioButton* radioButton = mainWindow.addRadioButton(tgui::to_string(currentID));
+        tgui::RadioButton* radioButton = mainWindow.add<tgui::RadioButton>(tgui::to_string(currentID));
         radioButton->load(radioButtons.back().pathname.value);
 
         // Store the aspect ratio
@@ -151,7 +151,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         labels.push_back(properties);
 
         // Add a label to the form
-        tgui::Label* label = mainWindow.addLabel(tgui::to_string(currentID));
+        tgui::Label* label = mainWindow.add<tgui::Label>(tgui::to_string(currentID));
         label->setText("Label");
 
         // Store the aspect ratio
@@ -166,7 +166,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         editBoxes.push_back(properties);
 
         // Add an edit box to the form
-        tgui::EditBox* editBox = mainWindow.addEditBox(tgui::to_string(currentID));
+        tgui::EditBox* editBox = mainWindow.add<tgui::EditBox>(tgui::to_string(currentID));
         editBox->load(editBoxes.back().pathname.value);
         editBox->setBorders(2, 2, 2, 2);
         editBox->selectionPointColor = sf::Color(110, 110, 255);
@@ -187,7 +187,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         listboxes.push_back(properties);
 
         // Add an listbox to the form
-        tgui::Listbox* listbox = mainWindow.addListbox(tgui::to_string(currentID));
+        tgui::Listbox* listbox = mainWindow.add<tgui::Listbox>(tgui::to_string(currentID));
         listbox->load(200, 240, "images/objects/Scrollbar/" OBJECT_STYLE, 30);
         listbox->setBorders(2, 2, 2, 2);
         listbox->changeColors(sf::Color( 50,  50,  50),
@@ -208,8 +208,8 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         comboBoxes.push_back(properties);
 
         // Add an combo box to the form
-        tgui::ComboBox* comboBox = mainWindow.addComboBox(tgui::to_string(currentID));
-        comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, 240, 10, "images/objects/Scrollbar/" OBJECT_STYLE);
+        tgui::ComboBox* comboBox = mainWindow.add<tgui::ComboBox>(tgui::to_string(currentID));
+        comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, 240, 36, 10, "images/objects/Scrollbar/" OBJECT_STYLE);
         comboBox->setBorders(2, 2, 2, 2);
         comboBox->changeColors(sf::Color( 50,  50,  50),
                                sf::Color(200, 200, 200),
@@ -229,7 +229,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         sliders.push_back(properties);
 
         // Add a slider to the form
-        tgui::Slider* slider = mainWindow.addSlider(tgui::to_string(currentID));
+        tgui::Slider* slider = mainWindow.add<tgui::Slider>(tgui::to_string(currentID));
         slider->load(sliders.back().pathname.value);
         slider->verticalScroll = false;
 
@@ -245,7 +245,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         scrollbars.push_back(properties);
 
         // Add a scrollbar to the form
-        tgui::Scrollbar* scrollbar = mainWindow.addScrollbar(tgui::to_string(currentID));
+        tgui::Scrollbar* scrollbar = mainWindow.add<tgui::Scrollbar>(tgui::to_string(currentID));
         scrollbar->load(scrollbars.back().pathname.value);
         scrollbar->setMaximum(5);
         scrollbar->setLowValue(4);
@@ -263,7 +263,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         loadingBars.push_back(properties);
 
         // Add a loading bar to the form
-        tgui::LoadingBar* loadingBar = mainWindow.addLoadingBar(tgui::to_string(currentID));
+        tgui::LoadingBar* loadingBar = mainWindow.add<tgui::LoadingBar>(tgui::to_string(currentID));
         loadingBar->load(loadingBars.back().pathname.value);
 
         // Store the aspect ratio
@@ -278,7 +278,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         textBoxes.push_back(properties);
 
         // Add a text box to the form
-        tgui::TextBox* textBox = mainWindow.addTextBox(tgui::to_string(currentID));
+        tgui::TextBox* textBox = mainWindow.add<tgui::TextBox>(tgui::to_string(currentID));
         textBox->load(320, 172, 24, textBoxes.back().scrollbarPathname.value);
         textBox->setBorders(2, 2, 2, 2);
         textBox->selectionPointColor = sf::Color(110, 110, 255);
@@ -294,14 +294,14 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
     }
 
     // Bring the scale squares to front
-    mainWindow.getButton("Square_TopLeft")->moveToFront();
-    mainWindow.getButton("Square_Top")->moveToFront();
-    mainWindow.getButton("Square_TopRight")->moveToFront();
-    mainWindow.getButton("Square_Right")->moveToFront();
-    mainWindow.getButton("Square_BottomRight")->moveToFront();
-    mainWindow.getButton("Square_Bottom")->moveToFront();
-    mainWindow.getButton("Square_BottomLeft")->moveToFront();
-    mainWindow.getButton("Square_Left")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_TopLeft")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_Top")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_TopRight")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_Right")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_BottomRight")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_Bottom")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_BottomLeft")->moveToFront();
+    mainWindow.get<tgui::Button>("Square_Left")->moveToFront();
 
     resizePropertyWindow();
 
@@ -324,20 +324,20 @@ void Builder::changeVisibleProperties()
         {
             windows[i].addProperties(propertyWindow);
 
-            mainWindow.getButton("Square_TopLeft")->setPosition(-3, -3);
-            mainWindow.getButton("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
-            mainWindow.getButton("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
-            mainWindow.getButton("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
-            mainWindow.getButton("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_TopLeft")->setPosition(-3, -3);
+            mainWindow.get<tgui::Button>("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
+            mainWindow.get<tgui::Button>("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
+            mainWindow.get<tgui::Button>("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
             return;
         }
     }
 
     // Create the delete button
-    tgui::Button* button = propertyWindow.addButton();
+    tgui::Button* button = propertyWindow.add<tgui::Button>();
     button->load("images/objects/Button/" OBJECT_STYLE);
     button->setText("Delete object");
     button->setSize(static_cast<float>(propertyWindow.getSize().x - 8), 40);
@@ -351,14 +351,14 @@ void Builder::changeVisibleProperties()
             radioButtons[i].addProperties(propertyWindow);
             button->setPosition(4, 10 + (40 * (Property_Checkbox_CallbackID + 1)));
 
-            mainWindow.getButton("Square_TopLeft")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value - 3);
-            mainWindow.getButton("Square_Top")->setPosition(radioButtons[i].left.value + (radioButtons[i].width.value / 2.f) - 3, radioButtons[i].top.value - 3);
-            mainWindow.getButton("Square_TopRight")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value - 3);
-            mainWindow.getButton("Square_Right")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value + (radioButtons[i].height.value / 2.f) - 3);
-            mainWindow.getButton("Square_BottomRight")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
-            mainWindow.getButton("Square_Bottom")->setPosition(radioButtons[i].left.value + (radioButtons[i].width.value / 2.f) - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
-            mainWindow.getButton("Square_BottomLeft")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
-            mainWindow.getButton("Square_Left")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value + (radioButtons[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_TopLeft")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value - 3);
+            mainWindow.get<tgui::Button>("Square_Top")->setPosition(radioButtons[i].left.value + (radioButtons[i].width.value / 2.f) - 3, radioButtons[i].top.value - 3);
+            mainWindow.get<tgui::Button>("Square_TopRight")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value - 3);
+            mainWindow.get<tgui::Button>("Square_Right")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value + (radioButtons[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_BottomRight")->setPosition(radioButtons[i].left.value + radioButtons[i].width.value - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
+            mainWindow.get<tgui::Button>("Square_Bottom")->setPosition(radioButtons[i].left.value + (radioButtons[i].width.value / 2.f) - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
+            mainWindow.get<tgui::Button>("Square_BottomLeft")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value + radioButtons[i].height.value - 3);
+            mainWindow.get<tgui::Button>("Square_Left")->setPosition(radioButtons[i].left.value - 3, radioButtons[i].top.value + (radioButtons[i].height.value / 2.f) - 3);
             return;
         }
     }
@@ -372,14 +372,14 @@ void Builder::changeVisibleProperties()
             objects[i].addProperties(propertyWindow); \
             button->setPosition(4, 10 + (40 * (Property_##Object##_CallbackID + 1))); \
           \
-            mainWindow.getButton("Square_TopLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_Top")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_TopRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_Right")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
-            mainWindow.getButton("Square_BottomRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_Bottom")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_BottomLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_Left")->setPosition(objects[i].left.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
+            mainWindow.get<tgui::Button>("Square_TopLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Top")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_TopRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Right")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
+            mainWindow.get<tgui::Button>("Square_BottomRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Bottom")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_BottomLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Left")->setPosition(objects[i].left.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
             return; \
         } \
     }
@@ -461,14 +461,14 @@ void Builder::updateProperty(unsigned int propertyNumber)
         if (windows[i].id == currentID)
         {
             windows[i].updateProperty(mainWindow, propertyWindow, propertyNumber); \
-            mainWindow.getButton("Square_TopLeft")->setPosition(-3, -3);
-            mainWindow.getButton("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
-            mainWindow.getButton("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
-            mainWindow.getButton("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
-            mainWindow.getButton("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
-            mainWindow.getButton("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_TopLeft")->setPosition(-3, -3);
+            mainWindow.get<tgui::Button>("Square_Top")->setPosition((windows[i].width.value / 2.f) - 3, -3);
+            mainWindow.get<tgui::Button>("Square_TopRight")->setPosition(static_cast<float>(windows[i].width.value - 3), -3);
+            mainWindow.get<tgui::Button>("Square_Right")->setPosition(static_cast<float>(windows[i].width.value - 3), (windows[i].height.value / 2.f) - 3);
+            mainWindow.get<tgui::Button>("Square_BottomRight")->setPosition(static_cast<float>(windows[i].width.value - 3), static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_Bottom")->setPosition((windows[i].width.value / 2.f) - 3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_BottomLeft")->setPosition(-3, static_cast<float>(windows[i].height.value - 3));
+            mainWindow.get<tgui::Button>("Square_Left")->setPosition(-3, (windows[i].height.value / 2.f) - 3);
             return;
         }
     }
@@ -480,14 +480,14 @@ void Builder::updateProperty(unsigned int propertyNumber)
         if (objects[i].id == currentID) \
         { \
             objects[i].updateProperty(mainWindow, propertyWindow, propertyNumber); \
-            mainWindow.getButton("Square_TopLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_Top")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_TopRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value - 3); \
-            mainWindow.getButton("Square_Right")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
-            mainWindow.getButton("Square_BottomRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_Bottom")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_BottomLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value + objects[i].height.value - 3); \
-            mainWindow.getButton("Square_Left")->setPosition(objects[i].left.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
+            mainWindow.get<tgui::Button>("Square_TopLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Top")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_TopRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Right")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
+            mainWindow.get<tgui::Button>("Square_BottomRight")->setPosition(objects[i].left.value + objects[i].width.value - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Bottom")->setPosition(objects[i].left.value + (objects[i].width.value / 2.f) - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_BottomLeft")->setPosition(objects[i].left.value - 3, objects[i].top.value + objects[i].height.value - 3); \
+            mainWindow.get<tgui::Button>("Square_Left")->setPosition(objects[i].left.value - 3, objects[i].top.value + (objects[i].height.value / 2.f) - 3); \
             return; \
         } \
     }
@@ -592,7 +592,7 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
         #define FindObjectNr(Object, objects) \
         for (unsigned int i=0; i<objects.size(); ++i) \
         { \
-            tgui::Object* object = mainWindow.get##Object(tgui::to_string(objects[i].id)); \
+            tgui::Object* object = mainWindow.get<tgui::Object>(tgui::to_string(objects[i].id)); \
          \
             if (object->mouseOnObject(mouseX, mouseY)) \
             { \
@@ -641,7 +641,7 @@ unsigned int Builder::getScaleSquareObjectID(float x, float y)
 
     #define FindObjectNr(name, objID) \
     { \
-        tgui::Button* button = mainWindow.getButton(name); \
+        tgui::Button* button = mainWindow.get<tgui::Button>(name); \
       \
         if (button->mouseOnObject(mouseX, mouseY)) \
         { \
@@ -737,7 +737,7 @@ void Builder::moveObjectX(float pixels, unsigned int id, bool delay)
         if (id == currentID)
         {
             // Get the pointer to the property
-            tgui::EditBox* editbox = propertyWindow.getEditBox("text_Left");
+            tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Left");
 
             // Adjust the property
             float left = static_cast<float>(atof(editbox->getText().c_str()));
@@ -779,7 +779,7 @@ void Builder::moveObjectX(float pixels, unsigned int id, bool delay)
                 if (objects[i].id == id) \
                 { \
                     objects[i].left.value += pixels; \
-                    mainWindow.get##Object(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
+                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
                     return; \
                 } \
             }
@@ -828,7 +828,7 @@ void Builder::moveObjectY(float pixels, unsigned int id, bool delay)
         if (id == currentID)
         {
             // Get the pointer to the property
-            tgui::EditBox* editbox = propertyWindow.getEditBox("text_Top");
+            tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Top");
 
             // Adjust the property
             float top = static_cast<float>(atof(editbox->getText().c_str()));
@@ -870,7 +870,7 @@ void Builder::moveObjectY(float pixels, unsigned int id, bool delay)
                 if (objects[i].id == id) \
                 { \
                     objects[i].top.value += pixels; \
-                    mainWindow.get##Object(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
+                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
                     return; \
                 } \
             }
@@ -905,8 +905,8 @@ void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id,
         if (id == currentID)
         {
             // Get the pointer to the properties
-            tgui::EditBox* editboxWidth = propertyWindow.getEditBox("text_Width");
-            tgui::EditBox* editboxHeight = propertyWindow.getEditBox("text_Height");
+            tgui::EditBox* editboxWidth = propertyWindow.get<tgui::EditBox>("text_Width");
+            tgui::EditBox* editboxHeight = propertyWindow.get<tgui::EditBox>("text_Height");
 
             // Adjust the properties
             float width = static_cast<float>(atof(editboxWidth->getText().c_str()));
@@ -953,7 +953,7 @@ void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id,
                 { \
                     objects[i].width.value += addToWidth; \
                     objects[i].height.value += addToHeight; \
-                    mainWindow.get##Object(tgui::to_string(id))->setSize(objects[i].width.value, objects[i].height.value); \
+                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setSize(objects[i].width.value, objects[i].height.value); \
                     return; \
                 } \
             }
@@ -1034,19 +1034,19 @@ bool Builder::loadForm()
     mainWindow.removeAllObjects();
 
     // Create an empty picture with the size of the window
-    tgui::Picture* picture = mainWindow.addPicture("1");
+    tgui::Picture* picture = mainWindow.add<tgui::Picture>("1");
     picture->load("images/Empty.png");
     picture->setSize(static_cast<float>(windows.back().width.value), static_cast<float>(windows.back().height.value));
 
     // Recreate the scale squares pictures
-    mainWindow.addButton("Square_TopLeft")->load("images/Square");
-    mainWindow.copyButton("Square_TopLeft", "Square_Top");
-    mainWindow.copyButton("Square_TopLeft", "Square_TopRight");
-    mainWindow.copyButton("Square_TopLeft", "Square_Right");
-    mainWindow.copyButton("Square_TopLeft", "Square_BottomRight");
-    mainWindow.copyButton("Square_TopLeft", "Square_Bottom");
-    mainWindow.copyButton("Square_TopLeft", "Square_BottomLeft");
-    mainWindow.copyButton("Square_TopLeft", "Square_Left");
+    mainWindow.add<tgui::Button>("Square_TopLeft")->load("images/Square");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Top");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_TopRight");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Right");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_BottomRight");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Bottom");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_BottomLeft");
+    mainWindow.copy<tgui::Button>("Square_TopLeft", "Square_Left");
 
     // Remove all properties
     pictures.clear();
@@ -1097,7 +1097,7 @@ bool Builder::loadForm()
                 labels.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Label* realObject = mainWindow.getLabel(tgui::to_string(id));
+                tgui::Label* realObject = mainWindow.get<tgui::Label>(tgui::to_string(id));
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1121,7 +1121,7 @@ bool Builder::loadForm()
                 pictures.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Picture* realObject = mainWindow.getPicture(tgui::to_string(id));
+                tgui::Picture* realObject = mainWindow.get<tgui::Picture>(tgui::to_string(id));
                 realObject->load(object->getLoadedFilename());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1146,7 +1146,7 @@ bool Builder::loadForm()
                 buttons.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Button* realObject = mainWindow.getButton(tgui::to_string(id));
+                tgui::Button* realObject = mainWindow.get<tgui::Button>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1176,7 +1176,7 @@ bool Builder::loadForm()
                 checkboxes.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Checkbox* realObject = mainWindow.getCheckbox(tgui::to_string(id));
+                tgui::Checkbox* realObject = mainWindow.get<tgui::Checkbox>(tgui::to_string(id));
                 //realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1211,7 +1211,7 @@ bool Builder::loadForm()
                 radioButtons.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::RadioButton* realObject = mainWindow.getRadioButton(tgui::to_string(id));
+                tgui::RadioButton* realObject = mainWindow.get<tgui::RadioButton>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1253,7 +1253,7 @@ bool Builder::loadForm()
                 editBoxes.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::EditBox* realObject = mainWindow.getEditBox(tgui::to_string(id));
+                tgui::EditBox* realObject = mainWindow.get<tgui::EditBox>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1287,7 +1287,7 @@ bool Builder::loadForm()
                 sliders.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Slider* realObject = mainWindow.getSlider(tgui::to_string(id));
+                tgui::Slider* realObject = mainWindow.get<tgui::Slider>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1316,7 +1316,7 @@ bool Builder::loadForm()
                 scrollbars.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::Scrollbar* realObject = mainWindow.getScrollbar(tgui::to_string(id));
+                tgui::Scrollbar* realObject = mainWindow.get<tgui::Scrollbar>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1364,7 +1364,7 @@ bool Builder::loadForm()
                 listboxes.back().selectedItem.value = object->getSelectedItemID();
 
                 // Draw the object in the correct way
-                tgui::Listbox* realObject = mainWindow.getListbox(tgui::to_string(id));
+                tgui::Listbox* realObject = mainWindow.get<tgui::Listbox>(tgui::to_string(id));
                 realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getLoadedScrollbarPathname(), object->getItemHeight());
                 realObject->setPosition(object->getPosition());
                 realObject->setMaximumItems(object->getMaximumItems());
@@ -1413,8 +1413,8 @@ bool Builder::loadForm()
                 comboBoxes.back().selectedItem.value = object->getSelectedItemID();
 
                 // Draw the object in the correct way
-                tgui::ComboBox* realObject = mainWindow.getComboBox(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname(), static_cast<unsigned int>(object->getScaledSize().x), object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
+                tgui::ComboBox* realObject = mainWindow.get<tgui::ComboBox>(tgui::to_string(id));
+                realObject->load(object->getLoadedPathname(), static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
@@ -1442,7 +1442,7 @@ bool Builder::loadForm()
                 loadingBars.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::LoadingBar* realObject = mainWindow.getLoadingBar(tgui::to_string(id));
+                tgui::LoadingBar* realObject = mainWindow.get<tgui::LoadingBar>(tgui::to_string(id));
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
@@ -1479,7 +1479,7 @@ bool Builder::loadForm()
                 textBoxes.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
-                tgui::TextBox* realObject = mainWindow.getTextBox(tgui::to_string(id));
+                tgui::TextBox* realObject = mainWindow.get<tgui::TextBox>(tgui::to_string(id));
                 realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getTextSize(), object->getLoadedScrollbarPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);

@@ -148,6 +148,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Button::initialize(const sf::Font& globalFont)
+    {
+        m_Text.setFont(globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Button::load(const std::string pathname)
     {
         // When everything is loaded successfully, this will become true.
@@ -161,7 +168,7 @@ namespace tgui
         m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
             m_LoadedPathname.push_back('/');
 
         // Open the info file
@@ -613,6 +620,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the button wasn't loaded correctly

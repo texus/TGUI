@@ -125,6 +125,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Listbox::initialize(const sf::Font& globalFont)
+    {
+        setTextFont(globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Listbox::load(unsigned int width, unsigned int height, const std::string scrollbarPathname, unsigned int itemHeight)
     {
         // When everything is loaded successfully, this will become true.
@@ -265,9 +272,6 @@ namespace tgui
         // A negative size is not allowed for this object
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
-
-        // Reset the scale
-        setScale(1, 1);
 
         // The calculations require an unsigned integer
         unsigned int uiHeight = static_cast<unsigned int>(height);
@@ -524,13 +528,13 @@ namespace tgui
     bool Listbox::setSelectedItem(const std::string itemName)
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // Check if a match was found
-            if (m_Items[x].compare(itemName) == 0)
+            if (m_Items[i].compare(itemName) == 0)
             {
                 // Select the item
-                m_SelectedItem = x + 1;
+                m_SelectedItem = i + 1;
                 return true;
             }
         }
@@ -578,19 +582,19 @@ namespace tgui
     void Listbox::removeItem(const std::string itemName)
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then delete the item
-            if (m_Items[x].compare(itemName))
+            if (m_Items[i].compare(itemName))
             {
-                m_Items.erase(m_Items.begin() + x);
+                m_Items.erase(m_Items.begin() + i);
 
                 // If the removed item was selected then unselect it
-                if (m_SelectedItem == x + 1)
+                if (m_SelectedItem == i + 1)
                     m_SelectedItem = 0;
 
                 // If the selected item was after the removed item then move it
-                if (m_SelectedItem > x + 1)
+                if (m_SelectedItem > i + 1)
                     --m_SelectedItem;
 
                 // If there is a scrollbar then tell it that an item was removed
@@ -634,12 +638,12 @@ namespace tgui
     unsigned int Listbox::getItemID(const std::string itemName)
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then return the IDd you have requested that you be notified on this event. You can view your new message by clicking on the following link:
 
-            if (m_Items[x].compare(itemName))
-                return x + 1;
+            if (m_Items[i].compare(itemName))
+                return i + 1;
         }
 
         // No match was found
@@ -755,8 +759,8 @@ namespace tgui
                 m_MaxItems = m_Size.y / m_ItemHeight;
 
                 // Remove the items that didn't fit inside the listbox
-                for (unsigned int x=m_MaxItems; x<m_Items.size(); ++x)
-                    m_Items.erase(m_Items.begin() + x);
+                for (unsigned int i=m_MaxItems; i<m_Items.size(); ++i)
+                    m_Items.erase(m_Items.begin() + i);
             }
         }
     }
@@ -766,21 +770,6 @@ namespace tgui
     unsigned int Listbox::getItemHeight()
     {
         return m_ItemHeight;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Listbox::setTextSize(unsigned int textSize)
-    {
-        // Set the item size (all calculations are done there, there is no reason to copy them)
-        setItemHeight(static_cast<unsigned int>(textSize * 1.25f));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Listbox::getTextSize()
-    {
-        return m_TextSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -797,8 +786,8 @@ namespace tgui
             std::vector<std::string> items = getItems();
 
             // Remove the items that passed the limitation
-            for (unsigned int x=m_MaxItems; x<items.size(); ++x)
-                m_Items.erase(m_Items.begin() + x);
+            for (unsigned int i=m_MaxItems; i<items.size(); ++i)
+                m_Items.erase(m_Items.begin() + i);
 
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_Scroll != NULL)
@@ -1001,7 +990,7 @@ namespace tgui
                 else // an item was selected
                 {
                     callback.value = m_SelectedItem;
-                    callback.text  = m_Items.at(m_SelectedItem-1);
+                    callback.text  = m_Items[m_SelectedItem-1];
                 }
 
                 m_Parent->addCallback(callback);
@@ -1168,13 +1157,13 @@ namespace tgui
             // Clear the render texture that we will be drawing on
             m_RenderTexture->clear(sf::Color::Transparent);
 
-            for (unsigned int x=firstItem; x<lastItem; ++x)
+            for (unsigned int i=firstItem; i<lastItem; ++i)
             {
                 // Restore the transformations
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_Items[x]);
+                text.setString(m_Items[i]);
 
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
@@ -1195,12 +1184,12 @@ namespace tgui
                 }
 
                 // Check if we are drawing the selected item
-                if ((m_SelectedItem - 1) == x)
+                if ((m_SelectedItem - 1) == i)
                 {
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
                         sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
@@ -1218,7 +1207,7 @@ namespace tgui
                     text.setColor(m_TextColor);
 
                 // Set the translation for the text
-                states.transform.translate(2, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
+                states.transform.translate(2, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
 
                 // Draw the text on the render texture
                 m_RenderTexture->draw(text, states);
@@ -1241,21 +1230,21 @@ namespace tgui
             // Store the current transformations
             sf::Transform storedTransform = states.transform;
 
-            for (unsigned int x=0; x<m_Items.size(); ++x)
+            for (unsigned int i=0; i<m_Items.size(); ++i)
             {
                 // Restore the transformations
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_Items[x]);
+                text.setString(m_Items[i]);
 
                 // Check if we are drawing the selected item
-                if ((m_SelectedItem - 1) == x)
+                if ((m_SelectedItem - 1) == i)
                 {
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, static_cast<float>(x * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, static_cast<float>(i * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
                         sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
@@ -1291,7 +1280,7 @@ namespace tgui
                 }
 
                 // Set the translation for the text
-                states.transform.translate(2, (x * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
+                states.transform.translate(2, (i * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
 
                 // Draw the text
                 target.draw(text, states);

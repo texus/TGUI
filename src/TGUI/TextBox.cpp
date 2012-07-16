@@ -175,6 +175,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::initialize(const sf::Font& globalFont)
+    {
+        setTextFont(globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
@@ -250,9 +257,6 @@ namespace tgui
         // A negative size is not allowed for this object
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
-
-        // Reset the scale
-        setScale(1, 1);
 
         // The calculations require an unsigned integer
         unsigned int uiHeight = static_cast<unsigned int>(height);
@@ -404,6 +408,10 @@ namespace tgui
     {
         // Store the new text size
         m_TextSize = size;
+
+        // There is a minimum text size
+        if (m_TextSize < 8)
+            m_TextSize = 8;
 
         // Change the text size
         m_TextBeforeSelection.setCharacterSize(m_TextSize);
@@ -573,7 +581,8 @@ namespace tgui
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
                                const sf::Color& unfocusedSelectedBgrColor,
-                               const sf::Color& borderColor)
+                               const sf::Color& borderColor,
+                               const sf::Color& newSelectionPointColor)
     {
         m_TextBeforeSelection.setColor(color);
         m_TextSelection1.setColor(selectedColor);
@@ -581,6 +590,7 @@ namespace tgui
         m_TextAfterSelection1.setColor(color);
         m_TextAfterSelection2.setColor(color);
 
+        selectionPointColor             = newSelectionPointColor;
         m_BackgroundColor               = backgroundColor;
         m_SelectedTextBgrColor          = selectedBgrColor;
         m_UnfocusedSelectedTextBgrColor = unfocusedSelectedBgrColor;
