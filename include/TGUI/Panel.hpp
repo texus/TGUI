@@ -69,11 +69,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Creates the panel.
         ///
-        /// \param width           Sets the width of the panel.
-        /// \param height          Sets the height of the panel.
-        /// \param backgroundColor Sets the background color of the panel (fully transparent by default).
+        /// \param width                   Sets the width of the panel.
+        /// \param height                  Sets the height of the panel.
+        /// \param backgroundColor         Sets the background color of the panel (fully transparent by default).
+        /// \param backgroundImageFilename The filename to an image that will be used as background image (empty string by default)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent);
+        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +96,23 @@ namespace tgui
         /// \brief Returns the size of the panel, after the scaling transformation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the background image of the panel.
+        ///
+        /// This image will be scaled to fill the whole panel.
+        /// Passing an empty string to this function will remove the current background image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setBackgroundImage(const std::string filename = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the filename that was used to load the current background image.
+        ///
+        /// If no background image was loaded then this function will return an empty string.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getLoadedBackgroundImageFilename();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +168,11 @@ namespace tgui
     private:
 
         sf::RenderTexture* m_RenderTexture;
+
+        sf::Texture* m_Texture;
+        sf::Sprite   m_Sprite;
+
+        std::string m_LoadedBackgroundImageFilename;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
