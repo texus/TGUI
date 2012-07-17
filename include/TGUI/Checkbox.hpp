@@ -204,7 +204,7 @@ namespace tgui
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the checkbox on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
