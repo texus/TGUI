@@ -73,8 +73,13 @@ namespace tgui
         /// \param height                  Sets the height of the panel.
         /// \param backgroundColor         Sets the background color of the panel (fully transparent by default).
         /// \param backgroundImageFilename The filename to an image that will be used as background image (empty string by default)
+        ///
+        /// \return
+        ///        - true on success
+        ///        - false when the internal sf::RenderTexture could not be created.
+        ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
+        virtual bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +170,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         sf::RenderTexture* m_RenderTexture;
 

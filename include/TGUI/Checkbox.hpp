@@ -69,7 +69,7 @@ namespace tgui
         /// \brief Loads the checkbox images and optionally a matching text color.
         ///
         /// \param pathname  The path to the folder that contains the images.
-        ///                 The folder must also contain an info.txt file, which will give more information about the checkbox.
+        ///                  The folder must also contain an info.txt file, which will give more information about the checkbox.
         ///
         /// \return
         ///        - true on success
