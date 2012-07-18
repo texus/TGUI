@@ -23,167 +23,172 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _TGUI_PANEL_INCLUDED_
-#define _TGUI_PANEL_INCLUDED_
+#ifndef _TGUI_CHILD_WINDOW_INCLUDED_
+#define _TGUI_CHILD_WINDOW_INCLUDED_
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief A static group of objects. The background color can be solid or transparent.
+    /// \brief Movable Panel with title bar.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    struct TGUI_API Panel : public OBJECT, Group
+    struct TGUI_API ChildWindow : public Panel, OBJECT_BORDERS
     {
+
+        // Layouts
+        enum Layout
+        {
+            LayoutLeft,
+            LayoutRight
+        };
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Panel();
+        ChildWindow();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Panel(const Panel& copy);
+        ChildWindow(const ChildWindow& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Panel();
+        virtual ~ChildWindow();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Overload of assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Panel& operator= (const Panel& right);
+        ChildWindow& operator= (const ChildWindow& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
-        // Called when added to a group. The font from the group will be inherited.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void initialize(const sf::Font& globalFont);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the panel.
+        /// \brief Creates the child window.
         ///
-        /// \param width                   Sets the width of the panel.
-        /// \param height                  Sets the height of the panel.
-        /// \param backgroundColor         Sets the background color of the panel (fully transparent by default).
-        /// \param backgroundImageFilename The filename to an image that will be used as background image (empty string by default)
+        /// \param width            Sets the width of the child window.
+        /// \param height           Sets the height of the child window.
+        /// \param backgroundColor  Sets the background color of the child window.
+        /// \param pathname         The path to the folder that contains the images for the titlebar and an optional background image.
+        ///                         The folder must also contain an info.txt file, which will give more information about the child window.
         ///
         /// \return
         ///        - true on success
         ///        - false when the internal sf::RenderTexture could not be created.
-        ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
+        ///        - false when the pathname was empty
+        ///        - false when the info.txt file was not found
+        ///        - false when the images couldn't be loaded
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
+        bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor, const std::string pathname);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the panel.
+        /// \brief Returns the pathname that was used to load the child window.
         ///
-        /// \param width   Sets the new width of the panel.
-        /// \param height  Sets the new height of the panel.
+        /// When the child window has not been loaded yet then this function will return an empty string.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(float width, float height);
+        std::string getLoadedPathname();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the panel, unaffected by scaling.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2u getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the panel, after the scaling transformation.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Vector2f getScaledSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background image of the panel.
+        /// \brief Change the height of the title bar.
         ///
-        /// This image will be scaled to fill the whole panel.
-        /// Passing an empty string to this function will remove the current background image.
+        /// The default height is the height of the title bar image that is loaded with the load function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setBackgroundImage(const std::string filename = "");
+        void setTitlebarHeight(unsigned int height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename that was used to load the current background image.
+        /// \brief Returns the height of the title bar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getTitleBarHeight() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the transparency of the window.
         ///
-        /// If no background image was loaded then this function will return an empty string.
+        /// By default all objects in the window are drawn fully opaque, but with this function you can make them semi-transparent.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getLoadedBackgroundImageFilename();
+        void setTransparency(unsigned char transparency);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
-        // Send the event to all underlying objects.
+        /// \brief Returns the transparency of the window.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void handleEvent(sf::Event& event, const float mouseX = 0, const float mouseY = 0);
+        unsigned char getTransparency() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
-        // Focuses the next object in the panel. If the last object was focused then all objects will be
-        // unfocused and this function will return false.
+        /// \brief Changes the size of the borders.
+        ///
+        /// \param leftBorder    The width of the left border
+        /// \param topBorder     The height of the top border
+        /// \param rightBorder   The width of the right border
+        /// \param bottomBorder  The height of the bottom border
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool focusNextObject();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are used to receive callback from EventManager.
-        // These events are send to the childs of the panel by it's own EventManager.
-        // You normally don't need them, but you can use these functions to simulate an event.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
-        void objectFocused();
-        void objectUnfocused();
+        void setBorders(unsigned int leftBorder   = 0,
+                        unsigned int topBorder    = 0,
+                        unsigned int rightBorder  = 0,
+                        unsigned int bottomBorder = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Send the event to all underlying objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void handleEvent(sf::Event& event, const float mouseX = 0, const float mouseY = 0);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The objects inside the panel use this function to send their callbacks.
-        // This function will alert the window (or any other parent of this panel) about the callback.
+        // With this function, the child window will tell the EventManager if the mouse is on top of it or not.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addCallback(Callback& callback);
+        bool mouseOnObject(float x, float y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the panel on the render target.
+        // This function will be called and it will draw the child window on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        /// The background color of the Panel. The default is a transparent background (sf::Color::Transparent).
-        sf::Color backgroundColor;
+        /// Should the close button be on the right side or on the left side of the title bar?
+        Layout layout;
 
+        /// The distance between the side of the title bar and the close button.
+        unsigned int distanceToSide;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        sf::RenderTexture* m_RenderTexture;
-
-        sf::Texture* m_Texture;
-        sf::Sprite   m_Sprite;
-
-        std::string m_LoadedBackgroundImageFilename;
+        /// The color that is used to draw the borders of the window
+        sf::Color borderColor;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
 
+        unsigned int  m_TitleBarHeight;
+        std::string   m_LoadedPathname;
+        bool          m_SplitImage;
+        Vector2f      m_DraggingPosition;
+        unsigned char m_Opacity;
 
-        friend struct Group;
+        sf::Texture*  m_TextureTitleBar_L;
+        sf::Texture*  m_TextureTitleBar_M;
+        sf::Texture*  m_TextureTitleBar_R;
+
+        sf::Sprite    m_SpriteTitleBar_L;
+        sf::Sprite    m_SpriteTitleBar_M;
+        sf::Sprite    m_SpriteTitleBar_R;
+
+        tgui::Button* m_CloseButton;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -196,4 +201,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_TGUI_PANEL_INCLUDED_
+#endif //_TGUI_CHILD_WINDOW_INCLUDED_

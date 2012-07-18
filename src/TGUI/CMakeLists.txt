@@ -20,6 +20,7 @@ set(TGUI_SRC
     TextureManager.cpp
     Group.cpp
     Panel.cpp
+    ChildWindow.cpp
     Window.cpp
 )
 

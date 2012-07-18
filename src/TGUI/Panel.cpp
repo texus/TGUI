@@ -188,18 +188,12 @@ namespace tgui
             // Adjust the mouse position of the event
             event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);
             event.mouseButton.y = mouseY - static_cast<int>(getPosition().y);
-
-            // Mark the mouse as down
-            m_MouseDown = true;
         }
         else if (event.type == sf::Event::MouseButtonReleased)
         {
             // Adjust the mouse position of the event
             event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);
             event.mouseButton.y = mouseY - static_cast<int>(getPosition().y);
-
-            // Mark the mouse as up
-            m_MouseDown = false;
         }
 
         // Let the event manager handle the event

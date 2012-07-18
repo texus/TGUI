@@ -67,6 +67,7 @@ namespace tgui
 
     struct Group;
     struct Panel;
+    struct ChildWindow;
     struct Window;
 
 
@@ -114,6 +115,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 
 #include <TGUI/Group.hpp>
 #include <TGUI/Panel.hpp>
+#include <TGUI/ChildWindow.hpp>
 #include <TGUI/Window.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

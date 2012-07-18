@@ -114,11 +114,6 @@ namespace tgui
     {
         m_Visible = false;
 
-        // Change the mouse button state.
-        // If we don't do this then we might redraw the wrong image when the object becomes visible again.
-        m_MouseHover = false;
-        m_MouseDown = false;
-
         // If the object is focused then it must be unfocused
         m_Parent->unfocus(this);
     }

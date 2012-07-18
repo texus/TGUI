@@ -65,6 +65,8 @@ namespace tgui
         panel,
         textBox,
         spriteSheet,
+        childWindow,
+
         ObjectTypesCount
     };
 

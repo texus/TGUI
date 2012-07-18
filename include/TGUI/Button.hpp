@@ -239,6 +239,9 @@ namespace tgui
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_TextSize;
+
+
+        friend struct ChildWindow;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
