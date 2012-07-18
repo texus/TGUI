@@ -168,6 +168,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Group::removeObject(const OBJECT* object)
+    {
+        // Loop through every object
+        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        {
+            // Check if the pointer matches
+            if (m_Objects[i] == object)
+            {
+                // Remove the object
+                m_EventManager.removeObject(m_Objects[i]->getObjectID());
+                delete m_Objects[i];
+                m_Objects.erase(m_Objects.begin() + i);
+                object = NULL;
+
+                // Also emove the name it from the list
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Group::removeAllObjects()
     {
         // Remove all the objects from the event and animation manager

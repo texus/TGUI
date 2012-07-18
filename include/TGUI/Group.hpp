@@ -94,6 +94,8 @@ namespace tgui
         ///
         /// \warning This function will return NULL when an unknown object name was passed.
         ///
+        /// \warning Don't pass an empty string to this function. Objects with empty names are sometimes used internally.
+        ///
         /// Usage example:
         /// \code tgui::Picture* pic = group.get<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,16 +183,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single object that was added to the panel.
+        /// \brief Removes a single object that was added to the group.
         ///
-        /// If there are multiple objects with the same name then only the first matching object
-        /// will be removed.
+        /// If there are multiple objects with the same name then only the first matching object will be removed.
+        ///
+        /// \see removeObject(OBJECT*)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeObject(const std::string objectName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all objects that were added to the panel.
+        /// \brief Removes a single object that was added to the group.
+        ///
+        /// \see removeObject(std::string)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void removeObject(const OBJECT* object);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Removes all objects that were added to the group.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllObjects();
 
