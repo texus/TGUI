@@ -22,6 +22,7 @@ set(TGUI_SRC
     Panel.cpp
     ChildWindow.cpp
     Window.cpp
+    Form.cpp
 )
 
 # add the sfml and tgui include directories

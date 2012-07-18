@@ -117,6 +117,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/Window.hpp>
+#include <TGUI/Form.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
