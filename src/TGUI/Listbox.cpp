@@ -732,6 +732,16 @@ namespace tgui
         // Delete the scrollbar
         delete m_Scroll;
         m_Scroll = NULL;
+
+        // When the items no longer fit inside the listbox then we need to remove some
+        if ((m_Items.size() * m_ItemHeight) > m_Size.y)
+        {
+            // Calculate ho many items fit inside the listbox
+            m_MaxItems = m_Size.y / m_ItemHeight;
+
+            // Remove the items that didn't fit inside the listbox
+            m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -759,8 +769,7 @@ namespace tgui
                 m_MaxItems = m_Size.y / m_ItemHeight;
 
                 // Remove the items that didn't fit inside the listbox
-                for (unsigned int i=m_MaxItems; i<m_Items.size(); ++i)
-                    m_Items.erase(m_Items.begin() + i);
+                m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
             }
         }
         else // There is a scrollbar
@@ -791,8 +800,7 @@ namespace tgui
             std::vector<std::string> items = getItems();
 
             // Remove the items that passed the limitation
-            for (unsigned int i=m_MaxItems; i<items.size(); ++i)
-                m_Items.erase(m_Items.begin() + i);
+            m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
 
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_Scroll != NULL)
@@ -946,9 +954,6 @@ namespace tgui
         {
             // Remember the old selected item
             unsigned int oldSelectedItem = m_SelectedItem;
-
-            // Set the mouse down flag to true
-            m_MouseDown = true;
 
             // Check if there is a scrollbar or whether it is hidden
             if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))

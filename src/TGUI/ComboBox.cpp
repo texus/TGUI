@@ -247,7 +247,7 @@ namespace tgui
             m_Listbox->setItemHeight(10);
 
         // Set the size of the listbox
-        m_Listbox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_Listbox->m_Items.size())));
+        m_Listbox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_Listbox->m_Items.size())) - m_TopBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,7 +601,6 @@ namespace tgui
         // The mouse is not on top of the combo box
         m_MouseHover = false;
         m_Listbox->mouseNotOnObject();
-        m_Listbox->mouseNoLongerDown();
         return false;
     }
 
@@ -689,12 +688,18 @@ namespace tgui
                 // Set the scale factors of the listbox
                 m_Listbox->setScale(getScale());
 
-                // Always show the beginning of the list
-                if (m_Listbox->m_Scroll != NULL)
-                    m_Listbox->m_Scroll->setValue(0);
-
                 // Show the list
                 m_ShowList = true;
+
+                // Check if there is a scrollbar
+                if (m_Listbox->m_Scroll != NULL)
+                {
+                    // If the selected item is not visible then change the value of the scrollbar
+                    if (m_Listbox->m_SelectedItem > m_NrOfItemsToDisplay)
+                        m_Listbox->m_Scroll->setValue((m_Listbox->m_SelectedItem - m_NrOfItemsToDisplay) * m_Listbox->m_ItemHeight);
+                    else
+                        m_Listbox->m_Scroll->setValue(0);
+                }
             }
 
             // The mouse is no longer down
@@ -733,6 +738,33 @@ namespace tgui
 
     void ComboBox::mouseNoLongerDown()
     {
+        // Make sure that the mouse went down on top of the combo box
+        if (m_MouseDown == true)
+        {
+            // Check if the list is visible
+            if (m_ShowList == true)
+            {
+                // Check if the mouse is on top of the listbox
+                if (m_MouseOnListbox == true)
+                {
+                    // Check if the mouse went down on top of the listbox
+                    if (m_Listbox->m_MouseDown == true)
+                    {
+                        // Check if the mouse went down on the scrollbar
+                        if ((m_Listbox->m_Scroll != NULL) && (m_Listbox->m_Scroll->m_MouseDown == true))
+                        {
+                            m_MouseDown = false;
+                            m_Listbox->mouseNotOnObject();
+                            m_Listbox->mouseNoLongerDown();
+
+                            // Don't hide the list
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         m_MouseDown = false;
         m_Listbox->mouseNotOnObject();
         m_Listbox->mouseNoLongerDown();
