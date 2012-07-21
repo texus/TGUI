@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <typeinfo>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -44,34 +46,13 @@ namespace tgui
         // Copy all the objects
         for (unsigned int i=0; i<groupToCopy.m_Objects.size(); ++i)
         {
-            if (groupToCopy.m_Objects[i]->m_ObjectType == picture)
-                copyObject(static_cast<Picture*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == button)
-                copyObject(static_cast<Button*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == checkbox)
-                copyObject(static_cast<Checkbox*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == radioButton)
-                copyObject(static_cast<RadioButton*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == label)
-                copyObject(static_cast<Label*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == editBox)
-                copyObject(static_cast<EditBox*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == listbox)
-                copyObject(static_cast<Listbox*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == comboBox)
-                copyObject(static_cast<ComboBox*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == slider)
-                copyObject(static_cast<Slider*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == scrollbar)
-                copyObject(static_cast<Scrollbar*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == loadingBar)
-                copyObject(static_cast<LoadingBar*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == textBox)
-                copyObject(static_cast<TextBox*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == panel)
-                copyObject(static_cast<Panel*>(groupToCopy.m_Objects[i]));
-            if (groupToCopy.m_Objects[i]->m_ObjectType == spriteSheet)
-                copyObject(static_cast<SpriteSheet*>(groupToCopy.m_Objects[i]));
+            OBJECT* newObject = static_cast<OBJECT*>(groupToCopy.m_Objects[i]->clone());
+            m_EventManager.addObject(newObject);
+
+            newObject->initialize(globalFont);
+
+            m_Objects.push_back(newObject);
+            m_ObjName.push_back(groupToCopy.m_ObjName[i]);
         }
     }
 
@@ -92,37 +73,19 @@ namespace tgui
             // Copy the font
             globalFont = right.globalFont;
 
+            // Remove all the old objects
+            removeAllObjects();
+
             // Copy all the objects
             for (unsigned int i=0; i<right.m_Objects.size(); ++i)
             {
-                if (right.m_Objects[i]->m_ObjectType == picture)
-                    copyObject(static_cast<Picture*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == button)
-                    copyObject(static_cast<Button*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == checkbox)
-                    copyObject(static_cast<Checkbox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == radioButton)
-                    copyObject(static_cast<RadioButton*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == label)
-                    copyObject(static_cast<Label*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == editBox)
-                    copyObject(static_cast<EditBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == listbox)
-                    copyObject(static_cast<Listbox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == comboBox)
-                    copyObject(static_cast<ComboBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == slider)
-                    copyObject(static_cast<Slider*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == scrollbar)
-                    copyObject(static_cast<Scrollbar*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == loadingBar)
-                    copyObject(static_cast<LoadingBar*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == textBox)
-                    copyObject(static_cast<TextBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == panel)
-                    copyObject(static_cast<Panel*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == spriteSheet)
-                    copyObject(static_cast<SpriteSheet*>(right.m_Objects[i]));
+                OBJECT* newObject = static_cast<OBJECT*>(right.m_Objects[i]->clone());
+                m_EventManager.addObject(newObject);
+
+                newObject->initialize(globalFont);
+
+                m_Objects.push_back(newObject);
+                m_ObjName.push_back(right.m_ObjName[i]);
             }
         }
 

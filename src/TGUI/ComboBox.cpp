@@ -112,6 +112,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ComboBox* ComboBox::clone()
+    {
+        return new ComboBox(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ComboBox::load(const std::string pathname, unsigned int width, unsigned int height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
