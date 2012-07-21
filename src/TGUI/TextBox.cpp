@@ -379,6 +379,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::addText(const std::string text)
+    {
+        // Don't do anything when the text box wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Add the text
+        m_Text += text;
+
+        // Set the selection point behind the last character
+        setSelectionPointPosition(m_Text.length());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::string TextBox::getText()
     {
         return m_Text;
