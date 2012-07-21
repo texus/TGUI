@@ -58,11 +58,13 @@ namespace tgui
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListbox    (copy.m_MouseOnListbox),
     m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),
-    m_Listbox           (copy.m_Listbox),
     m_LoadedPathname    (copy.m_LoadedPathname)
     {
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal, m_TextureNormal)) m_SpriteNormal.setTexture(*m_TextureNormal);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover))   m_SpriteHover.setTexture(*m_TextureHover);
+
+        // Copy the listbox
+        m_Listbox = new tgui::Listbox(*copy.m_Listbox);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +85,9 @@ namespace tgui
         {
             ComboBox temp(right);
             this->OBJECT::operator=(right);
+
+            // Delete the old listbox
+            delete m_Listbox;
 
             std::swap(m_ShowList,           temp.m_ShowList);
             std::swap(m_MouseOnListbox,     temp.m_MouseOnListbox);
