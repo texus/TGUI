@@ -38,9 +38,9 @@ namespace tgui
     m_TitleBarHeight(0),
     m_LoadedPathname(""),
     m_SplitImage    (false),
-    m_Opacity       (255),
-    m_CloseButton   (NULL)
+    m_Opacity       (255)
     {
+        m_CloseButton = new tgui::Button();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,13 +54,15 @@ namespace tgui
     m_LoadedPathname  (childWindowToCopy.m_LoadedPathname),
     m_SplitImage      (childWindowToCopy.m_SplitImage),
     m_DraggingPosition(childWindowToCopy.m_DraggingPosition),
-    m_Opacity         (childWindowToCopy.m_Opacity),
-    m_CloseButton     (childWindowToCopy.m_CloseButton)
+    m_Opacity         (childWindowToCopy.m_Opacity)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L))   m_SpriteTitleBar_L.setTexture(*m_TextureTitleBar_L);
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_M, m_TextureTitleBar_M))   m_SpriteTitleBar_M.setTexture(*m_TextureTitleBar_M);
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R))   m_SpriteTitleBar_R.setTexture(*m_TextureTitleBar_R);
+
+        // Copy the button
+        m_CloseButton = new tgui::Button(*childWindowToCopy.m_CloseButton);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +72,8 @@ namespace tgui
         if (m_TextureTitleBar_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
         if (m_TextureTitleBar_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
         if (m_TextureTitleBar_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
-        if (m_CloseButton != NULL)         m_Parent->removeObject(m_CloseButton);
+
+        delete m_CloseButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +85,9 @@ namespace tgui
         {
             ChildWindow temp(right);
             this->Panel::operator=(right);
+
+            // Delete the old close button
+            delete m_CloseButton;
 
             std::swap(layout,              temp.layout);
             std::swap(distanceToSide,      temp.distanceToSide);
@@ -228,7 +234,6 @@ namespace tgui
         if (m_TextureTitleBar_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
         if (m_TextureTitleBar_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
         if (m_TextureTitleBar_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
-        if (m_CloseButton != NULL)         m_Parent->removeObject(m_CloseButton);
 
         bool error = false;
 
@@ -250,13 +255,8 @@ namespace tgui
                 return false;
 
             // Load the close button
-            m_CloseButton = m_Parent->add<Button>();
-            m_CloseButton->hide();
             if (m_CloseButton->load(m_LoadedPathname + "/Close") == false)
                 return false;
-
-            // The close button may not be focused
-            m_CloseButton->m_AllowFocus = false;
         }
 
         // When there is no error we will return true
@@ -413,9 +413,6 @@ namespace tgui
                     // Check if the close button was clicked
                     if (m_CloseButton->m_MouseDown == true)
                     {
-                        // Remove the close button
-                        m_Parent->removeObject(m_CloseButton);
-
                         // Remove the objects in the child window
                         removeAllObjects();
 
@@ -501,9 +498,7 @@ namespace tgui
             states.transform.translate(static_cast<float>(distanceToSide), (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
         // Draw the close button
-        m_CloseButton->show();
         target.draw(*m_CloseButton, states);
-        m_CloseButton->hide();
 
         // Undo the transformation
         states.transform = sf::Transform();
