@@ -15,6 +15,7 @@ set(TGUI_SRC
     ComboBox.cpp
     TextBox.cpp
     SpriteSheet.cpp
+    AnimatedPicture.cpp
     InfoFileParser.cpp
     EventManager.cpp
     TextureManager.cpp

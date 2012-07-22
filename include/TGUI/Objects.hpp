@@ -65,6 +65,7 @@ namespace tgui
         panel,
         textBox,
         spriteSheet,
+        animatedPicture,
         childWindow,
 
         ObjectTypesCount
@@ -259,7 +260,7 @@ namespace tgui
         virtual void objectFocused();
         virtual void objectUnfocused();
 
-        void mouseNotOnObject();
+        virtual void mouseNotOnObject();
         virtual void mouseNoLongerDown();
 
 
@@ -420,12 +421,13 @@ namespace tgui
         // This enum contains the different values for Trigger.
         enum triggers
         {
-            mouseClick,      // Button, Checkbox, RadioButton
-            keyPress_Space,  // Button, Checkbox, RadioButton
-            keyPress_Return, // Button, Checkbox, RadioButton
-            textChanged,     // EditBox
-            valueChanged,    // Slider, LoadingBar
-            itemSelected,    // Listbox, ComboBox
+            mouseClick,        // Button, Checkbox, RadioButton
+            keyPress_Space,    // Button, Checkbox, RadioButton
+            keyPress_Return,   // Button, Checkbox, RadioButton
+            textChanged,       // EditBox
+            valueChanged,      // Slider, LoadingBar
+            itemSelected,      // Listbox, ComboBox
+            animationFinished, // AnimatedPicture
 
             count // Keep this one last
         };

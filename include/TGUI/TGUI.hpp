@@ -108,6 +108,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>
 #include <TGUI/SpriteSheet.hpp>
+#include <TGUI/AnimatedPicture.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>

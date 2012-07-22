@@ -565,6 +565,15 @@ namespace tgui
                 object->m_AnimationTimeElapsed += elapsedTime;
                 object->update();
             }
+            else if (m_Objects[i]->m_ObjectType == animatedPicture)
+            {
+                // Convert the object
+                OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
+
+                // Update the elapsed time
+                object->m_AnimationTimeElapsed += elapsedTime;
+                object->update();
+            }
         }
     }
 
