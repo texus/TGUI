@@ -679,7 +679,7 @@ void Builder::deleteObject()
     unsigned int i;
 
     // Remove the object from the window
-    mainWindow.removeObject(tgui::to_string(currentID));
+    mainWindow.remove(tgui::to_string(currentID));
 
     // Find and remove the properties of the object
     #define FindObjectWithID(object) \

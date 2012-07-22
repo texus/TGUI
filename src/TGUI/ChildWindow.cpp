@@ -424,7 +424,7 @@ namespace tgui
                         removeAllObjects();
 
                         // Remove the child window itself
-                        m_Parent->removeObject(this);
+                        m_Parent->remove(this);
 
                         // Get out of here
                         return;

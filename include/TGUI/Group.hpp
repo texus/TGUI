@@ -118,13 +118,11 @@ namespace tgui
         /// \param oldObject     A pointer to the old object.
         /// \param newObjectName If you want to access the object later then you must do this with this name.
         ///
-        /// \see copy
-        ///
         /// Usage example:
-        /// \code tgui::Picture* pic = group.copyObject(pictureToCopy, "NameOfNewPic"); \endcode
+        /// \code tgui::Picture* pic = group.copy(pictureToCopy, "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* copyObject(T* oldObject, const std::string newObjectName = "")
+        T* copy(T* oldObject, const std::string newObjectName = "")
         {
             T* newObject = new T(*oldObject);
             m_EventManager.addObject(newObject);
@@ -143,8 +141,6 @@ namespace tgui
         /// \param newObjectName If you want to access the copied object later then you must do this with this name.
         ///
         /// \warning This function will return NULL when an unknown object name was passed.
-        ///
-        /// \see copyObject
         ///
         /// Usage example:
         /// \code tgui::Picture* pic = group.copy<tgui::Picture>("PicToCopy", "NameOfNewPic"); \endcode
@@ -187,17 +183,17 @@ namespace tgui
         ///
         /// If there are multiple objects with the same name then only the first matching object will be removed.
         ///
-        /// \see removeObject(OBJECT*)
+        /// \see remove(OBJECT*)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeObject(const std::string objectName);
+        void remove(const std::string objectName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a single object that was added to the group.
         ///
-        /// \see removeObject(std::string)
+        /// \see remove(std::string)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeObject(const OBJECT* object);
+        void remove(const OBJECT* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

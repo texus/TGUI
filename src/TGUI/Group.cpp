@@ -108,7 +108,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::removeObject(const std::string objectName)
+    void Group::remove(const std::string objectName)
     {
         // Loop through every object
         for (unsigned int i=0; i<m_ObjName.size(); ++i)
@@ -131,7 +131,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::removeObject(const OBJECT* object)
+    void Group::remove(const OBJECT* object)
     {
         // Loop through every object
         for (unsigned int i=0; i<m_Objects.size(); ++i)
