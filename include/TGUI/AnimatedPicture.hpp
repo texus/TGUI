@@ -81,7 +81,7 @@ namespace tgui
         ///        - 0 when the image couldn't be loaded (probalby not found)
         ///        - The frame number on success (the first frame has number 1)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int addFrame(const std::string filename, const sf::Time frameDurarion = 0);
+        unsigned int addFrame(const std::string filename, const sf::Time frameDurarion = sf::Time());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +167,7 @@ namespace tgui
         /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
         ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFrameDuration(unsigned int frame, const sf::Time frameDuration = 0);
+        void setFrameDuration(unsigned int frame, const sf::Time frameDuration = sf::Time());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
