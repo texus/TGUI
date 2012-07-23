@@ -40,7 +40,7 @@
 
 #define OBJECT_STYLE "Black"
 
-#define VERSION "v0.2"
+#define VERSION "v0.2.1-dev"
 
 
 struct Builder;

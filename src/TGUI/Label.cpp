@@ -31,19 +31,20 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Label()
+    Label::Label() :
+    m_AutoSize(true)
     {
         m_ObjectType = label;
-
         m_Loaded = true;
-        text.setCharacterSize(30);
+
+        m_RenderTexture = new sf::RenderTexture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::initialize(const sf::Font& globalFont)
     {
-        text.setFont(globalFont);
+        m_Text.setFont(globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,91 +62,107 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Undo the scaling
-        setScale(1, 1);
+        // Set the size of the render texture
+        m_RenderTexture->create(width, height);
 
-        // Set the new text height
-        text.setCharacterSize(static_cast<unsigned int>(height));
-
-        // Get the size of the text
-        sf::FloatRect bounds = text.getLocalBounds();
-
-        // The text still has too fit inside the area
-        if (bounds.width > width)
-        {
-            // Adjust the text size
-            text.setCharacterSize(static_cast<unsigned int>((height * width) / bounds.width));
-        }
+        // You are no longer auto-sizing
+        m_AutoSize = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u Label::getSize() const
     {
-        return Vector2u(static_cast<unsigned int>(text.getLocalBounds().left + text.getLocalBounds().width), static_cast<unsigned int>(text.getLocalBounds().top + text.getLocalBounds().height));
+        return m_RenderTexture->getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Label::getScaledSize() const
     {
-        return Vector2f((text.getLocalBounds().left + text.getLocalBounds().width) * getScale().x, (text.getLocalBounds().top + text.getLocalBounds().height) * getScale().y);
+        return Vector2f(m_RenderTexture->getSize().x * getScale().x, m_RenderTexture->getSize().y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setText(const std::string string)
     {
-        text.setString(string);
+        m_Text.setString(string);
+
+        // Change the size of the label if necessary
+        if (m_AutoSize)
+            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string Label::getText()
     {
-        return text.getString().toAnsiString();
+        return m_Text.getString().toAnsiString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextFont(const sf::Font& font)
     {
-        text.setFont(font);
+        m_Text.setFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font& Label::getTextFont()
     {
-        return text.getFont();
+        return m_Text.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextColor(const sf::Color& color)
     {
-        text.setColor(color);
+        m_Text.setColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Label::getTextColor()
     {
-        return text.getColor();
+        return m_Text.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextSize(const unsigned int size)
     {
-        text.setCharacterSize(size);
+        m_Text.setCharacterSize(size);
+
+        // Change the size of the label if necessary
+        if (m_AutoSize)
+            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int Label::getTextSize()
     {
-        return text.getCharacterSize();
+        return m_Text.getCharacterSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setAutoSize(bool autoSize)
+    {
+        m_AutoSize = autoSize;
+
+        // Change the size of the label if necessary
+        if (m_AutoSize)
+            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Label::getAutoSize()
+    {
+        return m_AutoSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +170,7 @@ namespace tgui
     bool Label::mouseOnObject(float x, float y)
     {
         // Check if the mouse is on top of the label
-        if (text.getGlobalBounds().contains(x - getPosition().x, y - getPosition().y))
+        if (sf::FloatRect(0, 0, static_cast<float>(m_RenderTexture->getSize().x), static_cast<float>(m_RenderTexture->getSize().y)).contains(x - getPosition().x, y - getPosition().y))
             return true;
         else
             return false;
@@ -197,8 +214,16 @@ namespace tgui
 
     void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // When there is no text then there is nothing to draw
+        if (m_Text.getString().isEmpty())
+            return;
+
+        m_RenderTexture->clear(sf::Color::Transparent);
+        m_RenderTexture->draw(m_Text);
+        m_RenderTexture->display();
+
         states.transform *= getTransform();
-        target.draw(text, states);
+        target.draw(sf::Sprite(m_RenderTexture->getTexture()), states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::Label* label = window.add<tgui::Label>("label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber)); \
+    label->setPosition(10, 14 + (40 * propertyNumber)); \
     label->setTextSize(26); \
  \
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_"#property); \
@@ -51,7 +51,7 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::Label* label = window.add<tgui::Label>("label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber)); \
+    label->setPosition(10, 14 + (40 * propertyNumber)); \
     label->setTextSize(26); \
  \
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_"#property); \
@@ -266,7 +266,7 @@ void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNum
     tgui::Label* label = window.add<tgui::Label>("label_Checked");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40 * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
@@ -301,7 +301,7 @@ void PropertyPasswordChar::addProperty(tgui::Window& window, unsigned int proper
     tgui::Label* label = window.add<tgui::Label>("label_PasswordChar");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40 * propertyNumber));
     label->setTextSize(26);
 
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_PasswordChar");
@@ -502,7 +502,7 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
     tgui::Label* label = window.add<tgui::Label>("label_VerticalScroll");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10 - label->text.getGlobalBounds().left, 14 - label->text.getGlobalBounds().top + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40 * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
