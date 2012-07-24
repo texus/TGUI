@@ -557,6 +557,17 @@ namespace tgui
                             // Change the background color (black on error)
                             panel->backgroundColor = tgui::extractColor(line.erase(0, 16));
                         }
+                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 16);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the image
+                            panel->setBackgroundImage(line);
+                        }
                         else
                         {
                             // All newly created objects must be part of the panel
