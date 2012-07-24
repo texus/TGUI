@@ -161,6 +161,10 @@ namespace tgui
         // Set the size of the panel
         m_Size.x = width;
         m_Size.y = height;
+
+        // If there is no background image then te panel can be considered loaded
+        if (m_LoadedBackgroundImageFilename.empty())
+            m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +244,7 @@ namespace tgui
             // Set the size of the sprite
             m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
 
+            m_Loaded = true;
             return true;
         }
         else // The texture was not loaded
@@ -297,6 +302,18 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Set the transform
+        states.transform *= getTransform();
+
+        // Draw the background
+        sf::RectangleShape background(Vector2f(static_cast<float>(m_Size.x),  static_cast<float>(m_Size.y)));
+        background.setFillColor(backgroundColor);
+        target.draw(background, states);
+
+        // Draw the background image if there is one
+        if (m_Texture != NULL)
+            target.draw(m_Sprite, states);
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
@@ -308,7 +325,6 @@ namespace tgui
                   m_Size.x * scaleViewX, m_Size.y * scaleViewY);
 
         // Draw the objects
-        states.transform *= getTransform();
         drawObjectGroup(&target, states);
 
         // Disable the clipping
