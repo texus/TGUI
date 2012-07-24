@@ -55,6 +55,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Does the same as setSize.
+        ///
+        /// This function was only added because all other objects have a load function.
+        ///
+        /// \see setSize
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void load(float width, float height);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the text inside the label.
         ///
         /// Only the part of the text that lies within the size will be drawn.
@@ -177,7 +187,7 @@ namespace tgui
 
         sf::Text m_Text;
 
-        sf::RenderTexture* m_RenderTexture;
+        Vector2u m_Size;
 
         bool m_AutoSize;
 

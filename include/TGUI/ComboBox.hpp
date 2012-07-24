@@ -257,9 +257,6 @@ namespace tgui
         /// \brief Adds an item to the list, so that it can be selected later.
         ///
         /// \param itemName The name of the item you want to add (this is the text that will be displayed inside the combo box)
-        /// \param cropText When the text doesn't fit inside the list then the last characters are removed when \a cropText is true.
-        ///                 Trying to find the item with the full text later will of course fail. If the text may not be clipped for this reason then
-        ///                 you can set cropText to false, but this might cost some speed when drawing (it has to be clipped there every frame).
         ///
         /// \return
         ///         - 0 when the combo box wasn't loaded correctly
@@ -272,7 +269,7 @@ namespace tgui
         /// \see setMaximumItems
         /// \see setItemsToDisplay
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int addItem(const std::string itemName, bool cropText = false);
+        unsigned int addItem(const std::string itemName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

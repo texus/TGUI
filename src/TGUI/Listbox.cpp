@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -44,8 +46,6 @@ namespace tgui
         m_Loaded = true;
 
         changeColors();
-
-        m_RenderTexture = new sf::RenderTexture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,10 +66,6 @@ namespace tgui
     m_BorderColor            (copy.m_BorderColor),
     m_TextFont               (copy.m_TextFont)
     {
-        // Copy the render texture
-        if (m_RenderTexture->create(copy.m_RenderTexture->getSize().x, copy.m_RenderTexture->getSize().y) == false)
-            m_Loaded = false;
-
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != NULL)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
@@ -83,8 +79,6 @@ namespace tgui
     {
         if (m_Scroll != NULL)
             delete m_Scroll;
-
-        delete m_RenderTexture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +111,6 @@ namespace tgui
             std::swap(m_SelectedTextColor,       temp.m_SelectedTextColor);
             std::swap(m_BorderColor,             temp.m_BorderColor);
             std::swap(m_TextFont,                temp.m_TextFont);
-            std::swap(m_RenderTexture,           temp.m_RenderTexture);
         }
 
         return *this;
@@ -233,10 +226,6 @@ namespace tgui
         m_ItemHeight = itemHeight;
         m_LoadedScrollbarPathname = scrollbarPathname;
 
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            return false;
-
         // If there is a scrollbar then load it
         if (scrollbarPathname.empty() == false)
         {
@@ -323,10 +312,6 @@ namespace tgui
         // Store the values
         m_Size.x = static_cast<unsigned int>(width);
         m_Size.y = uiHeight;
-
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
 
         // If there is a scrollbar then change it
         if (m_Scroll != NULL)
@@ -457,77 +442,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::addItem(const std::string itemName, bool cropText)
+    unsigned int Listbox::addItem(const std::string itemName)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
         {
             // If there is a scrollbar then there is no limit
-            if (m_Scroll != NULL)
-            {
-                goto addTheItem;
-            }
-            else // There is no scrollbar
+            if (m_Scroll == NULL)
             {
                 // Calculate the amount of items that fit in the listbox
                 unsigned int maximumItems = m_Size.y / m_ItemHeight;
 
                 // Check if the item still fits in the listbox
-                if (m_Items.size() < maximumItems)
-                {
-                    goto addTheItem;
-                }
-                else // The item no longer fits inside the listbox
+                if (m_Items.size() == maximumItems)
                     return 0;
-            }
-        }
-        else // The item limit was reached
-            return 0;
-
-      addTheItem:
-
-        // Check if the string should be cropped when it is too long
-        if (cropText)
-        {
-            // Create a copy of the string (because the original can't be changed)
-            std::string itemNameCopy = itemName;
-
-            // Create a text object
-            sf::Text tempText(itemNameCopy);
-            tempText.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
-
-            // Calculate the maximum text width (the text must fit inside the listbox)
-            float maximumTextWidth;
-
-            if (m_Scroll == NULL)
-                maximumTextWidth = (m_Size.x - (m_LeftBorder - m_RightBorder)) * getScale().x;
-            else
-                maximumTextWidth = ((m_Size.x - (m_LeftBorder - m_RightBorder)) * getScale().x) - m_Scroll->getSize().x;
-
-            // Check if the text is too long to fit inside the listbox
-            while (tempText.getGlobalBounds().width > maximumTextWidth)
-            {
-                // Make sure that the string is not empty already
-                if (itemNameCopy.empty() == false)
-                    break;
-
-                // Remove the last character
-                itemNameCopy.erase(itemNameCopy.length() -1);
-                tempText.setString(itemNameCopy);
             }
 
             // Add the item to the list
-            m_Items.push_back(itemNameCopy);
-        }
-        else // Just add the item to the list
             m_Items.push_back(itemName);
 
-        // If there is a scrollbar then tell it that another item was added
-        if (m_Scroll != NULL)
-            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
+            // If there is a scrollbar then tell it that another item was added
+            if (m_Scroll != NULL)
+                m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
-        // Return the item id
-        return m_Items.size();
+            // Return the item id
+            return m_Items.size();
+        }
+        else // The item limit was reached
+            return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -876,10 +818,6 @@ namespace tgui
         else
             m_Size.y = height2 + m_TopBorder + m_BottomBorder;
 
-        // Recreate the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
-
         // Check if there is a scrollbar
         if (m_Scroll != NULL)
         {
@@ -915,7 +853,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
             return true;
         else // The mouse is not on top of the listbox
         {
@@ -1133,24 +1071,25 @@ namespace tgui
 
         // Draw the borders
         {
-            sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
-            Back.setFillColor(m_BorderColor);
-            target.draw(Back, states);
+            sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
+            back.setFillColor(m_BorderColor);
+            target.draw(back, states);
         }
 
         // Move the front rect a little bit
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
-        // Draw the listbox
+        // Draw the background
         {
-            sf::RectangleShape Front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
+            sf::RectangleShape front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
                                               static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
-            Front.setFillColor(m_BackgroundColor);
-            target.draw(Front, states);
+            front.setFillColor(m_BackgroundColor);
+            target.draw(front, states);
         }
 
-        // Change the scale factors
-        states.transform.scale(curScale.y / curScale.x, 1);
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Create a text object to draw the items
         sf::Text text("", m_TextFont, m_TextSize);
@@ -1158,9 +1097,7 @@ namespace tgui
         // Check if there is a scrollbar and whether it isn't hidden
         if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
         {
-            // Store the transformation (without translation)
-            states.transform = oldTransform;
-            oldTransform.scale(curScale.x, curScale.y);
+            // Store the transformation
             sf::Transform storedTransform = states.transform;
 
             // Find out which items should be drawn
@@ -1171,8 +1108,11 @@ namespace tgui
             if ((m_Scroll->m_Value + m_Scroll->m_LowValue) % m_ItemHeight != 0)
                 ++lastItem;
 
-            // Clear the render texture that we will be drawing on
-            m_RenderTexture->clear(sf::Color::Transparent);
+            // Enable the clipping
+            glEnable(GL_SCISSOR_TEST);
+            glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                      target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                      (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
             for (unsigned int i=firstItem; i<lastItem; ++i)
             {
@@ -1185,21 +1125,6 @@ namespace tgui
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
 
-                // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = ((m_Size.x - m_LeftBorder - m_RightBorder - 4) * (curScale.x / curScale.y)) - (m_Scroll->getSize().x / curScale.y);
-
-                // Check if the text is too long to fit inside the listbox
-                while (bounds.width > maximumTextWidth)
-                {
-                    // Remove the last character
-                    std::string tempString = text.getString().toAnsiString();
-                    tempString.erase(tempString.length() -1);
-                    text.setString(tempString);
-
-                    // Recalculate the size
-                    bounds = text.getGlobalBounds();
-                }
-
                 // Check if we are drawing the selected item
                 if ((m_SelectedItem - 1) == i)
                 {
@@ -1209,9 +1134,9 @@ namespace tgui
                         states.transform.translate(0, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
-                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
-                        Back.setFillColor(m_SelectedBackgroundColor);
-                        m_RenderTexture->draw(Back, states);
+                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        back.setFillColor(m_SelectedBackgroundColor);
+                        target.draw(back, states);
 
                         // Restore the transformation
                         states.transform = storedTransform;
@@ -1226,24 +1151,21 @@ namespace tgui
                 // Set the translation for the text
                 states.transform.translate(2, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
 
-                // Draw the text on the render texture
-                m_RenderTexture->draw(text, states);
+                // Draw the text
+                target.draw(text, states);
             }
-
-            // Display the render texture
-            m_RenderTexture->display();
-
-            // Restore the old transformation
-            states.transform = oldTransform;
-            states.transform *= getTransform();
-            states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
-
-            // Draw the text on the window
-            sf::Sprite sprite(m_RenderTexture->getTexture());
-            target.draw(sprite, states);
         }
         else // There is no scrollbar or it is invisible
         {
+            // Enable the clipping
+            glEnable(GL_SCISSOR_TEST);
+            glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                      target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                      (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+
+            // Change the scale factors
+            states.transform.scale(curScale.y / curScale.x, 1);
+
             // Store the current transformations
             sf::Transform storedTransform = states.transform;
 
@@ -1264,9 +1186,9 @@ namespace tgui
                         states.transform.translate(0, static_cast<float>(i * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
-                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
-                        Back.setFillColor(m_SelectedBackgroundColor);
-                        target.draw(Back, states);
+                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        back.setFillColor(m_SelectedBackgroundColor);
+                        target.draw(back, states);
 
                         // Restore the transformation
                         states.transform = storedTransform;
@@ -1281,21 +1203,6 @@ namespace tgui
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
 
-                // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x / curScale.y;
-
-                // Check if the text is too long to fit inside the listbox
-                while (bounds.width > maximumTextWidth)
-                {
-                    // Remove the last character
-                    std::string tempString = text.getString().toAnsiString();
-                    tempString.erase(tempString.length() -1);
-                    text.setString(tempString);
-
-                    // Recalculate the size
-                    bounds = text.getGlobalBounds();
-                }
-
                 // Set the translation for the text
                 states.transform.translate(2, (i * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
 
@@ -1303,6 +1210,9 @@ namespace tgui
                 target.draw(text, states);
             }
         }
+
+        // Disable the clipping
+        glDisable(GL_SCISSOR_TEST);
 
         // Check if there is a scrollbar
         if (m_Scroll != NULL)

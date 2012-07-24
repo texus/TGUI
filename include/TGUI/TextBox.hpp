@@ -85,7 +85,6 @@ namespace tgui
         ///
         /// \return
         ///        - true on success
-        ///        - false when the internal sf::RenderTexture could not be created.
         ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(unsigned int width, unsigned int height, unsigned int textSize, const std::string scrollbarPathname = "");
@@ -440,9 +439,6 @@ namespace tgui
 
         // The pathname used to load the scrollbar (if there is one)
         std::string m_LoadedScrollbarPathname;
-
-        // The render texture, used to draw the text on (this allows to display only a part of the text)
-        sf::RenderTexture* m_RenderTexture;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -123,6 +125,10 @@ namespace tgui
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
 
+        // Make sure that the pathname isn't empty
+        if (pathname.empty())
+            return false;
+
         // Set the background color of the child window
         backgroundColor = bkgColor;
 
@@ -130,13 +136,9 @@ namespace tgui
         m_LoadedPathname = pathname;
         m_LoadedBackgroundImageFilename = "";
 
-        // Create the render texture
-        if (m_RenderTexture->create(width, height) == false)
-            return false;
-
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // Set the size of the child window
+        m_Size.x = width;
+        m_Size.y = height;
 
         // When the pathname does not end with a "/" then we will add it
         if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
@@ -356,7 +358,7 @@ namespace tgui
                 {
                     // Temporary set the close button to the correct position
                     if (layout == LayoutRight)
-                        m_CloseButton->setPosition(getPosition().x + m_RenderTexture->getSize().x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
+                        m_CloseButton->setPosition(getPosition().x + m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
                     else
                         m_CloseButton->setPosition(getPosition().x + distanceToSide, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
@@ -366,6 +368,9 @@ namespace tgui
 
                     // Reset the position of the button
                     m_CloseButton->setPosition(0, 0);
+
+                    // The mouse is on top of the title bar, so the objects don't need to know abot it
+                    return;
                 }
             }
         }
@@ -379,7 +384,7 @@ namespace tgui
 
                 // Temporary set the close button to the correct position
                 if (layout == LayoutRight)
-                    m_CloseButton->setPosition(position.x + m_RenderTexture->getSize().x - distanceToSide - m_CloseButton->getScaledSize().x, position.y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
+                    m_CloseButton->setPosition(position.x + m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, position.y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
                 else
                     m_CloseButton->setPosition(position.x + distanceToSide, position.y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
@@ -398,6 +403,9 @@ namespace tgui
 
                 // Reset the position of the button
                 m_CloseButton->setPosition(0, 0);
+
+                // The mouse is on top of the title bar, so the objects don't need to know abot it
+                return;
             }
         }
         else if (event.type == sf::Event::MouseButtonReleased)
@@ -410,7 +418,7 @@ namespace tgui
             {
                 // Temporary set the close button to the correct position
                 if (layout == LayoutRight)
-                    m_CloseButton->setPosition(getPosition().x + m_RenderTexture->getSize().x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
+                    m_CloseButton->setPosition(getPosition().x + m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
                 else
                     m_CloseButton->setPosition(getPosition().x + distanceToSide, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
@@ -433,6 +441,9 @@ namespace tgui
 
                 // Reset the position of the button
                 m_CloseButton->setPosition(0, 0);
+
+                // The mouse is on top of the title bar, so the objects don't need to know abot it
+                return;
             }
         }
 
@@ -450,7 +461,10 @@ namespace tgui
 
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(x, y))
+        {
+            m_EventManager.mouseNotOnObject();
             return true;
+        }
         else
         {
             // Check if the mouse is on top of the window
@@ -480,6 +494,8 @@ namespace tgui
         // Adjust the transformation
         states.transform *= getTransform();
 
+        sf::Transform oldTransform = states.transform;
+
         // Check if the title bar image is split
         if (m_SplitImage)
         {
@@ -489,57 +505,55 @@ namespace tgui
         else // The title bar image isn't split
         {
             // Scale the title bar
-            states.transform.scale(static_cast<float>(m_RenderTexture->getSize().x) / m_TextureTitleBar_M->getSize().x, static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y);
+            states.transform.scale(static_cast<float>(m_Size.x) / m_TextureTitleBar_M->getSize().x, static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y);
 
             // Draw the title bar
             target.draw(m_SpriteTitleBar_M, states);
 
             // Undo the scaling
-            states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / m_RenderTexture->getSize().x, static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
+            states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / m_Size.x, static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
         }
 
         // Move the close button to the correct position
         if (layout == LayoutRight)
-            states.transform.translate(m_RenderTexture->getSize().x - distanceToSide - m_CloseButton->getScaledSize().x, (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
+            states.transform.translate(m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
         else //if (layout == LayoutLeft)
             states.transform.translate(static_cast<float>(distanceToSide), (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
         // Draw the close button
         target.draw(*m_CloseButton, states);
 
-        // Undo the transformation
-        states.transform = sf::Transform();
+        // Set the correct transformation
+        states.transform = oldTransform.translate(0, m_TitleBarHeight);
+
+        // Draw the borders
+        sf::RectangleShape borders(Vector2f(m_Size.x, m_Size.y));
+        borders.setFillColor(borderColor);
+        target.draw(borders, states);
 
         // Make room for the borders
         states.transform.translate(m_LeftBorder, m_TopBorder);
 
-        // Clear the texture
-        m_RenderTexture->clear(borderColor);
-
         // Draw the background
-        sf::RectangleShape background(Vector2f(m_RenderTexture->getSize().x - m_LeftBorder - m_RightBorder, m_RenderTexture->getSize().y - m_TopBorder - m_BottomBorder));
+        sf::RectangleShape background(Vector2f(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder));
         background.setFillColor(backgroundColor);
-        m_RenderTexture->draw(background, states);
+        target.draw(background, states);
 
-        // Draw the objects on the texture
-        drawObjectGroup(m_RenderTexture, states);
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Display the texture
-        m_RenderTexture->display();
+        // Enable the clipping
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((getPosition().y + m_TitleBarHeight + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                  (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
-        // Undo the translation
-        states.transform.translate(-static_cast<float>(m_LeftBorder), -static_cast<float>(m_TopBorder));
+        // Draw the objects in the child window
+        drawObjectGroup(&target, states);
 
-        // Adjust the transformation
-        states.transform *= getTransform();
-
-        // Move the rectangle to under the titlebar
-        states.transform.translate(0, m_TitleBarHeight);
-
-        // Draw the child window on the window
-        sf::Sprite sprite(m_RenderTexture->getTexture());
-        sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        target.draw(sprite, states);
+        // Disable the clipping
+        glDisable(GL_SCISSOR_TEST);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

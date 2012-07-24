@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -32,12 +34,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Label::Label() :
+    m_Size    (0, 0),
     m_AutoSize(true)
     {
         m_ObjectType = label;
         m_Loaded = true;
-
-        m_RenderTexture = new sf::RenderTexture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,14 +57,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::load(float width, float height)
+    {
+        setSize(width, height);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::setSize(float width, float height)
     {
         // A negative size is not allowed for this object
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Set the size of the render texture
-        m_RenderTexture->create(width, height);
+        // Change the size of the label
+        m_Size.x = width;
+        m_Size.y = height;
 
         // You are no longer auto-sizing
         m_AutoSize = false;
@@ -73,14 +82,14 @@ namespace tgui
 
     Vector2u Label::getSize() const
     {
-        return m_RenderTexture->getSize();
+        return m_Size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Label::getScaledSize() const
     {
-        return Vector2f(m_RenderTexture->getSize().x * getScale().x, m_RenderTexture->getSize().y * getScale().y);
+        return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +100,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_AutoSize)
-            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+        {
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +149,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_AutoSize)
-            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+        {
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +170,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_AutoSize)
-            m_RenderTexture->create(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+        {
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +188,7 @@ namespace tgui
     bool Label::mouseOnObject(float x, float y)
     {
         // Check if the mouse is on top of the label
-        if (sf::FloatRect(0, 0, static_cast<float>(m_RenderTexture->getSize().x), static_cast<float>(m_RenderTexture->getSize().y)).contains(x - getPosition().x, y - getPosition().y))
+        if (sf::FloatRect(0, 0, static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)).contains(x - getPosition().x, y - getPosition().y))
             return true;
         else
             return false;
@@ -218,12 +236,22 @@ namespace tgui
         if (m_Text.getString().isEmpty())
             return;
 
-        m_RenderTexture->clear(sf::Color::Transparent);
-        m_RenderTexture->draw(m_Text);
-        m_RenderTexture->display();
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
+        // Enable the clipping
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((getPosition().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((getPosition().y + m_Size.y - target.getView().getCenter().y + (target.getView().getSize().y / 2.f)) * scaleViewY),
+                  m_Size.x * scaleViewX, m_Size.y * scaleViewY);
+
+        // Draw the text
         states.transform *= getTransform();
-        target.draw(sf::Sprite(m_RenderTexture->getTexture()), states);
+        target.draw(m_Text, states);
+
+        // Disable the clipping
+        glDisable(GL_SCISSOR_TEST);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

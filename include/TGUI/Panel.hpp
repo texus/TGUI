@@ -83,7 +83,6 @@ namespace tgui
         ///
         /// \return
         ///        - true on success
-        ///        - false when the internal sf::RenderTexture could not be created.
         ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
@@ -181,12 +180,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::RenderTexture* m_RenderTexture;
+        Vector2u     m_Size;
 
         sf::Texture* m_Texture;
         sf::Sprite   m_Sprite;
 
-        std::string m_LoadedBackgroundImageFilename;
+        std::string  m_LoadedBackgroundImageFilename;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

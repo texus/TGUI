@@ -86,7 +86,6 @@ namespace tgui
         ///
         /// \return
         ///        - true on success
-        ///        - false when the internal sf::RenderTexture could not be created.
         ///        - false when the pathname was empty
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded

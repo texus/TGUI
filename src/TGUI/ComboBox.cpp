@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -444,7 +446,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::addItem(const std::string item, bool cropText)
+    unsigned int ComboBox::addItem(const std::string item)
     {
         // An item can only be added when the combo box was loaded correctly
         if (m_Loaded == false)
@@ -458,7 +460,7 @@ namespace tgui
             m_Listbox->setSize(static_cast<float>(m_Listbox->m_Size.x), ((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y * (m_Listbox->m_Items.size() + 1)) + (m_BottomBorder * getScale().y));
 
         // Add the item
-        return m_Listbox->addItem(item, cropText);
+        return m_Listbox->addItem(item);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -823,38 +825,25 @@ namespace tgui
         tempText.setCharacterSize(m_Listbox->m_ItemHeight);
         tempText.setColor(m_Listbox->m_TextColor);
 
-        // Make sure that the text fits inside the combo box
-        {
-            // Get the global bounds
-            sf::FloatRect bounds = tempText.getGlobalBounds();
-
-            // Calculate the maximum text width
-            float maximumTextWidth = ((m_Listbox->m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x) - ((m_SpriteNormal.getGlobalBounds().width * curScale.y * m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y);
-
-            // Check if the text is too long to fit inside the combo box
-            while (((bounds.width * curScale.y) + bounds.left) > maximumTextWidth)
-            {
-                std::string tempString = tempText.getString().toAnsiString();
-
-                // Make sure that the string isn't empty
-                if (tempString.size() == 0)
-                    break;
-
-                // Remove the last character
-                tempString.erase(tempString.length() -1);
-                tempText.setString(tempString);
-
-                // Recalculate the size
-                bounds = tempText.getGlobalBounds();
-            }
-        }
-
         // Undo the x-scaling
         states.transform.scale(curScale.y/curScale.x, 1);
+
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        // Enable the clipping
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((getPosition().y + m_TopBorder + (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                  (m_Listbox->m_Size.x - (m_TextureNormal->getSize().x * curScale.y * static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y) - m_LeftBorder - m_RightBorder - tempText.getLocalBounds().left) * scaleViewX, (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
         // Draw the selected item
         states.transform.translate(2, (m_Listbox->m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
         target.draw(tempText, states);
+
+        // Disable the clipping
+        glDisable(GL_SCISSOR_TEST);
 
         // Reset the transformation
         states.transform = oldTransform.scale(1.0f/curScale.x, 1.0f/curScale.y);

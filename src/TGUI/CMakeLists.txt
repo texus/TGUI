@@ -30,6 +30,10 @@ set(TGUI_SRC
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
 
+# OpenGL is required (due to a temporary fix)
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR})
+
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${TGUI_SRC})
@@ -37,7 +41,8 @@ if(TGUI_SHARED_LIBS)
 
     # the library should be linked to sfml, unless you are on linux
     if (NOT LINUX)
-        target_link_libraries( ${PROJECT_NAME} ${SFML_LIBRARIES} )
+        set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
+        target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
 
         # on Windows/gcc get rid of "lib" prefix for shared libraries,
         # and transform the ".dll.a" suffix into ".a" for import libraries

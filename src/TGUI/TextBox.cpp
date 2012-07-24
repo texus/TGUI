@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
@@ -60,8 +62,6 @@ namespace tgui
         m_ObjectType = textBox;
 
         changeColors();
-
-        m_RenderTexture = new sf::RenderTexture();
 
         // Load the text box with default values
         m_Loaded = true;
@@ -101,10 +101,6 @@ namespace tgui
     m_MultilineSelectionRectWidth  (copy.m_MultilineSelectionRectWidth),
     m_LoadedScrollbarPathname      (copy.m_LoadedScrollbarPathname)
     {
-        // Copy the render texture
-        if (m_RenderTexture->create(copy.m_RenderTexture->getSize().x, copy.m_RenderTexture->getSize().y) == false)
-            m_Loaded = false;
-
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != NULL)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
@@ -118,8 +114,6 @@ namespace tgui
     {
         if (m_Scroll != NULL)
             delete m_Scroll;
-
-        delete m_RenderTexture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +161,6 @@ namespace tgui
             std::swap(m_MultilineSelectionRectWidth,   temp.m_MultilineSelectionRectWidth);
             std::swap(m_Scroll,                        temp.m_Scroll);
             std::swap(m_LoadedScrollbarPathname,       temp.m_LoadedScrollbarPathname);
-            std::swap(m_RenderTexture,                 temp.m_RenderTexture);
         }
 
         return *this;
@@ -216,10 +209,6 @@ namespace tgui
 
         // Set the text size
         setTextSize(textSize);
-
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            return false;
 
         // If there is a scrollbar then load it
         if (scrollbarPathname.empty() == false)
@@ -331,10 +320,6 @@ namespace tgui
         // Store the values
         m_Size.x = static_cast<unsigned int>(width);
         m_Size.y = uiHeight;
-
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
 
         // If there is a scrollbar then change it
         if (m_Scroll != NULL)
@@ -476,10 +461,6 @@ namespace tgui
                 m_Size.y = height2 + m_TopBorder + m_BottomBorder;
         }
 
-        // Recreate the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
-
         // If there is a scrollbar then update the low value (in case the height of the text box has changed)
         if (m_Scroll != NULL)
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
@@ -579,10 +560,6 @@ namespace tgui
             m_Size.y = height1 + m_TopBorder + m_BottomBorder;
         else
             m_Size.y = height2 + m_TopBorder + m_BottomBorder;
-
-        // Recreate the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
 
         // Check if there is a scrollbar
         if (m_Scroll != NULL)
@@ -866,7 +843,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the listbox
-        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
         {
             return true;
         }
@@ -2115,29 +2092,37 @@ namespace tgui
         // Adjust the transformation
         states.transform *= getTransform();
 
-        // Store the transformation
-        sf::Transform oldTransform = states.transform;
-
         // Draw the borders
-        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
-        Back.setFillColor(m_BorderColor);
-        target.draw(Back, states);
+        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
+        back.setFillColor(m_BorderColor);
+        target.draw(back, states);
 
-        // Reset the transformation
-        states.transform = sf::Transform();
+        // Don't draw on top of the borders
+        states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
-        // Clear our render texture
-        m_RenderTexture->clear(m_BackgroundColor);
+        // Draw the background
+        sf::RectangleShape front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
+        front.setFillColor(m_BackgroundColor);
+        target.draw(front, states);
 
         // Set the text on the correct position
-        states.transform.translate(2, 0);
-
-        // Adjust the text position if there is a scrollbar
         if (m_Scroll != NULL)
-            states.transform.translate(0, -static_cast<float>(m_Scroll->m_Value));
+            states.transform.translate(2, -static_cast<float>(m_Scroll->m_Value));
+        else
+            states.transform.translate(2, 0);
+
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        // Enable the clipping
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                  (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
         // Draw the text
-        m_RenderTexture->draw(m_TextBeforeSelection, states);
+        target.draw(m_TextBeforeSelection, states);
 
         // Check if there is a selection
         if (m_SelChars > 0)
@@ -2164,10 +2149,10 @@ namespace tgui
                 selectionBackground1.setFillColor(m_UnfocusedSelectedTextBgrColor);
 
             // Draw the selection background
-            m_RenderTexture->draw(selectionBackground1, states);
+            target.draw(selectionBackground1, states);
 
             // Draw the first part of the selected text
-            m_RenderTexture->draw(m_TextSelection1, states);
+            target.draw(m_TextSelection1, states);
 
             // Check if there is a second part in the selection
             if (m_TextSelection2.getString().getSize() > 0)
@@ -2192,12 +2177,12 @@ namespace tgui
                 for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
                 {
                     selectionBackground2.setSize(sf::Vector2f(m_MultilineSelectionRectWidth[i], static_cast<float>(m_LineHeight)));
-                    m_RenderTexture->draw(selectionBackground2, states);
+                    target.draw(selectionBackground2, states);
                     selectionBackground2.move(0, static_cast<float>(m_LineHeight));
                 }
 
                 // Draw the second part of the selection
-                m_RenderTexture->draw(m_TextSelection2, states);
+                target.draw(m_TextSelection2, states);
 
                 // Translate to the end of the selection
                 states.transform.translate(m_TextSelection2.findCharacterPos(textSelection2Length));
@@ -2217,7 +2202,7 @@ namespace tgui
             }
 
             // Draw the first part of the text behind the selection
-            m_RenderTexture->draw(m_TextAfterSelection1, states);
+            target.draw(m_TextAfterSelection1, states);
 
             // Check if there is a second part in the selection
             if (m_TextAfterSelection2.getString().getSize() > 0)
@@ -2247,7 +2232,7 @@ namespace tgui
                 }
 
                 // Draw the second part of the text after the selection
-                m_RenderTexture->draw(m_TextAfterSelection2, states);
+                target.draw(m_TextAfterSelection2, states);
             }
         }
 
@@ -2271,17 +2256,12 @@ namespace tgui
                     selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f) + 2, static_cast<float>(m_SelectionPointPosition.y - m_Scroll->m_Value));
 
                 // Draw the selection point
-                m_RenderTexture->draw(selectionPoint, states);
+                target.draw(selectionPoint, states);
             }
         }
 
-        // Set the correct position of the render texture
-        states.transform = oldTransform;
-        states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
-
-        // Display the render texture
-        m_RenderTexture->display();
-        target.draw(sf::Sprite(m_RenderTexture->getTexture()), states);
+        // Disable the clipping
+        glDisable(GL_SCISSOR_TEST);
 
         // Check if there is a scrollbar
         if (m_Scroll != NULL)

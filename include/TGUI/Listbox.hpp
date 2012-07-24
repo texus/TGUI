@@ -86,7 +86,6 @@ namespace tgui
         ///
         /// \return
         ///        - true on success
-        ///        - false when the internal sf::RenderTexture could not be created.
         ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(unsigned int width,
@@ -220,12 +219,8 @@ namespace tgui
         /// \brief Adds an item to the list.
         ///
         /// \param itemName The name of the item you want to add (this is the text that will be displayed inside the listbox)
-        /// \param cropText When the text doesn't fit inside the list then the last characters are removed when \a cropText is true.
-        ///                 Trying to find the item with the full text later will of course fail. If the text may not be clipped for this reason then
-        ///                 you can set cropText to false, but this might cost some speed when drawing (it has to be clipped there every frame).
         ///
         /// \return
-        ///         - 0 when the listbox wasn't loaded correctly
         ///         - 0 when the listbox is full (you have set a maximum item limit and you are trying to add more items)
         ///         - 0 when there is no scrollbar and you try to have more items than fit inside the listbox
         ///         - The id of the item when it was successfully added.
@@ -234,7 +229,7 @@ namespace tgui
         ///
         /// \see setMaximumItems
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int addItem(const std::string itemName, bool cropText = false);
+        unsigned int addItem(const std::string itemName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -449,9 +444,6 @@ namespace tgui
 
         // The font used to draw the text
         sf::Font m_TextFont;
-
-        // The render texture, used to draw the text on (this allows to display only a part of the text)
-        sf::RenderTexture* m_RenderTexture;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend struct ComboBox;
