@@ -29,7 +29,10 @@ SET( ${PROJECT_NAME}_MINOR_VERSION 5 )
 
 # project options
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
-tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
+
+if (NOT MACOSX)
+    tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
+endif()
 
 # Set some useful compile flags.
 if( COMPILER_GCC )
