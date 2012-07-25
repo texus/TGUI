@@ -530,6 +530,13 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
         // Check if there is a title
         if (title.empty() == false)
         {
@@ -537,15 +544,12 @@ namespace tgui
             sf::Text text(title);
             text.setCharacterSize(m_TitleBarHeight * 8 / 10);
 
-            // Enable the clipping
-            glEnable(GL_SCISSOR_TEST);
-
             // Check the layout
             if (layout == LayoutRight)
             {
                 // Set the clipping area
-                glScissor((getPosition().x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                          target.getSize().y - ((getPosition().y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                glScissor((globalTranslation.x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                          target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                           (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
 
                 // Draw the text
@@ -556,8 +560,8 @@ namespace tgui
             else // if (layout == LayoutLeft)
             {
                 // Set the clipping area
-                glScissor((getPosition().x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                          target.getSize().y - ((getPosition().y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                glScissor((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                          target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                           (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
 
                 // Draw the text
@@ -566,8 +570,8 @@ namespace tgui
                 states.transform.translate(-m_CloseButton->getScaledSize().x - (2*distanceToSide), 0);
             }
 
-            // Disable the clipping
-            glDisable(GL_SCISSOR_TEST);
+            // Reset the old clipping area
+            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         }
 
         // Move the close button to the correct position
@@ -595,17 +599,16 @@ namespace tgui
         background.setFillColor(backgroundColor);
         target.draw(background, states);
 
-        // Enable the clipping
-        glEnable(GL_SCISSOR_TEST);
-        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((getPosition().y + m_TitleBarHeight + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+        // Set the clipping area
+        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((globalTranslation.y + m_TitleBarHeight + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                   (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
         // Draw the objects in the child window
         drawObjectGroup(&target, states);
 
-        // Disable the clipping
-        glDisable(GL_SCISSOR_TEST);
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

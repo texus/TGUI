@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -1419,8 +1421,35 @@ namespace tgui
         // Update the time
         updateTime(m_Clock.restart());
 
+        // Check if clipping is enabled
+        bool clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
+        GLint scissor[4];
+
+        if (clippingEnabled)
+        {
+            // Remember the old clipping area
+            glGetIntegerv(GL_SCISSOR_BOX, scissor);
+        }
+        else // Clipping was disabled
+        {
+            // Enable clipping
+            glEnable(GL_SCISSOR_TEST);
+        }
+
         // Draw the window with all objects inside it
         drawObjectGroup(m_Window, states);
+
+        // Check if clipping was previously enabled
+        if (clippingEnabled)
+        {
+            // Reset the old clipping
+            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+        }
+        else // Clipping was previously disabled
+        {
+            // Disable the clipping again
+            glDisable(GL_SCISSOR_TEST);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

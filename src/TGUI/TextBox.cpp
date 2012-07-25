@@ -2118,10 +2118,16 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Enable the clipping
-        glEnable(GL_SCISSOR_TEST);
-        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Set the clipping area
+        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                   (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
         // Draw the text
@@ -2263,8 +2269,8 @@ namespace tgui
             }
         }
 
-        // Disable the clipping
-        glDisable(GL_SCISSOR_TEST);
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Check if there is a scrollbar
         if (m_Scroll != NULL)

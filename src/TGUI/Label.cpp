@@ -240,18 +240,24 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Enable the clipping
-        glEnable(GL_SCISSOR_TEST);
-        glScissor((getPosition().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((getPosition().y + m_Size.y - target.getView().getCenter().y + (target.getView().getSize().y / 2.f)) * scaleViewY),
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Set the clipping area
+        glScissor((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((globalTranslation.y + m_Size.y) * scaleViewY),
                   m_Size.x * scaleViewX, m_Size.y * scaleViewY);
 
         // Draw the text
         states.transform *= getTransform();
         target.draw(m_Text, states);
 
-        // Disable the clipping
-        glDisable(GL_SCISSOR_TEST);
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

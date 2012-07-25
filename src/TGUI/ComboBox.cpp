@@ -833,18 +833,24 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Enable the clipping
-        glEnable(GL_SCISSOR_TEST);
-        glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((getPosition().y + m_TopBorder + (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Set the clipping area
+        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                  target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                   (m_Listbox->m_Size.x - (m_TextureNormal->getSize().x * curScale.y * static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y) - m_LeftBorder - m_RightBorder - tempText.getLocalBounds().left) * scaleViewX, (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
         // Draw the selected item
         states.transform.translate(2, (m_Listbox->m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
         target.draw(tempText, states);
 
-        // Disable the clipping
-        glDisable(GL_SCISSOR_TEST);
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Reset the transformation
         states.transform = oldTransform.scale(1.0f/curScale.x, 1.0f/curScale.y);

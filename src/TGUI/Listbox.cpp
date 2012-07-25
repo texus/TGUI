@@ -1092,6 +1092,13 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
         // Create a text object to draw the items
         sf::Text text("", m_TextFont, m_TextSize);
 
@@ -1109,10 +1116,9 @@ namespace tgui
             if ((m_Scroll->m_Value + m_Scroll->m_LowValue) % m_ItemHeight != 0)
                 ++lastItem;
 
-            // Enable the clipping
-            glEnable(GL_SCISSOR_TEST);
-            glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                      target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+            // Set the clipping area
+            glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                      target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                       (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
             for (unsigned int i=firstItem; i<lastItem; ++i)
@@ -1158,10 +1164,9 @@ namespace tgui
         }
         else // There is no scrollbar or it is invisible
         {
-            // Enable the clipping
-            glEnable(GL_SCISSOR_TEST);
-            glScissor((getPosition().x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                      target.getSize().y - ((getPosition().y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+            // Set the clipping area
+            glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                      target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
                       (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
 
             // Change the scale factors
@@ -1212,8 +1217,8 @@ namespace tgui
             }
         }
 
-        // Disable the clipping
-        glDisable(GL_SCISSOR_TEST);
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Check if there is a scrollbar
         if (m_Scroll != NULL)
