@@ -428,6 +428,14 @@ namespace tgui
                     // Check if the close button was clicked
                     if (m_CloseButton->m_MouseDown == true)
                     {
+                        // If a callback was requested then send it
+                        if (callbackID > 0)
+                        {
+                            Callback callback;
+                            callback.trigger = Callback::closed;
+                            m_Parent->addCallback(callback);
+                        }
+
                         // Remove the objects in the child window
                         removeAllObjects();
 

@@ -428,6 +428,7 @@ namespace tgui
             valueChanged,      // Slider, LoadingBar
             itemSelected,      // Listbox, ComboBox
             animationFinished, // AnimatedPicture
+            closed,            // ChildWindow
 
             count // Keep this one last
         };
