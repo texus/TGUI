@@ -1434,6 +1434,7 @@ namespace tgui
         {
             // Enable clipping
             glEnable(GL_SCISSOR_TEST);
+            glScissor(0, 0, m_Window->getSize().x, m_Window->getSize().y);
         }
 
         // Draw the window with all objects inside it
