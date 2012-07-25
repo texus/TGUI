@@ -799,6 +799,9 @@ namespace tgui
         // Get the current scale
         Vector2f curScale = getScale();
 
+        // Get the global translation
+        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+
         // Adjust the transformation
         states.transform *= getTransform();
 
@@ -833,9 +836,6 @@ namespace tgui
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
-        // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
 
         // Get the old clipping area
         GLint scissor[4];
