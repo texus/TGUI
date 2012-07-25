@@ -60,6 +60,7 @@ namespace tgui
     m_LoadedPathname        ("")
     {
         m_ObjectType = editBox;
+        m_RequiresUpdateCalls = true;
 
         changeColors();
     }

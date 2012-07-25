@@ -547,25 +547,7 @@ namespace tgui
             // Check if the object is a group or an object that uses the time
             if (m_Objects[i]->m_ObjectType == panel)
                 dynamic_cast<Group*>(m_Objects[i])->updateTime(elapsedTime);
-            else if (m_Objects[i]->m_ObjectType == editBox)
-            {
-                // Convert the object
-                OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
-
-                // Update the elapsed time
-                object->m_AnimationTimeElapsed += elapsedTime;
-                object->update();
-            }
-            else if (m_Objects[i]->m_ObjectType == textBox)
-            {
-                // Convert the object
-                OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
-
-                // Update the elapsed time
-                object->m_AnimationTimeElapsed += elapsedTime;
-                object->update();
-            }
-            else if (m_Objects[i]->m_ObjectType == animatedPicture)
+            else if (m_Objects[i]->m_RequiresUpdateCalls)
             {
                 // Convert the object
                 OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);

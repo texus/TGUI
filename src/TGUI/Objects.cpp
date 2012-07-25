@@ -32,37 +32,39 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT() :
-    callbackID   (0),
-    m_Enabled    (true),
-    m_Visible    (true),
-    m_Loaded     (false),
-    m_ObjectPhase(0),
-    m_Parent     (NULL),
-    m_MouseHover (false),
-    m_MouseDown  (false),
-    m_ObjectID   (0),
-    m_Focused    (false),
-    m_AllowFocus (false)
+    callbackID           (0),
+    m_Enabled            (true),
+    m_Visible            (true),
+    m_Loaded             (false),
+    m_ObjectPhase        (0),
+    m_Parent             (NULL),
+    m_MouseHover         (false),
+    m_MouseDown          (false),
+    m_ObjectID           (0),
+    m_Focused            (false),
+    m_AllowFocus         (false),
+    m_RequiresUpdateCalls(false)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT(const OBJECT& copy) :
-    sf::Drawable     (copy),
-    sf::Transformable(copy),
-    callbackID       (copy.callbackID),
-    m_Enabled        (copy.m_Enabled),
-    m_Visible        (copy.m_Visible),
-    m_Loaded         (copy.m_Loaded),
-    m_ObjectPhase    (copy.m_ObjectPhase),
-    m_Parent         (copy.m_Parent),
-    m_MouseHover     (false),
-    m_MouseDown      (false),
-    m_ObjectID       (0),
-    m_Focused        (false),
-    m_AllowFocus     (copy.m_AllowFocus),
-    m_ObjectType     (copy.m_ObjectType)
+    sf::Drawable         (copy),
+    sf::Transformable    (copy),
+    callbackID           (copy.callbackID),
+    m_Enabled            (copy.m_Enabled),
+    m_Visible            (copy.m_Visible),
+    m_Loaded             (copy.m_Loaded),
+    m_ObjectPhase        (copy.m_ObjectPhase),
+    m_Parent             (copy.m_Parent),
+    m_MouseHover         (false),
+    m_MouseDown          (false),
+    m_ObjectID           (0),
+    m_Focused            (false),
+    m_AllowFocus         (copy.m_AllowFocus),
+    m_ObjectType         (copy.m_ObjectType),
+    m_RequiresUpdateCalls(copy.m_RequiresUpdateCalls)
     {
     }
 
@@ -79,18 +81,22 @@ namespace tgui
         // Make sure it is not the same object
         if (this != &right)
         {
-            callbackID    = right.callbackID;
-            m_Enabled     = right.m_Enabled;
-            m_Visible     = right.m_Visible;
-            m_Loaded      = right.m_Loaded;
-            m_ObjectPhase = right.m_ObjectPhase;
-            m_Parent      = right.m_Parent;
-            m_MouseHover  = false;
-            m_MouseDown   = false;
-            m_ObjectID    = 0;
-            m_Focused     = false;
-            m_AllowFocus  = right.m_AllowFocus;
-            m_ObjectType  = right.m_ObjectType;
+            this->sf::Drawable::operator=(right);
+            this->sf::Transformable::operator=(right);
+
+            callbackID            = right.callbackID;
+            m_Enabled             = right.m_Enabled;
+            m_Visible             = right.m_Visible;
+            m_Loaded              = right.m_Loaded;
+            m_ObjectPhase         = right.m_ObjectPhase;
+            m_Parent              = right.m_Parent;
+            m_MouseHover          = false;
+            m_MouseDown           = false;
+            m_ObjectID            = 0;
+            m_Focused             = false;
+            m_AllowFocus          = right.m_AllowFocus;
+            m_ObjectType          = right.m_ObjectType;
+            m_RequiresUpdateCalls = right.m_RequiresUpdateCalls;
         }
 
         return *this;

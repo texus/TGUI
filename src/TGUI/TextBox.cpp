@@ -60,6 +60,7 @@ namespace tgui
     m_LoadedScrollbarPathname    ("")
     {
         m_ObjectType = textBox;
+        m_RequiresUpdateCalls = true;
 
         changeColors();
 

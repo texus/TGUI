@@ -306,6 +306,9 @@ namespace tgui
         // Is the object a button, a listbox, a checkbox, ...
         ObjectTypes m_ObjectType;
 
+        // This is set to true for objects that are also derived from OBJECT_ANIMATION.
+        bool m_RequiresUpdateCalls;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
