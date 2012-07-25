@@ -1094,7 +1094,7 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
 
         // Get the old clipping area
         GLint scissor[4];

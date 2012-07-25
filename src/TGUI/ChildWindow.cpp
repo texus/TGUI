@@ -532,7 +532,7 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(0, 0);
+        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
 
         // Get the old clipping area
         GLint scissor[4];
@@ -548,10 +548,14 @@ namespace tgui
             // Check the layout
             if (layout == LayoutRight)
             {
+                // Calculate the clipping area
+                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX, scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1]);
+                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f) + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0] + scissor[2]);
+                GLint scissorBottom = TGUI_MINIMUM(target.getSize().y - ((globalTranslation.y + (2*m_TitleBarHeight) - target.getView().getCenter().y + (target.getView().getSize().y / 2.f)) * scaleViewY), scissor[1] + scissor[3]);
+
                 // Set the clipping area
-                glScissor((globalTranslation.x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                          target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                          (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
+                glScissor(scissorLeft, scissorTop, scissorRight - scissorLeft, scissorTop - scissorBottom);
 
                 // Draw the text
                 states.transform.translate(static_cast<float>(distanceToSide), 0);
@@ -560,10 +564,14 @@ namespace tgui
             }
             else // if (layout == LayoutLeft)
             {
+                // Calculate the clipping area
+                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX, scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1]);
+                GLuint scissorRight = TGUI_MINIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f) + m_Size.x - distanceToSide) * scaleViewX, scissor[0] + scissor[2]);
+                GLuint scissorBottom = TGUI_MINIMUM(target.getSize().y - ((globalTranslation.y + ((2*m_TitleBarHeight) - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1] + scissor[3]);
+
                 // Set the clipping area
-                glScissor((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                          target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                          (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
+                glScissor(scissorLeft, scissorTop, scissorRight - scissorLeft, scissorTop - scissorBottom);
 
                 // Draw the text
                 states.transform.translate(m_CloseButton->getScaledSize().x + (2*distanceToSide), 0);
