@@ -1,0 +1,2 @@
+Phases = Hover, Down     # The phases for the close button (next to normal)
+SeparateHoverImage = true

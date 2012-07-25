@@ -3,7 +3,6 @@ Phases     = Hover, Focus   	    # The Editbox has two optional phases
 TextColor  = (200, 200, 200)
 SelectedTextColor  = (255, 255, 255)
 SelectedTextBackgroundColor = ( 10, 110, 255)
-SelectionPointColor = (70, 70, 200)
 UnfocusedSelectedTextBackgroundColor = (110, 110, 255)
 SelectionPointColor = (110, 110, 255)
 Borders = (6, 4, 6, 4)
