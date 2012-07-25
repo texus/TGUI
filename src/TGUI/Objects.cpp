@@ -49,18 +49,20 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT(const OBJECT& copy) :
-    callbackID   (copy.callbackID),
-    m_Enabled    (copy.m_Enabled),
-    m_Visible    (copy.m_Visible),
-    m_Loaded     (copy.m_Loaded),
-    m_ObjectPhase(copy.m_ObjectPhase),
-    m_Parent     (copy.m_Parent),
-    m_MouseHover (false),
-    m_MouseDown  (false),
-    m_ObjectID   (0),
-    m_Focused    (false),
-    m_AllowFocus (copy.m_AllowFocus),
-    m_ObjectType (copy.m_ObjectType)
+    sf::Drawable     (copy),
+    sf::Transformable(copy),
+    callbackID       (copy.callbackID),
+    m_Enabled        (copy.m_Enabled),
+    m_Visible        (copy.m_Visible),
+    m_Loaded         (copy.m_Loaded),
+    m_ObjectPhase    (copy.m_ObjectPhase),
+    m_Parent         (copy.m_Parent),
+    m_MouseHover     (false),
+    m_MouseDown      (false),
+    m_ObjectID       (0),
+    m_Focused        (false),
+    m_AllowFocus     (copy.m_AllowFocus),
+    m_ObjectType     (copy.m_ObjectType)
     {
     }
 
