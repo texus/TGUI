@@ -177,6 +177,9 @@ namespace tgui
         /// The color that is used to draw the borders of the window
         sf::Color borderColor;
 
+        /// The title of the window
+        std::string title;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 

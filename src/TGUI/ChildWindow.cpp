@@ -37,6 +37,7 @@ namespace tgui
     layout          (ChildWindow::LayoutRight),
     distanceToSide  (5),
     borderColor     (0, 0, 0),
+    title           (""),
     m_TitleBarHeight(0),
     m_LoadedPathname(""),
     m_SplitImage    (false),
@@ -52,6 +53,7 @@ namespace tgui
     layout            (childWindowToCopy.layout),
     distanceToSide    (childWindowToCopy.distanceToSide),
     borderColor       (childWindowToCopy.borderColor),
+    title             (childWindowToCopy.title),
     m_TitleBarHeight  (childWindowToCopy.m_TitleBarHeight),
     m_LoadedPathname  (childWindowToCopy.m_LoadedPathname),
     m_SplitImage      (childWindowToCopy.m_SplitImage),
@@ -101,6 +103,7 @@ namespace tgui
             std::swap(layout,              temp.layout);
             std::swap(distanceToSide,      temp.distanceToSide);
             std::swap(borderColor,         temp.borderColor);
+            std::swap(title,               temp.title);
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
             std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
             std::swap(m_SplitImage,        temp.m_SplitImage);
@@ -522,6 +525,50 @@ namespace tgui
             states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / m_Size.x, static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
         }
 
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        // Check if there is a title
+        if (title.empty() == false)
+        {
+            // Create the text object
+            sf::Text text(title);
+            text.setCharacterSize(m_TitleBarHeight * 8 / 10);
+
+            // Enable the clipping
+            glEnable(GL_SCISSOR_TEST);
+
+            // Check the layout
+            if (layout == LayoutRight)
+            {
+                // Set the clipping area
+                glScissor((getPosition().x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                          target.getSize().y - ((getPosition().y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                          (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
+
+                // Draw the text
+                states.transform.translate(static_cast<float>(distanceToSide), 0);
+                target.draw(text, states);
+                states.transform.translate(-static_cast<float>(distanceToSide), 0);
+            }
+            else // if (layout == LayoutLeft)
+            {
+                // Set the clipping area
+                glScissor((getPosition().x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
+                          target.getSize().y - ((getPosition().y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
+                          (m_Size.x - (3*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, m_TitleBarHeight * scaleViewY);
+
+                // Draw the text
+                states.transform.translate(m_CloseButton->getScaledSize().x + (2*distanceToSide), 0);
+                target.draw(text, states);
+                states.transform.translate(-m_CloseButton->getScaledSize().x - (2*distanceToSide), 0);
+            }
+
+            // Disable the clipping
+            glDisable(GL_SCISSOR_TEST);
+        }
+
         // Move the close button to the correct position
         if (layout == LayoutRight)
             states.transform.translate(m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
@@ -546,10 +593,6 @@ namespace tgui
         sf::RectangleShape background(Vector2f(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder));
         background.setFillColor(backgroundColor);
         target.draw(background, states);
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Enable the clipping
         glEnable(GL_SCISSOR_TEST);
