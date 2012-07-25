@@ -52,6 +52,7 @@ namespace tgui
 
     Listbox::Listbox(const Listbox& copy) :
     OBJECT                   (copy),
+    OBJECT_BORDERS           (copy),
     m_Items                  (copy.m_Items),
     m_SelectedItem           (copy.m_SelectedItem),
     m_Size                   (copy.m_Size),

@@ -57,6 +57,7 @@ namespace tgui
 
     ComboBox::ComboBox(const ComboBox& copy) :
     OBJECT              (copy),
+    OBJECT_BORDERS      (copy),
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListbox    (copy.m_MouseOnListbox),
     m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),

@@ -47,6 +47,7 @@ namespace tgui
 
     AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
     OBJECT           (copy),
+    OBJECT_ANIMATION (copy),
     loop             (copy.loop),
     m_LoadedFilenames(copy.m_LoadedFilenames),
     m_FrameDuration  (copy.m_FrameDuration),

@@ -50,6 +50,7 @@ namespace tgui
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
     Panel             (childWindowToCopy),
+    OBJECT_BORDERS    (childWindowToCopy),
     layout            (childWindowToCopy.layout),
     distanceToSide    (childWindowToCopy.distanceToSide),
     borderColor       (childWindowToCopy.borderColor),

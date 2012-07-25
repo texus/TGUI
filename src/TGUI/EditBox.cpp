@@ -68,6 +68,8 @@ namespace tgui
 
     EditBox::EditBox(const EditBox& copy) :
     OBJECT                         (copy),
+    OBJECT_BORDERS                 (copy),
+    OBJECT_ANIMATION               (copy),
     selectionPointColor            (copy.selectionPointColor),
     selectionPointWidth            (copy.selectionPointWidth),
     m_SelectionPointVisible        (copy.m_SelectionPointVisible),

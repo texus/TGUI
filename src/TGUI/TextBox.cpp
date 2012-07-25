@@ -72,6 +72,8 @@ namespace tgui
 
     TextBox::TextBox(const TextBox& copy) :
     OBJECT                         (copy),
+    OBJECT_BORDERS                 (copy),
+    OBJECT_ANIMATION               (copy),
     selectionPointColor            (copy.selectionPointColor),
     selectionPointWidth            (copy.selectionPointWidth),
     m_Size                         (copy.m_Size),
