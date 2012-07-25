@@ -134,6 +134,8 @@ namespace tgui
 
             TextBox temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_BORDERS::operator=(right);
+            this->OBJECT_ANIMATION::operator=(right);
 
             std::swap(selectionPointColor,             temp.selectionPointColor);
             std::swap(selectionPointWidth,             temp.selectionPointWidth);

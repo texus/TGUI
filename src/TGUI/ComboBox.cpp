@@ -88,6 +88,7 @@ namespace tgui
         {
             ComboBox temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_BORDERS::operator=(right);
 
             // Delete the old listbox
             delete m_Listbox;

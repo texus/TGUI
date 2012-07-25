@@ -97,6 +97,7 @@ namespace tgui
         {
             ChildWindow temp(right);
             this->Panel::operator=(right);
+            this->OBJECT_BORDERS::operator=(right);
 
             // Delete the old close button
             delete m_CloseButton;

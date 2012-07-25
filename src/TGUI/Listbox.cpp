@@ -90,6 +90,7 @@ namespace tgui
         {
             Listbox temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_BORDERS::operator=(right);
 
             // If there already was a scrollbar then delete it now
             if (m_Scroll != NULL)

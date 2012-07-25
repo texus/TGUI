@@ -87,6 +87,7 @@ namespace tgui
         {
             AnimatedPicture temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_ANIMATION::operator=(right);
 
             // If there already were frames then remove them now
             for (unsigned int i=0; i< m_Textures.size(); ++i)
