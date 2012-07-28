@@ -454,12 +454,9 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        // Set the item height again, in case the scale changed by now
-        m_Listbox->setItemHeight(static_cast<unsigned int>((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y));
-
         // Make room to add another item, until there are enough items
         if (m_NrOfItemsToDisplay > m_Listbox->m_Items.size())
-            m_Listbox->setSize(static_cast<float>(m_Listbox->m_Size.x), ((m_TextureNormal->getSize().y + m_TopBorder + m_BottomBorder) * getScale().y * (m_Listbox->m_Items.size() + 1)) + (m_BottomBorder * getScale().y));
+            m_Listbox->setSize(static_cast<float>(m_Listbox->m_Size.x), (m_Listbox->m_ItemHeight * getScale().y * (m_Listbox->m_Items.size() + 1)) + m_BottomBorder);
 
         // Add the item
         return m_Listbox->addItem(item);
@@ -796,11 +793,15 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+
+        // Get the current scale
+        Vector2f curScale = getScale();
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -833,18 +834,18 @@ namespace tgui
         // Undo the x-scaling
         states.transform.scale(curScale.y/curScale.x, 1);
 
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Listbox->m_Size.x - (m_TextureNormal->getSize().x * curScale.y * (static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y)) - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Listbox->m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+
         // Set the clipping area
-        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                  (m_Listbox->m_Size.x - (m_TextureNormal->getSize().x * curScale.y * static_cast<float>(m_Listbox->m_ItemHeight) / m_TextureNormal->getSize().y) - m_LeftBorder - m_RightBorder - tempText.getLocalBounds().left) * scaleViewX, (m_Listbox->m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the selected item
         states.transform.translate(2, (m_Listbox->m_ItemHeight * 0.3333333f) - (tempText.getCharacterSize() / 2.0f));
@@ -881,8 +882,8 @@ namespace tgui
         if (m_ShowList)
         {
             // Set the listbox to the correct position and draw it
-            m_Listbox->setPosition(getPosition().x, getPosition().y + ((m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder) * curScale.y));
-            target.draw(*m_Listbox);
+            states.transform = oldTransform.translate(0, m_Listbox->m_ItemHeight + m_TopBorder + m_BottomBorder);
+            target.draw(*m_Listbox, states);
         }
     }
 

@@ -136,9 +136,6 @@ namespace tgui
 
     bool Listbox::load(unsigned int width, unsigned int height, const std::string scrollbarPathname, unsigned int itemHeight)
     {
-        // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
-
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
         {
@@ -252,15 +249,11 @@ namespace tgui
                 // Set the maximum
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
-                m_Loaded = true;
                 return true;
             }
         }
         else
-        {
-            m_Loaded = true;
             return true;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1061,12 +1054,16 @@ namespace tgui
 
     void Listbox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        // Get the global translation
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+
         // Get the current position and scale
         Vector2f position = getPosition();
         Vector2f curScale = getScale();
-
-        // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
 
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
@@ -1092,10 +1089,6 @@ namespace tgui
             target.draw(front, states);
         }
 
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
@@ -1117,10 +1110,14 @@ namespace tgui
             if ((m_Scroll->m_Value + m_Scroll->m_LowValue) % m_ItemHeight != 0)
                 ++lastItem;
 
+            // Calculate the clipping area
+            GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
+            GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+            GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, scissor[0] + scissor[2]);
+            GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+
             // Set the clipping area
-            glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                      target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                      (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
             for (unsigned int i=firstItem; i<lastItem; ++i)
             {
@@ -1139,7 +1136,7 @@ namespace tgui
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->m_Value)).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
                         sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
@@ -1165,13 +1162,14 @@ namespace tgui
         }
         else // There is no scrollbar or it is invisible
         {
-            // Set the clipping area
-            glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                      target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                      (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+            // Calculate the clipping area
+            GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
+            GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+            GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
+            GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
 
-            // Change the scale factors
-            states.transform.scale(curScale.y / curScale.x, 1);
+            // Set the clipping area
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
             // Store the current transformations
             sf::Transform storedTransform = states.transform;

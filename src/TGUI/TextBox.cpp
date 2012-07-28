@@ -1350,15 +1350,18 @@ namespace tgui
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
 
-                // Check if the scrollbar is behind the text
-                if (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue)
+                if (m_Scroll != NULL)
                 {
-                    // Adjust the value of the scrollbar
-                    m_Scroll->setValue(m_Scroll->m_Value);
+                    // Check if the scrollbar is behind the text
+                    if (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue)
+                    {
+                        // Adjust the value of the scrollbar
+                        m_Scroll->setValue(m_Scroll->m_Value);
 
-                    // The text has to be updated again
-                    m_SelectionTextsNeedUpdate = true;
-                    updateDisplayedText();
+                        // The text has to be updated again
+                        m_SelectionTextsNeedUpdate = true;
+                        updateDisplayedText();
+                    }
                 }
             }
             else // When you did select some characters
@@ -1413,15 +1416,18 @@ namespace tgui
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd);
 
-                // Check if there is a risk that the scrollbar is going to be behind the text
-                if ((m_Scroll->m_Value == m_Scroll->m_Maximum - m_Scroll->m_LowValue) || (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue - m_LineHeight))
+                if (m_Scroll != NULL)
                 {
-                    // Reset the value of the scroll. If it is too high then it will be automatically be adjusted.
-                    m_Scroll->setValue(m_Scroll->m_Value);
+                    // Check if there is a risk that the scrollbar is going to be behind the text
+                    if ((m_Scroll->m_Value == m_Scroll->m_Maximum - m_Scroll->m_LowValue) || (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue - m_LineHeight))
+                    {
+                        // Reset the value of the scroll. If it is too high then it will be automatically be adjusted.
+                        m_Scroll->setValue(m_Scroll->m_Value);
 
-                    // The text has to be updated again
-                    m_SelectionTextsNeedUpdate = true;
-                    updateDisplayedText();
+                        // The text has to be updated again
+                        m_SelectionTextsNeedUpdate = true;
+                        updateDisplayedText();
+                    }
                 }
             }
             else // You did select some characters
@@ -2094,8 +2100,12 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -2119,18 +2129,18 @@ namespace tgui
         else
             states.transform.translate(2, 0);
 
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+
         // Set the clipping area
-        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((globalTranslation.y + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                  (m_Size.x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the text
         target.draw(m_TextBeforeSelection, states);
@@ -2254,7 +2264,7 @@ namespace tgui
             if ((m_Focused) && (m_SelectionPointVisible))
             {
                 // Reset the transformation
-                states.transform = sf::Transform();
+                states.transform = sf::Transform().translate(globalTranslation);
 
                 // Create the selection point rectangle
                 sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(selectionPointWidth), static_cast<float>(m_LineHeight)));

@@ -302,8 +302,25 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM(globalTranslation.x * scaleViewX, scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y) * scaleViewY, target.getSize().y - scissor[1]);
+
+        // Set the clipping area
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Set the transform
         states.transform *= getTransform();
@@ -316,19 +333,6 @@ namespace tgui
         // Draw the background image if there is one
         if (m_Texture != NULL)
             target.draw(m_Sprite, states);
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Set the clipping area
-        glScissor((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((globalTranslation.y + m_Size.y - target.getView().getCenter().y + (target.getView().getSize().y / 2.f)) * scaleViewY),
-                  m_Size.x * scaleViewX, m_Size.y * scaleViewY);
 
         // Draw the objects
         drawObjectGroup(&target, states);

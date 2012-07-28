@@ -241,20 +241,20 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX, scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(target.getSize().y - ((globalTranslation.y + m_Size.y) * scaleViewY), scissor[1]);
-        GLuint scissorRight = TGUI_MINIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f) + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
-        GLuint scissorBottom = TGUI_MINIMUM(target.getSize().y - (globalTranslation.y * scaleViewY), scissor[1] + scissor[3]);
+        GLint scissorLeft = TGUI_MAXIMUM(globalTranslation.x * scaleViewX, scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y) * scaleViewY, target.getSize().y - scissor[1]);
 
         // Set the clipping area
-        glScissor(scissorLeft, scissorTop, scissorRight - scissorLeft, scissorBottom - scissorTop);
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the text
         states.transform *= getTransform();

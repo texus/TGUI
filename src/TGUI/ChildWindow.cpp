@@ -346,41 +346,18 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Check if the mouse on top of the close button
-        if (event.type == sf::Event::MouseMoved)
+        // Check if something has to be done differently with the event
+        if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
             // Check if you are dragging the child window
-            if (m_MouseDown == true)
+            if ((event.type == sf::Event::MouseMoved) && (m_MouseDown == true))
             {
                 // Move the child window
                 Vector2f position = getPosition();
                 setPosition(position.x + (mouseX - position.x - m_DraggingPosition.x), position.y + (mouseY - position.y - m_DraggingPosition.y));
+                return;
             }
-            else // The child window is not being dragged
-            {
-                // Check if the mouse is on top of the title bar
-                if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))
-                {
-                    // Temporary set the close button to the correct position
-                    if (layout == LayoutRight)
-                        m_CloseButton->setPosition(getPosition().x + m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
-                    else
-                        m_CloseButton->setPosition(getPosition().x + distanceToSide, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
-                    // Send the hover event to the close button
-                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
-                        m_CloseButton->mouseMoved(mouseX, mouseY);
-
-                    // Reset the position of the button
-                    m_CloseButton->setPosition(0, 0);
-
-                    // The mouse is on top of the title bar, so the objects don't need to know abot it
-                    return;
-                }
-            }
-        }
-        else if (event.type == sf::Event::MouseButtonPressed)
-        {
             // Check if the mouse is on top of the title bar
             if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))
             {
@@ -393,62 +370,55 @@ namespace tgui
                 else
                     m_CloseButton->setPosition(position.x + distanceToSide, position.y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
 
-                // Send the mouse press event to the close button
-                if (m_CloseButton->mouseOnObject(mouseX, mouseY))
-                    m_CloseButton->leftMousePressed(mouseX, mouseY);
-                else
+                // Call the correct function of the button
+                if (event.type == sf::Event::MouseMoved)
                 {
-                    // The mouse went down on the title bar
-                    m_MouseDown = true;
-
-                    // Remember where we are dragging the title bar
-                    m_DraggingPosition.x = mouseX - position.x;
-                    m_DraggingPosition.y = mouseY - position.y;
+                    // Send the hover event to the close button
+                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                        m_CloseButton->mouseMoved(mouseX, mouseY);
                 }
-
-                // Reset the position of the button
-                m_CloseButton->setPosition(0, 0);
-
-                // The mouse is on top of the title bar, so the objects don't need to know abot it
-                return;
-            }
-        }
-        else if (event.type == sf::Event::MouseButtonReleased)
-        {
-            // The mouse is no longer down
-            m_MouseDown = false;
-
-            // Check if the mouse is on top of the title bar
-            if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))
-            {
-                // Temporary set the close button to the correct position
-                if (layout == LayoutRight)
-                    m_CloseButton->setPosition(getPosition().x + m_Size.x - distanceToSide - m_CloseButton->getScaledSize().x, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
-                else
-                    m_CloseButton->setPosition(getPosition().x + distanceToSide, getPosition().y + (m_TitleBarHeight / 2.f) - (m_CloseButton->getScaledSize().x / 2.f));
-
-                // Send the mouse release event to the close button
-                if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                else if (event.type == sf::Event::MouseButtonPressed)
                 {
-                    // Check if the close button was clicked
-                    if (m_CloseButton->m_MouseDown == true)
+                    // Send the mouse press event to the close button
+                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                        m_CloseButton->leftMousePressed(mouseX, mouseY);
+                    else
                     {
-                        // If a callback was requested then send it
-                        if (callbackID > 0)
+                        // The mouse went down on the title bar
+                        m_MouseDown = true;
+
+                        // Remember where we are dragging the title bar
+                        m_DraggingPosition.x = mouseX - position.x;
+                        m_DraggingPosition.y = mouseY - position.y;
+                    }
+                }
+                else if (event.type == sf::Event::MouseButtonReleased)
+                {
+                     m_MouseDown = false;
+
+                    // Send the mouse release event to the close button
+                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                    {
+                        // Check if the close button was clicked
+                        if (m_CloseButton->m_MouseDown == true)
                         {
-                            Callback callback;
-                            callback.trigger = Callback::closed;
-                            m_Parent->addCallback(callback);
+                            // If a callback was requested then send it
+                            if (callbackID > 0)
+                            {
+                                Callback callback;
+                                callback.trigger = Callback::closed;
+                                m_Parent->addCallback(callback);
+                            }
+
+                            // Remove the objects in the child window
+                            removeAllObjects();
+
+                            // Remove the child window itself
+                            m_Parent->remove(this);
+
+                            // Get out of here
+                            return;
                         }
-
-                        // Remove the objects in the child window
-                        removeAllObjects();
-
-                        // Remove the child window itself
-                        m_Parent->remove(this);
-
-                        // Get out of here
-                        return;
                     }
                 }
 
@@ -458,10 +428,31 @@ namespace tgui
                 // The mouse is on top of the title bar, so the objects don't need to know abot it
                 return;
             }
+            else // The mouse is not on top of the titlebar
+            {
+                // When the mouse went up then change the mouse down flag
+                if (event.type == sf::Event::MouseButtonReleased)
+                {
+                    m_MouseDown = false;
+                    m_CloseButton->mouseNoLongerDown();
+                }
+
+                // Check if the mouse is on top of the borders
+                if ((getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y + m_TitleBarHeight))).contains(mouseX, mouseY))
+                &&  (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TitleBarHeight + m_TopBorder, static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(mouseX, mouseY) == false))
+                {
+                    // If the mouse was released then tell the objects about it
+                    if (event.type == sf::Event::MouseButtonReleased)
+                        m_EventManager.mouseNoLongerDown();
+
+                    // Don't send the event to the objects
+                    return;
+                }
+            }
         }
 
         // Let the child window handle the rest
-        Panel::handleEvent(event, mouseX, mouseY - m_TitleBarHeight);
+        Panel::handleEvent(event, mouseX - m_LeftBorder, mouseY - m_TitleBarHeight - m_TopBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +464,7 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
         {
             m_EventManager.mouseNotOnObject();
             return true;
@@ -504,8 +495,12 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
         // Get the global translation
-        sf::Vector2f globalTranslation = states.transform.transformPoint(getPosition());
+        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -530,10 +525,6 @@ namespace tgui
             states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / m_Size.x, static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
         }
 
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
@@ -549,13 +540,13 @@ namespace tgui
             if (layout == LayoutRight)
             {
                 // Calculate the clipping area
-                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + distanceToSide - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX, scissor[0]);
-                GLint scissorTop = TGUI_MAXIMUM(target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1]);
-                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f) + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0] + scissor[2]);
-                GLint scissorBottom = TGUI_MINIMUM(target.getSize().y - ((globalTranslation.y + (2*m_TitleBarHeight) - target.getView().getCenter().y + (target.getView().getSize().y / 2.f)) * scaleViewY), scissor[1] + scissor[3]);
+                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + distanceToSide) * scaleViewX, scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0] + scissor[2]);
+                GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight) * scaleViewY, target.getSize().y - scissor[1]);
 
                 // Set the clipping area
-                glScissor(scissorLeft, scissorTop, scissorRight - scissorLeft, scissorTop - scissorBottom);
+                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
                 // Draw the text
                 states.transform.translate(static_cast<float>(distanceToSide), 0);
@@ -565,13 +556,13 @@ namespace tgui
             else // if (layout == LayoutLeft)
             {
                 // Calculate the clipping area
-                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX, scissor[0]);
-                GLint scissorTop = TGUI_MAXIMUM(target.getSize().y - ((globalTranslation.y + (m_TitleBarHeight - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1]);
-                GLuint scissorRight = TGUI_MINIMUM((globalTranslation.x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f) + m_Size.x - distanceToSide) * scaleViewX, scissor[0] + scissor[2]);
-                GLuint scissorBottom = TGUI_MINIMUM(target.getSize().y - ((globalTranslation.y + ((2*m_TitleBarHeight) - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY), scissor[1] + scissor[3]);
+                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x - distanceToSide + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
+                GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight) * scaleViewY, target.getSize().y - scissor[1]);
 
                 // Set the clipping area
-                glScissor(scissorLeft, scissorTop, scissorRight - scissorLeft, scissorTop - scissorBottom);
+                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
                 // Draw the text
                 states.transform.translate(m_CloseButton->getScaledSize().x + (2*distanceToSide), 0);
@@ -608,10 +599,14 @@ namespace tgui
         background.setFillColor(backgroundColor);
         target.draw(background, states);
 
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TitleBarHeight + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+
         // Set the clipping area
-        glScissor((globalTranslation.x + m_LeftBorder - target.getView().getCenter().x + (target.getView().getSize().x / 2.f)) * scaleViewX,
-                  target.getSize().y - ((globalTranslation.y + m_TitleBarHeight + m_TopBorder + (m_Size.y - m_TopBorder - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f))) * scaleViewY),
-                  (m_Size.x - m_LeftBorder - m_RightBorder) * scaleViewX, (m_Size.y - m_TopBorder - m_BottomBorder) * scaleViewY);
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the objects in the child window
         drawObjectGroup(&target, states);
