@@ -57,6 +57,13 @@ namespace tgui
     m_SplitImage    (copy.m_SplitImage),
     m_LoadedPathname(copy.m_LoadedPathname)
     {
+        // Copy the textures
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_L, m_TextureBack_L))     m_SpriteBack_L.setTexture(*m_TextureBack_L);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_M, m_TextureBack_M))     m_SpriteBack_M.setTexture(*m_TextureBack_M);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_R, m_TextureBack_R))     m_SpriteBack_R.setTexture(*m_TextureBack_R);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_L, m_TextureFront_L))   m_SpriteFront_L.setTexture(*m_TextureFront_L);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_M, m_TextureFront_M))   m_SpriteFront_M.setTexture(*m_TextureFront_M);
+        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_R, m_TextureFront_R))   m_SpriteFront_R.setTexture(*m_TextureFront_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
