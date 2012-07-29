@@ -2129,6 +2129,9 @@ namespace tgui
         else
             states.transform.translate(2, 0);
 
+        // Remeber this tranformation
+        sf::Transform oldTransform = states.transform;
+
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
@@ -2264,17 +2267,12 @@ namespace tgui
             if ((m_Focused) && (m_SelectionPointVisible))
             {
                 // Reset the transformation
-                states.transform = sf::Transform().translate(globalTranslation);
+                states.transform = oldTransform;
 
                 // Create the selection point rectangle
                 sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(selectionPointWidth), static_cast<float>(m_LineHeight)));
+                selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y));
                 selectionPoint.setFillColor(selectionPointColor);
-
-                // Set the position of the rectangle
-                if (m_Scroll == NULL)
-                    selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f) + 2, static_cast<float>(m_SelectionPointPosition.y));
-                else
-                    selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f) + 2, static_cast<float>(m_SelectionPointPosition.y - m_Scroll->m_Value));
 
                 // Draw the selection point
                 target.draw(selectionPoint, states);
@@ -2288,8 +2286,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Reset the transformation
-            states.transform = sf::Transform();
-            states.transform.translate(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * getScale().y));
+            states.transform = sf::Transform().translate(globalTranslation);
+            states.transform.translate(((m_Size.x - m_RightBorder) * getScale().x) - m_Scroll->getSize().x, m_TopBorder * getScale().y);
             m_Scroll->setScale(1, (getScale().y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
 
             // Draw the scrollbar
