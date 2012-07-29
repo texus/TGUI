@@ -529,19 +529,16 @@ int main()
             }
         }
 
-        // Clear the windows
         app.mainWindow.clear(sf::Color(230, 230, 230));
-        app.objectsWindow.clear(sf::Color(230, 230, 230));
-        app.propertyWindow.clear(sf::Color(230, 230, 230));
-
-        // Draw the windows
         app.mainWindow.drawGUI();
-        app.objectsWindow.drawGUI();
-        app.propertyWindow.drawGUI();
-
-        // Display the windows
         app.mainWindow.display();
+
+        app.objectsWindow.clear(sf::Color(230, 230, 230));
+        app.objectsWindow.drawGUI();
         app.objectsWindow.display();
+
+        app.propertyWindow.clear(sf::Color(230, 230, 230));
+        app.propertyWindow.drawGUI();
         app.propertyWindow.display();
 
         // Sleep for a moment
