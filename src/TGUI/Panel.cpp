@@ -319,6 +319,12 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y) * scaleViewY, target.getSize().y - scissor[1]);
 
+        // If the object outside the window then don't draw anything
+        if (scissorRight < scissorLeft)
+            scissorRight = scissorLeft;
+        else if (scissorBottom < scissorTop)
+            scissorTop = scissorBottom;
+
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
