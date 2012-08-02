@@ -360,7 +360,10 @@ namespace tgui
 
             // Move the childwindow to the front when clicking on it
             if (event.type == sf::Event::MouseButtonPressed)
-                moveToFront();
+            {
+                m_Parent->focus(this);
+                m_Parent->moveObjectToFront(this);
+            }
 
             // Check if the mouse is on top of the title bar
             if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))

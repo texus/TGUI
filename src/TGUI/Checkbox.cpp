@@ -102,9 +102,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::initialize(const sf::Font& globalFont)
+    void Checkbox::initialize()
     {
-        m_Text.setFont(globalFont);
+        m_Text.setFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ namespace tgui
         bool error = false;
 
         // load the optional textures
-        if (m_ObjectPhase & objectPhase::focused)
+        if (m_ObjectPhase & ObjectPhase_Focused)
         {
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused))
             {
@@ -197,7 +197,7 @@ namespace tgui
                 error = true;
         }
 
-        if (m_ObjectPhase & objectPhase::hover)
+        if (m_ObjectPhase & ObjectPhase_Hover)
         {
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover))
                 m_SpriteMouseHover.setTexture(*m_TextureMouseHover, true);
@@ -476,7 +476,7 @@ namespace tgui
     void Checkbox::objectFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_ObjectPhase & objectPhase::focused) == 0)
+        if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
             m_Parent->unfocus(this);
     }
 
@@ -507,11 +507,11 @@ namespace tgui
             target.draw(m_SpriteUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
-        if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+        if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
             target.draw(m_SpriteFocused, states);
 
         // When the mouse is on top of the checkbox then draw an extra image
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteMouseHover, states);
 
 

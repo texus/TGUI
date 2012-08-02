@@ -60,7 +60,7 @@ namespace tgui
     m_LoadedScrollbarPathname    ("")
     {
         m_ObjectType = textBox;
-        m_RequiresUpdateCalls = true;
+        m_AnimatedObject = true;
 
         changeColors();
 
@@ -173,9 +173,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::initialize(const sf::Font& globalFont)
+    void TextBox::initialize()
     {
-        setTextFont(globalFont);
+        setTextFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2107,6 +2107,9 @@ namespace tgui
         // Get the global translation
         Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
+        // Store the
+        sf::Transform origTransform = states.transform;
+
         // Adjust the transformation
         states.transform *= getTransform();
 
@@ -2292,8 +2295,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Reset the transformation
-            states.transform = sf::Transform().translate(globalTranslation);
-            states.transform.translate(((m_Size.x - m_RightBorder) * getScale().x) - m_Scroll->getSize().x, m_TopBorder * getScale().y);
+            states.transform = origTransform;
+            states.transform.translate(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) - m_Scroll->getSize().x, getPosition().y + m_TopBorder * getScale().y);
             m_Scroll->setScale(1, (getScale().y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
 
             // Draw the scrollbar

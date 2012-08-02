@@ -60,7 +60,7 @@ namespace tgui
     m_LoadedPathname        ("")
     {
         m_ObjectType = editBox;
-        m_RequiresUpdateCalls = true;
+        m_AnimatedObject = true;
 
         changeColors();
     }
@@ -185,9 +185,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::initialize(const sf::Font& globalFont)
+    void EditBox::initialize()
     {
-        setTextFont(globalFont);
+        setTextFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +314,7 @@ namespace tgui
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::focused)
+            if (m_ObjectPhase & ObjectPhase_Focused)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Focus." + imageExtension, m_TextureFocused_L))
                     && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Focus." + imageExtension, m_TextureFocused_M))
@@ -330,7 +330,7 @@ namespace tgui
                     error = true;
             }
 
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Hover." + imageExtension, m_TextureHover_L))
                     && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Hover." + imageExtension, m_TextureHover_M))
@@ -353,7 +353,7 @@ namespace tgui
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::focused)
+            if (m_ObjectPhase & ObjectPhase_Focused)
             {
                 if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused_M))
                 {
@@ -364,7 +364,7 @@ namespace tgui
                     error = true;
             }
 
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover_M))
                     m_SpriteHover_M.setTexture(*m_TextureHover_M, true);
@@ -2024,11 +2024,11 @@ namespace tgui
                 target.draw(m_SpriteNormal_L, states);
 
                 // When the edit box is focused then draw an extra image
-                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                     target.draw(m_SpriteFocused_L, states);
 
                 // When the mouse is on top of the edit box then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteHover_L, states);
             }
 
@@ -2053,11 +2053,11 @@ namespace tgui
                     target.draw(m_SpriteNormal_M, states);
 
                     // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_SpriteFocused_M, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteHover_M, states);
                 }
 
@@ -2073,11 +2073,11 @@ namespace tgui
                     target.draw(m_SpriteNormal_R, states);
 
                     // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_SpriteFocused_R, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteHover_R, states);
                 }
             }
@@ -2092,11 +2092,11 @@ namespace tgui
                     target.draw(m_SpriteNormal_R, states);
 
                     // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_SpriteFocused_R, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteHover_R, states);
                 }
             }
@@ -2110,11 +2110,11 @@ namespace tgui
             target.draw(m_SpriteNormal_M, states);
 
             // When the edit box is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                 target.draw(m_SpriteFocused_M, states);
 
             // When the mouse is on top of the edit boc then draw an extra image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteHover_M, states);
         }
 

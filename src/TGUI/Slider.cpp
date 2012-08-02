@@ -245,7 +245,7 @@ namespace tgui
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Track_Hover." + imageExtension, m_TextureTrackHover_L))
                  && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Track_Hover." + imageExtension, m_TextureTrackHover_M))
@@ -274,7 +274,7 @@ namespace tgui
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover_M))
                  && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
@@ -815,7 +815,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_L, states);
                     else
                         target.draw(m_SpriteTrackNormal_L, states);
@@ -826,12 +826,12 @@ namespace tgui
                     target.draw(m_SpriteTrackNormal_L, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_L, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                    target.draw(m_SpriteFocused_L, states);
             }
 
@@ -856,7 +856,7 @@ namespace tgui
                     if (m_SeparateHoverImage)
                     {
                         // Draw the correct image
-                        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                             target.draw(m_SpriteTrackHover_M, states);
                         else
                             target.draw(m_SpriteTrackNormal_M, states);
@@ -867,12 +867,12 @@ namespace tgui
                         target.draw(m_SpriteTrackNormal_M, states);
 
                         // When the mouse is on top of the slider then draw the hover image
-                        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                             target.draw(m_SpriteTrackHover_M, states);
                     }
 
                     // When the slider is focused then draw an extra image
-//                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                        target.draw(m_SpriteFocused_M, states);
                 }
 
@@ -891,7 +891,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_R, states);
                     else
                         target.draw(m_SpriteTrackNormal_R, states);
@@ -902,12 +902,12 @@ namespace tgui
                     target.draw(m_SpriteTrackNormal_R, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_R, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                    target.draw(m_SpriteFocused_R, states);
             }
         }
@@ -917,7 +917,7 @@ namespace tgui
             target.draw(m_SpriteTrackNormal_M, states);
 
             // When the mouse is on top of the slider then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteTrackHover_M, states);
         }
 
@@ -963,7 +963,7 @@ namespace tgui
         target.draw(m_SpriteThumbNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteThumbHover, states);
     }
 

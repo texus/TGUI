@@ -172,7 +172,7 @@ namespace tgui
 
         // load the optional textures
 
-        if (m_ObjectPhase & objectPhase::hover)
+        if (m_ObjectPhase & ObjectPhase_Hover)
         {
             if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover_M))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover))
@@ -738,7 +738,7 @@ namespace tgui
         target.draw(m_SpriteTrackNormal_M, states);
 
         // When the mouse is on top of the scrollbar then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteTrackHover_M, states);
 
 
@@ -761,7 +761,7 @@ namespace tgui
                 target.draw(m_SpriteArrowNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
                 // Calculate the real track height (height without the arrows)
@@ -784,7 +784,7 @@ namespace tgui
                 target.draw(m_SpriteThumbNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteThumbHover, states);
 
                 // Reset the transformation
@@ -805,7 +805,7 @@ namespace tgui
                 target.draw(m_SpriteArrowNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
                 // Calculate the real track height (height without the arrows)
@@ -828,7 +828,7 @@ namespace tgui
                 target.draw(m_SpriteThumbNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteThumbHover, states);
 
                 // Reset the transformation
@@ -845,7 +845,7 @@ namespace tgui
             target.draw(m_SpriteArrowNormal, states);
 
             // When the mouse is on top of the scrollbar then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteArrowHover, states);
         }
         else
@@ -863,7 +863,7 @@ namespace tgui
                 target.draw(m_SpriteArrowNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
                 // Calculate the real track width (width without the arrows)
@@ -886,7 +886,7 @@ namespace tgui
                 target.draw(m_SpriteThumbNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteThumbHover, states);
 
                 // Reset the transformation
@@ -910,7 +910,7 @@ namespace tgui
                 target.draw(m_SpriteArrowNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
                 // Calculate the real track width (width without the arrows)
@@ -933,7 +933,7 @@ namespace tgui
                 target.draw(m_SpriteThumbNormal, states);
 
                 // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteThumbHover, states);
 
                 // Reset the transformation
@@ -953,7 +953,7 @@ namespace tgui
             target.draw(m_SpriteArrowNormal, states);
 
             // When the mouse is on top of the scrollbar then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteArrowHover, states);
         }
 

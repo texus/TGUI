@@ -32,8 +32,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EventManager::EventManager() :
-    m_WindowScale(1, 1),
-    m_Parent     (NULL)
+    m_FocusedObject(0),
+    m_WindowScale  (1, 1),
+    m_Parent       (NULL)
     {
         // Reset all the key flags
         for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
@@ -130,7 +131,7 @@ namespace tgui
                         }
 
                         // Focus the object
-                        setFocus(m_Objects[objectNr]->m_ObjectID);
+                        focusObject(m_Objects[objectNr]);
 
                         // Send the event to the object
                         m_Objects[objectNr]->leftMousePressed(mouseX, mouseY);
@@ -309,137 +310,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EventManager::addObject(OBJECT* object)
+    void EventManager::focusObject(OBJECT* object)
     {
-        // This will store the highest id from our existing objects
-        unsigned int highestID = 0;
-
-        // This will be true when there already is a focused object
-        bool focusedObjectFound = false;
-
-        // Loop all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // If the id is higher then change the highest id
-            if (m_Objects[i]->m_ObjectID > highestID)
-                highestID = m_Objects[i]->m_ObjectID;
-
-            // Check if we found a focused object
-            if (m_Objects[i]->m_Focused)
-                focusedObjectFound = true;
-        }
-
-        // When there is no object focused yet
-        if (focusedObjectFound == false)
-        {
-            // The object will be focused (if allowed), but will not receive a callback for this! (the object doesn't exist yet)
-            if (m_Parent != NULL)
-            {
-                if (m_Parent->m_Focused == true)
-                    object->m_Focused = true;
-            }
-            else
-                object->m_Focused = true;
-        }
-
-        object->m_ObjectID = highestID + 1;
-
-        // Add the object to the list
-        m_Objects.push_back(object);
-
-        // Return the object id
-        return object->m_ObjectID;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int EventManager::removeObject(unsigned int id)
-    {
-        // Ignore when the id is 0 (already removed)
-        if (id == 0)
-            return 0;
-
-        // Loop all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Check if the id matches
-            if (m_Objects[i]->m_ObjectID == id)
-            {
-                // Try to focus on another object (if this object was focused)
-                if (m_Objects[i]->m_Focused)
-                    tabKeyPressed();
-
-                // Remove the object from the list
-                m_Objects.erase(m_Objects.begin()+i);
-            }
-        }
-
-        // Return the new id
-        return 0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EventManager::removeAllObjects()
-    {
-        m_Objects.clear();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool EventManager::setFocus(unsigned int id)
-    {
-        // These will store the currently focused and the new focused object numbers
-        unsigned int currentlyFocusedObjectNr = 0;
-        unsigned int newFocusedObjectNr = 0;
-
-        bool currentFocusedObjectFound = false;
-        bool newFocusedObjectFound = false;
-
         // Loop all the objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
         {
-            // Search for the focused object
-            if (m_Objects[i]->m_Focused)
+            // Search for the object that has to be focused
+            if (m_Objects[i] == object)
             {
-                currentlyFocusedObjectNr = i;
-                currentFocusedObjectFound = true;
-            }
-
-            // Also search for the id of the object that has to be focused
-            else if (m_Objects[i]->m_ObjectID == id)
-            {
-                newFocusedObjectNr = i;
-                newFocusedObjectFound = true;
-            }
-        }
-
-        // Check if we the object that has to be focused
-        if (newFocusedObjectFound)
-        {
-            // We don't have to do the rest when we are trying to focus an object that is already focused
-            if ((currentlyFocusedObjectNr != newFocusedObjectNr) || (currentFocusedObjectFound == false))
-            {
-                // unfocus the currently focused object
-                if (currentFocusedObjectFound)
+                // Only continue when the object wasn't already focused
+                if (m_FocusedObject != i+1)
                 {
-                    m_Objects[currentlyFocusedObjectNr]->m_Focused = false;
-                    m_Objects[currentlyFocusedObjectNr]->objectUnfocused();
+                    // Unfocus the currently focused object
+                    if (m_FocusedObject)
+                    {
+                        m_Objects[m_FocusedObject-1]->m_Focused = false;
+                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                    }
+
+                    // Focus the new object
+                    m_FocusedObject = i+1;
+                    m_Objects[i]->m_Focused = true;
+                    m_Objects[i]->objectFocused();
                 }
+                else
+                    m_Objects[i]->m_Focused = true;
 
-                // Focus the new object
-                m_Objects[newFocusedObjectNr]->m_Focused = true;
-                m_Objects[newFocusedObjectNr]->objectFocused();
+                // Another object is focused. Clear all key flags
+                for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
+                    m_KeyPress[j] = false;
+
+                break;
             }
-
-            // Another object is focused. Clear all key flags
-            for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
-                m_KeyPress[i] = false;
-
-            return true;
         }
-        else
-            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,7 +356,12 @@ namespace tgui
             tabKeyPressed();
 
             // Make sure that the object gets unfocused
-            object->m_Focused = false;
+            if (object->m_Focused)
+            {
+                object->m_Focused = false;
+                m_Objects[m_FocusedObject-1]->objectUnfocused();
+                m_FocusedObject = 0;
+            }
         }
     }
 
@@ -461,80 +369,12 @@ namespace tgui
 
     void EventManager::unfocusAllObjects()
     {
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        if (m_FocusedObject)
         {
-            // Check if the object is focused
-            if (m_Objects[i]->m_Focused)
-            {
-                // Unfocus the object
-                m_Objects[i]->m_Focused = false;
-                m_Objects[i]->objectUnfocused();
-            }
+            m_Objects[m_FocusedObject-1]->m_Focused = false;
+            m_Objects[m_FocusedObject-1]->objectUnfocused();
+            m_FocusedObject = 0;
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EventManager::moveObjectToFront(OBJECT* object)
-    {
-        // Don't do anything when the id is 0
-        if (object->m_ObjectID == 0)
-            return;
-
-        unsigned int highestID = 0;
-
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Check if the id is higher
-            if (m_Objects[i]->m_ObjectID > object->m_ObjectID)
-            {
-                // Remember the highest id
-                if (highestID < m_Objects[i]->m_ObjectID)
-                    highestID = m_Objects[i]->m_ObjectID;
-
-                // Change the id
-                --m_Objects[i]->m_ObjectID;
-            }
-        }
-
-        // If the object can be moved forward then do so
-        if (highestID > 0)
-            object->m_ObjectID = highestID;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EventManager::moveObjectToBack(OBJECT* object)
-    {
-        // Don't do anything when the id is 0
-        if (object->m_ObjectID == 0)
-            return;
-
-        unsigned int lowestID = 0;
-
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Ignore an id of 0
-            if (m_Objects[i]->m_ObjectID != 0)
-            {
-                // Check if the id is lower
-                if (m_Objects[i]->m_ObjectID < object->m_ObjectID)
-                {
-                    // Remember the lowest id
-                    if (lowestID > m_Objects[i]->m_ObjectID)
-                        lowestID = m_Objects[i]->m_ObjectID;
-
-                    // Change the id
-                    ++m_Objects[i]->m_ObjectID;
-                }
-            }
-        }
-
-        // If the object can be moved backward then do so
-        if (lowestID > 0)
-            object->m_ObjectID = lowestID;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,7 +387,7 @@ namespace tgui
             // Check if the object is a group or an object that uses the time
             if (m_Objects[i]->m_ObjectType == panel)
                 dynamic_cast<Group*>(m_Objects[i])->updateTime(elapsedTime);
-            else if (m_Objects[i]->m_RequiresUpdateCalls)
+            else if (m_Objects[i]->m_AnimatedObject)
             {
                 // Convert the object
                 OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
@@ -561,127 +401,139 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::tabKeyPressed()
+    void EventManager::moveObjectToFront(OBJECT* object)
     {
-        // These will hold the id and number of the current focused object
-        unsigned int id = 0;
-        unsigned int objectNr = 0;
-
-        // Loop all objects
+        // Loop through all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
         {
-            // Find the id of the focused object
-            if (m_Objects[i]->m_Focused)
+            // Check if the object is found
+            if (m_Objects[i] == object)
             {
-                id = m_Objects[i]->m_ObjectID;
-                objectNr = i;
+                // Copy the object
+                m_Objects.push_back(m_Objects[i]);
+
+                // Focus the correct object
+                if ((m_FocusedObject == 0) || (m_FocusedObject == i+1))
+                    m_FocusedObject = m_Objects.size()-1;
+                else if (m_FocusedObject > i+1)
+                    --m_FocusedObject;
+
+                // Remove the old object
+                m_Objects.erase(m_Objects.begin() + i);
+
                 break;
             }
         }
+    }
 
-        // We need two more id's and numbers to find the next object
-        unsigned int id_Bigger = 0;
-        unsigned int id_Smaller = 0;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        unsigned int nr_Bigger = 0;
-        unsigned int nr_Smaller = 0;
-
-        // Loop all objects again
+    void EventManager::moveObjectToBack(OBJECT* object)
+    {
+        // Loop through all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
+        {
+            // Check if the object is found
+            if (m_Objects[i] == object)
+            {
+                // Copy the object
+                m_Objects.insert(m_Objects.begin(), m_Objects[i]);
+
+                // Focus the correct object
+                if (m_FocusedObject == i+1)
+                    m_FocusedObject = 1;
+                else if (m_FocusedObject)
+                    ++m_FocusedObject;
+
+                // Remove the old object
+                m_Objects.erase(m_Objects.begin() + i + 1);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EventManager::tabKeyPressed()
+    {
+        // Check if a panel is focused
+        if (m_FocusedObject)
+        {
+            if (m_Objects[m_FocusedObject-1]->m_ObjectType == panel)
+            {
+                // Focus the next object in panel
+                if (static_cast<tgui::Panel*>(m_Objects[m_FocusedObject-1])->focusNextObject())
+                {
+                    // Another object is focused. Clear all key flags
+                    for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
+                        m_KeyPress[i] = false;
+
+                    // Don't continue, th panel has made the needed changes in his event manager
+                    return;
+                }
+            }
+        }
+
+        // Loop all objects behind the focused one
+        for (unsigned int i=m_FocusedObject; i<m_Objects.size(); ++i)
         {
             // If you are not allowed to focus the object, then skip it
             if (m_Objects[i]->m_AllowFocus == true)
             {
-                // Check if the ObjectID is bigger than the focused one
-                if (m_Objects[i]->m_ObjectID > id)
+                // Make sure that the object is visible and enabled
+                if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
+                {
+                    if (m_FocusedObject)
+                    {
+                        // unfocus the current object
+                        m_Objects[m_FocusedObject-1]->m_Focused = false;
+                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                    }
+
+                    // Focus on the new object
+                    m_FocusedObject = i+1;
+                    m_Objects[i]->m_Focused = true;
+                    m_Objects[i]->objectFocused();
+
+                    // Another object is focused. Clear all key flags
+                    for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
+                        m_KeyPress[j] = false;
+
+                    return;
+                }
+            }
+        }
+
+        // None of the objects behind the focused one could be focused, so loop the ones before it
+        if (m_FocusedObject)
+        {
+            for (unsigned int i=0; i<m_FocusedObject-1; ++i)
+            {
+                // If you are not allowed to focus the object, then skip it
+                if (m_Objects[i]->m_AllowFocus == true)
                 {
                     // Make sure that the object is visible and enabled
                     if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
                     {
-                        // Check if we should mark this object
-                        if ((id_Bigger == 0) || ((id_Bigger > 0) && (m_Objects[i]->m_ObjectID < id_Bigger)))
-                        {
-                            id_Bigger = m_Objects[i]->m_ObjectID;
-                            nr_Bigger = i;
-                        }
-                    }
-                }
-                // Check if the object has a lower id
-                else if (m_Objects[i]->m_ObjectID < id)
-                {
-                    // Make sure that the id is not 0 and that the object is visible and enabled
-                    if ((m_Objects[i]->m_ObjectID != 0) && (m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
-                    {
-                        // Check if this is the first time we pass here
-                        if (id_Smaller == 0)
-                        {
-                            // If this is the first time then mark this object
-                            id_Smaller = m_Objects[i]->m_ObjectID;
-                            nr_Smaller = i;
-                        }
-                        else // We already marked an object
-                        {
-                            // Check if the new object has a lower id
-                            if (m_Objects[i]->m_ObjectID < id_Smaller)
-                            {
-                                // If it has a lower id then mark this one
-                                id_Smaller = m_Objects[i]->m_ObjectID;
-                                nr_Smaller = i;
-                            }
-                        }
-                    }
-                }
-                else // This object is already focused
-                {
-                    // Check if a panel is focused
-                    if (m_Objects[i]->m_ObjectType == panel)
-                    {
-                        // Focus the next object in panel
-                        if (static_cast<tgui::Panel*>(m_Objects[i])->focusNextObject())
-                        {
-                            // Another object is focused. Clear all key flags
-                            for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
-                                m_KeyPress[j] = false;
+                        // unfocus the current object
+                        m_Objects[m_FocusedObject-1]->m_Focused = false;
+                        m_Objects[m_FocusedObject-1]->objectUnfocused();
 
-                            // Don't continue, th panel has made the needed changes in his event manager
-                            return;
-                        }
+                        // Focus on the new object
+                        m_FocusedObject = i+1;
+                        m_Objects[i]->m_Focused = true;
+                        m_Objects[i]->objectFocused();
+
+                        // Another object is focused. Clear all key flags
+                        for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
+                            m_KeyPress[j] = false;
+
+                        return;
                     }
                 }
             }
         }
-
-        // Check if we found an id that is bigger than ours
-        if (id_Bigger != 0)
-        {
-            // unfocus the current object
-            m_Objects[objectNr]->m_Focused = false;
-            m_Objects[objectNr]->objectUnfocused();
-
-            // Focus on the new object
-            m_Objects[nr_Bigger]->m_Focused = true;
-            m_Objects[nr_Bigger]->objectFocused();
-        }
-        else // We have the highest id
-        {
-            // Check if we found another object (with a lower id)
-            if (id_Smaller != 0)
-            {
-                // unfocus the current object
-                m_Objects[objectNr]->m_Focused = false;
-                m_Objects[objectNr]->objectUnfocused();
-
-                // Focus on the new object
-                m_Objects[nr_Smaller]->m_Focused = true;
-                m_Objects[nr_Smaller]->objectFocused();
-            }
-            else // There are no other objects so nothing is changed
-                return;
-        }
-
-        // Another object is focused. Clear all key flags
-        for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
-            m_KeyPress[i] = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -692,74 +544,39 @@ namespace tgui
         for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
         m_KeyPress[i] = false;
 
-        // These will hold the id and number of the current focused object
-        unsigned int id = 0;
-        unsigned int objectNr = 0;
-
-        // Loop all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Find the id of the focused object
-            if (m_Objects[i]->m_Focused)
-            {
-                id = m_Objects[i]->m_ObjectID;
-                objectNr = i;
-                break;
-            }
-        }
-
-        // We need another id and number to find the next object
-        unsigned int id_Bigger = 0;
-        unsigned int nr_Bigger = 0;
-
-        // Loop all objects again
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all objects
+        for (unsigned int i=m_FocusedObject; i<m_Objects.size(); ++i)
         {
             // If you are not allowed to focus the object, then skip it
             if (m_Objects[i]->m_AllowFocus == true)
             {
-                // Check if the ObjectID is bigger than the focused one
-                if (m_Objects[i]->m_ObjectID > id)
+                // Make sure that the object is visible and enabled
+                if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
                 {
-                    // Make sure that the object is visible and enabled
-                    if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
-                    {
-                        // Check if we should mark this object
-                        if ((id_Bigger == 0) || ((id_Bigger > 0) && (m_Objects[i]->m_ObjectID < id_Bigger)))
-                        {
-                            id_Bigger = m_Objects[i]->m_ObjectID;
-                            nr_Bigger = i;
-                        }
-                    }
+                    // Unfocus the current object
+                    m_Objects[m_FocusedObject-1]->m_Focused = false;
+                    m_Objects[m_FocusedObject-1]->objectUnfocused();
+
+                    // Focus on the new object
+                    m_FocusedObject = i+1;
+                    m_Objects[i]->m_Focused = true;
+                    m_Objects[i]->objectFocused();
+
+                    return true;
                 }
             }
         }
 
-        // Check if we found an id that is bigger than ours
-        if (id_Bigger != 0)
-        {
-            // unfocus the current object
-            m_Objects[objectNr]->m_Focused = false;
-            m_Objects[objectNr]->objectUnfocused();
-
-            // Focus on the new object
-            m_Objects[nr_Bigger]->m_Focused = true;
-            m_Objects[nr_Bigger]->objectFocused();
-
-            return true;
-        }
-        else // We have the highest id
-        {
-            unfocusAllObjects();
-            return false;
-        }
+        // We have the highest id
+        unfocusAllObjects();
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool EventManager::mouseOnObject(unsigned int& objectNr, float x, float y)
     {
-        unsigned int highestID = 0;
+        bool objectFound = false;
 
         // Loop through all objects
         for (unsigned int i=0; i<m_Objects.size(); ++i)
@@ -770,28 +587,21 @@ namespace tgui
                 // Ask the object if the mouse is on top of them
                 if (m_Objects[i]->mouseOnObject(x, y))
                 {
-                    // Check if the id of the object is higher
-                    if (highestID < m_Objects[i]->m_ObjectID)
-                    {
-                        // If there already was an object then they overlap each other
-                        if (highestID > 0)
-                            m_Objects[objectNr]->mouseNotOnObject();
+                    // If there already was an object then they overlap each other
+                    if (objectFound)
+                        m_Objects[objectNr]->mouseNotOnObject();
 
-                        // Save the new highest id
-                        highestID = m_Objects[i]->m_ObjectID;
+                    // An object is found now
+                    objectFound = true;
 
-                        // Also remember what object should receive the event
-                        objectNr = i;
-                    }
+                    // Also remember what object should receive the event
+                    objectNr = i;
                 }
             }
         }
 
         // If our mouse is on top of an object then return true
-        if (highestID != 0)
-            return true;
-        else
-            return false;
+        return objectFound;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

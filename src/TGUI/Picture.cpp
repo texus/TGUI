@@ -62,6 +62,8 @@ namespace tgui
 
     Picture& Picture::operator= (const Picture& right)
     {
+        TGUI_UNUSED_PARAM(right);
+
         // Make sure it is not the same object
         if (this != &right)
         {
@@ -104,8 +106,8 @@ namespace tgui
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
-            // Set the texture for the sprite
-            m_Sprite.setTexture(*m_Texture, true);
+            // Set the texture
+            m_Sprite.setTexture(*m_Texture);
 
             // Return true to indicate that nothing went wrong
             m_Loaded = true;
@@ -207,14 +209,7 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Do not even try to draw when no image was loaded
-        if (m_Loaded == false)
-            return;
-
-        // Adjust the transformation
         states.transform *= getTransform();
-
-        // Draw the sprite
         target.draw(m_Sprite, states);
     }
 

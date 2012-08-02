@@ -109,9 +109,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::initialize(const sf::Font& globalFont)
+    void ComboBox::initialize()
     {
-        m_Listbox->setTextFont(globalFont);
+        m_Listbox->setTextFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ namespace tgui
             return false;
 
         // load the optional texture
-        if (m_ObjectPhase & objectPhase::hover)
+        if (m_ObjectPhase & ObjectPhase_Hover)
         {
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover))
                 m_SpriteHover.setTexture(*m_TextureHover, true);
@@ -881,7 +881,7 @@ namespace tgui
         target.draw(m_SpriteNormal, states);
 
         // If the mouse is on top of the combo box then draw another arrow image (if allowed)
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover) && (m_MouseOnListbox == false))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListbox == false))
             target.draw(m_SpriteHover, states);
 
         // If the listbox should be visible then draw it

@@ -41,7 +41,7 @@ namespace tgui
     m_Playing        (false)
     {
         m_ObjectType = animatedPicture;
-        m_RequiresUpdateCalls = true;
+        m_AnimatedObject = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

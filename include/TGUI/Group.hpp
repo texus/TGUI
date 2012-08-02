@@ -26,6 +26,8 @@
 #ifndef _TGUI_GROUP_INCLUDED_
 #define _TGUI_GROUP_INCLUDED_
 
+#include <list>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -72,12 +74,10 @@ namespace tgui
         {
             T* newObject = new T();
             newObject->m_Parent = this;
-            m_EventManager.addObject(newObject);
-
-            newObject->initialize(globalFont);
-
-            m_Objects.push_back(newObject);
+            m_EventManager.m_Objects.push_back(newObject);
             m_ObjName.push_back(objectName);
+
+            newObject->initialize();
 
             return newObject;
         }
@@ -105,7 +105,7 @@ namespace tgui
             for (unsigned int i=0; i<m_ObjName.size(); ++i)
             {
                 if (m_ObjName[i].compare(objectName) == 0)
-                    return static_cast<T*>(m_Objects[i]);
+                    return static_cast<T*>(m_EventManager.m_Objects[i]);
             }
 
             return NULL;
@@ -125,9 +125,8 @@ namespace tgui
         T* copy(T* oldObject, const std::string newObjectName = "")
         {
             T* newObject = new T(*oldObject);
-            m_EventManager.addObject(newObject);
 
-            m_Objects.push_back(newObject);
+            m_EventManager.m_Objects.push_back(newObject);
             m_ObjName.push_back(newObjectName);
 
             return newObject;
@@ -152,10 +151,9 @@ namespace tgui
             {
                 if (m_ObjName[i].compare(oldObjectName) == 0)
                 {
-                    T* newObject = new T(*static_cast<T*>(m_Objects[i]));
-                    m_EventManager.addObject(newObject);
+                    T* newObject = new T(*static_cast<T*>(m_EventManager.m_Objects[i]));
 
-                    m_Objects.push_back(newObject);
+                    m_EventManager.m_Objects.push_back(newObject);
                     m_ObjName.push_back(newObjectName);
 
                     return newObject;
@@ -193,7 +191,7 @@ namespace tgui
         ///
         /// \see remove(std::string)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(const OBJECT* object);
+        void remove(OBJECT* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +263,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::vector<OBJECT*>      m_Objects;
         std::vector<std::string>  m_ObjName;
 
 

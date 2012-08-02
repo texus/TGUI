@@ -64,6 +64,8 @@ namespace tgui
         if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_L, m_TextureFront_L))   m_SpriteFront_L.setTexture(*m_TextureFront_L);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_M, m_TextureFront_M))   m_SpriteFront_M.setTexture(*m_TextureFront_M);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_R, m_TextureFront_R))   m_SpriteFront_R.setTexture(*m_TextureFront_R);
+
+        recalculateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,6 +244,8 @@ namespace tgui
             setScale(width / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), height / m_TextureBack_M->getSize().y);
         else
             setScale(width / m_TextureBack_M->getSize().x, height / m_TextureBack_M->getSize().y);
+
+        recalculateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -44,15 +44,14 @@ namespace tgui
     globalFont(groupToCopy.globalFont)
     {
         // Copy all the objects
-        for (unsigned int i=0; i<groupToCopy.m_Objects.size(); ++i)
+        for (unsigned int i=0; i<groupToCopy.m_EventManager.m_Objects.size(); ++i)
         {
-            OBJECT* newObject = static_cast<OBJECT*>(groupToCopy.m_Objects[i]->clone());
-            m_EventManager.addObject(newObject);
-
-            newObject->initialize(globalFont);
-
-            m_Objects.push_back(newObject);
+            OBJECT* newObject = static_cast<OBJECT*>(groupToCopy.m_EventManager.m_Objects[i]->clone());
+            m_EventManager.m_Objects.push_back(newObject);
             m_ObjName.push_back(groupToCopy.m_ObjName[i]);
+
+            newObject->m_Parent = this;
+            newObject->initialize();
         }
     }
 
@@ -77,15 +76,14 @@ namespace tgui
             removeAllObjects();
 
             // Copy all the objects
-            for (unsigned int i=0; i<right.m_Objects.size(); ++i)
+            for (unsigned int i=0; i<right.m_EventManager.m_Objects.size(); ++i)
             {
-                OBJECT* newObject = static_cast<OBJECT*>(right.m_Objects[i]->clone());
-                m_EventManager.addObject(newObject);
-
-                newObject->initialize(globalFont);
-
-                m_Objects.push_back(newObject);
+                OBJECT* newObject = static_cast<OBJECT*>(right.m_EventManager.m_Objects[i]->clone());
+                m_EventManager.m_Objects.push_back(newObject);
                 m_ObjName.push_back(right.m_ObjName[i]);
+
+                newObject->m_Parent = this;
+                newObject->initialize();
             }
         }
 
@@ -96,7 +94,7 @@ namespace tgui
 
     std::vector<OBJECT*>& Group::getObjects()
     {
-        return m_Objects;
+        return m_EventManager.m_Objects;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,9 +115,8 @@ namespace tgui
             if (m_ObjName[i].compare(objectName) == 0)
             {
                 // Remove the object
-                m_EventManager.removeObject(m_Objects[i]->getObjectID());
-                delete m_Objects[i];
-                m_Objects.erase(m_Objects.begin() + i);
+                delete m_EventManager.m_Objects[i];
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);
@@ -131,18 +128,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(const OBJECT* object)
+    void Group::remove(OBJECT* object)
     {
         // Loop through every object
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
         {
             // Check if the pointer matches
-            if (m_Objects[i] == object)
+            if (m_EventManager.m_Objects[i] == object)
             {
+                // Unfocus the object, just in case it was focused
+                m_EventManager.unfocusObject(object);
+
                 // Remove the object
-                m_EventManager.removeObject(m_Objects[i]->getObjectID());
-                delete m_Objects[i];
-                m_Objects.erase(m_Objects.begin() + i);
+                delete m_EventManager.m_Objects[i];
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
                 object = NULL;
 
                 // Also emove the name it from the list
@@ -157,16 +156,16 @@ namespace tgui
 
     void Group::removeAllObjects()
     {
-        // Remove all the objects from the event and animation manager
-        m_EventManager.removeAllObjects();
-
         // Delete all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-            delete m_Objects[i];
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+            delete m_EventManager.m_Objects[i];
 
         // Clear the lists
-        m_Objects.clear();
+        m_EventManager.m_Objects.clear();
         m_ObjName.clear();
+
+        // There are no more objects, so none of the objects can be focused
+        m_EventManager.m_FocusedObject = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,10 +173,10 @@ namespace tgui
     void Group::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
         {
-            if (m_Objects[i]->m_ObjectType == radioButton)
-                static_cast<RadioButton*>(m_Objects[i])->m_Checked = false;
+            if (m_EventManager.m_Objects[i]->m_ObjectType == radioButton)
+                static_cast<RadioButton*>(m_EventManager.m_Objects[i])->m_Checked = false;
         }
     }
 
@@ -185,14 +184,14 @@ namespace tgui
 
     void Group::focus(OBJECT* object)
     {
-        m_EventManager.setFocus(object->getObjectID());
+        m_EventManager.focusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Group::unfocus(OBJECT* object)
     {
-        m_EventManager.unfocusObject(object);
+        m_EventManager.focusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,48 +219,12 @@ namespace tgui
 
     void Group::drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states) const
     {
-        unsigned int objectID = 0;
-        unsigned int highestID = TGUI_MAX_OBJECTS;
-        unsigned int lowestID = 0;
-
-        bool allObjectsInvisible = true;
-
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
         {
-            // Loop through all objects
-            for (unsigned int j=0; j<m_Objects.size(); ++j)
-            {
-                // Check if the visible object has a higher id
-                if ((m_Objects[j]->isVisible()) && (m_Objects[j]->m_ObjectID > lowestID))
-                {
-                    // Make sure that the object id is the smallest
-                    if (m_Objects[j]->m_ObjectID < highestID)
-                    {
-                        // Remember the new highers id
-                        highestID = m_Objects[j]->m_ObjectID;
-
-                        // Remember the object that has to be drawn
-                        objectID = j;
-
-                        // We have found an object that is visible
-                        allObjectsInvisible = false;
-                    }
-                }
-            }
-
-            // When none of the objects is visible then don't draw anything.
-            if (allObjectsInvisible == true)
-                break;
-
-            // Draw the object if it is allowed
-            if (lowestID < m_Objects[objectID]->m_ObjectID)
-                target->draw(*m_Objects[objectID], states);
-
-            // Remember the new lowest id
-            lowestID = m_Objects[objectID]->m_ObjectID;
-
-            // Reset the highest id
-            highestID = TGUI_MAX_OBJECTS;
+            // Draw the object if it is visible
+            if (m_EventManager.m_Objects[i]->m_Visible)
+                target->draw(*m_EventManager.m_Objects[i], states);
         }
     }
 
