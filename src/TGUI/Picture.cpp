@@ -166,7 +166,10 @@ namespace tgui
 
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
+        {
+            // Only return true when the pixel under the mouse isn't transparent
+            return !TGUI_TextureManager.isTransparentPixel(m_Texture, x / getScale().x, y / getScale().y);
+        }
         else
             return false;
     }

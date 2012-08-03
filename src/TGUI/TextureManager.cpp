@@ -144,6 +144,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TextureManager::isTransparentPixel(sf::Texture* texture, unsigned int x, unsigned int y)
+    {
+        if (texture == NULL)
+            return false;
+
+        // Loop all our textures to check which one it is
+        std::list<sf::Texture>::iterator it = m_Textures.begin();
+        for (unsigned int i=0; i<m_Textures.size(); ++i, ++it)
+        {
+            if (&*it == texture)
+            {
+                // Check if the pixel is transparent
+                if (m_Images[i].getPixel(x, y).a == 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        // None of the textures matches
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
