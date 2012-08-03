@@ -186,13 +186,7 @@ namespace tgui
             event.mouseMove.x = mouseX - static_cast<int>(getPosition().x);
             event.mouseMove.y = mouseY - static_cast<int>(getPosition().y);
         }
-        else if (event.type == sf::Event::MouseButtonPressed)
-        {
-            // Adjust the mouse position of the event
-            event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);
-            event.mouseButton.y = mouseY - static_cast<int>(getPosition().y);
-        }
-        else if (event.type == sf::Event::MouseButtonReleased)
+        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
             // Adjust the mouse position of the event
             event.mouseButton.x = mouseX - static_cast<int>(getPosition().x);

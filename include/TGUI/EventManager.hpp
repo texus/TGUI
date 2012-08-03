@@ -47,7 +47,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // When this function is called then all the objects receive the event (if there are objects).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void handleEvent(sf::Event& event, const sf::View& view = sf::View());
+        void handleEvent(sf::Event& event);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,9 +137,6 @@ namespace tgui
         // When something happens then this key will also becomes false again (while the key is still down).
         // Not all elements are used, only a few elements of the array are changed.
         bool m_KeyPress[sf::Keyboard::KeyCount];
-
-        // The scale of the window (ratio between real size and the viewport)
-        Vector2f m_WindowScale;
 
         // A pointer to the struct that owns the event manager (NULL when it is the window)
         OBJECT* m_Parent;

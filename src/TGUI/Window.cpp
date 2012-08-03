@@ -71,8 +71,26 @@ namespace tgui
 
     void Window::handleEvent(sf::Event& event)
     {
+        // Check if the event is a mouse move or mouse down/press
+        if (event.type == sf::Event::MouseMoved)
+        {
+            Vector2f mouseCoords = convertCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), getView());
+
+            // Adjust the mouse position of the event
+            event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
+            event.mouseMove.y = static_cast<int>(mouseCoords.y + 0.5f);
+        }
+        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
+        {
+            Vector2f mouseCoords = convertCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), getView());
+
+            // Adjust the mouse position of the event
+            event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
+            event.mouseButton.y = static_cast<int>(mouseCoords.y + 0.5f);
+        }
+
         // Let the event manager handle the event
-        m_EventManager.handleEvent(event, getView());
+        m_EventManager.handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
