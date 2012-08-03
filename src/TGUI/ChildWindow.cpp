@@ -34,14 +34,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    layout          (ChildWindow::LayoutRight),
-    distanceToSide  (5),
-    borderColor     (0, 0, 0),
-    title           (""),
-    m_TitleBarHeight(0),
-    m_LoadedPathname(""),
-    m_SplitImage    (false),
-    m_Opacity       (255)
+    layout             (ChildWindow::LayoutRight),
+    distanceToSide     (5),
+    borderColor        (0, 0, 0),
+    title              (""),
+    m_TitleBarHeight   (0),
+    m_LoadedPathname   (""),
+    m_SplitImage       (false),
+    m_Opacity          (255),
+    m_TextureTitleBar_L(NULL),
+    m_TextureTitleBar_M(NULL),
+    m_TextureTitleBar_R(NULL)
     {
         m_CloseButton = new tgui::Button();
     }
