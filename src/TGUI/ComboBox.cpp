@@ -223,7 +223,6 @@ namespace tgui
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
         setSize(width, height);
-        setScrollbar(scrollbarPathname);
 
         // Check if a scrollbar should be loaded
         if (scrollbarPathname.empty() == false)
