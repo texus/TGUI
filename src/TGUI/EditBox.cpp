@@ -724,7 +724,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& EditBox::getTextFont()
+    const sf::Font* EditBox::getTextFont()
     {
         return m_TextBeforeSelection.getFont();
     }
@@ -2134,7 +2134,7 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
             // Check if there is a text width limit
             if (m_LimitTextWidth)
@@ -2203,7 +2203,7 @@ namespace tgui
 
             // Undo the translation that was done to fix the kerning
             if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(-static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                states.transform.translate(-static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
         }
 
         float textSize;
@@ -2231,7 +2231,7 @@ namespace tgui
             {
                 // Watch out for the kerning
                 if (m_TextBeforeSelection.getString().getSize() > 0)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                 // Draw the selected text
 //                states.transform.translate(m_TextBeforeSelection.getGlobalBounds().width, 0);
@@ -2240,7 +2240,7 @@ namespace tgui
 
                 // Watch out for kerning
                 if (m_DisplayedText.length() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                 // Draw the text behind the selected text
 //                states.transform.translate(m_TextSelection.getGlobalBounds().width, 0);
@@ -2313,7 +2313,7 @@ namespace tgui
                     if (tempString.length() > 0)
                     {
                         // Watch out for the kerning
-                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                         // Draw the text before selection
 //                       states.transform.translate(tempTextBeforeSelection.getGlobalBounds().width, 0);
@@ -2348,7 +2348,7 @@ namespace tgui
                     tempTextAfterSelection.setString(tempString);
 
                     // Watch out for kerning
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                     // Draw the text before selection
 //                    states.transform.translate(tempTextSelection.getGlobalBounds().width, 0);

@@ -66,7 +66,6 @@ namespace tgui
 
         // Load the text box with default values
         m_Loaded = true;
-        setTextSize(20);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,7 +408,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& TextBox::getTextFont()
+    const sf::Font* TextBox::getTextFont()
     {
         return m_TextBeforeSelection.getFont();
     }
@@ -433,7 +432,7 @@ namespace tgui
         m_TextAfterSelection2.setCharacterSize(m_TextSize);
 
         // Calculate the height of one line
-        m_LineHeight = m_TextBeforeSelection.getFont().getLineSpacing(m_TextSize);
+        m_LineHeight = m_TextBeforeSelection.getFont()->getLineSpacing(m_TextSize);
 
         // There is also a minimum height
         if (m_Size.y < (m_LineHeight + m_TopBorder + m_BottomBorder))
@@ -2170,7 +2169,7 @@ namespace tgui
 
             // Watch out for kerning
             if (textBeforeSelectionLength > 1)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
             // Create the selection background
             sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
@@ -2195,7 +2194,7 @@ namespace tgui
 
                 // If there was a kerning correction then undo it now
                 if (textBeforeSelectionLength > 1)
-                    states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
+                    states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
                 // Create the second selection background
                 sf::RectangleShape selectionBackground2;
@@ -2222,7 +2221,7 @@ namespace tgui
 
                 // Watch out for kerning
                 if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
             }
             else // The selection was only on one line
             {
@@ -2231,7 +2230,7 @@ namespace tgui
 
                 // Watch out for kerning
                 if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
+                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
             }
 
             // Draw the first part of the text behind the selection
@@ -2248,7 +2247,7 @@ namespace tgui
 
                     // If there was a kerning correction then undo it now
                     if (m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2)
-                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length + textSelection2Length - 2], m_TextSize)), 0);
                 }
                 else
                 {
@@ -2257,11 +2256,11 @@ namespace tgui
 
                     // If there was a kerning correction then undo it now
                     if (textBeforeSelectionLength > 1)
-                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength-2], m_DisplayedText[textBeforeSelectionLength-1], m_TextSize)), 0);
 
                     // If there was a kerning correction then undo it now
                     if ((m_DisplayedText.length() > textBeforeSelectionLength + textSelection1Length - 2) && (textBeforeSelectionLength + textSelection1Length > 2))
-                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont().getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
+                        states.transform.translate(static_cast<float>(-m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 3], m_DisplayedText[textBeforeSelectionLength + textSelection1Length - 2], m_TextSize)), 0);
                 }
 
                 // Draw the second part of the text after the selection

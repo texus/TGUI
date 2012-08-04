@@ -826,7 +826,7 @@ namespace tgui
         std::string selectedItem = m_Listbox->getSelectedItem();
 
         // Create a text object to draw it
-        sf::Text tempText(selectedItem);
+        sf::Text tempText(selectedItem, m_Listbox->m_TextFont);
         tempText.setCharacterSize(m_Listbox->m_ItemHeight);
         tempText.setColor(m_Listbox->m_TextColor);
 

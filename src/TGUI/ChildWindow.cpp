@@ -543,7 +543,7 @@ namespace tgui
         if (title.empty() == false)
         {
             // Create the text object
-            sf::Text text(title);
+            sf::Text text(title, globalFont);
             text.setCharacterSize(m_TitleBarHeight * 8 / 10);
 
             // Check the layout
