@@ -195,14 +195,58 @@ namespace tgui
 
     void Group::moveObjectToFront(OBJECT* object)
     {
-        m_EventManager.moveObjectToFront(object);
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        {
+            // Check if the object is found
+            if (m_EventManager.m_Objects[i] == object)
+            {
+                // Copy the object
+                m_EventManager.m_Objects.push_back(m_EventManager.m_Objects[i]);
+                m_ObjName.push_back(m_ObjName[i]);
+
+                // Focus the correct object
+                if ((m_EventManager.m_FocusedObject == 0) || (m_EventManager.m_FocusedObject == i+1))
+                    m_EventManager.m_FocusedObject = m_EventManager.m_Objects.size()-1;
+                else if (m_EventManager.m_FocusedObject > i+1)
+                    --m_EventManager.m_FocusedObject;
+
+                // Remove the old object
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Group::moveObjectToBack(OBJECT* object)
     {
-        m_EventManager.moveObjectToBack(object);
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        {
+            // Check if the object is found
+            if (m_EventManager.m_Objects[i] == object)
+            {
+                // Copy the object
+                m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), m_EventManager.m_Objects[i]);
+                m_ObjName.insert(m_ObjName.begin(), m_ObjName[i]);
+
+                // Focus the correct object
+                if (m_EventManager.m_FocusedObject == i+1)
+                    m_EventManager.m_FocusedObject = 1;
+                else if (m_EventManager.m_FocusedObject)
+                    ++m_EventManager.m_FocusedObject;
+
+                // Remove the old object
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i + 1);
+                m_ObjName.erase(m_ObjName.begin() + i + 1);
+
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -387,60 +387,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::moveObjectToFront(OBJECT* object)
-    {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Check if the object is found
-            if (m_Objects[i] == object)
-            {
-                // Copy the object
-                m_Objects.push_back(m_Objects[i]);
-
-                // Focus the correct object
-                if ((m_FocusedObject == 0) || (m_FocusedObject == i+1))
-                    m_FocusedObject = m_Objects.size()-1;
-                else if (m_FocusedObject > i+1)
-                    --m_FocusedObject;
-
-                // Remove the old object
-                m_Objects.erase(m_Objects.begin() + i);
-
-                break;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EventManager::moveObjectToBack(OBJECT* object)
-    {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-        {
-            // Check if the object is found
-            if (m_Objects[i] == object)
-            {
-                // Copy the object
-                m_Objects.insert(m_Objects.begin(), m_Objects[i]);
-
-                // Focus the correct object
-                if (m_FocusedObject == i+1)
-                    m_FocusedObject = 1;
-                else if (m_FocusedObject)
-                    ++m_FocusedObject;
-
-                // Remove the old object
-                m_Objects.erase(m_Objects.begin() + i + 1);
-
-                break;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EventManager::tabKeyPressed()
     {
         // Check if a panel is focused
