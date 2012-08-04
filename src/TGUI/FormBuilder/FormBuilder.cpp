@@ -596,12 +596,12 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
          \
             if (object->mouseOnObject(mouseX, mouseY)) \
             { \
-                if (highestID < object->getObjectID()) \
+                if (highestID < objects[i].id) \
                 { \
                     if (highestID > 0) \
                         object->mouseNotOnObject(); \
                  \
-                    highestID = object->getObjectID(); \
+                    highestID = objects[i].id; \
                     objectID = objects[i].id; \
                 } \
             } \
@@ -645,10 +645,10 @@ unsigned int Builder::getScaleSquareObjectID(float x, float y)
       \
         if (button->mouseOnObject(mouseX, mouseY)) \
         { \
-            if (highestID < button->getObjectID()) \
+            if (highestID < objID) \
             { \
                 button->mouseMoved(mouseX, mouseY); \
-                highestID = button->getObjectID(); \
+                highestID = objID; \
                 objectID = objID; \
             } \
         } \
@@ -1067,6 +1067,7 @@ bool Builder::loadForm()
 
     // Create a temporary window
     tgui::Window tempWindow;
+    tempWindow.globalFont = mainWindow.globalFont;
 
     // Load all the objects in the temporary window
     if (tempWindow.loadObjectsFromFile("form.txt"))

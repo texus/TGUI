@@ -45,9 +45,22 @@ int main()
 
     Builder app;
 
+    sf::Font font;
+    if (font.loadFromFile("DejaVuSans.ttf") == false)
+    {
+        std::cerr << "Failed to load DejaVuSans.ttf" << std::endl;
+        return 1;
+    }
+    app.mainWindow.globalFont = font;
+    app.propertyWindow.globalFont = font;
+    app.objectsWindow.globalFont = font;
+
     // Initialize the objects window
     if (!app.objectsWindow.loadObjectsFromFile("FormObjectsWindow.txt"))
+    {
+        std::cerr << "Failed to load FormObjectsWindow.txt" << std::endl;
         return 1;
+    }
 
     // Select the window by default
     app.newObject(tgui::window);
@@ -109,6 +122,7 @@ int main()
                             app.currentID = id;
 
                             // Show the properties of the newly selected object
+                            app.changeVisibleProperties();
                             app.resizePropertyWindow();
                         }
 

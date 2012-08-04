@@ -45,7 +45,7 @@ namespace tgui
     m_Text                       (""),
     m_DisplayedText              (""),
     m_TextSize                   (30),
-    m_LineHeight                 (0),
+    m_LineHeight                 (40),
     m_Lines                      (1),
     m_MaxChars                   (0),
     m_TopLine                    (1),
