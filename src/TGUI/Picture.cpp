@@ -168,7 +168,7 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
         {
             // Only return true when the pixel under the mouse isn't transparent
-            return !TGUI_TextureManager.isTransparentPixel(m_Texture, x / getScale().x - getPosition().x, y / getScale().y - getPosition().y);
+            return !TGUI_TextureManager.isTransparentPixel(m_Texture, static_cast<unsigned int>(x / getScale().x - getPosition().x), static_cast<unsigned int>(y / getScale().y - getPosition().y));
         }
         else
             return false;

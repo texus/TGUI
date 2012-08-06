@@ -1207,7 +1207,7 @@ namespace tgui
                             line.erase(0, 6);
 
                             // Set the width
-                            comboBox->setSize(atoi(line.c_str()), comboBox->getSize().y);
+                            comboBox->setSize(static_cast<float>(atoi(line.c_str())), static_cast<float>(comboBox->getSize().y));
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
@@ -1471,7 +1471,7 @@ namespace tgui
         updateTime(m_Clock.restart());
 
         // Check if clipping is enabled
-        bool clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
+        GLboolean clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
         GLint scissor[4];
 
         if (clippingEnabled)

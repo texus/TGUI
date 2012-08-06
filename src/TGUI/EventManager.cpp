@@ -62,7 +62,7 @@ namespace tgui
                      || (m_Objects[i]->m_ObjectType == comboBox)
                      || (m_Objects[i]->m_ObjectType == textBox))
                     {
-                        m_Objects[i]->mouseMoved(event.mouseMove.x, event.mouseMove.y);
+                        m_Objects[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
 
@@ -70,7 +70,7 @@ namespace tgui
                     else if (m_Objects[i]->m_ObjectType == panel)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[i])->handleEvent(event, event.mouseMove.x, event.mouseMove.y);
+                        static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
                 }
@@ -80,16 +80,16 @@ namespace tgui
             unsigned int objectNr;
 
             // Check if the mouse is on top of an object
-            if (mouseOnObject(objectNr, event.mouseMove.x, event.mouseMove.y))
+            if (mouseOnObject(objectNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
             {
                 // Check if the object is a group
                 if (m_Objects[objectNr]->m_ObjectType == panel)
                 {
                     // Make the event handler of the group do the rest
-                    static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, event.mouseMove.x, event.mouseMove.y);
+                    static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 }
                 else // Send the event to the object
-                    m_Objects[objectNr]->mouseMoved(event.mouseMove.x, event.mouseMove.y);
+                    m_Objects[objectNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             }
         }
 
@@ -102,7 +102,7 @@ namespace tgui
                 unsigned int objectNr;
 
                 // Check if the mouse is on top of an object
-                if (mouseOnObject(objectNr, event.mouseButton.x, event.mouseButton.y))
+                if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_ObjectType == panel)
@@ -111,7 +111,7 @@ namespace tgui
                         unfocusAllObjects();
 
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, event.mouseButton.x, event.mouseButton.y);
+                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // The event has to be sent to an object
                     {
@@ -130,7 +130,7 @@ namespace tgui
                         focusObject(m_Objects[objectNr]);
 
                         // Send the event to the object
-                        m_Objects[objectNr]->leftMousePressed(event.mouseButton.x, event.mouseButton.y);
+                        m_Objects[objectNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                 }
                 else // The mouse didn't went down on an object, so unfocus the focused object
@@ -147,16 +147,16 @@ namespace tgui
                 unsigned int objectNr;
 
                 // Check if the mouse is on top of an object
-                if (mouseOnObject(objectNr, event.mouseButton.x, event.mouseButton.y))
+                if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_ObjectType == panel)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, event.mouseButton.x, event.mouseButton.y);
+                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // Send the event to the object
-                        m_Objects[objectNr]->leftMouseReleased(event.mouseButton.x, event.mouseButton.y);
+                        m_Objects[objectNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
 
                     // Tell all the other objects that the mouse has gone up
                     for (unsigned int i=0; i<m_Objects.size(); ++i)
@@ -164,7 +164,7 @@ namespace tgui
                         if (i != objectNr)
                         {
                             if (m_Objects[i]->m_ObjectType == panel)
-                                static_cast<Panel*>(m_Objects[i])->handleEvent(event, event.mouseButton.x, event.mouseButton.y);
+                                static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                             else
                                 m_Objects[i]->mouseNoLongerDown();
                         }
@@ -176,7 +176,7 @@ namespace tgui
                     for (unsigned int i=0; i<m_Objects.size(); ++i)
                     {
                         if (m_Objects[i]->m_ObjectType == panel)
-                            static_cast<Panel*>(m_Objects[i])->handleEvent(event, event.mouseButton.x, event.mouseButton.y);
+                            static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                         else
                             m_Objects[i]->mouseNoLongerDown();
                     }

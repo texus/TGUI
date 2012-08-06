@@ -1111,10 +1111,10 @@ namespace tgui
                 ++lastItem;
 
             // Calculate the clipping area
-            GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
-            GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-            GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x) * scaleViewX, scissor[0] + scissor[2]);
-            GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+            GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + m_LeftBorder) * scaleViewX), scissor[0]);
+            GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.y + m_TopBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+            GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x) * scaleViewX), scissor[0] + scissor[2]);
+            GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)
@@ -1169,10 +1169,10 @@ namespace tgui
         else // There is no scrollbar or it is invisible
         {
             // Calculate the clipping area
-            GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
-            GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-            GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
-            GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+            GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + m_LeftBorder) * scaleViewX), scissor[0]);
+            GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.y + m_TopBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+            GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX), scissor[0] + scissor[2]);
+            GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_Size.y - m_BottomBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)

@@ -33,13 +33,13 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::Label* label = window.add<tgui::Label>("label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
-    label->setPosition(10, 14 + (40 * propertyNumber)); \
+    label->setPosition(10, 14 + (40.f * propertyNumber)); \
     label->setTextSize(26); \
  \
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber))); \
+    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
     editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(value); \
     editBox->callbackID = propertyNumber + 1; \
@@ -51,13 +51,13 @@ void Property##property::addProperty(tgui::Window& window, unsigned int property
     tgui::Label* label = window.add<tgui::Label>("label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
-    label->setPosition(10, 14 + (40 * propertyNumber)); \
+    label->setPosition(10, 14 + (40.f * propertyNumber)); \
     label->setTextSize(26); \
  \
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_"#property); \
     editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber))); \
+    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
     editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
     editBox->setText(tgui::to_string(value)); \
     editBox->callbackID = propertyNumber + 1; \
@@ -266,13 +266,13 @@ void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNum
     tgui::Label* label = window.add<tgui::Label>("label_Checked");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10, 14 + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_Checked");
     comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.f - 10), 40);
-    comboBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
+    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 
@@ -301,13 +301,13 @@ void PropertyPasswordChar::addProperty(tgui::Window& window, unsigned int proper
     tgui::Label* label = window.add<tgui::Label>("label_PasswordChar");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10, 14 + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     tgui::EditBox* editBox = window.add<tgui::EditBox>("text_PasswordChar");
     editBox->load("images/objects/EditBox/" OBJECT_STYLE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
+    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     editBox->setSize(window.getSize().x / 2.0f - 10, 32);
     editBox->setMaximumCharacters(1);
     editBox->callbackID = propertyNumber + 1;
@@ -502,13 +502,13 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
     tgui::Label* label = window.add<tgui::Label>("label_VerticalScroll");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
-    label->setPosition(10, 14 + (40 * propertyNumber));
+    label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_VerticalScroll");
     comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.0f - 10), 40);
-    comboBox->setPosition(window.getSize().x / 2.f, static_cast<float>(10 + (40 * propertyNumber)));
+    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
 

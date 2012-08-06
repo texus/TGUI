@@ -71,8 +71,8 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Change the size of the label
-        m_Size.x = width;
-        m_Size.y = height;
+        m_Size.x = static_cast<unsigned int>(width);
+        m_Size.y = static_cast<unsigned int>(height);
 
         // You are no longer auto-sizing
         m_AutoSize = false;
@@ -101,8 +101,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
+            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
         }
     }
 
@@ -150,8 +150,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
+            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
         }
     }
 
@@ -171,8 +171,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
+            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
+            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
         }
     }
 
@@ -248,10 +248,10 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM(globalTranslation.x * scaleViewX, scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_Size.y) * scaleViewY, target.getSize().y - scissor[1]);
+        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.x * scaleViewX), scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x) * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_Size.y) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
         // If the object outside the window then don't draw anything
         if (scissorRight < scissorLeft)

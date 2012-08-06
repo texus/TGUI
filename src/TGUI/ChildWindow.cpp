@@ -449,7 +449,7 @@ namespace tgui
 
                 // Check if the mouse is on top of the borders
                 if ((getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y + m_TitleBarHeight))).contains(mouseX, mouseY))
-                &&  (getTransform().transformRect(sf::FloatRect(m_LeftBorder, m_TitleBarHeight + m_TopBorder, static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(mouseX, mouseY) == false))
+                &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(mouseX, mouseY) == false))
                 {
                     // If the mouse was released then tell the objects about it
                     if (event.type == sf::Event::MouseButtonReleased)
@@ -550,10 +550,10 @@ namespace tgui
             if (layout == LayoutRight)
             {
                 // Calculate the clipping area
-                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + distanceToSide) * scaleViewX, scissor[0]);
-                GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0] + scissor[2]);
-                GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight) * scaleViewY, target.getSize().y - scissor[1]);
+                GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + distanceToSide) * scaleViewX), scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * scaleViewX), scissor[0] + scissor[2]);
+                GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_TitleBarHeight) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
                 // If the object outside the window then don't draw anything
                 if (scissorRight < scissorLeft)
@@ -572,10 +572,10 @@ namespace tgui
             else // if (layout == LayoutLeft)
             {
                 // Calculate the clipping area
-                GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x) * scaleViewX, scissor[0]);
-                GLint scissorTop = TGUI_MAXIMUM(globalTranslation.y * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-                GLint scissorRight = TGUI_MINIMUM((globalTranslation.x - distanceToSide + m_Size.x) * scaleViewX, scissor[0] + scissor[2]);
-                GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight) * scaleViewY, target.getSize().y - scissor[1]);
+                GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x) * scaleViewX), scissor[0]);
+                GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x - distanceToSide + m_Size.x) * scaleViewX), scissor[0] + scissor[2]);
+                GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_TitleBarHeight) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
                 // If the object outside the window then don't draw anything
                 if (scissorRight < scissorLeft)
@@ -606,26 +606,26 @@ namespace tgui
         target.draw(*m_CloseButton, states);
 
         // Set the correct transformation
-        states.transform = oldTransform.translate(0, m_TitleBarHeight);
+        states.transform = oldTransform.translate(0, static_cast<float>(m_TitleBarHeight));
 
         // Draw the borders
-        sf::RectangleShape borders(Vector2f(m_Size.x, m_Size.y));
+		sf::RectangleShape borders(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
         borders.setFillColor(borderColor);
         target.draw(borders, states);
 
         // Make room for the borders
-        states.transform.translate(m_LeftBorder, m_TopBorder);
+        states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
         // Draw the background
-        sf::RectangleShape background(Vector2f(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder));
+        sf::RectangleShape background(Vector2f(static_cast<float>(m_Size.x) - m_LeftBorder - m_RightBorder, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder));
         background.setFillColor(backgroundColor);
         target.draw(background, states);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM((globalTranslation.x + m_LeftBorder) * scaleViewX, scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM((globalTranslation.y + m_TitleBarHeight + m_TopBorder) * scaleViewY, target.getSize().y - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX, scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM((globalTranslation.y + m_TitleBarHeight + m_Size.y - m_BottomBorder) * scaleViewY, target.getSize().y - scissor[1]);
+        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + m_LeftBorder) * scaleViewX), scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.y + m_TitleBarHeight + m_TopBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x - m_RightBorder) * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_TitleBarHeight + m_Size.y - m_BottomBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
         // If the object outside the window then don't draw anything
         if (scissorRight < scissorLeft)
