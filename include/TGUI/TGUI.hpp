@@ -60,6 +60,8 @@ namespace tgui
     struct ComboBox;
     struct TextBox;
     struct SpriteSheet;
+    struct AnimatedPicture;
+    struct AnimatedButton;
 
     struct InfoFileParser;
     struct EventManager;
@@ -115,6 +117,7 @@ namespace tgui
         textBox,
         spriteSheet,
         animatedPicture,
+        animatedButton,
         childWindow,
 
         ObjectTypesCount
@@ -148,6 +151,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #include <TGUI/TextBox.hpp>
 #include <TGUI/SpriteSheet.hpp>
 #include <TGUI/AnimatedPicture.hpp>
+#include <TGUI/AnimatedButton.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>
