@@ -57,9 +57,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::load(float width, float height)
+    void Label::load(float width, float height, const sf::Color& bkgColor)
     {
         setSize(width, height);
+        backgroundColor = bkgColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,8 +263,19 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        // Draw the text
+        // Apply the transformation
         states.transform *= getTransform();
+
+        // If there is a background color then draw the background
+        if (backgroundColor != sf::Color::Transparent)
+        {
+            sf::RectangleShape back(sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height));
+            back.setPosition(m_Text.getLocalBounds().left, m_Text.getLocalBounds().top);
+            back.setFillColor(backgroundColor);
+            target.draw(back, states);
+        }
+
+        // Draw the text
         target.draw(m_Text, states);
 
         // Reset the old clipping area
