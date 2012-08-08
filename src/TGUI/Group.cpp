@@ -231,8 +231,10 @@ namespace tgui
             if (m_EventManager.m_Objects[i] == object)
             {
                 // Copy the object
-                m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), m_EventManager.m_Objects[i]);
-                m_ObjName.insert(m_ObjName.begin(), m_ObjName[i]);
+                OBJECT* obj = m_EventManager.m_Objects[i];
+                std::string name = m_ObjName[i];
+                m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), obj);
+                m_ObjName.insert(m_ObjName.begin(), name);
 
                 // Focus the correct object
                 if (m_EventManager.m_FocusedObject == i+1)
