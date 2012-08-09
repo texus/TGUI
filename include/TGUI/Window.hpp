@@ -66,19 +66,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads a form from a file.
-        ///
-        /// The objects will be loaded inside the window.
-        /// Note that even when this function fails, some objects might have been loaded already.
-        ///
-        /// \return
-        ///        - true on success
-        ///        - false when the file could not be opened or when the file contains a mistake.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadObjectsFromFile(const std::string pathname);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Draws all the objects that were added to the window.
         ///
         /// You can optionally pass some global render states.
