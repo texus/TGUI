@@ -196,7 +196,8 @@ namespace tgui
              || (event.key.code == sf::Keyboard::Up)
              || (event.key.code == sf::Keyboard::Down)
              || (event.key.code == sf::Keyboard::BackSpace)
-             || (event.key.code == sf::Keyboard::Delete))
+             || (event.key.code == sf::Keyboard::Delete)
+             || (event.key.code == sf::Keyboard::Return))
             {
                 // Loop through all the object
                 for (unsigned int i=0; i<m_Objects.size(); ++i)
@@ -235,7 +236,8 @@ namespace tgui
                      && (event.key.code != sf::Keyboard::Up)
                      && (event.key.code != sf::Keyboard::Down)
                      && (event.key.code != sf::Keyboard::BackSpace)
-                     && (event.key.code != sf::Keyboard::Delete))
+                     && (event.key.code != sf::Keyboard::Delete)
+                     && (event.key.code != sf::Keyboard::Return))
                     {
                         // Loop through all the object
                         for (unsigned int i=0; i<m_Objects.size(); ++i)
