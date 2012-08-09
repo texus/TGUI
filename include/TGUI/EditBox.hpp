@@ -233,7 +233,6 @@ namespace tgui
         void changeColors(const sf::Color& textColor                            = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
                           const sf::Color& selectedTextBackgroundColor          = sf::Color( 10, 110, 255),
-                          const sf::Color& unfocusedSelectedTextBackgroundColor = sf::Color(110, 110, 255),
                           const sf::Color& selectionPointColor                  = sf::Color(110, 110, 255));
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,13 +256,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor);
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the edit box when the edit box is not focused.
-        ///
-        /// \see changeColors
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setUnfocusedSelectedTextBackgroundColor(const sf::Color& unfocusedSelectedTextBackgroundColor);
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Get the text color that is currently being used inside the edit box.
@@ -279,11 +271,6 @@ namespace tgui
         /// \brief Get the background color of the selected text that is currently being used inside the edit box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextBackgroundColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected text that is currently being used inside the edit box when the edit box is not focused.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getUnfocusedSelectedTextBackgroundColor();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +300,7 @@ namespace tgui
         void mouseMoved(float x, float y);
         void keyPressed(sf::Keyboard::Key Key);
         void textEntered(char Key);
+        void objectUnfocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,7 +372,6 @@ namespace tgui
 
         // The rectangle behind the selected text will have this color
         sf::Color     m_SelectedTextBgrColor;
-        sf::Color     m_UnfocusedSelectedTextBgrColor;
 
         // We need three SFML texts to draw our text.
         sf::Text      m_TextBeforeSelection;

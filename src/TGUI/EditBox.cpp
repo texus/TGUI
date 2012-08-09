@@ -68,32 +68,31 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox(const EditBox& copy) :
-    OBJECT                         (copy),
-    OBJECT_BORDERS                 (copy),
-    OBJECT_ANIMATION               (copy),
-    selectionPointColor            (copy.selectionPointColor),
-    selectionPointWidth            (copy.selectionPointWidth),
-    m_SelectionPointVisible        (copy.m_SelectionPointVisible),
-    m_SelectionPointPosition       (copy.m_SelectionPointPosition),
-    m_LimitTextWidth               (copy.m_LimitTextWidth),
-    m_DisplayedText                (copy.m_DisplayedText),
-    m_SelText                      (copy.m_SelText),
-    m_Text                         (copy.m_Text),
-    m_TextSize                     (copy.m_TextSize),
-    m_SelChars                     (copy.m_SelChars),
-    m_SelStart                     (copy.m_SelStart),
-    m_SelEnd                       (copy.m_SelEnd),
-    m_PasswordChar                 (copy.m_PasswordChar),
-    m_MaxChars                     (copy.m_MaxChars),
-    m_SplitImage                   (copy.m_SplitImage),
-    m_LeftTextCrop                 (copy.m_LeftTextCrop),
-    m_RightTextCrop                (copy.m_RightTextCrop),
-    m_SelectedTextBgrColor         (copy.m_SelectedTextBgrColor),
-    m_UnfocusedSelectedTextBgrColor(copy.m_UnfocusedSelectedTextBgrColor),
-    m_TextBeforeSelection          (copy.m_TextBeforeSelection),
-    m_TextSelection                (copy.m_TextSelection),
-    m_TextAfterSelection           (copy.m_TextAfterSelection),
-    m_LoadedPathname               (copy.m_LoadedPathname)
+    OBJECT                  (copy),
+    OBJECT_BORDERS          (copy),
+    OBJECT_ANIMATION        (copy),
+    selectionPointColor     (copy.selectionPointColor),
+    selectionPointWidth     (copy.selectionPointWidth),
+    m_SelectionPointVisible (copy.m_SelectionPointVisible),
+    m_SelectionPointPosition(copy.m_SelectionPointPosition),
+    m_LimitTextWidth        (copy.m_LimitTextWidth),
+    m_DisplayedText         (copy.m_DisplayedText),
+    m_SelText               (copy.m_SelText),
+    m_Text                  (copy.m_Text),
+    m_TextSize              (copy.m_TextSize),
+    m_SelChars              (copy.m_SelChars),
+    m_SelStart              (copy.m_SelStart),
+    m_SelEnd                (copy.m_SelEnd),
+    m_PasswordChar          (copy.m_PasswordChar),
+    m_MaxChars              (copy.m_MaxChars),
+    m_SplitImage            (copy.m_SplitImage),
+    m_LeftTextCrop          (copy.m_LeftTextCrop),
+    m_RightTextCrop         (copy.m_RightTextCrop),
+    m_SelectedTextBgrColor  (copy.m_SelectedTextBgrColor),
+    m_TextBeforeSelection   (copy.m_TextBeforeSelection),
+    m_TextSelection         (copy.m_TextSelection),
+    m_TextAfterSelection    (copy.m_TextAfterSelection),
+    m_LoadedPathname        (copy.m_LoadedPathname)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))       m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -137,47 +136,46 @@ namespace tgui
             this->OBJECT_BORDERS::operator=(right);
             this->OBJECT_ANIMATION::operator=(right);
 
-            std::swap(selectionPointColor,             temp.selectionPointColor);
-            std::swap(selectionPointWidth,             temp.selectionPointWidth);
-            std::swap(m_SelectionPointVisible,         temp.m_SelectionPointVisible);
-            std::swap(m_SelectionPointPosition,        temp.m_SelectionPointPosition);
-            std::swap(m_LimitTextWidth,                temp.m_LimitTextWidth);
-            std::swap(m_DisplayedText,                 temp.m_DisplayedText);
-            std::swap(m_SelText,                       temp.m_SelText);
-            std::swap(m_Text,                          temp.m_Text);
-            std::swap(m_TextSize,                      temp.m_TextSize);
-            std::swap(m_SelChars,                      temp.m_SelChars);
-            std::swap(m_SelStart,                      temp.m_SelStart);
-            std::swap(m_SelEnd,                        temp.m_SelEnd);
-            std::swap(m_PasswordChar,                  temp.m_PasswordChar);
-            std::swap(m_MaxChars,                      temp.m_MaxChars);
-            std::swap(m_SplitImage,                    temp.m_SplitImage);
-            std::swap(m_LeftTextCrop,                  temp.m_LeftTextCrop);
-            std::swap(m_RightTextCrop,                 temp.m_RightTextCrop);
-            std::swap(m_SelectedTextBgrColor,          temp.m_SelectedTextBgrColor);
-            std::swap(m_UnfocusedSelectedTextBgrColor, temp.m_UnfocusedSelectedTextBgrColor);
-            std::swap(m_TextBeforeSelection,           temp.m_TextBeforeSelection);
-            std::swap(m_TextSelection,                 temp.m_TextSelection);
-            std::swap(m_TextAfterSelection,            temp.m_TextAfterSelection);
-            std::swap(m_TextureNormal_L,               temp.m_TextureNormal_L);
-            std::swap(m_TextureNormal_M,               temp.m_TextureNormal_M);
-            std::swap(m_TextureNormal_R,               temp.m_TextureNormal_R);
-            std::swap(m_TextureHover_L,                temp.m_TextureHover_L);
-            std::swap(m_TextureHover_M,                temp.m_TextureHover_M);
-            std::swap(m_TextureHover_R,                temp.m_TextureHover_R);
-            std::swap(m_TextureFocused_L,              temp.m_TextureFocused_L);
-            std::swap(m_TextureFocused_M,              temp.m_TextureFocused_M);
-            std::swap(m_TextureFocused_R,              temp.m_TextureFocused_R);
-            std::swap(m_SpriteNormal_L,                temp.m_SpriteNormal_L);
-            std::swap(m_SpriteNormal_M,                temp.m_SpriteNormal_M);
-            std::swap(m_SpriteNormal_R,                temp.m_SpriteNormal_R);
-            std::swap(m_SpriteHover_L,                 temp.m_SpriteHover_L);
-            std::swap(m_SpriteHover_M,                 temp.m_SpriteHover_M);
-            std::swap(m_SpriteHover_R,                 temp.m_SpriteHover_R);
-            std::swap(m_SpriteFocused_L,               temp.m_SpriteFocused_L);
-            std::swap(m_SpriteFocused_M,               temp.m_SpriteFocused_M);
-            std::swap(m_SpriteFocused_R,               temp.m_SpriteFocused_R);
-            std::swap(m_LoadedPathname,                temp.m_LoadedPathname);
+            std::swap(selectionPointColor,      temp.selectionPointColor);
+            std::swap(selectionPointWidth,      temp.selectionPointWidth);
+            std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
+            std::swap(m_SelectionPointPosition, temp.m_SelectionPointPosition);
+            std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
+            std::swap(m_DisplayedText,          temp.m_DisplayedText);
+            std::swap(m_SelText,                temp.m_SelText);
+            std::swap(m_Text,                   temp.m_Text);
+            std::swap(m_TextSize,               temp.m_TextSize);
+            std::swap(m_SelChars,               temp.m_SelChars);
+            std::swap(m_SelStart,               temp.m_SelStart);
+            std::swap(m_SelEnd,                 temp.m_SelEnd);
+            std::swap(m_PasswordChar,           temp.m_PasswordChar);
+            std::swap(m_MaxChars,               temp.m_MaxChars);
+            std::swap(m_SplitImage,             temp.m_SplitImage);
+            std::swap(m_LeftTextCrop,           temp.m_LeftTextCrop);
+            std::swap(m_RightTextCrop,          temp.m_RightTextCrop);
+            std::swap(m_SelectedTextBgrColor,   temp.m_SelectedTextBgrColor);
+            std::swap(m_TextBeforeSelection,    temp.m_TextBeforeSelection);
+            std::swap(m_TextSelection,          temp.m_TextSelection);
+            std::swap(m_TextAfterSelection,     temp.m_TextAfterSelection);
+            std::swap(m_TextureNormal_L,        temp.m_TextureNormal_L);
+            std::swap(m_TextureNormal_M,        temp.m_TextureNormal_M);
+            std::swap(m_TextureNormal_R,        temp.m_TextureNormal_R);
+            std::swap(m_TextureHover_L,         temp.m_TextureHover_L);
+            std::swap(m_TextureHover_M,         temp.m_TextureHover_M);
+            std::swap(m_TextureHover_R,         temp.m_TextureHover_R);
+            std::swap(m_TextureFocused_L,       temp.m_TextureFocused_L);
+            std::swap(m_TextureFocused_M,       temp.m_TextureFocused_M);
+            std::swap(m_TextureFocused_R,       temp.m_TextureFocused_R);
+            std::swap(m_SpriteNormal_L,         temp.m_SpriteNormal_L);
+            std::swap(m_SpriteNormal_M,         temp.m_SpriteNormal_M);
+            std::swap(m_SpriteNormal_R,         temp.m_SpriteNormal_R);
+            std::swap(m_SpriteHover_L,          temp.m_SpriteHover_L);
+            std::swap(m_SpriteHover_M,          temp.m_SpriteHover_M);
+            std::swap(m_SpriteHover_R,          temp.m_SpriteHover_R);
+            std::swap(m_SpriteFocused_L,        temp.m_SpriteFocused_L);
+            std::swap(m_SpriteFocused_M,        temp.m_SpriteFocused_M);
+            std::swap(m_SpriteFocused_R,        temp.m_SpriteFocused_R);
+            std::swap(m_LoadedPathname,         temp.m_LoadedPathname);
         }
 
         return *this;
@@ -271,10 +269,6 @@ namespace tgui
             else if (property.compare("selectedtextbackgroundcolor") == 0)
             {
                 m_SelectedTextBgrColor = extractColor(value);
-            }
-            else if (property.compare("unfocusedselectedtextbackgroundcolor") == 0)
-            {
-                m_UnfocusedSelectedTextBgrColor = extractColor(value);
             }
             else if (property.compare("selectionpointcolor") == 0)
             {
@@ -1046,7 +1040,6 @@ namespace tgui
     void EditBox::changeColors(const sf::Color& color,
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
-                               const sf::Color& unfocusedSelectedBgrColor,
                                const sf::Color& newSelectionPointColor)
     {
         m_TextBeforeSelection.setColor(color);
@@ -1055,7 +1048,6 @@ namespace tgui
 
         selectionPointColor = newSelectionPointColor;
         m_SelectedTextBgrColor = selectedBgrColor;
-        m_UnfocusedSelectedTextBgrColor = unfocusedSelectedBgrColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1082,13 +1074,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setUnfocusedSelectedTextBackgroundColor(const sf::Color& unfocusedSelectedTextBackgroundColor)
-    {
-        m_UnfocusedSelectedTextBgrColor = unfocusedSelectedTextBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     const sf::Color& EditBox::getTextColor()
     {
         return m_TextBeforeSelection.getColor();
@@ -1106,13 +1091,6 @@ namespace tgui
     const sf::Color& EditBox::getSelectedTextBackgroundColor()
     {
         return m_SelectedTextBgrColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& EditBox::getUnfocusedSelectedTextBackgroundColor()
-    {
-        return m_UnfocusedSelectedTextBgrColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1271,25 +1249,11 @@ namespace tgui
     {
         TGUI_UNUSED_PARAM(y);
 
-        // Check if the edit box was already focused
-        if (m_Focused)
-        {
-            // Set the new selection point
-            setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder)));
+        // Set the new selection point
+        setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder)));
 
-            // Set the mouse down flag
-            m_MouseDown = true;
-        }
-        else // When the editbox was not focused
-        {
-            // Make sure that no text was selected
-            if (m_SelChars == 0)
-            {
-                // When no text was selected then just do the same as when the edibox was already focused
-                setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder)));
-                m_MouseDown = true;
-            }
-        }
+        // Set the mouse down flag
+        m_MouseDown = true;
 
         // The selection point should be visible
         m_SelectionPointVisible = true;
@@ -1977,6 +1941,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::objectUnfocused()
+    {
+        // If there is a selection then undo it now
+        if (m_SelChars)
+            setSelectionPointPosition(m_SelEnd);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::update()
     {
         // Only show/hide the selection point every half second
@@ -2143,11 +2116,7 @@ namespace tgui
 //                sf::RectangleShape TextBgr(Vector2f(m_TextSelection.getGlobalBounds().width,
                 sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x,
                                                     ((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y)));
-
-                if (m_Focused)
-                    TextBgr.setFillColor(m_SelectedTextBgrColor);
-                else
-                    TextBgr.setFillColor(m_UnfocusedSelectedTextBgrColor);
+                TextBgr.setFillColor(m_SelectedTextBgrColor);
 
 //                TextBgr.setPosition(m_TextBeforeSelection.getGlobalBounds().width, 0);
                 TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
@@ -2192,11 +2161,7 @@ namespace tgui
                     }
                 }
 
-                if (m_Focused)
-                    TextBgr.setFillColor(m_SelectedTextBgrColor);
-                else
-                    TextBgr.setFillColor(m_UnfocusedSelectedTextBgrColor);
-
+                TextBgr.setFillColor(m_SelectedTextBgrColor);
                 TextBgr.setSize(rectSize);
                 target.draw(TextBgr, states);
             }

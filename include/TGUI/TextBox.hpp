@@ -208,7 +208,6 @@ namespace tgui
                           const sf::Color& textColor                            = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
                           const sf::Color& selectedTextBackgroundColor          = sf::Color( 10, 110, 255),
-                          const sf::Color& unfocusedSelectedTextBackgroundColor = sf::Color(110, 110, 255),
                           const sf::Color& borderColor                          = sf::Color(  0,   0,   0),
                           const sf::Color& selectionPointColor                  = sf::Color(110, 110, 255));
 
@@ -241,13 +240,6 @@ namespace tgui
         void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the text box when the text box is not focused.
-        ///
-        /// \see changeColors
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setUnfocusedSelectedTextBackgroundColor(const sf::Color& unfocusedSelectedTextBackgroundColor);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Set the border color that will be used inside the text box.
         ///
         /// \see changeColors
@@ -274,11 +266,6 @@ namespace tgui
         /// \brief Get the background color of the selected text that is currently being used inside the text box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextBackgroundColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected that is currently being used inside the text box when the text box is not focused.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getUnfocusedSelectedTextBackgroundColor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Get the border color that is currently being used inside the text box.
@@ -328,6 +315,7 @@ namespace tgui
         void textEntered(char Key);
         void mouseNotOnObject();
         void mouseNoLongerDown();
+        void objectUnfocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,7 +408,6 @@ namespace tgui
         // The colors that are used by the text box
         sf::Color m_BackgroundColor;
         sf::Color m_SelectedTextBgrColor;
-        sf::Color m_UnfocusedSelectedTextBgrColor;
         sf::Color m_BorderColor;
 
         // The sfml Text objects

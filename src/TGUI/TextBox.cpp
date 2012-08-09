@@ -39,25 +39,25 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox() :
-    selectionPointColor          (110, 110, 255),
-    selectionPointWidth          (2),
-    m_Size                       (360, 200),
-    m_Text                       (""),
-    m_DisplayedText              (""),
-    m_TextSize                   (30),
-    m_LineHeight                 (40),
-    m_Lines                      (1),
-    m_MaxChars                   (0),
-    m_TopLine                    (1),
-    m_VisibleLines               (1),
-    m_SelChars                   (0),
-    m_SelStart                   (0),
-    m_SelEnd                     (0),
-    m_SelectionPointPosition     (0, 0),
-    m_SelectionPointVisible      (true),
-    m_SelectionTextsNeedUpdate   (true),
-    m_Scroll                     (NULL),
-    m_LoadedScrollbarPathname    ("")
+    selectionPointColor       (110, 110, 255),
+    selectionPointWidth       (2),
+    m_Size                    (360, 200),
+    m_Text                    (""),
+    m_DisplayedText           (""),
+    m_TextSize                (30),
+    m_LineHeight              (40),
+    m_Lines                   (1),
+    m_MaxChars                (0),
+    m_TopLine                 (1),
+    m_VisibleLines            (1),
+    m_SelChars                (0),
+    m_SelStart                (0),
+    m_SelEnd                  (0),
+    m_SelectionPointPosition  (0, 0),
+    m_SelectionPointVisible   (true),
+    m_SelectionTextsNeedUpdate(true),
+    m_Scroll                  (NULL),
+    m_LoadedScrollbarPathname ("")
     {
         m_ObjectType = textBox;
         m_AnimatedObject = true;
@@ -71,37 +71,36 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox(const TextBox& copy) :
-    OBJECT                         (copy),
-    OBJECT_BORDERS                 (copy),
-    OBJECT_ANIMATION               (copy),
-    selectionPointColor            (copy.selectionPointColor),
-    selectionPointWidth            (copy.selectionPointWidth),
-    m_Size                         (copy.m_Size),
-    m_Text                         (copy.m_Text),
-    m_DisplayedText                (copy.m_DisplayedText),
-    m_TextSize                     (copy.m_TextSize),
-    m_LineHeight                   (copy.m_LineHeight),
-    m_Lines                        (copy.m_Lines),
-    m_MaxChars                     (copy.m_MaxChars),
-    m_TopLine                      (copy.m_TopLine),
-    m_VisibleLines                 (copy.m_VisibleLines),
-    m_SelChars                     (copy.m_SelChars),
-    m_SelStart                     (copy.m_SelStart),
-    m_SelEnd                       (copy.m_SelEnd),
-    m_SelectionPointPosition       (copy.m_SelectionPointPosition),
-    m_SelectionPointVisible        (copy.m_SelectionPointVisible),
-    m_SelectionTextsNeedUpdate     (copy.m_SelectionTextsNeedUpdate),
-    m_BackgroundColor              (copy.m_BackgroundColor),
-    m_SelectedTextBgrColor         (copy.m_SelectedTextBgrColor),
-    m_UnfocusedSelectedTextBgrColor(copy.m_UnfocusedSelectedTextBgrColor),
-    m_BorderColor                  (copy.m_BorderColor),
-    m_TextBeforeSelection          (copy.m_TextBeforeSelection),
-    m_TextSelection1               (copy.m_TextSelection1),
-    m_TextSelection2               (copy.m_TextSelection2),
-    m_TextAfterSelection1          (copy.m_TextAfterSelection1),
-    m_TextAfterSelection2          (copy.m_TextAfterSelection2),
-    m_MultilineSelectionRectWidth  (copy.m_MultilineSelectionRectWidth),
-    m_LoadedScrollbarPathname      (copy.m_LoadedScrollbarPathname)
+    OBJECT                       (copy),
+    OBJECT_BORDERS               (copy),
+    OBJECT_ANIMATION             (copy),
+    selectionPointColor          (copy.selectionPointColor),
+    selectionPointWidth          (copy.selectionPointWidth),
+    m_Size                       (copy.m_Size),
+    m_Text                       (copy.m_Text),
+    m_DisplayedText              (copy.m_DisplayedText),
+    m_TextSize                   (copy.m_TextSize),
+    m_LineHeight                 (copy.m_LineHeight),
+    m_Lines                      (copy.m_Lines),
+    m_MaxChars                   (copy.m_MaxChars),
+    m_TopLine                    (copy.m_TopLine),
+    m_VisibleLines               (copy.m_VisibleLines),
+    m_SelChars                   (copy.m_SelChars),
+    m_SelStart                   (copy.m_SelStart),
+    m_SelEnd                     (copy.m_SelEnd),
+    m_SelectionPointPosition     (copy.m_SelectionPointPosition),
+    m_SelectionPointVisible      (copy.m_SelectionPointVisible),
+    m_SelectionTextsNeedUpdate   (copy.m_SelectionTextsNeedUpdate),
+    m_BackgroundColor            (copy.m_BackgroundColor),
+    m_SelectedTextBgrColor       (copy.m_SelectedTextBgrColor),
+    m_BorderColor                (copy.m_BorderColor),
+    m_TextBeforeSelection        (copy.m_TextBeforeSelection),
+    m_TextSelection1             (copy.m_TextSelection1),
+    m_TextSelection2             (copy.m_TextSelection2),
+    m_TextAfterSelection1        (copy.m_TextAfterSelection1),
+    m_TextAfterSelection2        (copy.m_TextAfterSelection2),
+    m_MultilineSelectionRectWidth(copy.m_MultilineSelectionRectWidth),
+    m_LoadedScrollbarPathname    (copy.m_LoadedScrollbarPathname)
     {
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != NULL)
@@ -136,35 +135,34 @@ namespace tgui
             this->OBJECT_BORDERS::operator=(right);
             this->OBJECT_ANIMATION::operator=(right);
 
-            std::swap(selectionPointColor,             temp.selectionPointColor);
-            std::swap(selectionPointWidth,             temp.selectionPointWidth);
-            std::swap(m_Size,                          temp.m_Size);
-            std::swap(m_Text,                          temp.m_Text);
-            std::swap(m_DisplayedText,                 temp.m_DisplayedText);
-            std::swap(m_TextSize,                      temp.m_TextSize);
-            std::swap(m_LineHeight,                    temp.m_LineHeight);
-            std::swap(m_Lines,                         temp.m_Lines);
-            std::swap(m_MaxChars,                      temp.m_MaxChars);
-            std::swap(m_TopLine,                       temp.m_TopLine);
-            std::swap(m_VisibleLines,                  temp.m_VisibleLines);
-            std::swap(m_SelChars,                      temp.m_SelChars);
-            std::swap(m_SelStart,                      temp.m_SelStart);
-            std::swap(m_SelEnd,                        temp.m_SelEnd);
-            std::swap(m_SelectionPointPosition,        temp.m_SelectionPointPosition);
-            std::swap(m_SelectionPointVisible,         temp.m_SelectionPointVisible);
-            std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
-            std::swap(m_SelectionTextsNeedUpdate,      temp.m_SelectionTextsNeedUpdate);
-            std::swap(m_SelectedTextBgrColor,          temp.m_SelectedTextBgrColor);
-            std::swap(m_UnfocusedSelectedTextBgrColor, temp.m_UnfocusedSelectedTextBgrColor);
-            std::swap(m_BorderColor,                   temp.m_BorderColor);
-            std::swap(m_TextBeforeSelection,           temp.m_TextBeforeSelection);
-            std::swap(m_TextSelection1,                temp.m_TextSelection1);
-            std::swap(m_TextSelection2,                temp.m_TextSelection2);
-            std::swap(m_TextAfterSelection1,           temp.m_TextAfterSelection1);
-            std::swap(m_TextAfterSelection2,           temp.m_TextAfterSelection2);
-            std::swap(m_MultilineSelectionRectWidth,   temp.m_MultilineSelectionRectWidth);
-            std::swap(m_Scroll,                        temp.m_Scroll);
-            std::swap(m_LoadedScrollbarPathname,       temp.m_LoadedScrollbarPathname);
+            std::swap(selectionPointColor,           temp.selectionPointColor);
+            std::swap(selectionPointWidth,           temp.selectionPointWidth);
+            std::swap(m_Size,                        temp.m_Size);
+            std::swap(m_Text,                        temp.m_Text);
+            std::swap(m_DisplayedText,               temp.m_DisplayedText);
+            std::swap(m_TextSize,                    temp.m_TextSize);
+            std::swap(m_LineHeight,                  temp.m_LineHeight);
+            std::swap(m_Lines,                       temp.m_Lines);
+            std::swap(m_MaxChars,                    temp.m_MaxChars);
+            std::swap(m_TopLine,                     temp.m_TopLine);
+            std::swap(m_VisibleLines,                temp.m_VisibleLines);
+            std::swap(m_SelChars,                    temp.m_SelChars);
+            std::swap(m_SelStart,                    temp.m_SelStart);
+            std::swap(m_SelEnd,                      temp.m_SelEnd);
+            std::swap(m_SelectionPointPosition,      temp.m_SelectionPointPosition);
+            std::swap(m_SelectionPointVisible,       temp.m_SelectionPointVisible);
+            std::swap(m_BackgroundColor,             temp.m_BackgroundColor);
+            std::swap(m_SelectionTextsNeedUpdate,    temp.m_SelectionTextsNeedUpdate);
+            std::swap(m_SelectedTextBgrColor,        temp.m_SelectedTextBgrColor);
+            std::swap(m_BorderColor,                 temp.m_BorderColor);
+            std::swap(m_TextBeforeSelection,         temp.m_TextBeforeSelection);
+            std::swap(m_TextSelection1,              temp.m_TextSelection1);
+            std::swap(m_TextSelection2,              temp.m_TextSelection2);
+            std::swap(m_TextAfterSelection1,         temp.m_TextAfterSelection1);
+            std::swap(m_TextAfterSelection2,         temp.m_TextAfterSelection2);
+            std::swap(m_MultilineSelectionRectWidth, temp.m_MultilineSelectionRectWidth);
+            std::swap(m_Scroll,                      temp.m_Scroll);
+            std::swap(m_LoadedScrollbarPathname,     temp.m_LoadedScrollbarPathname);
         }
 
         return *this;
@@ -583,7 +581,6 @@ namespace tgui
                                const sf::Color& color,
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
-                               const sf::Color& unfocusedSelectedBgrColor,
                                const sf::Color& borderColor,
                                const sf::Color& newSelectionPointColor)
     {
@@ -596,7 +593,6 @@ namespace tgui
         selectionPointColor             = newSelectionPointColor;
         m_BackgroundColor               = backgroundColor;
         m_SelectedTextBgrColor          = selectedBgrColor;
-        m_UnfocusedSelectedTextBgrColor = unfocusedSelectedBgrColor;
         m_BorderColor                   = borderColor;
     }
 
@@ -633,13 +629,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setUnfocusedSelectedTextBackgroundColor(const sf::Color& unfocusedSelectedTextBackgroundColor)
-    {
-        m_UnfocusedSelectedTextBgrColor = unfocusedSelectedTextBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::setBorderColor(const sf::Color& borderColor)
     {
         m_BorderColor = borderColor;
@@ -671,13 +660,6 @@ namespace tgui
     const sf::Color& TextBox::getSelectedTextBackgroundColor()
     {
         return m_SelectedTextBgrColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getUnfocusedSelectedTextBackgroundColor()
-    {
-        return m_UnfocusedSelectedTextBgrColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -904,15 +886,11 @@ namespace tgui
         // If the click occured on the text box
         if (clickedOnTextBox)
         {
-            // Check if the text box was already focused
-            if ((m_Focused) || ((!m_Focused) && (m_SelChars == 0)))
-            {
-                // Set the new selection point
-                setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder)));
+            // Set the new selection point
+            setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder)));
 
-                // Set the mouse down flag
-                m_MouseDown = true;
-            }
+            // Set the mouse down flag
+            m_MouseDown = true;
 
             // The selection point should be visible
             m_SelectionPointVisible = true;
@@ -2074,6 +2052,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::objectUnfocused()
+    {
+        // If there is a selection then undo it now
+        if (m_SelChars)
+            setSelectionPointPosition(m_SelEnd);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::update()
     {
         // Only show/hide the selection point every half second
@@ -2173,12 +2160,7 @@ namespace tgui
 
             // Create the selection background
             sf::RectangleShape selectionBackground1(sf::Vector2f(m_TextSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_LineHeight)));
-
-            // Set the correct fill color
-            if (m_Focused)
-                selectionBackground1.setFillColor(m_SelectedTextBgrColor);
-            else
-                selectionBackground1.setFillColor(m_UnfocusedSelectedTextBgrColor);
+            selectionBackground1.setFillColor(m_SelectedTextBgrColor);
 
             // Draw the selection background
             target.draw(selectionBackground1, states);
@@ -2198,12 +2180,7 @@ namespace tgui
 
                 // Create the second selection background
                 sf::RectangleShape selectionBackground2;
-
-                // Set the correct fill color
-                if (m_Focused)
-                    selectionBackground2.setFillColor(m_SelectedTextBgrColor);
-                else
-                    selectionBackground2.setFillColor(m_UnfocusedSelectedTextBgrColor);
+                selectionBackground2.setFillColor(m_SelectedTextBgrColor);
 
                 // Draw the background rectangles of the selected text
                 for (unsigned int i=0; i<m_MultilineSelectionRectWidth.size(); ++i)
