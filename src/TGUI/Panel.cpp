@@ -56,7 +56,10 @@ namespace tgui
     {
         // Copy the texture of te background image
         if (TGUI_TextureManager.copyTexture(panelToCopy.m_Texture, m_Texture))
+        {
             m_Sprite.setTexture(*m_Texture);
+            m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +168,12 @@ namespace tgui
         // If there is no background image then te panel can be considered loaded
         if (m_LoadedBackgroundImageFilename.empty())
             m_Loaded = true;
+        else
+        {
+            // Set the size of the sprite
+            if (m_Loaded)
+                m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,9 +335,12 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw the background
-        sf::RectangleShape background(Vector2f(static_cast<float>(m_Size.x),  static_cast<float>(m_Size.y)));
-        background.setFillColor(backgroundColor);
-        target.draw(background, states);
+        if (backgroundColor != sf::Color::Transparent)
+        {
+            sf::RectangleShape background(Vector2f(static_cast<float>(m_Size.x),  static_cast<float>(m_Size.y)));
+            background.setFillColor(backgroundColor);
+            target.draw(background, states);
+        }
 
         // Draw the background image if there is one
         if (m_Texture != NULL)
