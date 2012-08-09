@@ -261,6 +261,8 @@ namespace tgui
                             // Continue like normal
                             goto multilineCommentProcessed;
                         }
+                        else // There is no end of the comment in this line
+                            line = "";
                     }
                     else // There is no end of the comment in this line
                         line = "";
