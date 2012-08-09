@@ -396,6 +396,10 @@ namespace tgui
 
     void EventManager::tabKeyPressed()
     {
+        // Don't do anything when the tab key usage is disabled
+        if (tabKeyUsageEnabled == false)
+            return;
+
         // Check if a panel is focused
         if (m_FocusedObject)
         {
@@ -479,6 +483,10 @@ namespace tgui
 
     bool EventManager::focusNextObject()
     {
+        // Don't do anything when the tab key usage is disabled
+        if (tabKeyUsageEnabled == false)
+            return false;
+
         // Another object will be focused. Clear all key flags
         for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
         m_KeyPress[i] = false;

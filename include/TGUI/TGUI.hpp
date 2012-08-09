@@ -124,12 +124,13 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
+    extern tgui::TextureManager  TGUI_TextureManager;
+
+    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
+    extern bool tabKeyUsageEnabled;
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
-extern tgui::TextureManager     TGUI_TextureManager;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
