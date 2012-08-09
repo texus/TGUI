@@ -172,8 +172,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         editBox->selectionPointColor = sf::Color(110, 110, 255);
         editBox->changeColors(sf::Color(200, 200, 200),
                               sf::Color(255, 255, 255),
-                              sf::Color( 10, 110, 255),
-                              sf::Color(110, 110, 255));
+                              sf::Color( 10, 110, 255));
 
         // Store the aspect ratio
         aspectRatios.push_back(editBox->getScaledSize().y / editBox->getScaledSize().x);
@@ -265,6 +264,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Add a loading bar to the form
         tgui::LoadingBar* loadingBar = mainWindow.add<tgui::LoadingBar>(tgui::to_string(currentID));
         loadingBar->load(loadingBars.back().pathname.value);
+        loadingBar->setValue(0);
 
         // Store the aspect ratio
         aspectRatios.push_back(loadingBar->getScaledSize().y / loadingBar->getScaledSize().x);
@@ -286,7 +286,6 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                               sf::Color(200, 200, 200),
                               sf::Color(255, 255, 255),
                               sf::Color( 10, 110, 255),
-                              sf::Color(110, 110, 255),
                               sf::Color::Black);
 
         // Store the aspect ratio
@@ -713,285 +712,133 @@ void Builder::deleteObject()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Builder::moveObjectX(float pixels, unsigned int id, bool delay)
-{
-    // Check if there is a delay
-    if (delay == true)
-    {
-        // Search for the delay of the current selected object
-        for (unsigned int i=0; i<resizeObjectDelays.size(); ++i)
-        {
-            // If the resize delay is found then add the position change to it
-            if (resizeObjectDelays[i].m_Id == id)
-            {
-                resizeObjectDelays[i].m_AddToPositionX += pixels;
-                break;
-            }
-        }
-    }
-    else // There is no delay
-    {
-        unsigned int i;
-
-        // Check if the object that is being moved is still selected
-        if (id == currentID)
-        {
-            // Get the pointer to the property
-            tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Left");
-
-            // Adjust the property
-            float left = static_cast<float>(atof(editbox->getText().c_str()));
-            left += pixels;
-
-            // Change the contents of the edit box
-            editbox->setText(tgui::to_string(left));
-
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    updateProperty(Property_##Object##_Left); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
-        else // The object is no longer selected
-        {
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    objects[i].left.value += pixels; \
-                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void Builder::moveObjectY(float pixels, unsigned int id, bool delay)
-{
-     // Check if there is a delay
-    if (delay == true)
-    {
-        // Search for the delay of the current selected object
-        for (unsigned int i=0; i<resizeObjectDelays.size(); ++i)
-        {
-            // If the resize delay is found then add the position change to it
-            if (resizeObjectDelays[i].m_Id == id)
-            {
-                resizeObjectDelays[i].m_AddToPositionY += pixels;
-                break;
-            }
-        }
-    }
-    else // There is no delay
-    {
-        unsigned int i;
-
-        // Check if the object that is being moved is still selected
-        if (id == currentID)
-        {
-            // Get the pointer to the property
-            tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Top");
-
-            // Adjust the property
-            float top = static_cast<float>(atof(editbox->getText().c_str()));
-            top += pixels;
-
-            // Change the contents of the edit box
-            editbox->setText(tgui::to_string(top));
-
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    updateProperty(Property_##Object##_Top); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
-        else // The object is no longer selected
-        {
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    objects[i].top.value += pixels; \
-                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setPosition(objects[i].left.value, objects[i].top.value); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void Builder::resizeObject(float addToWidth, float addToHeight, unsigned int id, int delay)
+void Builder::moveObjectX(float pixels)
 {
     unsigned int i;
 
-    if (delay == 0)
-    {
-        // Check if the object that is being scaled is still selected
-        if (id == currentID)
-        {
-            // Get the pointer to the properties
-            tgui::EditBox* editboxWidth = propertyWindow.get<tgui::EditBox>("text_Width");
-            tgui::EditBox* editboxHeight = propertyWindow.get<tgui::EditBox>("text_Height");
+    // Get the pointer to the property
+    tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Left");
 
-            // Adjust the properties
-            float width = static_cast<float>(atof(editboxWidth->getText().c_str()));
-            float height = static_cast<float>(atof(editboxHeight->getText().c_str()));
-            width += addToWidth;
-            height += addToHeight;
+    // Adjust the property
+    float left = static_cast<float>(atof(editbox->getText().c_str()));
+    left += pixels;
 
-            // Change the contents of the edit boxes
-            editboxWidth->setText(tgui::to_string(width));
-            editboxHeight->setText(tgui::to_string(height));
+    // Change the contents of the edit box
+    editbox->setText(tgui::to_string(left));
 
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    updateProperty(Property_##Object##_Width); \
-                    updateProperty(Property_##Object##_Height); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
-        else // The object is no longer selected
-        {
-            #define FindObjectWithID(Object, objects) \
-            for (i=0; i<objects.size(); ++i) \
-            { \
-                if (objects[i].id == id) \
-                { \
-                    objects[i].width.value += addToWidth; \
-                    objects[i].height.value += addToHeight; \
-                    mainWindow.get<tgui::Object>(tgui::to_string(id))->setSize(objects[i].width.value, objects[i].height.value); \
-                    return; \
-                } \
-            }
-
-            FindObjectWithID(Picture, pictures)
-            FindObjectWithID(Button, buttons)
-            FindObjectWithID(Checkbox, checkboxes)
-            FindObjectWithID(Checkbox, radioButtons)
-            FindObjectWithID(Label, labels)
-            FindObjectWithID(EditBox, editBoxes)
-            FindObjectWithID(Listbox, listboxes)
-            FindObjectWithID(ComboBox, comboBoxes)
-            FindObjectWithID(Slider, sliders)
-            FindObjectWithID(Scrollbar, scrollbars)
-            FindObjectWithID(LoadingBar, loadingBars)
-            FindObjectWithID(TextBox, textBoxes)
-
-            #undef FindObjectWithID
-        }
+    #define FindObjectWithID(Object, objects) \
+    for (i=0; i<objects.size(); ++i) \
+    { \
+        if (objects[i].id == currentID) \
+        { \
+            updateProperty(Property_##Object##_Left); \
+            return; \
+        } \
     }
-    else // There is a delay
-    {
-        // Check if there already was a delay
-        for (i=0; i<resizeObjectDelays.size(); ++i)
-        {
-            if (id == resizeObjectDelays[i].m_Id)
-            {
-                // There already was a delay, so reset the timer and add the positions
-                resizeObjectDelays[i].m_Delay = DEFAULT_OBJECT_RESIZE_DELAY;
-                resizeObjectDelays[i].m_AddToWidth += addToWidth;
-                resizeObjectDelays[i].m_AddToHeight += addToHeight;
-                return;
-            }
-        }
 
-        // There was no delay yet, so set one now
-        resizeObjectDelays.push_back(ObjectResizeDelay(addToWidth, addToHeight, id, delay));
+    FindObjectWithID(Picture, pictures)
+    FindObjectWithID(Button, buttons)
+    FindObjectWithID(Checkbox, checkboxes)
+    FindObjectWithID(Checkbox, radioButtons)
+    FindObjectWithID(Label, labels)
+    FindObjectWithID(EditBox, editBoxes)
+    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ComboBox, comboBoxes)
+    FindObjectWithID(Slider, sliders)
+    FindObjectWithID(Scrollbar, scrollbars)
+    FindObjectWithID(LoadingBar, loadingBars)
+    FindObjectWithID(TextBox, textBoxes)
+
+    #undef FindObjectWithID
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Builder::moveObjectY(float pixels)
+{
+    unsigned int i;
+
+    // Get the pointer to the property
+    tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Top");
+
+    // Adjust the property
+    float top = static_cast<float>(atof(editbox->getText().c_str()));
+    top += pixels;
+
+    // Change the contents of the edit box
+    editbox->setText(tgui::to_string(top));
+
+    #define FindObjectWithID(Object, objects) \
+    for (i=0; i<objects.size(); ++i) \
+    { \
+        if (objects[i].id == currentID) \
+        { \
+            updateProperty(Property_##Object##_Top); \
+            return; \
+        } \
     }
+
+    FindObjectWithID(Picture, pictures)
+    FindObjectWithID(Button, buttons)
+    FindObjectWithID(Checkbox, checkboxes)
+    FindObjectWithID(Checkbox, radioButtons)
+    FindObjectWithID(Label, labels)
+    FindObjectWithID(EditBox, editBoxes)
+    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ComboBox, comboBoxes)
+    FindObjectWithID(Slider, sliders)
+    FindObjectWithID(Scrollbar, scrollbars)
+    FindObjectWithID(LoadingBar, loadingBars)
+    FindObjectWithID(TextBox, textBoxes)
+
+    #undef FindObjectWithID
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Builder::resizeObject(float addToWidth, float addToHeight)
+{
+    unsigned int i;
+
+    // Get the pointer to the properties
+    tgui::EditBox* editboxWidth = propertyWindow.get<tgui::EditBox>("text_Width");
+    tgui::EditBox* editboxHeight = propertyWindow.get<tgui::EditBox>("text_Height");
+
+    // Adjust the properties
+    float width = static_cast<float>(atof(editboxWidth->getText().c_str()));
+    float height = static_cast<float>(atof(editboxHeight->getText().c_str()));
+    width += addToWidth;
+    height += addToHeight;
+
+    // Change the contents of the edit boxes
+    editboxWidth->setText(tgui::to_string(width));
+    editboxHeight->setText(tgui::to_string(height));
+
+    #define FindObjectWithID(Object, objects) \
+    for (i=0; i<objects.size(); ++i) \
+    { \
+        if (objects[i].id == currentID) \
+        { \
+            updateProperty(Property_##Object##_Width); \
+            updateProperty(Property_##Object##_Height); \
+            return; \
+        } \
+    }
+
+    FindObjectWithID(Picture, pictures)
+    FindObjectWithID(Button, buttons)
+    FindObjectWithID(Checkbox, checkboxes)
+    FindObjectWithID(Checkbox, radioButtons)
+    FindObjectWithID(Label, labels)
+    FindObjectWithID(EditBox, editBoxes)
+    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ComboBox, comboBoxes)
+    FindObjectWithID(Slider, sliders)
+    FindObjectWithID(Scrollbar, scrollbars)
+    FindObjectWithID(LoadingBar, loadingBars)
+    FindObjectWithID(TextBox, textBoxes)
+
+    #undef FindObjectWithID
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1248,7 +1095,6 @@ bool Builder::loadForm()
                 editBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
                 editBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
                 editBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(object->getSelectedTextBackgroundColor());
-                editBoxes.back().unfocusedSelectedTextBackgroundColor.value = tgui::convertColorToString(object->getUnfocusedSelectedTextBackgroundColor());
                 editBoxes.back().selectionPointColor.value = tgui::convertColorToString(object->selectionPointColor);
                 editBoxes.back().selectionPointWidth.value = object->selectionPointWidth;
                 editBoxes.back().callbackID.value = object->callbackID;
@@ -1264,7 +1110,7 @@ bool Builder::loadForm()
                 realObject->setPasswordChar(object->getPasswordChar());
                 realObject->setMaximumCharacters(object->getMaximumCharacters());
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
-                realObject->changeColors(object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor());
+                realObject->changeColors(object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor());
                 realObject->selectionPointColor = object->selectionPointColor;
                 realObject->selectionPointWidth = object->selectionPointWidth;
                 realObject->callbackID = object->callbackID;
@@ -1473,7 +1319,6 @@ bool Builder::loadForm()
                 textBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
                 textBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
                 textBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(object->getSelectedTextBackgroundColor());
-                textBoxes.back().unfocusedSelectedTextBackgroundColor.value = tgui::convertColorToString(object->getUnfocusedSelectedTextBackgroundColor());
                 textBoxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
                 textBoxes.back().selectionPointColor.value = tgui::convertColorToString(object->selectionPointColor);
                 textBoxes.back().selectionPointWidth.value = object->selectionPointWidth;
@@ -1489,7 +1334,7 @@ bool Builder::loadForm()
                 realObject->setTextFont(mainWindow.globalFont);
                 realObject->setMaximumCharacters(object->getMaximumCharacters());
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
-                realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getUnfocusedSelectedTextBackgroundColor(), object->getBorderColor());
+                realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedTextColor(), object->getSelectedTextBackgroundColor(), object->getBorderColor());
                 realObject->selectionPointColor = object->selectionPointColor;
                 realObject->selectionPointWidth = object->selectionPointWidth;
                 realObject->callbackID = object->callbackID;
@@ -1860,11 +1705,6 @@ void Builder::saveForm()
             line = TAB TAB "SelectedTextBackgroundColor = ";
             AddBrackets(editBoxes[objectIndex].selectedTextBackgroundColor.value)
             line.append(editBoxes[objectIndex].selectedTextBackgroundColor.value).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "UnfocusedSelectedTextBackgroundColor = ";
-            AddBrackets(editBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value)
-            line.append(editBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectionPointColor = ";
@@ -2313,11 +2153,6 @@ void Builder::saveForm()
             line = TAB TAB "SelectedTextBackgroundColor = ";
             AddBrackets(textBoxes[objectIndex].selectedTextBackgroundColor.value)
             line.append(textBoxes[objectIndex].selectedTextBackgroundColor.value).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "UnfocusedSelectedTextBackgroundColor = ";
-            AddBrackets(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value)
-            line.append(textBoxes[objectIndex].unfocusedSelectedTextBackgroundColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "BorderColor         = ";

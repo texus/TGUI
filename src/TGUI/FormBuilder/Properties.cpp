@@ -1557,7 +1557,6 @@ void PropertiesEditBox::addProperties(tgui::Window& window)
     textColor.addProperty(window, Property_EditBox_TextColor);
     selectedTextColor.addProperty(window, Property_EditBox_SelectedTextColor);
     selectedTextBackgroundColor.addProperty(window, Property_EditBox_SelectedTextBackgroundColor);
-    unfocusedSelectedTextBackgroundColor.addProperty(window, Property_EditBox_UnfocusedSelectedTextBackgroundColor);
     selectionPointColor.addProperty(window, Property_EditBox_SelectionPointColor);
     selectionPointWidth.addProperty(window, Property_EditBox_SelectionPointWidth);
     callbackID.addProperty(window, Property_EditBox_CallbackID);
@@ -1824,36 +1823,6 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         }
         else // The string is empty, so use the default color
             editBox->setSelectedTextBackgroundColor(sf::Color::White);
-    }
-    else if (propertyNumber == Property_EditBox_UnfocusedSelectedTextBackgroundColor)
-    {
-        // Store the new color
-        unfocusedSelectedTextBackgroundColor.value = propertyWindow.get<tgui::EditBox>("text_UnfocusedSelectedTextBackgroundColor")->getText();
-
-        // Get the pointer to the edit box
-        tgui::EditBox* editBox = formWindow.get<tgui::EditBox>(tgui::to_string(id));
-
-        // Only continue when the string is not empty
-        if (unfocusedSelectedTextBackgroundColor.value.empty() == false)
-        {
-            std::string strColor = unfocusedSelectedTextBackgroundColor.value;
-
-            // If there is no bracket at the beginning then add one
-            if (strColor[0] != '(')
-                strColor.insert(strColor.begin(), '(');
-
-            // If there is no bracket at the end then add one
-            if (strColor[strColor.length()-1] != ')')
-                strColor.insert(strColor.end(), ')');
-
-            // Convert the string to a color
-            sf::Color color = tgui::extractColor(strColor);
-
-            // Use the new color
-            editBox->setUnfocusedSelectedTextBackgroundColor(color);
-        }
-        else // The string is empty, so use the default color
-            editBox->setUnfocusedSelectedTextBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_EditBox_SelectionPointColor)
     {
@@ -3382,7 +3351,6 @@ void PropertiesTextBox::addProperties(tgui::Window& window)
     textColor.addProperty(window, Property_TextBox_TextColor);
     selectedTextColor.addProperty(window, Property_TextBox_SelectedTextColor);
     selectedTextBackgroundColor.addProperty(window, Property_TextBox_SelectedTextBackgroundColor);
-    unfocusedSelectedTextBackgroundColor.addProperty(window, Property_TextBox_UnfocusedSelectedTextBackgroundColor);
     borderColor.addProperty(window, Property_TextBox_BorderColor);
     selectionPointColor.addProperty(window, Property_TextBox_SelectionPointColor);
     selectionPointWidth.addProperty(window, Property_TextBox_SelectionPointWidth);
@@ -3650,36 +3618,6 @@ void PropertiesTextBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         }
         else // The string is empty, so use the default color
             textBox->setSelectedTextBackgroundColor(sf::Color::White);
-    }
-    else if (propertyNumber == Property_TextBox_UnfocusedSelectedTextBackgroundColor)
-    {
-        // Store the new color
-        unfocusedSelectedTextBackgroundColor.value = propertyWindow.get<tgui::EditBox>("text_UnfocusedSelectedTextBackgroundColor")->getText();
-
-        // Get the pointer to the text box
-        tgui::TextBox* textBox = formWindow.get<tgui::TextBox>(tgui::to_string(id));
-
-        // Only continue when the string is not empty
-        if (unfocusedSelectedTextBackgroundColor.value.empty() == false)
-        {
-            std::string strColor = unfocusedSelectedTextBackgroundColor.value;
-
-            // If there is no bracket at the beginning then add one
-            if (strColor[0] != '(')
-                strColor.insert(strColor.begin(), '(');
-
-            // If there is no bracket at the end then add one
-            if (strColor[strColor.length()-1] != ')')
-                strColor.insert(strColor.end(), ')');
-
-            // Convert the string to a color
-            sf::Color color = tgui::extractColor(strColor);
-
-            // Use the new color
-            textBox->setUnfocusedSelectedTextBackgroundColor(color);
-        }
-        else // The string is empty, so use the default color
-            textBox->setUnfocusedSelectedTextBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_TextBox_BorderColor)
     {

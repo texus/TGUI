@@ -41,8 +41,6 @@ int main()
     chdir(path);
 #endif
 
-    sf::Clock resizeDelayClock;
-
     Builder app;
 
     sf::Font font;
@@ -142,28 +140,28 @@ int main()
                         // The mouse should have moved at least 10 pixels left
                         while (event.mouseMove.x < app.dragPos.x - 10)
                         {
-                            app.moveObjectX(-10, app.currentID);
+                            app.moveObjectX(-10);
                             app.dragPos.x -=10;
                         }
 
                         // The mouse should have moved at least 10 pixels right
                         while (event.mouseMove.x > app.dragPos.x + 10)
                         {
-                            app.moveObjectX(10, app.currentID);
+                            app.moveObjectX(10);
                             app.dragPos.x +=10;
                         }
 
                         // The mouse should have moved at least 10 pixels up
                         while (event.mouseMove.y < app.dragPos.y - 10)
                         {
-                            app.moveObjectY(-10, app.currentID);
+                            app.moveObjectY(-10);
                             app.dragPos.y -=10;
                         }
 
                         // The mouse should have moved at least 10 pixels down
                         while (event.mouseMove.y > app.dragPos.y + 10)
                         {
-                            app.moveObjectY(10, app.currentID);
+                            app.moveObjectY(10);
                             app.dragPos.y +=10;
                         }
                     }
@@ -179,14 +177,14 @@ int main()
                                 while (event.mouseMove.x > app.dragPos.x + 10)
                                 {
                                     app.dragPos.x += 10;
-                                    app.resizeObject(10, 0, app.currentID);
+                                    app.resizeObject(10, 0);
                                 }
 
                                 // Check if you are pulling the right square to the left
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
                                     app.dragPos.x -= 10;
-                                    app.resizeObject(-10, 0, app.currentID);
+                                    app.resizeObject(-10, 0);
                                 }
 
                                 // Store the new aspect ratio of the object
@@ -198,16 +196,16 @@ int main()
                                 while (event.mouseMove.x > app.dragPos.x + 10)
                                 {
                                     app.dragPos.x += 10;
-                                    app.resizeObject(-10, 0, app.currentID);
-                                    app.moveObjectX(10, app.currentID, true);
+                                    app.resizeObject(-10, 0);
+                                    app.moveObjectX(10);
                                 }
 
                                 // Check if you are pulling the left square to the left
                                 while (event.mouseMove.x < app.dragPos.x - 10)
                                 {
                                     app.dragPos.x -= 10;
-                                    app.resizeObject(10, 0, app.currentID);
-                                    app.moveObjectX(-10, app.currentID, true);
+                                    app.resizeObject(10, 0);
+                                    app.moveObjectX(-10);
                                 }
 
                                 // Store the new aspect ratio of the object
@@ -219,14 +217,14 @@ int main()
                                 while (event.mouseMove.y > app.dragPos.y + 10)
                                 {
                                     app.dragPos.y += 10;
-                                    app.resizeObject(0, 10, app.currentID);
+                                    app.resizeObject(0, 10);
                                 }
 
                                 // Check if you are pulling the bottom square up
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(0, -10, app.currentID);
+                                    app.resizeObject(0, -10);
                                 }
 
                                 // Store the new aspect ratio of the object
@@ -238,16 +236,16 @@ int main()
                                 while (event.mouseMove.y > app.dragPos.y + 10)
                                 {
                                     app.dragPos.y += 10;
-                                    app.resizeObject(0, -10, app.currentID);
-                                    app.moveObjectY(10, app.currentID, true);
+                                    app.resizeObject(0, -10);
+                                    app.moveObjectY(10);
                                 }
 
                                 // Check if you are pulling the top square up
                                 while (event.mouseMove.y < app.dragPos.y - 10)
                                 {
                                     app.dragPos.y -= 10;
-                                    app.resizeObject(0, 10, app.currentID);
-                                    app.moveObjectY(-10, app.currentID, true);
+                                    app.resizeObject(0, 10);
+                                    app.moveObjectY(-10);
                                 }
 
                                 // Store the new aspect ratio of the object
@@ -268,9 +266,9 @@ int main()
                                         {
                                             app.dragPos.x -= 10;
                                             app.dragPos.y -= ratio;
-                                            app.resizeObject(10, ratio, app.currentID);
-                                            app.moveObjectX(-10, app.currentID, true);
-                                            app.moveObjectY(-ratio, app.currentID, true);
+                                            app.resizeObject(10, ratio);
+                                            app.moveObjectX(-10);
+                                            app.moveObjectY(-ratio);
                                         }
 
                                         // Check if you are pulling the top left square to the bottom right side
@@ -278,9 +276,9 @@ int main()
                                         {
                                             app.dragPos.x += 10;
                                             app.dragPos.y += ratio;
-                                            app.resizeObject(-10, -ratio, app.currentID);
-                                            app.moveObjectX(10, app.currentID, true);
-                                            app.moveObjectY(ratio, app.currentID, true);
+                                            app.resizeObject(-10, -ratio);
+                                            app.moveObjectX(10);
+                                            app.moveObjectY(ratio);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_TOP_RIGHT)
@@ -290,8 +288,8 @@ int main()
                                         {
                                             app.dragPos.x += 10;
                                             app.dragPos.y -= ratio;
-                                            app.resizeObject(10, ratio, app.currentID);
-                                            app.moveObjectY(-ratio, app.currentID, true);
+                                            app.resizeObject(10, ratio);
+                                            app.moveObjectY(-ratio);
                                         }
 
                                         // Check if you are pulling the top right square to the bottom left side
@@ -299,8 +297,8 @@ int main()
                                         {
                                             app.dragPos.x -= 10;
                                             app.dragPos.y += ratio;
-                                            app.resizeObject(-10, -ratio, app.currentID);
-                                            app.moveObjectY(ratio, app.currentID, true);
+                                            app.resizeObject(-10, -ratio);
+                                            app.moveObjectY(ratio);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
@@ -310,8 +308,8 @@ int main()
                                         {
                                             app.dragPos.x -= 10;
                                             app.dragPos.y += ratio;
-                                            app.resizeObject(10, ratio, app.currentID);
-                                            app.moveObjectX(-10, app.currentID, true);
+                                            app.resizeObject(10, ratio);
+                                            app.moveObjectX(-10);
                                         }
 
                                         // Check if you are pulling the top left square to the upper right side
@@ -319,8 +317,8 @@ int main()
                                         {
                                             app.dragPos.x += 10;
                                             app.dragPos.y -= ratio;
-                                            app.resizeObject(-10, -ratio, app.currentID);
-                                            app.moveObjectX(10, app.currentID, true);
+                                            app.resizeObject(-10, -ratio);
+                                            app.moveObjectX(10);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
@@ -330,7 +328,7 @@ int main()
                                         {
                                             app.dragPos.x += 10;
                                             app.dragPos.y += ratio;
-                                            app.resizeObject(10, ratio, app.currentID);
+                                            app.resizeObject(10, ratio);
                                         }
 
                                         // Check if you are pulling the bottom right square to the upper left side
@@ -338,7 +336,7 @@ int main()
                                         {
                                             app.dragPos.x -= 10;
                                             app.dragPos.y -= ratio;
-                                            app.resizeObject(-10, -ratio, app.currentID);
+                                            app.resizeObject(-10, -ratio);
                                         }
                                     }
                                 }
@@ -353,9 +351,9 @@ int main()
                                         {
                                             app.dragPos.x -= ratio;
                                             app.dragPos.y -= 10;
-                                            app.resizeObject(ratio, 10, app.currentID);
-                                            app.moveObjectX(-ratio, app.currentID, true);
-                                            app.moveObjectY(-10, app.currentID, true);
+                                            app.resizeObject(ratio, 10);
+                                            app.moveObjectX(-ratio);
+                                            app.moveObjectY(-10);
                                         }
 
                                         // Check if you are pulling the top left square to the bottom right side
@@ -363,9 +361,9 @@ int main()
                                         {
                                             app.dragPos.x += ratio;
                                             app.dragPos.y += 10;
-                                            app.resizeObject(-ratio, -10, app.currentID);
-                                            app.moveObjectX(ratio, app.currentID, true);
-                                            app.moveObjectY(10, app.currentID, true);
+                                            app.resizeObject(-ratio, -10);
+                                            app.moveObjectX(ratio);
+                                            app.moveObjectY(10);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_TOP_RIGHT)
@@ -375,8 +373,8 @@ int main()
                                         {
                                             app.dragPos.x += ratio;
                                             app.dragPos.y -= 10;
-                                            app.resizeObject(ratio, 10, app.currentID);
-                                            app.moveObjectY(-10, app.currentID, true);
+                                            app.resizeObject(ratio, 10);
+                                            app.moveObjectY(-10);
                                         }
 
                                         // Check if you are pulling the top right square to the bottom left side
@@ -384,8 +382,8 @@ int main()
                                         {
                                             app.dragPos.x -= ratio;
                                             app.dragPos.y += 10;
-                                            app.resizeObject(-ratio, -10, app.currentID);
-                                            app.moveObjectY(10, app.currentID, true);
+                                            app.resizeObject(-ratio, -10);
+                                            app.moveObjectY(10);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_BOTTOM_LEFT)
@@ -395,8 +393,8 @@ int main()
                                         {
                                             app.dragPos.x -= ratio;
                                             app.dragPos.y += 10;
-                                            app.resizeObject(ratio, 10, app.currentID);
-                                            app.moveObjectX(-ratio, app.currentID, true);
+                                            app.resizeObject(ratio, 10);
+                                            app.moveObjectX(-ratio);
                                         }
 
                                         // Check if you are pulling the top left square to the upper right side
@@ -404,8 +402,8 @@ int main()
                                         {
                                             app.dragPos.x += ratio;
                                             app.dragPos.y -= 10;
-                                            app.resizeObject(-ratio, -10, app.currentID);
-                                            app.moveObjectX(ratio, app.currentID, true);
+                                            app.resizeObject(-ratio, -10);
+                                            app.moveObjectX(ratio);
                                         }
                                     }
                                     else if (app.draggingSquare == SQUARE_BOTTOM_RIGHT)
@@ -415,7 +413,7 @@ int main()
                                         {
                                             app.dragPos.x += ratio;
                                             app.dragPos.y += 10;
-                                            app.resizeObject(ratio, 10, app.currentID);
+                                            app.resizeObject(ratio, 10);
                                         }
 
                                         // Check if you are pulling the bottom right square to the upper left side
@@ -423,7 +421,7 @@ int main()
                                         {
                                             app.dragPos.x -= ratio;
                                             app.dragPos.y -= 10;
-                                            app.resizeObject(-ratio, -10, app.currentID);
+                                            app.resizeObject(-ratio, -10);
                                         }
                                     }
                                 }
@@ -512,34 +510,6 @@ int main()
 
                 // Just in case the width of height would have changed, store the aspect ratio
                 app.storeObjectsNewAspectRatio();
-            }
-        }
-
-        // Get the elapsed time
-        int elapsedTime = resizeDelayClock.getElapsedTime().asMilliseconds();
-        resizeDelayClock.restart();
-
-        // Check if there are resize delays
-        for (unsigned int i=0; i<app.resizeObjectDelays.size(); ++i)
-        {
-            app.resizeObjectDelays[i].m_Delay -= elapsedTime;
-
-            // Check if the delay reached 0
-            if (app.resizeObjectDelays[i].m_Delay <= 0)
-            {
-                // Execute the resize
-                app.resizeObject(app.resizeObjectDelays[i].m_AddToWidth, app.resizeObjectDelays[i].m_AddToHeight, app.resizeObjectDelays[i].m_Id, 0);
-
-                // If needed then also change the position of the object
-                if (app.resizeObjectDelays[i].m_AddToPositionX != 0)
-                    app.moveObjectX(app.resizeObjectDelays[i].m_AddToPositionX, app.resizeObjectDelays[i].m_Id);
-
-                if (app.resizeObjectDelays[i].m_AddToPositionY != 0)
-                    app.moveObjectY(app.resizeObjectDelays[i].m_AddToPositionY, app.resizeObjectDelays[i].m_Id);
-
-                // Remove the object from the list
-                app.resizeObjectDelays.erase(app.resizeObjectDelays.begin() + i);
-                --i;
             }
         }
 

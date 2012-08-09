@@ -36,8 +36,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_OBJECT_RESIZE_DELAY 30
-
 #define OBJECT_STYLE "Black"
 
 #define VERSION "v0.2.1-dev"
@@ -58,29 +56,6 @@ enum squares
     SQUARE_BOTTOM,
     SQUARE_RIGHT,
     SQUARE_BOTTOM_RIGHT
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-struct ObjectResizeDelay
-{
-    ObjectResizeDelay(float addToWidth, float addToHeight, unsigned int id, int delay)
-    {
-        m_AddToWidth     = addToWidth;
-        m_AddToHeight    = addToHeight;
-        m_Id             = id;
-        m_Delay          = delay;
-        m_AddToPositionX = 0;
-        m_AddToPositionY = 0;
-    }
-
-    float        m_AddToWidth;
-    float        m_AddToHeight;
-    unsigned int m_Id;
-    int          m_Delay;
-
-    float        m_AddToPositionX;
-    float        m_AddToPositionY;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,12 +93,11 @@ struct Builder
     void deleteObject();
 
     // Move the currently selected object
-    void moveObjectX(float pixels, unsigned int id, bool delay = false);
-    void moveObjectY(float pixels, unsigned int id, bool delay = false);
+    void moveObjectX(float pixels);
+    void moveObjectY(float pixels);
 
-    // This function is called to resize an object. To avoid that the object received many resize requests,
-    // there will be a delay. If no other request is sent during the delay then the object will be resized.
-    void resizeObject(float addToWidth, float addToHeight, unsigned id, int delay = DEFAULT_OBJECT_RESIZE_DELAY);
+    // This function is called to resize an object.
+    void resizeObject(float addToWidth, float addToHeight);
 
     // Calculates and stores the new aspect ratio of the object
     void storeObjectsNewAspectRatio();
@@ -165,9 +139,6 @@ struct Builder
 
     // Where was the mouse when dragging?
     sf::Vector2f dragPos;
-
-    // This will store the delays for resizing objects
-    std::vector<ObjectResizeDelay> resizeObjectDelays;
 
     // Hold the aspect ratios of the objects
     std::vector<float> aspectRatios;
