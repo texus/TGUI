@@ -57,7 +57,8 @@ namespace tgui
     m_TextureFocused_L      (NULL),
     m_TextureFocused_M      (NULL),
     m_TextureFocused_R      (NULL),
-    m_LoadedPathname        ("")
+    m_LoadedPathname        (""),
+    m_PossibleDoubleClick   (false)
     {
         m_ObjectType = editBox;
         m_AnimatedObject = true;
@@ -92,7 +93,8 @@ namespace tgui
     m_TextBeforeSelection   (copy.m_TextBeforeSelection),
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
-    m_LoadedPathname        (copy.m_LoadedPathname)
+    m_LoadedPathname        (copy.m_LoadedPathname),
+    m_PossibleDoubleClick   (copy.m_PossibleDoubleClick)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))       m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -176,6 +178,7 @@ namespace tgui
             std::swap(m_SpriteFocused_M,        temp.m_SpriteFocused_M);
             std::swap(m_SpriteFocused_R,        temp.m_SpriteFocused_R);
             std::swap(m_LoadedPathname,         temp.m_LoadedPathname);
+            std::swap(m_PossibleDoubleClick,    temp.m_PossibleDoubleClick);
         }
 
         return *this;
@@ -1249,8 +1252,62 @@ namespace tgui
     {
         TGUI_UNUSED_PARAM(y);
 
-        // Set the new selection point
-        setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder)));
+        // Check if this is a double click
+        if (m_PossibleDoubleClick)
+        {
+            // The next click is going to be a normal one again
+            m_PossibleDoubleClick = false;
+
+            // Select the whole text
+            m_SelStart = 0;
+            m_SelEnd = m_Text.length();
+            m_SelChars = m_Text.length();
+
+            // Change the three texts
+            m_TextBeforeSelection.setString("");
+            m_TextSelection.setString(m_DisplayedText);
+            m_TextAfterSelection.setString("");
+
+            // Calculate the width of the edit box
+            float width;
+            if (m_SplitImage)
+                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
+                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
+            else
+                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
+
+            // If the width is too small then nothing should be displayed
+            if (width < 0)
+                width = 0;
+
+            // Make sure the last part of the text becomes visible
+            m_RightTextCrop = m_Text.length();
+
+            // Try to display as much characters as possible
+            while ((m_TextSelection.findCharacterPos(m_RightTextCrop).x - m_TextSelection.findCharacterPos(m_LeftTextCrop).x) > width)
+                ++m_LeftTextCrop;
+
+            // Calculate the position of the selection point
+            float position = m_TextSelection.findCharacterPos(m_SelEnd).x;
+
+            // Check if scrolling is enabled, if so then adjust the position
+            if (m_LimitTextWidth == false)
+                position -= m_TextSelection.findCharacterPos(m_LeftTextCrop).x;
+
+            // Now change the position of the selection point
+            if (m_SplitImage)
+                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y) + position);
+            else
+                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x) + position);
+        }
+        else // No double clicking
+        {
+            // Set the new selection point
+            setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder)));
+
+            // If the next click comes soon enough then it will be a double click
+            m_PossibleDoubleClick = true;
+        }
 
         // Set the mouse down flag
         m_MouseDown = true;
@@ -1965,6 +2022,9 @@ namespace tgui
 
         // Switch the value of the visible flag
         m_SelectionPointVisible = m_SelectionPointVisible ? false : true;
+
+        // Too slow for double clicking
+        m_PossibleDoubleClick = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

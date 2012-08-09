@@ -57,7 +57,8 @@ namespace tgui
     m_SelectionPointVisible   (true),
     m_SelectionTextsNeedUpdate(true),
     m_Scroll                  (NULL),
-    m_LoadedScrollbarPathname ("")
+    m_LoadedScrollbarPathname (""),
+    m_PossibleDoubleClick     (false)
     {
         m_ObjectType = textBox;
         m_AnimatedObject = true;
@@ -100,7 +101,8 @@ namespace tgui
     m_TextAfterSelection1        (copy.m_TextAfterSelection1),
     m_TextAfterSelection2        (copy.m_TextAfterSelection2),
     m_MultilineSelectionRectWidth(copy.m_MultilineSelectionRectWidth),
-    m_LoadedScrollbarPathname    (copy.m_LoadedScrollbarPathname)
+    m_LoadedScrollbarPathname    (copy.m_LoadedScrollbarPathname),
+    m_PossibleDoubleClick        (copy.m_PossibleDoubleClick)
     {
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != NULL)
@@ -163,6 +165,7 @@ namespace tgui
             std::swap(m_MultilineSelectionRectWidth, temp.m_MultilineSelectionRectWidth);
             std::swap(m_Scroll,                      temp.m_Scroll);
             std::swap(m_LoadedScrollbarPathname,     temp.m_LoadedScrollbarPathname);
+            std::swap(m_PossibleDoubleClick,         temp.m_PossibleDoubleClick);
         }
 
         return *this;
@@ -886,8 +889,82 @@ namespace tgui
         // If the click occured on the text box
         if (clickedOnTextBox)
         {
-            // Set the new selection point
-            setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder)));
+            // Check if this is a double click
+            if (m_PossibleDoubleClick)
+            {
+                // The next click is going to be a normal one again
+                m_PossibleDoubleClick = false;
+
+                // Select the whole text
+                m_SelStart = 0;
+                m_SelEnd = m_Text.length();
+                m_SelChars = m_Text.length();
+
+                // Update the text
+                m_SelectionTextsNeedUpdate = true;
+                updateDisplayedText();
+
+                // Check if there is a scrollbar
+                if (m_Scroll != NULL)
+                {
+                    unsigned int newlines = 0;
+                    unsigned int newlinesAdded = 0;
+                    unsigned int totalLines = 0;
+
+                    // Loop through all characters
+                    for (unsigned int i=0; i<m_SelEnd; ++i)
+                    {
+                        // Make sure there is no newline in the text
+                        if (m_Text[i] != '\n')
+                        {
+                            // Check if there is a newline in the displayed text
+                            if (m_DisplayedText[i + newlinesAdded] == '\n')
+                            {
+                                // A newline was added here
+                                ++newlinesAdded;
+                                ++totalLines;
+
+                                if (i < m_SelEnd)
+                                    ++newlines;
+                            }
+                        }
+                        else // The text already contains a newline
+                        {
+                            ++totalLines;
+
+                            if (i < m_SelEnd)
+                                ++newlines;
+                        }
+                    }
+
+                    // Check if the selection point is located above the view
+                    if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->m_Value % m_LineHeight > 0)))
+                    {
+                        m_Scroll->setValue(newlines * m_LineHeight);
+                        updateDisplayedText();
+                    }
+
+                    // Check if the selection point is below the view
+                    else if (newlines > m_TopLine + m_VisibleLines - 2)
+                    {
+                        m_Scroll->setValue((newlines - m_VisibleLines + 1) * m_LineHeight);
+                        updateDisplayedText();
+                    }
+                    else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->m_Value % m_LineHeight > 0))
+                    {
+                        m_Scroll->setValue((newlines - m_VisibleLines + 2) * m_LineHeight);
+                        updateDisplayedText();
+                    }
+                }
+            }
+            else // No double clicking
+            {
+                // Set the new selection point
+                setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder)));
+
+                // If the next click comes soon enough then it will be a double click
+                m_PossibleDoubleClick = true;
+            }
 
             // Set the mouse down flag
             m_MouseDown = true;
@@ -2076,6 +2153,9 @@ namespace tgui
 
         // Switch the value of the visible flag
         m_SelectionPointVisible = m_SelectionPointVisible ? false : true;
+
+        // Too slow for double clicking
+        m_PossibleDoubleClick = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

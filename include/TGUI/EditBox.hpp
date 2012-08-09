@@ -407,6 +407,9 @@ namespace tgui
         // The pathname used to load the edit box
         std::string m_LoadedPathname;
 
+        // Is there a possibility that the user is going to double click?
+        bool m_PossibleDoubleClick;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     };

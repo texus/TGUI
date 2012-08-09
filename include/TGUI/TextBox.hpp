@@ -425,6 +425,9 @@ namespace tgui
         // The pathname used to load the scrollbar (if there is one)
         std::string m_LoadedScrollbarPathname;
 
+        // Is there a possibility that the user is going to double click?
+        bool m_PossibleDoubleClick;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
