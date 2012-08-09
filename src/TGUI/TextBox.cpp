@@ -889,8 +889,10 @@ namespace tgui
         // If the click occured on the text box
         if (clickedOnTextBox)
         {
+            unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder);
+
             // Check if this is a double click
-            if (m_PossibleDoubleClick)
+            if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
             {
                 // The next click is going to be a normal one again
                 m_PossibleDoubleClick = false;
@@ -960,7 +962,7 @@ namespace tgui
             else // No double clicking
             {
                 // Set the new selection point
-                setSelectionPointPosition(static_cast<unsigned int>(findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder)));
+                setSelectionPointPosition(selectionPointPosition);
 
                 // If the next click comes soon enough then it will be a double click
                 m_PossibleDoubleClick = true;
