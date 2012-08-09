@@ -107,8 +107,13 @@ namespace tgui
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_ObjectType == panel)
                     {
-                        // If an object was focused then unfocus it
-                        unfocusAllObjects();
+                        // If another object was focused then unfocus it now
+                        if ((m_FocusedObject) && (m_FocusedObject != objectNr+1))
+                        {
+                            m_Objects[m_FocusedObject-1]->m_Focused = false;
+                            m_Objects[m_FocusedObject-1]->objectUnfocused();
+                            m_FocusedObject = 0;
+                        }
 
                         // Make the event handler of the group do the rest
                         static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
