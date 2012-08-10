@@ -255,6 +255,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
+            return;
+
         // A negative size is not allowed for this object
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
@@ -435,6 +439,10 @@ namespace tgui
         // Calculate the height of one line
         m_LineHeight = m_TextBeforeSelection.getFont()->getLineSpacing(m_TextSize);
 
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
+            return;
+
         // There is also a minimum height
         if (m_Size.y < (m_LineHeight + m_TopBorder + m_BottomBorder))
         {
@@ -514,6 +522,10 @@ namespace tgui
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
+            return;
+
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
             return;
 
         // Set the new border size
@@ -679,6 +691,10 @@ namespace tgui
         // The selection point position has to stay inside the string
         if (charactersBeforeSelectionPoint > m_Text.length())
             charactersBeforeSelectionPoint = m_Text.length();
+
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
+            return;
 
         // Set the selection point to the correct position
         m_SelChars = 0;
@@ -889,6 +905,10 @@ namespace tgui
         // If the click occured on the text box
         if (clickedOnTextBox)
         {
+            // Don't continue when line height is 0
+            if (m_LineHeight == 0)
+                return;
+
             unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder);
 
             // Check if this is a double click
@@ -991,6 +1011,10 @@ namespace tgui
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_Scroll->m_MouseDown == true)
             {
+                // Don't continue when line height is 0
+                if (m_LineHeight == 0)
+                    return;
+
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_Scroll->m_Value;
 
@@ -1527,6 +1551,10 @@ namespace tgui
         // If there is a limit in the amount of lines then make a simulation
         if (m_Scroll == NULL)
         {
+            // Don't continue when line height is 0
+            if (m_LineHeight == 0)
+                return;
+
             float maxLineWidth;
 
             // Calculate the maximum line width
@@ -1613,6 +1641,10 @@ namespace tgui
     {
         // This code will crash when the text box is empty. We need to avoid this.
         if (m_Text.length() == 0)
+            return 0;
+
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
             return 0;
 
         // Find out on which line you clicked
@@ -1780,6 +1812,10 @@ namespace tgui
 
     void TextBox::selectText(float posX, float posY)
     {
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
+            return;
+
         // Find out where the selection point should be
         m_SelEnd = findSelectionPointPosition(posX - getPosition().x - m_LeftBorder - 4, posY - getPosition().y - m_TopBorder);
 
@@ -1853,6 +1889,10 @@ namespace tgui
     {
         // Don't continue when the text box wasn't loaded correctly
         if (m_Loaded == false)
+            return;
+
+        // Don't continue when line height is 0
+        if (m_LineHeight == 0)
             return;
 
         float maxLineWidth;
