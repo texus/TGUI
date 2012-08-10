@@ -1,5 +1,5 @@
 
-#include <TGUI/TGUI.hpp>
+#include "../include/TGUI/TGUI.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +18,7 @@ void init(tgui::Window& window)
     // constain an info.txt file and the necessary images. The info.txt file is very complex
     // so it won't be discussed here (See the 'read me' file inside the objects folder).
     tgui::Button* button = window.add<tgui::Button>();
-    button->load("TGUI/objects/Button/Black");
+    button->load("../objects/Button/Black");
     button->setText("Button 1");
     button->setSize(160, 40);
     button->setPosition(20, 4);
@@ -28,7 +28,7 @@ void init(tgui::Window& window)
     // Outside the init function, our pointer will be gone, but of course you might
     // still need to access the object. You will need the string to do that.
     tgui::Checkbox* checkbox = window.add<tgui::Checkbox>("CHECK");
-    checkbox->load("TGUI/objects/Checkbox/Black");
+    checkbox->load("../objects/Checkbox/Black");
     checkbox->setText("Checkbox");
     checkbox->setPosition(20, 50);
 
@@ -37,7 +37,7 @@ void init(tgui::Window& window)
     // In this example all radio buttons are added to the same parent, the window.
     // You can use panels to make multiple radio button groups.
     tgui::RadioButton* radioButton1 = window.add<tgui::RadioButton>();
-    radioButton1->load("TGUI/objects/RadioButton/Black");
+    radioButton1->load("../objects/RadioButton/Black");
     radioButton1->setText("Radio button 1");
     radioButton1->setPosition(20, 100);
 
@@ -45,7 +45,7 @@ void init(tgui::Window& window)
     // It is loaded with the same path as the previous radio button.
     // The images won't be loaded again, they will simply be reused.
     tgui::RadioButton* radioButton2 = window.add<tgui::RadioButton>();
-    radioButton2->load("TGUI/objects/RadioButton/Black");
+    radioButton2->load("../objects/RadioButton/Black");
     radioButton2->setText("Radio button 2");
     radioButton2->setPosition(20, 150);
 
@@ -54,7 +54,7 @@ void init(tgui::Window& window)
     // You can call setTextSize to change the size of the text. If you do not do this and leave it 0,
     // like in this example, the text will be auto scaled and fit perfectly within those borders.
     tgui::EditBox* editBox = window.add<tgui::EditBox>();
-    editBox->load("TGUI/objects/EditBox/Black");
+    editBox->load("../objects/EditBox/Black");
     editBox->setBorders(6, 4, 6, 4);
     editBox->setText("This text no longer fits inside the EditBox.");
     editBox->setPosition(20, 300);
@@ -63,7 +63,7 @@ void init(tgui::Window& window)
     // Create the slider.
     // We want the slider to lie horizontal, so we set vertical scroll to false.
     tgui::Slider* slider = window.add<tgui::Slider>();
-    slider->load("TGUI/objects/Slider/Black");
+    slider->load("../objects/Slider/Black");
     slider->setVerticalScroll(false);
     slider->setPosition(30, 360);
 
@@ -72,7 +72,7 @@ void init(tgui::Window& window)
     // Note that we change callbackID here. This ID is used to receive callbacks.
     // The ID is 0 by default which means that no callback is sent.
     tgui::LoadingBar* loadingBar = window.add<tgui::LoadingBar>("LOAD");
-    loadingBar->load("TGUI/objects/LoadingBar/Black");
+    loadingBar->load("../objects/LoadingBar/Black");
     loadingBar->setPosition(20, 400);
     loadingBar->setMaximum(500);
     loadingBar->callbackID = 1;
@@ -82,7 +82,7 @@ void init(tgui::Window& window)
     // The number is 1 by default and the scrollbar is only visible when the maximum is higher.
     // Here we set the maximum to 5.
     tgui::Scrollbar* scroll = window.add<tgui::Scrollbar>();
-    scroll->load("TGUI/objects/Scrollbar/Black");
+    scroll->load("../objects/Scrollbar/Black");
     scroll->setLowValue(4);
     scroll->setMaximum(5);
     scroll->setVerticalScroll(false);
@@ -100,7 +100,7 @@ void init(tgui::Window& window)
     // The last parameter is the height of one item (if not provided this is a tenth of the height).
     // Again you can set the borders with the setBorders function.
     tgui::Listbox* listbox = window.add<tgui::Listbox>();
-    listbox->load(260, 200, "TGUI/objects/Scrollbar/Black", 30);
+    listbox->load(260, 200, "../objects/Scrollbar/Black", 30);
     listbox->setBorders(4, 4, 4, 4);
     listbox->setPosition(300, 20);
     listbox->addItem("Item 1");
@@ -122,7 +122,7 @@ void init(tgui::Window& window)
     // If there is a scrollbar then it will become visible when you have more items than this number.
     // The last parameter would be the path to the scrollbar.
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>();
-    comboBox->load("TGUI/objects/ComboBox/Black", 200, 40);
+    comboBox->load("../objects/ComboBox/Black", 200, 40);
     comboBox->setBorders(4, 4, 4, 4);
     comboBox->setPosition(500, 330);
     comboBox->addItem("Item 1 is too long");
@@ -143,10 +143,7 @@ void init(tgui::Window& window)
                            sf::Color( 10, 110, 255), sf::Color(255, 255, 255));
 
 
-    // The following objects were not discussed in this example code:
-    // - TextBox
-    // - Panel
-    // - SpriteSheet
+    // There are still a lot of objects missing in this example code.
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +151,13 @@ void init(tgui::Window& window)
 int main()
 {
     // The window is created like you would create a sf::Window
-    tgui::Window window(sf::VideoMode(800, 600), "TGUI v0.3.6");
+    tgui::Window window(sf::VideoMode(800, 600), "TGUI v0.5");
+
+    // Set the font for all the objects.
+    window.globalFont.loadFromFile("../Fonts/DejaVuSans.ttf") == false)
+    {
+       // Error
+    }
 
     // In the init function the objects will be created
     init(window);
