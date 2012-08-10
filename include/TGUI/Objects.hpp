@@ -251,6 +251,9 @@ namespace tgui
         // This is set to true for objects that are also derived from OBJECT_ANIMATION.
         bool m_AnimatedObject;
 
+        // This is set to true for objects that have something to be dragged around (e.g. sliders and scrollbars)
+        bool m_DraggableObject;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

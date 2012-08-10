@@ -38,6 +38,7 @@ namespace tgui
     m_TextureArrowHover (NULL)
     {
         m_ObjectType = scrollbar;
+        m_DraggableObject = true;
 
         m_Maximum = 0;
     }

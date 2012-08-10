@@ -62,6 +62,7 @@ namespace tgui
     {
         m_ObjectType = textBox;
         m_AnimatedObject = true;
+        m_DraggableObject = true;
 
         changeColors();
 

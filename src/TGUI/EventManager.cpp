@@ -53,14 +53,8 @@ namespace tgui
                 // Check if the mouse went down on the object
                 if (m_Objects[i]->m_MouseDown)
                 {
-                    // Some objects should always receive mouse move events while dragging them,
-                    // even if the mouse is no longer on top of them.
-                    if ((m_Objects[i]->m_ObjectType == editBox)
-                     || (m_Objects[i]->m_ObjectType == slider)
-                     || (m_Objects[i]->m_ObjectType == scrollbar)
-                     || (m_Objects[i]->m_ObjectType == listbox)
-                     || (m_Objects[i]->m_ObjectType == comboBox)
-                     || (m_Objects[i]->m_ObjectType == textBox))
+                    // Some objects should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
+                    if (m_Objects[i]->m_DraggableObject)
                     {
                         m_Objects[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;

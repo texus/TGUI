@@ -43,6 +43,7 @@ namespace tgui
     m_LoadedScrollbarPathname("")
     {
         m_ObjectType = listbox;
+        m_DraggableObject = true;
         m_Loaded = true;
 
         changeColors();

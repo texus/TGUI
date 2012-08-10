@@ -42,6 +42,7 @@ namespace tgui
     m_LoadedPathname    ("")
     {
         m_ObjectType = comboBox;
+        m_DraggableObject = true;
 
         m_Listbox = new Listbox();
         m_Listbox->m_Size.x = 50;
