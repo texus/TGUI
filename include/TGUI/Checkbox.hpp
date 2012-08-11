@@ -150,7 +150,7 @@ namespace tgui
         /// \brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
-        /// This global font can be changed by calling the setGlobalFont function from Panel.
+        /// This global font can be changed by changing \a gloabalFont from the parent.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
