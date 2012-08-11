@@ -42,6 +42,7 @@ namespace tgui
     m_TextureFront_L(NULL),
     m_TextureFront_M(NULL),
     m_TextureFront_R(NULL),
+    m_TextSize      (0),
     m_LoadedPathname("")
     {
         m_ObjectType = loadingBar;
@@ -55,6 +56,8 @@ namespace tgui
     m_Maximum       (copy.m_Maximum),
     m_Value         (copy.m_Value),
     m_SplitImage    (copy.m_SplitImage),
+    m_Text          (copy.m_Text),
+    m_TextSize      (copy.m_TextSize),
     m_LoadedPathname(copy.m_LoadedPathname)
     {
         // Copy the textures
@@ -107,10 +110,19 @@ namespace tgui
             std::swap(m_SpriteFront_L,  temp.m_SpriteFront_L);
             std::swap(m_SpriteFront_M,  temp.m_SpriteFront_M);
             std::swap(m_SpriteFront_R,  temp.m_SpriteFront_R);
+            std::swap(m_Text,           temp.m_Text);
+            std::swap(m_TextSize,       temp.m_TextSize);
             std::swap(m_LoadedPathname, temp.m_LoadedPathname);
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::initialize()
+    {
+        m_Text.setFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,6 +426,107 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void LoadingBar::setText(const std::string text)
+    {
+        // Don't do anything when the loading bar wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Set the new text
+        m_Text.setString(text);
+
+        // Check if the text is auto sized
+        if (m_TextSize == 0)
+        {
+            // Calculate a possible text size
+            float size = m_TextureBack_M->getSize().y * 0.8f;
+            m_Text.setCharacterSize(static_cast<unsigned int>(size));
+
+            // The calculation is slightly different when the image is split
+            if (m_SplitImage)
+            {
+                // Calculate the loading bar width
+                unsigned int loadingBarWidth = m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x;
+
+                // We must make sure that the text isn't too width
+                if (m_Text.getGlobalBounds().width > (loadingBarWidth * 0.8f))
+                {
+                    // The text is too width, so make it smaller
+                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (loadingBarWidth * 0.8f))));
+                }
+            }
+            else // The image is not split
+            {
+                // We must make sure that the text isn't too width
+                if (m_Text.getGlobalBounds().width > (m_TextureBack_M->getSize().x * 0.8f))
+                {
+                    // The text is too width, so make it smaller
+                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (m_TextureBack_M->getSize().x*0.8f))));
+                }
+            }
+        }
+        else // When the text has a fixed size
+        {
+            // Set the text size
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string LoadingBar::getText()
+    {
+        return m_Text.getString().toAnsiString();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::setTextFont(const sf::Font& font)
+    {
+        m_Text.setFont(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Font* LoadingBar::getTextFont()
+    {
+        return m_Text.getFont();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::setTextColor(const sf::Color& color)
+    {
+        m_Text.setColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& LoadingBar::getTextColor()
+    {
+        return m_Text.getColor();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::setTextSize(const unsigned int size)
+    {
+        // Change the text size
+        m_TextSize = size;
+
+        // Call setText to reposition the text
+        setText(m_Text.getString().toAnsiString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int LoadingBar::getTextSize()
+    {
+        return m_TextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool LoadingBar::mouseOnObject(float x, float y)
     {
         // Don't do anything when the loading bar wasn't loaded correctly
@@ -569,12 +682,15 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Remember the current transformation
+        sf::Transform oldTransform = states.transform;
+
+        // Get the current scale
+        Vector2f curScale = getScale();
+
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Get the current scale
-            Vector2f curScale = getScale();
-
             // Set the position of the image
             states.transform.translate(getPosition());
 
@@ -631,6 +747,99 @@ namespace tgui
             // Draw the loading bar
             target.draw(m_SpriteBack_M, states);
             target.draw(m_SpriteFront_M, states);
+        }
+
+        // Check if there is a text to draw
+        if (m_Text.getString().isEmpty() == false)
+        {
+            // Reset the transformations
+            states.transform = oldTransform;
+            states.transform.translate(getPosition());
+
+            // Get the current size of the text, so that we can recalculate the position
+            sf::FloatRect rect = m_Text.getGlobalBounds();
+
+            // Check if the user has chosen a text size
+            if (m_TextSize > 0)
+            {
+                // The calculation will be different when the image is split
+                if (m_SplitImage)
+                {
+                    // Calculate the new position for the text
+                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
+                    rect.left = ((((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)
+                                   * curScale.x) - rect.width) * 0.5f) - rect.left;
+                }
+                else // The image is not split
+                {
+                    // Calculate the new position for the text
+                    rect.left = (((m_TextureBack_M->getSize().x * curScale.x) - rect.width) * 0.5f) - rect.left;
+                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
+                }
+
+                // Set the new position
+                states.transform.translate(static_cast<float>(static_cast<int>(rect.left + 0.5f)), static_cast<float>(static_cast<int>(rect.top + 0.5f)));
+            }
+            else // autoscale
+            {
+                // Get the text size
+                unsigned int size = m_Text.getCharacterSize();
+
+                // Calculate a better size for the text
+                float NewSize = m_TextureBack_M->getSize().y * curScale.y * 0.8f;
+
+                // Calculate the scale factor
+                float textScale = NewSize / size;
+
+                // The calculation will be different when the image is split
+                if (m_SplitImage)
+                {
+                    float loadingBarWidth;
+
+                    // Check if the middle image is draw
+                    if ((curScale.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
+                        < curScale.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
+                    {
+                        loadingBarWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * curScale.x;
+                    }
+                    else
+                        loadingBarWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y;
+
+
+                    // Check if the text isn't too width
+                    if ((m_Text.getGlobalBounds().width * textScale) > (loadingBarWidth * 0.8f))
+                    {
+                        // Change the scale
+                        textScale = (loadingBarWidth * 0.8f) / m_Text.getGlobalBounds().width;
+                    }
+
+                    // Calculate the new position for the text
+                    rect.left = ((loadingBarWidth - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
+                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
+                }
+                else // The image isn't split
+                {
+                    // Check if the text isn't too width
+                    if ((m_Text.getGlobalBounds().width * textScale) > (m_TextureBack_M->getSize().x * curScale.x * 0.8f))
+                    {
+                        // Change the scale
+                        textScale = (m_TextureBack_M->getSize().x * curScale.x * 0.8f) / m_Text.getGlobalBounds().width;
+                    }
+
+                    // Calculate the new position for the text
+                    rect.left = (((m_TextureBack_M->getSize().x * curScale.x) - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
+                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
+                }
+
+                // Set the new position
+                states.transform.translate(rect.left, rect.top);
+
+                // Set the scale for the text
+                states.transform.scale(textScale, textScale);
+            }
+
+            // Draw the text
+            target.draw(m_Text, states);
         }
     }
 
