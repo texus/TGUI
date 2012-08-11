@@ -412,6 +412,8 @@ namespace tgui
                         // Check if the close button was clicked
                         if (m_CloseButton->m_MouseDown == true)
                         {
+                            m_CloseButton->m_MouseDown = false;
+
                             // If a callback was requested then send it
                             if (callbackID > 0)
                             {
@@ -419,15 +421,17 @@ namespace tgui
                                 callback.trigger = Callback::closed;
                                 m_Parent->addCallback(callback);
                             }
+                            else // The user won't stop the closing, so destroy the window
+                            {
+                                // Remove the objects in the child window
+                                removeAllObjects();
 
-                            // Remove the objects in the child window
-                            removeAllObjects();
+                                // Remove the child window itself
+                                m_Parent->remove(this);
 
-                            // Remove the child window itself
-                            m_Parent->remove(this);
-
-                            // Get out of here
-                            return;
+                                // Get out of here
+                                return;
+                            }
                         }
                     }
                 }
