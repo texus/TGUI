@@ -929,6 +929,7 @@ namespace tgui
             if ((callbackID > 0) && (oldSelectedItem != m_SelectedItem))
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::itemSelected;
 

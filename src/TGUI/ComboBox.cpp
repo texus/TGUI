@@ -648,6 +648,7 @@ namespace tgui
             if ((callbackID > 0) && (oldItem != m_Listbox->getSelectedItemID()))
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::itemSelected;
                 callback.value      = m_Listbox->getSelectedItemID();

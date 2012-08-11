@@ -475,6 +475,7 @@ namespace tgui
             if ((callbackID > 0) && (oldValue != m_Value))
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::valueChanged;
                 callback.value      = m_Value;
@@ -663,6 +664,7 @@ namespace tgui
             if ((callbackID > 0) && (oldValue != m_Value))
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::valueChanged;
                 callback.value      = m_Value;

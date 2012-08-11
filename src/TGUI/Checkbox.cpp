@@ -408,6 +408,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::mouseClick;
                 callback.checked    = m_Checked;
@@ -445,6 +446,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Space;
                 callback.checked    = m_Checked;
@@ -463,6 +465,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Return;
                 callback.checked    = m_Checked;

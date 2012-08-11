@@ -338,6 +338,9 @@ namespace tgui
             // How did the callbak occur? (one of the elements from the Triggers enum)
             unsigned int trigger;
 
+            // Pointer to the object
+            OBJECT* object;
+
 
         // Checkbox and RadioButton
 

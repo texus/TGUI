@@ -1476,6 +1476,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::textChanged;
                 callback.text       = m_Text;
@@ -1525,6 +1526,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::textChanged;
                 callback.text       = m_Text;
@@ -1629,6 +1631,7 @@ namespace tgui
         if (callbackID > 0)
         {
             Callback callback;
+            callback.object     = this;
             callback.callbackID = callbackID;
             callback.trigger    = Callback::textChanged;
             callback.text       = m_Text;

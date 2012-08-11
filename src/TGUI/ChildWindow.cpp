@@ -418,7 +418,9 @@ namespace tgui
                             if (callbackID > 0)
                             {
                                 Callback callback;
-                                callback.trigger = Callback::closed;
+                                callback.object     = this;
+                                callback.callbackID = callbackID;
+                                callback.trigger    = Callback::closed;
                                 m_Parent->addCallback(callback);
                             }
                             else // The user won't stop the closing, so destroy the window

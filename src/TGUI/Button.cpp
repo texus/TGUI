@@ -566,6 +566,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object      = this;
                 callback.callbackID  = callbackID;
                 callback.trigger     = Callback::mouseClick;
                 callback.mouseButton = sf::Mouse::Left;
@@ -599,6 +600,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Space;
                 m_Parent->addCallback(callback);
@@ -610,6 +612,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Return;
                 m_Parent->addCallback(callback);
