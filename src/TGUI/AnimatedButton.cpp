@@ -47,6 +47,7 @@ namespace tgui
 
     AnimatedButton::AnimatedButton(const AnimatedButton& copy) :
     OBJECT               (copy),
+    OBJECT_ANIMATION     (copy),
     m_DurationsNormal    (copy.m_DurationsNormal),
     m_DurationsMouseHover(copy.m_DurationsMouseHover),
     m_DurationsMouseDown (copy.m_DurationsMouseDown),
@@ -132,6 +133,7 @@ namespace tgui
         {
             AnimatedButton temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_ANIMATION::operator=(right);
 
             std::swap(m_TexturesNormal,      temp.m_TexturesNormal);
             std::swap(m_TexturesMouseHover,  temp.m_TexturesMouseHover);
