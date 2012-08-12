@@ -948,6 +948,10 @@ namespace tgui
                             // Change the selected text background color (black on error)
                             editBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
                         }
+                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
+                        {
+                            TGUI_OUTPUT("TGUI warning: EditBox no longer has a selection background color when unfocused.");
+                        }
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
                             // Change the selection pointer color (black on error)
@@ -1074,6 +1078,10 @@ namespace tgui
                         {
                             // Change the selected text background color (black on error)
                             textBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
+                        }
+                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
+                        {
+                            TGUI_OUTPUT("TGUI warning: TextBox no longer has a selection background color when unfocused.");
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
