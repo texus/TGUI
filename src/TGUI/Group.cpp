@@ -616,7 +616,11 @@ namespace tgui
                         // Get the pointer to the label back
                         tgui::Label* label = static_cast<tgui::Label*>(extraPtr);
 
-                        if (line.substr(0, 5).compare("text=") == 0)
+                        if (line.substr(0, 9).compare("autosize=") == 0)
+                        {
+                            label->setAutoSize(!!atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 5);
@@ -636,6 +640,11 @@ namespace tgui
                         {
                             // Change the text color (black on error)
                             label->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            label->backgroundColor = tgui::extractColor(line.erase(0, 16));
                         }
                         else CHECK_SHARED_PROPERTIES(label)
                             else // The line was wrong

@@ -164,6 +164,42 @@ addProperty_Value(Height)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+PropertyAutoSize::PropertyAutoSize()
+{
+    description = "AutoSize";
+    value = 0;
+}
+
+void PropertyAutoSize::addProperty(tgui::Window& window, unsigned int propertyNumber)
+{
+    // Create the label
+    tgui::Label* label = window.add<tgui::Label>("label_AutoSize");
+    label->setText(description);
+    label->setTextColor(sf::Color::Black);
+    label->setPosition(10, 14 + (40.f * propertyNumber));
+    label->setTextSize(26);
+
+    // Create the combo box
+    tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_AutoSize");
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.f - 10), 40);
+    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
+    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
+    comboBox->callbackID = propertyNumber + 1;
+
+    // Change the colors of the combo box
+    comboBox->changeColors(sf::Color( 50,  50,  50),
+                           sf::Color(200, 200, 200),
+                           sf::Color( 10, 110, 255),
+                           sf::Color(255, 255, 255));
+
+    // Change the contents of the combo box
+    comboBox->addItem("false");
+    comboBox->addItem("true");
+    comboBox->setSelectedItem(value + 1);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 PropertyText::PropertyText()
 {
     description = "Text";
@@ -211,16 +247,6 @@ PropertySelectedTextBackgroundColor::PropertySelectedTextBackgroundColor()
 }
 
 addProperty_String(SelectedTextBackgroundColor)
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-PropertyUnfocusedSelectedTextBackgroundColor::PropertyUnfocusedSelectedTextBackgroundColor()
-{
-    description = "Unfocused selected text background color";
-    value = "255,255,255";
-}
-
-addProperty_String(UnfocusedSelectedTextBackgroundColor)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1328,12 +1354,14 @@ PropertiesLabel::PropertiesLabel()
     name.value = "";
     left.value = 0;
     top.value = 0;
-    width.value = 72;
+    width.value = 79;
     height.value = 31;
+    autoSize.value = true;
     text.value = "Label";
     textSize.value = 30;
     textColor.value = "255,255,255";
     textFont.value = "Global";
+    backgroundColor.value = "0,0,0,0";
     callbackID.value = 0;
 }
 
@@ -1348,7 +1376,10 @@ void PropertiesLabel::addProperties(tgui::Window& window)
     textSize.addProperty(window, Property_Label_TextSize);
     textColor.addProperty(window, Property_Label_TextColor);
     textFont.addProperty(window, Property_Label_TextFont);
+    backgroundColor.addProperty(window, Property_Label_BackgroundColor);
     callbackID.addProperty(window, Property_Label_CallbackID);
+
+    autoSize.addProperty(window, Property_Label_AutoSize);
 }
 
 void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
@@ -1379,30 +1410,51 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         // Store the new size
         width.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Width")->getText().c_str()));
 
-        // Get the pointer to the label
-        tgui::Label* label = formWindow.get<tgui::Label>(tgui::to_string(id));
-
         // Change the size of the label
-        label->setSize(width.value, height.value);
+        formWindow.get<tgui::Label>(tgui::to_string(id))->setSize(width.value, height.value);
 
-        // Adjust the text size property
-        textSize.value = label->getTextSize();
-        propertyWindow.get<tgui::EditBox>("text_TextSize")->setText(tgui::to_string(textSize.value));
+        // You are no longer auto sizing
+        if (autoSize.value == true)
+        {
+            autoSize.value = false;
+            propertyWindow.get<tgui::ComboBox>("combo_AutoSize")->setSelectedItem("false");
+        }
     }
     else if (propertyNumber == Property_Label_Height)
     {
         // Store the new size
         height.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Height")->getText().c_str()));
 
+        // Change the size of the label
+        formWindow.get<tgui::Label>(tgui::to_string(id))->setSize(width.value, height.value);
+
+        // You are no longer auto sizing
+        if (autoSize.value == true)
+        {
+            autoSize.value = false;
+            propertyWindow.get<tgui::ComboBox>("combo_AutoSize")->setSelectedItem("false");
+        }
+    }
+    else if (propertyNumber == Property_Label_AutoSize)
+    {
+        // Store the auto-size boolean
+        autoSize.value = !!(propertyWindow.get<tgui::ComboBox>("combo_AutoSize")->getSelectedItemID() - 1);
+
         // Get the pointer to the label
         tgui::Label* label = formWindow.get<tgui::Label>(tgui::to_string(id));
 
-        // Change the size of the label
-        label->setSize(width.value, height.value);
+        // Tell the label to auto-size or not
+        label->setAutoSize(autoSize.value);
 
-        // Adjust the text size property
-        textSize.value = label->getTextSize();
-        propertyWindow.get<tgui::EditBox>("text_TextSize")->setText(tgui::to_string(textSize.value));
+        // Check if auto-size is enabled
+        if (autoSize.value)
+        {
+            // Change the width and height
+            width.value = static_cast<float>(label->getSize().x);
+            height.value = static_cast<float>(label->getSize().y);
+            propertyWindow.get<tgui::EditBox>("text_Width")->setText(tgui::to_string(width.value));
+            propertyWindow.get<tgui::EditBox>("text_Height")->setText(tgui::to_string(height.value));
+        }
     }
     else if (propertyNumber == Property_Label_Text)
     {
@@ -1502,6 +1554,33 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         // You are not allowed the change the font yet
         propertyWindow.get<tgui::EditBox>("text_TextFont")->setText("Global");
     }
+    else if (propertyNumber == Property_Label_BackgroundColor)
+    {
+        // Store the new background color
+        backgroundColor.value = propertyWindow.get<tgui::EditBox>("text_BackgroundColor")->getText();
+
+        // Only continue when the string is not empty
+        if (backgroundColor.value.empty() == false)
+        {
+            std::string strColor = backgroundColor.value;
+
+            // If there is no bracket at the beginning then add one
+            if (strColor[0] != '(')
+                strColor.insert(strColor.begin(), '(');
+
+            // If there is no bracket at the end then add one
+            if (strColor[strColor.length()-1] != ')')
+                strColor.insert(strColor.end(), ')');
+
+            // Convert the string to a color
+            sf::Color color = tgui::extractColor(strColor);
+
+            // Use the new color
+            formWindow.get<tgui::Label>(tgui::to_string(id))->backgroundColor = color;
+        }
+        else // The string is empty, so use the default color
+            formWindow.get<tgui::Label>(tgui::to_string(id))->backgroundColor = sf::Color::White;
+    }
     else if (propertyNumber == Property_Label_CallbackID)
     {
         // Store the new callback id
@@ -1532,7 +1611,6 @@ PropertiesEditBox::PropertiesEditBox()
     textColor.value = "200, 200, 200";
     selectedTextColor.value = "255, 255, 255";
     selectedTextBackgroundColor.value = "10, 110, 255";
-    unfocusedSelectedTextBackgroundColor.value = "110, 110, 255";
     selectionPointColor.value = "110, 110, 255";
     selectionPointWidth.value = 2;
     callbackID.value = 0;
@@ -3325,7 +3403,6 @@ PropertiesTextBox::PropertiesTextBox()
     textColor.value = "200, 200, 200";
     selectedTextColor.value = "255, 255, 255";
     selectedTextBackgroundColor.value = "10, 110, 255";
-    unfocusedSelectedTextBackgroundColor.value = "110, 110, 255";
     borderColor.value = "0, 0, 0";
     selectionPointColor.value = "110, 110, 255";
     selectionPointWidth.value = 2;

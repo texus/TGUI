@@ -938,20 +938,24 @@ bool Builder::loadForm()
                 labels.back().top.value = object->getPosition().y;
                 labels.back().width.value = object->getScaledSize().x;
                 labels.back().height.value = object->getScaledSize().y;
+                labels.back().autoSize.value = object->getAutoSize();
                 labels.back().text.value = object->getText();
                 labels.back().textSize.value = object->getTextSize();
                 labels.back().textColor.value = tgui::convertColorToString(object->getTextColor());
                 labels.back().textFont.value = "Global";
+                labels.back().backgroundColor.value = tgui::convertColorToString(object->backgroundColor);
                 labels.back().callbackID.value = object->callbackID;
 
                 // Draw the object in the correct way
                 tgui::Label* realObject = mainWindow.get<tgui::Label>(tgui::to_string(id));
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setAutoSize(object->getAutoSize());
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextColor(object->getTextColor());
                 realObject->setTextFont(mainWindow.globalFont);
+                realObject->backgroundColor = object->backgroundColor;
                 realObject->callbackID = object->callbackID;
             }
             else if (objects[i]->getObjectType() == tgui::picture)
@@ -1613,28 +1617,45 @@ void Builder::saveForm()
             line.append(labels[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
+            line = TAB TAB "Left             = ";
             line.append(tgui::to_string(labels[objectIndex].left.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
+            line = TAB TAB "Top              = ";
             line.append(tgui::to_string(labels[objectIndex].top.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Text       = \"";
+            line = TAB TAB "Width            = ";
+            line.append(tgui::to_string(labels[objectIndex].width.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Height           = ";
+            line.append(tgui::to_string(labels[objectIndex].height.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "AutoSize         = ";
+            line.append(tgui::to_string(labels[objectIndex].autoSize.value)).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "Text             = \"";
             line.append(labels[objectIndex].text.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextSize   = ";
+            line = TAB TAB "TextSize         = ";
             line.append(tgui::to_string(labels[objectIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "TextColor  = ";
+            line = TAB TAB "TextColor        = ";
             AddBrackets(labels[objectIndex].textColor.value)
             line.append(labels[objectIndex].textColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "CallbackID = ";
+            line = TAB TAB "BackgroundColor  = ";
+            AddBrackets(labels[objectIndex].backgroundColor.value)
+            line.append(labels[objectIndex].backgroundColor.value).append("\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
+            line = TAB TAB "CallbackID       = ";
             line.append(tgui::to_string(labels[objectIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 

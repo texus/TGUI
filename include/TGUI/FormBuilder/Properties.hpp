@@ -70,10 +70,12 @@ enum Properties
     Property_Label_Top,
     Property_Label_Width,
     Property_Label_Height,
+    Property_Label_AutoSize,
     Property_Label_Text,
     Property_Label_TextSize,
     Property_Label_TextColor,
     Property_Label_TextFont,
+    Property_Label_BackgroundColor,
     Property_Label_CallbackID,
 
     Property_EditBox_Name = 0,
@@ -311,6 +313,14 @@ struct PropertyHeight : public PropertyValueFloat
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+struct PropertyAutoSize : public PropertyValueBool
+{
+    PropertyAutoSize();
+    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 struct PropertyText : public PropertyValueString
 {
     PropertyText();
@@ -346,14 +356,6 @@ struct PropertySelectedTextColor : public PropertyValueString
 struct PropertySelectedTextBackgroundColor : public PropertyValueString
 {
     PropertySelectedTextBackgroundColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-struct PropertyUnfocusedSelectedTextBackgroundColor : public PropertyValueString
-{
-    PropertyUnfocusedSelectedTextBackgroundColor();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
 };
 
@@ -648,17 +650,19 @@ struct PropertiesLabel
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 
-    unsigned int       id;
-    PropertyName       name;
-    PropertyLeft       left;
-    PropertyTop        top;
-    PropertyWidth      width;
-    PropertyHeight     height;
-    PropertyText       text;
-    PropertyTextSize   textSize;
-    PropertyTextColor  textColor;
-    PropertyTextFont   textFont;
-    PropertyCallbackID callbackID;
+    unsigned int            id;
+    PropertyName            name;
+    PropertyLeft            left;
+    PropertyTop             top;
+    PropertyWidth           width;
+    PropertyHeight          height;
+    PropertyAutoSize        autoSize;
+    PropertyText            text;
+    PropertyTextSize        textSize;
+    PropertyTextColor       textColor;
+    PropertyTextFont        textFont;
+    PropertyBackgroundColor backgroundColor;
+    PropertyCallbackID      callbackID;
 };
 
 
@@ -686,7 +690,6 @@ struct PropertiesEditBox
     PropertyTextColor           textColor;
     PropertySelectedTextColor   selectedTextColor;
     PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
-    PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;
     PropertyCallbackID          callbackID;
@@ -858,7 +861,6 @@ struct PropertiesTextBox
     PropertyTextColor           textColor;
     PropertySelectedTextColor   selectedTextColor;
     PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
-    PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
     PropertyBorderColor         borderColor;
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;
