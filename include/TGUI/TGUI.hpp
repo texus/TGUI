@@ -62,6 +62,7 @@ namespace tgui
     struct SpriteSheet;
     struct AnimatedPicture;
     struct AnimatedButton;
+    struct SpinButton;
 
     struct InfoFileParser;
     struct EventManager;
@@ -113,11 +114,13 @@ namespace tgui
         slider,
         scrollbar,
         loadingBar,
-        panel,
         textBox,
         spriteSheet,
         animatedPicture,
         animatedButton,
+        spinButton,
+
+        panel,
         childWindow,
 
         ObjectTypesCount
@@ -153,6 +156,7 @@ namespace tgui
 #include <TGUI/SpriteSheet.hpp>
 #include <TGUI/AnimatedPicture.hpp>
 #include <TGUI/AnimatedButton.hpp>
+#include <TGUI/SpinButton.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>

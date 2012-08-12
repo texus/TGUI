@@ -87,6 +87,9 @@ if (command -v g++) then
     echo "Compiling 'AnimatedButton.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/AnimatedButton.cpp" -o "lib/obj/AnimatedButton.o"
 
+    echo "Compiling 'SpinButton.cpp' ..."
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpinButton.cpp" -o "lib/obj/SpinButton.o"
+
     echo "Compiling 'InfoFileParser.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/InfoFileParser.cpp" -o "lib/obj/InfoFileParser.o"
 
@@ -132,6 +135,7 @@ if (command -v g++) then
                     "lib/obj/SpriteSheet.o" \
                     "lib/obj/AnimatedPicture.o" \
                     "lib/obj/AnimatedButton.o" \
+                    "lib/obj/SpinButton.o" \
                     "lib/obj/InfoFileParser.o" \
                     "lib/obj/EventManager.o" \
                     "lib/obj/TextureManager.o" \
