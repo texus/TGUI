@@ -62,8 +62,6 @@ namespace tgui
 
     Picture& Picture::operator= (const Picture& right)
     {
-        TGUI_UNUSED_PARAM(right);
-
         // Make sure it is not the same object
         if (this != &right)
         {
@@ -107,7 +105,7 @@ namespace tgui
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
             // Set the texture
-            m_Sprite.setTexture(*m_Texture);
+            m_Sprite.setTexture(*m_Texture, true);
 
             // Return true to indicate that nothing went wrong
             m_Loaded = true;
