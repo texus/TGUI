@@ -84,7 +84,7 @@ Window: "PropertyWindow"
     {
         Filename   = "images/TextBox.png"
         Position   = (58, 274)
-        CallbackID = 13
+        CallbackID = 12
     }
 
     Button: "Load"
