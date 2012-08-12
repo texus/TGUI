@@ -554,7 +554,12 @@ namespace tgui
                         else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
                         else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
                         else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
+                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
                         else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
+                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
+                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
+                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
+                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
                         else // The line was wrong
                             goto LoadingFailed;
 
@@ -602,7 +607,12 @@ namespace tgui
                             else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
                             else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
                             else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
                             else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
                             else // The line was wrong
                                 goto LoadingFailed;
                         }
@@ -1389,6 +1399,54 @@ namespace tgui
 
                         break;
                     }
+                    case tgui::spinButton + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the spin button back
+                        tgui::SpinButton* spinButton = static_cast<tgui::SpinButton*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the spin button
+                            spinButton->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            spinButton->setValue(atoi(line.erase(0, 6).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            spinButton->setMinimum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            spinButton->setMaximum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("verticalscroll=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool vericalScroll;
+                            CHECK_BOOL(vericalScroll)
+
+                            spinButton->verticalScroll = vericalScroll;
+                        }
+                        else CHECK_SHARED_PROPERTIES(spinButton)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
                     case tgui::radioButton + 1:
                     {
                         START_LOADING_OBJECT
@@ -1447,6 +1505,285 @@ namespace tgui
                         else CHECK_SHARED_PROPERTIES(radioButton)
                             else // The line was wrong
                                 goto LoadingFailed;
+
+                        break;
+                    }
+                    case tgui::childWindow + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the child window back
+                        tgui::ChildWindow* child = static_cast<tgui::ChildWindow*>(extraPtr);
+
+                        CHECK_SHARED_PROPERTIES(child)
+                        else if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the child window
+                            if (child->load(child->getSize().x, child->getSize().y, child->backgroundColor, line) == false)
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            child->backgroundColor = tgui::extractColor(line.erase(0, 16));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 16);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the image
+                            child->setBackgroundImage(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            tgui::Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                child->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 13).compare("transparency=") == 0)
+                        {
+                            child->setTransparency(atoi(line.erase(0, 13).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("titlebarheight=") == 0)
+                        {
+                            child->setTitlebarHeight(atoi(line.erase(0, 15).c_str()));
+                        }
+                        else if (line.substr(0, 7).compare("layout=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 7);
+
+                            // Check what the layout is
+                            if (line.compare("left") == 0)
+                                child->layout = ChildWindow::LayoutLeft;
+                            else if (line.compare("right") == 0)
+                                child->layout = ChildWindow::LayoutRight;
+                            else
+                                goto LoadingFailed;
+                        }
+                        else
+                        {
+                            // All newly created objects must be part of the panel
+                            parentID.push(tgui::childWindow + 1);
+                            parentPtr.push(child);
+
+                            COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
+                            else COMPARE_OBJECT(6, "label:", Label, tgui::label)
+                            else COMPARE_OBJECT(7, "button:", Button, tgui::button)
+                            else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
+                            else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
+                            else // The line was wrong
+                                goto LoadingFailed;
+                        }
+
+                        break;
+                    }
+                    case tgui::spriteSheet + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the sprite sheet back
+                        tgui::SpriteSheet* spriteSheet = static_cast<tgui::SpriteSheet*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("filename=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The filename must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the sprite sheet
+                            spriteSheet->load(line);
+                        }
+                        else if (line.substr(0, 5).compare("rows=") == 0)
+                        {
+                            spriteSheet->setRows(atoi(line.erase(0, 5).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("columns=") == 0)
+                        {
+                            spriteSheet->setColumns(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 6).compare("cells=") == 0)
+                        {
+                            Vector2u cells;
+                            if (extractVector2u(line.erase(0, 6), cells) == false)
+                                goto LoadingFailed;
+
+                            // Set the cells
+                            spriteSheet->setCells(cells.x, cells.y);
+                        }
+                        else if (line.substr(0, 12).compare("visiblecell=") == 0)
+                        {
+                            Vector2u cell;
+                            if (extractVector2u(line.erase(0, 12), cell) == false)
+                                goto LoadingFailed;
+
+                            spriteSheet->setVisibleCell(cell.x, cell.y);
+                        }
+                        else CHECK_SHARED_PROPERTIES(spriteSheet)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case tgui::animatedButton + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the animated button back
+                        tgui::AnimatedButton* button = static_cast<tgui::AnimatedButton*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the animated button
+                            if (button->load(line) == false)
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the caption
+                            button->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            button->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            button->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 13).compare("currentframe=") == 0)
+                        {
+                            button->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
+                        }
+                        else CHECK_SHARED_PROPERTIES(button)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case tgui::animatedPicture + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the sprite animated picture
+                        tgui::AnimatedPicture* animatedPicture = static_cast<tgui::AnimatedPicture*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 6).compare("frame=") == 0)
+                        {
+                            line.erase(0, 6);
+
+                            // Make sure that the string isn't empty
+                            if (line.empty() == false)
+                            {
+                                // The first and last character have to be brackets
+                                if ((line[0] == '(') && (line[line.length()-1] == ')'))
+                                {
+                                    // Remove the brackets
+                                    line.erase(0, 1);
+                                    line.erase(line.length()-1);
+
+                                    // Search for the first comma
+                                    std::string::size_type commaPos = line.find(',');
+                                    if (commaPos != std::string::npos)
+                                    {
+                                        // Get the frame duration
+                                        int duration = atoi(line.substr(commaPos+1).c_str());
+                                        line.erase(commaPos);
+
+                                        // The filename must start and end with quotes
+                                        CHECK_FOR_QUOTES
+
+                                        // Add the frame to the animated picture
+                                        if (animatedPicture->addFrame(line, sf::milliseconds(duration)) == false)
+                                            goto LoadingFailed;
+                                    }
+                                    else
+                                        goto LoadingFailed;
+                                }
+                                else
+                                    goto LoadingFailed;
+                            }
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("loop=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 5);
+
+                            // Check if the value is true or false
+                            bool loop;
+                            CHECK_BOOL(loop)
+
+                            animatedPicture->loop = loop;
+                        }
+                        else if (line.substr(0, 8).compare("playing=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 8);
+
+                            // Check if the value is true or false
+                            bool playing;
+                            CHECK_BOOL(playing)
+
+                            if (playing)
+                                animatedPicture->play();
+                        }
+                        else if (line.substr(0, 13).compare("currentframe=") == 0)
+                        {
+                            animatedPicture->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
+                        }
+                        else CHECK_SHARED_PROPERTIES(animatedPicture)
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }

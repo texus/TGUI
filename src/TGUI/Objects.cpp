@@ -459,6 +459,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool extractVector2u(std::string string, Vector2u& vector)
+    {
+        // Make sure that the string isn't empty
+        if (string.empty() == false)
+        {
+            // The first and last character have to be brackets
+            if ((string[0] == '(') && (string[string.length()-1] == ')'))
+            {
+                // Remove the brackets
+                string.erase(0, 1);
+                string.erase(string.length()-1);
+
+                // Search for the first comma
+                std::string::size_type commaPos = string.find(',');
+                if (commaPos != std::string::npos)
+                {
+                    // Get the x value and delete this part of the string
+                    vector.x = static_cast<unsigned int>(atoi(string.substr(0, commaPos).c_str()));
+                    string.erase(0, commaPos+1);
+
+                    // Get the y value
+                    vector.y = static_cast<unsigned int>(atoi(string.c_str()));
+
+                    return true;
+                }
+            }
+        }
+
+        // If you pass here then something is wrong with the string
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool extractVector4u(std::string string, Vector4u& vector)
     {
         // Make sure that the line isn't empty
