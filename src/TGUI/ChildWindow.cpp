@@ -627,6 +627,10 @@ namespace tgui
         background.setFillColor(backgroundColor);
         target.draw(background, states);
 
+        // Draw the background image if there is one
+        if (m_Texture != NULL)
+            target.draw(m_Sprite, states);
+
         // Calculate the clipping area
         GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.x + m_LeftBorder) * scaleViewX), scissor[0]);
         GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>((globalTranslation.y + m_TitleBarHeight + m_TopBorder) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
