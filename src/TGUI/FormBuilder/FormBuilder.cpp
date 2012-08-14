@@ -917,7 +917,11 @@ bool Builder::loadForm()
     tempWindow.globalFont = mainWindow.globalFont;
 
     // Load all the objects in the temporary window
+#ifdef __APPLE__
+    if (tempWindow.loadObjectsFromFile("../../../form.txt"))
+#else
     if (tempWindow.loadObjectsFromFile("form.txt"))
+#endif
     {
         // Get a list of all the loaded objects
         std::vector<tgui::OBJECT*> objects = tempWindow.getObjects();
@@ -1386,7 +1390,11 @@ if (string.size() > 0) \
 void Builder::saveForm()
 {
     // Open the form file for writing
+#ifdef __APPLE__
+    FILE* pFile = fopen("../../../form.txt", "w");
+#else
     FILE* pFile = fopen("form.txt", "w");
+#endif
 
     if (pFile == NULL)
         return;

@@ -96,6 +96,12 @@ if (TGUI_BUILD_FORM_BUILDER)
     target_link_libraries(FormBuilder ${PROJECT_NAME})
     target_link_libraries(FormBuilder ${SFML_LIBRARIES})
 
+    # On mac, also link with the Foundation framework
+    if (MACOSX)
+        find_library(FOUNDATION_LIB Foundation VARIANT framework)
+        target_link_libraries(FormBuilder ${FOUNDATION_LIB})
+    endif()
+
     # The Form Builder must remember the location of the libraries, even when installed
     if (LINUX)
         set_property(TARGET FormBuilder PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -112,6 +118,13 @@ if (TGUI_BUILD_FORM_BUILDER)
         # Put the tgui.dll file in the Form Builder folder
         install( FILES "${PROJECT_BINARY_DIR}/lib/tgui.dll" DESTINATION "${CMAKE_SOURCE_DIR}/Form Builder" )
 
+    endif()
+
+    # Copy the resource files to the bundle on mac
+    if (MACOSX)
+        install( DIRECTORY "${PROJECT_SOURCE_DIR}/Form Builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
+        install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
+        install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/FormObjectsWindow.txt" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
     endif()
 
 endif()
