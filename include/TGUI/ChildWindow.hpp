@@ -177,7 +177,7 @@ namespace tgui
         sf::Color borderColor;
 
         /// The title of the window
-        std::string title;
+        sf::String title;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:

@@ -448,7 +448,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::addItem(const std::string item)
+    unsigned int ComboBox::addItem(const sf::String item)
     {
         // An item can only be added when the combo box was loaded correctly
         if (m_Loaded == false)
@@ -464,7 +464,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(const std::string itemName)
+    bool ComboBox::setSelectedItem(const sf::String itemName)
     {
         return m_Listbox->setSelectedItem(itemName);
     }
@@ -485,7 +485,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::removeItem(const std::string itemName)
+    void ComboBox::removeItem(const sf::String itemName)
     {
         m_Listbox->removeItem(itemName);
     }
@@ -499,28 +499,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ComboBox::getItem(unsigned int id)
+    sf::String ComboBox::getItem(unsigned int id)
     {
         return m_Listbox->getItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getItemID(const std::string itemName)
+    unsigned int ComboBox::getItemID(const sf::String itemName)
     {
         return m_Listbox->getItemID(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string>& ComboBox::getItems()
+    std::vector<sf::String>& ComboBox::getItems()
     {
         return m_Listbox->getItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ComboBox::getSelectedItem() const
+    sf::String ComboBox::getSelectedItem() const
     {
         return m_Listbox->getSelectedItem();
     }
@@ -824,11 +824,8 @@ namespace tgui
         Front.setFillColor(m_Listbox->m_BackgroundColor);
         target.draw(Front, states);
 
-        // Get the selected item
-        std::string selectedItem = m_Listbox->getSelectedItem();
-
         // Create a text object to draw it
-        sf::Text tempText(selectedItem, m_Listbox->m_TextFont);
+        sf::Text tempText(m_Listbox->getSelectedItem(), m_Listbox->m_TextFont);
         tempText.setCharacterSize(m_Listbox->m_ItemHeight);
         tempText.setColor(m_Listbox->m_TextColor);
 

@@ -37,7 +37,6 @@ namespace tgui
     m_SelectionPointPosition(0),
     m_LimitTextWidth        (false),
     m_DisplayedText         (""),
-    m_SelText               (""),
     m_Text                  (""),
     m_TextSize              (0),
     m_SelChars              (0),
@@ -79,7 +78,6 @@ namespace tgui
     m_SelectionPointPosition(copy.m_SelectionPointPosition),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
-    m_SelText               (copy.m_SelText),
     m_Text                  (copy.m_Text),
     m_TextSize              (copy.m_TextSize),
     m_SelChars              (copy.m_SelChars),
@@ -145,7 +143,6 @@ namespace tgui
             std::swap(m_SelectionPointPosition, temp.m_SelectionPointPosition);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
-            std::swap(m_SelText,                temp.m_SelText);
             std::swap(m_Text,                   temp.m_Text);
             std::swap(m_TextSize,               temp.m_TextSize);
             std::swap(m_SelChars,               temp.m_SelChars);
@@ -430,40 +427,40 @@ namespace tgui
         if (m_LimitTextWidth)
         {
             // Remember the current text length
-            unsigned int textLength = m_DisplayedText.length();
+            unsigned int textLength = m_DisplayedText.getSize();
 
             // Check if the text fits into the EditBox
 //            while (tempText.getGlobalBounds().width > width)
-            while (tempText.findCharacterPos(tempText.getString().getSize()).x > width)
+            while (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.length()-1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1);
+                m_Text.erase(m_Text.getSize()-1);
+                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
 
                 // Refresh the text
                 tempText.setString(m_DisplayedText);
             }
 
             // Check if the text changed
-            if (m_DisplayedText.length() < textLength)
+            if (m_DisplayedText.getSize() < textLength)
             {
                 // Change the texts that are drawn on the screen
                 m_TextBeforeSelection.setString(
-                                                m_DisplayedText.substr(
+                                                m_DisplayedText.toWideString().substr(
                                                                        0,
                                                                        m_TextBeforeSelection.getString().getSize()
                                                                       )
                                               );
 
                 m_TextSelection.setString(
-                                          m_DisplayedText.substr(
+                                          m_DisplayedText.toWideString().substr(
                                                                  m_TextBeforeSelection.getString().getSize(),
                                                                  m_TextSelection.getString().getSize()
                                                                 )
                                         );
 
                 m_TextAfterSelection.setString(
-                                               m_DisplayedText.substr(
+                                               m_DisplayedText.toWideString().substr(
                                                                       m_TextBeforeSelection.getString().getSize()
                                                                        + m_TextSelection.getString().getSize(),
                                                                       m_TextAfterSelection.getString().getSize()
@@ -487,7 +484,7 @@ namespace tgui
                 editBoxWidth = 0;
 
             // Now check if the text fits into the EditBox
-            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x > editBoxWidth)
+            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > editBoxWidth)
             {
                 // Reset the left crop position
                 m_LeftTextCrop = 0;
@@ -511,7 +508,7 @@ namespace tgui
                     while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < editBoxWidth)
                     {
                         // Move the right text crop position forward
-                        if (m_RightTextCrop < m_DisplayedText.length())
+                        if (m_RightTextCrop < m_DisplayedText.getSize())
                             ++m_RightTextCrop;
                     }
                 }
@@ -574,7 +571,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setText(const std::string text)
+    void EditBox::setText(const sf::String text)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -606,21 +603,18 @@ namespace tgui
         m_DisplayedText = text;
 
         // If there is a character limit then check if it is exeeded
-        if ((m_MaxChars > 0) && (m_DisplayedText.length() > m_MaxChars))
+        if ((m_MaxChars > 0) && (m_DisplayedText.getSize() > m_MaxChars))
         {
             // Remove all the excess characters
-            while (m_DisplayedText.length() > m_MaxChars)
-            {
-                m_Text.erase(m_Text.length()-1, 1);
-                m_DisplayedText.erase(m_Text.length()-1, 1);
-            }
+            m_Text.erase(m_MaxChars, sf::String::InvalidPos);
+            m_DisplayedText.erase(m_MaxChars, sf::String::InvalidPos);
         }
 
         // Check if there is a password character
         if (m_PasswordChar != '\0')
         {
             // Loop every character and change it
-            for (unsigned int i=0; i < m_Text.length(); ++i)
+            for (unsigned int i=0; i < m_Text.getSize(); ++i)
                 m_DisplayedText[i] = m_PasswordChar;
         }
 
@@ -653,12 +647,12 @@ namespace tgui
             while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
             {
                 // Make sure that you are not trying to erase if it is already empty
-                if (m_DisplayedText.empty())
+                if (m_DisplayedText.isEmpty())
                     break;
 
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
-                m_Text.erase(m_Text.length()-1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1);
+                m_Text.erase(m_Text.getSize()-1);
+                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
 
                 // Set the new text
                 m_TextBeforeSelection.setString(m_DisplayedText);
@@ -668,10 +662,10 @@ namespace tgui
         {
             // Set the text crop
             m_LeftTextCrop = 0;
-            m_RightTextCrop = m_DisplayedText.length();
+            m_RightTextCrop = m_DisplayedText.getSize();
 
             // Now check if the text fits into the EditBox
-            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.length()).x > width)
+            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // The text is too long to fit inside the EditBox
                 while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
@@ -683,12 +677,12 @@ namespace tgui
         }
 
         // Set the selection point behind the last character
-        setSelectionPointPosition(m_DisplayedText.length());
+        setSelectionPointPosition(m_DisplayedText.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string EditBox::getText()
+    sf::String EditBox::getText()
     {
         return m_Text;
     }
@@ -747,7 +741,7 @@ namespace tgui
         else
         {
             // Set the password character
-            for (unsigned int i=0; i < m_DisplayedText.length(); ++i)
+            for (unsigned int i=0; i < m_DisplayedText.getSize(); ++i)
                 m_DisplayedText[i] = m_PasswordChar;
         }
 
@@ -769,8 +763,8 @@ namespace tgui
             while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
             {
                 // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.length()-1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1);
+                m_Text.erase(m_Text.getSize()-1);
+                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
             }
         }
         else // Scrolling is enabled
@@ -788,21 +782,21 @@ namespace tgui
 
         // The internal text has changed, so the text to display also has to change (the length stays the same)
         m_TextBeforeSelection.setString(
-                                        m_DisplayedText.substr(
+                                        m_DisplayedText.toWideString().substr(
                                                                0,
                                                                m_TextBeforeSelection.getString().getSize()
                                                               )
                                       );
 
         m_TextSelection.setString(
-                                  m_DisplayedText.substr(
+                                  m_DisplayedText.toWideString().substr(
                                                          m_TextBeforeSelection.getString().getSize(),
                                                          m_TextSelection.getString().getSize()
                                                         )
                                 );
 
         m_TextAfterSelection.setString(
-                                       m_DisplayedText.substr(
+                                       m_DisplayedText.toWideString().substr(
                                                               m_TextBeforeSelection.getString().getSize()
                                                                + m_TextSelection.getString().getSize(),
                                                               m_TextAfterSelection.getString().getSize()
@@ -847,19 +841,16 @@ namespace tgui
         m_MaxChars = maxChars;
 
         // If there is a character limit then check if it is exeeded
-        if ((m_MaxChars > 0) && (m_DisplayedText.length() > m_MaxChars))
+        if ((m_MaxChars > 0) && (m_DisplayedText.getSize() > m_MaxChars))
         {
             // Remove all the excess characters
-            while (m_DisplayedText.length() > m_MaxChars)
-            {
-                m_Text.erase(m_Text.length()-1, 1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1, 1);
-            }
+            m_Text.erase(m_MaxChars, sf::String::InvalidPos);
+            m_DisplayedText.erase(m_MaxChars, sf::String::InvalidPos);
 
             // If we passed here then the internal text has changed. We also need to change the one to display.
             m_TextBeforeSelection.setString(m_DisplayedText);
-            m_TextSelection.setString(std::string(""));
-            m_TextAfterSelection.setString(std::string(""));
+            m_TextSelection.setString("");
+            m_TextAfterSelection.setString("");
 
             // Check if scrolling is enabled
             if (m_LimitTextWidth == false)
@@ -900,7 +891,7 @@ namespace tgui
         }
 
         // Set the selection point behind the last character
-        setSelectionPointPosition(m_DisplayedText.length());
+        setSelectionPointPosition(m_DisplayedText.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -981,40 +972,40 @@ namespace tgui
         if (m_LimitTextWidth)
         {
             // Remember the current text length
-            unsigned int textLength = m_DisplayedText.length();
+            unsigned int textLength = m_DisplayedText.getSize();
 
             // Check if the text fits into the EditBox
 //            while (tempText.getGlobalBounds().width > width)
-            while (tempText.findCharacterPos(tempText.getString().getSize()).x > width)
+            while (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.length()-1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1);
+                m_Text.erase(m_Text.getSize()-1);
+                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
 
                 // Refresh the text
                 tempText.setString(m_DisplayedText);
             }
 
             // Check if the text changed
-            if (m_DisplayedText.length() < textLength)
+            if (m_DisplayedText.getSize() < textLength)
             {
                 // Change the texts that are drawn on the screen
                 m_TextBeforeSelection.setString(
-                                                m_DisplayedText.substr(
+                                                m_DisplayedText.toWideString().substr(
                                                                        0,
                                                                        m_TextBeforeSelection.getString().getSize()
                                                                       )
                                               );
 
                 m_TextSelection.setString(
-                                          m_DisplayedText.substr(
+                                          m_DisplayedText.toWideString().substr(
                                                                  m_TextBeforeSelection.getString().getSize(),
                                                                  m_TextSelection.getString().getSize()
                                                                 )
                                         );
 
                 m_TextAfterSelection.setString(
-                                               m_DisplayedText.substr(
+                                               m_DisplayedText.toWideString().substr(
                                                                       m_TextBeforeSelection.getString().getSize()
                                                                        + m_TextSelection.getString().getSize(),
                                                                       m_TextAfterSelection.getString().getSize()
@@ -1024,7 +1015,7 @@ namespace tgui
         }
         else // Scrolling is enabled
         {
-            unsigned int length = m_DisplayedText.length();
+            unsigned int length = m_DisplayedText.getSize();
 
             // Now check if the text fits into the EditBox
             while (m_TextBeforeSelection.findCharacterPos(length).x > width)
@@ -1121,15 +1112,15 @@ namespace tgui
 
             // Now check if the text fits into the EditBox
 //            while (m_TextBeforeSelection.getGlobalBounds().width > width)
-            while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
+            while (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // Make sure that you are not trying to erase if it is already empty
-                if (m_DisplayedText.empty())
+                if (m_DisplayedText.isEmpty())
                     break;
 
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
-                m_Text.erase(m_Text.length()-1);
-                m_DisplayedText.erase(m_DisplayedText.length()-1);
+                m_Text.erase(m_Text.getSize()-1);
+                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
 
                 // Set the new text
                 m_TextBeforeSelection.setString(m_DisplayedText);
@@ -1142,8 +1133,8 @@ namespace tgui
     void EditBox::setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint)
     {
         // The selection point position has to stay inside the string
-        if (charactersBeforeSelectionPoint > m_Text.length())
-            charactersBeforeSelectionPoint = m_Text.length();
+        if (charactersBeforeSelectionPoint > m_Text.getSize())
+            charactersBeforeSelectionPoint = m_Text.getSize();
 
         // Set the selection point to the correct position
         m_SelChars = 0;
@@ -1174,7 +1165,7 @@ namespace tgui
     unsigned int EditBox::findSelectionPointPosition(float posX)
     {
         // This code will crash when the editbox is empty. We need to avoid this.
-        if (m_DisplayedText.length() == 0)
+        if (m_DisplayedText.isEmpty())
             return 0;
 
         // What part of the text is visible
@@ -1184,7 +1175,7 @@ namespace tgui
         if (m_LimitTextWidth)
         {
             leftBound = 0;
-            rightBound = m_DisplayedText.length();
+            rightBound = m_DisplayedText.getSize();
         }
         else // Scrolling is enabled
         {
@@ -1201,16 +1192,16 @@ namespace tgui
             return leftBound;
 
         // This string will store pieces of the text
-        std::string tempString;
+        sf::String tempString;
 
         // Add the first character to our temp string
-        tempString.push_back(m_DisplayedText[leftBound]);
+        tempString += m_DisplayedText[leftBound];
 
         // for all the other characters, check where you have clicked.
         for (unsigned int i = leftBound + 1; i < rightBound; ++i)
         {
             // Add the next character to the temp string
-            tempString.push_back(m_DisplayedText[i]);
+            tempString += m_DisplayedText[i];
 
             // Set the string
             tempText.setString(tempString);
@@ -1263,8 +1254,8 @@ namespace tgui
 
             // Select the whole text
             m_SelStart = 0;
-            m_SelEnd = m_Text.length();
-            m_SelChars = m_Text.length();
+            m_SelEnd = m_Text.getSize();
+            m_SelChars = m_Text.getSize();
 
             // Change the three texts
             m_TextBeforeSelection.setString("");
@@ -1284,7 +1275,7 @@ namespace tgui
                 width = 0;
 
             // Make sure the last part of the text becomes visible
-            m_RightTextCrop = m_Text.length();
+            m_RightTextCrop = m_Text.getSize();
 
             // Try to display as much characters as possible
             while ((m_TextSelection.findCharacterPos(m_RightTextCrop).x - m_TextSelection.findCharacterPos(m_LeftTextCrop).x) > width)
@@ -1387,7 +1378,7 @@ namespace tgui
                 else if (x - getPosition().x > (width - rightBorderWidth))
                 {
                     // Check if the right crop position can be incremented
-                    if (m_RightTextCrop < m_DisplayedText.length())
+                    if (m_RightTextCrop < m_DisplayedText.getSize())
                     {
                         // Increment the right crop position
                         ++m_RightTextCrop;
@@ -1412,9 +1403,9 @@ namespace tgui
                     m_SelChars = m_SelEnd - m_SelStart;
 
                     // Change our three texts
-                    m_TextBeforeSelection.setString(m_DisplayedText.substr(0, m_SelStart));
-                    m_TextSelection.setString(m_DisplayedText.substr(m_SelStart, m_SelChars));
-                    m_TextAfterSelection.setString(m_DisplayedText.substr(m_SelEnd));
+                    m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelStart));
+                    m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart, m_SelChars));
+                    m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd));
                 }
             }
             else if (m_SelEnd < m_SelStart)
@@ -1426,9 +1417,9 @@ namespace tgui
                     m_SelChars = m_SelStart - m_SelEnd;
 
                     // Change our three texts
-                    m_TextBeforeSelection.setString(m_DisplayedText.substr(0, m_SelEnd));
-                    m_TextSelection.setString(m_DisplayedText.substr(m_SelEnd, m_SelChars));
-                    m_TextAfterSelection.setString(m_DisplayedText.substr(m_SelStart));
+                    m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelEnd));
+                    m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd, m_SelChars));
+                    m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart));
                 }
             }
             else
@@ -1541,7 +1532,7 @@ namespace tgui
             else // When we didn't select any text
             {
                 // You don't have to do anything when the selection point is at the end of the text
-                if (m_SelEnd < m_DisplayedText.length())
+                if (m_SelEnd < m_DisplayedText.getSize())
                 {
                     // Check if scrolling is enabled
                     if (m_LimitTextWidth == false)
@@ -1601,7 +1592,7 @@ namespace tgui
                 m_TextBeforeSelection.setString(m_DisplayedText);
 
                 // Check if the right crop position can be raised
-                while (m_RightTextCrop < m_DisplayedText.length())
+                while (m_RightTextCrop < m_DisplayedText.getSize())
                 {
                     // Change the right crop position (if necessary)
                     if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
@@ -1633,8 +1624,8 @@ namespace tgui
                     width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
 
                 // Reset the crop positions
-                m_LeftTextCrop = m_DisplayedText.length();
-                m_RightTextCrop = m_DisplayedText.length();
+                m_LeftTextCrop = m_DisplayedText.getSize();
+                m_RightTextCrop = m_DisplayedText.getSize();
 
                 // Adjust the text before the selection, it has to be changed before the calculations
                 m_TextBeforeSelection.setString(m_DisplayedText);
@@ -1651,7 +1642,7 @@ namespace tgui
             }
 
             // Set the selection point behind the text
-            setSelectionPointPosition(m_Text.length());
+            setSelectionPointPosition(m_Text.getSize());
 
             // Our selection point has moved, it should be visible
             m_SelectionPointVisible = true;
@@ -1696,7 +1687,7 @@ namespace tgui
                         width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
 
                     // Check if the right crop position was the end of the text
-                    if (m_RightTextCrop == (m_DisplayedText.length() + 1))
+                    if (m_RightTextCrop == (m_DisplayedText.getSize() + 1))
                         --m_RightTextCrop;
 
                     // Adjust the text before the selection, it has to be changed before the calculations
@@ -1743,8 +1734,8 @@ namespace tgui
                             width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
 
                         // Check if the right crop position was the end of the text
-                        if (m_RightTextCrop > m_DisplayedText.length())
-                            m_RightTextCrop = m_DisplayedText.length();
+                        if (m_RightTextCrop > m_DisplayedText.getSize())
+                            m_RightTextCrop = m_DisplayedText.getSize();
 
                         // reset the left crop position
                         m_LeftTextCrop = m_RightTextCrop;
@@ -1794,7 +1785,7 @@ namespace tgui
                         m_TextBeforeSelection.setString(m_DisplayedText);
 
                         // Check if you can still scroll right
-                        while (m_RightTextCrop < m_DisplayedText.length())
+                        while (m_RightTextCrop < m_DisplayedText.getSize())
                         {
                             // Check if another character can be visible
                             if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
@@ -1833,7 +1824,7 @@ namespace tgui
             if (m_SelChars == 0)
             {
                 // When the selection point is at the end of the line then you can't delete anything
-                if (m_SelEnd == m_Text.length())
+                if (m_SelEnd == m_Text.getSize())
                     return;
 
                 // Erase the character
@@ -1859,7 +1850,7 @@ namespace tgui
                     m_TextBeforeSelection.setString(m_DisplayedText);
 
                     // Make sure that there is still space after the right crop position
-                    while (m_RightTextCrop < m_DisplayedText.length())
+                    while (m_RightTextCrop < m_DisplayedText.getSize())
                     {
                         // Check if the next character may be visible
                         if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
@@ -1901,7 +1892,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::textEntered(char key)
+    void EditBox::textEntered(sf::Uint32 key)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -1932,17 +1923,17 @@ namespace tgui
             keyPressed(sf::Keyboard::BackSpace);
 
         // Make sure we don't exceed our maximum characters limit
-        if ((m_MaxChars > 0) && (m_Text.length() + 1 > m_MaxChars))
+        if ((m_MaxChars > 0) && (m_Text.getSize() + 1 > m_MaxChars))
             return;
 
         // Insert our character
-        m_Text.insert(m_Text.begin()+m_SelEnd, key);
+        m_Text.insert(m_SelEnd, key);
 
         // Change the displayed text
         if (m_PasswordChar != '\0')
-            m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, m_PasswordChar);
+            m_DisplayedText.insert(m_SelEnd, m_PasswordChar);
         else
-            m_DisplayedText.insert(m_DisplayedText.begin()+m_SelEnd, key);
+            m_DisplayedText.insert(m_SelEnd, key);
 
         // When there is a text width limit then reverse what we just did
         if (m_LimitTextWidth)
@@ -1953,7 +1944,7 @@ namespace tgui
 
             // Now check if the text fits into the EditBox
 //            if (tempText.getGlobalBounds().width > width)
-            if (tempText.findCharacterPos(tempText.getString().getSize()).x > width)
+            if (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // If the text does not fit in the EditBox then delete the added character
                 m_Text.erase(m_SelEnd, 1);
@@ -2199,7 +2190,7 @@ namespace tgui
                 tempText.setString(m_DisplayedText);
 
                 // Check if the whole selected text is visible
-                if ((m_TextBeforeSelection.getString().getSize() >= m_LeftTextCrop) && (tempText.getString().getSize() - m_TextAfterSelection.getString().getSize() <= m_RightTextCrop))
+                if ((m_TextBeforeSelection.getString().getSize() >= m_LeftTextCrop) && (m_DisplayedText.getSize() - m_TextAfterSelection.getString().getSize() <= m_RightTextCrop))
                 {
 //                    rectSize = Vector2f(m_TextSelection.getGlobalBounds().width,
                     rectSize = Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x,
@@ -2271,7 +2262,7 @@ namespace tgui
                 target.draw(m_TextSelection, states);
 
                 // Watch out for kerning
-                if (m_DisplayedText.length() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
+                if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
                     states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                 // Draw the text behind the selected text
@@ -2289,20 +2280,20 @@ namespace tgui
             if (m_LeftTextCrop < tempTextBeforeSelection.getString().getSize())
             {
                 // Get the string
-                std::string tempString = tempTextBeforeSelection.getString().toAnsiString();
+                sf::String tempString = tempTextBeforeSelection.getString();
 
                 // Erase the invisible part of the text
                 tempString.erase(0, m_LeftTextCrop);
 
                 // Check if the text should be drawn completely or not
                 if (m_RightTextCrop < tempTextBeforeSelection.getString().getSize())
-                    tempString.erase(m_RightTextCrop - m_LeftTextCrop);
+                    tempString.erase(m_RightTextCrop - m_LeftTextCrop, sf::String::InvalidPos);
 
                 // Make the changes in the text
                 tempTextBeforeSelection.setString(tempString);
 
                 // Check if a part of the text before selection is visible
-                if (tempString.length() > 0)
+                if (tempString.getSize() > 0)
                 {
                     // Draw the text before selection
                     target.draw(tempTextBeforeSelection, states);
@@ -2325,7 +2316,7 @@ namespace tgui
                 if (m_LeftTextCrop < charactersToSkip + m_TextSelection.getString().getSize())
                 {
                     // Get the selected string
-                    std::string tempString = m_TextSelection.getString().toAnsiString();
+                    sf::String tempString = m_TextSelection.getString();
 
                     // Change the string of the temperary text
                     tempTextSelection.setString(tempString);
@@ -2336,13 +2327,13 @@ namespace tgui
 
                     // Check if the text should be drawn completely or not
                     if (m_RightTextCrop < tempTextSelection.getString().getSize() + charactersToSkip)
-                        tempString.erase(m_RightTextCrop - charactersToSkip);
+                        tempString.erase(m_RightTextCrop - charactersToSkip, sf::String::InvalidPos);
 
                     // Make the changes in the text
                     tempTextSelection.setString(tempString);
 
                     // Check if a part of the selected text is visible
-                    if (tempString.length() > 0)
+                    if (tempString.getSize() > 0)
                     {
                         // Watch out for the kerning
                         states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
@@ -2363,7 +2354,7 @@ namespace tgui
                 if (m_RightTextCrop > charactersToSkip)
                 {
                     // Get the selected string
-                    std::string tempString = m_TextAfterSelection.getString().toAnsiString();
+                    sf::String tempString = m_TextAfterSelection.getString();
 
                     // Change the string of the temperary text
                     tempTextAfterSelection.setString(tempString);
@@ -2374,7 +2365,7 @@ namespace tgui
 
                     // Check if the text should be drawn completely or not
                     if (m_RightTextCrop < tempTextAfterSelection.getString().getSize() + charactersToSkip)
-                        tempString.erase(m_RightTextCrop - charactersToSkip);
+                        tempString.erase(m_RightTextCrop - charactersToSkip, sf::String::InvalidPos);
 
                     // Make the changes in the text
                     tempTextAfterSelection.setString(tempString);

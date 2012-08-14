@@ -438,7 +438,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::addItem(const std::string itemName)
+    unsigned int Listbox::addItem(const sf::String itemName)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
@@ -470,13 +470,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::setSelectedItem(const std::string itemName)
+    bool Listbox::setSelectedItem(const sf::String itemName)
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // Check if a match was found
-            if (m_Items[i].compare(itemName) == 0)
+            if (m_Items[i].toWideString().compare(itemName) == 0)
             {
                 // Select the item
                 m_SelectedItem = i + 1;
@@ -524,13 +524,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::removeItem(const std::string itemName)
+    void Listbox::removeItem(const sf::String itemName)
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then delete the item
-            if (m_Items[i].compare(itemName))
+            if (m_Items[i].toWideString().compare(itemName))
             {
                 m_Items.erase(m_Items.begin() + i);
 
@@ -566,7 +566,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Listbox::getItem(unsigned int id)
+    sf::String Listbox::getItem(unsigned int id)
     {
         // Check if the id is valid
         if ((id > 0) && (id <= m_Items.size()))
@@ -575,19 +575,19 @@ namespace tgui
             return m_Items[id - 1];
         }
         else // The id is outside the range
-            return std::string("");
+            return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::getItemID(const std::string itemName)
+    unsigned int Listbox::getItemID(const sf::String itemName)
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then return the IDd you have requested that you be notified on this event. You can view your new message by clicking on the following link:
 
-            if (m_Items[i].compare(itemName))
+            if (m_Items[i].toWideString().compare(itemName))
                 return i + 1;
         }
 
@@ -597,14 +597,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string>& Listbox::getItems()
+    std::vector<sf::String>& Listbox::getItems()
     {
         return m_Items;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Listbox::getSelectedItem() const
+    sf::String Listbox::getSelectedItem() const
     {
         // Make sure that an item is selected
         if (m_SelectedItem > 0)
@@ -631,6 +631,9 @@ namespace tgui
 
     bool Listbox::setScrollbar(const std::string scrollbarPathname)
     {
+        // Store the pathname
+        m_LoadedScrollbarPathname = scrollbarPathname;
+
         // Calling setScrollbar with an empty string does the same as removeScrollbar
         if (scrollbarPathname.empty() == true)
         {
@@ -741,9 +744,6 @@ namespace tgui
         // Check if we already passed the limit
         if ((m_MaxItems > 0) && (m_MaxItems < m_Items.size()))
         {
-            // Copy the list of items
-            std::vector<std::string> items = getItems();
-
             // Remove the items that passed the limitation
             m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
 

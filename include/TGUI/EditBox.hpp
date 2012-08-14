@@ -126,13 +126,13 @@ namespace tgui
         /// \see setMaximumCharacters
         /// \see limitTextWidth
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setText(const std::string text);
+        void setText(const sf::String text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the text inside the edit box. This text is not affected by the password character.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getText();
+        sf::String getText();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +299,7 @@ namespace tgui
         void leftMouseReleased(float x, float y);
         void mouseMoved(float x, float y);
         void keyPressed(sf::Keyboard::Key Key);
-        void textEntered(char Key);
+        void textEntered(sf::Uint32 Key);
         void objectUnfocused();
 
 
@@ -347,9 +347,8 @@ namespace tgui
         // You can change the boolean with the limitTextWidth(bool) function.
         bool          m_LimitTextWidth;
 
-        std::string   m_DisplayedText;
-        std::string   m_SelText;
-        std::string   m_Text;
+        sf::String    m_DisplayedText;
+        sf::String    m_Text;
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int  m_TextSize;

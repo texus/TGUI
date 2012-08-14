@@ -225,9 +225,9 @@ namespace tgui
 
         // Return the size of the track
         if (verticalScroll)
-            return Vector2u(m_TextureNormal->getSize().x, m_TextureNormal->getSize().y * 2.f);
+            return Vector2u(m_TextureNormal->getSize().x, m_TextureNormal->getSize().y * 2);
         else
-            return Vector2u(m_TextureNormal->getSize().y * 2.f, m_TextureNormal->getSize().x);
+            return Vector2u(m_TextureNormal->getSize().y * 2, m_TextureNormal->getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -496,10 +496,10 @@ namespace tgui
         else // The image is not drawn in the same direction than the loaded image
         {
             // Rotate the arrow
-            states.transform.rotate(-90, m_TextureNormal->getSize().x, m_TextureNormal->getSize().y);
+            states.transform.rotate(-90, static_cast<float>(m_TextureNormal->getSize().x), static_cast<float>(m_TextureNormal->getSize().y));
 
             // Set the left arrow on the correct position
-            states.transform.translate(m_TextureNormal->getSize().y, 0);
+            states.transform.translate(static_cast<float>(m_TextureNormal->getSize().y), 0);
 
             // Draw the normal image
             target.draw(m_SpriteNormal, states);

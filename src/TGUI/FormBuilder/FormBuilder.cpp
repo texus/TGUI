@@ -720,7 +720,7 @@ void Builder::moveObjectX(float pixels)
     tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Left");
 
     // Adjust the property
-    float left = static_cast<float>(atof(editbox->getText().c_str()));
+    float left = static_cast<float>(atof(editbox->getText().toAnsiString().c_str()));
     left += pixels;
 
     // Change the contents of the edit box
@@ -762,7 +762,7 @@ void Builder::moveObjectY(float pixels)
     tgui::EditBox* editbox = propertyWindow.get<tgui::EditBox>("text_Top");
 
     // Adjust the property
-    float top = static_cast<float>(atof(editbox->getText().c_str()));
+    float top = static_cast<float>(atof(editbox->getText().toAnsiString().c_str()));
     top += pixels;
 
     // Change the contents of the edit box
@@ -805,8 +805,8 @@ void Builder::resizeObject(float addToWidth, float addToHeight)
     tgui::EditBox* editboxHeight = propertyWindow.get<tgui::EditBox>("text_Height");
 
     // Adjust the properties
-    float width = static_cast<float>(atof(editboxWidth->getText().c_str()));
-    float height = static_cast<float>(atof(editboxHeight->getText().c_str()));
+    float width = static_cast<float>(atof(editboxWidth->getText().toAnsiString().c_str()));
+    float height = static_cast<float>(atof(editboxHeight->getText().toAnsiString().c_str()));
     width += addToWidth;
     height += addToHeight;
 
@@ -921,7 +921,7 @@ bool Builder::loadForm()
     {
         // Get a list of all the loaded objects
         std::vector<tgui::OBJECT*> objects = tempWindow.getObjects();
-        std::vector<std::string> objectNames = tempWindow.getObjectNames();
+        std::vector<sf::String> objectNames = tempWindow.getObjectNames();
 
         // Loop through all objects
         for (unsigned int i=0; i<objects.size(); ++i)
@@ -1183,7 +1183,7 @@ bool Builder::loadForm()
                 tgui::Listbox* object = static_cast<tgui::Listbox*>(objects[i]);
 
                 // Get a list of the items
-                std::vector<std::string> items = object->getItems();
+                std::vector<sf::String> items = object->getItems();
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(tgui::listbox, objectNames[i]);
@@ -1232,7 +1232,7 @@ bool Builder::loadForm()
                 tgui::ComboBox* object = static_cast<tgui::ComboBox*>(objects[i]);
 
                 // Get a list of the items
-                std::vector<std::string> items = object->getItems();
+                std::vector<sf::String> items = object->getItems();
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(tgui::comboBox, objectNames[i]);

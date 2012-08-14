@@ -214,7 +214,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -558,7 +558,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::setText(const std::string text)
+    void AnimatedButton::setText(const sf::String text)
     {
         // Don't do anything when the button wasn't loaded correctly
         if (m_Loaded == false)
@@ -591,9 +591,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string AnimatedButton::getText()
+    sf::String AnimatedButton::getText()
     {
-        return m_Text.getString().toAnsiString();
+        return m_Text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -632,7 +632,7 @@ namespace tgui
         m_TextSize = size;
 
         // Call setText to reposition the text
-        setText(m_Text.getString().toAnsiString());
+        setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

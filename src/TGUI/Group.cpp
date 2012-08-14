@@ -1558,7 +1558,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 13).compare("transparency=") == 0)
                         {
-                            child->setTransparency(atoi(line.erase(0, 13).c_str()));
+                            child->setTransparency(static_cast<unsigned char>(atoi(line.erase(0, 13).c_str())));
                         }
                         else if (line.substr(0, 15).compare("titlebarheight=") == 0)
                         {
@@ -1812,20 +1812,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string>& Group::getObjectNames()
+    std::vector<sf::String>& Group::getObjectNames()
     {
         return m_ObjName;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(const std::string objectName)
+    void Group::remove(const sf::String objectName)
     {
         // Loop through every object
         for (unsigned int i=0; i<m_ObjName.size(); ++i)
         {
             // Check if the name matches
-            if (m_ObjName[i].compare(objectName) == 0)
+            if (m_ObjName[i].toWideString().compare(objectName) == 0)
             {
                 // Remove the object
                 delete m_EventManager.m_Objects[i];

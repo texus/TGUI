@@ -273,7 +273,7 @@ namespace tgui
         else if (event.type == sf::Event::TextEntered)
         {
             // Check if the character that we pressed is allowed
-            if ((event.text.unicode >= 30) && (event.text.unicode <= 126))
+            if ((event.text.unicode >= 30) && (event.text.unicode != 127))
             {
                 // Loop through all the object
                 for (unsigned int i=0; i<m_Objects.size(); ++i)
@@ -288,7 +288,7 @@ namespace tgui
                             static_cast<Panel*>(m_Objects[i])->handleEvent(event);
                         }
                         else // Tell the object that the key was pressed
-                            m_Objects[i]->textEntered(event.text.unicode & 255);
+                            m_Objects[i]->textEntered(event.text.unicode);
                     }
                 }
             }

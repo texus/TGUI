@@ -546,7 +546,7 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Check if there is a title
-        if (title.empty() == false)
+        if (title.isEmpty() == false)
         {
             // Create the text object
             sf::Text text(title, globalFont);

@@ -201,7 +201,7 @@ namespace tgui
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
         virtual void keyPressed(sf::Keyboard::Key key);
-        virtual void textEntered(char key);
+        virtual void textEntered(sf::Uint32 key);
         virtual void objectFocused();
         virtual void objectUnfocused();
 
@@ -361,7 +361,7 @@ namespace tgui
         // Editbox and Listbox
 
             // This string will contain the new string inside the editbox
-            std::string text;
+            sf::String text;
 
 
         // Slider, Listbox and LoadingBar

@@ -70,7 +70,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.add<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* add(const std::string objectName = "")
+        T* add(const sf::String objectName = "")
         {
             T* newObject = new T();
             newObject->m_Parent = this;
@@ -100,11 +100,11 @@ namespace tgui
         /// \code tgui::Picture* pic = group.get<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* get(const std::string objectName)
+        T* get(const sf::String objectName)
         {
             for (unsigned int i=0; i<m_ObjName.size(); ++i)
             {
-                if (m_ObjName[i].compare(objectName) == 0)
+                if (m_ObjName[i].toWideString().compare(objectName) == 0)
                     return static_cast<T*>(m_EventManager.m_Objects[i]);
             }
 
@@ -122,7 +122,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.copy(pictureToCopy, "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* copy(T* oldObject, const std::string newObjectName = "")
+        T* copy(T* oldObject, const sf::String newObjectName = "")
         {
             T* newObject = new T(*oldObject);
 
@@ -145,11 +145,11 @@ namespace tgui
         /// \code tgui::Picture* pic = group.copy<tgui::Picture>("PicToCopy", "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* copy(const std::string oldObjectName, const std::string newObjectName = "")
+        T* copy(const sf::String oldObjectName, const sf::String newObjectName = "")
         {
             for (unsigned int i=0; i<m_ObjName.size(); ++i)
             {
-                if (m_ObjName[i].compare(oldObjectName) == 0)
+                if (m_ObjName[i].toWideString().compare(oldObjectName) == 0)
                 {
                     T* newObject = new T(*static_cast<T*>(m_EventManager.m_Objects[i]));
 
@@ -188,7 +188,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns a list of the names of all the objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<std::string>& getObjectNames();
+        std::vector<sf::String>& getObjectNames();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,13 +198,13 @@ namespace tgui
         ///
         /// \see remove(OBJECT*)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(const std::string objectName);
+        void remove(const sf::String objectName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a single object that was added to the group.
         ///
-        /// \see remove(std::string)
+        /// \see remove(sf::String)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void remove(OBJECT* object);
 
@@ -278,7 +278,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::vector<std::string>  m_ObjName;
+        std::vector<sf::String>  m_ObjName;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
