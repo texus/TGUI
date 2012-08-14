@@ -65,12 +65,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the slider images.
+        /// \brief Loads the spin button images.
         ///
         /// The \a verticalScroll member might be changed in this function. If you want to change it then do it afterwards.
         ///
         /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the slider.
+        ///                  The folder must also contain an info.txt file, which will give more information about the spin button.
         ///
         /// \return
         ///        - true on success
@@ -82,32 +82,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the slider.
+        /// \brief Changes the size of the spin button.
         ///
         /// This function will undo all scaling, as it just calculates the correct scale factors for you.
         ///
-        /// \param width   The new width of the slider
-        /// \param height  The new height of the slider
+        /// \param width   The new width of the spin button
+        /// \param height  The new height of the spin button
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(float width, float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the slider, unaffected by scaling.
+        /// \brief Returns the size of the spin button, unaffected by scaling.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2u getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the slider, after the scaling transformation.
+        /// \brief Returns the size of the spin button, after the scaling transformation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getScaledSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the slider.
+        /// \brief Returns the pathname that was used to load the spin button.
         ///
-        /// When the slider has not been loaded yet then this function will return an empty string.
+        /// When the spin button has not been loaded yet then this function will return an empty string.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::string getLoadedPathname();
 
@@ -139,14 +139,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the direction of the slider.
-        ///
-        /// Pass false when you want the slider to lie horizontal.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll( bool verticalScroll );
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the minimum value.
         ///
         /// The default minimum value 0.
@@ -169,12 +161,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Find out if the slider is lying vertical or not.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getVerticalScroll();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // These functions are used to receive callback from the EventManager.
         // You normally don't need them, but you can use them to simulate an event.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +176,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the slider on the render target.
+        // This function will be called and it will draw the spin button on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -199,7 +185,7 @@ namespace tgui
     public:
 
         /// Is the spin button draw vertically (arrows on top of each other)?
-        /// Set this boolean to false when the slider should lie horizontal (arrows next to each other).
+        /// Set this boolean to false when the spin button should lie horizontal (arrows next to each other).
         bool verticalScroll;
 
     protected:

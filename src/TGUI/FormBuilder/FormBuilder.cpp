@@ -1131,7 +1131,7 @@ bool Builder::loadForm()
                 sliders.back().top.value = object->getPosition().y;
                 sliders.back().width.value = object->getScaledSize().x;
                 sliders.back().height.value = object->getScaledSize().y;
-                sliders.back().verticalScroll.value = object->getVerticalScroll();
+                sliders.back().verticalScroll.value = object->verticalScroll;
                 sliders.back().value.value = object->getValue();
                 sliders.back().minimum.value = object->getMinimum();
                 sliders.back().maximum.value = object->getMaximum();
@@ -1142,7 +1142,7 @@ bool Builder::loadForm()
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
-                realObject->setVerticalScroll(object->getVerticalScroll());
+                realObject->verticalScroll = object->verticalScroll;
                 realObject->setValue(object->getValue());
                 realObject->setMinimum(object->getMinimum());
                 realObject->setMaximum(object->getMaximum());
@@ -1160,7 +1160,7 @@ bool Builder::loadForm()
                 scrollbars.back().top.value = object->getPosition().y;
                 scrollbars.back().width.value = object->getScaledSize().x;
                 scrollbars.back().height.value = object->getScaledSize().y;
-                scrollbars.back().verticalScroll.value = object->getVerticalScroll();
+                scrollbars.back().verticalScroll.value = object->verticalScroll;
                 scrollbars.back().value.value = object->getValue();
                 scrollbars.back().lowValue.value = object->getLowValue();
                 scrollbars.back().maximum.value = object->getMaximum();
@@ -1171,7 +1171,7 @@ bool Builder::loadForm()
                 realObject->load(object->getLoadedPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
-                realObject->setVerticalScroll(object->getVerticalScroll());
+                realObject->verticalScroll = object->verticalScroll;
                 realObject->setValue(object->getValue());
                 realObject->setLowValue(object->getLowValue());
                 realObject->setMaximum(object->getMaximum());

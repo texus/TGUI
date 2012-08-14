@@ -129,7 +129,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -200,7 +200,7 @@ namespace tgui
 
     void SpinButton::setSize(float width, float height)
     {
-        // Don't do anything when the slider wasn't loaded correctly
+        // Don't do anything when the spin button wasn't loaded correctly
         if (m_Loaded == false)
             return;
 
@@ -219,7 +219,7 @@ namespace tgui
 
     Vector2u SpinButton::getSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
+        // Don't continue when the spin button wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2u(0, 0);
 
@@ -234,7 +234,7 @@ namespace tgui
 
     Vector2f SpinButton::getScaledSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
+        // Don't continue when the spin button wasn't loaded correctly
         if (m_Loaded == false)
             return Vector2f(0, 0);
 
@@ -295,13 +295,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setVerticalScroll( bool vertical )
-    {
-        verticalScroll = vertical;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     unsigned int SpinButton::getMinimum()
     {
         return m_Minimum;
@@ -319,13 +312,6 @@ namespace tgui
     unsigned int SpinButton::getValue()
     {
         return m_Value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool SpinButton::getVerticalScroll()
-    {
-        return verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
