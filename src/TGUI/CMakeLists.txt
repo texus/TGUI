@@ -18,6 +18,7 @@ set(TGUI_SRC
     AnimatedPicture.cpp
     AnimatedButton.cpp
     SpinButton.cpp
+    Slider2D.cpp
     InfoFileParser.cpp
     EventManager.cpp
     TextureManager.cpp

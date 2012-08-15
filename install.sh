@@ -90,6 +90,9 @@ if (command -v g++) then
     echo "Compiling 'SpinButton.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpinButton.cpp" -o "lib/obj/SpinButton.o"
 
+    echo "Compiling 'Slider2D.cpp' ..."
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider2D.cpp" -o "lib/obj/Slider2D.o"
+
     echo "Compiling 'InfoFileParser.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/InfoFileParser.cpp" -o "lib/obj/InfoFileParser.o"
 
@@ -136,6 +139,7 @@ if (command -v g++) then
                     "lib/obj/AnimatedPicture.o" \
                     "lib/obj/AnimatedButton.o" \
                     "lib/obj/SpinButton.o" \
+                    "lib/obj/Slider2D.o" \
                     "lib/obj/InfoFileParser.o" \
                     "lib/obj/EventManager.o" \
                     "lib/obj/TextureManager.o" \

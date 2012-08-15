@@ -63,6 +63,7 @@ namespace tgui
     struct AnimatedPicture;
     struct AnimatedButton;
     struct SpinButton;
+    struct Slider2D;
 
     struct InfoFileParser;
     struct EventManager;
@@ -119,6 +120,7 @@ namespace tgui
         animatedPicture,
         animatedButton,
         spinButton,
+        slider2D,
 
         panel,
         childWindow,
@@ -157,6 +159,7 @@ namespace tgui
 #include <TGUI/AnimatedPicture.hpp>
 #include <TGUI/AnimatedButton.hpp>
 #include <TGUI/SpinButton.hpp>
+#include <TGUI/Slider2D.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>

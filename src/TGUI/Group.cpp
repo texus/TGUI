@@ -552,6 +552,7 @@ namespace tgui
                         else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                         else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
                         else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
+                        else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
                         else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
                         else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
                         else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
@@ -605,6 +606,7 @@ namespace tgui
                             else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                             else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
                             else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
                             else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
                             else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
                             else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
@@ -1314,6 +1316,77 @@ namespace tgui
 
                         break;
                     }
+                    case tgui::slider2D + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the slider back
+                        tgui::Slider2D* slider = static_cast<tgui::Slider2D*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the slider
+                            slider->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            Vector2f value;
+                            if (extractVector2f(line.erase(0, 6), value) == false)
+                                goto LoadingFailed;
+
+                            slider->setValue(value);
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            Vector2f minimum;
+                            if (extractVector2f(line.erase(0, 8), minimum) == false)
+                                goto LoadingFailed;
+
+                            slider->setMinimum(minimum);
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            Vector2f maximum;
+                            if (extractVector2f(line.erase(0, 8), maximum) == false)
+                                goto LoadingFailed;
+
+                            slider->setMaximum(maximum);
+                        }
+                        else if (line.substr(0, 15).compare("returntocenter=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool returnToCenter;
+                            CHECK_BOOL(returnToCenter)
+
+                            slider->returnToCenter = returnToCenter;
+                        }
+                        else if (line.substr(0, 15).compare("fixedthumbsize=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool fixedThumbSize;
+                            CHECK_BOOL(fixedThumbSize)
+
+                            slider->fixedThumbSize = fixedThumbSize;
+                        }
+                        else CHECK_SHARED_PROPERTIES(slider)
+                            else // The line was wrong
+                                goto LoadingFailed;
+
+                        break;
+                    }
                     case tgui::scrollbar + 1:
                     {
                         START_LOADING_OBJECT
@@ -1593,6 +1666,7 @@ namespace tgui
                             else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                             else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
                             else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
                             else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
                             else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
                             else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
