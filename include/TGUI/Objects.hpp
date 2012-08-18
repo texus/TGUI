@@ -254,6 +254,9 @@ namespace tgui
         // This is set to true for objects that have something to be dragged around (e.g. sliders and scrollbars)
         bool m_DraggableObject;
 
+        // This is set to true for objects that store other objects inside them
+        bool m_GroupObject;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

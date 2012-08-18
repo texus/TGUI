@@ -166,6 +166,7 @@ namespace tgui
 #include <TGUI/TextureManager.hpp>
 
 #include <TGUI/Group.hpp>
+#include <TGUI/GroupObject.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/Window.hpp>

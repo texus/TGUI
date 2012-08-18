@@ -105,6 +105,9 @@ if (command -v g++) then
     echo "Compiling 'Group.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Group.cpp" -o "lib/obj/Group.o"
 
+    echo "Compiling 'GroupObject.cpp' ..."
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/GroupObject.cpp" -o "lib/obj/GroupObject.o"
+
     echo "Compiling 'Panel.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Panel.cpp" -o "lib/obj/Panel.o"
 
@@ -144,6 +147,7 @@ if (command -v g++) then
                     "lib/obj/EventManager.o" \
                     "lib/obj/TextureManager.o" \
                     "lib/obj/Group.o" \
+                    "lib/obj/GroupObject.o" \
                     "lib/obj/Panel.o" \
                     "lib/obj/ChildWindow.o" \
                     "lib/obj/Window.o" \

@@ -40,16 +40,13 @@ namespace tgui
     m_LoadedBackgroundImageFilename("")
     {
         m_ObjectType = panel;
-        m_EventManager.m_Parent = this;
-
         m_AllowFocus = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
-    OBJECT                         (panelToCopy),
-    Group                          (panelToCopy),
+    GroupObject                    (panelToCopy),
     backgroundColor                (panelToCopy.backgroundColor),
     m_Size                         (panelToCopy.m_Size),
     m_LoadedBackgroundImageFilename(panelToCopy.m_LoadedBackgroundImageFilename)
@@ -79,8 +76,7 @@ namespace tgui
         if (this != &right)
         {
             Panel temp(right);
-            this->OBJECT::operator=(right);
-            this->Group::operator=(right);
+            this->GroupObject::operator=(right);
 
             std::swap(backgroundColor,                 temp.backgroundColor);
             std::swap(m_Size,                          temp.m_Size);
@@ -90,13 +86,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::initialize()
-    {
-        globalFont = m_Parent->globalFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,35 +171,6 @@ namespace tgui
     {
         // Pass the callback to the parent. It has to get to the main window eventually.
         m_Parent->addCallback(callback);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::handleEvent(sf::Event& event, const float mouseX, const float mouseY)
-    {
-        // Check if the event is a mouse move or mouse down/press
-        if (event.type == sf::Event::MouseMoved)
-        {
-            // Adjust the mouse position of the event
-            event.mouseMove.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseMove.y = static_cast<int>(mouseY - getPosition().y);
-        }
-        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
-        {
-            // Adjust the mouse position of the event
-            event.mouseButton.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseButton.y = static_cast<int>(mouseY - getPosition().y);
-        }
-
-        // Let the event manager handle the event
-        m_EventManager.handleEvent(event);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Panel::focusNextObject()
-    {
-        return m_EventManager.focusNextObject();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,18 +266,19 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Get the global translation
-        Vector2f globalTranslation = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        // Get the global position
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.x * scaleViewX), scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(globalTranslation.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.x + m_Size.x) * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>((globalTranslation.y + m_Size.y) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
         // If the object outside the window then don't draw anything
         if (scissorRight < scissorLeft)

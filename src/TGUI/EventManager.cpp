@@ -61,10 +61,10 @@ namespace tgui
                     }
 
                     // Groups also need a different treatment
-                    else if (m_Objects[i]->m_ObjectType == panel)
+                    else if (m_Objects[i]->m_GroupObject)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                        static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
                 }
@@ -77,10 +77,10 @@ namespace tgui
             if (mouseOnObject(objectNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
             {
                 // Check if the object is a group
-                if (m_Objects[objectNr]->m_ObjectType == panel)
+                if (m_Objects[objectNr]->m_GroupObject)
                 {
                     // Make the event handler of the group do the rest
-                    static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                    static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 }
                 else // Send the event to the object
                     m_Objects[objectNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
@@ -98,8 +98,11 @@ namespace tgui
                 // Check if the mouse is on top of an object
                 if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
+                    // Focus the object
+                    focusObject(m_Objects[objectNr]);
+
                     // Check if the object is a group
-                    if (m_Objects[objectNr]->m_ObjectType == panel)
+                    if (m_Objects[objectNr]->m_GroupObject)
                     {
                         // If another object was focused then unfocus it now
                         if ((m_FocusedObject) && (m_FocusedObject != objectNr+1))
@@ -110,27 +113,10 @@ namespace tgui
                         }
 
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // The event has to be sent to an object
-                    {
-                        // Check if the object is not directly linked to the main window
-                        if (m_Parent != NULL)
-                        {
-                            // Check if the group is not yet focused
-                            if (m_Parent->isFocused() == false)
-                            {
-                                // Focus the group
-                                m_Parent->m_Parent->focus(m_Parent);
-                            }
-                        }
-
-                        // Focus the object
-                        focusObject(m_Objects[objectNr]);
-
-                        // Send the event to the object
                         m_Objects[objectNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                    }
                 }
                 else // The mouse didn't went down on an object, so unfocus the focused object
                     unfocusAllObjects();
@@ -149,10 +135,10 @@ namespace tgui
                 if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
                     // Check if the object is a group
-                    if (m_Objects[objectNr]->m_ObjectType == panel)
+                    if (m_Objects[objectNr]->m_GroupObject)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<Panel*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // Send the event to the object
                         m_Objects[objectNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
@@ -162,8 +148,8 @@ namespace tgui
                     {
                         if (i != objectNr)
                         {
-                            if (m_Objects[i]->m_ObjectType == panel)
-                                static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                            if (m_Objects[i]->m_GroupObject)
+                                static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                             else
                                 m_Objects[i]->mouseNoLongerDown();
                         }
@@ -174,8 +160,8 @@ namespace tgui
                     // Tell all the objects that the mouse has gone up
                     for (unsigned int i=0; i<m_Objects.size(); ++i)
                     {
-                        if (m_Objects[i]->m_ObjectType == panel)
-                            static_cast<Panel*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        if (m_Objects[i]->m_GroupObject)
+                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                         else
                             m_Objects[i]->mouseNoLongerDown();
                     }
@@ -205,10 +191,10 @@ namespace tgui
                     if (m_Objects[i]->m_Focused == true)
                     {
                         // Check if the object is a group
-                        if (m_Objects[i]->m_ObjectType == panel)
+                        if (m_Objects[i]->m_GroupObject)
                         {
                             // Make the event handler of the group do the rest
-                            static_cast<Panel*>(m_Objects[i])->handleEvent(event);
+                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
                         }
                         else // Tell the object that the key was pressed
                             m_Objects[i]->keyPressed(event.key.code);
@@ -245,10 +231,10 @@ namespace tgui
                             if (m_Objects[i]->m_Focused == true)
                             {
                                 // Check if the object is a group
-                                if (m_Objects[i]->m_ObjectType == panel)
+                                if (m_Objects[i]->m_GroupObject)
                                 {
                                     // Make the event handler of the group do the rest
-                                    static_cast<Panel*>(m_Objects[i])->handleEvent(event);
+                                    static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
                                 }
                                 else // Tell the object that the key was pressed
                                     m_Objects[i]->keyPressed(event.key.code);
@@ -282,10 +268,10 @@ namespace tgui
                     if (m_Objects[i]->m_Focused == true)
                     {
                         // Check if the object is a group
-                        if (m_Objects[i]->m_ObjectType == panel)
+                        if (m_Objects[i]->m_GroupObject)
                         {
                             // Make the event handler of the group do the rest
-                            static_cast<Panel*>(m_Objects[i])->handleEvent(event);
+                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
                         }
                         else // Tell the object that the key was pressed
                             m_Objects[i]->textEntered(event.text.unicode);
@@ -372,7 +358,7 @@ namespace tgui
         for (unsigned int i=0; i<m_Objects.size(); ++i)
         {
             // Check if the object is a group or an object that uses the time
-            if (m_Objects[i]->m_ObjectType == panel)
+            if (m_Objects[i]->m_GroupObject)
                 dynamic_cast<Group*>(m_Objects[i])->updateTime(elapsedTime);
             else if (m_Objects[i]->m_AnimatedObject)
             {
@@ -394,19 +380,19 @@ namespace tgui
         if (tabKeyUsageEnabled == false)
             return;
 
-        // Check if a panel is focused
+        // Check if a group is focused
         if (m_FocusedObject)
         {
-            if (m_Objects[m_FocusedObject-1]->m_ObjectType == panel)
+            if (m_Objects[m_FocusedObject-1]->m_GroupObject)
             {
-                // Focus the next object in panel
-                if (static_cast<tgui::Panel*>(m_Objects[m_FocusedObject-1])->focusNextObject())
+                // Focus the next object in group
+                if (static_cast<tgui::GroupObject*>(m_Objects[m_FocusedObject-1])->focusNextObject())
                 {
                     // Another object is focused. Clear all key flags
                     for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
                         m_KeyPress[i] = false;
 
-                    // Don't continue, th panel has made the needed changes in his event manager
+                    // Don't continue, the group has made the needed changes in his event manager
                     return;
                 }
             }
@@ -494,9 +480,12 @@ namespace tgui
                 // Make sure that the object is visible and enabled
                 if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
                 {
-                    // Unfocus the current object
-                    m_Objects[m_FocusedObject-1]->m_Focused = false;
-                    m_Objects[m_FocusedObject-1]->objectUnfocused();
+                    if (m_FocusedObject > 0)
+                    {
+                        // Unfocus the current object
+                        m_Objects[m_FocusedObject-1]->m_Focused = false;
+                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                    }
 
                     // Focus on the new object
                     m_FocusedObject = i+1;

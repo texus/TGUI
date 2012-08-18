@@ -23,6 +23,7 @@ set(TGUI_SRC
     EventManager.cpp
     TextureManager.cpp
     Group.cpp
+    GroupObject.cpp
     Panel.cpp
     ChildWindow.cpp
     Window.cpp

@@ -43,7 +43,8 @@ namespace tgui
     m_Focused        (false),
     m_AllowFocus     (false),
     m_AnimatedObject (false),
-    m_DraggableObject(false)
+    m_DraggableObject(false),
+    m_GroupObject    (false)
     {
     }
 
@@ -64,7 +65,8 @@ namespace tgui
     m_AllowFocus     (copy.m_AllowFocus),
     m_ObjectType     (copy.m_ObjectType),
     m_AnimatedObject (copy.m_AnimatedObject),
-    m_DraggableObject(copy.m_DraggableObject)
+    m_DraggableObject(copy.m_DraggableObject),
+    m_GroupObject    (copy.m_GroupObject)
     {
     }
 
@@ -97,6 +99,7 @@ namespace tgui
             m_ObjectType      = right.m_ObjectType;
             m_AnimatedObject  = right.m_AnimatedObject;
             m_DraggableObject = right.m_DraggableObject;
+            m_GroupObject     = right.m_GroupObject;
         }
 
         return *this;

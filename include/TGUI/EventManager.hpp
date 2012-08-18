@@ -134,6 +134,7 @@ namespace tgui
 
         // The event handler can only be used by objects and by the window
         friend struct Group;
+        friend struct GroupObject;
         friend struct Panel;
         friend struct ChildWindow;
         friend struct Window;
