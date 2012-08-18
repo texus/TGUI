@@ -252,10 +252,12 @@ namespace tgui
             }
             else if (property.compare("borders") == 0)
             {
-                // Get the borders
                 Vector4u borders;
                 if (extractVector4u(value, borders))
                     setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+
+                // Set the selection point to the correct position
+                m_SelectionPointPosition = m_LeftBorder;
             }
             else if (property.compare("textcolor") == 0)
             {
