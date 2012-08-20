@@ -412,7 +412,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& ComboBox::getTextFont()
+    const sf::Font* ComboBox::getTextFont()
     {
         return m_Listbox->getTextFont();
     }
