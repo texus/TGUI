@@ -2338,7 +2338,8 @@ namespace tgui
                     if (tempString.getSize() > 0)
                     {
                         // Watch out for the kerning
-                        states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                        if (m_TextBeforeSelection.getString().getSize() > 1)
+                            states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
                         // Draw the text before selection
 //                       states.transform.translate(tempTextBeforeSelection.getGlobalBounds().width, 0);
