@@ -33,9 +33,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Form::Form(sf::RenderWindow* window)
+    Form::Form(sf::RenderWindow& window)
     {
-        m_Window = window;
+        m_Window = &window;
 
         // The main window is always focused
         m_GroupFocused = true;
