@@ -184,21 +184,17 @@ namespace tgui
              || (event.key.code == sf::Keyboard::Delete)
              || (event.key.code == sf::Keyboard::Return))
             {
-                // Loop through all the object
-                for (unsigned int i=0; i<m_Objects.size(); ++i)
+                // Check if there is a focused object
+                if (m_FocusedObject)
                 {
-                    // Check if the object is focused
-                    if (m_Objects[i]->m_Focused == true)
+                    // Check if the object is a group
+                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                     {
-                        // Check if the object is a group
-                        if (m_Objects[i]->m_GroupObject)
-                        {
-                            // Make the event handler of the group do the rest
-                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
-                        }
-                        else // Tell the object that the key was pressed
-                            m_Objects[i]->keyPressed(event.key.code);
+                        // Make the event handler of the group do the rest
+                        static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
                     }
+                    else // Tell the object that the key was pressed
+                        m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
                 }
             }
         }
@@ -224,21 +220,17 @@ namespace tgui
                      && (event.key.code != sf::Keyboard::Delete)
                      && (event.key.code != sf::Keyboard::Return))
                     {
-                        // Loop through all the object
-                        for (unsigned int i=0; i<m_Objects.size(); ++i)
+                        // Check if there is a focused object
+                        if (m_FocusedObject)
                         {
-                            // Check if the object is focused
-                            if (m_Objects[i]->m_Focused == true)
+                            // Check if the object is a group
+                            if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                             {
-                                // Check if the object is a group
-                                if (m_Objects[i]->m_GroupObject)
-                                {
-                                    // Make the event handler of the group do the rest
-                                    static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
-                                }
-                                else // Tell the object that the key was pressed
-                                    m_Objects[i]->keyPressed(event.key.code);
+                                // Make the event handler of the group do the rest
+                                static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
                             }
+                            else // Tell the object that the key was pressed
+                                m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
                         }
                     }
                 }
@@ -261,21 +253,17 @@ namespace tgui
             // Check if the character that we pressed is allowed
             if ((event.text.unicode >= 30) && (event.text.unicode != 127))
             {
-                // Loop through all the object
-                for (unsigned int i=0; i<m_Objects.size(); ++i)
+                // Check if there is a focused object
+                if (m_FocusedObject)
                 {
-                    // Check if the object is focused
-                    if (m_Objects[i]->m_Focused == true)
+                    // Check if the object is a group
+                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                     {
-                        // Check if the object is a group
-                        if (m_Objects[i]->m_GroupObject)
-                        {
-                            // Make the event handler of the group do the rest
-                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event);
-                        }
-                        else // Tell the object that the key was pressed
-                            m_Objects[i]->textEntered(event.text.unicode);
+                        // Make the event handler of the group do the rest
+                        static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
                     }
+                    else // Tell the object that the key was pressed
+                        m_Objects[m_FocusedObject-1]->textEntered(event.text.unicode);
                 }
             }
         }
