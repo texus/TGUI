@@ -49,7 +49,7 @@ namespace tgui
         ///         - true when the image was loaded successfully
         ///         - false when the image couldn't be loaded (probalby file not found)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getTexture(const std::string filename, sf::Texture*& textureToLoad);
+        virtual bool getTexture(const std::string filename, sf::Texture*& textureToLoad);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ namespace tgui
         ///         - true when the texture was loaded before by TextureManager
         ///         - false when the texture was never loaded (or already removed) by TextureManager
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool copyTexture(sf::Texture* textureToCopy, sf::Texture*& newTexture);
+        virtual bool copyTexture(sf::Texture* textureToCopy, sf::Texture*& newTexture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ namespace tgui
         ///
         /// \remarks For EVERY call to getTexture or copyTexture (that returned true) this function MUST be called.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeTexture(sf::Texture*& textureToRemove);
+        virtual void removeTexture(sf::Texture*& textureToRemove);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,11 +81,11 @@ namespace tgui
         ///
         /// When the texture was not in the list (or when it is NULL), this function will always return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool isTransparentPixel(sf::Texture* texture, unsigned int x, unsigned int y);
+        virtual bool isTransparentPixel(sf::Texture* texture, unsigned int x, unsigned int y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         std::vector<std::string>   m_Filenames;  // The filenames of the texture
         std::vector<sf::Image>     m_Images;     // The SFML images
