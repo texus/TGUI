@@ -448,7 +448,8 @@ namespace tgui
                 m_CloseButton->setPosition(0, 0);
                 m_CloseButton->setScale(1, 1);
 
-                // The mouse is on top of the title bar, so the objects don't need to know abot it
+                // Tell the objects that the mouse is no longer down
+                m_EventManager.mouseNoLongerDown();
                 return;
             }
             else // The mouse is not on top of the titlebar
