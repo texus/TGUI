@@ -401,13 +401,13 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            setScale(width / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x),
-                     height / m_TextureNormal_M->getSize().y);
+            sf::Transformable::setScale(width / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x),
+                                        height / m_TextureNormal_M->getSize().y);
         }
         else // The image is not split
         {
-            setScale(width / m_TextureNormal_M->getSize().x,
-                     height / m_TextureNormal_M->getSize().y);
+            sf::Transformable::setScale(width / m_TextureNormal_M->getSize().x,
+                                        height / m_TextureNormal_M->getSize().y);
         }
 
         // Check if we are auto scaling the text
@@ -2399,6 +2399,30 @@ namespace tgui
             // Draw the selection point
             target.draw(SelectionPoint, states);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::setScale(float factorX, float factorY)
+    {
+        TGUI_UNUSED_PARAM(factorX);
+        TGUI_UNUSED_PARAM(factorY);
+    }
+
+    void EditBox::setScale(const Vector2f& factors)
+    {
+        TGUI_UNUSED_PARAM(factors);
+    }
+
+    void EditBox::scale(float factorX, float factorY)
+    {
+        TGUI_UNUSED_PARAM(factorX);
+        TGUI_UNUSED_PARAM(factorY);
+    }
+
+    void EditBox::scale(const Vector2f& factors)
+    {
+        TGUI_UNUSED_PARAM(factors);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
