@@ -513,11 +513,21 @@ namespace tgui
 
     void Button::leftMousePressed(float x, float y)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
         // Set the mouse down flag
         m_MouseDown = true;
+
+        // Add the callback (if the user requested it)
+        if (callbackID > 0)
+        {
+            Callback callback;
+            callback.object      = this;
+            callback.callbackID  = callbackID;
+            callback.trigger     = Callback::mouseDown;
+            callback.mouseButton = sf::Mouse::Left;
+            callback.mouseX      = x - getPosition().x;
+            callback.mouseY      = y - getPosition().y;
+            m_Parent->addCallback(callback);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

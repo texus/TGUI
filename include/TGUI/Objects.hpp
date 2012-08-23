@@ -372,6 +372,7 @@ namespace tgui
         // This enum contains the different values for Trigger.
         enum triggers
         {
+            mouseDown,         // Button
             mouseClick,        // Button, Checkbox, RadioButton
             keyPress_Space,    // Button, Checkbox, RadioButton
             keyPress_Return,   // Button, Checkbox, RadioButton
