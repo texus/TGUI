@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -58,6 +60,7 @@ namespace tgui
 
     Button::Button(const Button& copy) :
     OBJECT              (copy),
+    m_Size              (copy.m_Size),
     m_LoadedPathname    (copy.m_LoadedPathname),
     m_SplitImage        (copy.m_SplitImage),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
@@ -112,6 +115,7 @@ namespace tgui
             Button temp(right);
             this->OBJECT::operator=(right);
 
+            std::swap(m_Size,                temp.m_Size);
             std::swap(m_TextureNormal_L,     temp.m_TextureNormal_L);
             std::swap(m_TextureNormal_M,     temp.m_TextureNormal_M);
             std::swap(m_TextureNormal_R,     temp.m_TextureNormal_R);
@@ -255,11 +259,13 @@ namespace tgui
                 m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
                 m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
+
+                // Set the size of the button
+                m_Size.x = static_cast<float>(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
+                m_Size.y = static_cast<float>(m_TextureNormal_M->getSize().y);
             }
             else
                 return false;
-
-            bool error = false;
 
             // load the optional textures
             if (m_ObjectPhase & ObjectPhase_Focused)
@@ -275,7 +281,7 @@ namespace tgui
                     m_AllowFocus = true;
                 }
                 else
-                    error = true;
+                    return false;
             }
 
             if (m_ObjectPhase & ObjectPhase_Hover)
@@ -289,7 +295,7 @@ namespace tgui
                     m_SpriteMouseHover_R.setTexture(*m_TextureMouseHover_R, true);
                 }
                 else
-                    error = true;
+                    return false;
             }
 
             if (m_ObjectPhase & ObjectPhase_MouseDown)
@@ -303,22 +309,23 @@ namespace tgui
                     m_SpriteMouseDown_R.setTexture(*m_TextureMouseDown_R, true);
                 }
                 else
-                    error = true;
+                    return false;
             }
 
             // When there is no error we will return true
-            m_Loaded = !error;
-            return !error;
+            m_Loaded = true;
+            return true;
         }
         else // The image isn't split
         {
             // load the required texture
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            {
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
+                m_Size = Vector2f(m_TextureNormal_M->getSize());
+            }
             else
                 return false;
-
-            bool error = false;
 
             // load the optional textures
             if (m_ObjectPhase & ObjectPhase_Focused)
@@ -329,7 +336,7 @@ namespace tgui
                     m_AllowFocus = true;
                 }
                 else
-                    error = true;
+                    return false;
             }
 
             if (m_ObjectPhase & ObjectPhase_Hover)
@@ -337,7 +344,7 @@ namespace tgui
                 if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover_M))
                     m_SpriteMouseHover_M.setTexture(*m_TextureMouseHover_M, true);
                 else
-                    error = true;
+                    return false;
             }
 
             if (m_ObjectPhase & ObjectPhase_MouseDown)
@@ -345,12 +352,12 @@ namespace tgui
                 if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Down." + imageExtension, m_TextureMouseDown_M))
                     m_SpriteMouseDown_M.setTexture(*m_TextureMouseDown_M, true);
                 else
-                    error = true;
+                    return false;
             }
 
             // When there is no error we will return true
-            m_Loaded = !error;
-            return !error;
+            m_Loaded = true;
+            return true;
         }
     }
 
@@ -362,60 +369,32 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            setScale(width / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x),
-                     height / m_TextureNormal_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            setScale(width / m_TextureNormal_M->getSize().x,
-                     height / m_TextureNormal_M->getSize().y);
-        }
+        // Set the new size of the button
+        m_Size.x = width;
+        m_Size.y = height;
+
+        // Recalculate the text size
+        setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u Button::getSize() const
     {
-        // Don't continue when the button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2u(m_Size);
+        else
             return Vector2u(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the three images
-            return Vector2u(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x, m_TextureNormal_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2u(m_TextureNormal_M->getSize().x, m_TextureNormal_M->getSize().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Button::getScaledSize() const
     {
-        // Don't continue when the button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+        else
             return Vector2f(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the three images
-            return Vector2f((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x,
-                            m_TextureNormal_M->getSize().y * getScale().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2f(m_TextureNormal_M->getSize().x * getScale().x, m_TextureNormal_M->getSize().y * getScale().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -440,36 +419,22 @@ namespace tgui
         if (m_TextSize == 0)
         {
             // Calculate a possible text size
-            float size = m_TextureNormal_M->getSize().y * 0.9f;
+            float size = m_Size.y * 0.85f;
             m_Text.setCharacterSize(static_cast<unsigned int>(size));
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
 
-            // The calculation is slightly different when the image is split
-            if (m_SplitImage)
+            // Make sure that the text isn't too width
+            if (m_Text.getGlobalBounds().width > (m_Size.x * 0.8f))
             {
-                // Calculate the button width
-                unsigned int buttonWidth = m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x;
-
-                // We must make sure that the text isn't too width
-                if (m_Text.getGlobalBounds().width > (buttonWidth * 0.8f))
-                {
-                    // The text is too width, so make it smaller
-                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (buttonWidth*0.8f))));
-                }
-            }
-            else // The image is not split
-            {
-                // We must make sure that the text isn't too width
-                if (m_Text.getGlobalBounds().width > (m_TextureNormal_M->getSize().x * 0.8f))
-                {
-                    // The text is too width, so make it smaller
-                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (m_TextureNormal_M->getSize().x*0.8f))));
-                }
+                // The text is too width, so make it smaller
+                m_Text.setCharacterSize(static_cast<unsigned int>(size / (m_Text.getGlobalBounds().width / (m_Size.x * 0.8f))));
+                m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
             }
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
+            m_Text.setCharacterSize(m_TextSize);
         }
     }
 
@@ -637,9 +602,8 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
+        // Apply the transformations
+        states.transform *= getTransform();
 
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
@@ -647,11 +611,12 @@ namespace tgui
         // Drawing the button image will be different when the image is split
         if (m_SplitImage)
         {
-            // Set the position of the left image
-            states.transform.translate(position);
+            Vector2f scaling;
+            scaling.x = m_Size.x / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
+            scaling.y = m_Size.y / m_TextureNormal_M->getSize().y;
 
-            // Set the scale for the left image
-            states.transform.scale(curScale.y, curScale.y);
+            // Set the scaling
+            states.transform.scale(scaling.y, scaling.y);
 
             // Draw the left image
             {
@@ -689,19 +654,19 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((curScale.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
+            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
+                < scaling.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
             {
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)  * curScale.x)
-                                 - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y))
+                float scaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)  * scaling.x)
+                                 - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y))
                                / m_TextureNormal_M->getSize().x;
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / curScale.y, 1);
+                states.transform.scale(scaleX / scaling.y, 1);
 
                 // Draw the middle image
                 {
@@ -742,7 +707,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(curScale.y / scaleX, 1);
+                states.transform.scale(scaling.y / scaleX, 1);
             }
             else // The middle image is not drawn
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
@@ -784,8 +749,8 @@ namespace tgui
         }
         else // The image is not split
         {
-            // Adjust the transformation
-            states.transform *= getTransform();
+            // Draw the button at the correct size
+            states.transform.scale(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
 
             // Check if there is a separate hover image
             if (m_SeparateHoverImage)
@@ -825,89 +790,16 @@ namespace tgui
         {
             // Reset the transformations
             states.transform = oldTransform;
-            states.transform.translate(position);
 
             // Get the current size of the text, so that we can recalculate the position
             sf::FloatRect rect = m_Text.getGlobalBounds();
 
-            // Check if the user has chosen a text size
-            if (m_TextSize > 0)
-            {
-                // The calculation will be different when the image is split
-                if (m_SplitImage)
-                {
-                    // Calculate the new position for the text
-                    rect.top = (((m_TextureNormal_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
-                    rect.left = ((((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)
-                                   * curScale.x) - rect.width) * 0.5f) - rect.left;
-                }
-                else // The image is not split
-                {
-                    // Calculate the new position for the text
-                    rect.left = (((m_TextureNormal_M->getSize().x * curScale.x) - rect.width) * 0.5f) - rect.left;
-                    rect.top = (((m_TextureNormal_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
-                }
+            // Calculate the new position for the text
+            rect.left = (m_Size.x - rect.width) * 0.5f - rect.left;
+            rect.top = (m_Size.y - rect.height) * 0.5f - rect.top;
 
-                // Set the new position
-                states.transform.translate(static_cast<float>(static_cast<int>(rect.left + 0.5f)), static_cast<float>(static_cast<int>(rect.top + 0.5f)));
-            }
-            else // autoscale
-            {
-                // Get the text size
-                unsigned int size = m_Text.getCharacterSize();
-
-                // Calculate a better size for the text
-                float NewSize = m_TextureNormal_M->getSize().y * curScale.y * 0.9f;
-
-                // Calculate the scale factor
-                float textScale = NewSize / size;
-
-                // The calculation will be different when the image is split
-                if (m_SplitImage)
-                {
-                    float buttonWidth;
-
-                    // Check if the middle image is draw
-                    if ((curScale.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                        < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
-                    {
-                        buttonWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * curScale.x;
-                    }
-                    else
-                        buttonWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y;
-
-
-                    // Check if the text isn't too width
-                    if ((m_Text.getGlobalBounds().width * textScale) > (buttonWidth * 0.8f))
-                    {
-                        // Change the scale
-                        textScale = (buttonWidth * 0.8f) / m_Text.getGlobalBounds().width;
-                    }
-
-                    // Calculate the new position for the text
-                    rect.left = ((buttonWidth - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
-                    rect.top = (((m_TextureNormal_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
-                }
-                else // The image isn't split
-                {
-                    // Check if the text isn't too width
-                    if ((m_Text.getGlobalBounds().width * textScale) > (m_TextureNormal_M->getSize().x * curScale.x * 0.8f))
-                    {
-                        // Change the scale
-                        textScale = (m_TextureNormal_M->getSize().x * curScale.x * 0.8f) / m_Text.getGlobalBounds().width;
-                    }
-
-                    // Calculate the new position for the text
-                    rect.left = (((m_TextureNormal_M->getSize().x * curScale.x) - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
-                    rect.top = (((m_TextureNormal_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
-                }
-
-                // Set the new position
-                states.transform.translate(rect.left, rect.top);
-
-                // Set the scale for the text
-                states.transform.scale(textScale, textScale);
-            }
+            // Set the new position
+            states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));
 
             // Draw the text
             target.draw(m_Text, states);
