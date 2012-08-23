@@ -193,7 +193,7 @@ namespace tgui
 
         sf::Text m_Text;
 
-        Vector2u m_Size;
+        Vector2f m_Size;
 
         bool m_AutoSize;
 

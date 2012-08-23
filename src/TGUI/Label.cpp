@@ -73,8 +73,8 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Change the size of the label
-        m_Size.x = static_cast<unsigned int>(width);
-        m_Size.y = static_cast<unsigned int>(height);
+        m_Size.x = width;
+        m_Size.y = height;
 
         // You are no longer auto-sizing
         m_AutoSize = false;
@@ -84,7 +84,7 @@ namespace tgui
 
     Vector2u Label::getSize() const
     {
-        return m_Size;
+        return Vector2u(m_Size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,8 +103,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
-            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
         }
     }
 
@@ -152,8 +152,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
-            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
         }
     }
 
@@ -173,8 +173,8 @@ namespace tgui
         // Change the size of the label if necessary
         if (m_AutoSize)
         {
-            m_Size.x = static_cast<unsigned int>(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width);
-            m_Size.y = static_cast<unsigned int>(m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
+            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
         }
     }
 
@@ -190,7 +190,7 @@ namespace tgui
     bool Label::mouseOnObject(float x, float y)
     {
         // Check if the mouse is on top of the label
-        if (sf::FloatRect(0, 0, static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)).contains(x - getPosition().x, y - getPosition().y))
+        if (sf::FloatRect(0, 0, m_Size.x, m_Size.y).contains(x - getPosition().x, y - getPosition().y))
             return true;
         else
             return false;
@@ -245,7 +245,7 @@ namespace tgui
 
         // Get the global position
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
