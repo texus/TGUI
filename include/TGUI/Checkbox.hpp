@@ -230,6 +230,9 @@ namespace tgui
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_TextSize;
 
+        // The size of the checkbox
+        Vector2f m_Size;
+
         // The SFML textures
         sf::Texture* m_TextureUnchecked;
         sf::Texture* m_TextureChecked;
