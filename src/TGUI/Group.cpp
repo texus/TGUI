@@ -547,7 +547,7 @@ namespace tgui
                         else COMPARE_OBJECT(7, "button:", Button, tgui::button)
                         else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
                         else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                        else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
+                        else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
                         else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
                         else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                         else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
@@ -601,7 +601,7 @@ namespace tgui
                             else COMPARE_OBJECT(7, "button:", Button, tgui::button)
                             else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
                             else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                            else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
                             else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
                             else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                             else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
@@ -659,8 +659,8 @@ namespace tgui
                             label->backgroundColor = tgui::extractColor(line.erase(0, 16));
                         }
                         else CHECK_SHARED_PROPERTIES(label)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -705,8 +705,8 @@ namespace tgui
                             button->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(button)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -753,8 +753,8 @@ namespace tgui
                             slider->verticalScroll = vericalScroll;
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -778,17 +778,17 @@ namespace tgui
                             picture->load(line);
                         }
                         else CHECK_SHARED_PROPERTIES(picture)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
-                    case tgui::listbox + 1:
+                    case tgui::listBox + 1:
                     {
                         START_LOADING_OBJECT
 
-                        // Get the pointer to the listbox back
-                        tgui::Listbox* listbox = static_cast<tgui::Listbox*>(extraPtr);
+                        // Get the pointer to the list box back
+                        tgui::ListBox* listBox = static_cast<tgui::ListBox*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 6).compare("width=") == 0)
@@ -797,7 +797,7 @@ namespace tgui
                             line.erase(0, 6);
 
                             // Set the width
-                            listbox->setSize(static_cast<float>(atof(line.c_str())), static_cast<float>(listbox->getSize().y));
+                            listBox->setSize(static_cast<float>(atof(line.c_str())), static_cast<float>(listBox->getSize().y));
                         }
                         else if (line.substr(0, 7).compare("height=") == 0)
                         {
@@ -805,7 +805,7 @@ namespace tgui
                             line.erase(0, 7);
 
                             // Set the height
-                            listbox->setSize(static_cast<float>(listbox->getSize().x), static_cast<float>(atof(line.c_str())));
+                            listBox->setSize(static_cast<float>(listBox->getSize().x), static_cast<float>(atof(line.c_str())));
                         }
                         else if (line.substr(0, 11).compare("itemheight=") == 0)
                         {
@@ -813,7 +813,7 @@ namespace tgui
                             line.erase(0, 11);
 
                             // Set the item height
-                            listbox->setItemHeight(atoi(line.c_str()));
+                            listBox->setItemHeight(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
@@ -824,7 +824,7 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the scrollbar
-                            listbox->setScrollbar(line);
+                            listBox->setScrollbar(line);
                         }
                         else if (line.substr(0, 8).compare("borders=") == 0)
                         {
@@ -834,29 +834,29 @@ namespace tgui
                             // Get the borders
                             tgui::Vector4u borders;
                             if (extractVector4u(line, borders))
-                                listbox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                                listBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
                                 goto LoadingFailed;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
-                            listbox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
+                            listBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
-                            listbox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            listBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
                         {
-                            listbox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
+                            listBox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
-                            listbox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                            listBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
-                            listbox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
+                            listBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 13).compare("maximumitems=") == 0)
                         {
@@ -864,7 +864,7 @@ namespace tgui
                             line.erase(0, 13);
 
                             // Set the maximum items
-                            listbox->setMaximumItems(atoi(line.c_str()));
+                            listBox->setMaximumItems(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 5).compare("item=") == 0)
                         {
@@ -874,8 +874,8 @@ namespace tgui
                             // The pathname must start and end with quotes
                             CHECK_FOR_QUOTES
 
-                            // Add the item to the listbox
-                            listbox->addItem(line);
+                            // Add the item to the list box
+                            listBox->addItem(line);
                         }
                         else if (line.substr(0, 13).compare("selecteditem=") == 0)
                         {
@@ -893,17 +893,17 @@ namespace tgui
                                 line.erase(line.length()-1, 1);
 
                                 // Select the item
-                                listbox->setSelectedItem(line);
+                                listBox->setSelectedItem(line);
                             }
                             else // There were no quotes
                             {
                                 // Select the item
-                                listbox->setSelectedItem(atoi(line.c_str()));
+                                listBox->setSelectedItem(atoi(line.c_str()));
                             }
                         }
-                        else CHECK_SHARED_PROPERTIES(listbox)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else CHECK_SHARED_PROPERTIES(listBox)
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1012,8 +1012,8 @@ namespace tgui
                             editBox->setMaximumCharacters(atoi(line.c_str()));
                         }
                         else CHECK_SHARED_PROPERTIES(editBox)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1131,8 +1131,8 @@ namespace tgui
                             textBox->setMaximumCharacters(atoi(line.c_str()));
                         }
                         else CHECK_SHARED_PROPERTIES(textBox)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1192,8 +1192,8 @@ namespace tgui
                             checkbox->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(checkbox)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1311,8 +1311,8 @@ namespace tgui
                             }
                         }
                         else CHECK_SHARED_PROPERTIES(comboBox)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1382,8 +1382,8 @@ namespace tgui
                             slider->fixedThumbSize = fixedThumbSize;
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1430,8 +1430,8 @@ namespace tgui
                             scrollbar->verticalScroll = vericalScroll;
                         }
                         else CHECK_SHARED_PROPERTIES(scrollbar)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1467,8 +1467,8 @@ namespace tgui
                             loadingBar->setMaximum(atoi(line.erase(0, 8).c_str()));
                         }
                         else CHECK_SHARED_PROPERTIES(loadingBar)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1576,8 +1576,8 @@ namespace tgui
                             radioButton->setTextColor(tgui::extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(radioButton)
-                            else // The line was wrong
-                                goto LoadingFailed;
+                        else // The line was wrong
+                            goto LoadingFailed;
 
                         break;
                     }
@@ -1661,7 +1661,7 @@ namespace tgui
                             else COMPARE_OBJECT(7, "button:", Button, tgui::button)
                             else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
                             else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                            else COMPARE_OBJECT(8, "listbox:", Listbox, tgui::listbox)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
                             else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
                             else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
                             else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)

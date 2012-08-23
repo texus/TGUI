@@ -680,7 +680,7 @@ namespace tgui
 
     void Slider::keyPressed(sf::Keyboard::Key key)
     {
-        /// TODO: Respond on arrow presses
+        // TODO: Respond on arrow presses
 
         TGUI_UNUSED_PARAM(key);
     }

@@ -431,15 +431,15 @@ namespace tgui
         // This boolean becomes true when you clicked on the combo box, when the list should be shown
         bool m_ShowList;
 
-        // When the mouse is on top of the object, it might be on the listbox part.
-        bool m_MouseOnListbox;
+        // When the mouse is on top of the object, it might be on the list box part.
+        bool m_MouseOnListBox;
 
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
         unsigned int m_NrOfItemsToDisplay;
 
-        // Internally a listbox is used to store all items
-        Listbox*     m_Listbox;
+        // Internally a list box is used to store all items
+        ListBox*     m_ListBox;
 
         // The pathname of the loaded scrollbar (if there is one)
         std::string  m_LoadedScrollbarPathname;

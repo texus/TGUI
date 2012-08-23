@@ -103,7 +103,7 @@ namespace tgui
         ///
         /// Until the maximum is bigger than this value, no scrollbar will be drawn.
         /// You can however choose to always draw the scrollbar by setting \a autoHide to false.
-        /// In e.g. a listbox, this value is the amount of items that fit inside the listbox.
+        /// In e.g. a list box, this value is the amount of items that fit inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setLowValue(unsigned int lowValue);
 
@@ -156,8 +156,8 @@ namespace tgui
         sf::Sprite   m_SpriteArrowHover;
 
 
-        // Listbox, ComboBox and TextBox can access the scrollbar directly
-        friend struct Listbox;
+        // ListBox, ComboBox and TextBox can access the scrollbar directly
+        friend struct ListBox;
         friend struct ComboBox;
         friend struct TextBox;
 

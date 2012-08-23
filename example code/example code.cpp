@@ -94,25 +94,25 @@ void init(tgui::Window& window)
     // The objects that are going to be created now have different parameters for the load function.
     // The explanation and the names of the parameters to pass should be clear enough though.
 
-    // Create the listbox.
+    // Create the list box.
     // You must pass the width and height to the load function. The next parameter is the path to
     // the scrollbar. This path works like that from all the other objects.
     // The last parameter is the height of one item (if not provided this is a tenth of the height).
     // Again you can set the borders with the setBorders function.
-    tgui::Listbox* listbox = window.add<tgui::Listbox>();
-    listbox->load(260, 200, "../objects/Scrollbar/Black", 30);
-    listbox->setBorders(4, 4, 4, 4);
-    listbox->setPosition(300, 20);
-    listbox->addItem("Item 1");
-    listbox->addItem("Item 2");
-    listbox->addItem("Item 3");
-    listbox->addItem("Item 4 is too long to fit inside the listbox and will be cropped.");
-    listbox->addItem("Item 5");
-    listbox->addItem("Item 6");
-    listbox->addItem("Item 7");
-    listbox->addItem("Item 8");
-    listbox->addItem("Item 9");
-    listbox->addItem("Item 10");
+    tgui::ListBox* listBox = window.add<tgui::ListBox>();
+    listBox->load(260, 200, "../objects/Scrollbar/Black", 30);
+    listBox->setBorders(4, 4, 4, 4);
+    listBox->setPosition(300, 20);
+    listBox->addItem("Item 1");
+    listBox->addItem("Item 2");
+    listBox->addItem("Item 3");
+    listBox->addItem("Item 4 is too long to fit inside the list box and will be cropped.");
+    listBox->addItem("Item 5");
+    listBox->addItem("Item 6");
+    listBox->addItem("Item 7");
+    listBox->addItem("Item 8");
+    listBox->addItem("Item 9");
+    listBox->addItem("Item 10");
 
     // Create the combo box.
     // The first parameter of the load function is normal. It is the path were the arrow image can
@@ -131,8 +131,8 @@ void init(tgui::Window& window)
     comboBox->setSelectedItem(2); // "Item 2" will now be selected
 
     // In this case I am not happy with the default colors.
-    // The listbox and combo box don't fit next to our other objects.
-    listbox->changeColors(sf::Color( 50,  50,  50),  // Background color
+    // The list box and combo box don't fit next to our other objects.
+    listBox->changeColors(sf::Color( 50,  50,  50),  // Background color
                           sf::Color(200, 200, 200),  // Text color
                           sf::Color( 10, 110, 255),  // Background color of the selected item.
                           sf::Color(255, 255, 255)); // Text color of the selected item

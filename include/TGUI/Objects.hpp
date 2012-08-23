@@ -242,7 +242,7 @@ namespace tgui
         // Can the object be focused?
         bool m_AllowFocus;
 
-        // Is the object a button, a listbox, a checkbox, ...
+        // Is the object a button, an edit box, a checkbox, ...
         ObjectTypes m_ObjectType;
 
         // This is set to true for objects that are also derived from OBJECT_ANIMATION.
@@ -358,13 +358,13 @@ namespace tgui
             sf::Mouse::Button mouseButton;
 
 
-        // Editbox and Listbox
+        // Editbox and ListBox
 
             // This string will contain the new string inside the editbox
             sf::String text;
 
 
-        // Slider, Listbox and LoadingBar
+        // Slider, ListBox and LoadingBar
 
             unsigned int value;
 
@@ -377,7 +377,7 @@ namespace tgui
             keyPress_Return,   // Button, Checkbox, RadioButton
             textChanged,       // EditBox
             valueChanged,      // Slider, LoadingBar
-            itemSelected,      // Listbox, ComboBox
+            itemSelected,      // ListBox, ComboBox
             animationFinished, // AnimatedPicture
             closed,            // ChildWindow
 

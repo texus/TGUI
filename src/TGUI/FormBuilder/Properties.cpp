@@ -1953,7 +1953,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PropertiesListbox::PropertiesListbox()
+PropertiesListBox::PropertiesListBox()
 {
     id = 0;
     name.value = "";
@@ -1978,68 +1978,68 @@ PropertiesListbox::PropertiesListbox()
     loadedDefaultScrollbar = true;
 }
 
-void PropertiesListbox::addProperties(tgui::Window& window)
+void PropertiesListBox::addProperties(tgui::Window& window)
 {
-    name.addProperty(window, Property_Listbox_Name);
-    left.addProperty(window, Property_Listbox_Left);
-    top.addProperty(window, Property_Listbox_Top);
-    width.addProperty(window, Property_Listbox_Width);
-    height.addProperty(window, Property_Listbox_Height);
-    scrollbarPathname.addProperty(window, Property_Listbox_ScrollbarPathname);
-    itemHeight.addProperty(window, Property_Listbox_ItemHeight);
-    maximumItems.addProperty(window, Property_Listbox_MaximumItems);
-    borders.addProperty(window, Property_Listbox_Borders);
-    backgroundColor.addProperty(window, Property_Listbox_BackgroundColor);
-    textColor.addProperty(window, Property_Listbox_TextColor);
-    selectedBackgroundColor.addProperty(window, Property_Listbox_SelectedBackgroundColor);
-    selectedTextColor.addProperty(window, Property_Listbox_SelectedTextColor);
-    borderColor.addProperty(window, Property_Listbox_BorderColor);
-    items.addProperty(window, Property_Listbox_Items);
-    selectedItem.addProperty(window, Property_Listbox_SelectedItem);
-    textFont.addProperty(window, Property_Listbox_TextFont);
-    callbackID.addProperty(window, Property_Listbox_CallbackID);
+    name.addProperty(window, Property_ListBox_Name);
+    left.addProperty(window, Property_ListBox_Left);
+    top.addProperty(window, Property_ListBox_Top);
+    width.addProperty(window, Property_ListBox_Width);
+    height.addProperty(window, Property_ListBox_Height);
+    scrollbarPathname.addProperty(window, Property_ListBox_ScrollbarPathname);
+    itemHeight.addProperty(window, Property_ListBox_ItemHeight);
+    maximumItems.addProperty(window, Property_ListBox_MaximumItems);
+    borders.addProperty(window, Property_ListBox_Borders);
+    backgroundColor.addProperty(window, Property_ListBox_BackgroundColor);
+    textColor.addProperty(window, Property_ListBox_TextColor);
+    selectedBackgroundColor.addProperty(window, Property_ListBox_SelectedBackgroundColor);
+    selectedTextColor.addProperty(window, Property_ListBox_SelectedTextColor);
+    borderColor.addProperty(window, Property_ListBox_BorderColor);
+    items.addProperty(window, Property_ListBox_Items);
+    selectedItem.addProperty(window, Property_ListBox_SelectedItem);
+    textFont.addProperty(window, Property_ListBox_TextFont);
+    callbackID.addProperty(window, Property_ListBox_CallbackID);
 }
 
-void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesListBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
-    if (propertyNumber == Property_Listbox_Name)
+    if (propertyNumber == Property_ListBox_Name)
     {
         name.value = propertyWindow.get<tgui::EditBox>("text_Name")->getText();
     }
-    else if (propertyNumber == Property_Listbox_Left)
+    else if (propertyNumber == Property_ListBox_Left)
     {
         // Store the new position
         left.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Left")->getText().toAnsiString().c_str()));
 
-        // Change the position of the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setPosition(left.value, top.value);
+        // Change the position of the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setPosition(left.value, top.value);
     }
-    else if (propertyNumber == Property_Listbox_Top)
+    else if (propertyNumber == Property_ListBox_Top)
     {
         // Store the new position
         top.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Top")->getText().toAnsiString().c_str()));
 
-        // Change the position of the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setPosition(left.value, top.value);
+        // Change the position of the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setPosition(left.value, top.value);
     }
-    else if (propertyNumber == Property_Listbox_Width)
+    else if (propertyNumber == Property_ListBox_Width)
     {
         // Store the new width
         width.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Width")->getText().toAnsiString().c_str()));
 
-        // Change the size of the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setSize(width.value, height.value);
+        // Change the size of the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setSize(width.value, height.value);
     }
-    else if (propertyNumber == Property_Listbox_Height)
+    else if (propertyNumber == Property_ListBox_Height)
     {
         // Store the new height
         height.value = static_cast<float>(atof(propertyWindow.get<tgui::EditBox>("text_Height")->getText().toAnsiString().c_str()));
 
-        // Change the size of the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setSize(width.value, height.value);
+        // Change the size of the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setSize(width.value, height.value);
     }
-    else if (propertyNumber == Property_Listbox_ScrollbarPathname)
+    else if (propertyNumber == Property_ListBox_ScrollbarPathname)
     {
         scrollbarPathname.value = propertyWindow.get<tgui::EditBox>("text_ScrollbarPathname")->getText();
 
@@ -2050,7 +2050,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             loadedDefaultScrollbar = false;
 
             // Load the new scrollbar
-            formWindow.get<tgui::Listbox>(tgui::to_string(id))->setScrollbar(scrollbarPathname.value);
+            formWindow.get<tgui::ListBox>(tgui::to_string(id))->setScrollbar(scrollbarPathname.value);
         }
         else // The file didn't exist
         {
@@ -2061,25 +2061,25 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
                 loadedDefaultScrollbar = true;
 
                 // Load the default scrollbar
-                formWindow.get<tgui::Listbox>(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
+                formWindow.get<tgui::ListBox>(tgui::to_string(id))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
             }
         }
     }
-    else if (propertyNumber == Property_Listbox_ItemHeight)
+    else if (propertyNumber == Property_ListBox_ItemHeight)
     {
         // Store the new item height
         itemHeight.value = atoi(propertyWindow.get<tgui::EditBox>("text_ItemHeight")->getText().toAnsiString().c_str());
 
-        // Change the item height in the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setItemHeight(itemHeight.value);
+        // Change the item height in the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setItemHeight(itemHeight.value);
     }
-    else if (propertyNumber == Property_Listbox_MaximumItems)
+    else if (propertyNumber == Property_ListBox_MaximumItems)
     {
         // Store the new maximum
         maximumItems.value = atoi(propertyWindow.get<tgui::EditBox>("text_MaximumItems")->getText().toAnsiString().c_str());
 
-        // Change the maximum items in the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setMaximumItems(maximumItems.value);
+        // Change the maximum items in the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setMaximumItems(maximumItems.value);
 
         // If there is a maximum, then make sure that there aren't too many items
         if (maximumItems.value > 0)
@@ -2130,7 +2130,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             }
         }
     }
-    else if (propertyNumber == Property_Listbox_Borders)
+    else if (propertyNumber == Property_ListBox_Borders)
     {
         // Store the new borders
         borders.value = propertyWindow.get<tgui::EditBox>("text_Borders")->getText();
@@ -2150,15 +2150,15 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         tgui::extractVector4u(strBorders, border);
 
         // Apply the borders
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setBorders(border.x1, border.x2, border.x3, border.x4);
     }
-    else if (propertyNumber == Property_Listbox_BackgroundColor)
+    else if (propertyNumber == Property_ListBox_BackgroundColor)
     {
         // Store the new background color
         backgroundColor.value = propertyWindow.get<tgui::EditBox>("text_BackgroundColor")->getText();
 
-        // Get a pointer to the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
+        // Get a pointer to the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
 
         // Only continue when the string is not empty
         if (backgroundColor.value.empty() == false)
@@ -2177,18 +2177,18 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->setBackgroundColor(color);
+            listBox->setBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->setBackgroundColor(sf::Color::White);
+            listBox->setBackgroundColor(sf::Color::White);
     }
-    else if (propertyNumber == Property_Listbox_TextColor)
+    else if (propertyNumber == Property_ListBox_TextColor)
     {
         // Store the new text color
         textColor.value = propertyWindow.get<tgui::EditBox>("text_TextColor")->getText();
 
-        // Get a pointer to the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
+        // Get a pointer to the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
 
         // Only continue when the string is not empty
         if (textColor.value.empty() == false)
@@ -2207,18 +2207,18 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->setTextColor(color);
+            listBox->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->setTextColor(sf::Color::White);
+            listBox->setTextColor(sf::Color::White);
     }
-    else if (propertyNumber == Property_Listbox_SelectedBackgroundColor)
+    else if (propertyNumber == Property_ListBox_SelectedBackgroundColor)
     {
         // Store the new background color
         selectedBackgroundColor.value = propertyWindow.get<tgui::EditBox>("text_SelectedBackgroundColor")->getText();
 
-        // Get a pointer to the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
+        // Get a pointer to the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedBackgroundColor.value.empty() == false)
@@ -2237,18 +2237,18 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->setSelectedBackgroundColor(color);
+            listBox->setSelectedBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->setSelectedBackgroundColor(sf::Color::White);
+            listBox->setSelectedBackgroundColor(sf::Color::White);
     }
-    else if (propertyNumber == Property_Listbox_SelectedTextColor)
+    else if (propertyNumber == Property_ListBox_SelectedTextColor)
     {
         // Store the new text color
         selectedTextColor.value = propertyWindow.get<tgui::EditBox>("text_SelectedTextColor")->getText();
 
-        // Get a pointer to the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
+        // Get a pointer to the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextColor.value.empty() == false)
@@ -2267,18 +2267,18 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->setSelectedTextColor(color);
+            listBox->setSelectedTextColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->setSelectedTextColor(sf::Color::White);
+            listBox->setSelectedTextColor(sf::Color::White);
     }
-    else if (propertyNumber == Property_Listbox_BorderColor)
+    else if (propertyNumber == Property_ListBox_BorderColor)
     {
         // Store the new border color
         borderColor.value = propertyWindow.get<tgui::EditBox>("text_BorderColor")->getText();
 
-        // Get a pointer to the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
+        // Get a pointer to the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
 
         // Only continue when the string is not empty
         if (borderColor.value.empty() == false)
@@ -2297,19 +2297,19 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            listbox->setBorderColor(color);
+            listBox->setBorderColor(color);
         }
         else // The string is empty, so use the default color
-            listbox->setBorderColor(sf::Color::White);
+            listBox->setBorderColor(sf::Color::White);
     }
-    else if (propertyNumber == Property_Listbox_Items)
+    else if (propertyNumber == Property_ListBox_Items)
     {
         // Store the new items
         items.value = propertyWindow.get<tgui::EditBox>("text_Items")->getText();
 
-        // Remove all objects from the listbox
-        tgui::Listbox* listbox = formWindow.get<tgui::Listbox>(tgui::to_string(id));
-        listbox->removeAllItems();
+        // Remove all objects from the list box
+        tgui::ListBox* listBox = formWindow.get<tgui::ListBox>(tgui::to_string(id));
+        listBox->removeAllItems();
 
         std::string strItems = items.value;
         bool commaFound = true;
@@ -2326,8 +2326,8 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             // Check if a comma was found
             if (commaPos != std::string::npos)
             {
-                // Add the item to the listbox
-                listbox->addItem(strItems.substr(0, commaPos));
+                // Add the item to the list box
+                listBox->addItem(strItems.substr(0, commaPos));
 
                 // Erase the item from the string
                 strItems.erase(0, commaPos + 1);
@@ -2342,7 +2342,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             {
                 // Add the last item to the list, when the string isn't empty
                 if (strItems.size() > 0)
-                    listbox->addItem(strItems);
+                    listBox->addItem(strItems);
 
                 // Another item was found
                 ++count;
@@ -2370,7 +2370,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         if (selectedItem.value > 0)
         {
             // Change the selected item
-            if (listbox->setSelectedItem(selectedItem.value) == false)
+            if (listBox->setSelectedItem(selectedItem.value) == false)
             {
                 // If the id was too high then set the property back to 0
                 selectedItem.value = 0;
@@ -2378,15 +2378,15 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             }
         }
     }
-    else if (propertyNumber == Property_Listbox_SelectedItem)
+    else if (propertyNumber == Property_ListBox_SelectedItem)
     {
         // Store the new selected item
         selectedItem.value = atoi(propertyWindow.get<tgui::EditBox>("text_SelectedItem")->getText().toAnsiString().c_str());
 
-        // Change the selected item in the listbox
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->setSelectedItem(selectedItem.value);
+        // Change the selected item in the list box
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->setSelectedItem(selectedItem.value);
     }
-    else if (propertyNumber == Property_Listbox_TextFont)
+    else if (propertyNumber == Property_ListBox_TextFont)
     {
 /*
         // Store the new text font
@@ -2396,7 +2396,7 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::Listbox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::ListBox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -2410,19 +2410,19 @@ void PropertiesListbox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::Listbox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::ListBox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
         propertyWindow.get<tgui::EditBox>("text_TextFont")->setText("Global");
     }
-    else if (propertyNumber == Property_Listbox_CallbackID)
+    else if (propertyNumber == Property_ListBox_CallbackID)
     {
         // Store the new callback id
         callbackID.value = atoi(propertyWindow.get<tgui::EditBox>("text_CallbackID")->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get<tgui::Listbox>(tgui::to_string(id))->callbackID = callbackID.value;
+        formWindow.get<tgui::ListBox>(tgui::to_string(id))->callbackID = callbackID.value;
     }
 }
 

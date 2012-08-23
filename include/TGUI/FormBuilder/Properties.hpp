@@ -97,24 +97,24 @@ enum Properties
     Property_EditBox_SelectionPointWidth,
     Property_EditBox_CallbackID,
 
-    Property_Listbox_Name = 0,
-    Property_Listbox_Left,
-    Property_Listbox_Top,
-    Property_Listbox_Width,
-    Property_Listbox_Height,
-    Property_Listbox_ScrollbarPathname,
-    Property_Listbox_ItemHeight,
-    Property_Listbox_MaximumItems,
-    Property_Listbox_Borders,
-    Property_Listbox_BackgroundColor,
-    Property_Listbox_TextColor,
-    Property_Listbox_SelectedBackgroundColor,
-    Property_Listbox_SelectedTextColor,
-    Property_Listbox_BorderColor,
-    Property_Listbox_Items,
-    Property_Listbox_SelectedItem,
-    Property_Listbox_TextFont,
-    Property_Listbox_CallbackID,
+    Property_ListBox_Name = 0,
+    Property_ListBox_Left,
+    Property_ListBox_Top,
+    Property_ListBox_Width,
+    Property_ListBox_Height,
+    Property_ListBox_ScrollbarPathname,
+    Property_ListBox_ItemHeight,
+    Property_ListBox_MaximumItems,
+    Property_ListBox_Borders,
+    Property_ListBox_BackgroundColor,
+    Property_ListBox_TextColor,
+    Property_ListBox_SelectedBackgroundColor,
+    Property_ListBox_SelectedTextColor,
+    Property_ListBox_BorderColor,
+    Property_ListBox_Items,
+    Property_ListBox_SelectedItem,
+    Property_ListBox_TextFont,
+    Property_ListBox_CallbackID,
 
     Property_ComboBox_Name = 0,
     Property_ComboBox_Pathname,
@@ -700,9 +700,9 @@ struct PropertiesEditBox
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertiesListbox
+struct PropertiesListBox
 {
-    PropertiesListbox();
+    PropertiesListBox();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 

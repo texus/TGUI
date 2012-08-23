@@ -177,26 +177,26 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         // Store the aspect ratio
         aspectRatios.push_back(editBox->getScaledSize().y / editBox->getScaledSize().x);
     }
-    else if (objectID == tgui::listbox)
+    else if (objectID == tgui::listBox)
     {
         // Create a new property list
-        PropertiesListbox properties;
+        PropertiesListBox properties;
         properties.id = currentID;
         properties.name.value = objectName;
-        listboxes.push_back(properties);
+        listBoxes.push_back(properties);
 
-        // Add an listbox to the form
-        tgui::Listbox* listbox = mainWindow.add<tgui::Listbox>(tgui::to_string(currentID));
-        listbox->load(200, 240, "images/objects/Scrollbar/" OBJECT_STYLE, 30);
-        listbox->setBorders(2, 2, 2, 2);
-        listbox->changeColors(sf::Color( 50,  50,  50),
+        // Add an list box to the form
+        tgui::ListBox* listBox = mainWindow.add<tgui::ListBox>(tgui::to_string(currentID));
+        listBox->load(200, 240, "images/objects/Scrollbar/" OBJECT_STYLE, 30);
+        listBox->setBorders(2, 2, 2, 2);
+        listBox->changeColors(sf::Color( 50,  50,  50),
                               sf::Color(200, 200, 200),
                               sf::Color( 10, 110, 255),
                               sf::Color(255, 255, 255),
                               sf::Color::Black);
 
         // Store the aspect ratio
-        aspectRatios.push_back(listbox->getScaledSize().y / listbox->getScaledSize().x);
+        aspectRatios.push_back(listBox->getScaledSize().y / listBox->getScaledSize().x);
     }
     else if (objectID == tgui::comboBox)
     {
@@ -388,7 +388,7 @@ void Builder::changeVisibleProperties()
     FindObjectWithID(Checkbox, checkboxes)
     FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
@@ -438,7 +438,7 @@ void Builder::resizePropertyWindow()
     FindObjectWithID(Checkbox, checkboxes)
     FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
@@ -497,7 +497,7 @@ void Builder::updateProperty(unsigned int propertyNumber)
     FindObjectWithID(radioButtons)
     FindObjectWithID(labels)
     FindObjectWithID(editBoxes)
-    FindObjectWithID(listboxes)
+    FindObjectWithID(listBoxes)
     FindObjectWithID(comboBoxes)
     FindObjectWithID(sliders)
     FindObjectWithID(scrollbars)
@@ -557,12 +557,12 @@ void Builder::setGlobalFont(const sf::Font& font)
             editBoxes[i].updateProperty(mainWindow, propertyWindow, Property_EditBox_TextFont);
     }
 
-    // Loop through all listboxes
-    for (i=0; i<listboxes.size(); ++i)
+    // Loop through all list boxes
+    for (i=0; i<listBoxes.size(); ++i)
     {
         // Check if the global font is used
-        if (listboxes[i].textFont.value.compare("Global") == 0)
-            listboxes[i].updateProperty(mainWindow, propertyWindow, Property_Listbox_TextFont);
+        if (listBoxes[i].textFont.value.compare("Global") == 0)
+            listBoxes[i].updateProperty(mainWindow, propertyWindow, Property_ListBox_TextFont);
     }
 
     // Loop through all combo boxes
@@ -570,7 +570,7 @@ void Builder::setGlobalFont(const sf::Font& font)
     {
         // Check if the global font is used
         if (comboBoxes[i].textFont.value.compare("Global") == 0)
-            comboBoxes[i].updateProperty(mainWindow, propertyWindow, Property_Listbox_TextFont);
+            comboBoxes[i].updateProperty(mainWindow, propertyWindow, Property_ListBox_TextFont);
     }
 */
 }
@@ -612,7 +612,7 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
         FindObjectNr(RadioButton, radioButtons)
         FindObjectNr(Label, labels)
         FindObjectNr(EditBox, editBoxes)
-        FindObjectNr(Listbox, listboxes)
+        FindObjectNr(ListBox, listBoxes)
         FindObjectNr(ComboBox, comboBoxes)
         FindObjectNr(Slider, sliders)
         FindObjectNr(Scrollbar, scrollbars)
@@ -700,7 +700,7 @@ void Builder::deleteObject()
     FindObjectWithID(radioButtons)
     FindObjectWithID(labels)
     FindObjectWithID(editBoxes)
-    FindObjectWithID(listboxes)
+    FindObjectWithID(listBoxes)
     FindObjectWithID(comboBoxes)
     FindObjectWithID(sliders)
     FindObjectWithID(scrollbars)
@@ -742,7 +742,7 @@ void Builder::moveObjectX(float pixels)
     FindObjectWithID(Checkbox, radioButtons)
     FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
@@ -784,7 +784,7 @@ void Builder::moveObjectY(float pixels)
     FindObjectWithID(Checkbox, radioButtons)
     FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
@@ -831,7 +831,7 @@ void Builder::resizeObject(float addToWidth, float addToHeight)
     FindObjectWithID(Checkbox, radioButtons)
     FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
-    FindObjectWithID(Listbox, listboxes)
+    FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
     FindObjectWithID(Slider, sliders)
     FindObjectWithID(Scrollbar, scrollbars)
@@ -863,7 +863,7 @@ void Builder::storeObjectsNewAspectRatio()
         FindObjectWithID(Checkbox, radioButtons)
         FindObjectWithID(Label, labels)
         FindObjectWithID(EditBox, editBoxes)
-        FindObjectWithID(Listbox, listboxes)
+        FindObjectWithID(ListBox, listBoxes)
         FindObjectWithID(ComboBox, comboBoxes)
         FindObjectWithID(Slider, sliders)
         FindObjectWithID(Scrollbar, scrollbars)
@@ -902,7 +902,7 @@ bool Builder::loadForm()
     radioButtons.clear();
     labels.clear();
     editBoxes.clear();
-    listboxes.clear();
+    listBoxes.clear();
     comboBoxes.clear();
     sliders.clear();
     scrollbars.clear();
@@ -1181,45 +1181,45 @@ bool Builder::loadForm()
                 realObject->setMaximum(object->getMaximum());
                 realObject->callbackID = object->callbackID;
             }
-            else if (objects[i]->getObjectType() == tgui::listbox)
+            else if (objects[i]->getObjectType() == tgui::listBox)
             {
-                // Convert the object to a listbox (which it is)
-                tgui::Listbox* object = static_cast<tgui::Listbox*>(objects[i]);
+                // Convert the object to a list box (which it is)
+                tgui::ListBox* object = static_cast<tgui::ListBox*>(objects[i]);
 
                 // Get a list of the items
                 std::vector<sf::String> items = object->getItems();
 
                 // Create and fill the properties of the object
-                unsigned int id = newObject(tgui::listbox, objectNames[i]);
-                listboxes.back().left.value = object->getPosition().x;
-                listboxes.back().top.value = object->getPosition().y;
-                listboxes.back().width.value = object->getScaledSize().x;
-                listboxes.back().height.value = object->getScaledSize().y;
-                listboxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
-                listboxes.back().itemHeight.value = object->getItemHeight();
-                listboxes.back().maximumItems.value = object->getMaximumItems();
-                listboxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
-                listboxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
-                listboxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
-                listboxes.back().selectedBackgroundColor.value = tgui::convertColorToString(object->getSelectedBackgroundColor());
-                listboxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
-                listboxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
-                listboxes.back().textFont.value = "Global";
-                listboxes.back().callbackID.value = object->callbackID;
+                unsigned int id = newObject(tgui::listBox, objectNames[i]);
+                listBoxes.back().left.value = object->getPosition().x;
+                listBoxes.back().top.value = object->getPosition().y;
+                listBoxes.back().width.value = object->getScaledSize().x;
+                listBoxes.back().height.value = object->getScaledSize().y;
+                listBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
+                listBoxes.back().itemHeight.value = object->getItemHeight();
+                listBoxes.back().maximumItems.value = object->getMaximumItems();
+                listBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
+                listBoxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
+                listBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
+                listBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(object->getSelectedBackgroundColor());
+                listBoxes.back().selectedTextColor.value = tgui::convertColorToString(object->getSelectedTextColor());
+                listBoxes.back().borderColor.value = tgui::convertColorToString(object->getBorderColor());
+                listBoxes.back().textFont.value = "Global";
+                listBoxes.back().callbackID.value = object->callbackID;
 
-                // If there is an item then add it to the listbox
+                // If there is an item then add it to the list box
                 if (items.empty() == false)
                 {
-                    listboxes.back().items.value = items[0];
+                    listBoxes.back().items.value = items[0];
 
                     // Add the other items
                     for (unsigned int j=1; j<items.size(); ++j)
-                        listboxes.back().items.value += "," + items[j];
+                        listBoxes.back().items.value += "," + items[j];
                 }
-                listboxes.back().selectedItem.value = object->getSelectedItemID();
+                listBoxes.back().selectedItem.value = object->getSelectedItemID();
 
                 // Draw the object in the correct way
-                tgui::Listbox* realObject = mainWindow.get<tgui::Listbox>(tgui::to_string(id));
+                tgui::ListBox* realObject = mainWindow.get<tgui::ListBox>(tgui::to_string(id));
                 realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getLoadedScrollbarPathname(), object->getItemHeight());
                 realObject->setPosition(object->getPosition());
                 realObject->setMaximumItems(object->getMaximumItems());
@@ -1256,14 +1256,14 @@ bool Builder::loadForm()
                 comboBoxes.back().textFont.value = "Global";
                 comboBoxes.back().callbackID.value = object->callbackID;
 
-                // If there is an item then add it to the listbox
+                // If there is an item then add it to the list box
                 if (items.empty() == false)
                 {
                     comboBoxes.back().items.value = items[0];
 
                     // Add the other items
                     for (unsigned int j=1; j<items.size(); ++j)
-                        listboxes.back().items.value += "," + items[j];
+                        listBoxes.back().items.value += "," + items[j];
                 }
                 comboBoxes.back().selectedItem.value = object->getSelectedItemID();
 
@@ -1425,7 +1425,7 @@ void Builder::saveForm()
         FindLowestID(radioButtons, tgui::radioButton)
         FindLowestID(labels, tgui::label)
         FindLowestID(editBoxes, tgui::editBox)
-        FindLowestID(listboxes, tgui::listbox)
+        FindLowestID(listBoxes, tgui::listBox)
         FindLowestID(comboBoxes, tgui::comboBox)
         FindLowestID(sliders, tgui::slider)
         FindLowestID(scrollbars, tgui::scrollbar)
@@ -1752,73 +1752,73 @@ void Builder::saveForm()
             line = TAB "}\n\n";
             fwrite(line.c_str(), 1, line.size(), pFile);
         }
-        else if (objectID == tgui::listbox)
+        else if (objectID == tgui::listBox)
         {
-            line = TAB "Listbox: \"";
-            line.append(listboxes[objectIndex].name.value).append("\"\n" TAB "{\n");
+            line = TAB "ListBox: \"";
+            line.append(listBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Left                    = ";
-            line.append(tgui::to_string(listboxes[objectIndex].left.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].left.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Top                     = ";
-            line.append(tgui::to_string(listboxes[objectIndex].top.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].top.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Width                   = ";
-            line.append(tgui::to_string(listboxes[objectIndex].width.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].width.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Height                  = ";
-            line.append(tgui::to_string(listboxes[objectIndex].height.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].height.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ScrollbarPathname       = \"";
-            line.append(listboxes[objectIndex].scrollbarPathname.value).append("\"\n");
+            line.append(listBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ItemHeight              = ";
-            line.append(tgui::to_string(listboxes[objectIndex].itemHeight.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].itemHeight.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "MaximumItems            = ";
-            line.append(tgui::to_string(listboxes[objectIndex].maximumItems.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].maximumItems.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders                 = ";
-            AddBrackets(listboxes[objectIndex].borders.value)
-            line.append(listboxes[objectIndex].borders.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].borders.value)
+            line.append(listBoxes[objectIndex].borders.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "BackgroundColor         = ";
-            AddBrackets(listboxes[objectIndex].backgroundColor.value)
-            line.append(listboxes[objectIndex].backgroundColor.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].backgroundColor.value)
+            line.append(listBoxes[objectIndex].backgroundColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextColor               = ";
-            AddBrackets(listboxes[objectIndex].textColor.value)
-            line.append(listboxes[objectIndex].textColor.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].textColor.value)
+            line.append(listBoxes[objectIndex].textColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectedBackgroundColor = ";
-            AddBrackets(listboxes[objectIndex].selectedBackgroundColor.value)
-            line.append(listboxes[objectIndex].selectedBackgroundColor.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].selectedBackgroundColor.value)
+            line.append(listBoxes[objectIndex].selectedBackgroundColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectedTextColor       = ";
-            AddBrackets(listboxes[objectIndex].selectedTextColor.value)
-            line.append(listboxes[objectIndex].selectedTextColor.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].selectedTextColor.value)
+            line.append(listBoxes[objectIndex].selectedTextColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "BorderColor             = ";
-            AddBrackets(listboxes[objectIndex].borderColor.value)
-            line.append(listboxes[objectIndex].borderColor.value).append("\n");
+            AddBrackets(listBoxes[objectIndex].borderColor.value)
+            line.append(listBoxes[objectIndex].borderColor.value).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             // Make a list of all items
             {
-                std::string strItems = listboxes[objectIndex].items.value;
+                std::string strItems = listBoxes[objectIndex].items.value;
                 bool commaFound = true;
 
                 // Loop all items
@@ -1855,11 +1855,11 @@ void Builder::saveForm()
             }
 
             line = TAB TAB "SelectedItem            = ";
-            line.append(tgui::to_string(listboxes[objectIndex].selectedItem.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].selectedItem.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID              = ";
-            line.append(tgui::to_string(listboxes[objectIndex].callbackID.value)).append("\n");
+            line.append(tgui::to_string(listBoxes[objectIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";

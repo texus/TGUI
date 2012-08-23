@@ -121,7 +121,7 @@ struct Builder
     std::vector<PropertiesRadioButton> radioButtons;
     std::vector<PropertiesLabel>       labels;
     std::vector<PropertiesEditBox>     editBoxes;
-    std::vector<PropertiesListbox>     listboxes;
+    std::vector<PropertiesListBox>     listBoxes;
     std::vector<PropertiesComboBox>    comboBoxes;
     std::vector<PropertiesSlider>      sliders;
     std::vector<PropertiesScrollbar>   scrollbars;

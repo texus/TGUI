@@ -55,7 +55,7 @@ namespace tgui
     struct EditBox;
     struct Slider;
     struct Scrollbar;
-    struct Listbox;
+    struct ListBox;
     struct LoadingBar;
     struct ComboBox;
     struct TextBox;
@@ -89,9 +89,10 @@ namespace tgui
 
     enum ObjectPhase
     {
-        ObjectPhase_Hover = 1,
+        ObjectPhase_Hover     = 1,
         ObjectPhase_MouseDown = 2,
-        ObjectPhase_Focused = 4
+        ObjectPhase_Focused   = 4,
+        ObjectPhase_Selected  = 8
     };
 
 
@@ -110,7 +111,7 @@ namespace tgui
         radioButton,
         label,
         editBox,
-        listbox,
+        listBox,
         comboBox,
         slider,
         scrollbar,
@@ -125,7 +126,7 @@ namespace tgui
         panel,
         childWindow,
 
-        ObjectTypesCount
+        custom
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ namespace tgui
 #include <TGUI/EditBox.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
-#include <TGUI/Listbox.hpp>
+#include <TGUI/ListBox.hpp>
 #include <TGUI/LoadingBar.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>

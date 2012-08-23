@@ -32,30 +32,30 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TGUI_API Listbox : public OBJECT, OBJECT_BORDERS
+    struct TGUI_API ListBox : public OBJECT, OBJECT_BORDERS
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox();
+        ListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox(const Listbox& copy);
+        ListBox(const ListBox& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Listbox();
+        virtual ~ListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Overload of assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox& operator= (const Listbox& right);
+        ListBox& operator= (const ListBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,20 +67,20 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Listbox* clone();
+        virtual ListBox* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the listbox.
+        /// \brief Creates the list box.
         ///
-        /// The listbox may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
+        /// The list box may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
         ///
-        /// \param width              The width of the listbox (borders included).
-        /// \param height             The height of the listbox (borders included).
+        /// \param width              The width of the list box (borders included).
+        /// \param height             The height of the list box (borders included).
         /// \param scrollbarPathname  The pathname needed to load the scrollbar.
-        ///                           If not provided then there will be no possibility to scroll, thus no items will be added when the listbox is full.
-        /// \param itemHeight         The height of a single item in the listbox. The text size will be based on this, but will be a little smaller.
-        ///                           If ItemHeight is 0 then it will become a tenth of the height of the listbox.
+        ///                           If not provided then there will be no possibility to scroll, thus no items will be added when the list box is full.
+        /// \param itemHeight         The height of a single item in the list box. The text size will be based on this, but will be a little smaller.
+        ///                           If ItemHeight is 0 then it will become a tenth of the height of the list box.
         ///
         /// \return
         ///        - true on success
@@ -93,22 +93,22 @@ namespace tgui
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the listbox.
+        /// \brief Changes the size of the list box.
         ///
-        /// \param width   The new width of the listbox
-        /// \param height  The new height of the listbox
+        /// \param width   The new width of the list box
+        /// \param height  The new height of the list box
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the listbox, unaffected by scaling.
+        /// \brief Returns the size of the list box, unaffected by scaling.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2u getSize() const;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the listbox, after the scaling transformation.
+        /// \brief Returns the size of the list box, after the scaling transformation.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getScaledSize() const;
 
@@ -122,9 +122,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the colors used in the listbox.
+        /// \brief Changes the colors used in the list box.
         ///
-        /// \param backgroundColor          The color of the background of the listbox
+        /// \param backgroundColor          The color of the background of the list box
         /// \param textColor                The color of the text
         /// \param selectedBackgroundColor  The color of the background of the selected item
         /// \param selectedTextColor        The color of the text when it is selected
@@ -137,35 +137,35 @@ namespace tgui
                                   const sf::Color& borderColor             = sf::Color::Black);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color that will be used inside the listbox.
+        /// \brief Set the background color that will be used inside the list box.
         ///
         /// \see changeColors
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBackgroundColor(const sf::Color& backgroundColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used inside the listbox.
+        /// \brief Set the text color that will be used inside the list box.
         ///
         /// \see changeColors
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTextColor(const sf::Color& textColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the listbox.
+        /// \brief Set the background color of the selected text that will be used inside the list box.
         ///
         /// \see changeColors
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color of the selected text that will be used inside the listbox.
+        /// \brief Set the text color of the selected text that will be used inside the list box.
         ///
         /// \see changeColors
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSelectedTextColor(const sf::Color& selectedTextColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the border color text that will be used inside the listbox.
+        /// \brief Set the border color text that will be used inside the list box.
         ///
         /// \see changeColors
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,27 +173,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color that is currently being used inside the listbox.
+        /// \brief Get the background color that is currently being used inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getBackgroundColor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used inside the listbox.
+        /// \brief Get the text color that is currently being used inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getTextColor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected text that is currently being used inside the listbox.
+        /// \brief Get the background color of the selected text that is currently being used inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getSelectedBackgroundColor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color of the selected text that is currently being used inside the listbox.
+        /// \brief Get the text color of the selected text that is currently being used inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getSelectedTextColor();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the border color that is currently being used inside the listbox.
+        /// \brief Get the border color that is currently being used inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getBorderColor();
 
@@ -216,11 +216,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Adds an item to the list.
         ///
-        /// \param itemName The name of the item you want to add (this is the text that will be displayed inside the listbox)
+        /// \param itemName The name of the item you want to add (this is the text that will be displayed inside the list box)
         ///
         /// \return
-        ///         - 0 when the listbox is full (you have set a maximum item limit and you are trying to add more items)
-        ///         - 0 when there is no scrollbar and you try to have more items than fit inside the listbox
+        ///         - 0 when the list box is full (you have set a maximum item limit and you are trying to add more items)
+        ///         - 0 when there is no scrollbar and you try to have more items than fit inside the list box
         ///         - The id of the item when it was successfully added.
         ///
         /// \warning The id returned by this function is no longer correct when an item is removed. Use it immediately or don't use it at all.
@@ -231,9 +231,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects an item in the listbox.
+        /// \brief Selects an item in the list box.
         ///
-        /// When adding items to the listbox with the addItem function, none of them will be selected.
+        /// When adding items to the list box with the addItem function, none of them will be selected.
         /// If you want a default item selected then you can use this function to select it.
         /// The first item that matches the name will be selected.
         ///
@@ -246,9 +246,9 @@ namespace tgui
         virtual bool setSelectedItem(const sf::String itemName);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects an item in the listbox.
+        /// \brief Selects an item in the list box.
         ///
-        /// When adding items to the listbox with the addItem function, none of them will be selected.
+        /// When adding items to the list box with the addItem function, none of them will be selected.
         /// If you want a default item selected then you can use this function to select it.
         ///
         /// The id starts counting from 1. If you pass 0 to this function then none of the items will be selected.
@@ -331,43 +331,43 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the scrollbar of the listbox.
+        /// \brief Changes the scrollbar of the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool setScrollbar(const std::string scrollbarPathname);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the scrollbar from the listbox (if there is one).
+        /// \brief Removes the scrollbar from the list box (if there is one).
         ///
-        /// When there are too many items to fit in the listbox then the items will be removed.
+        /// When there are too many items to fit in the list box then the items will be removed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeScrollbar();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the height of the items in the listbox.
+        /// \brief Changes the height of the items in the list box.
         ///
         /// This size is always a little big greater than the text size.
-        /// When there is no scrollbar then the items will be removed when they no longer fit inside the listbox.
+        /// When there is no scrollbar then the items will be removed when they no longer fit inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setItemHeight(unsigned int itemHeight);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the height of the items in the listbox.
+        /// \brief Returns the height of the items in the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getItemHeight();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the maximum items that the listbox can contain.
+        /// \brief Changes the maximum items that the list box can contain.
         ///
         /// If this function returns 0 then there is no limit.
-        /// If no scrollbar was loaded then there is always a limitation because the text can't go outside the listbox.
+        /// If no scrollbar was loaded then there is always a limitation because the text can't go outside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setMaximumItems(unsigned int maximumItems = 0);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum items that the listbox can contain. If 0 then there is no limit.
+        /// \brief Returns the maximum items that the list box can contain. If 0 then there is no limit.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getMaximumItems();
 
@@ -404,7 +404,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the listbox on the render target.
+        // This function will be called and it will draw the list box on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -412,7 +412,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        // This contains the different items in the listbox
+        // This contains the different items in the list box
         std::vector<sf::String> m_Items;
 
         // What is the id of the selected item?
@@ -424,7 +424,7 @@ namespace tgui
 
         unsigned int m_TextSize;
 
-        // This will store the maximum number of items in the listbox (zero by default, meaning that there is no limit)
+        // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
         unsigned int m_MaxItems;
 
         // When there are too many items a scrollbar will be shown
@@ -433,7 +433,7 @@ namespace tgui
         // The pathname of the loaded scrollbar (if there is one)
         std::string m_LoadedScrollbarPathname;
 
-        // These colors are used to draw the listbox
+        // These colors are used to draw the list box
         sf::Color m_BackgroundColor;
         sf::Color m_TextColor;
         sf::Color m_SelectedBackgroundColor;

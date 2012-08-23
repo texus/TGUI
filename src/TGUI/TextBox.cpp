@@ -29,10 +29,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
-///                             the selection point moves at the end of the line because it is not allowed to be in front.
-///                             This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
-///                             This bug can thus only be solved after implementing word wrapping.
+// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
+//                             the selection point moves at the end of the line because it is not allowed to be in front.
+//                             This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
+//                             This bug can thus only be solved after implementing word wrapping.
 
 namespace tgui
 {
@@ -850,12 +850,12 @@ namespace tgui
             m_Scroll->setScale(1, 1);
         }
 
-        // Check if the mouse is on top of the listbox
+        // Check if the mouse is on top of the list box
         if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
         {
             return true;
         }
-        else // The mouse is not on top of the listbox
+        else // The mouse is not on top of the list box
         {
             m_MouseHover = false;
             return false;
