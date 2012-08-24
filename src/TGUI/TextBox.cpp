@@ -852,9 +852,7 @@ namespace tgui
 
         // Check if the mouse is on top of the list box
         if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
-        {
             return true;
-        }
         else // The mouse is not on top of the list box
         {
             m_MouseHover = false;
@@ -912,7 +910,7 @@ namespace tgui
             if (m_LineHeight == 0)
                 return;
 
-            unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder);
+            unsigned int selectionPointPosition = findSelectionPointPosition((x - getPosition().x - m_LeftBorder - 4) / getScale().x, (y - getPosition().y - m_TopBorder) / getScale().y);
 
             // Check if this is a double click
             if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
@@ -1811,7 +1809,7 @@ namespace tgui
             return;
 
         // Find out where the selection point should be
-        m_SelEnd = findSelectionPointPosition(posX - getPosition().x - m_LeftBorder - 4, posY - getPosition().y - m_TopBorder);
+        m_SelEnd = findSelectionPointPosition((posX - getPosition().x - m_LeftBorder - 4) / getScale().x, (posY - getPosition().y - m_TopBorder) / getScale().y);
 
         // Calculate how many character are being selected
         if (m_SelEnd < m_SelStart)
@@ -2202,13 +2200,16 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Get the current scale
+        Vector2f curScale = getScale();
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Store the current transform
         sf::Transform origTransform = states.transform;
@@ -2401,7 +2402,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
