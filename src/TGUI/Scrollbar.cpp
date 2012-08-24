@@ -959,7 +959,6 @@ namespace tgui
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteArrowHover, states);
         }
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

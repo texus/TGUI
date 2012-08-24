@@ -26,6 +26,9 @@
 #ifndef _TGUI_SLIDER_INCLUDED_
 #define _TGUI_SLIDER_INCLUDED_
 
+// TODO: The thumb should have the same scaling as the rest of the slider.
+//       This is already done in the experimental brach, but this cannot be merged before scrollbar is fixed too.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
