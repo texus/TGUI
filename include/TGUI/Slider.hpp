@@ -77,6 +77,9 @@ namespace tgui
         ///        - false when the pathname is empty
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
+        ///
+        /// \remarks You must call setSize after this function or the slider will not be drawn on the screen.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool load(const std::string pathname);
 
@@ -84,10 +87,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the slider.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
-        ///
         /// \param width   The new width of the slider
         /// \param height  The new height of the slider
+        ///
+        /// \remarks If this function is not called then the slider will not be drawn on the screen.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -208,6 +212,10 @@ namespace tgui
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
         bool m_SeparateHoverImage;
+
+        // The size of the slider and its thumb
+        Vector2f m_Size;
+        Vector2f m_ThumbSize;
 
         sf::Texture* m_TextureTrackNormal_L;
         sf::Texture* m_TextureTrackHover_L;
