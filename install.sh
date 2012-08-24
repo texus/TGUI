@@ -67,7 +67,7 @@ if (command -v g++) then
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Scrollbar.cpp" -o "lib/obj/Scrollbar.o"
 
     echo "Compiling 'Listbox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Listbox.cpp" -o "lib/obj/Listbox.o"
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ListBox.cpp" -o "lib/obj/ListBox.o"
 
     echo "Compiling 'LoadingBar.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/LoadingBar.cpp" -o "lib/obj/LoadingBar.o"
@@ -134,7 +134,7 @@ if (command -v g++) then
                     "lib/obj/EditBox.o" \
                     "lib/obj/Slider.o" \
                     "lib/obj/Scrollbar.o" \
-                    "lib/obj/Listbox.o" \
+                    "lib/obj/ListBox.o" \
                     "lib/obj/LoadingBar.o" \
                     "lib/obj/ComboBox.o" \
                     "lib/obj/TextBox.o" \

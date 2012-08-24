@@ -10,7 +10,7 @@ set(TGUI_SRC
     EditBox.cpp
     Slider.cpp
     Scrollbar.cpp
-    Listbox.cpp
+    ListBox.cpp
     LoadingBar.cpp
     ComboBox.cpp
     TextBox.cpp
