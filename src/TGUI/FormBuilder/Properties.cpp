@@ -1662,7 +1662,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             editBox->load(pathname.value);
 
             // Reset the scaling
-            editBox->setScale(1, 1);
+            editBox->setSize(editBox->getSize().x, editBox->getSize().y);
 
             // Change the width and height properties
             width.value = static_cast<float>(editBox->getSize().x);
