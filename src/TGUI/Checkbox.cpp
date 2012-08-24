@@ -375,7 +375,8 @@ namespace tgui
             // Check if the mouse is on top of the text
             if (allowTextClick)
             {
-                if (m_Text.getGlobalBounds().contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y))
+                sf::FloatRect bounds = m_Text.getLocalBounds();
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y))
                     return true;
             }
         }
@@ -544,7 +545,6 @@ namespace tgui
         // Draw the text
         target.draw(m_Text, states);
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
