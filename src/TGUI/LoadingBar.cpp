@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -56,6 +58,7 @@ namespace tgui
     m_Maximum       (copy.m_Maximum),
     m_Value         (copy.m_Value),
     m_SplitImage    (copy.m_SplitImage),
+    m_Size          (copy.m_Size),
     m_Text          (copy.m_Text),
     m_TextSize      (copy.m_TextSize),
     m_LoadedPathname(copy.m_LoadedPathname)
@@ -98,6 +101,7 @@ namespace tgui
             std::swap(m_Maximum,        temp.m_Maximum);
             std::swap(m_Value,          temp.m_Value);
             std::swap(m_SplitImage,     temp.m_SplitImage);
+            std::swap(m_Size,           temp.m_Size);
             std::swap(m_TextureBack_L,  temp.m_TextureBack_L);
             std::swap(m_TextureBack_M,  temp.m_TextureBack_M);
             std::swap(m_TextureBack_R,  temp.m_TextureBack_R);
@@ -212,8 +216,9 @@ namespace tgui
                 m_SpriteFront_M.setTexture(*m_TextureFront_M, true);
                 m_SpriteFront_R.setTexture(*m_TextureFront_R, true);
 
-                m_Loaded = true;
-                return true;
+                // Set the size of the loading bar
+                m_Size.x = static_cast<float>(m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x);
+                m_Size.y = static_cast<float>(m_TextureBack_M->getSize().y);
             }
             else
                 return false;
@@ -227,16 +232,19 @@ namespace tgui
                 m_SpriteBack_M.setTexture(*m_TextureBack_M, true);
                 m_SpriteFront_M.setTexture(*m_TextureFront_M, true);
 
-                m_Loaded = true;
-
-                // Calculate the size of the front image (the size of the part that will be drawn)
-                recalculateSize();
-
-                return true;
+                // Set the size of the loading bar
+                m_Size = Vector2f(m_TextureBack_M->getSize());
             }
             else
                 return false;
         }
+
+        // Calculate the size of the front image (the size of the part that will be drawn)
+        recalculateSize();
+
+        // Loading has succeeded
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,34 +259,25 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Change the scale
-        if (m_SplitImage)
-            setScale(width / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), height / m_TextureBack_M->getSize().y);
-        else
-            setScale(width / m_TextureBack_M->getSize().x, height / m_TextureBack_M->getSize().y);
+        // Set the size of the loading bar
+        m_Size.x = width;
+        m_Size.y = height;
 
+        // Recalculate the size of the front image
         recalculateSize();
+
+        // Recalculate the text size
+        setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u LoadingBar::getSize() const
     {
-        // Don't continue when the loading bar wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2u(m_Size);
+        else
             return Vector2u(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the three images
-            return Vector2u(m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x, m_TextureBack_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2u(m_TextureBack_M->getSize().x, m_TextureBack_M->getSize().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,32 +285,10 @@ namespace tgui
     Vector2f LoadingBar::getScaledSize() const
     {
         // Don't continue when the loading bar wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2f(m_Size.x * getScale().y, m_Size.y * getScale().y);
+        else
             return Vector2f(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Check if the middle image is drawn
-            if ((getScale().y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < getScale().x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
-            {
-                // Return the size of the three images
-                return Vector2f((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * getScale().x,
-                                m_TextureBack_M->getSize().y * getScale().y);
-            }
-            else // The loading bar is too small
-            {
-                // Return the size of the two images
-                return Vector2f((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * getScale().y,
-                                m_TextureBack_M->getSize().y * getScale().y);
-            }
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2f(m_TextureBack_M->getSize().x * getScale().x, m_TextureBack_M->getSize().y * getScale().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -440,36 +417,22 @@ namespace tgui
         if (m_TextSize == 0)
         {
             // Calculate a possible text size
-            float size = m_TextureBack_M->getSize().y * 0.8f;
+            float size = m_Size.y * 0.85f;
             m_Text.setCharacterSize(static_cast<unsigned int>(size));
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
 
-            // The calculation is slightly different when the image is split
-            if (m_SplitImage)
+            // Make sure that the text isn't too width
+            if (m_Text.getGlobalBounds().width > (m_Size.x * 0.8f))
             {
-                // Calculate the loading bar width
-                unsigned int loadingBarWidth = m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x;
-
-                // We must make sure that the text isn't too width
-                if (m_Text.getGlobalBounds().width > (loadingBarWidth * 0.8f))
-                {
-                    // The text is too width, so make it smaller
-                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (loadingBarWidth * 0.8f))));
-                }
-            }
-            else // The image is not split
-            {
-                // We must make sure that the text isn't too width
-                if (m_Text.getGlobalBounds().width > (m_TextureBack_M->getSize().x * 0.8f))
-                {
-                    // The text is too width, so make it smaller
-                    m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (m_TextureBack_M->getSize().x*0.8f))));
-                }
+                // The text is too width, so make it smaller
+                m_Text.setCharacterSize(static_cast<unsigned int>(size / (m_Text.getGlobalBounds().width / (m_Size.x * 0.8f))));
+                m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
             }
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
+            m_Text.setCharacterSize(m_TextSize);
         }
     }
 
@@ -528,56 +491,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::mouseOnObject(float x, float y)
-    {
-        // Don't do anything when the loading bar wasn't loaded correctly
-        if (m_Loaded == false)
-            return false;
-
-        float loadingBarWidth;
-        float loadingBarHeight;
-
-        // Get the current scale
-        Vector2f curScale = getScale();
-
-        // Calculate the loading bar size
-        if (m_SplitImage)
-        {
-            loadingBarHeight = m_TextureBack_M->getSize().y * curScale.y;
-
-            // Check if the middle part will be drawn (this won't happen when the x scale is too small
-            if ((curScale.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < curScale.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
-            {
-                loadingBarWidth =(m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x + m_TextureBack_M->getSize().x) * getScale().x;
-            }
-            else // The middle part won't be drawn
-            {
-                loadingBarWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y;
-            }
-        }
-        else
-        {
-            loadingBarWidth = m_TextureBack_M->getSize().x * curScale.x;
-            loadingBarHeight = m_TextureBack_M->getSize().y * curScale.y;
-        }
-
-        // Check if the mouse is on top of the loading bar
-        if ((x > getPosition().x) && (x < getPosition().x + loadingBarWidth)
-            && (y > getPosition().y) && (y < getPosition().y + loadingBarHeight))
-        {
-            return true;
-        }
-        else // When the mouse is not on top of the loading bar
-        {
-            m_MouseHover = false;
-            return false;
-        }
-
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void LoadingBar::recalculateSize()
     {
         // Don't calculate anything when the loading bar wasn't loaded correctly
@@ -588,12 +501,12 @@ namespace tgui
         if (m_SplitImage)
         {
             // Get the current scale
-            sf::Vector2f curScale = getScale();
+            sf::Vector2f scaling(m_Size.x / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), m_Size.y / m_TextureBack_M->getSize().y);
 
             // Get the bounds of the sprites
-            sf::FloatRect backBounds_L = m_SpriteBack_L.getGlobalBounds();
-            sf::FloatRect backBounds_M = m_SpriteBack_M.getGlobalBounds();
-            sf::FloatRect backBounds_R = m_SpriteBack_R.getGlobalBounds();
+            sf::FloatRect backBounds_L = m_SpriteBack_L.getLocalBounds();
+            sf::FloatRect backBounds_M = m_SpriteBack_M.getLocalBounds();
+            sf::FloatRect backBounds_R = m_SpriteBack_R.getLocalBounds();
 
             // Calculate the necessary sizes
             float totalWidth;
@@ -601,15 +514,15 @@ namespace tgui
             float frontSize;
 
             // Check if the middle image is drawn
-            if ((curScale.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < curScale.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
+            if ((scaling.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
+                < scaling.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
             {
-                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * curScale.x;
-                middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y);
+                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * scaling.x;
+                middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y);
             }
             else // The loading bar is too small
             {
-                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y;
+                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y;
                 middleTextureWidth = 0;
             }
 
@@ -623,18 +536,18 @@ namespace tgui
             if (frontSize > 0)
             {
                 // Check if a piece of the middle part should be drawn
-                if (frontSize > m_TextureBack_L->getSize().x * curScale.y)
+                if (frontSize > m_TextureBack_L->getSize().x * scaling.y)
                 {
                     // Check if a piece of the right part should be drawn
-                    if (frontSize > (m_TextureBack_L->getSize().x * curScale.y) + middleTextureWidth)
+                    if (frontSize > (m_TextureBack_L->getSize().x * scaling.y) + middleTextureWidth)
                     {
                         // Check if the bar is not full
                         if (frontSize < totalWidth)
-                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * curScale.y) + middleTextureWidth);
+                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * scaling.y) + middleTextureWidth);
                     }
                     else // Only a part of the middle image should be drawn
                     {
-                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * curScale.y)) / middleTextureWidth * m_TextureBack_M->getSize().x;
+                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * scaling.y)) / middleTextureWidth * m_TextureBack_M->getSize().x;
                         backBounds_R.width = 0;
                     }
                 }
@@ -658,17 +571,14 @@ namespace tgui
         }
         else // The image is not split
         {
-            // Get the size of the back sprite
-            sf::FloatRect backBounds = m_SpriteBack_M.getGlobalBounds();
-
             // Calculate the size of the front sprite
-            sf::IntRect frontBounds(backBounds);
+            sf::IntRect frontBounds(m_SpriteBack_M.getLocalBounds());
 
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                frontBounds.width = static_cast<int>(backBounds.width * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
+                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
             else
-                frontBounds.width = static_cast<int>(backBounds.width);
+                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x);
 
             // Set the size of the front image
             m_SpriteFront_M.setTextureRect(frontBounds);
@@ -683,38 +593,39 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Apply the transformation
+        states.transform *= getTransform();
+
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
-
-        // Get the current scale
-        Vector2f curScale = getScale();
 
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Set the position of the image
-            states.transform.translate(getPosition());
+            // Get the scale the images
+            Vector2f scaling(m_Size.x / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), m_Size.y / m_TextureBack_M->getSize().y);
 
-            // Draw the loading bar
-            states.transform.scale(curScale.y, curScale.y);
+            // Scale the image
+            states.transform.scale(scaling.y, scaling.y);
+
+            // Draw the left image of the loading bar
             target.draw(m_SpriteBack_L, states);
             target.draw(m_SpriteFront_L, states);
 
-
             // Check if the middle image may be drawn
-            if ((curScale.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < curScale.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
+            if ((scaling.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
+                < scaling.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
             {
                 // Put the middle image on the correct position
                 states.transform.translate(m_SpriteBack_L.getGlobalBounds().width, 0);
 
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)  * curScale.x)
-                                - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y))
+                float scaleX = (((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)  * scaling.x)
+                                - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y))
                                 / m_TextureBack_M->getSize().x;
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / curScale.y, 1);
+                states.transform.scale(scaleX / scaling.y, 1);
 
                 // Draw the middle image
                 target.draw(m_SpriteBack_M, states);
@@ -724,7 +635,7 @@ namespace tgui
                 states.transform.translate(m_SpriteBack_M.getGlobalBounds().width, 0);
 
                 // Set the scale for the right image
-                states.transform.scale(curScale.y / scaleX, 1);
+                states.transform.scale(scaling.y / scaleX, 1);
 
                 // Draw the right image
                 target.draw(m_SpriteBack_R, states);
@@ -742,8 +653,8 @@ namespace tgui
         }
         else // The image is not split
         {
-            // Adjust the transformation
-            states.transform *= getTransform();
+            // Scale the image
+            states.transform.scale(m_Size.x / m_TextureBack_M->getSize().x, m_Size.y / m_TextureBack_M->getSize().y);
 
             // Draw the loading bar
             target.draw(m_SpriteBack_M, states);
@@ -755,89 +666,16 @@ namespace tgui
         {
             // Reset the transformations
             states.transform = oldTransform;
-            states.transform.translate(getPosition());
 
             // Get the current size of the text, so that we can recalculate the position
             sf::FloatRect rect = m_Text.getGlobalBounds();
 
-            // Check if the user has chosen a text size
-            if (m_TextSize > 0)
-            {
-                // The calculation will be different when the image is split
-                if (m_SplitImage)
-                {
-                    // Calculate the new position for the text
-                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
-                    rect.left = ((((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)
-                                   * curScale.x) - rect.width) * 0.5f) - rect.left;
-                }
-                else // The image is not split
-                {
-                    // Calculate the new position for the text
-                    rect.left = (((m_TextureBack_M->getSize().x * curScale.x) - rect.width) * 0.5f) - rect.left;
-                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
-                }
+            // Calculate the new position for the text
+            rect.left = (m_Size.x - rect.width) * 0.5f - rect.left;
+            rect.top = (m_Size.y - rect.height) * 0.5f - rect.top;
 
-                // Set the new position
-                states.transform.translate(static_cast<float>(static_cast<int>(rect.left + 0.5f)), static_cast<float>(static_cast<int>(rect.top + 0.5f)));
-            }
-            else // autoscale
-            {
-                // Get the text size
-                unsigned int size = m_Text.getCharacterSize();
-
-                // Calculate a better size for the text
-                float NewSize = m_TextureBack_M->getSize().y * curScale.y * 0.8f;
-
-                // Calculate the scale factor
-                float textScale = NewSize / size;
-
-                // The calculation will be different when the image is split
-                if (m_SplitImage)
-                {
-                    float loadingBarWidth;
-
-                    // Check if the middle image is draw
-                    if ((curScale.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                        < curScale.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
-                    {
-                        loadingBarWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * curScale.x;
-                    }
-                    else
-                        loadingBarWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * curScale.y;
-
-
-                    // Check if the text isn't too width
-                    if ((m_Text.getGlobalBounds().width * textScale) > (loadingBarWidth * 0.8f))
-                    {
-                        // Change the scale
-                        textScale = (loadingBarWidth * 0.8f) / m_Text.getGlobalBounds().width;
-                    }
-
-                    // Calculate the new position for the text
-                    rect.left = ((loadingBarWidth - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
-                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
-                }
-                else // The image isn't split
-                {
-                    // Check if the text isn't too width
-                    if ((m_Text.getGlobalBounds().width * textScale) > (m_TextureBack_M->getSize().x * curScale.x * 0.8f))
-                    {
-                        // Change the scale
-                        textScale = (m_TextureBack_M->getSize().x * curScale.x * 0.8f) / m_Text.getGlobalBounds().width;
-                    }
-
-                    // Calculate the new position for the text
-                    rect.left = (((m_TextureBack_M->getSize().x * curScale.x) - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
-                    rect.top = (((m_TextureBack_M->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
-                }
-
-                // Set the new position
-                states.transform.translate(rect.left, rect.top);
-
-                // Set the scale for the text
-                states.transform.scale(textScale, textScale);
-            }
+            // Set the new position
+            states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));
 
             // Draw the text
             target.draw(m_Text, states);

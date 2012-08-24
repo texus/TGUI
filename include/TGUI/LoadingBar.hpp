@@ -87,8 +87,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the loading bar.
-        ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -229,13 +227,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is used to receive callback from the EventManager.
-        // You normally don't need it, but you can use it to simulate an event.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
 
@@ -263,6 +254,9 @@ namespace tgui
         // If this is true then the L, M and R images will be used.
         // If it is false then the button is just one big image that will be stored in the M image.
         bool m_SplitImage;
+
+        // The size of the loading bar
+        Vector2f m_Size;
 
         sf::Texture* m_TextureBack_L;
         sf::Texture* m_TextureBack_M;
