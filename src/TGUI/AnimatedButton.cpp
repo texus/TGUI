@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -48,6 +50,7 @@ namespace tgui
     AnimatedButton::AnimatedButton(const AnimatedButton& copy) :
     OBJECT               (copy),
     OBJECT_ANIMATION     (copy),
+    m_Size               (copy.m_Size),
     m_DurationsNormal    (copy.m_DurationsNormal),
     m_DurationsMouseHover(copy.m_DurationsMouseHover),
     m_DurationsMouseDown (copy.m_DurationsMouseDown),
@@ -135,6 +138,7 @@ namespace tgui
             this->OBJECT::operator=(right);
             this->OBJECT_ANIMATION::operator=(right);
 
+            std::swap(m_Size,                temp.m_Size);
             std::swap(m_TexturesNormal,      temp.m_TexturesNormal);
             std::swap(m_TexturesMouseHover,  temp.m_TexturesMouseHover);
             std::swap(m_TexturesMouseDown,   temp.m_TexturesMouseDown);
@@ -508,6 +512,8 @@ namespace tgui
         {
             if (m_TexturesNormal[0] != NULL)
             {
+                m_Size = Vector2f(m_TexturesNormal[0]->getSize());
+
                 m_Loaded = true;
                 return true;
             }
@@ -524,29 +530,33 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        setScale(width / m_TexturesNormal[0]->getSize().x, height / m_TexturesNormal[0]->getSize().y);
+        // Set the new size of the button
+        m_Size.x = width;
+        m_Size.y = height;
+
+        // Recalculate the text size when auto sizing
+        if (m_TextSize == 0)
+            setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u AnimatedButton::getSize() const
     {
-        // Don't continue when the button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2u(m_Size);
+        else
             return Vector2u(0, 0);
-
-        return Vector2u(m_TexturesNormal[0]->getSize().x, m_TexturesNormal[0]->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f AnimatedButton::getScaledSize() const
     {
-        // Don't continue when the button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+        else
             return Vector2f(0, 0);
-
-        return Vector2f(m_TexturesNormal[0]->getSize().x * getScale().x, m_TexturesNormal[0]->getSize().y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,21 +581,22 @@ namespace tgui
         if (m_TextSize == 0)
         {
             // Calculate a possible text size
-            float size = m_TexturesNormal[0]->getSize().y * 0.9f;
+            float size = m_Size.y * 0.85f;
             m_Text.setCharacterSize(static_cast<unsigned int>(size));
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
 
-
-            // We must make sure that the text isn't too width
-            if (m_Text.getGlobalBounds().width > (m_TexturesNormal[0]->getSize().x * 0.8f))
+            // Make sure that the text isn't too width
+            if (m_Text.getGlobalBounds().width > (m_Size.x * 0.8f))
             {
                 // The text is too width, so make it smaller
-                m_Text.setCharacterSize(static_cast<unsigned int> (size / (m_Text.getGlobalBounds().width / (m_TexturesNormal[0]->getSize().x * 0.8f))));
+                m_Text.setCharacterSize(static_cast<unsigned int>(size / (m_Text.getGlobalBounds().width / (m_Size.x * 0.8f))));
+                m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
             }
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
+            m_Text.setCharacterSize(m_TextSize);
         }
     }
 
@@ -914,15 +925,14 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
+        // Apply the transformations
+        states.transform *= getTransform();
 
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Adjust the transformation
-        states.transform *= getTransform();
+        // Set the scaling
+        states.transform.scale(m_Size.x / m_TexturesNormal[0]->getSize().x, m_Size.y / m_TexturesNormal[0]->getSize().y);
 
         // Check if there is a separate hover image
         if (m_SeparateHoverImage)
@@ -961,49 +971,16 @@ namespace tgui
         {
             // Reset the transformations
             states.transform = oldTransform;
-            states.transform.translate(position);
 
             // Get the current size of the text, so that we can recalculate the position
             sf::FloatRect rect = m_Text.getGlobalBounds();
 
-            // Check if the user has chosen a text size
-            if (m_TextSize > 0)
-            {
-                // Calculate the new position for the text
-                rect.left = (((m_TexturesNormal[0]->getSize().x * curScale.x) - rect.width) * 0.5f) - rect.left;
-                rect.top = (((m_TexturesNormal[0]->getSize().y * curScale.y) - rect.height) * 0.5f) - rect.top;
+            // Calculate the new position for the text
+            rect.left = (m_Size.x - rect.width) * 0.5f - rect.left;
+            rect.top = (m_Size.y - rect.height) * 0.5f - rect.top;
 
-                // Set the new position
-                states.transform.translate(static_cast<float>(static_cast<int>(rect.left + 0.5f)), static_cast<float>(static_cast<int>(rect.top + 0.5f)));
-            }
-            else // autoscale
-            {
-                // Get the text size
-                unsigned int size = m_Text.getCharacterSize();
-
-                // Calculate a better size for the text
-                float NewSize = m_TexturesNormal[0]->getSize().y * curScale.y * 0.9f;
-
-                // Calculate the scale factor
-                float textScale = NewSize / size;
-
-                // Check if the text isn't too width
-                if ((m_Text.getGlobalBounds().width * textScale) > (m_TexturesNormal[0]->getSize().x * curScale.x * 0.8f))
-                {
-                    // Change the scale
-                    textScale = (m_TexturesNormal[0]->getSize().x * curScale.x * 0.8f) / m_Text.getGlobalBounds().width;
-                }
-
-                // Calculate the new position for the text
-                rect.left = (((m_TexturesNormal[0]->getSize().x * curScale.x) - (rect.width * textScale)) * 0.5f) - (rect.left * textScale);
-                rect.top = (((m_TexturesNormal[0]->getSize().y * curScale.y) - (rect.height * textScale)) * 0.5f) - (rect.top * textScale);
-
-                // Set the new position
-                states.transform.translate(rect.left, rect.top);
-
-                // Set the scale for the text
-                states.transform.scale(textScale, textScale);
-            }
+            // Set the new position
+            states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));
 
             // Draw the text
             target.draw(m_Text, states);
@@ -1011,8 +988,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

@@ -223,6 +223,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+        // The size of the button
+        Vector2f m_Size;
+
         // The SFML textures
         std::vector<sf::Texture*> m_TexturesNormal;
         std::vector<sf::Texture*> m_TexturesMouseHover;
