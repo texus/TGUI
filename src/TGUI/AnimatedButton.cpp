@@ -561,7 +561,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string AnimatedButton::getLoadedPathname()
+    std::string AnimatedButton::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -602,7 +602,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String AnimatedButton::getText()
+    sf::String AnimatedButton::getText() const
     {
         return m_Text.getString();
     }
@@ -630,7 +630,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& AnimatedButton::getTextColor()
+    const sf::Color& AnimatedButton::getTextColor() const
     {
         return m_Text.getColor();
     }
@@ -648,7 +648,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedButton::getTextSize()
+    unsigned int AnimatedButton::getTextSize() const
     {
         return m_TextSize;
     }

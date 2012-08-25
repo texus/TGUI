@@ -285,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ChildWindow::getLoadedPathname()
+    std::string ChildWindow::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }

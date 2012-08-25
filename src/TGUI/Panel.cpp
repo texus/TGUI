@@ -97,7 +97,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::load(unsigned int width, unsigned int height, const sf::Color& bkgColor, const std::string filename)
+    bool Panel::load(const unsigned int width, const unsigned int height, const sf::Color& bkgColor, const std::string filename)
     {
         // Until the loading succeeds, the panel will be marked as unloaded
         m_Loaded = false;
@@ -167,7 +167,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::addCallback(Callback& callback)
+    void Panel::addCallback(const Callback& callback)
     {
         // Pass the callback to the parent. It has to get to the main window eventually.
         m_Parent->addCallback(callback);
@@ -216,7 +216,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Panel::getLoadedBackgroundImageFilename()
+    std::string Panel::getLoadedBackgroundImageFilename() const
     {
         return m_LoadedBackgroundImageFilename;
     }

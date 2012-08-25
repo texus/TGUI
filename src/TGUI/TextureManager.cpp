@@ -81,7 +81,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::copyTexture(sf::Texture* textureToCopy, sf::Texture*& newTexture)
+    bool TextureManager::copyTexture(sf::Texture* const textureToCopy, sf::Texture*& newTexture)
     {
         // The two textures must be exactly the same
         newTexture = textureToCopy;
@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::isTransparentPixel(sf::Texture* texture, unsigned int x, unsigned int y)
+    bool TextureManager::isTransparentPixel(const sf::Texture* const texture, unsigned int x, unsigned int y)
     {
         if (texture == NULL)
             return false;

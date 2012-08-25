@@ -566,7 +566,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string EditBox::getLoadedPathname()
+    std::string EditBox::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -684,7 +684,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String EditBox::getText()
+    sf::String EditBox::getText() const
     {
         return m_Text;
     }
@@ -702,7 +702,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::getTextSize()
+    unsigned int EditBox::getTextSize() const
     {
         return m_TextSize;
     }
@@ -718,7 +718,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* EditBox::getTextFont()
+    const sf::Font* EditBox::getTextFont() const
     {
         return m_TextBeforeSelection.getFont();
     }
@@ -830,7 +830,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char EditBox::getPasswordChar()
+    char EditBox::getPasswordChar() const
     {
         return m_PasswordChar;
     }
@@ -898,7 +898,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::getMaximumCharacters()
+    unsigned int EditBox::getMaximumCharacters() const
     {
         return m_MaxChars;
     }
@@ -1071,21 +1071,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& EditBox::getTextColor()
+    const sf::Color& EditBox::getTextColor() const
     {
         return m_TextBeforeSelection.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& EditBox::getSelectedTextColor()
+    const sf::Color& EditBox::getSelectedTextColor() const
     {
         return m_TextSelection.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& EditBox::getSelectedTextBackgroundColor()
+    const sf::Color& EditBox::getSelectedTextBackgroundColor() const
     {
         return m_SelectedTextBgrColor;
     }

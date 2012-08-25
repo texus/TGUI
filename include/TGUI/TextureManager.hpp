@@ -63,7 +63,7 @@ namespace tgui
         ///         - true when the texture was loaded before by TextureManager
         ///         - false when the texture was never loaded (or already removed) by TextureManager
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool copyTexture(sf::Texture* textureToCopy, sf::Texture*& newTexture);
+        virtual bool copyTexture(sf::Texture* const textureToCopy, sf::Texture*& newTexture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ namespace tgui
         ///
         /// When the texture was not in the list (or when it is NULL), this function will always return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool isTransparentPixel(sf::Texture* texture, unsigned int x, unsigned int y);
+        virtual bool isTransparentPixel(const sf::Texture* const texture, unsigned int x, unsigned int y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -359,7 +359,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string TextBox::getLoadedScrollbarPathname()
+    std::string TextBox::getLoadedScrollbarPathname() const
     {
         return m_LoadedScrollbarPathname;
     }
@@ -396,7 +396,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String TextBox::getText()
+    sf::String TextBox::getText() const
     {
         return m_Text;
     }
@@ -414,7 +414,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* TextBox::getTextFont()
+    const sf::Font* TextBox::getTextFont() const
     {
         return m_TextBeforeSelection.getFont();
     }
@@ -486,7 +486,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getTextSize()
+    unsigned int TextBox::getTextSize() const
     {
         return m_TextSize;
     }
@@ -511,7 +511,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getMaximumCharacters()
+    unsigned int TextBox::getMaximumCharacters() const
     {
         return m_MaxChars;
     }
@@ -651,35 +651,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getBackgroundColor()
+    const sf::Color& TextBox::getBackgroundColor() const
     {
         return m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getTextColor()
+    const sf::Color& TextBox::getTextColor() const
     {
         return m_TextBeforeSelection.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getSelectedTextColor()
+    const sf::Color& TextBox::getSelectedTextColor() const
     {
         return m_TextSelection1.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getSelectedTextBackgroundColor()
+    const sf::Color& TextBox::getSelectedTextBackgroundColor() const
     {
         return m_SelectedTextBgrColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getBorderColor()
+    const sf::Color& TextBox::getBorderColor() const
     {
         return m_BorderColor;
     }
