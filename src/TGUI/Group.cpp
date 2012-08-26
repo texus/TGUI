@@ -2265,7 +2265,7 @@ namespace tgui
 
     void Group::unfocus(OBJECT* object)
     {
-        m_EventManager.focusObject(object);
+        m_EventManager.unfocusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
