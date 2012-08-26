@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -89,6 +91,288 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    struct Operation
+    {
+        enum ops
+        {
+            Add,
+            Subtract,
+            Multiply,
+            Divide
+        };
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float evaluate(std::string expression)
+    {
+        std::string::size_type openingBracketPos;
+        std::string::size_type closingBracketPos;
+
+        std::vector<float> numbers;
+        std::vector<Operation::ops> operations;
+
+        bool readingNumber = false;
+        bool commaFound = false;
+        bool numbersBehindComma = 0;
+
+        // Search for an opening bracket
+        openingBracketPos = expression.rfind('(');
+
+        // Check if a bracket was found
+        while (openingBracketPos != std::string::npos)
+        {
+            // There has to be a closing bracket
+            closingBracketPos = expression.find(')', openingBracketPos+1);
+
+            // Give an error when there was no closing bracket
+            if (closingBracketPos == std::string::npos)
+            {
+                TGUI_OUTPUT("TGUI error: Failed to parse string, missing closing bracket.");
+                return 0;
+            }
+
+            // Evaluate the sting between the brackets
+            float factor = evaluate(expression.substr(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1));
+
+            // Replace the brackets with the factor
+            expression.erase(openingBracketPos, closingBracketPos - openingBracketPos + 1);
+            expression.insert(openingBracketPos, to_string(factor));
+
+            // Find the next opening bracket
+            openingBracketPos = expression.rfind('(');
+        }
+
+        // Loop through all characters
+        for (std::string::iterator it = expression.begin(); it != expression.end(); ++it)
+        {
+            // Read the string character by character
+            char nextChar = *it;
+
+            // Check if the character is a number
+            if ((nextChar > 47) && (nextChar < 58))
+            {
+                // Check if we were already reading a number
+                if (readingNumber)
+                {
+                    // Check if a comma was found before the character
+                    if (commaFound)
+                    {
+                        // Add the number
+                        ++numbersBehindComma;
+                        numbers.back() += (nextChar - 48) / pow(10.f, numbersBehindComma);
+                    }
+                    else // No comma
+                    {
+                        // Append the number
+                        numbers.back() *= 10;
+                        numbers.back() += nextChar - 48;
+                    }
+                }
+                else // This is the start of the number
+                {
+                    // Add this new number
+                    numbers.push_back(nextChar - 48);
+                    readingNumber = true;
+                }
+            }
+
+            // Check if the character is a comma
+            else if ((nextChar == 44) || (nextChar == 46))
+            {
+                // From now on, all new numbers will be behind the comma
+                commaFound = true;
+
+                // If your number starts with a comma then add a zero
+                if (readingNumber == false)
+                {
+                    numbers.push_back(0);
+                    readingNumber = true;
+                }
+            }
+
+            // The character wasn't a number
+            else
+            {
+                // Ignore spaces
+                if (nextChar == 32)
+                    continue;
+
+                // If you were not reading a number yet then this might be a unary operator
+                if (readingNumber == false)
+                {
+                    // Ignore a plus
+                    if (nextChar == 43)
+                        break;
+
+                    // Handle subtraction
+                    else if (nextChar == 45)
+                    {
+                        numbers.push_back(0);
+                        operations.push_back(Operation::Subtract);
+                    }
+                }
+                else // We were reading a number
+                {
+                    // Reset some data
+                    readingNumber = false;
+                    commaFound = false;
+                    numbersBehindComma = 0;
+                }
+
+                // Find out what the operation is
+                if (nextChar == 43)
+                    operations.push_back(Operation::Add);
+                else if (nextChar == 45)
+                    operations.push_back(Operation::Subtract);
+                else if ((nextChar == 42) || (nextChar == 120))
+                    operations.push_back(Operation::Multiply);
+                else if (nextChar == 47)
+                    operations.push_back(Operation::Divide);
+                else
+                {
+                    // An unknow character was found
+                    TGUI_OUTPUT(std::string("TGUI error: Failed to parse string, unknown character found: '") + nextChar + "'.");
+                    return 0;
+                }
+            }
+        }
+
+        // Make sure the number of operators is correct
+        if (numbers.size() != operations.size() + 1)
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse string, incorrect number of operators.");
+            return 0;
+        }
+
+        // Look for the multiplication or divide operations
+        unsigned int i = 0;
+        while (i<operations.size())
+        {
+            if (operations[i] == Operation::Multiply)
+            {
+                // Multiply the numbers
+                numbers[i] *= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else if (operations[i] == Operation::Divide)
+            {
+                // Divide the numbers
+                numbers[i] /= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else
+                ++i;
+        }
+
+        // Look for the add or subtract operations
+        i = 0;
+        while (i<operations.size())
+        {
+            if (operations[i] == Operation::Add)
+            {
+                // Add the numbers
+                numbers[i] += numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else if (operations[i] == Operation::Subtract)
+            {
+                // Subtract the numbers
+                numbers[i] -= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else
+                ++i;
+        }
+
+        // When passing here, i should be 0, there should be one answer left and there shouldn't be any operations left
+        if ((i == 0) && (numbers.size() == 1) && (operations.empty()))
+            return numbers[0];
+        else
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse string, incorrect result.");
+            return 0;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float readFloat(std::string expression)
+    {
+        // Check if the expression is empty
+        if (expression.empty())
+        {
+            TGUI_OUTPUT("TGUI error: Empty expression, using 0 as result value.");
+            return 0;
+        }
+
+        // Look for quotes
+        if ((expression[0] == '"') && (expression[expression.length()-1] == '"'))
+        {
+            // When quotes are found then erase them
+            expression.erase(0, 1);
+            expression.erase(expression.length()-1, 1);
+
+            // The expression should still contain something
+            if (expression.empty())
+            {
+                TGUI_OUTPUT("TGUI error: Expression with empty string or single quote.");
+                return 0;
+            }
+
+            // Calculate the value
+            return evaluate(expression);
+        }
+        else
+            return static_cast<float>(atof(expression.c_str()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int readInt(std::string expression)
+    {
+        // Check if the expression is empty
+        if (expression.empty())
+        {
+            TGUI_OUTPUT("TGUI error: Empty expression, using 0 as result value.");
+            return 0;
+        }
+
+        // Look for quotes
+        if ((expression[0] == '"') && (expression[expression.length()-1] == '"'))
+        {
+            // When quotes are found then erase them
+            expression.erase(0, 1);
+            expression.erase(expression.length()-1, 1);
+
+            // The expression should still contain something
+            if (expression.empty())
+            {
+                TGUI_OUTPUT("TGUI error: Expression with empty string or single quote.");
+                return 0;
+            }
+
+            // Calculate the value
+            return static_cast<int>(evaluate(expression) + 0.5f);
+        }
+        else
+            return atoi(expression.c_str());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Group::loadObjectsFromFile(const std::string filename)
     {
         // I wrote these defines to avoid having the same code over and over again
@@ -104,12 +388,12 @@ namespace tgui
             else if (line.substr(0, 6).compare("width=") == 0) \
             { \
                 line.erase(0, 6); \
-                name->setSize(static_cast<float>(atoi(line.c_str())), name->getScaledSize().y); \
+                name->setSize(readFloat(line.c_str()), name->getScaledSize().y); \
             } \
             else if (line.substr(0, 7).compare("height=") == 0) \
             { \
                 line.erase(0, 7); \
-                name->setSize(name->getScaledSize().x, static_cast<float>(atoi(line.c_str()))); \
+                name->setSize(name->getScaledSize().x, readFloat(line.c_str())); \
             } \
             else if (line.substr(0, 6).compare("scale=") == 0) \
             { \
@@ -132,17 +416,17 @@ namespace tgui
             else if (line.substr(0, 5).compare("left=") == 0) \
             { \
                 line.erase(0, 5); \
-                name->setPosition(static_cast<float>(atoi(line.c_str())), name->getPosition().y); \
+                name->setPosition(readFloat(line.c_str()), name->getPosition().y); \
             } \
             else if (line.substr(0, 4).compare("top=") == 0) \
             { \
                 line.erase(0, 4); \
-                name->setPosition(name->getPosition().x, static_cast<float>(atoi(line.c_str()))); \
+                name->setPosition(name->getPosition().x, readFloat(line.c_str())); \
             } \
             else if (line.substr(0, 11).compare("callbackid=") == 0) \
             { \
                 line.erase(0, 11); \
-                name->callbackID = atoi(line.c_str()); \
+                name->callbackID = readInt(line.c_str()); \
             }
 
         #define CHECK_FOR_QUOTES \
@@ -476,11 +760,14 @@ namespace tgui
                         std::string::size_type tokenPos = line.find(defineTokens[i]);
 
                         // Check if a token was found
-                        if (tokenPos != std::string::npos)
+                        while (tokenPos != std::string::npos)
                         {
                             // Replace the token with the corresponding value
                             line.erase(tokenPos, defineTokens[i].length());
                             line.insert(tokenPos, defineValues[i]);
+
+                            // Search again for the next token
+                            tokenPos = line.find(defineTokens[i]);
                         }
                     }
                 }
