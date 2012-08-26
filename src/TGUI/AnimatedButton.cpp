@@ -797,7 +797,7 @@ namespace tgui
     {
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
-            m_Parent->unfocus(this);
+            m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

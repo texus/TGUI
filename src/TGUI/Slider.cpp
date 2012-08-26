@@ -690,7 +690,7 @@ namespace tgui
     void Slider::objectFocused()
     {
         // A slider can't be focused (yet)
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

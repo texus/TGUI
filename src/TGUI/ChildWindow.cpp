@@ -366,7 +366,7 @@ namespace tgui
             // Move the childwindow to the front when clicking on it
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                m_Parent->focus(this);
+                m_Parent->focusObject(this);
                 m_Parent->moveObjectToFront(this);
             }
 

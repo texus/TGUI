@@ -436,7 +436,7 @@ namespace tgui
     void SpinButton::objectFocused()
     {
         // A spin button can't be focused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
