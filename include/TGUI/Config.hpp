@@ -31,12 +31,11 @@
     #ifdef SFML_SYSTEM_WINDOWS
 
         // Windows compilers need specific (and different) keywords for export and import
-        // Export always seems to work. Import doesn't work when using the source code directly.
-//        #ifdef TGUI_EXPORTS
+        #ifdef tgui_EXPORTS
             #define TGUI_API __declspec(dllexport)
-//        #else
-//            #define TGUI_API __declspec(dllimport)
-//        #endif
+        #else
+            #define TGUI_API __declspec(dllimport)
+        #endif
 
         // For Visual C++ compilers, we also need to turn off this annoying C4251 warning
         #ifdef _MSC_VER
