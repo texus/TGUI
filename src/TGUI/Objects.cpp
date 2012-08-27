@@ -246,6 +246,13 @@ namespace tgui
 
     void OBJECT::unfocus()
     {
+        m_Parent->unfocusAllObjects();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::focusNextObject()
+    {
         m_Parent->unfocusObject(this);
     }
 
