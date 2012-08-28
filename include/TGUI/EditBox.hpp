@@ -23,11 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// TODO: Improve clipping. EditBox was the first object to receive some sort of clipping and was never updated to the newer and better method.
-// TODO: Support different layouts. There should be a possibility to center the text or to put it on the right side of the edit box.
 // TODO: Double clicking should only select one word. To select the whole text, you should click 3 times.
-// During the next rewrite, at least the first two will be added.
-
 
 #ifndef _TGUI_EDITBOX_INCLUDED_
 #define _TGUI_EDITBOX_INCLUDED_
@@ -41,37 +37,62 @@ namespace tgui
     struct TGUI_API EditBox : public OBJECT, OBJECT_BORDERS, OBJECT_ANIMATION
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief The text layout
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        struct Layout
+        {
+            enum layouts
+            {
+                Left,
+                Center,
+                Right
+            };
+        };
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Copy constructor
+        ///
+        /// \param copy  Instance to copy
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox(const EditBox& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ~EditBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Overload of assignment operator
+        ///
+        /// \param right  Instance to assign
+        ///
+        /// \return Reference to itself
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EditBox& operator= (const EditBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        // This function is called when the object is created (when it is added to a group).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        // Makes a copy of the object by calling the copy constructor.
+        // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual EditBox* clone();
 
@@ -87,6 +108,7 @@ namespace tgui
         ///        - false when the pathname is empty
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool load(const std::string pathname);
 
@@ -98,18 +120,25 @@ namespace tgui
         ///
         /// \param width   The new width of the edit box
         /// \param height  The new height of the edit box
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the size of the edit box, unaffected by scaling.
+        ///
+        /// \return The size of the edit box.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2u getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the size of the edit box, after the scaling transformation.
+        ///
+        /// \return The size of the edit box.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getScaledSize() const;
 
@@ -117,7 +146,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the pathname that was used to load the edit box.
         ///
-        /// When the edit box has not been loaded yet then this function will return an empty string.
+        /// \return Pathname used to load the edit box.
+        ///        When the edit box has not been loaded yet then this function will return an empty string.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::string getLoadedPathname() const;
 
@@ -125,18 +156,24 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the text of the editbox.
         ///
+        /// \param text  The new text.
+        ///
         /// The last characters of the text might be removed in the following situations:
         /// - You have set a character limit and this text contains too much characters.
-        /// - The text does not fit inside the EditBox and you have limited the text width.
+        /// - You have limited the text width and the text does not fit inside the EditBox.
         ///
         /// \see setMaximumCharacters
         /// \see limitTextWidth
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setText(const sf::String text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the text inside the edit box. This text is not affected by the password character.
+        ///
+        /// \return The text of the edit box.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::String getText() const;
 
@@ -144,8 +181,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the character size of the text.
         ///
-        /// If the size is 0 (default) then the text will be scaled to fit in the edit box.
-        /// Note that this text size is the size before scaling.
+        /// \param textSize  The new size of the text.
+        ///                  If the size is 0 (default) then the text will be scaled to fit in the edit box.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTextSize(const unsigned int textSize);
 
@@ -153,7 +191,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the character size of the text.
         ///
-        /// It is possible that this function returns 0, which means that the text is auto-scaled.
+        /// \return The text size.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getTextSize() const;
 
@@ -163,12 +202,18 @@ namespace tgui
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed by changing \a gloabalFont from the parent.
+        ///
+        /// \param font  The new font.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the font of the text.
+        ///
+        /// \return  The font that is currently being used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Font* getTextFont() const;
 
@@ -176,10 +221,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Sets a password character.
         ///
-        /// If \a NewPasswordChar is 0 then there is no password character.
+        /// \param passwordChar  The new password character.
+        ///                      If set to 0 then there is no password character.
         ///
         /// When the text width is limited then this function might remove the last characters in the text if they no
         /// longer fit in the EditBox. You can avoid this by setting LimitTextWidth to false (which is the default).
+        ///
+        /// \see limitTextWidth
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPasswordChar(const char passwordChar = '\0');
 
@@ -187,7 +236,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the password character.
         ///
-        /// This will be 0 when there is no password character.
+        /// \return  The password character that is currently being used.
+        ///          When no password character is used then this function returns 0.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual char getPasswordChar() const;
 
@@ -195,8 +246,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Change the character limit.
         ///
-        /// Set \a maxChars to 0 to disable the limit.
-        /// This limit is disabled by default.
+        /// \param maxChars  The new character limit. Set it to 0 to disable the limit.
+        ///
+        /// This character limit is disabled by default.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setMaximumCharacters(const unsigned int maxChars = 0);
 
@@ -204,8 +257,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the character limit.
         ///
-        /// The function will return 0 when there is no limit.
-        /// This limit is disabled by default.
+        /// \return The character limit.
+        ///         The function will return 0 when there is no limit.
+        ///
+        /// There is no character limit by default.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getMaximumCharacters() const;
 
@@ -220,6 +276,7 @@ namespace tgui
         /// \param topBorder     The height of the top border
         /// \param rightBorder   The width of the right border
         /// \param bottomBorder  The height of the bottom border
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBorders(const unsigned int leftBorder   = 0,
                                 const unsigned int topBorder    = 0,
@@ -235,6 +292,7 @@ namespace tgui
         /// \param selectedTextBackgroundColor          The color of the background of the text that is selected
         /// \param unfocusedSelectedTextBackgroundColor The color of the background of the text that is selected when the edit box is not focused
         /// \param selectionPointColor                  The color of the flickering selection point
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void changeColors(const sf::Color& textColor                            = sf::Color(  0,   0,   0),
                                   const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
@@ -244,37 +302,49 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Set the text color that will be used inside the edit box.
         ///
-        /// \see changeColors
+        /// \param textColor  The new text color.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTextColor(const sf::Color& textColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Set the text color of the selected text that will be used inside the edit box.
         ///
-        /// \see changeColors
+        /// \param selectedTextColor  The new text color.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSelectedTextColor(const sf::Color& selectedTextColor);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Set the background color of the selected text that will be used inside the edit box.
         ///
-        /// \see changeColors
+        /// \param selectedTextBackgroundColor  The new background color.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Get the text color that is currently being used inside the edit box.
+        ///
+        /// \return The text color that is currently being used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getTextColor() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Get the text color of the selected text that is currently being used inside the edit box.
+        ///
+        /// \return The selected text color that is currently being used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getSelectedTextColor() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Get the background color of the selected text that is currently being used inside the edit box.
+        ///
+        /// \return The background color of the selected text that is currently being used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const sf::Color& getSelectedTextBackgroundColor() const;
 
@@ -282,8 +352,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Should the text width be limited or should you be able to type even if the edit box is full?
         ///
+        /// \param limitWidth  Should there be a text width limit or not.
+        ///
         /// When set to true, you will no longer be able to add text when the edit box is full.
         /// The default value is false.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void limitTextWidth(const bool limitWidth);
 
@@ -291,7 +364,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Sets the flickering selection point to after a specific character.
         ///
+        /// \param charactersBeforeSelectionPoint  The new position.
+        ///
         /// Normally you will not need this function.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSelectionPointPosition(const unsigned int charactersBeforeSelectionPoint);
 
@@ -332,41 +408,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Scaling is not working in EditBox and may thus not be used.
-        /// This will be fixed during the next rewrite.
-        ///
-        /// \see setSize
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScale(float factorX, float factorY);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Scaling is not working in EditBox and may thus not be used.
-        /// This will be fixed during the next rewrite.
-        ///
-        /// \see setSize
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScale(const Vector2f& factors);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Scaling is not working in EditBox and may thus not be used.
-        /// This will be fixed during the next rewrite.
-        ///
-        /// \see setSize
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scale(float factorX, float factorY);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Scaling is not working in EditBox and may thus not be used.
-        /// This will be fixed during the next rewrite.
-        ///
-        /// \see setSize
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scale(const Vector2f& factor);
-
-        // Group must be able to access the scale
-        friend struct Group;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
@@ -377,47 +418,55 @@ namespace tgui
         /// The width in pixels of the flickering selection point
         unsigned int  selectionPointWidth;
 
+        /// The text layout
+        Layout::layouts textLayout;
 
     protected:
 
-        // Internal information about the selection point
+        // Is the selection point visible or not?
         bool          m_SelectionPointVisible;
-        unsigned int  m_SelectionPointPosition;
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the limitTextWidth(bool) function.
         bool          m_LimitTextWidth;
 
+        // The text inside the edit box
         sf::String    m_DisplayedText;
         sf::String    m_Text;
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int  m_TextSize;
 
+        // The selection
         unsigned int  m_SelChars;
         unsigned int  m_SelStart;
         unsigned int  m_SelEnd;
 
+        // The password character
         char          m_PasswordChar;
 
+        // The maximum allowed characters.
+        // Zero by default, meaning no limit.
         unsigned int  m_MaxChars;
 
         // If true then the image is split in three parts
         bool          m_SplitImage;
 
-        // When the text width is not limited, you can scroll the edit box.
-        // These numbers will hold the first and last visible letter.
-        unsigned int  m_LeftTextCrop;
-        unsigned int  m_RightTextCrop;
+        // When the text width is not limited, you can scroll the edit box and only a part will be visible.
+        unsigned int  m_TextCropPosition;
 
         // The rectangle behind the selected text will have this color
         sf::Color     m_SelectedTextBgrColor;
 
-        // We need three SFML texts to draw our text.
+        // The size of the edit box
+        Vector2f      m_Size;
+
+        // We need three SFML texts to draw our text, and one more for calculations.
         sf::Text      m_TextBeforeSelection;
         sf::Text      m_TextSelection;
         sf::Text      m_TextAfterSelection;
+        sf::Text      m_TextFull;
 
         // The SFML textures
         sf::Texture*  m_TextureNormal_L;

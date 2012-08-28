@@ -25,6 +25,9 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -33,8 +36,8 @@ namespace tgui
 
     EditBox::EditBox() :
     selectionPointWidth     (2),
+    textLayout              (Layout::Left),
     m_SelectionPointVisible (true),
-    m_SelectionPointPosition(0),
     m_LimitTextWidth        (false),
     m_DisplayedText         (""),
     m_Text                  (""),
@@ -45,8 +48,7 @@ namespace tgui
     m_PasswordChar          ('\0'),
     m_MaxChars              (0),
     m_SplitImage            (false),
-    m_LeftTextCrop          (0),
-    m_RightTextCrop         (0),
+    m_TextCropPosition      (0),
     m_TextureNormal_L       (NULL),
     m_TextureNormal_M       (NULL),
     m_TextureNormal_R       (NULL),
@@ -74,8 +76,8 @@ namespace tgui
     OBJECT_ANIMATION        (copy),
     selectionPointColor     (copy.selectionPointColor),
     selectionPointWidth     (copy.selectionPointWidth),
+    textLayout              (copy.textLayout),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
-    m_SelectionPointPosition(copy.m_SelectionPointPosition),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
     m_Text                  (copy.m_Text),
@@ -86,12 +88,13 @@ namespace tgui
     m_PasswordChar          (copy.m_PasswordChar),
     m_MaxChars              (copy.m_MaxChars),
     m_SplitImage            (copy.m_SplitImage),
-    m_LeftTextCrop          (copy.m_LeftTextCrop),
-    m_RightTextCrop         (copy.m_RightTextCrop),
+    m_TextCropPosition      (copy.m_TextCropPosition),
     m_SelectedTextBgrColor  (copy.m_SelectedTextBgrColor),
+    m_Size                  (copy.m_Size),
     m_TextBeforeSelection   (copy.m_TextBeforeSelection),
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
+    m_TextFull              (copy.m_TextFull),
     m_LoadedPathname        (copy.m_LoadedPathname),
     m_PossibleDoubleClick   (copy.m_PossibleDoubleClick)
     {
@@ -139,8 +142,8 @@ namespace tgui
 
             std::swap(selectionPointColor,      temp.selectionPointColor);
             std::swap(selectionPointWidth,      temp.selectionPointWidth);
+            std::swap(textLayout,               temp.textLayout);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
-            std::swap(m_SelectionPointPosition, temp.m_SelectionPointPosition);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
             std::swap(m_Text,                   temp.m_Text);
@@ -151,12 +154,13 @@ namespace tgui
             std::swap(m_PasswordChar,           temp.m_PasswordChar);
             std::swap(m_MaxChars,               temp.m_MaxChars);
             std::swap(m_SplitImage,             temp.m_SplitImage);
-            std::swap(m_LeftTextCrop,           temp.m_LeftTextCrop);
-            std::swap(m_RightTextCrop,          temp.m_RightTextCrop);
+            std::swap(m_TextCropPosition,       temp.m_TextCropPosition);
             std::swap(m_SelectedTextBgrColor,   temp.m_SelectedTextBgrColor);
+            std::swap(m_Size,                   temp.m_Size);
             std::swap(m_TextBeforeSelection,    temp.m_TextBeforeSelection);
             std::swap(m_TextSelection,          temp.m_TextSelection);
             std::swap(m_TextAfterSelection,     temp.m_TextAfterSelection);
+            std::swap(m_TextFull,               temp.m_TextFull);
             std::swap(m_TextureNormal_L,        temp.m_TextureNormal_L);
             std::swap(m_TextureNormal_M,        temp.m_TextureNormal_M);
             std::swap(m_TextureNormal_R,        temp.m_TextureNormal_R);
@@ -202,6 +206,8 @@ namespace tgui
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
+        m_Size.x = 0;
+        m_Size.y = 0;
 
         // Make sure that the pathname isn't empty
         if (pathname.empty())
@@ -218,7 +224,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -235,11 +241,9 @@ namespace tgui
             // Check what the property is
             if (property.compare("splitimage") == 0)
             {
-                // Find out if it is split or not
-                if (value.compare("true") == 0)
+                // Enable SplitImage if needed
+                if ((value.compare("true") == 0) || (value.compare("1") == 0))
                     m_SplitImage = true;
-                else if (value.compare("false") == 0)
-                    m_SplitImage = false;
             }
             else if (property.compare("phases") == 0)
             {
@@ -255,15 +259,13 @@ namespace tgui
                 Vector4u borders;
                 if (extractVector4u(value, borders))
                     setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
-
-                // Set the selection point to the correct position
-                m_SelectionPointPosition = m_LeftBorder;
             }
             else if (property.compare("textcolor") == 0)
             {
                 sf::Color color = extractColor(value);
                 m_TextBeforeSelection.setColor(color);
                 m_TextAfterSelection.setColor(color);
+                m_TextFull.setColor(color);
             }
             else if (property.compare("selectedtextcolor") == 0)
             {
@@ -277,6 +279,8 @@ namespace tgui
             {
                 selectionPointColor = extractColor(value);
             }
+            else
+                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
         }
 
         // Close the info file
@@ -289,9 +293,9 @@ namespace tgui
         if (m_TextureHover_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
         if (m_TextureHover_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
         if (m_TextureHover_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
-        if (m_TextureFocused_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureFocused_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_R);
 
         bool error = false;
 
@@ -370,16 +374,8 @@ namespace tgui
             }
         }
 
-        // Check if we are auto scaling the text
-        if (m_TextSize == 0)
-        {
-            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * getScale().y);
-
-            // Set the text size
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
-        }
+        // Auto scale the text
+        setTextSize(0);
 
         // When there is no error we will return true
         m_Loaded = !error;
@@ -394,174 +390,38 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
+        // Store the new size
+        m_Size.x = width;
+        m_Size.y = height;
 
-        // Check if the image is split
+        // A negative size is not allowed for this object
+        if (m_Size.x  < 0) m_Size.x  = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+
+        // When using splitimage, make sure that the width isn't too small
         if (m_SplitImage)
         {
-            sf::Transformable::setScale(width / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x),
-                                        height / m_TextureNormal_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            sf::Transformable::setScale(width / m_TextureNormal_M->getSize().x,
-                                        height / m_TextureNormal_M->getSize().y);
+            if ((m_Size.y / m_TextureNormal_M->getSize().y) * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) > m_Size.x)
+                m_Size.x = (m_Size.y / m_TextureNormal_M->getSize().y) * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x);
         }
 
-        // Check if we are auto scaling the text
+        // Recalculate the text size when auto scaling
         if (m_TextSize == 0)
-        {
-            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * getScale().y);
-
-            // Set the text size
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
-        }
-
-        // Store the whole string in one text object to make the calculations
-        sf::Text tempText(m_TextBeforeSelection);
-        tempText.setString(m_DisplayedText);
-
-        // When there is a text width limit then we have to check if the text stays within these limits
-        if (m_LimitTextWidth)
-        {
-            // Remember the current text length
-            unsigned int textLength = m_DisplayedText.getSize();
-
-            // Check if the text fits into the EditBox
-//            while (tempText.getGlobalBounds().width > width)
-            while (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
-            {
-                // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.getSize()-1);
-                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
-
-                // Refresh the text
-                tempText.setString(m_DisplayedText);
-            }
-
-            // Check if the text changed
-            if (m_DisplayedText.getSize() < textLength)
-            {
-                // Change the texts that are drawn on the screen
-                m_TextBeforeSelection.setString(
-                                                m_DisplayedText.toWideString().substr(
-                                                                       0,
-                                                                       m_TextBeforeSelection.getString().getSize()
-                                                                      )
-                                              );
-
-                m_TextSelection.setString(
-                                          m_DisplayedText.toWideString().substr(
-                                                                 m_TextBeforeSelection.getString().getSize(),
-                                                                 m_TextSelection.getString().getSize()
-                                                                )
-                                        );
-
-                m_TextAfterSelection.setString(
-                                               m_DisplayedText.toWideString().substr(
-                                                                      m_TextBeforeSelection.getString().getSize()
-                                                                       + m_TextSelection.getString().getSize(),
-                                                                      m_TextAfterSelection.getString().getSize()
-                                                                     )
-                                             );
-            }
-        }
-        else // Scrolling is enabled
-        {
-            float editBoxWidth;
-
-            // Calculate the width of the edit box
-            if (m_SplitImage)
-                editBoxWidth = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
-            else
-                editBoxWidth = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-            // If the width is negative then the editBox is too small to be displayed
-            if (editBoxWidth < 0)
-                editBoxWidth = 0;
-
-            // Now check if the text fits into the EditBox
-            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > editBoxWidth)
-            {
-                // Reset the left crop position
-                m_LeftTextCrop = 0;
-
-                // Check if we should try moving the right text crop position left or right
-                if (m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x > editBoxWidth)
-                {
-                    // The text is too long to fit inside the EditBox
-                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > editBoxWidth)
-                    {
-                        // Check if the last character can be dropped
-                        if (m_SelEnd < m_RightTextCrop)
-                            --m_RightTextCrop;
-                        else
-                            ++m_LeftTextCrop;
-                    }
-                }
-                else // The edit box is now bigger than before
-                {
-                    // Try to add more visible text to the edit box
-                    while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < editBoxWidth)
-                    {
-                        // Move the right text crop position forward
-                        if (m_RightTextCrop < m_DisplayedText.getSize())
-                            ++m_RightTextCrop;
-                    }
-                }
-
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(m_SelectionPointPosition);
-            }
-        }
+            setText(m_Text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u EditBox::getSize() const
     {
-        // Don't continue when the edit box wasn't loaded correctly
-        if (m_Loaded == false)
-            return Vector2u(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the three images
-            return Vector2u(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x, m_TextureNormal_M->getSize().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2u(m_TextureNormal_M->getSize().x, m_TextureNormal_M->getSize().y);
-        }
+        return Vector2u(m_Size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f EditBox::getScaledSize() const
     {
-        // Don't continue when the edit box wasn't loaded correctly
-        if (m_Loaded == false)
-            return Vector2f(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the three images
-            return Vector2f((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x,
-                            m_TextureNormal_M->getSize().y * getScale().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the image
-            return Vector2f(m_TextureNormal_M->getSize().x * getScale().x, m_TextureNormal_M->getSize().y * getScale().y);
-        }
+        return Vector2f(m_Size.x * getScale().x, m_Size.y * getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -579,25 +439,27 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
-
-        // Change the text size
-        if (m_TextSize > 0)
+        // Check if the text is auto sized
+        if (m_TextSize == 0)
         {
-            unsigned int size = static_cast<unsigned int>(m_TextSize * curScale.y);
+            // Calculate the text size
+            m_TextFull.setString("kg");
+            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_Size.y - ((m_TopBorder + m_BottomBorder) * (m_Size.y / m_TextureNormal_M->getSize().y))));
+            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_TextFull.getCharacterSize() - m_TextFull.getLocalBounds().top));
+            m_TextFull.setString(m_DisplayedText);
 
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
+            // Also adjust the character size of the other texts
+            m_TextBeforeSelection.setCharacterSize(m_TextFull.getCharacterSize());
+            m_TextSelection.setCharacterSize(m_TextFull.getCharacterSize());
+            m_TextAfterSelection.setCharacterSize(m_TextFull.getCharacterSize());
         }
-        else // The text size must be calculated
+        else // When the text has a fixed size
         {
-            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y);
-
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
+            // Set the text size
+            m_TextBeforeSelection.setCharacterSize(m_TextSize);
+            m_TextSelection.setCharacterSize(m_TextSize);
+            m_TextAfterSelection.setCharacterSize(m_TextSize);
+            m_TextFull.setCharacterSize(m_TextSize);
         }
 
         // Change the text
@@ -620,38 +482,28 @@ namespace tgui
                 m_DisplayedText[i] = m_PasswordChar;
         }
 
-        // Change the text that will be displayed
+        // Set the texts
         m_TextBeforeSelection.setString(m_DisplayedText);
-
-        // The text has comlpetely changed, so there will no longer be selected text
         m_TextSelection.setString("");
         m_TextAfterSelection.setString("");
 
-
-        float width;
-
-        // Calculate the width of the edit box
-        if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * curScale.x)
-                     - ((m_LeftBorder + m_RightBorder) * curScale.y);
-        else
-            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * curScale.x;
-
-        // If the width is negative then the editBox is too small to be displayed
-        if (width < 0)
-            width = 0;
-
-        // When there is a text width limit then we have to check that one too
+        // Check if there is a text width limit
         if (m_LimitTextWidth)
         {
+            // Calculate the space inside the edit box
+            float width;
+            if (m_SplitImage)
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            else
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+            // If the width is negative then the editBox is too small to be displayed
+            if (width < 0)
+                width = 0;
+
             // Now check if the text fits into the EditBox
-//            while (m_TextBeforeSelection.getGlobalBounds().width > width)
             while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
             {
-                // Make sure that you are not trying to erase if it is already empty
-                if (m_DisplayedText.isEmpty())
-                    break;
-
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_Text.erase(m_Text.getSize()-1);
                 m_DisplayedText.erase(m_DisplayedText.getSize()-1);
@@ -660,23 +512,9 @@ namespace tgui
                 m_TextBeforeSelection.setString(m_DisplayedText);
             }
         }
-        else // Scrolling is enabled
-        {
-            // Set the text crop
-            m_LeftTextCrop = 0;
-            m_RightTextCrop = m_DisplayedText.getSize();
 
-            // Now check if the text fits into the EditBox
-            if (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > width)
-            {
-                // The text is too long to fit inside the EditBox
-                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                {
-                    // Drop the first character
-                    ++m_LeftTextCrop;
-                }
-            }
-        }
+        // Also set the full text
+        m_TextFull.setString(m_DisplayedText);
 
         // Set the selection point behind the last character
         setSelectionPointPosition(m_DisplayedText.getSize());
@@ -714,13 +552,14 @@ namespace tgui
         m_TextBeforeSelection.setFont(font);
         m_TextSelection.setFont(font);
         m_TextAfterSelection.setFont(font);
+        m_TextFull.setFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font* EditBox::getTextFont() const
     {
-        return m_TextBeforeSelection.getFont();
+        return m_TextFull.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,98 +573,8 @@ namespace tgui
         // Change the password character
         m_PasswordChar = passwordChar;
 
-        // Check f the password character was 0
-        if (m_PasswordChar == '\0')
-        {
-            // If it was 0 then just copy the text
-            m_DisplayedText = m_Text;
-        }
-        else
-        {
-            // Set the password character
-            for (unsigned int i=0; i < m_DisplayedText.getSize(); ++i)
-                m_DisplayedText[i] = m_PasswordChar;
-        }
-
-
-        float width;
-
-        // Calculate the width of the edit box
-        if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                     - ((m_LeftBorder + m_RightBorder) * getScale().y);
-        else
-            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-        // When there is a text width limit then we have to check if the text stays within these limits
-        if (m_LimitTextWidth)
-        {
-            // Check if the text fits into the EditBox
-//            while (m_TextBeforeSelection.getGlobalBounds().width > width)
-            while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
-            {
-                // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.getSize()-1);
-                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
-            }
-        }
-        else // Scrolling is enabled
-        {
-            // Check if we can't just keep the current cropping
-            while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-            {
-                // Check if the last character can be dropped
-                if (m_SelEnd < m_RightTextCrop)
-                    --m_RightTextCrop;
-                else
-                    ++m_LeftTextCrop;
-            }
-        }
-
-        // The internal text has changed, so the text to display also has to change (the length stays the same)
-        m_TextBeforeSelection.setString(
-                                        m_DisplayedText.toWideString().substr(
-                                                               0,
-                                                               m_TextBeforeSelection.getString().getSize()
-                                                              )
-                                      );
-
-        m_TextSelection.setString(
-                                  m_DisplayedText.toWideString().substr(
-                                                         m_TextBeforeSelection.getString().getSize(),
-                                                         m_TextSelection.getString().getSize()
-                                                        )
-                                );
-
-        m_TextAfterSelection.setString(
-                                       m_DisplayedText.toWideString().substr(
-                                                              m_TextBeforeSelection.getString().getSize()
-                                                               + m_TextSelection.getString().getSize(),
-                                                              m_TextAfterSelection.getString().getSize()
-                                                             )
-                                     );
-
-        // The position of the selection point must also be changed
-        if (m_SplitImage)
-        {
-            if (m_SelChars == 0)
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y) + m_TextBeforeSelection.findCharacterPos(m_SelEnd).x);
-            else
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y)
-                                            + m_TextSelection.findCharacterPos(m_SelEnd - m_TextBeforeSelection.getString().getSize()).x
-//                                            + m_TextBeforeSelection.getGlobalBounds().width);
-                                            + m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x);
-        }
-        else
-        {
-            if (m_SelChars == 0)
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x) + m_TextBeforeSelection.findCharacterPos(m_SelEnd).x);
-            else
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x)
-                                            + m_TextSelection.findCharacterPos(m_SelEnd - m_TextBeforeSelection.getString().getSize()).x
-//                                              + m_TextBeforeSelection.getGlobalBounds().width);
-                                            + m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x);
-        }
+        // Recalculate the text position
+        setText(m_Text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -849,51 +598,15 @@ namespace tgui
             m_Text.erase(m_MaxChars, sf::String::InvalidPos);
             m_DisplayedText.erase(m_MaxChars, sf::String::InvalidPos);
 
-            // If we passed here then the internal text has changed. We also need to change the one to display.
+            // If we passed here then the text has changed.
             m_TextBeforeSelection.setString(m_DisplayedText);
             m_TextSelection.setString("");
             m_TextAfterSelection.setString("");
+            m_TextFull.setString(m_DisplayedText);
 
-            // Check if scrolling is enabled
-            if (m_LimitTextWidth == false)
-            {
-                // Check if the right crop position lies behind the character limit
-                if (m_RightTextCrop > m_MaxChars)
-                {
-                    float width;
-
-                    // Calculate the width of the edit box
-                    if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                                 - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                    else
-                        width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                    // Check if the right crop position lies behind the character limit
-                    while (m_RightTextCrop > m_MaxChars)
-                    {
-                        // Lower the right crop position
-                        --m_RightTextCrop;
-
-                        // Check if the left crop position can be changed
-                        while (m_LeftTextCrop > 0)
-                        {
-                            // Check if it may be changed
-                            if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop - 1).x) <= width)
-                            {
-                                // Change the left crop position
-                                --m_LeftTextCrop;
-                            }
-                            else // The left crop position may no longer be changed
-                                break;
-                        }
-                    }
-                }
-            }
+            // Set the selection point behind the last character
+            setSelectionPointPosition(m_DisplayedText.getSize());
         }
-
-        // Set the selection point behind the last character
-        setSelectionPointPosition(m_DisplayedText.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -913,123 +626,8 @@ namespace tgui
         m_RightBorder  = borderRight;
         m_BottomBorder = borderBottom;
 
-        // Nothing can be calculated when the load function failed
-        if (m_Loaded == false)
-            return;
-
-        // The borders have changed, so the selection point position has to change too.
-        if (m_SplitImage)
-        {
-            if (m_SelChars == 0)
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y) + m_TextBeforeSelection.findCharacterPos(m_SelEnd).x);
-            else
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y)
-                                            + m_TextSelection.findCharacterPos(m_SelEnd - m_TextBeforeSelection.getString().getSize()).x
-//                                            + m_TextBeforeSelection.getGlobalBounds().width);
-                                            + m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x);
-        }
-        else
-        {
-            if (m_SelChars == 0)
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x) + m_TextBeforeSelection.findCharacterPos(m_SelEnd).x);
-            else
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x)
-                                            + m_TextSelection.findCharacterPos(m_SelEnd - m_TextBeforeSelection.getString().getSize()).x
-//                                              + m_TextBeforeSelection.getGlobalBounds().width);
-                                            + m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x);
-        }
-
         // Recalculate the text size
-        if (m_TextSize > 0)
-        {
-            unsigned int size = static_cast<unsigned int>(m_TextSize * getScale().y);
-
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
-        }
-        else // The text size must be calculated
-        {
-            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * getScale().y);
-
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
-        }
-
-        float width;
-
-        // Calculate the width of the edit box
-        if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                     - ((m_LeftBorder + m_RightBorder) * getScale().y);
-        else
-            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-        // Store the whole string in one text object to make the calculations
-        sf::Text tempText(m_TextBeforeSelection);
-        tempText.setString(m_DisplayedText);
-
-        // When there is a text width limit then we have to check if the text stays within these limits
-        if (m_LimitTextWidth)
-        {
-            // Remember the current text length
-            unsigned int textLength = m_DisplayedText.getSize();
-
-            // Check if the text fits into the EditBox
-//            while (tempText.getGlobalBounds().width > width)
-            while (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
-            {
-                // If the text does not fit in the EditBox then delete the last character
-                m_Text.erase(m_Text.getSize()-1);
-                m_DisplayedText.erase(m_DisplayedText.getSize()-1);
-
-                // Refresh the text
-                tempText.setString(m_DisplayedText);
-            }
-
-            // Check if the text changed
-            if (m_DisplayedText.getSize() < textLength)
-            {
-                // Change the texts that are drawn on the screen
-                m_TextBeforeSelection.setString(
-                                                m_DisplayedText.toWideString().substr(
-                                                                       0,
-                                                                       m_TextBeforeSelection.getString().getSize()
-                                                                      )
-                                              );
-
-                m_TextSelection.setString(
-                                          m_DisplayedText.toWideString().substr(
-                                                                 m_TextBeforeSelection.getString().getSize(),
-                                                                 m_TextSelection.getString().getSize()
-                                                                )
-                                        );
-
-                m_TextAfterSelection.setString(
-                                               m_DisplayedText.toWideString().substr(
-                                                                      m_TextBeforeSelection.getString().getSize()
-                                                                       + m_TextSelection.getString().getSize(),
-                                                                      m_TextAfterSelection.getString().getSize()
-                                                                     )
-                                             );
-            }
-        }
-        else // Scrolling is enabled
-        {
-            unsigned int length = m_DisplayedText.getSize();
-
-            // Now check if the text fits into the EditBox
-            while (m_TextBeforeSelection.findCharacterPos(length).x > width)
-            {
-                // The text is still too long
-                --length;
-            }
-
-            // Set the text crop
-            m_LeftTextCrop = 0;
-            m_RightTextCrop = length;
-        }
+        setText(m_Text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1099,34 +697,35 @@ namespace tgui
         // Check if the width is being limited
         if (m_LimitTextWidth == true)
         {
+            // Calculate the space inside the edit box
             float width;
-
-            // Calculate the width of the edit box
             if (m_SplitImage)
-                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
             else
-                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
 
             // If the width is negative then the editBox is too small to be displayed
             if (width < 0)
                 width = 0;
 
             // Now check if the text fits into the EditBox
-//            while (m_TextBeforeSelection.getGlobalBounds().width > width)
             while (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
-                // Make sure that you are not trying to erase if it is already empty
-                if (m_DisplayedText.isEmpty())
-                    break;
-
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_Text.erase(m_Text.getSize()-1);
                 m_DisplayedText.erase(m_DisplayedText.getSize()-1);
-
-                // Set the new text
                 m_TextBeforeSelection.setString(m_DisplayedText);
             }
+
+            // The full text might have changed
+            m_TextFull.setString(m_DisplayedText);
+
+            // There is no clipping
+            m_TextCropPosition = 0;
+
+            // If the selection point was behind the limit, then set it at the end
+            if (m_SelEnd > m_DisplayedText.getSize())
+                setSelectionPointPosition(m_SelEnd);
         }
     }
 
@@ -1143,83 +742,144 @@ namespace tgui
         m_SelStart = charactersBeforeSelectionPoint;
         m_SelEnd = charactersBeforeSelectionPoint;
 
-        // Change our three texts
+        // Change our texts
         m_TextBeforeSelection.setString(m_DisplayedText);
         m_TextSelection.setString("");
         m_TextAfterSelection.setString("");
+        m_TextFull.setString(m_DisplayedText);
 
-
-        float position = m_TextBeforeSelection.findCharacterPos(m_SelEnd).x;
-
-        // Check if scrolling is enabled, if so then adjust the position
+        // Check if scrolling is enabled
         if (m_LimitTextWidth == false)
-            position -= m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x;
+        {
+            // Calculate the space inside the edit box
+            float width;
+            if (m_SplitImage)
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            else
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
 
-        // Now change the position of the selection point
-        if (m_SplitImage)
-            m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y) + position);
-        else
-            m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x) + position);
+            // If the width is negative then the editBox is too small to be displayed
+            if (width < 0)
+                width = 0;
+
+            // Find out the position of the selection point
+            float selectionPointPosition = m_TextFull.findCharacterPos(m_SelEnd).x;
+
+            if (m_SelEnd == m_DisplayedText.getSize())
+                selectionPointPosition += m_TextFull.getCharacterSize() / 10.f;
+
+            // If the selection point is too far on the right then adjust the cropping
+            if (m_TextCropPosition + width < selectionPointPosition)
+                m_TextCropPosition = selectionPointPosition - width;
+
+            // If the selection point is too far on the left then adjust the cropping
+            if (m_TextCropPosition > selectionPointPosition)
+                m_TextCropPosition = selectionPointPosition;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int EditBox::findSelectionPointPosition(float posX)
     {
+        // Take the scaling into account
+        posX /= getScale().x;
+
         // This code will crash when the editbox is empty. We need to avoid this.
         if (m_DisplayedText.isEmpty())
             return 0;
 
-        // What part of the text is visible
-        unsigned int leftBound, rightBound;
-
-        // Check if there is a text width limit
-        if (m_LimitTextWidth)
+        // Find out what the first visible character is
+        unsigned int firstVisibleChar;
+        if (m_TextCropPosition)
         {
-            leftBound = 0;
-            rightBound = m_DisplayedText.getSize();
+            // Start searching near the selection point to quickly find the character even in a very long string
+            firstVisibleChar = m_SelEnd;
+
+            // Go backwards to find the character
+            while (m_TextFull.findCharacterPos(firstVisibleChar-1).x > m_TextCropPosition)
+                --firstVisibleChar;
         }
-        else // Scrolling is enabled
-        {
-            leftBound = m_LeftTextCrop;
-            rightBound = m_RightTextCrop;
-        }
+        else // If the first part is visible then the first character is also visible
+            firstVisibleChar = 0;
 
-        // Create a temp SFML text and give it the correct size
-        sf::Text tempText(m_TextBeforeSelection);
-        tempText.setString(m_DisplayedText);
-
-        // check if clicked on the first character.
-        if (posX < ((tempText.findCharacterPos(leftBound + 1).x - tempText.findCharacterPos(leftBound).x) / 2.0f) + 0.5f)
-            return leftBound;
-
-        // This string will store pieces of the text
         sf::String tempString;
+        float textWidthWithoutLastChar;
+        float fullTextWidth;
+        float halfOfLastCharWidth;
+        unsigned int lastVisibleChar;
 
-        // Add the first character to our temp string
-        tempString += m_DisplayedText[leftBound];
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+        // If the width is negative then the editBox is too small to be displayed
+        if (width < 0)
+            width = 0;
+
+        // Find out how many pixels the text is moved
+        unsigned int pixelsToMove = 0;
+        if (textLayout != Layout::Left)
+        {
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // Check if a layout would make sense
+            if (textWidth < width)
+            {
+                // Set the number of pixels to move
+                if (textLayout == Layout::Center)
+                    pixelsToMove = (width - textWidth) / 2.f;
+                else // if (textLayout == Layout::Right)
+                    pixelsToMove = width - textWidth;
+            }
+        }
+
+        // Find out what the last visible character is, starting from the selection point
+        lastVisibleChar = m_SelEnd;
+
+        // Go forward to find the character
+        while (m_TextFull.findCharacterPos(lastVisibleChar+1).x < m_TextCropPosition + width)
+        {
+            if (lastVisibleChar == m_DisplayedText.getSize())
+                break;
+
+            ++lastVisibleChar;
+        }
+
+        // Set the first part of the text
+        tempString = m_DisplayedText.toWideString().substr(0, firstVisibleChar);
+        m_TextFull.setString(tempString);
+
+        // Calculate the first position
+        fullTextWidth = m_TextFull.findCharacterPos(firstVisibleChar).x;
 
         // for all the other characters, check where you have clicked.
-        for (unsigned int i = leftBound + 1; i < rightBound; ++i)
+        for (unsigned int i = firstVisibleChar; i < lastVisibleChar; ++i)
         {
-            // Add the next character to the temp string
+            // Add the next character to the temporary string
             tempString += m_DisplayedText[i];
-
-            // Set the string
-            tempText.setString(tempString);
+            m_TextFull.setString(tempString);
 
             // Make some calculations
-            float textWidthWithoutLastChar = tempText.findCharacterPos(i - leftBound).x;
-            float fullTextWidth = tempText.findCharacterPos(i - leftBound + 1).x;
-            float halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
+            textWidthWithoutLastChar = fullTextWidth;
+            fullTextWidth = m_TextFull.findCharacterPos(i + 1).x;
+            halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
 
             // Check if you have clicked on the first halve of that character
-            if (posX < textWidthWithoutLastChar + halfOfLastCharWidth + 0.5f)
+            if (posX < textWidthWithoutLastChar + pixelsToMove + halfOfLastCharWidth - m_TextCropPosition)
+            {
+                m_TextFull.setString(m_DisplayedText);
                 return i;
+            }
         }
 
         // If you pass here then you clicked behind all the characters
-        return rightBound;
+        m_TextFull.setString(m_DisplayedText);
+        return lastVisibleChar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1246,7 +906,39 @@ namespace tgui
     {
         TGUI_UNUSED_PARAM(y);
 
-        unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder);
+        unsigned int selectionPointPosition;
+        float positionX;
+
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+        // If the width is negative then the editBox is too small to be displayed
+        if (width < 0)
+            width = 0;
+
+        // Find the selection point position
+        if (m_SplitImage)
+        {
+            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M->getSize().y));
+            selectionPointPosition = findSelectionPointPosition(positionX);
+        }
+        else
+        {
+            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x));
+            selectionPointPosition = findSelectionPointPosition(positionX);
+        }
+
+        // When clicking on the left of the first character, move the pointer to the left
+        if ((positionX < 0) && (selectionPointPosition > 0))
+            --selectionPointPosition;
+
+        // When clicking on the right of the right character, move the pointer to the right
+        if ((positionX > width) && (selectionPointPosition < m_DisplayedText.getSize()))
+            ++selectionPointPosition;
 
         // Check if this is a double click
         if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
@@ -1254,47 +946,18 @@ namespace tgui
             // The next click is going to be a normal one again
             m_PossibleDoubleClick = false;
 
+            // Set the selection point at the end of the text
+            setSelectionPointPosition(m_DisplayedText.getSize());
+
             // Select the whole text
             m_SelStart = 0;
             m_SelEnd = m_Text.getSize();
             m_SelChars = m_Text.getSize();
 
-            // Change the three texts
+            // Change the texts
             m_TextBeforeSelection.setString("");
             m_TextSelection.setString(m_DisplayedText);
             m_TextAfterSelection.setString("");
-
-            // Calculate the width of the edit box
-            float width;
-            if (m_SplitImage)
-                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
-            else
-                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-            // If the width is too small then nothing should be displayed
-            if (width < 0)
-                width = 0;
-
-            // Make sure the last part of the text becomes visible
-            m_RightTextCrop = m_Text.getSize();
-
-            // Try to display as much characters as possible
-            while ((m_TextSelection.findCharacterPos(m_RightTextCrop).x - m_TextSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                ++m_LeftTextCrop;
-
-            // Calculate the position of the selection point
-            float position = m_TextSelection.findCharacterPos(m_SelEnd).x;
-
-            // Check if scrolling is enabled, if so then adjust the position
-            if (m_LimitTextWidth == false)
-                position -= m_TextSelection.findCharacterPos(m_LeftTextCrop).x;
-
-            // Now change the position of the selection point
-            if (m_SplitImage)
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().y) + position);
-            else
-                m_SelectionPointPosition = static_cast<unsigned int>((m_LeftBorder * getScale().x) + position);
         }
         else // No double clicking
         {
@@ -1332,6 +995,9 @@ namespace tgui
         // Set the mouse move flag
         m_MouseHover = true;
 
+        // The mouse has moved so a double click is no longer possible
+        m_PossibleDoubleClick = false;
+
         // Check if the mouse is hold down (we are selecting multiple characters)
         if (m_MouseDown)
         {
@@ -1339,60 +1005,68 @@ namespace tgui
             if (m_LimitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_SelEnd = findSelectionPointPosition(x - getPosition().x - m_LeftBorder);
+                if (m_SplitImage)
+                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M->getSize().y)));
+                else
+                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x)));
             }
             else // Scrolling is enabled
             {
-                float width, rightBorderWidth;
+                float width;
+                float scalingX;
 
-                // Calculate the width of the edit box and the width of the right border
                 if (m_SplitImage)
                 {
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                    rightBorderWidth = m_RightBorder * getScale().y;
+                    scalingX = m_Size.y / m_TextureNormal_M->getSize().y;
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
                 }
                 else
                 {
-                    width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-                    rightBorderWidth = m_RightBorder * getScale().x;
+                    scalingX = m_Size.x / m_TextureNormal_M->getSize().x;
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
                 }
 
-                // Create a temporary text object
-                sf::Text tempText(m_TextBeforeSelection);
-                tempText.setString(m_DisplayedText);
+                // If the width is negative then the editBox is too small to be displayed
+                if (width < 0)
+                    width = 0;
 
                 // Check if the mouse is on the left of the text
-                if (x - getPosition().x < m_LeftBorder)
+                if (x - getPosition().x < m_LeftBorder * scalingX * getScale().x)
                 {
-                    // Check if the left crop position can be decremented
-                    if (m_LeftTextCrop > 0)
+                    // Move the text by a few pixels
+                    if (m_TextFull.getCharacterSize() > 10)
                     {
-                        // Decrement the left crop position
-                        --m_LeftTextCrop;
-
-                        // Check if the right crop position should be lowered
-                        while ((tempText.findCharacterPos(m_RightTextCrop).x - tempText.findCharacterPos(m_LeftTextCrop).x) > width)
-                            --m_RightTextCrop;
+                        if (m_TextCropPosition > m_TextFull.getCharacterSize() / 10)
+                            m_TextCropPosition -= static_cast<unsigned int>(std::floor(m_TextFull.getCharacterSize() / 10.f + 0.5f));
+                        else
+                            m_TextCropPosition = 0;
+                    }
+                    else
+                    {
+                        if (m_TextCropPosition)
+                            --m_TextCropPosition;
                     }
                 }
-                // Check if the mouse is on the right of the text
-                else if (x - getPosition().x > (width - rightBorderWidth))
+                // Check if the mouse is on the right of the text AND there is a possibility to scroll
+                else if ((x - getPosition().x > ((m_LeftBorder * scalingX) + width) * getScale().x) && (m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x > width))
                 {
-                    // Check if the right crop position can be incremented
-                    if (m_RightTextCrop < m_DisplayedText.getSize())
+                    // Move the text by a few pixels
+                    if (m_TextFull.getCharacterSize() > 10)
                     {
-                        // Increment the right crop position
-                        ++m_RightTextCrop;
-
-                        // Check if the left crop position should be raised
-                        while ((tempText.findCharacterPos(m_RightTextCrop).x - tempText.findCharacterPos(m_LeftTextCrop).x) > width)
-                            ++m_LeftTextCrop;
+                        if (m_TextCropPosition + width < m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x + (m_TextFull.getCharacterSize() / 10))
+                            m_TextCropPosition += static_cast<unsigned int>(std::floor(m_TextFull.getCharacterSize() / 10.f + 0.5f));
+                        else
+                            m_TextCropPosition = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x + (m_TextFull.getCharacterSize() / 10) - width;
+                    }
+                    else
+                    {
+                        if (m_TextCropPosition + width < m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x)
+                            ++m_TextCropPosition;
                     }
                 }
 
                 // Find out between which characters the mouse is standing
-                m_SelEnd = findSelectionPointPosition(x - getPosition().x - m_LeftBorder);
+                m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * scalingX));
             }
 
             // Check if we are selecting text from left to right
@@ -1434,28 +1108,6 @@ namespace tgui
                 m_TextSelection.setString("");
                 m_TextAfterSelection.setString("");
             }
-
-            // Create a temporary text object
-            sf::Text tempText(m_TextBeforeSelection);
-            tempText.setString(m_DisplayedText);
-
-            // Check if there is a text width limit
-            if (m_LimitTextWidth)
-            {
-                // Change the selection point
-                if (m_SplitImage)
-                    m_SelectionPointPosition = static_cast<unsigned int>(tempText.findCharacterPos(m_SelEnd).x + (m_LeftBorder * getScale().y));
-                else
-                    m_SelectionPointPosition = static_cast<unsigned int>(tempText.findCharacterPos(m_SelEnd).x + (m_LeftBorder * getScale().x));
-            }
-            else // Scrolling is enabled
-            {
-                // Change the selection point
-                if (m_SplitImage)
-                    m_SelectionPointPosition = static_cast<unsigned int>(tempText.findCharacterPos(m_SelEnd).x - tempText.findCharacterPos(m_LeftTextCrop).x + (m_LeftBorder * getScale().y));
-                else
-                    m_SelectionPointPosition = static_cast<unsigned int>(tempText.findCharacterPos(m_SelEnd).x - tempText.findCharacterPos(m_LeftTextCrop).x + (m_LeftBorder * getScale().x));
-            }
         }
     }
 
@@ -1481,39 +1133,9 @@ namespace tgui
             }
             else // When we didn't select any text
             {
-                // You don't have to do anything when the selection point is at the beginning of the text
+                // Move the selection point to the left
                 if (m_SelEnd > 0)
-                {
-                    // Check if scrolling is enabled
-                    if (m_LimitTextWidth == false)
-                    {
-                        // Check if you should scroll left
-                        if ((m_LeftTextCrop > 0) && ((m_LeftTextCrop == (m_SelEnd-1)) || (m_LeftTextCrop == m_SelEnd)))
-                        {
-                            float width;
-
-                            // Calculate the width of the edit box
-                            if (m_SplitImage)
-                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                            else
-                                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                            // Change the left crop position
-                            --m_LeftTextCrop;
-
-                            // Adjust the text before the selection, it has to be changed before the calculations
-                            m_TextBeforeSelection.setString(m_DisplayedText);
-
-                            // Change the right crop position (if necessary)
-                            while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                                --m_RightTextCrop;
-                        }
-                    }
-
-                    // Move the selection point to the left
                     setSelectionPointPosition(m_SelEnd - 1);
-                }
             }
 
             // Our selection point has moved, it should be visible
@@ -1533,39 +1155,9 @@ namespace tgui
             }
             else // When we didn't select any text
             {
-                // You don't have to do anything when the selection point is at the end of the text
+                // Move the selection point to the right
                 if (m_SelEnd < m_DisplayedText.getSize())
-                {
-                    // Check if scrolling is enabled
-                    if (m_LimitTextWidth == false)
-                    {
-                        // Check if you should scroll right
-                        if ((m_RightTextCrop == m_SelEnd) || (m_RightTextCrop == (m_SelEnd + 1)))
-                        {
-                            float width;
-
-                            // Calculate the width of the edit box
-                            if (m_SplitImage)
-                                width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                                         - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                            else
-                                width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                            // Change the right crop position
-                            ++m_RightTextCrop;
-
-                            // Adjust the text before the selection, it has to be changed before the calculations
-                            m_TextBeforeSelection.setString(m_DisplayedText);
-
-                            // Change the left crop position (if necessary)
-                            while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                                ++m_LeftTextCrop;
-                        }
-                    }
-
-                    // Move the selection point to the left
                     setSelectionPointPosition(m_SelEnd + 1);
-                }
             }
 
             // Our selection point has moved, it should be visible
@@ -1574,36 +1166,6 @@ namespace tgui
         }
         else if (key == sf::Keyboard::Home)
         {
-            // Check if scrolling is enabled
-            if (m_LimitTextWidth == false)
-            {
-                float width;
-
-                // Calculate the width of the edit box
-                if (m_SplitImage)
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                else
-                    width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                // Reset the crop positions
-                m_LeftTextCrop = 0;
-                m_RightTextCrop = 0;
-
-                // Adjust the text before the selection, it has to be changed before the calculations
-                m_TextBeforeSelection.setString(m_DisplayedText);
-
-                // Check if the right crop position can be raised
-                while (m_RightTextCrop < m_DisplayedText.getSize())
-                {
-                    // Change the right crop position (if necessary)
-                    if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
-                        ++m_RightTextCrop;
-                    else
-                        break;
-                }
-            }
-
             // Set the selection point to the beginning of the text
             setSelectionPointPosition(0);
 
@@ -1613,36 +1175,6 @@ namespace tgui
         }
         else if (key == sf::Keyboard::End)
         {
-            // Check if scrolling is enabled
-            if (m_LimitTextWidth == false)
-            {
-                float width;
-
-                // Calculate the width of the edit box
-                if (m_SplitImage)
-                    width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                             - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                else
-                    width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                // Reset the crop positions
-                m_LeftTextCrop = m_DisplayedText.getSize();
-                m_RightTextCrop = m_DisplayedText.getSize();
-
-                // Adjust the text before the selection, it has to be changed before the calculations
-                m_TextBeforeSelection.setString(m_DisplayedText);
-
-                // Check if the right crop position can be raised
-                while (m_LeftTextCrop > 0)
-                {
-                    // Change the right crop position (if necessary)
-                    if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop - 1).x) < width)
-                        --m_LeftTextCrop;
-                    else
-                        break;
-                }
-            }
-
             // Set the selection point behind the text
             setSelectionPointPosition(m_Text.getSize());
 
@@ -1676,39 +1208,6 @@ namespace tgui
                 m_Text.erase(m_SelEnd-1, 1);
                 m_DisplayedText.erase(m_SelEnd-1, 1);
 
-                // Check if scrolling is enabled
-                if (m_LimitTextWidth == false)
-                {
-                    float width;
-
-                    // Calculate the width of the edit box
-                    if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                        - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                    else
-                        width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                    // Check if the right crop position was the end of the text
-                    if (m_RightTextCrop == (m_DisplayedText.getSize() + 1))
-                        --m_RightTextCrop;
-
-                    // Adjust the text before the selection, it has to be changed before the calculations
-                    m_TextBeforeSelection.setString(m_DisplayedText);
-
-                    // Check if you can still scroll left
-                    while (m_LeftTextCrop > 0)
-                    {
-                        // Check if a character has to be removed
-                        if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop - 1).x) < width)
-                        {
-                            // Lower the left crop position
-                            --m_LeftTextCrop;
-                        }
-                        else
-                            break;
-                    }
-                }
-
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
             }
@@ -1723,42 +1222,6 @@ namespace tgui
                     m_Text.erase(m_SelStart, m_SelChars);
                     m_DisplayedText.erase(m_SelStart, m_SelChars);
 
-                    // Check if scrolling is enabled
-                    if (m_LimitTextWidth == false)
-                    {
-                        float width;
-
-                        // Calculate the width of the edit box
-                        if (m_SplitImage)
-                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                            - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                        else
-                            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                        // Check if the right crop position was the end of the text
-                        if (m_RightTextCrop > m_DisplayedText.getSize())
-                            m_RightTextCrop = m_DisplayedText.getSize();
-
-                        // reset the left crop position
-                        m_LeftTextCrop = m_RightTextCrop;
-
-                        // Adjust the text before the selection, it has to be changed before the calculations
-                        m_TextBeforeSelection.setString(m_DisplayedText);
-
-                        // Check if you can still scroll left
-                        while (m_LeftTextCrop > 0)
-                        {
-                            // Check if another character can be visible
-                            if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop - 1).x) < width)
-                            {
-                                // Lower the left crop position
-                                --m_LeftTextCrop;
-                            }
-                            else
-                                break;
-                        }
-                    }
-
                     // Set the selection point back on the correct position
                     setSelectionPointPosition(m_SelStart);
                 }
@@ -1768,42 +1231,29 @@ namespace tgui
                     m_Text.erase(m_SelEnd, m_SelChars);
                     m_DisplayedText.erase(m_SelEnd, m_SelChars);
 
-                    // Check if scrolling is enabled
-                    if (m_LimitTextWidth == false)
-                    {
-                        float width;
-
-                        // Calculate the width of the edit box
-                        if (m_SplitImage)
-                            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                            - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                        else
-                            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                        // reset the right crop position
-                        m_RightTextCrop = m_LeftTextCrop;
-
-                        // Adjust the text before the selection, it has to be changed before the calculations
-                        m_TextBeforeSelection.setString(m_DisplayedText);
-
-                        // Check if you can still scroll right
-                        while (m_RightTextCrop < m_DisplayedText.getSize())
-                        {
-                            // Check if another character can be visible
-                            if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
-                            {
-                                // Increment the right crop position
-                                ++m_RightTextCrop;
-                            }
-                            else
-                                break;
-                        }
-                    }
-
                     // Set the selection point back on the correct position
                     setSelectionPointPosition(m_SelEnd);
                 }
             }
+
+            // Calculate the space inside the edit box
+            float width;
+            if (m_SplitImage)
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            else
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // If the text can be moved to the right then do so
+            if (textWidth > width)
+            {
+                if (textWidth - m_TextCropPosition < width)
+                    m_TextCropPosition = textWidth - width;
+            }
+            else
+                m_TextCropPosition = 0;
 
             // The selection point should be visible again
             m_SelectionPointVisible = true;
@@ -1833,40 +1283,27 @@ namespace tgui
                 m_Text.erase(m_SelEnd, 1);
                 m_DisplayedText.erase(m_SelEnd, 1);
 
-                // Check if scrolling is enabled
-                if (m_LimitTextWidth == false)
-                {
-                    float width;
-
-                    // Calculate the width of the edit box
-                    if (m_SplitImage)
-                        width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                        - ((m_LeftBorder + m_RightBorder) * getScale().y);
-                    else
-                        width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-                    // Reset the right crop position
-                    m_RightTextCrop = m_LeftTextCrop;
-
-                    // Adjust the text before the selection, it has to be changed before the calculations
-                    m_TextBeforeSelection.setString(m_DisplayedText);
-
-                    // Make sure that there is still space after the right crop position
-                    while (m_RightTextCrop < m_DisplayedText.getSize())
-                    {
-                        // Check if the next character may be visible
-                        if ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop + 1).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) < width)
-                        {
-                            // The next character may be visible
-                            ++m_RightTextCrop;
-                        }
-                        else // The next character may not become visible
-                            break;
-                    }
-                }
-
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd);
+
+                // Calculate the space inside the edit box
+                float width;
+                if (m_SplitImage)
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                else
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+                // Calculate the text width
+                float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+                // If the text can be moved to the right then do so
+                if (textWidth > width)
+                {
+                    if (textWidth - m_TextCropPosition < width)
+                        m_TextCropPosition = textWidth - width;
+                }
+                else
+                    m_TextCropPosition = 0;
             }
             else // You did select some characters
             {
@@ -1900,26 +1337,6 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        float width;
-
-        // Calculate the width of the edit box
-        if (m_SplitImage)
-            width = ((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x) * getScale().x)
-                     - ((m_LeftBorder + m_RightBorder) * getScale().y);
-        else
-            width = (m_TextureNormal_M->getSize().x - m_LeftBorder - m_RightBorder) * getScale().x;
-
-        // Recalculate the text size when auto scaling
-        if (m_TextSize == 0)
-        {
-            unsigned int size = static_cast<unsigned int>((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * getScale().y);
-
-            // Set the text size
-            m_TextBeforeSelection.setCharacterSize(size);
-            m_TextSelection.setCharacterSize(size);
-            m_TextAfterSelection.setCharacterSize(size);
-        }
-
         // If there are selected characters then delete them first
         if (m_SelChars != 0)
             keyPressed(sf::Keyboard::BackSpace);
@@ -1937,43 +1354,26 @@ namespace tgui
         else
             m_DisplayedText.insert(m_SelEnd, key);
 
+        // Append the character to the text
+        m_TextFull.setString(m_DisplayedText);
+
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
         // When there is a text width limit then reverse what we just did
         if (m_LimitTextWidth)
         {
-            // Create a temporary SFML text object
-            sf::Text tempText(m_TextBeforeSelection);
-            tempText.setString(m_DisplayedText);
-
             // Now check if the text fits into the EditBox
-//            if (tempText.getGlobalBounds().width > width)
-            if (tempText.findCharacterPos(m_DisplayedText.getSize()).x > width)
+            if (m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x > width)
             {
                 // If the text does not fit in the EditBox then delete the added character
                 m_Text.erase(m_SelEnd, 1);
                 m_DisplayedText.erase(m_SelEnd, 1);
                 return;
-            }
-        }
-        else // Scrolling is enabled
-        {
-            // Change the right crop position
-            ++m_RightTextCrop;
-
-            // Adjust the text before the selection, it has to be changed before the calculations
-            m_TextBeforeSelection.setString(m_DisplayedText);
-
-            // Check if you add a character at the end of the visible text
-            if ((m_SelEnd+1) == m_RightTextCrop)
-            {
-                // Change the left crop position (if necessary)
-                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                    ++m_LeftTextCrop;
-            }
-            else // The character was inserted
-            {
-                // Check if the last visible character may stay visible
-                while ((m_TextBeforeSelection.findCharacterPos(m_RightTextCrop).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x) > width)
-                    --m_RightTextCrop;
             }
         }
 
@@ -2035,21 +1435,46 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+
+        // Get the global position
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * getScale().x) + viewPosition.x, getPosition().y + (m_TopBorder * getScale().x) + viewPosition.y);
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * getScale().y) + viewPosition.y);
+
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+        // If the object outside the window then don't draw anything
+        if (scissorRight < scissorLeft)
+            scissorRight = scissorLeft;
+        else if (scissorBottom < scissorTop)
+            scissorTop = scissorBottom;
+
+        // Apply the transformation
+        states.transform *= getTransform();
 
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
+        // Calculate the Y-scaling
+        float scalingY = m_Size.y / m_TextureNormal_M->getSize().y;
+
         // Drawing the edit box will be different when the image is split
         if (m_SplitImage)
         {
-            // Set the position of the left image
-            states.transform.translate(position);
-
-            // Set the scale for the left image
-            states.transform.scale(curScale.y, curScale.y);
+            // Set the scaling for the left image
+            states.transform.scale(scalingY, scalingY);
 
             // Draw the left image
             {
@@ -2066,19 +1491,16 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((curScale.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                < curScale.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
+            if ((scalingY * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)  * curScale.x)
-                                 - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * curScale.y))
-                               / m_TextureNormal_M->getSize().x;
+                float scaleX = (m_Size.x - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY)) / m_TextureNormal_M->getSize().x;
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / curScale.y, 1);
+                states.transform.scale(scaleX / scalingY, 1);
 
                 // Draw the middle image
                 {
@@ -2098,7 +1520,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(curScale.y / scaleX, 1);
+                states.transform.scale(scalingY / scaleX, 1);
 
                 // Draw the right image
                 {
@@ -2136,8 +1558,8 @@ namespace tgui
         }
         else // The image is not split
         {
-            // Adjust the transformation
-            states.transform *= getTransform();
+            // Set the scaling
+            states.transform.scale(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
 
             // Draw the edit box
             target.draw(m_SpriteNormal_M, states);
@@ -2154,13 +1576,37 @@ namespace tgui
         // Reset the transformation to draw the text
         states.transform = oldTransform;
 
-        // Set the translation
-        states.transform.translate(position);
-
         if (m_SplitImage)
-            states.transform.translate(static_cast<float>(m_LeftBorder * curScale.y), static_cast<float>(m_TopBorder * curScale.y));
+            states.transform.translate(m_LeftBorder * scalingY - m_TextCropPosition, m_TopBorder * scalingY);
         else
-            states.transform.translate(static_cast<float>(m_LeftBorder * curScale.x), static_cast<float>(m_TopBorder * curScale.y));
+            states.transform.translate(m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x) - m_TextCropPosition, m_TopBorder * scalingY);
+
+        // Check if the layout wasn't left
+        if (textLayout != Layout::Left)
+        {
+            // Calculate the space inside the edit box
+            float width;
+            if (m_SplitImage)
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingY);
+            else
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // Check if a layout would make sense
+            if (textWidth < width)
+            {
+                // Put the text on the correct position
+                if (textLayout == Layout::Center)
+                    states.transform.translate((width - textWidth) / 2.f, 0);
+                else // if (textLayout == Layout::Right)
+                    states.transform.translate(width - textWidth, 0);
+            }
+        }
+
+        // Set the clipping area
+        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the background when a text is selected
         if (m_TextSelection.getString().getSize() > 0)
@@ -2169,260 +1615,89 @@ namespace tgui
             if (m_TextBeforeSelection.getString().getSize() > 0)
                 states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
-            // Check if there is a text width limit
-            if (m_LimitTextWidth)
-            {
-                // Create and draw the rectangle
-//                sf::RectangleShape TextBgr(Vector2f(m_TextSelection.getGlobalBounds().width,
-                sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x,
-                                                    ((m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y)));
-                TextBgr.setFillColor(m_SelectedTextBgrColor);
-
-//                TextBgr.setPosition(m_TextBeforeSelection.getGlobalBounds().width, 0);
-                TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
-                target.draw(TextBgr, states);
-            }
-            else // Scrolling is enabled
-            {
-                sf::RectangleShape TextBgr;
-                Vector2f rectSize;
-
-                // Create a temporary text object
-                sf::Text tempText(m_TextBeforeSelection);
-                tempText.setString(m_DisplayedText);
-
-                // Check if the whole selected text is visible
-                if ((m_TextBeforeSelection.getString().getSize() >= m_LeftTextCrop) && (m_DisplayedText.getSize() - m_TextAfterSelection.getString().getSize() <= m_RightTextCrop))
-                {
-//                    rectSize = Vector2f(m_TextSelection.getGlobalBounds().width,
-                    rectSize = Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x,
-                                        (m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y);
-
-//                    TextBgr.setPosition(m_TextBeforeSelection.getGlobalBounds().width - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x, 0);
-                    TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x - m_TextBeforeSelection.findCharacterPos(m_LeftTextCrop).x, 0);
-                }
-                else // Part of the selected text is invisible
-                {
-                    // Check if you are selecting from left to right
-                    if (m_SelStart < m_SelEnd)
-                    {
-                        // Set the size of the rectangle
-                        rectSize = Vector2f(tempText.findCharacterPos(m_SelEnd).x - tempText.findCharacterPos(m_LeftTextCrop).x,
-                                                (m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y);
-                    }
-                    else // You are selecting from right to left
-                    {
-                        // Set the size of the rectangle
-                        rectSize = Vector2f(tempText.findCharacterPos(m_RightTextCrop).x - tempText.findCharacterPos(m_SelEnd).x,
-                                                (m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y);
-
-                        // Set the position of the rectangle
-                        TextBgr.setPosition(tempText.findCharacterPos(m_SelEnd).x - tempText.findCharacterPos(m_LeftTextCrop).x, 0);
-                    }
-                }
-
-                TextBgr.setFillColor(m_SelectedTextBgrColor);
-                TextBgr.setSize(rectSize);
-                target.draw(TextBgr, states);
-            }
+            // Create and draw the rectangle
+            sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, (m_Size.y - ((m_TopBorder + m_BottomBorder) * scalingY))));
+            TextBgr.setFillColor(m_SelectedTextBgrColor);
+            TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
+            target.draw(TextBgr, states);
 
             // Undo the translation that was done to fix the kerning
             if (m_TextBeforeSelection.getString().getSize() > 0)
                 states.transform.translate(-static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
         }
 
-        float textSize;
+        // Set the position of the text
+        sf::Text tempText(m_TextFull);
+        tempText.setString("kg");
+        states.transform.translate(0, std::floor((((m_Size.y - ((m_TopBorder + m_BottomBorder) * scalingY)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top + 0.5f));
 
-        // The text size will be different when auto scaling
-        if (m_TextSize == 0)
-            textSize = (m_TextureNormal_M->getSize().y - m_TopBorder - m_BottomBorder) * curScale.y;
-        else
-            textSize = static_cast<float>(m_TextSize);
+        // Draw the text before the selection
+        target.draw(m_TextBeforeSelection, states);
 
-        // Calculate the top position of the text
-        float TopPosition = ((m_TextureNormal_M->getSize().y * curScale.y) * 0.33333f) - (textSize / 2.0f);
-
-        // Set the position and scale
-        states.transform.translate(0, TopPosition - m_TopBorder);
-
-        // Check if there is atext width limit
-        if (m_LimitTextWidth)
+        // Check if there is a selection
+        if (m_SelChars != 0)
         {
-            // Draw the text before the selection
-            target.draw(m_TextBeforeSelection, states);
+            // Watch out for the kerning
+            if (m_TextBeforeSelection.getString().getSize() > 0)
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
-            // Check if there is a selection
-            if (m_SelChars != 0)
-            {
-                // Watch out for the kerning
-                if (m_TextBeforeSelection.getString().getSize() > 0)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+            // Draw the selected text
+            states.transform.translate(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
+            target.draw(m_TextSelection, states);
 
-                // Draw the selected text
-//                states.transform.translate(m_TextBeforeSelection.getGlobalBounds().width, 0);
-                states.transform.translate(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
-                target.draw(m_TextSelection, states);
+            // Watch out for kerning
+            if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
+                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
-                // Watch out for kerning
-                if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-
-                // Draw the text behind the selected text
-//                states.transform.translate(m_TextSelection.getGlobalBounds().width, 0);
-                states.transform.translate(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, 0);
-                target.draw(m_TextAfterSelection, states);
-            }
+            // Draw the text behind the selected text
+            states.transform.translate(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, 0);
+            target.draw(m_TextAfterSelection, states);
         }
-        else // Scrolling is enabled
-        {
-            // Create a temporary text
-            sf::Text tempTextBeforeSelection(m_TextBeforeSelection);
 
-            // Check if the text before selection should be drawn
-            if (m_LeftTextCrop < tempTextBeforeSelection.getString().getSize())
-            {
-                // Get the string
-                sf::String tempString = tempTextBeforeSelection.getString();
-
-                // Erase the invisible part of the text
-                tempString.erase(0, m_LeftTextCrop);
-
-                // Check if the text should be drawn completely or not
-                if (m_RightTextCrop < tempTextBeforeSelection.getString().getSize())
-                    tempString.erase(m_RightTextCrop - m_LeftTextCrop, sf::String::InvalidPos);
-
-                // Make the changes in the text
-                tempTextBeforeSelection.setString(tempString);
-
-                // Check if a part of the text before selection is visible
-                if (tempString.getSize() > 0)
-                {
-                    // Draw the text before selection
-                    target.draw(tempTextBeforeSelection, states);
-                }
-            }
-            else // When the text before selection shouldn't be drawn
-                tempTextBeforeSelection.setString("");
-
-            // Check if there is a selection
-            if (m_SelChars != 0)
-            {
-                // Create a temporary text
-                sf::Text tempTextSelection(m_TextSelection);
-                sf::Text tempTextAfterSelection(m_TextAfterSelection);
-
-                // First store the size of the text before selection
-                unsigned int charactersToSkip = m_TextBeforeSelection.getString().getSize();
-
-                // Check if the selection should be drawn
-                if (m_LeftTextCrop < charactersToSkip + m_TextSelection.getString().getSize())
-                {
-                    // Get the selected string
-                    sf::String tempString = m_TextSelection.getString();
-
-                    // Change the string of the temperary text
-                    tempTextSelection.setString(tempString);
-
-                    // Erase the invisible part of the text
-                    if (m_LeftTextCrop > charactersToSkip)
-                        tempString.erase(0, m_LeftTextCrop - charactersToSkip);
-
-                    // Check if the text should be drawn completely or not
-                    if (m_RightTextCrop < tempTextSelection.getString().getSize() + charactersToSkip)
-                        tempString.erase(m_RightTextCrop - charactersToSkip, sf::String::InvalidPos);
-
-                    // Make the changes in the text
-                    tempTextSelection.setString(tempString);
-
-                    // Check if a part of the selected text is visible
-                    if (tempString.getSize() > 0)
-                    {
-                        // Watch out for the kerning
-                        if (m_TextBeforeSelection.getString().getSize() > 1)
-                            states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-
-                        // Draw the text before selection
-//                       states.transform.translate(tempTextBeforeSelection.getGlobalBounds().width, 0);
-                        states.transform.translate(tempTextBeforeSelection.findCharacterPos(tempTextBeforeSelection.getString().getSize()).x, 0);
-                        target.draw(tempTextSelection, states);
-                    }
-                }
-                else // The selected text shouldn't be drawn (should be impossible)
-                    tempTextSelection.setString("");
-
-                // Some more characters can be skipped now
-                charactersToSkip += m_TextSelection.getString().getSize();
-
-                // Check if the text after the selection should be drawn
-                if (m_RightTextCrop > charactersToSkip)
-                {
-                    // Get the selected string
-                    sf::String tempString = m_TextAfterSelection.getString();
-
-                    // Change the string of the temperary text
-                    tempTextAfterSelection.setString(tempString);
-
-                    // Erase the invisible part of the text
-                    if (m_LeftTextCrop > charactersToSkip)
-                        tempString.erase(0, m_LeftTextCrop - charactersToSkip);
-
-                    // Check if the text should be drawn completely or not
-                    if (m_RightTextCrop < tempTextAfterSelection.getString().getSize() + charactersToSkip)
-                        tempString.erase(m_RightTextCrop - charactersToSkip, sf::String::InvalidPos);
-
-                    // Make the changes in the text
-                    tempTextAfterSelection.setString(tempString);
-
-                    // Watch out for kerning
-                    states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-
-                    // Draw the text before selection
-//                    states.transform.translate(tempTextSelection.getGlobalBounds().width, 0);
-                    states.transform.translate(tempTextSelection.findCharacterPos(tempTextSelection.getString().getSize()).x, 0);
-                    target.draw(tempTextAfterSelection, states);
-                }
-            }
-        }
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Reset the transformation to draw the selection point
         states.transform = oldTransform;
-        states.transform.translate(position);
 
         // Also draw the selection point (if needed)
         if ((m_Focused) && (m_SelectionPointVisible))
         {
-            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(selectionPointWidth),
-                                                       (m_TextureNormal_M->getSize().y - m_BottomBorder - m_TopBorder) * curScale.y));
-            SelectionPoint.setPosition(m_SelectionPointPosition - (selectionPointWidth*0.5f), static_cast<float>(m_TopBorder * curScale.y));
-            SelectionPoint.setFillColor(selectionPointColor);
+            // Check if the layout wasn't left
+            if (textLayout != Layout::Left)
+            {
+                // Calculate the space inside the edit box
+                float width;
+                if (m_SplitImage)
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingY);
+                else
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+                // Calculate the text width
+                float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+                // Check if a layout would make sense
+                if (textWidth < width)
+                {
+                    // Put the selection point on the correct position
+                    if (textLayout == Layout::Center)
+                        states.transform.translate((width - textWidth) / 2.f, 0);
+                    else // if (textLayout == Layout::Right)
+                        states.transform.translate(width - textWidth, 0);
+                }
+            }
+
+            // Move the selection point to the correct position
+            if (m_SplitImage)
+                states.transform.translate(m_LeftBorder * scalingY - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scalingY);
+            else
+                states.transform.translate(m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x) - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scalingY);
 
             // Draw the selection point
+            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(selectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scalingY)));
+            SelectionPoint.setFillColor(selectionPointColor);
             target.draw(SelectionPoint, states);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setScale(float factorX, float factorY)
-    {
-        TGUI_UNUSED_PARAM(factorX);
-        TGUI_UNUSED_PARAM(factorY);
-    }
-
-    void EditBox::setScale(const Vector2f& factors)
-    {
-        TGUI_UNUSED_PARAM(factors);
-    }
-
-    void EditBox::scale(float factorX, float factorY)
-    {
-        TGUI_UNUSED_PARAM(factorX);
-        TGUI_UNUSED_PARAM(factorY);
-    }
-
-    void EditBox::scale(const Vector2f& factors)
-    {
-        TGUI_UNUSED_PARAM(factors);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
