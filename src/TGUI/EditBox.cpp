@@ -36,7 +36,7 @@ namespace tgui
 
     EditBox::EditBox() :
     selectionPointWidth     (2),
-    textLayout              (Layout::Left),
+    textAlignment           (Alignment::Left),
     m_SelectionPointVisible (true),
     m_LimitTextWidth        (false),
     m_DisplayedText         (""),
@@ -76,7 +76,7 @@ namespace tgui
     OBJECT_ANIMATION        (copy),
     selectionPointColor     (copy.selectionPointColor),
     selectionPointWidth     (copy.selectionPointWidth),
-    textLayout              (copy.textLayout),
+    textAlignment           (copy.textAlignment),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
@@ -142,7 +142,7 @@ namespace tgui
 
             std::swap(selectionPointColor,      temp.selectionPointColor);
             std::swap(selectionPointWidth,      temp.selectionPointWidth);
-            std::swap(textLayout,               temp.textLayout);
+            std::swap(textAlignment,            temp.textAlignment);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
@@ -822,7 +822,7 @@ namespace tgui
 
         // Find out how many pixels the text is moved
         unsigned int pixelsToMove = 0;
-        if (textLayout != Layout::Left)
+        if (textAlignment != Alignment::Left)
         {
             // Calculate the text width
             float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
@@ -831,9 +831,9 @@ namespace tgui
             if (textWidth < width)
             {
                 // Set the number of pixels to move
-                if (textLayout == Layout::Center)
+                if (textAlignment == Alignment::Center)
                     pixelsToMove = (width - textWidth) / 2.f;
-                else // if (textLayout == Layout::Right)
+                else // if (textAlignment == Alignment::Right)
                     pixelsToMove = width - textWidth;
             }
         }
@@ -1435,6 +1435,18 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Calculate the scaling
+        Vector2f scaling;
+        scaling.x = m_Size.x / m_TextureNormal_M->getSize().x;
+        scaling.y = m_Size.y / m_TextureNormal_M->getSize().y;
+
+        // Calculate the scale of the left and right border
+        float borderScale;
+        if (m_SplitImage)
+            borderScale = scaling.y;
+        else
+            borderScale = scaling.x;
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
@@ -1442,8 +1454,8 @@ namespace tgui
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * getScale().x) + viewPosition.x, getPosition().y + (m_TopBorder * getScale().x) + viewPosition.y);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * getScale().y) + viewPosition.y);
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale * getScale().x) + viewPosition.x, getPosition().y + (m_TopBorder * getScale().y) + viewPosition.y);
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - (m_RightBorder * borderScale)) * getScale().x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * getScale().y) + viewPosition.y);
 
         // Get the old clipping area
         GLint scissor[4];
@@ -1467,14 +1479,11 @@ namespace tgui
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Calculate the Y-scaling
-        float scalingY = m_Size.y / m_TextureNormal_M->getSize().y;
-
         // Drawing the edit box will be different when the image is split
         if (m_SplitImage)
         {
             // Set the scaling for the left image
-            states.transform.scale(scalingY, scalingY);
+            states.transform.scale(scaling.y, scaling.y);
 
             // Draw the left image
             {
@@ -1491,16 +1500,16 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((scalingY * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
+            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = (m_Size.x - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY)) / m_TextureNormal_M->getSize().x;
+                float scaleX = scaling.x - (((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y) / m_TextureNormal_M->getSize().x);
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / scalingY, 1);
+                states.transform.scale(scaleX / scaling.y, 1);
 
                 // Draw the middle image
                 {
@@ -1520,7 +1529,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(scalingY / scaleX, 1);
+                states.transform.scale(scaling.y / scaleX, 1);
 
                 // Draw the right image
                 {
@@ -1559,7 +1568,7 @@ namespace tgui
         else // The image is not split
         {
             // Set the scaling
-            states.transform.scale(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
+            states.transform.scale(scaling);
 
             // Draw the edit box
             target.draw(m_SpriteNormal_M, states);
@@ -1575,21 +1584,13 @@ namespace tgui
 
         // Reset the transformation to draw the text
         states.transform = oldTransform;
-
-        if (m_SplitImage)
-            states.transform.translate(m_LeftBorder * scalingY - m_TextCropPosition, m_TopBorder * scalingY);
-        else
-            states.transform.translate(m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x) - m_TextCropPosition, m_TopBorder * scalingY);
+        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition, m_TopBorder * scaling.y);
 
         // Check if the layout wasn't left
-        if (textLayout != Layout::Left)
+        if (textAlignment != Alignment::Left)
         {
             // Calculate the space inside the edit box
-            float width;
-            if (m_SplitImage)
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingY);
-            else
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
 
             // Calculate the text width
             float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
@@ -1598,9 +1599,9 @@ namespace tgui
             if (textWidth < width)
             {
                 // Put the text on the correct position
-                if (textLayout == Layout::Center)
+                if (textAlignment == Alignment::Center)
                     states.transform.translate((width - textWidth) / 2.f, 0);
-                else // if (textLayout == Layout::Right)
+                else // if (textAlignment == Alignment::Right)
                     states.transform.translate(width - textWidth, 0);
             }
         }
@@ -1616,7 +1617,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
 
             // Create and draw the rectangle
-            sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, (m_Size.y - ((m_TopBorder + m_BottomBorder) * scalingY))));
+            sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, (m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y))));
             TextBgr.setFillColor(m_SelectedTextBgrColor);
             TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
             target.draw(TextBgr, states);
@@ -1629,7 +1630,7 @@ namespace tgui
         // Set the position of the text
         sf::Text tempText(m_TextFull);
         tempText.setString("kg");
-        states.transform.translate(0, std::floor((((m_Size.y - ((m_TopBorder + m_BottomBorder) * scalingY)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top + 0.5f));
+        states.transform.translate(0, std::floor((((m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top + 0.5f));
 
         // Draw the text before the selection
         target.draw(m_TextBeforeSelection, states);
@@ -1659,19 +1660,16 @@ namespace tgui
 
         // Reset the transformation to draw the selection point
         states.transform = oldTransform;
+        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scaling.y);
 
         // Also draw the selection point (if needed)
         if ((m_Focused) && (m_SelectionPointVisible))
         {
             // Check if the layout wasn't left
-            if (textLayout != Layout::Left)
+            if (textAlignment != Alignment::Left)
             {
                 // Calculate the space inside the edit box
-                float width;
-                if (m_SplitImage)
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingY);
-                else
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+                float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
 
                 // Calculate the text width
                 float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
@@ -1680,21 +1678,15 @@ namespace tgui
                 if (textWidth < width)
                 {
                     // Put the selection point on the correct position
-                    if (textLayout == Layout::Center)
+                    if (textAlignment == Alignment::Center)
                         states.transform.translate((width - textWidth) / 2.f, 0);
-                    else // if (textLayout == Layout::Right)
+                    else // if (textAlignment == Alignment::Right)
                         states.transform.translate(width - textWidth, 0);
                 }
             }
 
-            // Move the selection point to the correct position
-            if (m_SplitImage)
-                states.transform.translate(m_LeftBorder * scalingY - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scalingY);
-            else
-                states.transform.translate(m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x) - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scalingY);
-
             // Draw the selection point
-            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(selectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scalingY)));
+            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(selectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scaling.y)));
             SelectionPoint.setFillColor(selectionPointColor);
             target.draw(SelectionPoint, states);
         }

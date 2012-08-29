@@ -37,14 +37,19 @@ namespace tgui
     struct TGUI_API EditBox : public OBJECT, OBJECT_BORDERS, OBJECT_ANIMATION
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief The text layout
+        /// \brief The text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        struct Layout
+        struct Alignment
         {
-            enum layouts
+            enum alignments
             {
+                /// Put the text on the left side (default)
                 Left,
+
+                /// Center the text
                 Center,
+
+                /// Put the text on the right side (e.g. for numbers)
                 Right
             };
         };
@@ -115,8 +120,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the edit box.
-        ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
         ///
         /// \param width   The new width of the edit box
         /// \param height  The new height of the edit box
@@ -270,6 +273,7 @@ namespace tgui
         /// \brief Changes the border width and border height of the edit box.
         ///
         /// When the text is autoscaled then it will be drawn within these borders. The borders themselves are invisible.
+        /// The borders are also used to define the clipping area.
         /// Note that these borders are scaled together with the image!
         ///
         /// \param leftBorder    The width of the left border
@@ -418,8 +422,8 @@ namespace tgui
         /// The width in pixels of the flickering selection point
         unsigned int  selectionPointWidth;
 
-        /// The text layout
-        Layout::layouts textLayout;
+        /// The text alignment
+        Alignment::alignments textAlignment;
 
     protected:
 
