@@ -1454,8 +1454,10 @@ namespace tgui
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale * getScale().x) + viewPosition.x, getPosition().y + (m_TopBorder * getScale().y) + viewPosition.y);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - (m_RightBorder * borderScale)) * getScale().x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * getScale().y) + viewPosition.y);
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale * getScale().x) + viewPosition.x,
+                                                                   getPosition().y + (m_TopBorder * scaling.y * getScale().y) + viewPosition.y);
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - (m_RightBorder * borderScale)) * getScale().x) + viewPosition.x,
+                                                                       getPosition().y + ((m_Size.y - (m_BottomBorder * scaling.y)) * getScale().y) + viewPosition.y);
 
         // Get the old clipping area
         GLint scissor[4];
