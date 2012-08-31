@@ -215,6 +215,8 @@ namespace tgui
                 m_ObjectPhase |= ObjectPhase_Focused;
             else if (SinglePhase.compare("down") == 0)
                 m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (SinglePhase.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             // Remove this phase from the string
             phases.erase(0, commaPos+1);
@@ -230,6 +232,8 @@ namespace tgui
                 m_ObjectPhase |= ObjectPhase_Focused;
             else if (phases.compare("down") == 0)
                 m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (phases.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             return;
         }

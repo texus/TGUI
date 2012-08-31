@@ -136,6 +136,7 @@ namespace tgui
         friend struct GroupObject;
         friend struct Panel;
         friend struct ChildWindow;
+        friend struct Grid;
         friend struct Window;
         friend struct Form;
 

@@ -93,6 +93,9 @@ if (command -v g++) then
     echo "Compiling 'Slider2D.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider2D.cpp" -o "lib/obj/Slider2D.o"
 
+    echo "Compiling 'Tab.cpp' ..."
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Tab.cpp" -o "lib/obj/Tab.o"
+
     echo "Compiling 'InfoFileParser.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/InfoFileParser.cpp" -o "lib/obj/InfoFileParser.o"
 
@@ -113,6 +116,9 @@ if (command -v g++) then
 
     echo "Compiling 'ChildWindow.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ChildWindow.cpp" -o "lib/obj/ChildWindow.o"
+
+    echo "Compiling 'Grid.cpp' ..."
+        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Grid.cpp" -o "lib/obj/Grid.o"
 
     echo "Compiling 'Window.cpp' ..."
         g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Window.cpp" -o "lib/obj/Window.o"
@@ -143,6 +149,7 @@ if (command -v g++) then
                     "lib/obj/AnimatedButton.o" \
                     "lib/obj/SpinButton.o" \
                     "lib/obj/Slider2D.o" \
+                    "lib/obj/Tab.o" \
                     "lib/obj/InfoFileParser.o" \
                     "lib/obj/EventManager.o" \
                     "lib/obj/TextureManager.o" \
@@ -150,6 +157,7 @@ if (command -v g++) then
                     "lib/obj/GroupObject.o" \
                     "lib/obj/Panel.o" \
                     "lib/obj/ChildWindow.o" \
+                    "lib/obj/Grid.o" \
                     "lib/obj/Window.o" \
                     "lib/obj/Form.o")) then
             echo "Linking has failed. Make sure that sfml is installed on your system."

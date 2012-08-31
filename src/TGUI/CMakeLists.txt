@@ -19,6 +19,7 @@ set(TGUI_SRC
     AnimatedButton.cpp
     SpinButton.cpp
     Slider2D.cpp
+    Tab.cpp
     InfoFileParser.cpp
     EventManager.cpp
     TextureManager.cpp
@@ -26,6 +27,7 @@ set(TGUI_SRC
     GroupObject.cpp
     Panel.cpp
     ChildWindow.cpp
+    Grid.cpp
     Window.cpp
     Form.cpp
 )

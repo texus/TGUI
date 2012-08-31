@@ -388,12 +388,12 @@ namespace tgui
             else if (line.substr(0, 6).compare("width=") == 0) \
             { \
                 line.erase(0, 6); \
-                name->setSize(readFloat(line.c_str()), name->getScaledSize().y); \
+                name->setSize(readFloat(line.c_str()), name->getSize().y); \
             } \
             else if (line.substr(0, 7).compare("height=") == 0) \
             { \
                 line.erase(0, 7); \
-                name->setSize(name->getScaledSize().x, readFloat(line.c_str())); \
+                name->setSize(name->getSize().x, readFloat(line.c_str())); \
             } \
             else if (line.substr(0, 6).compare("scale=") == 0) \
             { \
@@ -809,7 +809,7 @@ namespace tgui
                             // The second line should contain "{"
                             if (line.compare("{") == 0)
                             {
-                                objectID = tgui::window + 1;
+                                objectID = window + 1;
                                 progress.pop();
                             }
                             else // The second line is wrong
@@ -818,53 +818,140 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::window + 1: // The window was found
+                    case window + 1: // The window was found
                     {
                         // Find out if the loading is done
                         if (line.compare("}") == 0)
                             goto LoadingSucceeded;
 
                         // The next object will have the window as its parent
-                        parentID.push(tgui::window + 1);
+                        parentID.push(window + 1);
                         parentPtr.push(this);
 
                         // The line doesn't contain a '}', so check what object it contains
-                        COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
-                        else COMPARE_OBJECT(6, "label:", Label, tgui::label)
-                        else COMPARE_OBJECT(7, "button:", Button, tgui::button)
-                        else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
-                        else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                        else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
-                        else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
-                        else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
-                        else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
-                        else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
-                        else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
-                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
-                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
-                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
-                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
-                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
-                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
-                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
-                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
+                        COMPARE_OBJECT(4, "tab:", Tab, tab)
+                        else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                        else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                        else COMPARE_OBJECT(6, "label:", Label, label)
+                        else COMPARE_OBJECT(7, "button:", Button, button)
+                        else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                        else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                        else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                        else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                        else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                        else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                        else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                        else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
                         else // The line was wrong
                             goto LoadingFailed;
 
                         break;
                     }
-                    case tgui::panel + 1:
+                    case tab + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the tab back
+                        Tab* tab = static_cast<Tab*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the tab
+                            tab->load(line);
+                        }
+                        else if (line.substr(0, 10).compare("tabheight=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 10);
+                            tab->setTabHeight(atoi(line.c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            tab->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            tab->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("distancetoside=") == 0)
+                        {
+                            line.erase(0, 15);
+                            tab->distanceToSide = atoi(line.c_str());
+                        }
+                        else if (line.substr(0, 4).compare("tab=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 4);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Add the item to the list box
+                            tab->add(line);
+                        }
+                        else if (line.substr(0, 12).compare("selectedtab=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 12);
+
+                            // The line must contain something
+                            if (line.empty() == true)
+                                goto LoadingFailed;
+
+                            // Check if there are quotes
+                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            {
+                                line.erase(0, 1);
+                                line.erase(line.length()-1, 1);
+
+                                // Select the item
+                                tab->select(line);
+                            }
+                            else // There were no quotes
+                            {
+                                // Select the item
+                                tab->select(atoi(line.c_str()));
+                            }
+                        }
+                        else CHECK_SHARED_PROPERTIES(tab)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case grid + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        TGUI_OUTPUT("TGUI warning: Grid cannot be loaded from an Object File yet.");
+                    }
+                    case panel + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the panel back
-                        tgui::Panel* panel = static_cast<tgui::Panel*>(extraPtr);
+                        Panel* panelPtr = static_cast<Panel*>(extraPtr);
 
-                        CHECK_SHARED_PROPERTIES(panel)
+                        CHECK_SHARED_PROPERTIES(panelPtr)
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            panel->backgroundColor = tgui::extractColor(line.erase(0, 16));
+                            panelPtr->backgroundColor = extractColor(line.erase(0, 16));
                         }
                         else if (line.substr(0, 16).compare("backgroundimage=") == 0)
                         {
@@ -875,45 +962,47 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the image
-                            panel->setBackgroundImage(line);
+                            panelPtr->setBackgroundImage(line);
                         }
                         else
                         {
                             // All newly created objects must be part of the panel
-                            parentID.push(tgui::panel + 1);
-                            parentPtr.push(panel);
+                            parentID.push(panel + 1);
+                            parentPtr.push(panelPtr);
 
-                            COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
-                            else COMPARE_OBJECT(6, "label:", Label, tgui::label)
-                            else COMPARE_OBJECT(7, "button:", Button, tgui::button)
-                            else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
+                            COMPARE_OBJECT(4, "tab:", Tab, tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                            else COMPARE_OBJECT(6, "label:", Label, label)
+                            else COMPARE_OBJECT(7, "button:", Button, button)
+                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
                             else // The line was wrong
                                 goto LoadingFailed;
                         }
 
                         break;
                     }
-                    case tgui::label + 1:
+                    case label + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the label back
-                        tgui::Label* label = static_cast<tgui::Label*>(extraPtr);
+                        Label* label = static_cast<Label*>(extraPtr);
 
                         if (line.substr(0, 9).compare("autosize=") == 0)
                         {
@@ -938,12 +1027,12 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            label->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            label->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            label->backgroundColor = tgui::extractColor(line.erase(0, 16));
+                            label->backgroundColor = extractColor(line.erase(0, 16));
                         }
                         else CHECK_SHARED_PROPERTIES(label)
                         else // The line was wrong
@@ -951,12 +1040,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::button + 1:
+                    case button + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the button back
-                        tgui::Button* button = static_cast<tgui::Button*>(extraPtr);
+                        Button* button = static_cast<Button*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -989,7 +1078,7 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            button->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            button->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(button)
                         else // The line was wrong
@@ -997,12 +1086,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::slider + 1:
+                    case slider + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the slider back
-                        tgui::Slider* slider = static_cast<tgui::Slider*>(extraPtr);
+                        Slider* slider = static_cast<Slider*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1045,12 +1134,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::picture + 1:
+                    case picture + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the picture back
-                        tgui::Picture* picture = static_cast<tgui::Picture*>(extraPtr);
+                        Picture* picture = static_cast<Picture*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("filename=") == 0)
@@ -1070,31 +1159,15 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::listBox + 1:
+                    case listBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the list box back
-                        tgui::ListBox* listBox = static_cast<tgui::ListBox*>(extraPtr);
+                        ListBox* listBox = static_cast<ListBox*>(extraPtr);
 
                         // Find out what the next property is
-                        if (line.substr(0, 6).compare("width=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 6);
-
-                            // Set the width
-                            listBox->setSize(static_cast<float>(atof(line.c_str())), static_cast<float>(listBox->getSize().y));
-                        }
-                        else if (line.substr(0, 7).compare("height=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 7);
-
-                            // Set the height
-                            listBox->setSize(static_cast<float>(listBox->getSize().x), static_cast<float>(atof(line.c_str())));
-                        }
-                        else if (line.substr(0, 11).compare("itemheight=") == 0)
+                        if (line.substr(0, 11).compare("itemheight=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 11);
@@ -1119,7 +1192,7 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            tgui::Vector4u borders;
+                            Vector4u borders;
                             if (extractVector4u(line, borders))
                                 listBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
@@ -1127,23 +1200,23 @@ namespace tgui
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
-                            listBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
+                            listBox->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
-                            listBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            listBox->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
                         {
-                            listBox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
+                            listBox->setSelectedBackgroundColor(extractColor(line.erase(0, 24)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
-                            listBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                            listBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
-                            listBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
+                            listBox->setBorderColor(extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 13).compare("maximumitems=") == 0)
                         {
@@ -1194,12 +1267,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::editBox + 1:
+                    case editBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the edit box back
-                        tgui::EditBox* editBox = static_cast<tgui::EditBox*>(extraPtr);
+                        EditBox* editBox = static_cast<EditBox*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1219,7 +1292,7 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            tgui::Vector4u borders;
+                            Vector4u borders;
                             if (extractVector4u(line, borders))
                                 editBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
@@ -1244,17 +1317,17 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            editBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            editBox->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
                             // Change the selected text color (black on error)
-                            editBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                            editBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
                         {
                             // Change the selected text background color (black on error)
-                            editBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
+                            editBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
                         }
                         else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
                         {
@@ -1263,7 +1336,7 @@ namespace tgui
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
                             // Change the selection pointer color (black on error)
-                            editBox->selectionPointColor = tgui::extractColor(line.erase(0, 20));
+                            editBox->selectionPointColor = extractColor(line.erase(0, 20));
                         }
                         else if (line.substr(0, 13).compare("passwordchar=") == 0)
                         {
@@ -1304,31 +1377,15 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::textBox + 1:
+                    case textBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the text box back
-                        tgui::TextBox* textBox = static_cast<tgui::TextBox*>(extraPtr);
+                        TextBox* textBox = static_cast<TextBox*>(extraPtr);
 
                         // Find out what the next property is
-                        if (line.substr(0, 6).compare("width=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 6);
-
-                            // Set the width
-                            textBox->setSize(static_cast<float>(atof(line.c_str())), static_cast<float>(textBox->getSize().y));
-                        }
-                        else if (line.substr(0, 7).compare("height=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 7);
-
-                            // Set the height
-                            textBox->setSize(static_cast<float>(textBox->getSize().x), static_cast<float>(atof(line.c_str())));
-                        }
-                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 18);
@@ -1345,7 +1402,7 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            tgui::Vector4u borders;
+                            Vector4u borders;
                             if (extractVector4u(line, borders))
                                 textBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
@@ -1370,22 +1427,22 @@ namespace tgui
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            textBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
+                            textBox->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            textBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            textBox->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
                             // Change the selected text color (black on error)
-                            textBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                            textBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
                         {
                             // Change the selected text background color (black on error)
-                            textBox->setSelectedTextBackgroundColor(tgui::extractColor(line.erase(0, 28)));
+                            textBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
                         }
                         else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
                         {
@@ -1394,12 +1451,12 @@ namespace tgui
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
                             // Change the border color (black on error)
-                            textBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
+                            textBox->setBorderColor(extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
                             // Change the selection pointer color (black on error)
-                            textBox->selectionPointColor = tgui::extractColor(line.erase(0, 20));
+                            textBox->selectionPointColor = extractColor(line.erase(0, 20));
                         }
                         else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
                         {
@@ -1423,12 +1480,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::checkbox + 1:
+                    case checkbox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the checkbox back
-                        tgui::Checkbox* checkbox = static_cast<tgui::Checkbox*>(extraPtr);
+                        Checkbox* checkbox = static_cast<Checkbox*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1476,7 +1533,7 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            checkbox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            checkbox->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(checkbox)
                         else // The line was wrong
@@ -1484,12 +1541,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::comboBox + 1:
+                    case comboBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the combo box back
-                        tgui::ComboBox* comboBox = static_cast<tgui::ComboBox*>(extraPtr);
+                        ComboBox* comboBox = static_cast<ComboBox*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1502,14 +1559,6 @@ namespace tgui
 
                             // Load the combo box
                             comboBox->load(line, comboBox->getSize().x, comboBox->getSize().y);
-                        }
-                        else if (line.substr(0, 6).compare("width=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 6);
-
-                            // Set the width
-                            comboBox->setSize(static_cast<float>(atoi(line.c_str())), static_cast<float>(comboBox->getSize().y));
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
@@ -1528,7 +1577,7 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            tgui::Vector4u borders;
+                            Vector4u borders;
                             if (extractVector4u(line, borders))
                                 comboBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
@@ -1536,23 +1585,23 @@ namespace tgui
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
-                            comboBox->setBackgroundColor(tgui::extractColor(line.erase(0, 16)));
+                            comboBox->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
-                            comboBox->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            comboBox->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
                         {
-                            comboBox->setSelectedBackgroundColor(tgui::extractColor(line.erase(0, 24)));
+                            comboBox->setSelectedBackgroundColor(extractColor(line.erase(0, 24)));
                         }
                         else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
                         {
-                            comboBox->setSelectedTextColor(tgui::extractColor(line.erase(0, 18)));
+                            comboBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
                         }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
-                            comboBox->setBorderColor(tgui::extractColor(line.erase(0, 12)));
+                            comboBox->setBorderColor(extractColor(line.erase(0, 12)));
                         }
                         else if (line.substr(0, 15).compare("itemstodisplay=") == 0)
                         {
@@ -1603,12 +1652,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::slider2D + 1:
+                    case slider2D + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the slider back
-                        tgui::Slider2D* slider = static_cast<tgui::Slider2D*>(extraPtr);
+                        Slider2D* slider = static_cast<Slider2D*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1674,12 +1723,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::scrollbar + 1:
+                    case scrollbar + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the scrollbar back
-                        tgui::Scrollbar* scrollbar = static_cast<tgui::Scrollbar*>(extraPtr);
+                        Scrollbar* scrollbar = static_cast<Scrollbar*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1722,12 +1771,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::loadingBar + 1:
+                    case loadingBar + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the loading bar back
-                        tgui::LoadingBar* loadingBar = static_cast<tgui::LoadingBar*>(extraPtr);
+                        LoadingBar* loadingBar = static_cast<LoadingBar*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1759,12 +1808,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::spinButton + 1:
+                    case spinButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the spin button back
-                        tgui::SpinButton* spinButton = static_cast<tgui::SpinButton*>(extraPtr);
+                        SpinButton* spinButton = static_cast<SpinButton*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1807,12 +1856,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::radioButton + 1:
+                    case radioButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the radio button back
-                        tgui::RadioButton* radioButton = static_cast<tgui::RadioButton*>(extraPtr);
+                        RadioButton* radioButton = static_cast<RadioButton*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1860,7 +1909,7 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            radioButton->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            radioButton->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else CHECK_SHARED_PROPERTIES(radioButton)
                         else // The line was wrong
@@ -1868,12 +1917,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::childWindow + 1:
+                    case childWindow + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the child window back
-                        tgui::ChildWindow* child = static_cast<tgui::ChildWindow*>(extraPtr);
+                        ChildWindow* child = static_cast<ChildWindow*>(extraPtr);
 
                         CHECK_SHARED_PROPERTIES(child)
                         else if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1891,7 +1940,7 @@ namespace tgui
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            child->backgroundColor = tgui::extractColor(line.erase(0, 16));
+                            child->backgroundColor = extractColor(line.erase(0, 16));
                         }
                         else if (line.substr(0, 16).compare("backgroundimage=") == 0)
                         {
@@ -1910,7 +1959,7 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            tgui::Vector4u borders;
+                            Vector4u borders;
                             if (extractVector4u(line, borders))
                                 child->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
@@ -1940,40 +1989,42 @@ namespace tgui
                         else
                         {
                             // All newly created objects must be part of the panel
-                            parentID.push(tgui::childWindow + 1);
+                            parentID.push(childWindow + 1);
                             parentPtr.push(child);
 
-                            COMPARE_OBJECT(6, "panel:", Panel, tgui::panel)
-                            else COMPARE_OBJECT(6, "label:", Label, tgui::label)
-                            else COMPARE_OBJECT(7, "button:", Button, tgui::button)
-                            else COMPARE_OBJECT(7, "slider:", Slider, tgui::slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture, tgui::picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox, tgui::listBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox, tgui::editBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox, tgui::textBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, tgui::checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox, tgui::comboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, tgui::slider2D)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, tgui::scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, tgui::loadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, tgui::spinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, tgui::radioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, tgui::childWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, tgui::spriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, tgui::animatedButton)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, tgui::animatedPicture)
+                            COMPARE_OBJECT(4, "tab:", Tab, tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                            else COMPARE_OBJECT(6, "label:", Label, label)
+                            else COMPARE_OBJECT(7, "button:", Button, button)
+                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
                             else // The line was wrong
                                 goto LoadingFailed;
                         }
 
                         break;
                     }
-                    case tgui::spriteSheet + 1:
+                    case spriteSheet + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the sprite sheet back
-                        tgui::SpriteSheet* spriteSheet = static_cast<tgui::SpriteSheet*>(extraPtr);
+                        SpriteSheet* spriteSheet = static_cast<SpriteSheet*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("filename=") == 0)
@@ -2018,12 +2069,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::animatedButton + 1:
+                    case animatedButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the animated button back
-                        tgui::AnimatedButton* button = static_cast<tgui::AnimatedButton*>(extraPtr);
+                        AnimatedButton* button = static_cast<AnimatedButton*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -2057,7 +2108,7 @@ namespace tgui
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
                             // Change the text color (black on error)
-                            button->setTextColor(tgui::extractColor(line.erase(0, 10)));
+                            button->setTextColor(extractColor(line.erase(0, 10)));
                         }
                         else if (line.substr(0, 13).compare("currentframe=") == 0)
                         {
@@ -2069,12 +2120,12 @@ namespace tgui
 
                         break;
                     }
-                    case tgui::animatedPicture + 1:
+                    case animatedPicture + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the sprite animated picture
-                        tgui::AnimatedPicture* animatedPicture = static_cast<tgui::AnimatedPicture*>(extraPtr);
+                        AnimatedPicture* animatedPicture = static_cast<AnimatedPicture*>(extraPtr);
 
                         // Find out what the next property is
                         if (line.substr(0, 6).compare("frame=") == 0)
