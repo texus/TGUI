@@ -534,7 +534,7 @@ namespace tgui
 
 
         // Restore the old transformation
-        oldTransform = states.transform;
+        states.transform = oldTransform;
 
         // Get the bounds of the text
         sf::FloatRect textBounds = m_Text.getGlobalBounds();
