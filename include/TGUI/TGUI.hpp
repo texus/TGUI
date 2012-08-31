@@ -186,7 +186,7 @@ namespace tgui
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef TGUI_OUTPUT
-    #define TGUI_OUTPUT(x)       sf::err() << x << std::endl;
+    #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
 #endif
 
 #define TGUI_MINIMUM(x, y)   (x < y) ? x : y

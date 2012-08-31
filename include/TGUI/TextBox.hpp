@@ -26,7 +26,15 @@
 #ifndef _TGUI_TEXT_BOX_INCLUDED_
 #define _TGUI_TEXT_BOX_INCLUDED_
 
-// TODO: Scrollbar should be scaled together with the TextBox.
+/// \todo  Scrollbar should be scaled together with the TextBox.
+/// \todo  Double clicking should only select one word in TextBox. To select the whole text, you should click 3 times.
+/// \todo  Add a horizontal scrollbar in Textbox.
+
+/// \todo  Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
+///                              the selection point moves at the end of the line because it is not allowed to be in front.
+///                              This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
+///                              This bug can thus only be solved after implementing decent word wrapping.
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

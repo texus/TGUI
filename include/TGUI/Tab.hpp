@@ -27,9 +27,8 @@
 #define _TGUI_TAB_INCLUDED_
 
 
-// TODO: Add a selected image
-// TODO: Add an optional close button to the tabs
-// TODO: Add an extra tab that can be used to open a new tab
+/// \todo  Add an optional close button to the tabs.
+/// \todo  Add an extra tab that can be used to open a new tab.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

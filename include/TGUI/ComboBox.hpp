@@ -27,7 +27,7 @@
 #define _TGUI_COMBO_BOX_INCLUDED_
 
 
-// TODO: Fix scaling. This cannot be done before scaling is fixed in ListBox.
+/// \todo  Fix scaling in ComboBox. This cannot be done before scaling is fixed in ListBox.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

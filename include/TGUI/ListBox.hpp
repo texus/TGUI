@@ -27,7 +27,7 @@
 #define _TGUI_LISTBOX_INCLUDED_
 
 
-// TODO: Fix scaling. This cannot be done before scaling is fixed in scrollbar.
+/// \todo  Fix scaling in ListBox. This cannot be done before scaling is fixed in scrollbar.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -29,11 +29,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
-//                             the selection point moves at the end of the line because it is not allowed to be in front.
-//                             This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
-//                             This bug can thus only be solved after implementing word wrapping.
-
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
