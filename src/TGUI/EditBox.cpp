@@ -486,21 +486,22 @@ namespace tgui
         m_TextBeforeSelection.setString(m_DisplayedText);
         m_TextSelection.setString("");
         m_TextAfterSelection.setString("");
+        m_TextFull.setString(m_DisplayedText);
+
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+        // If the width is negative then the editBox is too small to be displayed
+        if (width < 0)
+            width = 0;
 
         // Check if there is a text width limit
         if (m_LimitTextWidth)
         {
-            // Calculate the space inside the edit box
-            float width;
-            if (m_SplitImage)
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
-            else
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
-
-            // If the width is negative then the editBox is too small to be displayed
-            if (width < 0)
-                width = 0;
-
             // Now check if the text fits into the EditBox
             while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
             {
@@ -511,10 +512,24 @@ namespace tgui
                 // Set the new text
                 m_TextBeforeSelection.setString(m_DisplayedText);
             }
-        }
 
-        // Also set the full text
-        m_TextFull.setString(m_DisplayedText);
+            // Set the full text again
+            m_TextFull.setString(m_DisplayedText);
+        }
+        else // There is no text cropping
+        {
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // If the text can be moved to the right then do so
+            if (textWidth > width)
+            {
+                if (textWidth - m_TextCropPosition < width)
+                    m_TextCropPosition = textWidth - width;
+            }
+            else
+                m_TextCropPosition = 0;
+        }
 
         // Set the selection point behind the last character
         setSelectionPointPosition(m_DisplayedText.getSize());
