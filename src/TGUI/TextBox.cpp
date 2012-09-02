@@ -29,11 +29,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TODO: Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text,
-//                             the selection point moves at the end of the line because it is not allowed to be in front.
-//                             This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd.
-//                             This bug can thus only be solved after implementing word wrapping.
-
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +354,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string TextBox::getLoadedScrollbarPathname()
+    std::string TextBox::getLoadedScrollbarPathname() const
     {
         return m_LoadedScrollbarPathname;
     }
@@ -396,7 +391,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String TextBox::getText()
+    sf::String TextBox::getText() const
     {
         return m_Text;
     }
@@ -414,7 +409,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* TextBox::getTextFont()
+    const sf::Font* TextBox::getTextFont() const
     {
         return m_TextBeforeSelection.getFont();
     }
@@ -486,7 +481,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getTextSize()
+    unsigned int TextBox::getTextSize() const
     {
         return m_TextSize;
     }
@@ -511,7 +506,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getMaximumCharacters()
+    unsigned int TextBox::getMaximumCharacters() const
     {
         return m_MaxChars;
     }
@@ -651,35 +646,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getBackgroundColor()
+    const sf::Color& TextBox::getBackgroundColor() const
     {
         return m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getTextColor()
+    const sf::Color& TextBox::getTextColor() const
     {
         return m_TextBeforeSelection.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getSelectedTextColor()
+    const sf::Color& TextBox::getSelectedTextColor() const
     {
         return m_TextSelection1.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getSelectedTextBackgroundColor()
+    const sf::Color& TextBox::getSelectedTextBackgroundColor() const
     {
         return m_SelectedTextBgrColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getBorderColor()
+    const sf::Color& TextBox::getBorderColor() const
     {
         return m_BorderColor;
     }
@@ -852,9 +847,7 @@ namespace tgui
 
         // Check if the mouse is on top of the list box
         if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
-        {
             return true;
-        }
         else // The mouse is not on top of the list box
         {
             m_MouseHover = false;
@@ -912,7 +905,7 @@ namespace tgui
             if (m_LineHeight == 0)
                 return;
 
-            unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder);
+            unsigned int selectionPointPosition = findSelectionPointPosition((x - getPosition().x - m_LeftBorder - 4) / getScale().x, (y - getPosition().y - m_TopBorder) / getScale().y);
 
             // Check if this is a double click
             if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
@@ -1811,7 +1804,7 @@ namespace tgui
             return;
 
         // Find out where the selection point should be
-        m_SelEnd = findSelectionPointPosition(posX - getPosition().x - m_LeftBorder - 4, posY - getPosition().y - m_TopBorder);
+        m_SelEnd = findSelectionPointPosition((posX - getPosition().x - m_LeftBorder - 4) / getScale().x, (posY - getPosition().y - m_TopBorder) / getScale().y);
 
         // Calculate how many character are being selected
         if (m_SelEnd < m_SelStart)
@@ -2202,13 +2195,16 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Get the current scale
+        Vector2f curScale = getScale();
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Store the current transform
         sf::Transform origTransform = states.transform;
@@ -2401,7 +2397,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

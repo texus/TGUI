@@ -247,14 +247,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string SpinButton::getLoadedPathname()
+    std::string SpinButton::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMinimum(unsigned int minimum)
+    void SpinButton::setMinimum(const unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -266,7 +266,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMaximum(unsigned int maximum)
+    void SpinButton::setMaximum(const unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -281,7 +281,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setValue(unsigned int value)
+    void SpinButton::setValue(const unsigned int value)
     {
         // Set the new value
         m_Value = value;
@@ -295,21 +295,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SpinButton::getMinimum()
+    unsigned int SpinButton::getMinimum() const
     {
         return m_Minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SpinButton::getMaximum()
+    unsigned int SpinButton::getMaximum() const
     {
         return m_Maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SpinButton::getValue()
+    unsigned int SpinButton::getValue() const
     {
         return m_Value;
     }
@@ -436,7 +436,7 @@ namespace tgui
     void SpinButton::objectFocused()
     {
         // A spin button can't be focused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

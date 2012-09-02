@@ -53,13 +53,13 @@ namespace tgui
         // You can use this function to change the focus to another object.
         // You cannot manually call this function. You should call the focus function from the object's parent instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void focusObject(OBJECT* object);
+        virtual void focusObject(OBJECT* const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Unfocuses the given object.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void unfocusObject(OBJECT* object);
+        virtual void unfocusObject(OBJECT* const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +136,7 @@ namespace tgui
         friend struct GroupObject;
         friend struct Panel;
         friend struct ChildWindow;
+        friend struct Grid;
         friend struct Window;
         friend struct Form;
 

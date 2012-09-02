@@ -293,7 +293,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string LoadingBar::getLoadedPathname()
+    std::string LoadingBar::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -383,21 +383,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int LoadingBar::getMinimum()
+    unsigned int LoadingBar::getMinimum() const
     {
         return m_Minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int LoadingBar::getMaximum()
+    unsigned int LoadingBar::getMaximum() const
     {
         return m_Maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int LoadingBar::getValue()
+    unsigned int LoadingBar::getValue() const
     {
         return m_Value;
     }
@@ -438,7 +438,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String LoadingBar::getText()
+    sf::String LoadingBar::getText() const
     {
         return m_Text.getString();
     }
@@ -452,7 +452,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* LoadingBar::getTextFont()
+    const sf::Font* LoadingBar::getTextFont() const
     {
         return m_Text.getFont();
     }
@@ -466,7 +466,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& LoadingBar::getTextColor()
+    const sf::Color& LoadingBar::getTextColor() const
     {
         return m_Text.getColor();
     }
@@ -484,9 +484,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int LoadingBar::getTextSize()
+    unsigned int LoadingBar::getTextSize() const
     {
-        return m_TextSize;
+        return m_Text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,7 +501,7 @@ namespace tgui
         if (m_SplitImage)
         {
             // Get the current scale
-            sf::Vector2f scaling(m_Size.x / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), m_Size.y / m_TextureBack_M->getSize().y);
+            float scalingY = m_Size.y / m_TextureBack_M->getSize().y;
 
             // Get the bounds of the sprites
             sf::FloatRect backBounds_L = m_SpriteBack_L.getLocalBounds();
@@ -514,15 +514,14 @@ namespace tgui
             float frontSize;
 
             // Check if the middle image is drawn
-            if ((scaling.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < scaling.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
+            if ((scalingY * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x)) < m_Size.x)
             {
-                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x) * scaling.x;
-                middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y);
+                totalWidth = m_Size.x;
+                middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY);
             }
             else // The loading bar is too small
             {
-                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y;
+                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY;
                 middleTextureWidth = 0;
             }
 
@@ -536,18 +535,18 @@ namespace tgui
             if (frontSize > 0)
             {
                 // Check if a piece of the middle part should be drawn
-                if (frontSize > m_TextureBack_L->getSize().x * scaling.y)
+                if (frontSize > m_TextureBack_L->getSize().x * scalingY)
                 {
                     // Check if a piece of the right part should be drawn
-                    if (frontSize > (m_TextureBack_L->getSize().x * scaling.y) + middleTextureWidth)
+                    if (frontSize > (m_TextureBack_L->getSize().x * scalingY) + middleTextureWidth)
                     {
                         // Check if the bar is not full
                         if (frontSize < totalWidth)
-                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * scaling.y) + middleTextureWidth);
+                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * scalingY) + middleTextureWidth);
                     }
                     else // Only a part of the middle image should be drawn
                     {
-                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * scaling.y)) / middleTextureWidth * m_TextureBack_M->getSize().x;
+                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * scalingY)) / middleTextureWidth * m_TextureBack_M->getSize().x;
                         backBounds_R.width = 0;
                     }
                 }
@@ -603,29 +602,26 @@ namespace tgui
         if (m_SplitImage)
         {
             // Get the scale the images
-            Vector2f scaling(m_Size.x / (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x), m_Size.y / m_TextureBack_M->getSize().y);
+            float scalingY = m_Size.y / m_TextureBack_M->getSize().y;
 
             // Scale the image
-            states.transform.scale(scaling.y, scaling.y);
+            states.transform.scale(scalingY, scalingY);
 
             // Draw the left image of the loading bar
             target.draw(m_SpriteBack_L, states);
             target.draw(m_SpriteFront_L, states);
 
             // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x))
-                < scaling.x * (m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x))
+            if ((scalingY * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x)) < m_Size.x)
             {
                 // Put the middle image on the correct position
                 states.transform.translate(m_SpriteBack_L.getGlobalBounds().width, 0);
 
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x)  * scaling.x)
-                                - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scaling.y))
-                                / m_TextureBack_M->getSize().x;
+                float scaleX = (m_Size.x - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY)) / m_TextureBack_M->getSize().x;
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / scaling.y, 1);
+                states.transform.scale(scaleX / scalingY, 1);
 
                 // Draw the middle image
                 target.draw(m_SpriteBack_M, states);
@@ -635,7 +631,7 @@ namespace tgui
                 states.transform.translate(m_SpriteBack_M.getGlobalBounds().width, 0);
 
                 // Set the scale for the right image
-                states.transform.scale(scaling.y / scaleX, 1);
+                states.transform.scale(scalingY / scaleX, 1);
 
                 // Draw the right image
                 target.draw(m_SpriteBack_R, states);

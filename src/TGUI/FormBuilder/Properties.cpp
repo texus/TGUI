@@ -1661,7 +1661,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             tgui::EditBox* editBox = formWindow.get<tgui::EditBox>(tgui::to_string(id));
             editBox->load(pathname.value);
 
-            // Reset the scaling
+            // Reset the size
             editBox->setSize(editBox->getSize().x, editBox->getSize().y);
 
             // Change the width and height properties
@@ -1684,7 +1684,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
                 tgui::EditBox* editBox = formWindow.get<tgui::EditBox>(tgui::to_string(id));
                 editBox->load("images/objects/EditBox/" OBJECT_STYLE);
 
-                // Adjust the scaling
+                // Adjust the size
                 editBox->setSize(width.value, height.value);
             }
         }
@@ -2496,9 +2496,6 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
             tgui::ComboBox* comboBox = formWindow.get<tgui::ComboBox>(tgui::to_string(id));
             comboBox->load(pathname.value, comboBox->getSize().x, comboBox->getSize().y);
 
-            // Reset the scaling
-            comboBox->setScale(comboBox->getScale().x, 1);
-
             // Change the height property
             height.value = static_cast<float>(comboBox->getSize().y);
 
@@ -2915,8 +2912,8 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             tgui::Slider* slider = formWindow.get<tgui::Slider>(tgui::to_string(id));
             slider->load(pathname.value);
 
-            // Reset the scaling
-            slider->setScale(1, 1);
+            // Reset the size
+            slider->setSize(slider->getSize().x, slider->getSize().y);
 
             // Change the width and height properties
             width.value = static_cast<float>(slider->getSize().x);
@@ -3094,8 +3091,8 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
             tgui::Scrollbar* scrollbar = formWindow.get<tgui::Scrollbar>(tgui::to_string(id));
             scrollbar->load(pathname.value);
 
-            // Reset the scaling
-            scrollbar->setScale(1, 1);
+            // Reset the size
+            scrollbar->setSize(scrollbar->getSize().x, scrollbar->getSize().y);
 
             // Change the width and height properties
             width.value = static_cast<float>(scrollbar->getSize().x);

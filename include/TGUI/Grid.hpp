@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _TGUI_SLIDER_INCLUDED_
-#define _TGUI_SLIDER_INCLUDED_
+#ifndef _TGUI_GRID_INCLUDED_
+#define _TGUI_GRID_INCLUDED_
 
-/// \todo  The thumb should have the same scaling as the rest of the slider.
-///        This is already done in the experimental brach, but this cannot be merged before scrollbar is fixed too.
+
+/// \todo  Add more layouts in Grid.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,211 +35,217 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TGUI_API Slider : public OBJECT
+    struct TGUI_API Grid : public GroupObject
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor
+        /// \brief The layout of the object.
+        ///
+        /// Is the object drawn in the top left corner of the grid square or in the center of the grid square?
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Slider();
+        struct Layout
+        {
+            enum layouts
+            {
+                /// Draw the object in the top left corner of the cell
+                TopLeft,
+
+                /// Center the object in the cell
+                Center
+
+                // TODO: Add more layouts
+            };
+        };
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Grid();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Copy constructor
+        ///
+        /// \param copy  Instance to copy
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Slider(const Slider& copy);
+        Grid(const Grid& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Slider();
+        virtual ~Grid();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Overload of assignment operator
+        ///
+        /// \param right  Instance to assign
+        ///
+        /// \return Reference to itself
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Slider& operator= (const Slider& right);
+        Grid& operator= (const Grid& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        // This function is called when the object is created (when it is added to a group).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Slider* clone();
+        virtual void initialize();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the slider images.
-        ///
-        /// The \a verticalScroll member might be changed in this function. If you want to change it then do it afterwards.
-        ///
-        /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the slider.
-        ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
-        ///
-        /// \remarks You must call setSize after this function or the slider will not be drawn on the screen.
-        ///
+        // Makes a copy of the object by calling the copy constructor.
+        // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string pathname);
+        virtual Grid* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the slider.
+        /// \brief Changes the size of the grid.
         ///
-        /// \param width   The new width of the slider
-        /// \param height  The new height of the slider
+        /// By default, the grid will have the size of the objects that were added to it.
+        /// When changing this size, all objects will be scaled to fit inside the grid with this fixed size.
         ///
-        /// \remarks If this function is not called then the slider will not be drawn on the screen.
+        /// This function will change the scale factors.
+        ///
+        /// \param width   Sets the new width of the grid.
+        /// \param height  Sets the new height of the grid.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the slider, unaffected by scaling.
+        /// \brief Returns the size of the grid, unaffected by scaling.
+        ///
+        /// \return Size of the grid
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2u getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the slider, after the scaling transformation.
+        /// \brief Returns the size of the grid, after the scaling transformation.
+        ///
+        /// \return Size of the grid
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getScaledSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the slider.
+        /// \brief Removes a single object that was added to the group.
         ///
-        /// When the slider has not been loaded yet then this function will return an empty string.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a minimum value.
+        /// \param object  Pointer to an object that was added to the group with the add function.
         ///
-        /// When the value is too small then it will be changed to this minimum.
-        /// The default minimum value is 0.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setMinimum(const unsigned int minimum);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a maximum value.
+        /// \see remove(sf::String)
         ///
-        /// When the value is too big then it will be changed to this maximum.
-        /// The default maximum value is 100.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setMaximum(const unsigned int maximum);
+        virtual void remove(OBJECT* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the current value.
+        /// \brief Removes all objects that were added to the group.
         ///
-        /// It can't be smaller than the minimum or bigger than the maximum.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setValue(const unsigned int value);
+        virtual void removeAllObjects();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the minimum value.
+        /// \brief Add a new object to the next column.
         ///
-        /// The default minimum value 0.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int getMinimum() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum value.
+        /// \param object   Pointer to a fully created object that will be added to the grid.
+        /// \param borders  Distance from the grid square to the object (left, top, right, bottom).
+        /// \param layout   Where the object is located in the square.
         ///
-        /// The default maximum value 0.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int getMaximum() const;
+        virtual void addToRow(OBJECT* const object, const Vector4u& borders = Vector4u(0, 0, 0, 0), const Layout::layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the current value.
+        /// \brief Adds a new row to the grid.
+        ///
+        /// \param rowHeight  The height of the row when it stays empty, or the minimum height when objects are added to the row.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int getValue() const;
+        virtual void addRow(const unsigned int rowHeight = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are used to receive callback from the EventManager.
-        // You normally don't need them, but you can use them to simulate an event.
+        /// \brief Updates the position and size of the object.
+        ///
+        /// After an object has been added to the grid, you will have to call this function when you change the size of the object.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updateObjects();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the layout of a given object.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void changeObjectLayout(const OBJECT* const object, const Layout::layouts layout = Layout::Center);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are used to receive callback from EventManager.
+        // These events are send to the childs of the grid by it's own EventManager.
+        // You normally don't need them, but you can use these functions to simulate an event.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnObject(float x, float y);
-        virtual void leftMousePressed(float x, float y);
-        virtual void leftMouseReleased(float x, float y);
-        virtual void mouseMoved(float x, float y);
-        virtual void keyPressed(sf::Keyboard::Key key);
         virtual void objectFocused();
+        virtual void objectUnfocused();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // The objects inside the grid use this function to send their callbacks.
+        // This function will alert the window (or any other parent of this grid) about the callback.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void addCallback(const Callback& callback);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the position of one of the objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updatePosition(unsigned int row, unsigned int column);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Reposition all the objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updatePositionsOfAllObjects();
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the slider on the render target.
+        // This function will be called and it will draw the grid object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /// Is the slider draw vertically?
-        /// Set this boolean to false when the slider should lie horizontal.
-        bool verticalScroll;
-
     protected:
 
-        // When the mouse went down, did it go down on top of the thumb? If so, where?
-        bool m_MouseDownOnThumb;
-        Vector2f m_MouseDownOnThumbPos;
+        std::vector< std::vector<OBJECT*> >  m_GridObjects;
+        std::vector< std::vector<Vector4u> > m_ObjBorders;
+        std::vector< std::vector<Layout::layouts> >  m_ObjLayout;
 
-        unsigned int m_Minimum;
-        unsigned int m_Maximum;
-        unsigned int m_Value;
+        std::vector<unsigned int> m_RowHeight;
+        std::vector<unsigned int> m_ColumnWidth;
 
-        // Is the image vertically?
-        bool m_VerticalImage;
+        Vector2u  m_Size;
 
-        // If this is true then the L, M and R images will be used.
-        // If it is false then the slider is just one big image that will be stored in the M image.
-        bool m_SplitImage;
 
-        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_SeparateHoverImage;
-
-        // The size of the slider and its thumb
-        Vector2f m_Size;
-        Vector2f m_ThumbSize;
-
-        sf::Texture* m_TextureTrackNormal_L;
-        sf::Texture* m_TextureTrackHover_L;
-        sf::Texture* m_TextureTrackNormal_M;
-        sf::Texture* m_TextureTrackHover_M;
-        sf::Texture* m_TextureTrackNormal_R;
-        sf::Texture* m_TextureTrackHover_R;
-        sf::Texture* m_TextureThumbNormal;
-        sf::Texture* m_TextureThumbHover;
-
-        sf::Sprite   m_SpriteTrackNormal_L;
-        sf::Sprite   m_SpriteTrackHover_L;
-        sf::Sprite   m_SpriteTrackNormal_M;
-        sf::Sprite   m_SpriteTrackHover_M;
-        sf::Sprite   m_SpriteTrackNormal_R;
-        sf::Sprite   m_SpriteTrackHover_R;
-        sf::Sprite   m_SpriteThumbNormal;
-        sf::Sprite   m_SpriteThumbHover;
-
-        // The pathname used to load the slider
-        std::string m_LoadedPathname;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,4 +253,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_TGUI_SLIDER_INCLUDED_
+#endif //_TGUI_GRID_INCLUDED_

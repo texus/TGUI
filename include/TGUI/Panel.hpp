@@ -77,7 +77,7 @@ namespace tgui
         ///        - true on success
         ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(unsigned int width, unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
+        virtual bool load(const unsigned int width, const unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ namespace tgui
         ///
         /// If no background image was loaded then this function will return an empty string.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedBackgroundImageFilename();
+        virtual std::string getLoadedBackgroundImageFilename() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ namespace tgui
         // The objects inside the panel use this function to send their callbacks.
         // This function will alert the window (or any other parent of this panel) about the callback.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addCallback(Callback& callback);
+        virtual void addCallback(const Callback& callback);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

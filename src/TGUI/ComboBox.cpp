@@ -124,7 +124,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string pathname, unsigned int width, unsigned int height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
+    bool ComboBox::load(const std::string pathname, float width, float height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -223,7 +223,7 @@ namespace tgui
 
         // Make the changes
         m_NrOfItemsToDisplay = nrOfItemsInList;
-        setSize(static_cast<float>(width), static_cast<float>(height));
+        setSize(width, height);
 
         // Check if a scrollbar should be loaded
         if (scrollbarPathname.empty() == false)
@@ -288,14 +288,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ComboBox::getLoadedPathname()
+    std::string ComboBox::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ComboBox::getLoadedScrollbarPathname()
+    std::string ComboBox::getLoadedScrollbarPathname() const
     {
         return m_LoadedScrollbarPathname;
     }
@@ -314,7 +314,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getItemsToDisplay()
+    unsigned int ComboBox::getItemsToDisplay() const
     {
         return m_NrOfItemsToDisplay;
     }
@@ -370,35 +370,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ComboBox::getBackgroundColor()
+    const sf::Color& ComboBox::getBackgroundColor() const
     {
         return m_ListBox->m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ComboBox::getTextColor()
+    const sf::Color& ComboBox::getTextColor() const
     {
         return m_ListBox->m_TextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ComboBox::getSelectedBackgroundColor()
+    const sf::Color& ComboBox::getSelectedBackgroundColor() const
     {
         return m_ListBox->m_SelectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ComboBox::getSelectedTextColor()
+    const sf::Color& ComboBox::getSelectedTextColor() const
     {
         return m_ListBox->m_SelectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ComboBox::getBorderColor()
+    const sf::Color& ComboBox::getBorderColor() const
     {
         return m_ListBox->m_BorderColor;
     }
@@ -412,7 +412,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* ComboBox::getTextFont()
+    const sf::Font* ComboBox::getTextFont() const
     {
         return m_ListBox->getTextFont();
     }
@@ -499,21 +499,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getItem(unsigned int id)
+    sf::String ComboBox::getItem(const unsigned int id) const
     {
         return m_ListBox->getItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getItemID(const sf::String itemName)
+    unsigned int ComboBox::getItemID(const sf::String itemName) const
     {
         return m_ListBox->getItemID(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String>& ComboBox::getItems()
+    std::vector<sf::String>& ComboBox::getItems() const
     {
         return m_ListBox->getItems();
     }
@@ -527,7 +527,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getSelectedItemID()
+    unsigned int ComboBox::getSelectedItemID() const
     {
         return m_ListBox->getSelectedItemID();
     }
@@ -556,14 +556,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setMaximumItems(unsigned int maximumItems)
+    void ComboBox::setMaximumItems(const unsigned int maximumItems)
     {
         m_ListBox->setMaximumItems(maximumItems);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getMaximumItems()
+    unsigned int ComboBox::getMaximumItems() const
     {
         return m_ListBox->getMaximumItems();
     }
@@ -895,6 +895,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setScale(float factorX, float factorY)
+    {
+        sf::Transformable::setScale(factorX, factorY);
+    }
+
+    void ComboBox::setScale(const Vector2f& factors)
+    {
+        sf::Transformable::setScale(factors);
+    }
+
+    void ComboBox::scale(float factorX, float factorY)
+    {
+        sf::Transformable::scale(factorX, factorY);
+    }
+
+    void ComboBox::scale(const Vector2f& factors)
+    {
+        sf::Transformable::scale(factors);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

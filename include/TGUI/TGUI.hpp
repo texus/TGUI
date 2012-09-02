@@ -64,6 +64,7 @@ namespace tgui
     struct AnimatedButton;
     struct SpinButton;
     struct Slider2D;
+    struct Tab;
 
     struct InfoFileParser;
     struct EventManager;
@@ -72,6 +73,7 @@ namespace tgui
     struct Group;
     struct Panel;
     struct ChildWindow;
+    struct Grid;
     struct Window;
 
 
@@ -122,25 +124,31 @@ namespace tgui
         animatedButton,
         spinButton,
         slider2D,
+        tab,
 
         panel,
         childWindow,
+        grid,
 
         custom
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
-    extern tgui::TextureManager  TGUI_TextureManager;
-
-    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
-    extern bool tabKeyUsageEnabled;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
+
+namespace tgui
+{
+    /// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
+    extern TGUI_API TextureManager TGUI_TextureManager;
+
+    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
+    extern TGUI_API bool tabKeyUsageEnabled;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #include <TGUI/Vectors.hpp>
 
 #include <TGUI/Objects.hpp>
@@ -161,6 +169,7 @@ namespace tgui
 #include <TGUI/AnimatedButton.hpp>
 #include <TGUI/SpinButton.hpp>
 #include <TGUI/Slider2D.hpp>
+#include <TGUI/Tab.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>
@@ -170,12 +179,15 @@ namespace tgui
 #include <TGUI/GroupObject.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
+#include <TGUI/Grid.hpp>
 #include <TGUI/Window.hpp>
 #include <TGUI/Form.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_OUTPUT(x)       sf::err() << x << std::endl;
+#ifndef TGUI_OUTPUT
+    #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
+#endif
 
 #define TGUI_MINIMUM(x, y)   (x < y) ? x : y
 

@@ -373,8 +373,9 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        // Recalculate the text size
-        setText(m_Text.getString());
+        // Recalculate the text size when auto sizing
+        if (m_TextSize == 0)
+            setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,7 +400,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Button::getLoadedPathname()
+    std::string Button::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -440,7 +441,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Button::getText()
+    sf::String Button::getText() const
     {
         return m_Text.getString();
     }
@@ -454,7 +455,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* Button::getTextFont()
+    const sf::Font* Button::getTextFont() const
     {
         return m_Text.getFont();
     }
@@ -468,7 +469,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Button::getTextColor()
+    const sf::Color& Button::getTextColor() const
     {
         return m_Text.getColor();
     }
@@ -486,9 +487,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Button::getTextSize()
+    unsigned int Button::getTextSize() const
     {
-        return m_TextSize;
+        return m_Text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,7 +602,7 @@ namespace tgui
     {
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
-            m_Parent->unfocus(this);
+            m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -621,12 +622,10 @@ namespace tgui
         // Drawing the button image will be different when the image is split
         if (m_SplitImage)
         {
-            Vector2f scaling;
-            scaling.x = m_Size.x / (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
-            scaling.y = m_Size.y / m_TextureNormal_M->getSize().y;
+            float scalingY = m_Size.y / m_TextureNormal_M->getSize().y;
 
             // Set the scaling
-            states.transform.scale(scaling.y, scaling.y);
+            states.transform.scale(scalingY, scalingY);
 
             // Draw the left image
             {
@@ -664,19 +663,16 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x))
-                < scaling.x * (m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x))
+            if ((scalingY * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x)  * scaling.x)
-                                 - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y))
-                               / m_TextureNormal_M->getSize().x;
+                float scaleX = (m_Size.x - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY)) / m_TextureNormal_M->getSize().x;
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / scaling.y, 1);
+                states.transform.scale(scaleX / scalingY, 1);
 
                 // Draw the middle image
                 {
@@ -717,7 +713,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(scaling.y / scaleX, 1);
+                states.transform.scale(scalingY / scaleX, 1);
             }
             else // The middle image is not drawn
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
@@ -817,10 +813,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

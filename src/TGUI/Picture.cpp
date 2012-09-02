@@ -149,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Picture::getLoadedFilename()
+    std::string Picture::getLoadedFilename() const
     {
         return m_LoadedFilename;
     }

@@ -333,7 +333,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ListBox::getLoadedScrollbarPathname()
+    std::string ListBox::getLoadedScrollbarPathname() const
     {
         return m_LoadedScrollbarPathname;
     }
@@ -389,35 +389,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ListBox::getBackgroundColor()
+    const sf::Color& ListBox::getBackgroundColor() const
     {
         return m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ListBox::getTextColor()
+    const sf::Color& ListBox::getTextColor() const
     {
         return m_TextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ListBox::getSelectedBackgroundColor()
+    const sf::Color& ListBox::getSelectedBackgroundColor() const
     {
         return m_SelectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ListBox::getSelectedTextColor()
+    const sf::Color& ListBox::getSelectedTextColor() const
     {
         return m_SelectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ListBox::getBorderColor()
+    const sf::Color& ListBox::getBorderColor() const
     {
         return m_BorderColor;
     }
@@ -431,7 +431,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* ListBox::getTextFont()
+    const sf::Font* ListBox::getTextFont() const
     {
         return &m_TextFont;
     }
@@ -566,7 +566,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getItem(unsigned int id)
+    sf::String ListBox::getItem(const unsigned int id) const
     {
         // Check if the id is valid
         if ((id > 0) && (id <= m_Items.size()))
@@ -580,7 +580,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getItemID(const sf::String itemName)
+    unsigned int ListBox::getItemID(const sf::String itemName) const
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
@@ -622,7 +622,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getSelectedItemID()
+    unsigned int ListBox::getSelectedItemID() const
     {
         return m_SelectedItem;
     }
@@ -729,14 +729,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getItemHeight()
+    unsigned int ListBox::getItemHeight() const
     {
         return m_ItemHeight;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setMaximumItems(unsigned int maximumItems)
+    void ListBox::setMaximumItems(const unsigned int maximumItems)
     {
         // Set the new limit
         m_MaxItems = maximumItems;
@@ -755,7 +755,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getMaximumItems()
+    unsigned int ListBox::getMaximumItems() const
     {
         return m_MaxItems;
     }
@@ -1254,6 +1254,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setScale(float factorX, float factorY)
+    {
+        sf::Transformable::setScale(factorX, factorY);
+    }
+
+    void ListBox::setScale(const Vector2f& factors)
+    {
+        sf::Transformable::setScale(factors);
+    }
+
+    void ListBox::scale(float factorX, float factorY)
+    {
+        sf::Transformable::scale(factorX, factorY);
+    }
+
+    void ListBox::scale(const Vector2f& factors)
+    {
+        sf::Transformable::scale(factors);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -125,12 +125,12 @@ namespace tgui
         m_Visible = false;
 
         // If the object is focused then it must be unfocused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isVisible()
+    bool OBJECT::isVisible() const
     {
         return m_Visible;
     }
@@ -153,26 +153,26 @@ namespace tgui
         m_MouseDown = false;
 
         // If the object is focused then it must be unfocused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isEnabled()
+    bool OBJECT::isEnabled() const
     {
         return m_Enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isDisabled()
+    bool OBJECT::isDisabled() const
     {
         return !m_Enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isLoaded()
+    bool OBJECT::isLoaded() const
     {
         return m_Loaded;
     }
@@ -215,6 +215,8 @@ namespace tgui
                 m_ObjectPhase |= ObjectPhase_Focused;
             else if (SinglePhase.compare("down") == 0)
                 m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (SinglePhase.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             // Remove this phase from the string
             phases.erase(0, commaPos+1);
@@ -230,6 +232,8 @@ namespace tgui
                 m_ObjectPhase |= ObjectPhase_Focused;
             else if (phases.compare("down") == 0)
                 m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (phases.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             return;
         }
@@ -237,14 +241,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isFocused()
+    void OBJECT::focus()
+    {
+        m_Parent->focusObject(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::unfocus()
+    {
+        m_Parent->unfocusAllObjects();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::focusNextObject()
+    {
+        m_Parent->unfocusObject(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool OBJECT::isFocused() const
     {
         return m_Focused;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectTypes OBJECT::getObjectType()
+    ObjectTypes OBJECT::getObjectType() const
     {
         return m_ObjectType;
     }
@@ -336,7 +361,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector4u OBJECT_BORDERS::getBorders()
+    Vector4u OBJECT_BORDERS::getBorders() const
     {
         return Vector4u(m_LeftBorder, m_TopBorder, m_RightBorder, m_BottomBorder);
     }

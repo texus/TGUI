@@ -255,7 +255,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Checkbox::getLoadedPathname()
+    std::string Checkbox::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -276,7 +276,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::isChecked()
+    bool Checkbox::isChecked() const
     {
         return m_Checked;
     }
@@ -308,7 +308,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Checkbox::getText()
+    sf::String Checkbox::getText() const
     {
         return m_Text.getString();
     }
@@ -322,7 +322,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* Checkbox::getTextFont()
+    const sf::Font* Checkbox::getTextFont() const
     {
         return m_Text.getFont();
     }
@@ -336,7 +336,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Checkbox::getTextColor()
+    const sf::Color& Checkbox::getTextColor() const
     {
         return m_Text.getColor();
     }
@@ -354,9 +354,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Checkbox::getTextSize()
+    unsigned int Checkbox::getTextSize() const
     {
-        return m_TextSize;
+        return m_Text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +489,7 @@ namespace tgui
     {
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
-            m_Parent->unfocus(this);
+            m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,7 +534,7 @@ namespace tgui
 
 
         // Restore the old transformation
-        oldTransform = states.transform;
+        states.transform = oldTransform;
 
         // Get the bounds of the text
         sf::FloatRect textBounds = m_Text.getGlobalBounds();

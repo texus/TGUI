@@ -1,0 +1,6 @@
+Phases                = selected
+Extension             = png
+TextColor             = (200, 200, 200)
+SplitImage            = true
+SeparateSelectedImage = false
+DistanceToSide        = 6

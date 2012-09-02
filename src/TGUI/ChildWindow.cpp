@@ -285,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ChildWindow::getLoadedPathname()
+    std::string ChildWindow::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -366,7 +366,7 @@ namespace tgui
             // Move the childwindow to the front when clicking on it
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                m_Parent->focus(this);
+                m_Parent->focusObject(this);
                 m_Parent->moveObjectToFront(this);
             }
 
@@ -691,4 +691,3 @@ namespace tgui
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

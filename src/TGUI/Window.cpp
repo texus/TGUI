@@ -69,7 +69,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Window::handleEvent(sf::Event& event)
+    void Window::handleEvent(sf::Event event)
     {
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)
@@ -153,7 +153,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Window::addCallback(Callback& callback)
+    void Window::addCallback(const Callback& callback)
     {
         // Add the callback to the list
         m_Callback.push(callback);
