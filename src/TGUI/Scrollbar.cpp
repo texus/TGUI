@@ -22,8 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// git log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative -10
-
 
 #include <TGUI/TGUI.hpp>
 
@@ -52,7 +50,6 @@ namespace tgui
     autoHide  (copy.autoHide),
     m_LowValue(copy.m_LowValue)
     {
-        // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureArrowNormal, m_TextureArrowNormal)) m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureArrowHover, m_TextureArrowHover))   m_SpriteArrowHover.setTexture(*m_TextureArrowHover);
     }
@@ -122,9 +119,8 @@ namespace tgui
         std::string property;
         std::string value;
 
+        // Set some default values
         std::string imageExtension = "png";
-
-        // VerticalScroll will be true unless said otherwise
         m_VerticalImage = true;
         verticalScroll = true;
 
@@ -147,6 +143,11 @@ namespace tgui
                 {
                     m_VerticalImage = false;
                     verticalScroll = false;
+                }
+                else
+                {
+                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
                 }
             }
             else
@@ -254,7 +255,7 @@ namespace tgui
             return false;
 
         // Don't make any calculations when no scrollbar is needed
-        if (m_Maximum <= m_LowValue)
+        if ((m_Maximum <= m_LowValue) && (autoHide == true))
             return false;
 
         // Check if the mouse is on top of the scrollbar
@@ -274,19 +275,17 @@ namespace tgui
             // The scaling depends on how the scrollbar lies
             if (verticalScroll)
             {
-                float realTrackHeight;
                 float scalingX;
-
-//                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == verticalScroll)
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
-//                else
-//                    scalingX = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+                else
+                    scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
 
                 // Check if the arrows are drawn at full size
                 if (m_Size.y > 2 * m_TextureArrowNormal->getSize().y * scalingX)
                 {
-                    // Calculate the track height
-                    realTrackHeight = m_Size.y - (2 * m_TextureArrowNormal->getSize().y * scalingX);
+                    // Calculate the track and thumb height
+                    float realTrackHeight = m_Size.y - (2 * m_TextureArrowNormal->getSize().y * scalingX);
                     thumbHeight = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
 
                     // Calculate the top position of the thumb
@@ -294,31 +293,23 @@ namespace tgui
                 }
                 else // The arrows are not drawn at full size
                 {
-/*
-                    // Calculate the real track height (without the arrows)
-                    realTrackHeight = m_Size.y - (2 * m_TextureArrowNormal->getSize().y * curScale.y);
-                    thumbHeight = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
-
-                    // Calculate the top position of the thumb
-                    thumbTop = (m_TextureArrowNormal->getSize().y * curScale.y) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackHeight - thumbHeight));
-*/
+                    thumbHeight = 0;
+                    thumbTop = m_TextureArrowNormal->getSize().y * curScale.y;
                 }
             }
             else // The scrollbar lies horizontal
             {
-                float realTrackWidth;
                 float scalingY;
-
-//                if (m_VerticalImage == verticalScroll)
-//                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
-//                else
+                if (m_VerticalImage == verticalScroll)
+                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                else
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
 
                 // Check if the arrows are drawn at full size
                 if (m_Size.x > 2 * m_TextureArrowNormal->getSize().y * scalingY)
                 {
-                    // Calculate the track height
-                    realTrackWidth = m_Size.x - (2 * m_TextureArrowNormal->getSize().y * scalingY);
+                    // Calculate the track and thumb height
+                    float realTrackWidth = m_Size.x - (2 * m_TextureArrowNormal->getSize().y * scalingY);
                     thumbWidth = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
 
                     // Calculate the left position of the thumb
@@ -326,14 +317,8 @@ namespace tgui
                 }
                 else // The arrows are not drawn at full size
                 {
-/*
-                    // Calculate the track height
-                    realTrackWidth = m_Size.x - (2 * m_TextureArrowNormal->getSize().y * curScale.x);
-                    thumbWidth = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
-
-                    // Calculate the left position of the thumb
-                    thumbLeft = (m_TextureArrowNormal->getSize().y * curScale.x) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackWidth - thumbWidth));
-*/
+                    thumbWidth = 0;
+                    thumbLeft = m_TextureArrowNormal->getSize().y * curScale.x;
                 }
             }
 
@@ -377,121 +362,114 @@ namespace tgui
         // Check ig the scrollbar was really clicked
         if (m_MouseDown)
         {
-            // Remember the current value
-            unsigned int oldValue = m_Value;
-
-            // Get the current scaling
-            Vector2f curScale = getScale();
-
-            // Check in which direction the scrollbar lies
-            if (verticalScroll)
+            // Only continue when the calculations can be made
+            if (m_Maximum > m_LowValue)
             {
-                // Calculate the track height
-                float trackHeight = m_Size.y * curScale.y;
-                float scalingX;
+                // Remember the current value
+                unsigned int oldValue = m_Value;
 
-//                if (m_VerticalImage == verticalScroll)
-                    scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
-//                else
-//                    scalingX = m_Size.y / m_TextureTrackNormal_M->getSize().x * curScale.x;
+                // Get the current scaling
+                Vector2f curScale = getScale();
 
-                // Check if the arrows are drawn at full size
-                if (trackHeight > 2 * m_TextureArrowNormal->getSize().y * scalingX)
+                // Check in which direction the scrollbar lies
+                if (verticalScroll)
                 {
-                    // Check if you clicked on the top arrow
-                    if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
-                    {
-                        if (m_Value > 0)
-                            --m_Value;
-                    }
+                    // Calculate the track height
+                    float trackHeight = m_Size.y * curScale.y;
+                    float scalingX;
 
-                    // Check if you clicked the down arrow
-                    else if (y > getPosition().y + trackHeight - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                    if (m_VerticalImage == verticalScroll)
+                        scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
+                    else
+                        scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
+
+                    // Check if the arrows are drawn at full size
+                    if (trackHeight > 2 * m_TextureArrowNormal->getSize().y * scalingX)
                     {
-                        if (m_Value < (m_Maximum - m_LowValue))
-                            ++m_Value;
+                        // Check if you clicked on the top arrow
+                        if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                        {
+                            if (m_Value > 0)
+                                --m_Value;
+                        }
+
+                        // Check if you clicked the down arrow
+                        else if (y > getPosition().y + trackHeight - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                        {
+                            if (m_Value < (m_Maximum - m_LowValue))
+                                ++m_Value;
+                        }
+                    }
+                    else // The arrows are not drawn at full size
+                    {
+                        // Check on which arrow you clicked
+                        if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * curScale.y * ((m_Size.y * 0.5f) / m_TextureArrowNormal->getSize().y)))
+                        {
+                            if (m_Value > 0)
+                                --m_Value;
+                        }
+                        else // You clicked on the bottom arrow
+                        {
+                            if (m_Value < (m_Maximum - m_LowValue))
+                                ++m_Value;
+                        }
                     }
                 }
-                else // The arrows are not drawn at full size
+                else // The scrollbar lies horizontal
                 {
-/*
-                    // Check if you clicked on the top arrow
-                    if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * curScale.y))
+                    float scalingY;
+                    if (m_VerticalImage == verticalScroll)
+                        scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                    else
+                        scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+
+                    // Check if the arrows are drawn at full size
+                    if (m_Size.x * curScale.x > 2 * m_TextureArrowNormal->getSize().y * scalingY)
                     {
-                        if (m_Value > 0)
-                            --m_Value;
+                        // Check if you clicked on the left arrow
+                        if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
+                        {
+                            if (m_Value > 0)
+                                --m_Value;
+                        }
+
+                        // Check if you clicked the right arrow
+                        else if (x > getPosition().x + (m_Size.x * curScale.x) - (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
+                        {
+                            if (m_Value < (m_Maximum - m_LowValue))
+                                ++m_Value;
+                        }
                     }
-
-                    // Check if you clicked the down arrow
-                    else if (y > getPosition().y + trackHeight - (m_TextureArrowNormal->getSize().y * curScale.y))
+                    else // The arrows are not drawn at full size
                     {
-                        if (m_Value < (m_Maximum - m_LowValue))
-                            ++m_Value;
-                    }
-*/
-                }
-            }
-            else // The scrollbar lies horizontal
-            {
-                // Calculate the track width
-                float trackWidth = m_Size.x * getScale().x;
-                float scalingY;
-
-//                if (m_VerticalImage == verticalScroll)
-//                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y * curScale.y;
-//                else
-                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
-
-                // Check if the arrows are drawn at full size
-                if (trackWidth > 2 * m_TextureArrowNormal->getSize().y * scalingY)
-                {
-                    // Check if you clicked on the left arrow
-                    if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
-                    {
-                        if (m_Value > 0)
-                            --m_Value;
-                    }
-
-                    // Check if you clicked the right arrow
-                    else if (x > getPosition().x + trackWidth - (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
-                    {
-                        if (m_Value < (m_Maximum - m_LowValue))
-                            ++m_Value;
+                        // Check on which arrow you clicked
+                        if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * curScale.x * ((m_Size.x * 0.5f) / m_TextureArrowNormal->getSize().y)))
+                        {
+                            if (m_Value > 0)
+                                --m_Value;
+                        }
+                        else // You clicked on the right arrow
+                        {
+                            if (m_Value < (m_Maximum - m_LowValue))
+                                ++m_Value;
+                        }
                     }
                 }
-                else // The arrows are not drawn at full size
-                {
-/*
-                    // Check if you clicked on the left arrow
-                    if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * curScale.x))
-                    {
-                        if (m_Value > 0)
-                            --m_Value;
-                    }
 
-                    // Check if you clicked the right arrow
-                    else if (x > getPosition().x + trackWidth - (m_TextureArrowNormal->getSize().y * curScale.x))
-                    {
-                        if (m_Value < (m_Maximum - m_LowValue))
-                            ++m_Value;
-                    }
-*/
+                // Add the callback (if the user requested it and the value has changed)
+                if ((callbackID > 0) && (oldValue != m_Value))
+                {
+                    Callback callback;
+                    callback.object     = this;
+                    callback.callbackID = callbackID;
+                    callback.trigger    = Callback::valueChanged;
+                    callback.value      = m_Value;
+                    m_Parent->addCallback(callback);
                 }
             }
 
             // The mouse is no longer down
             m_MouseDown = false;
-
-            // Add the callback (if the user requested it and the value has changed)
-            if ((callbackID > 0) && (oldValue != m_Value))
-            {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::valueChanged;
-                callback.value      = m_Value;
-                m_Parent->addCallback(callback);
-            }
         }
     }
 
@@ -505,35 +483,31 @@ namespace tgui
 
         m_MouseHover = true;
 
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
-
         // Check if the mouse button is down
         if (m_MouseDown)
         {
+            // Don't continue if the calculations can't be made
+            if ((m_Maximum <= m_LowValue) && (autoHide == false))
+                return;
+
+            // Get the current position and scale
+            Vector2f position = getPosition();
+            Vector2f curScale = getScale();
+
             // Remember the current value
             unsigned int oldValue = m_Value;
 
             // Check in which direction the scrollbar lies
             if (verticalScroll)
             {
-                // Calculate the track height
-                float trackHeight = m_Size.y * curScale.y;
                 float scalingX;
-
-//                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == verticalScroll)
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
-//                else
-//                    scalingX = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+                else
+                    scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
 
                 // Calculate the arrow height
-                float arrowHeight;
-
-//                if (trackHeight > 2 * m_TextureArrowNormal->getSize().y * scalingX)
-                    arrowHeight = m_TextureArrowNormal->getSize().y * scalingX * curScale.y;
-//                else
-//                    arrowHeight = m_TextureArrowNormal->getSize().y * curScale.y;
+                float arrowHeight = m_TextureArrowNormal->getSize().y * scalingX * curScale.y;
 
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
@@ -542,7 +516,7 @@ namespace tgui
                     if ((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / (trackHeight - (2 * arrowHeight))) * m_Maximum) + 0.5f);
+                        unsigned value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / ((m_Size.y * curScale.y) - (2 * arrowHeight))) * m_Maximum) + 0.5f);
 
                         // If the value isn't too high then change it
                         if (value <= (m_Maximum - m_LowValue))
@@ -559,10 +533,10 @@ namespace tgui
                     if (y > position.y + arrowHeight)
                     {
                         // Make sure that you didn't click on the down arrow
-                        if (y <= position.y + trackHeight - arrowHeight)
+                        if (y <= position.y + (m_Size.y * curScale.y) - arrowHeight)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((y - position.y - arrowHeight) / (trackHeight - (2 * arrowHeight))) * m_Maximum);
+                            float value = (((y - position.y - arrowHeight) / ((m_Size.y * curScale.y) - (2 * arrowHeight))) * m_Maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_Value)
@@ -591,22 +565,14 @@ namespace tgui
             }
             else // the scrollbar lies horizontal
             {
-                // Calculate the track width
-                float trackWidth = m_Size.x * curScale.x;
                 float scalingY;
-
-//                if (m_VerticalImage == verticalScroll)
-//                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
-//                else
+                if (m_VerticalImage == verticalScroll)
+                    scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                else
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
 
                 // Calculate the arrow width
-                float arrowWidth;
-
-//                if (trackWidth > 2 * m_TextureArrowNormal->getSize().y * scalingY)
-                    arrowWidth = m_TextureArrowNormal->getSize().y * scalingY * curScale.x;
-//                else
-//                    arrowWidth = m_TextureArrowNormal->getSize().y * curScale.x;
+                float arrowWidth = m_TextureArrowNormal->getSize().y * scalingY * curScale.x;
 
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
@@ -615,7 +581,7 @@ namespace tgui
                     if ((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / (trackWidth - (2 * arrowWidth))) * m_Maximum) + 0.5f);
+                        unsigned value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / ((m_Size.x * curScale.x) - (2 * arrowWidth))) * m_Maximum) + 0.5f);
 
                         // Set the new value
                         if (value <= (m_Maximum - m_LowValue))
@@ -632,10 +598,10 @@ namespace tgui
                     if (x > position.x + arrowWidth)
                     {
                         // Make sure that you didn't click on the left arrow
-                        if (x <= position.x + trackWidth - arrowWidth)
+                        if (x <= position.x + (m_Size.x * curScale.x) - arrowWidth)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((x - position.x - arrowWidth) / (trackWidth - (2 * arrowWidth))) * m_Maximum);
+                            float value = (((x - position.x - arrowWidth) / ((m_Size.x * curScale.x) - (2 * arrowWidth))) * m_Maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_Value)
@@ -690,13 +656,6 @@ namespace tgui
 
         Vector2f scaling;
 
-//        float trackWidth, trackHeight;
-//        float thumbWidth, thumbHeight;
-
-        // Get the current position and scale
-//        Vector2f position = getPosition();
-//        Vector2f curScale = getScale();
-
         // Apply the transformation
         states.transform *= getTransform();
 
@@ -719,10 +678,7 @@ namespace tgui
             states.transform.scale(scaling);
 
             // Set the rotation
-//            if ((m_VerticalImage == true) && (verticalScroll == false))
-                states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
-//            else // if ((m_VerticalImage == false) && (verticalScroll == true))
-//                states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
+            states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
         }
 
         // Draw the normal track image
@@ -756,16 +712,23 @@ namespace tgui
 
                 // Calculate the scaling factor
                 float scaleY;
-//                if ((autoHide == false) && (m_Maximum <= m_LowValue))
-//                    scaleY = realTrackHeight / (m_ThumbSize.y * curScale.y);
-//                else
+                if ((autoHide == false) && (m_Maximum <= m_LowValue))
+                    scaleY = realTrackHeight / m_ThumbSize.y;
+                else
                     scaleY = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackHeight) / m_ThumbSize.y;
 
-                // Set the thumb on the correct position
-                states.transform.translate(0, m_TextureArrowNormal->getSize().y + (m_Value * ((realTrackHeight / m_Maximum))) / scaling.x);
-
-                // Scale the image
-                states.transform.scale(1, scaleY);
+                // Set the correct transformations for the thumb
+                if (m_VerticalImage)
+                {
+                    states.transform.translate(0, m_TextureArrowNormal->getSize().y + (m_Value * (realTrackHeight / m_Maximum)) / scaling.x);
+                    states.transform.scale(1, scaleY);
+                }
+                else // The original image lies horizontal as well
+                {
+                    states.transform.rotate(90, m_TextureThumbNormal->getSize().y * 0.5f, m_TextureThumbNormal->getSize().y * 0.5f);
+                    states.transform.translate(m_TextureArrowNormal->getSize().y + (m_Value * (realTrackHeight / m_Maximum)) / scaling.x, 0);
+                    states.transform.scale(scaleY, 1);
+                }
 
                 // Draw the normal thumb image
                 target.draw(m_SpriteThumbNormal, states);
@@ -785,9 +748,8 @@ namespace tgui
             }
             else // The arrows can't be drawn at full size
             {
-/*
                 // Scale the arrow
-                states.transform.scale(curScale.x, curScale.y);
+                states.transform.scale(scaling.x, (m_Size.y * 0.5f) / m_TextureArrowNormal->getSize().y);
 
                 // Draw the first normal arrow
                 target.draw(m_SpriteArrowNormal, states);
@@ -796,38 +758,14 @@ namespace tgui
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
-                // Calculate the real track height (height without the arrows)
-                float realTrackHeight = (trackHeight * curScale.y) - (2 * m_TextureArrowNormal->getSize().y * curScale.y);
-
-                // Calculate the scaling factor
-                float scaleY;
-                if ((autoHide == false) && (m_Maximum <= m_LowValue))
-                    scaleY = realTrackHeight / (thumbHeight * curScale.y);
-                else
-                    scaleY = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackHeight) / (thumbHeight * curScale.y);
-
-                // Set the thumb on the correct position
-                states.transform.translate(0, m_TextureArrowNormal->getSize().y + (m_Value * ((realTrackHeight / curScale.y) / m_Maximum)));
-
-                // Scale the image
-                states.transform.scale(1, scaleY);
-
-                // Draw the normal thumb image
-                target.draw(m_SpriteThumbNormal, states);
-
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_SpriteThumbHover, states);
-
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(position.x, position.y + (trackHeight * curScale.y));
+                states.transform.translate(0, m_Size.y);
 
                 // Set the scale of the arrow
-                states.transform.scale(curScale.x, -curScale.y);
-*/
+                states.transform.scale(scaling.x, -(m_Size.y * 0.5f) / m_TextureArrowNormal->getSize().y);
             }
 
             // Draw the second arrow
@@ -840,7 +778,7 @@ namespace tgui
         else // The scrollbar lies horizontal
         {
             // Check if the arrows can be drawn at full size
-            if (m_Size.x > 2 * m_TextureArrowNormal->getSize().y * scaling.x)
+            if (m_Size.x > 2 * m_TextureArrowNormal->getSize().y * scaling.y)
             {
                 // Scale the arrow
                 states.transform.scale(scaling.y, scaling.y);
@@ -858,19 +796,25 @@ namespace tgui
                 // Calculate the real track width (width without the arrows)
                 float realTrackWidth = m_Size.x - (2 * m_TextureArrowNormal->getSize().y * scaling.y);
 
-/// CHECK FORMULA
                 // Calculate the scaling factor
                 float scaleX;
-//                if ((autoHide == false) && (m_Maximum <= m_LowValue))
-//                    scaleX = realTrackWidth / (m_ThumbSize.x * curScale.y);
-//                else
+                if ((autoHide == false) && (m_Maximum <= m_LowValue))
+                    scaleX = realTrackWidth / m_ThumbSize.x;
+                else
                     scaleX = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackWidth) / m_ThumbSize.x;
 
-                // Set the thumb on the correct position
-                states.transform.translate(0, m_TextureArrowNormal->getSize().y + ((m_Value * (realTrackWidth / m_Maximum))) / scaling.y);
-
-                // Scale the image
-                states.transform.scale(1, scaleX);
+                // Set the correct transformations for the thumb
+                if (m_VerticalImage)
+                {
+                    states.transform.translate(0, m_TextureArrowNormal->getSize().y + (m_Value * (realTrackWidth / m_Maximum)) / scaling.y);
+                    states.transform.scale(1, scaleX);
+                }
+                else // The original image lies horizontal as well
+                {
+                    states.transform.rotate(90, m_TextureThumbNormal->getSize().y * 0.5f, m_TextureThumbNormal->getSize().y * 0.5f);
+                    states.transform.translate(m_TextureArrowNormal->getSize().y + (m_Value * (realTrackWidth / m_Maximum)) / scaling.y, 0);
+                    states.transform.scale(scaleX, 1);
+                }
 
                 // Draw the normal thumb image
                 target.draw(m_SpriteThumbNormal, states);
@@ -890,12 +834,11 @@ namespace tgui
             }
             else // The arrows can't be drawn at full size
             {
-/*
-                // Set the scale
-                states.transform.scale(curScale.x, curScale.y);
+                // Scale the arrow
+                states.transform.scale((m_Size.x * 0.5f) / m_TextureArrowNormal->getSize().y, scaling.y);
 
                 // Rotate the arrow
-                states.transform.rotate(-90, m_TextureArrowNormal->getSize().y * 0.5f, m_TextureArrowNormal->getSize().y * 0.5f);
+                states.transform.rotate(-90, m_TextureArrowNormal->getSize().x * 0.5f, m_TextureArrowNormal->getSize().x * 0.5f);
 
                 // Draw the first normal arrow
                 target.draw(m_SpriteArrowNormal, states);
@@ -904,38 +847,14 @@ namespace tgui
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_SpriteArrowHover, states);
 
-                // Calculate the real track width (width without the arrows)
-                float realTrackWidth = (trackWidth * curScale.x) - (2 * m_TextureArrowNormal->getSize().y * curScale.x);
-
-                // Calculate the scaling factor
-                float scaleX;
-                if ((autoHide == false) && (m_Maximum <= m_LowValue))
-                    scaleX = realTrackWidth / (thumbWidth * curScale.x);
-                else
-                    scaleX = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackWidth) / (thumbWidth * curScale.x);
-
-                // Set the thumb on the correct position
-                states.transform.translate(0, m_TextureArrowNormal->getSize().y + m_Value * ((realTrackWidth / curScale.x) / m_Maximum));
-
-                // Scale the image
-                states.transform.scale(1, scaleX);
-
-                // Draw the normal thumb image
-                target.draw(m_SpriteThumbNormal, states);
-
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_SpriteThumbHover, states);
-
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(position.x + (trackWidth * curScale.x), position.y);
+                states.transform.translate(m_Size.x, 0);
 
                 // Set the scale of the arrow
-                states.transform.scale(-curScale.x, curScale.y);
-*/
+                states.transform.scale(-(m_Size.x * 0.5f) / m_TextureArrowNormal->getSize().y, scaling.y);
             }
 
             // Rotate the arrow

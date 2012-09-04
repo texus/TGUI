@@ -202,6 +202,11 @@ namespace tgui
                     m_VerticalImage = false;
                     verticalScroll = false;
                 }
+                else
+                {
+                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                }
             }
             else if (property.compare("splitimage") == 0)
             {
