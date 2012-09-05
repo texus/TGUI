@@ -226,21 +226,15 @@ namespace tgui
             }
             else // The scrollbar was loaded successfully
             {
-                // The scrollbar has to be vertical
-                m_Scroll->verticalScroll = true;
-
-                // Set the low value
+                // Initialize the scrollbar
+                m_Scroll->setVerticalScroll(true);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-                m_Loaded = true;
-                return true;
+                m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
             }
         }
-        else
-        {
-            m_Loaded = true;
-            return true;
-        }
+
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +260,7 @@ namespace tgui
         if (m_Scroll == NULL)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
         else
-            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->m_TextureArrowNormal->getSize().x, width);
+            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
         // There is also a minimum height
         if (m_Scroll == NULL)
@@ -326,11 +320,11 @@ namespace tgui
         m_Size.x = static_cast<unsigned int>(width);
         m_Size.y = uiHeight;
 
-        // If there is a scrollbar then change it
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
         }
 
         // The size of the textbox has changed, update the text
@@ -470,9 +464,12 @@ namespace tgui
                 m_Size.y = height2 + m_TopBorder + m_BottomBorder;
         }
 
-        // If there is a scrollbar then update the low value (in case the height of the text box has changed)
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
+        {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+        }
 
         // The size has changed, update the text
         m_SelectionTextsNeedUpdate = true;
@@ -573,11 +570,11 @@ namespace tgui
         else
             m_Size.y = height2 + m_TopBorder + m_BottomBorder;
 
-        // Check if there is a scrollbar
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
         }
 
         // The space for the text has changed, so update the text
@@ -740,7 +737,7 @@ namespace tgui
             }
 
             // Check if the selection point is located above the view
-            if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->m_Value % m_LineHeight > 0)))
+            if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->getValue() % m_LineHeight > 0)))
             {
                 m_Scroll->setValue(newlines * m_LineHeight);
                 updateDisplayedText();
@@ -752,7 +749,7 @@ namespace tgui
                 m_Scroll->setValue((newlines - m_VisibleLines + 1) * m_LineHeight);
                 updateDisplayedText();
             }
-            else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->m_Value % m_LineHeight > 0))
+            else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->getValue() % m_LineHeight > 0))
             {
                 m_Scroll->setValue((newlines - m_VisibleLines + 2) * m_LineHeight);
                 updateDisplayedText();
@@ -787,13 +784,10 @@ namespace tgui
         }
         else // The scrollbar was loaded successfully
         {
-            // The scrollbar has to be vertical
-            m_Scroll->verticalScroll = true;
-
-            // Set the low value
+            // Initialize the scrollbar
+            m_Scroll->setVerticalScroll(true);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-            // Tell the scrollbar how many pixels the text contains
             m_Scroll->setMaximum(m_Lines * m_LineHeight);
 
             return true;
@@ -834,8 +828,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setScale(curScale);
+            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, position.y + (m_TopBorder * curScale.y));
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
@@ -873,14 +867,14 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Remember the old scrollbar value
-            unsigned int oldValue = m_Scroll->m_Value;
+            unsigned int oldValue = m_Scroll->getValue();
 
             // Get the current scale
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setScale(curScale);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -894,7 +888,7 @@ namespace tgui
             m_Scroll->setScale(1, 1);
 
             // If the value of the scrollbar has changed then update the text
-            if (oldValue != m_Scroll->m_Value)
+            if (oldValue != m_Scroll->getValue())
                 updateDisplayedText();
         }
 
@@ -956,7 +950,7 @@ namespace tgui
                     }
 
                     // Check if the selection point is located above the view
-                    if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->m_Value % m_LineHeight > 0)))
+                    if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->getValue() % m_LineHeight > 0)))
                     {
                         m_Scroll->setValue(newlines * m_LineHeight);
                         updateDisplayedText();
@@ -968,7 +962,7 @@ namespace tgui
                         m_Scroll->setValue((newlines - m_VisibleLines + 1) * m_LineHeight);
                         updateDisplayedText();
                     }
-                    else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->m_Value % m_LineHeight > 0))
+                    else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->getValue() % m_LineHeight > 0))
                     {
                         m_Scroll->setValue((newlines - m_VisibleLines + 2) * m_LineHeight);
                         updateDisplayedText();
@@ -1012,14 +1006,14 @@ namespace tgui
                     return;
 
                 // Remember the old scrollbar value
-                unsigned int oldValue = m_Scroll->m_Value;
+                unsigned int oldValue = m_Scroll->getValue();
 
                 // Get the current scale
                 Vector2f curScale = getScale();
 
                 // Temporarily set the position and scale of the scroll
-                m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-                m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+                m_Scroll->setScale(curScale);
+                m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
 
                 // Pass the event
                 m_Scroll->leftMouseReleased(x, y);
@@ -1029,29 +1023,29 @@ namespace tgui
                 m_Scroll->setScale(1, 1);
 
                 // If the value of the scrollbar has changed then update the text
-                if (oldValue != m_Scroll->m_Value)
+                if (oldValue != m_Scroll->getValue())
                 {
                     updateDisplayedText();
 
                     // Check if the scrollbar value was incremented (you have pressed on the down arrow)
-                    if (m_Scroll->m_Value == oldValue + 1)
+                    if (m_Scroll->getValue() == oldValue + 1)
                     {
                         // Decrement the value
-                        --m_Scroll->m_Value;
+                        m_Scroll->setValue(m_Scroll->getValue()-1);
 
                         // Scroll down with the whole item height instead of with a single pixel
-                        m_Scroll->setValue(m_Scroll->m_Value + m_LineHeight - (m_Scroll->m_Value % m_LineHeight));
+                        m_Scroll->setValue(m_Scroll->getValue() + m_LineHeight - (m_Scroll->getValue() % m_LineHeight));
                     }
-                    else if (m_Scroll->m_Value == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
+                    else if (m_Scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
                     {
                         // increment the value
-                        ++m_Scroll->m_Value;
+                        m_Scroll->setValue(m_Scroll->getValue()+1);
 
                         // Scroll up with the whole item height instead of with a single pixel
-                        if (m_Scroll->m_Value % m_LineHeight > 0)
-                            m_Scroll->setValue(m_Scroll->m_Value - (m_Scroll->m_Value % m_LineHeight));
+                        if (m_Scroll->getValue() % m_LineHeight > 0)
+                            m_Scroll->setValue(m_Scroll->getValue() - (m_Scroll->getValue() % m_LineHeight));
                         else
-                            m_Scroll->setValue(m_Scroll->m_Value - m_LineHeight);
+                            m_Scroll->setValue(m_Scroll->getValue() - m_LineHeight);
                     }
                 }
             }
@@ -1078,20 +1072,20 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setScale(curScale);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
             {
                 // Remember the old scrollbar value
-                unsigned int oldValue = m_Scroll->m_Value;
+                unsigned int oldValue = m_Scroll->getValue();
 
                 // Pass the event, even when the mouse is not on top of the scrollbar
                 m_Scroll->mouseMoved(x, y);
 
                 // If the value of the scrollbar has changed then update the text
-                if (oldValue != m_Scroll->m_Value)
+                if (oldValue != m_Scroll->getValue())
                     updateDisplayedText();
             }
             else // You are just moving the mouse
@@ -1429,10 +1423,10 @@ namespace tgui
                 if (m_Scroll != NULL)
                 {
                     // Check if the scrollbar is behind the text
-                    if (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue)
+                    if (m_Scroll->getValue() > m_Scroll->getMaximum() - m_Scroll->getLowValue())
                     {
                         // Adjust the value of the scrollbar
-                        m_Scroll->setValue(m_Scroll->m_Value);
+                        m_Scroll->setValue(m_Scroll->getValue());
 
                         // The text has to be updated again
                         m_SelectionTextsNeedUpdate = true;
@@ -1484,10 +1478,10 @@ namespace tgui
                 if (m_Scroll != NULL)
                 {
                     // Check if there is a risk that the scrollbar is going to be behind the text
-                    if ((m_Scroll->m_Value == m_Scroll->m_Maximum - m_Scroll->m_LowValue) || (m_Scroll->m_Value > m_Scroll->m_Maximum - m_Scroll->m_LowValue - m_LineHeight))
+                    if ((m_Scroll->getValue() == m_Scroll->getMaximum() - m_Scroll->getLowValue()) || (m_Scroll->getValue() > m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_LineHeight))
                     {
                         // Reset the value of the scroll. If it is too high then it will be automatically be adjusted.
-                        m_Scroll->setValue(m_Scroll->m_Value);
+                        m_Scroll->setValue(m_Scroll->getValue());
 
                         // The text has to be updated again
                         m_SelectionTextsNeedUpdate = true;
@@ -1541,13 +1535,7 @@ namespace tgui
             if (m_LineHeight == 0)
                 return;
 
-            float maxLineWidth;
-
-            // Calculate the maximum line width
-            if (m_Scroll == NULL)
-                maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
-            else
-                maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getScaledSize().x - 4;
+            float maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
 
             // If the width is negative then the text box is too small to be displayed
             if (maxLineWidth < 0)
@@ -1649,10 +1637,10 @@ namespace tgui
         else // There is no scrollbar
         {
             // If the position is negative then set the selection point before the first character
-            if (posY + m_Scroll->m_Value < 0)
+            if (posY + m_Scroll->getValue() < 0)
                 return 0;
             else
-                line = static_cast<unsigned int>((posY + m_Scroll->m_Value) / m_LineHeight + 1);
+                line = static_cast<unsigned int>((posY + m_Scroll->getValue()) / m_LineHeight + 1);
         }
 
         // Create a temporary text object that contains the full text
@@ -1708,7 +1696,7 @@ namespace tgui
             if (m_Scroll == NULL)
                 maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
             else
-                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4 - m_Scroll->getScaledSize().x;
+                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4 - m_Scroll->getSize().x;
 
             // If the width is negative then the text box is too small to be displayed
             if (maxLineWidth < 0)
@@ -1850,7 +1838,7 @@ namespace tgui
             }
 
             // Check if the selection point is located above the view
-            if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->m_Value % m_LineHeight > 0)))
+            if ((newlines < m_TopLine - 1) || ((newlines < m_TopLine) && (m_Scroll->getValue() % m_LineHeight > 0)))
             {
                 m_Scroll->setValue(newlines * m_LineHeight);
                 updateDisplayedText();
@@ -1862,7 +1850,7 @@ namespace tgui
                 m_Scroll->setValue((newlines - m_VisibleLines + 1) * m_LineHeight);
                 updateDisplayedText();
             }
-            else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->m_Value % m_LineHeight > 0))
+            else if ((newlines > m_TopLine + m_VisibleLines - 3) && (m_Scroll->getValue() % m_LineHeight > 0))
             {
                 m_Scroll->setValue((newlines - m_VisibleLines + 2) * m_LineHeight);
                 updateDisplayedText();
@@ -1888,7 +1876,7 @@ namespace tgui
         if (m_Scroll == NULL)
             maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
         else
-            maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getScaledSize().x - 4;
+            maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getSize().x - 4;
 
         // If the width is negative then the text box is too small to be displayed
         if (maxLineWidth < 0)
@@ -1963,10 +1951,10 @@ namespace tgui
             m_Scroll->setMaximum(m_Lines * m_LineHeight);
 
             // Calculate the top line
-            m_TopLine = m_Scroll->m_Value / m_LineHeight + 1;
+            m_TopLine = m_Scroll->getValue() / m_LineHeight + 1;
 
             // Calculate the number of visible lines
-            if ((m_Scroll->m_Value % m_LineHeight) == 0)
+            if ((m_Scroll->getValue() % m_LineHeight) == 0)
                 m_VisibleLines = TGUI_MINIMUM((m_Size.y - m_LeftBorder - m_TopBorder) / m_LineHeight, m_Lines);
             else
                 m_VisibleLines = TGUI_MINIMUM(((m_Size.y - m_LeftBorder - m_TopBorder) / m_LineHeight) + 1, m_Lines);
@@ -2206,11 +2194,11 @@ namespace tgui
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
         Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
-        // Store the current transform
-        sf::Transform origTransform = states.transform;
-
         // Adjust the transformation
         states.transform *= getTransform();
+
+        // Store the current transform
+        sf::Transform origTransform = states.transform;
 
         // Draw the borders
         sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
@@ -2227,7 +2215,7 @@ namespace tgui
 
         // Set the text on the correct position
         if (m_Scroll != NULL)
-            states.transform.translate(2, -static_cast<float>(m_Scroll->m_Value));
+            states.transform.translate(2, -static_cast<float>(m_Scroll->getValue()));
         else
             states.transform.translate(2, 0);
 
@@ -2385,14 +2373,10 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = origTransform;
-            states.transform.translate(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) - m_Scroll->getSize().x, getPosition().y + m_TopBorder * getScale().y);
-            m_Scroll->setScale(1, (getScale().y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            states.transform.translate((m_Size.x - m_RightBorder) - m_Scroll->getSize().x, m_TopBorder * getScale().y);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
-
-            // Reset the scale of the scrollbar
-            m_Scroll->setScale(1, 1);
         }
     }
 

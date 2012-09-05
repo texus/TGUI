@@ -345,6 +345,57 @@ namespace tgui
 
     void Scrollbar::leftMousePressed(float x, float y)
     {
+/// TODO (bug fix)
+/// When the mouse goes down on one of the arrows and then moves over the track, the thumb will follow the mouse.
+/// The fix would be to add something like below, but the code below will break clicking on the arrows.
+/// The solution would be to change the 'return' with setting some boolean that will be used later to check where the mouse went down.
+/*
+        // Make sure you didn't click on one of the arrows
+        if (m_VerticalScroll)
+        {
+            Vector2f curScale = getScale();
+
+            float scalingX;
+            if (m_VerticalImage == m_VerticalScroll)
+                scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
+            else
+                scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
+
+            // Check if the arrows are drawn at full size
+            if (m_Size.y * curScale.y > 2 * m_TextureArrowNormal->getSize().y * scalingX)
+            {
+                // Check if you clicked on one of the arrows
+                if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                    return;
+                else if (y > getPosition().y + (m_Size.y * curScale.y) - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                    return;
+            }
+            else // The arrows are not drawn at full size (there is no track)
+                return;
+        }
+        else // The scrollbar lies horizontal
+        {
+            Vector2f curScale = getScale();
+
+            float scalingY;
+            if (m_VerticalImage == m_VerticalScroll)
+                scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+            else
+                scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+
+            // Check if the arrows are drawn at full size
+            if (m_Size.x * curScale.x > 2 * m_TextureArrowNormal->getSize().y * scalingY)
+            {
+                // Check if you clicked on one of the arrows
+                if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
+                    return;
+                else if (x > getPosition().x + (m_Size.x * curScale.x) - (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
+                    return;
+            }
+            else // The arrows are not drawn at full size (there is no track)
+                return;
+        }
+*/
         m_MouseDown = true;
 
         // Refresh the value
@@ -370,17 +421,14 @@ namespace tgui
                 // Check in which direction the scrollbar lies
                 if (m_VerticalScroll)
                 {
-                    // Calculate the track height
-                    float trackHeight = m_Size.y * curScale.y;
                     float scalingX;
-
                     if (m_VerticalImage == m_VerticalScroll)
                         scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
                     else
                         scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
 
                     // Check if the arrows are drawn at full size
-                    if (trackHeight > 2 * m_TextureArrowNormal->getSize().y * scalingX)
+                    if (m_Size.y * curScale.y > 2 * m_TextureArrowNormal->getSize().y * scalingX)
                     {
                         // Check if you clicked on the top arrow
                         if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
@@ -390,7 +438,7 @@ namespace tgui
                         }
 
                         // Check if you clicked the down arrow
-                        else if (y > getPosition().y + trackHeight - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
+                        else if (y > getPosition().y + (m_Size.y * curScale.y) - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
                                 ++m_Value;
