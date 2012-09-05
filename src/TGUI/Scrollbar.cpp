@@ -122,7 +122,7 @@ namespace tgui
         // Set some default values
         std::string imageExtension = "png";
         m_VerticalImage = true;
-        verticalScroll = true;
+        m_VerticalScroll = true;
 
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
@@ -142,12 +142,12 @@ namespace tgui
                 if ((value.compare("false") == 0) || (value.compare("0") == 0))
                 {
                     m_VerticalImage = false;
-                    verticalScroll = false;
+                    m_VerticalScroll = false;
                 }
                 else
                 {
                     if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to m_VerticalScroll: \"" + value + "\".");
                 }
             }
             else
@@ -178,15 +178,11 @@ namespace tgui
             m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
             m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal, true);
 
-/// If setSize isn't called and the scrollbar gets rotated then things will go wrong.
-/// By not changing the size here, you will be forced to call setSize to get something on the screen.
-/*
             // Set the size of the scrollbar
             m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_M->getSize().y);
 
             // Set the thumb size
             m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
-*/
         }
         else
             return false;
@@ -273,10 +269,10 @@ namespace tgui
             float thumbHeight = m_ThumbSize.y;
 
             // The scaling depends on how the scrollbar lies
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 float scalingX;
-                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == m_VerticalScroll)
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
                 else
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
@@ -300,7 +296,7 @@ namespace tgui
             else // The scrollbar lies horizontal
             {
                 float scalingY;
-                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == m_VerticalScroll)
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
                 else
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
@@ -372,13 +368,13 @@ namespace tgui
                 Vector2f curScale = getScale();
 
                 // Check in which direction the scrollbar lies
-                if (verticalScroll)
+                if (m_VerticalScroll)
                 {
                     // Calculate the track height
                     float trackHeight = m_Size.y * curScale.y;
                     float scalingX;
 
-                    if (m_VerticalImage == verticalScroll)
+                    if (m_VerticalImage == m_VerticalScroll)
                         scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
                     else
                         scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
@@ -418,7 +414,7 @@ namespace tgui
                 else // The scrollbar lies horizontal
                 {
                     float scalingY;
-                    if (m_VerticalImage == verticalScroll)
+                    if (m_VerticalImage == m_VerticalScroll)
                         scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
                     else
                         scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
@@ -498,10 +494,10 @@ namespace tgui
             unsigned int oldValue = m_Value;
 
             // Check in which direction the scrollbar lies
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 float scalingX;
-                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == m_VerticalScroll)
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().x;
                 else
                     scalingX = m_Size.x / m_TextureTrackNormal_M->getSize().y;
@@ -566,7 +562,7 @@ namespace tgui
             else // the scrollbar lies horizontal
             {
                 float scalingY;
-                if (m_VerticalImage == verticalScroll)
+                if (m_VerticalImage == m_VerticalScroll)
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().y;
                 else
                     scalingY = m_Size.y / m_TextureTrackNormal_M->getSize().x;
@@ -663,7 +659,7 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Get the scale factors
-        if (verticalScroll == m_VerticalImage)
+        if (m_VerticalScroll == m_VerticalImage)
         {
             // Set the scaling
             scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().x;
@@ -692,7 +688,7 @@ namespace tgui
         states.transform = oldTransform;
 
         // The calculation depends on the direction of the scrollbar
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
             // Check if the arrows can be drawn at full size
             if (m_Size.y > 2 * m_TextureArrowNormal->getSize().y * scaling.x)

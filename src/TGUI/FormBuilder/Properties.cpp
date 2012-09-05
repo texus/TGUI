@@ -2983,7 +2983,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
         tgui::EditBox* propertyHeight = propertyWindow.get<tgui::EditBox>("text_Height");
 
         // Change the direction
-        slider->verticalScroll = !!verticalScroll.value;
+        slider->setVerticalScroll(!!verticalScroll.value);
 
         // Make temp buffers to switch the width and height
         float temp = width.value;
@@ -3162,7 +3162,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
         // Change the direction
         tgui::Scrollbar* scrollbar = formWindow.get<tgui::Scrollbar>(tgui::to_string(id));
-        scrollbar->verticalScroll = !!verticalScroll.value;
+        scrollbar->setVerticalScroll(!!verticalScroll.value);
 
         // Make temp buffers to switch the width and height
         float temp = width.value;

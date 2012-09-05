@@ -26,9 +26,6 @@
 #ifndef _TGUI_SLIDER_INCLUDED_
 #define _TGUI_SLIDER_INCLUDED_
 
-/// \todo  The thumb should have the same scaling as the rest of the slider.
-///        This is already done in the experimental brach, but this cannot be merged before scrollbar is fixed too.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -146,6 +143,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes whether the slider lies vertical or horizontal.
+        ///
+        /// \param verticallScroll  Does the slider lie vertically?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setVerticalScroll(bool verticallScroll);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the minimum value.
         ///
         /// The default minimum value 0.
@@ -165,6 +171,15 @@ namespace tgui
         /// \brief Returns the current value.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getValue() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns whether the slider lies vertical or horizontal.
+        ///
+        /// \return Does the slider lie vertically?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool getVerticalScroll();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,12 +205,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /// Is the slider draw vertically?
-        /// Set this boolean to false when the slider should lie horizontal.
-        bool verticalScroll;
-
     protected:
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
@@ -206,7 +215,10 @@ namespace tgui
         unsigned int m_Maximum;
         unsigned int m_Value;
 
-        // Is the image vertically?
+        // Is the slider draw vertically?
+        bool m_VerticalScroll;
+
+        // Does the image lie vertically?
         bool m_VerticalImage;
 
         // If this is true then the L, M and R images will be used.

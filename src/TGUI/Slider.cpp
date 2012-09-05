@@ -32,11 +32,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider() :
-    verticalScroll        (true),
     m_MouseDownOnThumb    (false),
     m_Minimum             (  0),
     m_Maximum             (100),
     m_Value               (  0),
+    m_VerticalScroll      (true),
     m_VerticalImage       (true),
     m_SplitImage          (false),
     m_SeparateHoverImage  (false),
@@ -58,12 +58,12 @@ namespace tgui
 
     Slider::Slider(const Slider& copy) :
     OBJECT               (copy),
-    verticalScroll       (copy.verticalScroll),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
     m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
+    m_VerticalScroll     (copy.m_VerticalScroll),
     m_VerticalImage      (copy.m_VerticalImage),
     m_SplitImage         (copy.m_SplitImage),
     m_SeparateHoverImage (copy.m_SeparateHoverImage),
@@ -107,12 +107,12 @@ namespace tgui
             Slider temp(right);
             this->OBJECT::operator=(right);
 
-            std::swap(verticalScroll,         temp.verticalScroll);
             std::swap(m_MouseDownOnThumb,     temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos,  temp.m_MouseDownOnThumbPos);
             std::swap(m_Minimum,              temp.m_Minimum);
             std::swap(m_Maximum,              temp.m_Maximum);
             std::swap(m_Value,                temp.m_Value);
+            std::swap(m_VerticalScroll,       temp.m_VerticalScroll);
             std::swap(m_VerticalImage,        temp.m_VerticalImage);
             std::swap(m_SplitImage,           temp.m_SplitImage);
             std::swap(m_SeparateHoverImage,   temp.m_SeparateHoverImage);
@@ -178,9 +178,9 @@ namespace tgui
 
         std::string imageExtension = "png";
 
-        // VerticalScroll will be true unless said otherwise
+        // m_VerticalScroll will be true unless said otherwise
         m_VerticalImage = true;
-        verticalScroll = true;
+        m_VerticalScroll = true;
 
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
@@ -200,12 +200,12 @@ namespace tgui
                 if ((value.compare("false") == 0) || (value.compare("0") == 0))
                 {
                     m_VerticalImage = false;
-                    verticalScroll = false;
+                    m_VerticalScroll = false;
                 }
                 else
                 {
                     if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to m_VerticalScroll: \"" + value + "\".");
                 }
             }
             else if (property.compare("splitimage") == 0)
@@ -253,9 +253,6 @@ namespace tgui
                 m_SpriteTrackNormal_R.setTexture(*m_TextureTrackNormal_R, true);
                 m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
 
-/// If setSize isn't called and the slider gets rotated then things will go wrong.
-/// By not changing the size here, you will be forced to call setSize to get something on the screen.
-/*
                 // Set the size of the slider
                 if (m_VerticalImage)
                     m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
@@ -264,7 +261,6 @@ namespace tgui
 
                 // Set the thumb size
                 m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
-*/
             }
             else
                 return false;
@@ -295,15 +291,11 @@ namespace tgui
                 m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
                 m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
 
-/// If setSize isn't called and the slider gets rotated then things will go wrong.
-/// By not changing the size here, you will be forced to call setSize to get something on the screen.
-/*
                 // Set the size of the slider
                 m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_M->getSize().y);
 
                 // Set the thumb size
                 m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
-*/
             }
             else
                 return false;
@@ -344,9 +336,9 @@ namespace tgui
         m_Size.y = height;
 
         // Set the thumb size
-        if (m_VerticalImage == verticalScroll)
+        if (m_VerticalImage == m_VerticalScroll)
         {
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
                 m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
@@ -359,7 +351,7 @@ namespace tgui
         }
         else
         {
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
                 m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
@@ -442,6 +434,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::setVerticalScroll(bool verticalScroll)
+    {
+        // Only continue when the value changed
+        if (m_VerticalScroll != verticalScroll)
+        {
+            // Change the internal value
+            m_VerticalScroll = verticalScroll;
+
+            // Swap the width and height if needed
+            if (m_VerticalScroll)
+            {
+                if (m_Size.x > m_Size.y)
+                    m_Size = Vector2f(m_Size.y, m_Size.x);
+            }
+            else // The slider lies horizontal
+            {
+                if (m_Size.y > m_Size.x)
+                    m_Size = Vector2f(m_Size.y, m_Size.x);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getVerticalScroll()
+    {
+        return m_VerticalScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int Slider::getMinimum() const
     {
         return m_Minimum;
@@ -478,7 +501,7 @@ namespace tgui
         Vector2f curScale = getScale();
 
         // The size is different when the image is rotated
-        if (m_VerticalImage == verticalScroll)
+        if (m_VerticalImage == m_VerticalScroll)
         {
             thumbWidth = m_ThumbSize.x * curScale.x;
             thumbHeight = m_ThumbSize.y * curScale.y;
@@ -490,7 +513,7 @@ namespace tgui
         }
 
         // Calculate the thumb position
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
             thumbLeft = ((m_Size.x * curScale.x) - thumbWidth) * 0.5f;
             thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * (m_Size.y * curScale.y)) - (thumbHeight * 0.5f);
@@ -562,7 +585,7 @@ namespace tgui
         if (m_MouseDown)
         {
             // Check in which direction the slider goes
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
@@ -659,7 +682,7 @@ namespace tgui
         if (m_SplitImage)
         {
             // Get the scale factors
-            if (verticalScroll == m_VerticalImage)
+            if (m_VerticalScroll == m_VerticalImage)
             {
                 scaling.x = m_Size.x / (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x);
                 scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().y;
@@ -667,14 +690,14 @@ namespace tgui
             else
             {
                 // Check in what direction the slider should rotate
-                if ((m_VerticalImage == true) && (verticalScroll == false))
+                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
                 {
                     // Set the rotation
                     states.transform.rotate(-90,
                                             (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * 0.5f,
                                             m_TextureTrackNormal_M->getSize().x * 0.5f);
                 }
-                else // if ((m_VerticalImage == false) && (verticalScroll == true))
+                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
                 {
                     // Set the rotation
                     states.transform.rotate(90,
@@ -793,7 +816,7 @@ namespace tgui
         }
         else // The image is not split
         {
-            if (verticalScroll == m_VerticalImage)
+            if (m_VerticalScroll == m_VerticalImage)
             {
                 // Set the scaling
                 scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().x;
@@ -808,9 +831,9 @@ namespace tgui
                 states.transform.scale(scaling);
 
                 // Set the rotation
-                if ((m_VerticalImage == true) && (verticalScroll == false))
+                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
                     states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
-                else // if ((m_VerticalImage == false) && (verticalScroll == true))
+                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
                     states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
             }
 
@@ -826,7 +849,7 @@ namespace tgui
         states.transform = oldTransform;
 
         // The thumb will be on a different position when we are scrolling vertically or not
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
             // Set the translation and scale for the thumb
             states.transform.translate(static_cast<int>(m_Size.x - m_ThumbSize.x) * 0.5f,
@@ -846,12 +869,12 @@ namespace tgui
         }
 
         // It is possible that the image is not drawn in the same direction than the loaded image
-        if ((m_VerticalImage == true) && (verticalScroll == false))
+        if ((m_VerticalImage == true) && (m_VerticalScroll == false))
         {
             // Set the rotation
             states.transform.rotate(-90, m_TextureThumbNormal->getSize().x * 0.5f, m_TextureThumbNormal->getSize().x * 0.5f);
         }
-        else if ((m_VerticalImage == false) && (verticalScroll == true))
+        else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
         {
             // Set the rotation
             states.transform.rotate(90, m_TextureThumbNormal->getSize().y * 0.5f, m_TextureThumbNormal->getSize().y * 0.5f);
