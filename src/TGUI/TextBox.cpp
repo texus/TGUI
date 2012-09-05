@@ -899,7 +899,7 @@ namespace tgui
             if (m_LineHeight == 0)
                 return;
 
-            unsigned int selectionPointPosition = findSelectionPointPosition((x - getPosition().x - m_LeftBorder - 4) / getScale().x, (y - getPosition().y - m_TopBorder) / getScale().y);
+            unsigned int selectionPointPosition = findSelectionPointPosition(((x - getPosition().x) / getScale().x) - m_LeftBorder - 4, ((y - getPosition().y) / getScale().y) - m_TopBorder);
 
             // Check if this is a double click
             if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
@@ -1064,6 +1064,9 @@ namespace tgui
 
         // Set the mouse move flag
         m_MouseHover = true;
+
+        // The mouse has moved so a double click is no longer possible
+        m_PossibleDoubleClick = false;
 
         // Get the current scale
         Vector2f curScale = getScale();
@@ -1792,7 +1795,7 @@ namespace tgui
             return;
 
         // Find out where the selection point should be
-        m_SelEnd = findSelectionPointPosition((posX - getPosition().x - m_LeftBorder - 4) / getScale().x, (posY - getPosition().y - m_TopBorder) / getScale().y);
+        m_SelEnd = findSelectionPointPosition(((posX - getPosition().x) / getScale().x) - m_LeftBorder - 4, ((posY - getPosition().y) / getScale().y) - m_TopBorder);
 
         // Calculate how many character are being selected
         if (m_SelEnd < m_SelStart)
