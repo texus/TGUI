@@ -1126,7 +1126,7 @@ namespace tgui
                             bool vericalScroll;
                             CHECK_BOOL(vericalScroll)
 
-                            slider->verticalScroll = vericalScroll;
+                            slider->setVerticalScroll(vericalScroll);
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
                         else // The line was wrong
@@ -1763,7 +1763,7 @@ namespace tgui
                             bool vericalScroll;
                             CHECK_BOOL(vericalScroll)
 
-                            scrollbar->verticalScroll = vericalScroll;
+                            scrollbar->setVerticalScroll(vericalScroll);
                         }
                         else CHECK_SHARED_PROPERTIES(scrollbar)
                         else // The line was wrong

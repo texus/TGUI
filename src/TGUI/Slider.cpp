@@ -446,12 +446,18 @@ namespace tgui
             if (m_VerticalScroll)
             {
                 if (m_Size.x > m_Size.y)
+                {
                     m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
+                }
             }
             else // The slider lies horizontal
             {
                 if (m_Size.y > m_Size.x)
+                {
                     m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
+                }
             }
         }
     }
