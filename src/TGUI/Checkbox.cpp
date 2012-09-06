@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -540,7 +542,7 @@ namespace tgui
         sf::FloatRect textBounds = m_Text.getGlobalBounds();
 
         // Set the position of the text
-        states.transform.translate(m_Size.x * 11.0f / 10.0f - textBounds.left, ((m_Size.y - textBounds.height) / 2.0f) - textBounds.top);
+        states.transform.translate(std::floor(m_Size.x * 11.0f / 10.0f - textBounds.left), std::floor(((m_Size.y - textBounds.height) / 2.0f) - textBounds.top));
 
         // Draw the text
         target.draw(m_Text, states);

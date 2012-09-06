@@ -26,6 +26,7 @@
 #include <TGUI/TGUI.hpp>
 
 #include <SFML/OpenGL.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -241,13 +242,10 @@ namespace tgui
             }
             else // The scrollbar was loaded successfully
             {
-                // The scrollbar has to be vertical
-                m_Scroll->verticalScroll = true;
-
-                // Set the low value
+                // Initialize the scrollbar
+                m_Scroll->setVerticalScroll(true);
+                m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-                // Set the maximum
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
                 return true;
@@ -272,7 +270,7 @@ namespace tgui
         if (m_Scroll == NULL)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
         else
-            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->m_TextureArrowNormal->getSize().x, width);
+            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
         // There is also a minimum list box height
         if (uiHeight < (m_ItemHeight + m_TopBorder + m_BottomBorder))
@@ -309,10 +307,10 @@ namespace tgui
         m_Size.x = static_cast<unsigned int>(width);
         m_Size.y = uiHeight;
 
-        // If there is a scrollbar then change it
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
         }
     }
@@ -660,11 +658,11 @@ namespace tgui
         }
         else // The scrollbar was loaded successfully
         {
-            // The scrollbar has to be vertical
-            m_Scroll->verticalScroll = true;
-
-            // Set the low value
+            // Initialize the scrollbar
+            m_Scroll->setVerticalScroll(true);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
             return true;
         }
@@ -814,14 +812,11 @@ namespace tgui
         else
             m_Size.y = height2 + m_TopBorder + m_BottomBorder;
 
-        // Check if there is a scrollbar
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-            // Tell the scrollbar how many items there are
-            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
         }
     }
 
@@ -837,8 +832,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
@@ -875,8 +870,8 @@ namespace tgui
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -897,27 +892,27 @@ namespace tgui
             unsigned int oldSelectedItem = m_SelectedItem;
 
             // Check if there is a scrollbar or whether it is hidden
-            if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
+            if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
-                if ((y - getPosition().y - m_TopBorder) <= (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight)))
+                if ((y - getPosition().y - m_TopBorder) / getScale().y <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
                 {
                     // We clicked on the first visible item
-                    m_SelectedItem = m_Scroll->m_Value / m_ItemHeight + 1;
+                    m_SelectedItem = m_Scroll->getValue() / m_ItemHeight + 1;
                 }
                 else // We didn't click on the first visible item
                 {
                     // Calculate on what item we clicked
-                    if ((m_Scroll->m_Value % m_ItemHeight) == 0)
-                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1);
+                    if ((m_Scroll->getValue() % m_ItemHeight) == 0)
+                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight)) + (m_Scroll->getValue() / m_ItemHeight) + 1);
                     else
-                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2);
+                        m_SelectedItem = static_cast<unsigned int>(((((y - getPosition().y - m_TopBorder) / getScale().y) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 2);
                 }
             }
             else // There is no scrollbar or it is not displayed
             {
                 // Calculate on which item we clicked
-                m_SelectedItem = static_cast<unsigned int> ((y - getPosition().y - m_TopBorder) / (m_ItemHeight * getScale().y)) + 1;
+                m_SelectedItem = static_cast<unsigned int>((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight)) + 1;
 
                 // When you clicked behind the last item then unselect the selected item
                 if (m_SelectedItem > m_Items.size())
@@ -958,14 +953,14 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Remember the old scrollbar value
-            unsigned int oldValue = m_Scroll->m_Value;
+            unsigned int oldValue = m_Scroll->getValue();
 
             // Get the current scale
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->leftMouseReleased(x, y);
@@ -975,24 +970,24 @@ namespace tgui
             m_Scroll->setScale(1, 1);
 
             // Check if the scrollbar value was incremented (you have pressed on the down arrow)
-            if (m_Scroll->m_Value == oldValue + 1)
+            if (m_Scroll->getValue() == oldValue + 1)
             {
                 // Decrement the value
-                --m_Scroll->m_Value;
+                m_Scroll->setValue(m_Scroll->getValue()-1);
 
                 // Scroll down with the whole item height instead of with a single pixel
-                m_Scroll->setValue(m_Scroll->m_Value + m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight));
+                m_Scroll->setValue(m_Scroll->getValue() + m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight));
             }
-            else if (m_Scroll->m_Value == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
+            else if (m_Scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
             {
                 // increment the value
-                ++m_Scroll->m_Value;
+                m_Scroll->setValue(m_Scroll->getValue()+1);
 
                 // Scroll up with the whole item height instead of with a single pixel
-                if (m_Scroll->m_Value % m_ItemHeight > 0)
-                    m_Scroll->setValue(m_Scroll->m_Value - (m_Scroll->m_Value % m_ItemHeight));
+                if (m_Scroll->getValue() % m_ItemHeight > 0)
+                    m_Scroll->setValue(m_Scroll->getValue() - (m_Scroll->getValue() % m_ItemHeight));
                 else
-                    m_Scroll->setValue(m_Scroll->m_Value - m_ItemHeight);
+                    m_Scroll->setValue(m_Scroll->getValue() - m_ItemHeight);
             }
         }
 
@@ -1010,8 +1005,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -1056,6 +1051,9 @@ namespace tgui
 
     void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Get the current scale
+        Vector2f curScale = getScale();
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
@@ -1064,27 +1062,24 @@ namespace tgui
         Vector2f topLeftPosition;
         Vector2f bottomRightPosition;
 
-        if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
+        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+
+        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-            bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x - target.getView().getCenter().x + (target.getView().getSize().x / 2.f),
-                                                                  getPosition().y + m_Size.y - m_BottomBorder - target.getView().getCenter().y + (target.getView().getSize().y / 2.f));
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * curScale.y) + viewPosition.y);
         }
         else
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) + viewPosition);
         }
-
-        // Get the current position and scale
-        Vector2f position = getPosition();
-        Vector2f curScale = getScale();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
 
         // Adjust the transformation
         states.transform *= getTransform();
+
+        // Remember the current transformation
+        sf::Transform oldTransform = states.transform;
 
         // Draw the borders
         {
@@ -1124,17 +1119,17 @@ namespace tgui
         sf::Text text("", m_TextFont, m_TextSize);
 
         // Check if there is a scrollbar and whether it isn't hidden
-        if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
+        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
             // Store the transformation
             sf::Transform storedTransform = states.transform;
 
             // Find out which items should be drawn
-            unsigned int firstItem = m_Scroll->m_Value / m_ItemHeight;
-            unsigned int lastItem = (m_Scroll->m_Value + m_Scroll->m_LowValue) / m_ItemHeight;
+            unsigned int firstItem = m_Scroll->getValue() / m_ItemHeight;
+            unsigned int lastItem = (m_Scroll->getValue() + m_Scroll->getLowValue()) / m_ItemHeight;
 
             // Show another item when the scrollbar is standing between two items
-            if ((m_Scroll->m_Value + m_Scroll->m_LowValue) % m_ItemHeight != 0)
+            if ((m_Scroll->getValue() + m_Scroll->getLowValue()) % m_ItemHeight != 0)
                 ++lastItem;
 
             // Set the clipping area
@@ -1157,7 +1152,7 @@ namespace tgui
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->m_Value)).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue())).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
                         sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
@@ -1175,8 +1170,7 @@ namespace tgui
                     text.setColor(m_TextColor);
 
                 // Set the translation for the text
-                states.transform.translate(2, (static_cast<float>(static_cast<int>((i * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
-///                states.transform.translate(2.f, static_cast<float>(i * m_ItemHeight) - static_cast<float>(m_Scroll->getValue()));
+                states.transform.translate(2, std::floor(static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue() + ((m_ItemHeight - bounds.height) / 2.0f) - bounds.top));
 
                 // Draw the text
                 target.draw(text, states);
@@ -1225,8 +1219,7 @@ namespace tgui
                 sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Set the translation for the text
-                states.transform.translate(2, (i * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
-///                states.transform.translate(2.f, static_cast<float>(i * m_ItemHeight));
+                states.transform.translate(2, std::floor((i * m_ItemHeight) + ((m_ItemHeight - bounds.height) / 2.0f) - bounds.top));
 
                 // Draw the text
                 target.draw(text, states);
@@ -1241,37 +1234,11 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = oldTransform;
-            states.transform.translate(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            states.transform.translate(m_Size.x - m_RightBorder - m_Scroll->getSize().x, m_TopBorder);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
-
-            // Reset the scale of the scrollbar
-            m_Scroll->setScale(1, 1);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setScale(float factorX, float factorY)
-    {
-        sf::Transformable::setScale(factorX, factorY);
-    }
-
-    void ListBox::setScale(const Vector2f& factors)
-    {
-        sf::Transformable::setScale(factors);
-    }
-
-    void ListBox::scale(float factorX, float factorY)
-    {
-        sf::Transformable::scale(factorX, factorY);
-    }
-
-    void ListBox::scale(const Vector2f& factors)
-    {
-        sf::Transformable::scale(factors);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
