@@ -34,6 +34,7 @@ namespace tgui
     Scrollbar::Scrollbar() :
     autoHide            (true),
     m_LowValue          (0),
+    m_MouseDownOnArrow  (false),
     m_TextureArrowNormal(NULL),
     m_TextureArrowHover (NULL)
     {
@@ -46,9 +47,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar(const Scrollbar& copy) :
-    Slider    (copy),
-    autoHide  (copy.autoHide),
-    m_LowValue(copy.m_LowValue)
+    Slider            (copy),
+    autoHide          (copy.autoHide),
+    m_LowValue        (copy.m_LowValue),
+    m_MouseDownOnArrow(copy.m_MouseDownOnArrow)
     {
         if (TGUI_TextureManager.copyTexture(copy.m_TextureArrowNormal, m_TextureArrowNormal)) m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal);
         if (TGUI_TextureManager.copyTexture(copy.m_TextureArrowHover, m_TextureArrowHover))   m_SpriteArrowHover.setTexture(*m_TextureArrowHover);
@@ -74,6 +76,7 @@ namespace tgui
 
             std::swap(autoHide,             temp.autoHide);
             std::swap(m_LowValue,           temp.m_LowValue);
+            std::swap(m_MouseDownOnArrow,   temp.m_MouseDownOnArrow);
             std::swap(m_TextureArrowNormal, temp.m_TextureArrowNormal);
             std::swap(m_TextureArrowHover,  temp.m_TextureArrowHover);
             std::swap(m_SpriteArrowNormal,  temp.m_SpriteArrowNormal);
@@ -345,11 +348,9 @@ namespace tgui
 
     void Scrollbar::leftMousePressed(float x, float y)
     {
-/// TODO (bug fix)
-/// When the mouse goes down on one of the arrows and then moves over the track, the thumb will follow the mouse.
-/// The fix would be to add something like below, but the code below will break clicking on the arrows.
-/// The solution would be to change the 'return' with setting some boolean that will be used later to check where the mouse went down.
-/*
+        m_MouseDown = true;
+        m_MouseDownOnArrow = false;
+
         // Make sure you didn't click on one of the arrows
         if (m_VerticalScroll)
         {
@@ -366,12 +367,12 @@ namespace tgui
             {
                 // Check if you clicked on one of the arrows
                 if (y < getPosition().y + (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
-                    return;
+                    m_MouseDownOnArrow = true;
                 else if (y > getPosition().y + (m_Size.y * curScale.y) - (m_TextureArrowNormal->getSize().y * scalingX * curScale.y))
-                    return;
+                    m_MouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
-                return;
+                m_MouseDownOnArrow = true;
         }
         else // The scrollbar lies horizontal
         {
@@ -388,26 +389,25 @@ namespace tgui
             {
                 // Check if you clicked on one of the arrows
                 if (x < getPosition().x + (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
-                    return;
+                    m_MouseDownOnArrow = true;
                 else if (x > getPosition().x + (m_Size.x * curScale.x) - (m_TextureArrowNormal->getSize().y * scalingY * curScale.x))
-                    return;
+                    m_MouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
-                return;
+                m_MouseDownOnArrow = true;
         }
-*/
-        m_MouseDown = true;
 
-        // Refresh the value
-        mouseMoved(x, y);
+        // Refresh the scrollbar value
+        if (m_MouseDownOnArrow == false)
+            mouseMoved(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Scrollbar::leftMouseReleased(float x, float y)
     {
-        // Check ig the scrollbar was really clicked
-        if (m_MouseDown)
+        // Check if one of the arrows was clicked
+        if ((m_MouseDown) && (m_MouseDownOnArrow))
         {
             // Only continue when the calculations can be made
             if (m_Maximum > m_LowValue)
@@ -511,10 +511,10 @@ namespace tgui
                     m_Parent->addCallback(callback);
                 }
             }
-
-            // The mouse is no longer down
-            m_MouseDown = false;
         }
+
+        // The mouse is no longer down
+        m_MouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,8 +527,8 @@ namespace tgui
 
         m_MouseHover = true;
 
-        // Check if the mouse button is down
-        if (m_MouseDown)
+        // Check if the mouse button went down on top of the track (or thumb)
+        if ((m_MouseDown) && (m_MouseDownOnArrow == false))
         {
             // Don't continue if the calculations can't be made
             if ((m_Maximum <= m_LowValue) && (autoHide == false))

@@ -150,6 +150,9 @@ namespace tgui
         // Maximum should be above this value before the scrollbar is needed
         unsigned int m_LowValue;
 
+        // Did the mouse went down on one of the arrows?
+        bool m_MouseDownOnArrow;
+
         sf::Texture* m_TextureArrowNormal;
         sf::Texture* m_TextureArrowHover;
 
