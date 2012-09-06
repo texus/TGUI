@@ -78,8 +78,6 @@ namespace tgui
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
         ///
-        /// \remarks You must call setSize after this function or the scrollbar will not be drawn on the screen.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool load(const std::string pathname);
 

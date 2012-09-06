@@ -78,8 +78,6 @@ namespace tgui
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
         ///
-        /// \remarks You must call setSize after this function or the slider will not be drawn on the screen.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool load(const std::string pathname);
 
@@ -89,8 +87,6 @@ namespace tgui
         ///
         /// \param width   The new width of the slider
         /// \param height  The new height of the slider
-        ///
-        /// \remarks If this function is not called then the slider will not be drawn on the screen.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
