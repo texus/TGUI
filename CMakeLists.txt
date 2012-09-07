@@ -44,6 +44,22 @@ if( COMPILER_GCC )
 	endif()
 endif()
 
+# Define an option for choosing between static and dynamic C runtime (VC++ only)
+if(WINDOWS AND COMPILER_MSVC)
+    tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
+    
+    # Apply it globally by modifying the compiler flags
+    if(TGUI_USE_STATIC_STD_LIBS)
+        foreach(flag
+                CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+            if(${flag} MATCHES "/MD")
+                string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
+            endif()
+        endforeach()
+    endif()
+endif()
+
 # Link to the static sfml libraries when building tgui statically
 if(NOT TGUI_SHARED_LIBS)
     set(SFML_STATIC_LIBRARIES TRUE)
