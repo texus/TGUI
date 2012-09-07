@@ -84,10 +84,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the spin button.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
-        ///
         /// \param width   The new width of the spin button
         /// \param height  The new height of the spin button
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -189,6 +188,8 @@ namespace tgui
         bool verticalScroll;
 
     protected:
+
+        Vector2f m_Size;
 
         unsigned int m_Minimum;
         unsigned int m_Maximum;

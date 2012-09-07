@@ -33,6 +33,7 @@ namespace tgui
 
     SpinButton::SpinButton() :
     verticalScroll        (true),
+    m_Size                (0, 0),
     m_Minimum             (0),
     m_Maximum             (10),
     m_Value               (0),
@@ -51,6 +52,7 @@ namespace tgui
     SpinButton::SpinButton(const SpinButton& copy) :
     OBJECT                (copy),
     verticalScroll        (copy.verticalScroll),
+    m_Size                (copy.m_Size),
     m_Minimum             (copy.m_Minimum),
     m_Maximum             (copy.m_Maximum),
     m_Value               (copy.m_Value),
@@ -84,6 +86,7 @@ namespace tgui
             this->OBJECT::operator=(right);
 
             std::swap(verticalScroll,         temp.verticalScroll);
+            std::swap(m_Size,                 temp.m_Size);
             std::swap(m_Minimum,              temp.m_Minimum);
             std::swap(m_Maximum,              temp.m_Maximum);
             std::swap(m_Value,                temp.m_Value);
@@ -136,7 +139,9 @@ namespace tgui
         std::string property;
         std::string value;
 
+        // Set some default values
         std::string imageExtension = "png";
+        verticalScroll = true;
 
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
@@ -153,10 +158,13 @@ namespace tgui
             }
             else if (property.compare("verticalscroll") == 0)
             {
-                if (value.compare("true") == 0)
-                    verticalScroll = true;
-                else if (value.compare("false") == 0)
+                if ((value.compare("false") == 0) || (value.compare("0") == 0))
                     verticalScroll = false;
+                else
+                {
+                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                }
             }
             else if (property.compare("separatehoverimage") == 0)
             {
@@ -179,7 +187,21 @@ namespace tgui
 
         // load the required texture
         if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal))
+        {
             m_SpriteNormal.setTexture(*m_TextureNormal, true);
+
+            // Store the size of the spin button
+            if (verticalScroll)
+            {
+                m_Size.x = static_cast<float>(m_TextureNormal->getSize().x);
+                m_Size.y = m_TextureNormal->getSize().y * 2;
+            }
+            else
+            {
+                m_Size.x = static_cast<float>(m_TextureNormal->getSize().y);
+                m_Size.y = m_TextureNormal->getSize().x * 2;
+            }
+        }
         else
             return false;
 
@@ -204,30 +226,23 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
+        // Store the new size
+        m_Size.x = width;
+        m_Size.y = height;
 
-        // Set the new scale factors
-        if (verticalScroll)
-            setScale(width / m_TextureNormal->getSize().x, height / (m_TextureNormal->getSize().y * 2.f));
-        else
-            setScale(width / (m_TextureNormal->getSize().y * 2.f), height / m_TextureNormal->getSize().x);
+        // A negative size is not allowed for this object
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u SpinButton::getSize() const
     {
-        // Don't continue when the spin button wasn't loaded correctly
-        if (m_Loaded == false)
-            return Vector2u(0, 0);
-
-        // Return the size of the track
-        if (verticalScroll)
-            return Vector2u(m_TextureNormal->getSize().x, m_TextureNormal->getSize().y * 2);
+        if (m_Loaded)
+            return Vector2u(m_Size);
         else
-            return Vector2u(m_TextureNormal->getSize().y * 2, m_TextureNormal->getSize().x);
+            return Vector2u(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,13 +251,9 @@ namespace tgui
     {
         // Don't continue when the spin button wasn't loaded correctly
         if (m_Loaded == false)
-            return Vector2f(0, 0);
-
-        // Return the size of the track
-        if (verticalScroll)
-            return Vector2f(m_TextureNormal->getSize().x * getScale().x, m_TextureNormal->getSize().y * 2.f * getScale().y);
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
         else
-            return Vector2f(m_TextureNormal->getSize().y * 2.f * getScale().x, m_TextureNormal->getSize().x * getScale().y);
+            return Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -449,6 +460,12 @@ namespace tgui
 
         // Adjust the transformation
         states.transform *= getTransform();
+
+        // Set the scaling
+        if (verticalScroll)
+            states.transform.scale(m_Size.x / m_TextureNormal->getSize().x, m_Size.y / (m_TextureNormal->getSize().y * 2.f));
+        else
+            states.transform.scale(m_Size.x / (m_TextureNormal->getSize().y * 2.f), m_Size.y / m_TextureNormal->getSize().x);
 
         // Check if the image is drawn in the same direction than it was loaded
         if (verticalScroll)
