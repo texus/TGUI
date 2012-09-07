@@ -172,7 +172,7 @@ namespace tgui
                 else // This is the start of the number
                 {
                     // Add this new number
-                    numbers.push_back(nextChar - 48);
+                    numbers.push_back(nextChar - 48.f);
                     readingNumber = true;
                 }
             }
@@ -388,12 +388,12 @@ namespace tgui
             else if (line.substr(0, 6).compare("width=") == 0) \
             { \
                 line.erase(0, 6); \
-                name->setSize(readFloat(line.c_str()), name->getSize().y); \
+                name->setSize(readFloat(line.c_str()), static_cast<float>(name->getSize().y)); \
             } \
             else if (line.substr(0, 7).compare("height=") == 0) \
             { \
                 line.erase(0, 7); \
-                name->setSize(name->getSize().x, readFloat(line.c_str())); \
+                name->setSize(static_cast<float>(name->getSize().x), readFloat(line.c_str())); \
             } \
             else if (line.substr(0, 6).compare("scale=") == 0) \
             { \
@@ -1558,7 +1558,7 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the combo box
-                            comboBox->load(line, comboBox->getSize().x, comboBox->getSize().y);
+                            comboBox->load(line, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
@@ -1934,7 +1934,7 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the child window
-                            if (child->load(child->getSize().x, child->getSize().y, child->backgroundColor, line) == false)
+                            if (child->load(static_cast<float>(child->getSize().x), static_cast<float>(child->getSize().y), child->backgroundColor, line) == false)
                                 goto LoadingFailed;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)

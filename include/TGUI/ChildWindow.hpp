@@ -89,7 +89,7 @@ namespace tgui
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const unsigned int width, const unsigned int height, const sf::Color& backgroundColor, const std::string pathname);
+        virtual bool load(const float width, const float height, const sf::Color& backgroundColor, const std::string pathname);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

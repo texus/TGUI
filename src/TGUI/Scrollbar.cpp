@@ -182,10 +182,10 @@ namespace tgui
             m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal, true);
 
             // Set the size of the scrollbar
-            m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_M->getSize().y);
+            m_Size = Vector2f(m_TextureTrackNormal_M->getSize());
 
             // Set the thumb size
-            m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
+            m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
         }
         else
             return false;

@@ -130,7 +130,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::load(unsigned int width, unsigned int height, const sf::Color& bkgColor, const std::string pathname)
+    bool ChildWindow::load(float width, float height, const sf::Color& bkgColor, const std::string pathname)
     {
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
@@ -225,7 +225,7 @@ namespace tgui
                                 m_Sprite.setTexture(*m_Texture, true);
 
                                 // Set the size of the sprite
-                                m_Sprite.setScale(static_cast<float>(width) / m_Texture->getSize().x, static_cast<float>(height) / m_Texture->getSize().y);
+                                m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
                             }
                             else // The texture was not loaded
                                 return false;

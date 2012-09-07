@@ -77,7 +77,7 @@ namespace tgui
         ///        - true on success
         ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const unsigned int width, const unsigned int height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
+        virtual bool load(const float width, const float height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +156,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        Vector2u     m_Size;
+        Vector2f     m_Size;
 
         sf::Texture* m_Texture;
         sf::Sprite   m_Sprite;

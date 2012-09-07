@@ -194,12 +194,12 @@ namespace tgui
             if (verticalScroll)
             {
                 m_Size.x = static_cast<float>(m_TextureNormal->getSize().x);
-                m_Size.y = m_TextureNormal->getSize().y * 2;
+                m_Size.y = m_TextureNormal->getSize().y * 2.f;
             }
             else
             {
                 m_Size.x = static_cast<float>(m_TextureNormal->getSize().y);
-                m_Size.y = m_TextureNormal->getSize().x * 2;
+                m_Size.y = m_TextureNormal->getSize().x * 2.f;
             }
         }
         else

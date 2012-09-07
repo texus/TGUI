@@ -320,8 +320,8 @@ namespace tgui
 
     void Tab::setSize(float width, float height)
     {
-        maximumTabWidth = width;
-        setTabHeight(height);
+        maximumTabWidth = static_cast<unsigned int>(width);
+        setTabHeight(static_cast<unsigned int>(height));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -680,10 +680,10 @@ namespace tgui
                     clippingRequired = true;
                 }
                 else
-                    tabWidth = m_NameWidth[i] + (2 * distanceToSide);
+                    tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * distanceToSide));
             }
             else
-                tabWidth = m_NameWidth[i] + (2 * distanceToSide);
+                tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * distanceToSide));
 
             // There is a minimum tab width
             if (tabWidth < 2 * distanceToSide)
@@ -695,7 +695,7 @@ namespace tgui
                 // There is another minimum when using SplitImage
                 float minimumWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY;
                 if (tabWidth < minimumWidth)
-                    tabWidth = minimumWidth;
+                    tabWidth = static_cast<unsigned int>(minimumWidth);
 
                 // Set the scaling
                 states.transform.scale(scalingY, scalingY);
@@ -882,7 +882,7 @@ namespace tgui
             }
 
             // Set the next tab on the correct position
-            states.transform.translate(tabWidth, 0);
+            states.transform.translate(static_cast<float>(tabWidth), 0);
         }
     }
 

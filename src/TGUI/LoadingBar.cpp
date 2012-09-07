@@ -491,6 +491,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool LoadingBar::mouseOnObject(float x, float y)
+    {
+        // Don't do anything when the loading bar wasn't loaded correctly
+        if (m_Loaded == false)
+            return false;
+
+        // Check if the mouse is on top of the button
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+            return true;
+        else
+        {
+            m_MouseHover = false;
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void LoadingBar::recalculateSize()
     {
         // Don't calculate anything when the loading bar wasn't loaded correctly

@@ -244,7 +244,7 @@ namespace tgui
             {
                 // Initialize the scrollbar
                 m_Scroll->setVerticalScroll(true);
-                m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+                m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
@@ -310,7 +310,7 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
         }
     }
@@ -660,7 +660,7 @@ namespace tgui
         {
             // Initialize the scrollbar
             m_Scroll->setVerticalScroll(true);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
@@ -815,7 +815,7 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
         }
     }
@@ -1234,7 +1234,7 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = oldTransform;
-            states.transform.translate(m_Size.x - m_RightBorder - m_Scroll->getSize().x, m_TopBorder);
+            states.transform.translate(static_cast<float>(m_Size.x) - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);

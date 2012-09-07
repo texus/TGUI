@@ -92,7 +92,7 @@ namespace tgui
     Vector2u SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Size.x / m_Columns, m_Size.y / m_Rows);
+            return Vector2u(static_cast<unsigned int>(m_Size.x / m_Columns), static_cast<unsigned int>(m_Size.y / m_Rows));
         else
             return Vector2u(0, 0);
     }

@@ -126,8 +126,8 @@ namespace tgui
         }
 
         // Store the new size
-        m_Size.x = width;
-        m_Size.y = height;
+        m_Size.x = static_cast<unsigned int>(width);
+        m_Size.y = static_cast<unsigned int>(height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +302,7 @@ namespace tgui
 
         // Recalculate the scale factors if needed
         if ((m_Size.x > 0) || (m_Size.y > 0))
-            setSize(m_Size.x, m_Size.y);
+            setSize(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ namespace tgui
 
         // Recalculate the scale factors if needed
         if ((m_Size.x > 0) || (m_Size.y > 0))
-            setSize(m_Size.x, m_Size.y);
+            setSize(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +325,7 @@ namespace tgui
     {
         // Recalculate the scale factors if needed
         if ((m_Size.x > 0) || (m_Size.y > 0))
-            setSize(m_Size.x, m_Size.y);
+            setSize(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y));
 
         // Reset the column widths
         for (std::vector<unsigned int>::iterator it=m_ColumnWidth.begin(); it!=m_ColumnWidth.end(); ++it)
@@ -341,11 +341,11 @@ namespace tgui
             {
                 // Remember the biggest column width
                 if (m_ColumnWidth[col] < m_GridObjects[row][col]->getScaledSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3)
-                    m_ColumnWidth[col] = m_GridObjects[row][col]->getScaledSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3;
+                    m_ColumnWidth[col] = static_cast<unsigned int>(m_GridObjects[row][col]->getScaledSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3);
 
                 // Remember the biggest row height
                 if (m_RowHeight[row] < m_GridObjects[row][col]->getScaledSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4)
-                    m_RowHeight[row] = m_GridObjects[row][col]->getScaledSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4;
+                    m_RowHeight[row] = static_cast<unsigned int>(m_GridObjects[row][col]->getScaledSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4);
             }
         }
 
@@ -354,7 +354,7 @@ namespace tgui
 
         // Recalculate the scale factors if needed
         if ((m_Size.x > 0) || (m_Size.y > 0))
-            setSize(m_Size.x, m_Size.y);
+            setSize(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,20 +382,20 @@ namespace tgui
 
     void Grid::updatePosition(unsigned int row, unsigned int col)
     {
-        unsigned int left = 0;
-        unsigned int top = 0;
+        float left = 0;
+        float top = 0;
 
         for (unsigned int i=0; i < row; ++i)
-            top += m_RowHeight[i];
+            top += static_cast<float>(m_RowHeight[i]);
 
         for (unsigned int i=0; i < col; ++i)
-            left += m_ColumnWidth[i];
+            left += static_cast<float>(m_ColumnWidth[i]);
 
         // TODO: Support more layouts
         if (m_ObjLayout[row][col] == Layout::TopLeft)
         {
-            left += m_ObjBorders[row][col].x1;
-            top += m_ObjBorders[row][col].x2;
+            left += static_cast<float>(m_ObjBorders[row][col].x1);
+            top += static_cast<float>(m_ObjBorders[row][col].x2);
         }
         else if (m_ObjLayout[row][col] == Layout::Center)
         {
@@ -410,8 +410,8 @@ namespace tgui
 
     void Grid::updatePositionsOfAllObjects()
     {
-        Vector2u position;
-        Vector2u previousPosition;
+        Vector2f position;
+        Vector2f previousPosition;
 
         // Loop through all rows
         for (unsigned int row=0; row < m_GridObjects.size(); ++row)
@@ -426,20 +426,20 @@ namespace tgui
                 // TODO: Support more layouts
                 if (m_ObjLayout[row][col] == Layout::TopLeft)
                 {
-                    position.x += m_ObjBorders[row][col].x1;
-                    position.y += m_ObjBorders[row][col].x2;
+                    position.x += static_cast<float>(m_ObjBorders[row][col].x1);
+                    position.y += static_cast<float>(m_ObjBorders[row][col].x2);
 
-                    m_GridObjects[row][col]->setPosition(position.x, position.y);
+                    m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ObjBorders[row][col].x1 - m_ColumnWidth[col];
-                    position.y -= m_ObjBorders[row][col].x2;
+                    position.x -= static_cast<float>(m_ObjBorders[row][col].x1 - m_ColumnWidth[col]);
+                    position.y -= static_cast<float>(m_ObjBorders[row][col].x2);
                 }
                 else if (m_ObjLayout[row][col] == Layout::Center)
                 {
                     position.x += m_ObjBorders[row][col].x1 + ((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f;
                     position.y += m_ObjBorders[row][col].x2 + ((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f;
 
-                    m_GridObjects[row][col]->setPosition(position.x, position.y);
+                    m_GridObjects[row][col]->setPosition(position);
 
                     position.x -= m_ObjBorders[row][col].x1 + ((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f - m_ColumnWidth[col];
                     position.y -= m_ObjBorders[row][col].x2 + ((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f;

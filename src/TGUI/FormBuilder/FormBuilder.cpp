@@ -1269,7 +1269,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::ComboBox* realObject = mainWindow.get<tgui::ComboBox>(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname(), static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
+                realObject->load(object->getLoadedPathname(), object->getScaledSize().x, object->getScaledSize().y, object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);

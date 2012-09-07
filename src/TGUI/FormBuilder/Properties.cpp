@@ -181,7 +181,7 @@ void PropertyAutoSize::addProperty(tgui::Window& window, unsigned int propertyNu
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_AutoSize");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.f - 10), 40);
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.f - 10, 40);
     comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
@@ -297,7 +297,7 @@ void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNum
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_Checked");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.f - 10), 40);
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.f - 10, 40);
     comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
@@ -533,7 +533,7 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
 
     // Create the combo box
     tgui::ComboBox* comboBox = window.add<tgui::ComboBox>("combo_VerticalScroll");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<unsigned int>(window.getSize().x / 2.0f - 10), 40);
+    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10, 40);
     comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
     comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
     comboBox->callbackID = propertyNumber + 1;
@@ -1414,7 +1414,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         formWindow.get<tgui::Label>(tgui::to_string(id))->setSize(width.value, height.value);
 
         // You are no longer auto sizing
-        if (autoSize.value == true)
+        if (!!autoSize.value == true)
         {
             autoSize.value = false;
             propertyWindow.get<tgui::ComboBox>("combo_AutoSize")->setSelectedItem("false");
@@ -1429,7 +1429,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         formWindow.get<tgui::Label>(tgui::to_string(id))->setSize(width.value, height.value);
 
         // You are no longer auto sizing
-        if (autoSize.value == true)
+        if (!!autoSize.value == true)
         {
             autoSize.value = false;
             propertyWindow.get<tgui::ComboBox>("combo_AutoSize")->setSelectedItem("false");
@@ -1444,7 +1444,7 @@ void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& pro
         tgui::Label* label = formWindow.get<tgui::Label>(tgui::to_string(id));
 
         // Tell the label to auto-size or not
-        label->setAutoSize(autoSize.value);
+        label->setAutoSize(!!autoSize.value);
 
         // Check if auto-size is enabled
         if (autoSize.value)
@@ -1662,7 +1662,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
             editBox->load(pathname.value);
 
             // Reset the size
-            editBox->setSize(editBox->getSize().x, editBox->getSize().y);
+            editBox->setSize(static_cast<float>(editBox->getSize().x), static_cast<float>(editBox->getSize().y));
 
             // Change the width and height properties
             width.value = static_cast<float>(editBox->getSize().x);
@@ -2494,7 +2494,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
             // Load the new combo box
             tgui::ComboBox* comboBox = formWindow.get<tgui::ComboBox>(tgui::to_string(id));
-            comboBox->load(pathname.value, comboBox->getSize().x, comboBox->getSize().y);
+            comboBox->load(pathname.value, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
 
             // Change the height property
             height.value = static_cast<float>(comboBox->getSize().y);
@@ -2512,7 +2512,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
                 // Load the default combo box
                 tgui::ComboBox* comboBox = formWindow.get<tgui::ComboBox>(tgui::to_string(id));
-                comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, comboBox->getSize().x, comboBox->getSize().y);
+                comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
 
                 // Adjust the scaling
                 comboBox->setSize(width.value, height.value);
@@ -2913,7 +2913,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             slider->load(pathname.value);
 
             // Reset the size
-            slider->setSize(slider->getSize().x, slider->getSize().y);
+            slider->setSize(static_cast<float>(slider->getSize().x), static_cast<float>(slider->getSize().y));
 
             // Change the width and height properties
             width.value = static_cast<float>(slider->getSize().x);
@@ -3092,7 +3092,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
             scrollbar->load(pathname.value);
 
             // Reset the size
-            scrollbar->setSize(scrollbar->getSize().x, scrollbar->getSize().y);
+            scrollbar->setSize(static_cast<float>(scrollbar->getSize().x), static_cast<float>(scrollbar->getSize().y));
 
             // Change the width and height properties
             width.value = static_cast<float>(scrollbar->getSize().x);

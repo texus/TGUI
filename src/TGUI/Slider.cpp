@@ -205,7 +205,7 @@ namespace tgui
                 else
                 {
                     if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to m_VerticalScroll: \"" + value + "\".");
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
                 }
             }
             else if (property.compare("splitimage") == 0)
@@ -255,12 +255,12 @@ namespace tgui
 
                 // Set the size of the slider
                 if (m_VerticalImage)
-                    m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M->getSize().x), static_cast<float>(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y));
                 else
-                    m_Size = Vector2f(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x, m_TextureTrackNormal_M->getSize().y);
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x), static_cast<float>(m_TextureTrackNormal_M->getSize().y));
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
+                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
             }
             else
                 return false;
@@ -292,10 +292,10 @@ namespace tgui
                 m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
 
                 // Set the size of the slider
-                m_Size = Vector2f(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_M->getSize().y);
+                m_Size = Vector2f(m_TextureTrackNormal_M->getSize());
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize().x, m_TextureThumbNormal->getSize().y);
+                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
             }
             else
                 return false;
@@ -327,13 +327,13 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // Set the size of the slider
         m_Size.x = width;
         m_Size.y = height;
+
+        // A negative size is not allowed for this object
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
 
         // Set the thumb size
         if (m_VerticalImage == m_VerticalScroll)
@@ -499,7 +499,7 @@ namespace tgui
             return false;
 
         // Calculate the thumb size and position
-        unsigned int thumbWidth, thumbHeight;
+        float thumbWidth, thumbHeight;
         float thumbLeft,  thumbTop;
 
         // Get the current position and scale

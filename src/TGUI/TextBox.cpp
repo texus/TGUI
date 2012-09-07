@@ -229,7 +229,7 @@ namespace tgui
                 // Initialize the scrollbar
                 m_Scroll->setVerticalScroll(true);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-                m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+                m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
             }
         }
 
@@ -324,7 +324,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The size of the textbox has changed, update the text
@@ -468,7 +468,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The size has changed, update the text
@@ -574,7 +574,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The space for the text has changed, so update the text
@@ -786,7 +786,7 @@ namespace tgui
         {
             // Initialize the scrollbar
             m_Scroll->setVerticalScroll(true);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setMaximum(m_Lines * m_LineHeight);
 
@@ -1697,9 +1697,9 @@ namespace tgui
             float maxLineWidth;
 
             if (m_Scroll == NULL)
-                maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
+                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f;
             else
-                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4 - m_Scroll->getSize().x;
+                maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f - m_Scroll->getSize().x;
 
             // If the width is negative then the text box is too small to be displayed
             if (maxLineWidth < 0)
@@ -1877,9 +1877,9 @@ namespace tgui
 
         // Calculate the maximum line width
         if (m_Scroll == NULL)
-            maxLineWidth = static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder - 4);
+            maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f;
         else
-            maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getSize().x - 4;
+            maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getSize().x - 4.f;
 
         // If the width is negative then the text box is too small to be displayed
         if (maxLineWidth < 0)
@@ -2376,7 +2376,7 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = origTransform;
-            states.transform.translate((m_Size.x - m_RightBorder) - m_Scroll->getSize().x, m_TopBorder * getScale().y);
+            states.transform.translate((m_Size.x - m_RightBorder) - static_cast<float>(m_Scroll->getSize().x), m_TopBorder * getScale().y);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);

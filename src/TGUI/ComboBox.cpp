@@ -874,7 +874,7 @@ namespace tgui
         else
         {
             float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureNormal->getSize().y;
-            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureNormal->getSize().x * scaleFactor), m_TopBorder);
+            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureNormal->getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
             states.transform.scale(scaleFactor, scaleFactor);
         }
 

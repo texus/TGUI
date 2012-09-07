@@ -97,7 +97,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::load(const unsigned int width, const unsigned int height, const sf::Color& bkgColor, const std::string filename)
+    bool Panel::load(const float width, const float height, const sf::Color& bkgColor, const std::string filename)
     {
         // Until the loading succeeds, the panel will be marked as unloaded
         m_Loaded = false;
@@ -126,7 +126,7 @@ namespace tgui
                 m_Sprite.setTexture(*m_Texture, true);
 
                 // Set the size of the sprite
-                m_Sprite.setScale(static_cast<float>(width) / m_Texture->getSize().x, static_cast<float>(height) / m_Texture->getSize().y);
+                m_Sprite.setScale(width / m_Texture->getSize().x, height / m_Texture->getSize().y);
 
                 // Return true to indicate that nothing went wrong
                 m_Loaded = true;
@@ -151,8 +151,8 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Set the size of the panel
-        m_Size.x = static_cast<unsigned int>(width);
-        m_Size.y = static_cast<unsigned int>(height);
+        m_Size.x = width;
+        m_Size.y = height;
 
         // If there is no background image then te panel can be considered loaded
         if (m_LoadedBackgroundImageFilename.empty())
@@ -161,7 +161,7 @@ namespace tgui
         {
             // Set the size of the sprite
             if (m_Loaded)
-                m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
+                m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
         }
     }
 
@@ -177,7 +177,7 @@ namespace tgui
 
     Vector2u Panel::getSize() const
     {
-        return m_Size;
+        return Vector2u(m_Size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ namespace tgui
             m_Sprite.setTexture(*m_Texture, true);
 
             // Set the size of the sprite
-            m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
+            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
 
             m_Loaded = true;
             return true;
@@ -268,7 +268,7 @@ namespace tgui
 
         // Get the global position
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
@@ -295,7 +295,7 @@ namespace tgui
         // Draw the background
         if (backgroundColor != sf::Color::Transparent)
         {
-            sf::RectangleShape background(Vector2f(static_cast<float>(m_Size.x),  static_cast<float>(m_Size.y)));
+            sf::RectangleShape background(m_Size);
             background.setFillColor(backgroundColor);
             target.draw(background, states);
         }

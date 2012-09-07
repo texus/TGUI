@@ -525,7 +525,7 @@ namespace tgui
             if (textWidth > width)
             {
                 if (textWidth - m_TextCropPosition < width)
-                    m_TextCropPosition = textWidth - width;
+                    m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
             }
             else
                 m_TextCropPosition = 0;
@@ -785,11 +785,11 @@ namespace tgui
 
             // If the selection point is too far on the right then adjust the cropping
             if (m_TextCropPosition + width < selectionPointPosition)
-                m_TextCropPosition = selectionPointPosition - width;
+                m_TextCropPosition = static_cast<unsigned int>(selectionPointPosition - width);
 
             // If the selection point is too far on the left then adjust the cropping
             if (m_TextCropPosition > selectionPointPosition)
-                m_TextCropPosition = selectionPointPosition;
+                m_TextCropPosition = static_cast<unsigned int>(selectionPointPosition);
         }
     }
 
@@ -836,7 +836,7 @@ namespace tgui
             width = 0;
 
         // Find out how many pixels the text is moved
-        unsigned int pixelsToMove = 0;
+        float pixelsToMove = 0;
         if (textAlignment != Alignment::Left)
         {
             // Calculate the text width
@@ -1071,7 +1071,7 @@ namespace tgui
                         if (m_TextCropPosition + width < m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x + (m_TextFull.getCharacterSize() / 10))
                             m_TextCropPosition += static_cast<unsigned int>(std::floor(m_TextFull.getCharacterSize() / 10.f + 0.5f));
                         else
-                            m_TextCropPosition = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x + (m_TextFull.getCharacterSize() / 10) - width;
+                            m_TextCropPosition = static_cast<unsigned int>(m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x + (m_TextFull.getCharacterSize() / 10) - width);
                     }
                     else
                     {
@@ -1265,7 +1265,7 @@ namespace tgui
             if (textWidth > width)
             {
                 if (textWidth - m_TextCropPosition < width)
-                    m_TextCropPosition = textWidth - width;
+                    m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
             }
             else
                 m_TextCropPosition = 0;
@@ -1315,7 +1315,7 @@ namespace tgui
                 if (textWidth > width)
                 {
                     if (textWidth - m_TextCropPosition < width)
-                        m_TextCropPosition = textWidth - width;
+                        m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
                 }
                 else
                     m_TextCropPosition = 0;
