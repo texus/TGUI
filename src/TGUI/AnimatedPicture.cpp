@@ -50,6 +50,7 @@ namespace tgui
     OBJECT           (copy),
     OBJECT_ANIMATION (copy),
     loop             (copy.loop),
+    m_Size           (copy.m_Size),
     m_LoadedFilenames(copy.m_LoadedFilenames),
     m_FrameDuration  (copy.m_FrameDuration),
     m_CurrentFrame   (copy.m_CurrentFrame),
@@ -94,6 +95,7 @@ namespace tgui
                 TGUI_TextureManager.removeTexture(m_Textures[i]);
 
             std::swap(loop,              temp.loop);
+            std::swap(m_Size,            temp.m_Size);
             std::swap(m_Textures,        temp.m_Textures);
             std::swap(m_Sprites,         temp.m_Sprites);
             std::swap(m_LoadedFilenames, temp.m_LoadedFilenames);
@@ -127,7 +129,12 @@ namespace tgui
         {
             // If this is the first frame then set it as the current displayed frame
             if (m_Textures.empty())
+            {
                 m_CurrentFrame = 1;
+
+                // Remeber the size of this image
+                m_Size = Vector2f(tempTexture->getSize());
+            }
 
             // Add the texture
             m_Textures.push_back(tempTexture);
@@ -157,8 +164,9 @@ namespace tgui
         if (m_Textures.empty())
             return;
 
-        // Set the new scale
-        setScale(width / m_Textures[0]->getSize().x, height / m_Textures[0]->getSize().y);
+        // Store the new size
+        m_Size.x = width;
+        m_Size.y = height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +174,7 @@ namespace tgui
     Vector2u AnimatedPicture::getSize() const
     {
         if (m_Textures.empty() == false)
-            return Vector2u(m_Textures[0]->getSize().x, m_Textures[0]->getSize().y);
+            return Vector2u(m_Size);
         else
             return Vector2u(0, 0);
     }
@@ -176,7 +184,7 @@ namespace tgui
     Vector2f AnimatedPicture::getScaledSize() const
     {
         if (m_Textures.empty() == false)
-            return Vector2f(m_Textures[0]->getSize().x * getScale().x, m_Textures[0]->getSize().y * getScale().y);
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
         else
             return Vector2f(0, 0);
     }
@@ -431,6 +439,9 @@ namespace tgui
 
         // Apply the transformation
         states.transform *= getTransform();
+
+        // Set the scaling
+        states.transform.scale(m_Size.x / m_Textures[0]->getSize().x, m_Size.y / m_Textures[0]->getSize().y);
 
         // Draw the frame
         target.draw(m_Sprites[m_CurrentFrame-1], states);

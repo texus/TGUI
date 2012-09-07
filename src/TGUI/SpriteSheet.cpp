@@ -82,8 +82,9 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Set the new scale
-        setScale(m_Columns * width / m_Texture->getSize().x, m_Rows * height / m_Texture->getSize().y);
+        // Store the new size
+        m_Size.x = m_Columns * width;
+        m_Size.y = m_Rows * height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +92,7 @@ namespace tgui
     Vector2u SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Texture->getSize().x / m_Columns, m_Texture->getSize().y / m_Rows);
+            return Vector2u(m_Size.x / m_Columns, m_Size.y / m_Rows);
         else
             return Vector2u(0, 0);
     }
@@ -101,7 +102,7 @@ namespace tgui
     Vector2f SpriteSheet::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Texture->getSize().x * getScale().x / m_Columns, m_Texture->getSize().y * getScale().y / m_Rows);
+            return Vector2f(m_Size.x * getScale().x / m_Columns, m_Size.y * getScale().y / m_Rows);
         else
             return Vector2f(0, 0);
     }

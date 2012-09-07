@@ -62,10 +62,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the picture cell, so the piece that is shown.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
-        ///
         /// \param width   The new width of the picture cell.
         /// \param height  The new height of the picture cell.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 

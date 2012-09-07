@@ -86,12 +86,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the displayed image.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
-        ///
         /// All frames should have the same size.
-        /// The scaling factors used to get the first frame to the correct size, will be used for the other frames.
+        /// The scaling factors used to get the first frame to the correct size, will also be used for the other frames.
         ///
         /// This function can only be called after the first frame is loaded.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -235,6 +234,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+        Vector2f m_Size;
 
         std::vector<sf::Texture*> m_Textures;
         std::vector<sf::Sprite>   m_Sprites;
