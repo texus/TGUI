@@ -38,6 +38,7 @@ namespace tgui
     Slider2D::Slider2D() :
     returnToCenter      (true),
     fixedThumbSize      (true),
+    m_Size              (0, 0),
     m_Minimum           (-1, -1),
     m_Maximum           (1, 1),
     m_Value             (0, 0),
@@ -57,6 +58,7 @@ namespace tgui
     OBJECT          (copy),
     returnToCenter  (copy.returnToCenter),
     fixedThumbSize  (copy.fixedThumbSize),
+    m_Size          (copy.m_Size),
     m_Minimum       (copy.m_Minimum),
     m_Maximum       (copy.m_Maximum),
     m_Value         (copy.m_Value),
@@ -92,6 +94,7 @@ namespace tgui
 
             std::swap(returnToCenter,       temp.returnToCenter);
             std::swap(fixedThumbSize,       temp.fixedThumbSize);
+            std::swap(m_Size,               temp.m_Size);
             std::swap(m_Minimum,            temp.m_Minimum);
             std::swap(m_Maximum,            temp.m_Maximum);
             std::swap(m_Value,              temp.m_Value);
@@ -171,15 +174,15 @@ namespace tgui
         if (m_TextureThumbNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
         if (m_TextureThumbHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
-
-        bool error = false;
-
         // load the required textures
         if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal))
             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
         {
             m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal, true);
             m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
+
+            // Store the size of the slider
+            m_Size = Vector2f(m_TextureTrackNormal->getSize());
         }
         else
             return false;
@@ -194,12 +197,12 @@ namespace tgui
                 m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
             }
             else
-                error = true;
+                return false;
         }
 
         // When there is no error we will return true
-        m_Loaded = !error;
-        return !error;
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,29 +217,29 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        setScale(width / m_TextureTrackNormal->getSize().x, height / m_TextureTrackNormal->getSize().y);
+        // Store the size of the slider
+        m_Size.x = width;
+        m_Size.y = height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2u Slider2D::getSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2u(m_Size);
+        else
             return Vector2u(0, 0);
-
-        return Vector2u(m_TextureTrackNormal->getSize().x, m_TextureTrackNormal->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Slider2D::getScaledSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+        else
             return Vector2f(0, 0);
-
-        return Vector2f(m_TextureTrackNormal->getSize().x * getScale().x, m_TextureTrackNormal->getSize().y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -416,13 +419,13 @@ namespace tgui
         {
             // If the position is positive then calculate the correct value
             if ((y - position.y) > 0)
-                m_Value.y = ((y - position.y) / (m_TextureTrackNormal->getSize().y * curScale.y)) * (m_Maximum.y - m_Minimum.y) + m_Minimum.y;
+                m_Value.y = ((y - position.y) / (m_Size.y * curScale.y)) * (m_Maximum.y - m_Minimum.y) + m_Minimum.y;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_Value.y = m_Minimum.y;
 
             // If the position is positive then calculate the correct value
             if ((x - position.x) > 0)
-                m_Value.x = ((x - position.x) / (m_TextureTrackNormal->getSize().x * curScale.x)) * (m_Maximum.x - m_Minimum.x) + m_Minimum.x;
+                m_Value.x = ((x - position.x) / (m_Size.x * curScale.x)) * (m_Maximum.x - m_Minimum.x) + m_Minimum.x;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_Value.x = m_Minimum.x;
 
@@ -466,14 +469,18 @@ namespace tgui
 
         // Get the global position
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + (m_TextureTrackNormal->getSize().x * curScale.x) - target.getView().getCenter().x + (target.getView().getSize().x / 2.f),
-                                                                       getPosition().y + (m_TextureTrackNormal->getSize().y * curScale.y) - target.getView().getCenter().y + (target.getView().getSize().y / 2.f));
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();
+
+        // Calculate the scale of the slider
+        Vector2f scaling;
+        scaling.x = m_Size.x / m_TextureTrackNormal->getSize().x;
+        scaling.y = m_Size.y / m_TextureTrackNormal->getSize().y;
+
+        // Set the scale of the slider
+        states.transform.scale(scaling);
 
         // Draw the normal track image
         target.draw(m_SpriteTrackNormal, states);
@@ -482,23 +489,22 @@ namespace tgui
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteTrackHover, states);
 
-        // Reset the transform
-        states.transform = oldTransform;
-        states.transform.translate(getPosition());
+        // Undo the scale
+        states.transform.scale(1.f / scaling.x, 1.f / scaling.y);
 
         // Check if the thumb should be scaled together with the slider
         if (fixedThumbSize)
         {
-            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * curScale.x) - (m_TextureThumbNormal->getSize().x * 0.5f),
-                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * curScale.y) - (m_TextureThumbNormal->getSize().y * 0.5f));
+            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * scaling.x) - (m_TextureThumbNormal->getSize().x * 0.5f),
+                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * scaling.y) - (m_TextureThumbNormal->getSize().y * 0.5f));
         }
         else // The thumb must be scaled
         {
-            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * curScale.x) - (m_TextureThumbNormal->getSize().x * 0.5f * curScale.y),
-                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * curScale.y) - (m_TextureThumbNormal->getSize().y * 0.5f * curScale.x));
+            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * scaling.x) - (m_TextureThumbNormal->getSize().x * 0.5f * scaling.y),
+                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * scaling.y) - (m_TextureThumbNormal->getSize().y * 0.5f * scaling.x));
 
             // Set the scale for the thumb
-            states.transform.scale(curScale.x, curScale.y);
+            states.transform.scale(scaling);
         }
 
         // Get the old clipping area

@@ -86,10 +86,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the slider.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
-        ///
         /// \param width   The new width of the slider
         /// \param height  The new height of the slider
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -206,6 +205,8 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
+
+        Vector2f m_Size;
 
         Vector2f m_Minimum;
         Vector2f m_Maximum;
