@@ -80,7 +80,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the picture.
         ///
-        /// This function will undo all scaling, as it just calculates the correct scale factors for you.
+        /// \param width   The new width of the picture
+        /// \param height  The new height of the picture
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
@@ -129,6 +131,9 @@ namespace tgui
 
         sf::Texture* m_Texture;
         sf::Sprite   m_Sprite;
+
+        // The size of the picture
+        Vector2f  m_Size;
 
         // The filename used to load the picture
         std::string m_LoadedFilename;
