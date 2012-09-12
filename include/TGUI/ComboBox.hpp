@@ -26,9 +26,6 @@
 #ifndef _TGUI_COMBO_BOX_INCLUDED_
 #define _TGUI_COMBO_BOX_INCLUDED_
 
-
-/// \todo  Fix scaling in ComboBox. This cannot be done before scaling is fixed in ListBox.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui

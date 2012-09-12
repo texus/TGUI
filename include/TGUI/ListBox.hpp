@@ -26,8 +26,7 @@
 #ifndef _TGUI_LISTBOX_INCLUDED_
 #define _TGUI_LISTBOX_INCLUDED_
 
-
-/// \todo  Fix scaling in ListBox. This cannot be done before scaling is fixed in scrollbar.
+/// \todo  ListBox shouldn't work with ids. Instead an index should be used like in Tab.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
