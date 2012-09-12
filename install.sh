@@ -30,180 +30,197 @@ if [ ! -d "lib/obj" ]; then
     mkdir lib/obj
 fi
 
+if [[ $(uname) == "Linux" ]]; then
 
-if (command -v g++) then
+    echo "Running the linux installer."
 
-    echo "g++ was found"
+    if (command -v g++) then
 
-    
-    echo "Compiling 'TGUI.cpp' ..."
-        g++ -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TGUI.cpp" -o "lib/obj/TGUI.o"
-
-    echo "Compiling 'Objects.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Objects.cpp" -o "lib/obj/Objects.o"
-
-    echo "Compiling 'Label.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Label.cpp" -o "lib/obj/Label.o"
-
-    echo "Compiling 'Picture.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Picture.cpp" -o "lib/obj/Picture.o"
-
-    echo "Compiling 'Button.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Button.cpp" -o "lib/obj/Button.o"
-
-    echo "Compiling 'Checkbox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Checkbox.cpp" -o "lib/obj/Checkbox.o"
-
-    echo "Compiling 'RadioButton.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/RadioButton.cpp" -o "lib/obj/RadioButton.o"
-
-    echo "Compiling 'EditBox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/EditBox.cpp" -o "lib/obj/EditBox.o"
-
-    echo "Compiling 'Slider.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider.cpp" -o "lib/obj/Slider.o"
-
-    echo "Compiling 'Scrollbar.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Scrollbar.cpp" -o "lib/obj/Scrollbar.o"
-
-    echo "Compiling 'Listbox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ListBox.cpp" -o "lib/obj/ListBox.o"
-
-    echo "Compiling 'LoadingBar.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/LoadingBar.cpp" -o "lib/obj/LoadingBar.o"
-
-    echo "Compiling 'ComboBox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ComboBox.cpp" -o "lib/obj/ComboBox.o"
-
-    echo "Compiling 'TextBox.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TextBox.cpp" -o "lib/obj/TextBox.o"
-
-    echo "Compiling 'SpriteSheet.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpriteSheet.cpp" -o "lib/obj/SpriteSheet.o"
-
-    echo "Compiling 'AnimatedPicture.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/AnimatedPicture.cpp" -o "lib/obj/AnimatedPicture.o"
-
-    echo "Compiling 'AnimatedButton.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/AnimatedButton.cpp" -o "lib/obj/AnimatedButton.o"
-
-    echo "Compiling 'SpinButton.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpinButton.cpp" -o "lib/obj/SpinButton.o"
-
-    echo "Compiling 'Slider2D.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider2D.cpp" -o "lib/obj/Slider2D.o"
-
-    echo "Compiling 'Tab.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Tab.cpp" -o "lib/obj/Tab.o"
-
-    echo "Compiling 'InfoFileParser.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/InfoFileParser.cpp" -o "lib/obj/InfoFileParser.o"
-
-    echo "Compiling 'EventManager.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/EventManager.cpp" -o "lib/obj/EventManager.o"
-
-    echo "Compiling 'TextureManager.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TextureManager.cpp" -o "lib/obj/TextureManager.o"
-
-    echo "Compiling 'Group.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Group.cpp" -o "lib/obj/Group.o"
-
-    echo "Compiling 'GroupObject.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/GroupObject.cpp" -o "lib/obj/GroupObject.o"
-
-    echo "Compiling 'Panel.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Panel.cpp" -o "lib/obj/Panel.o"
-
-    echo "Compiling 'ChildWindow.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ChildWindow.cpp" -o "lib/obj/ChildWindow.o"
-
-    echo "Compiling 'Grid.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Grid.cpp" -o "lib/obj/Grid.o"
-
-    echo "Compiling 'Window.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Window.cpp" -o "lib/obj/Window.o"
-
-    echo "Compiling 'Form.cpp' ..."
-        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Form.cpp" -o "lib/obj/Form.o"
-
-
-    echo "Linking tgui ..."
+        echo "g++ was found"
         
-        if ( ! (g++ -shared -o "lib/libtgui.so" \
-                    "lib/obj/TGUI.o" \
-                    "lib/obj/Objects.o" \
-                    "lib/obj/Label.o" \
-                    "lib/obj/Picture.o" \
-                    "lib/obj/Button.o" \
-                    "lib/obj/Checkbox.o" \
-                    "lib/obj/RadioButton.o" \
-                    "lib/obj/EditBox.o" \
-                    "lib/obj/Slider.o" \
-                    "lib/obj/Scrollbar.o" \
-                    "lib/obj/ListBox.o" \
-                    "lib/obj/LoadingBar.o" \
-                    "lib/obj/ComboBox.o" \
-                    "lib/obj/TextBox.o" \
-                    "lib/obj/SpriteSheet.o" \
-                    "lib/obj/AnimatedPicture.o" \
-                    "lib/obj/AnimatedButton.o" \
-                    "lib/obj/SpinButton.o" \
-                    "lib/obj/Slider2D.o" \
-                    "lib/obj/Tab.o" \
-                    "lib/obj/InfoFileParser.o" \
-                    "lib/obj/EventManager.o" \
-                    "lib/obj/TextureManager.o" \
-                    "lib/obj/Group.o" \
-                    "lib/obj/GroupObject.o" \
-                    "lib/obj/Panel.o" \
-                    "lib/obj/ChildWindow.o" \
-                    "lib/obj/Grid.o" \
-                    "lib/obj/Window.o" \
-                    "lib/obj/Form.o")) then
-            echo "Linking has failed. Make sure that sfml is installed on your system."
-            echo "Aborting installer"
-            exit
-        fi
+        echo "Compiling 'TGUI.cpp' ..."
+            g++ -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TGUI.cpp" -o "lib/obj/TGUI.o"
 
-    echo "Root permissions are needed to install 'lib/libtgui.so' to '/usr/local/lib' and to run ldconfig."
-        sudo cp "lib/libtgui.so" "/usr/local/lib"
-        sudo ldconfig
+        echo "Compiling 'Objects.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Objects.cpp" -o "lib/obj/Objects.o"
 
-    echo "Do you want to build the Form Builder? [Y/n]"
-    
-        while read inputline
-        do
-            if [ ${inputline} == "Y" ] || [ ${inputline} == "y" ]; then
-                
-                echo "Compiling 'FormBuilder/main.cpp' ..."
-                    g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/main.cpp" -o "lib/obj/main.o"
+        echo "Compiling 'Label.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Label.cpp" -o "lib/obj/Label.o"
 
-                echo "Compiling 'FormBuilder/Properties.cpp' ..."
-                    g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/Properties.cpp" -o "lib/obj/Properties.o"
+        echo "Compiling 'Picture.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Picture.cpp" -o "lib/obj/Picture.o"
 
-                echo "Compiling 'FormBuilder/FormBuilder.cpp' ..."
-                    g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/FormBuilder.cpp" -o "lib/obj/FormBuilder.o"
+        echo "Compiling 'Button.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Button.cpp" -o "lib/obj/Button.o"
 
-                echo "Linking Form Builder ..."
-                    if ( ! (g++ -o "Form Builder/FormBuilder" "lib/obj/main.o" "lib/obj/Properties.o" "lib/obj/FormBuilder.o" -ltgui -lsfml-graphics -lsfml-window -lsfml-system)) then
-                        echo "Linking has failed. Did you provide root access to install tgui?"
-                        echo "Aborting installer"
-                        exit
-                    fi
+        echo "Compiling 'Checkbox.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Checkbox.cpp" -o "lib/obj/Checkbox.o"
 
-                break
-            elif [ ${inputline} == "N" ] || [ ${inputline} == "n" ]; then
-                break
-            else
-                echo ""
-                echo "Do you want to build the Form Builder? [Y/n]" 
+        echo "Compiling 'RadioButton.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/RadioButton.cpp" -o "lib/obj/RadioButton.o"
+
+        echo "Compiling 'EditBox.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/EditBox.cpp" -o "lib/obj/EditBox.o"
+
+        echo "Compiling 'Slider.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider.cpp" -o "lib/obj/Slider.o"
+
+        echo "Compiling 'Scrollbar.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Scrollbar.cpp" -o "lib/obj/Scrollbar.o"
+
+        echo "Compiling 'Listbox.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ListBox.cpp" -o "lib/obj/ListBox.o"
+
+        echo "Compiling 'LoadingBar.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/LoadingBar.cpp" -o "lib/obj/LoadingBar.o"
+
+        echo "Compiling 'ComboBox.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ComboBox.cpp" -o "lib/obj/ComboBox.o"
+
+        echo "Compiling 'TextBox.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TextBox.cpp" -o "lib/obj/TextBox.o"
+
+        echo "Compiling 'SpriteSheet.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpriteSheet.cpp" -o "lib/obj/SpriteSheet.o"
+
+        echo "Compiling 'AnimatedPicture.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/AnimatedPicture.cpp" -o "lib/obj/AnimatedPicture.o"
+
+        echo "Compiling 'AnimatedButton.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/AnimatedButton.cpp" -o "lib/obj/AnimatedButton.o"
+
+        echo "Compiling 'SpinButton.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/SpinButton.cpp" -o "lib/obj/SpinButton.o"
+
+        echo "Compiling 'Slider2D.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Slider2D.cpp" -o "lib/obj/Slider2D.o"
+
+        echo "Compiling 'Tab.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Tab.cpp" -o "lib/obj/Tab.o"
+
+        echo "Compiling 'InfoFileParser.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/InfoFileParser.cpp" -o "lib/obj/InfoFileParser.o"
+
+        echo "Compiling 'EventManager.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/EventManager.cpp" -o "lib/obj/EventManager.o"
+
+        echo "Compiling 'TextureManager.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/TextureManager.cpp" -o "lib/obj/TextureManager.o"
+
+        echo "Compiling 'Group.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Group.cpp" -o "lib/obj/Group.o"
+
+        echo "Compiling 'GroupObject.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/GroupObject.cpp" -o "lib/obj/GroupObject.o"
+
+        echo "Compiling 'Panel.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Panel.cpp" -o "lib/obj/Panel.o"
+
+        echo "Compiling 'ChildWindow.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/ChildWindow.cpp" -o "lib/obj/ChildWindow.o"
+
+        echo "Compiling 'Grid.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Grid.cpp" -o "lib/obj/Grid.o"
+
+        echo "Compiling 'Window.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Window.cpp" -o "lib/obj/Window.o"
+
+        echo "Compiling 'Form.cpp' ..."
+            g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -fPIC -DSFML_DYNAMIC -I"include" -c "src/TGUI/Form.cpp" -o "lib/obj/Form.o"
+
+
+        echo "Linking tgui ..."
+            
+            if ( ! (g++ -shared -o "lib/libtgui.so" \
+                        "lib/obj/TGUI.o" \
+                        "lib/obj/Objects.o" \
+                        "lib/obj/Label.o" \
+                        "lib/obj/Picture.o" \
+                        "lib/obj/Button.o" \
+                        "lib/obj/Checkbox.o" \
+                        "lib/obj/RadioButton.o" \
+                        "lib/obj/EditBox.o" \
+                        "lib/obj/Slider.o" \
+                        "lib/obj/Scrollbar.o" \
+                        "lib/obj/ListBox.o" \
+                        "lib/obj/LoadingBar.o" \
+                        "lib/obj/ComboBox.o" \
+                        "lib/obj/TextBox.o" \
+                        "lib/obj/SpriteSheet.o" \
+                        "lib/obj/AnimatedPicture.o" \
+                        "lib/obj/AnimatedButton.o" \
+                        "lib/obj/SpinButton.o" \
+                        "lib/obj/Slider2D.o" \
+                        "lib/obj/Tab.o" \
+                        "lib/obj/InfoFileParser.o" \
+                        "lib/obj/EventManager.o" \
+                        "lib/obj/TextureManager.o" \
+                        "lib/obj/Group.o" \
+                        "lib/obj/GroupObject.o" \
+                        "lib/obj/Panel.o" \
+                        "lib/obj/ChildWindow.o" \
+                        "lib/obj/Grid.o" \
+                        "lib/obj/Window.o" \
+                        "lib/obj/Form.o")) then
+                echo "Linking has failed. Make sure that sfml is installed on your system."
+                echo "Aborting installer"
+                exit
             fi
-        done
 
-    echo "Installation DONE"
+        echo "Root permissions are needed to install 'lib/libtgui.so' to '/usr/local/lib' and to run ldconfig."
+            sudo cp "lib/libtgui.so" "/usr/local/lib"
+            sudo ldconfig
+
+        echo "Do you want to build the Form Builder? [Y/n]"
+        
+            while read inputline
+            do
+                if [ ${inputline} == "Y" ] || [ ${inputline} == "y" ]; then
+                    
+                    echo "Compiling 'FormBuilder/main.cpp' ..."
+                        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/main.cpp" -o "lib/obj/main.o"
+
+                    echo "Compiling 'FormBuilder/Properties.cpp' ..."
+                        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/Properties.cpp" -o "lib/obj/Properties.o"
+
+                    echo "Compiling 'FormBuilder/FormBuilder.cpp' ..."
+                        g++ -Wall -Wall -Wextra -Wshadow -Wno-long-long -pedantic -DSFML_DYNAMIC -I"include" -I"include/FormBuilder" -c "src/TGUI/FormBuilder/FormBuilder.cpp" -o "lib/obj/FormBuilder.o"
+
+                    echo "Linking Form Builder ..."
+                        if ( ! (g++ -o "Form Builder/FormBuilder" "lib/obj/main.o" "lib/obj/Properties.o" "lib/obj/FormBuilder.o" -ltgui -lsfml-graphics -lsfml-window -lsfml-system)) then
+                            echo "Linking has failed. Did you provide root permissions to install tgui?"
+                            echo "Aborting installer"
+                            exit
+                        fi
+
+                    break
+                elif [ ${inputline} == "N" ] || [ ${inputline} == "n" ]; then
+                    break
+                else
+                    echo ""
+                    echo "Do you want to build the Form Builder? [Y/n]" 
+                fi
+            done
+
+        echo "Installation DONE"
+
+    else
+        echo "g++ was NOT found"
+        echo "Aborting installer"
+    fi
+
+elif [[ $(uname) == "Darwin" ]]; then
+
+    echo "Running the Mac OS X installer."
+
+    echo "Mac OS X is not yet supported."
+    echo "Aborting installer"
 
 else
-    echo "g++ was NOT found"
+
+    echo "Unknown OS. Only 'Linux' and 'Darwin' are implemented."
+    echo "Your OS: $(uname)"
     echo "Aborting installer"
+
 fi
 
