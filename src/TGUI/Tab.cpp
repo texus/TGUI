@@ -375,7 +375,7 @@ namespace tgui
         if (selectTab)
             m_SelectedTab = m_TabNames.size()-1;
 
-        // Return the id of the new tab
+        // Return the index of the new tab
         return m_TabNames.size()-1;
     }
 
@@ -402,7 +402,7 @@ namespace tgui
 
     void Tab::select(const unsigned int index)
     {
-        // If the id is too big then select the last tab
+        // If the index is too big then do nothing
         if (index > m_TabNames.size()-1)
         {
             TGUI_OUTPUT("TGUI warning: Failed to select the tab. The index was too high.");
@@ -451,7 +451,7 @@ namespace tgui
 
     void Tab::remove(const unsigned int index)
     {
-        // The id can't be 0 or too high
+        // The index can't be too high
         if (index > m_TabNames.size()-1)
         {
             TGUI_OUTPUT("TGUI warning: Failed to remove the tab. The index was too high.");
