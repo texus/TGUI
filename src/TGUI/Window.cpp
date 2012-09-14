@@ -95,7 +95,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Window::drawGUI(const sf::RenderStates& states)
+    void Window::drawGUI()
     {
         // Update the time
         updateTime(m_Clock.restart());
@@ -117,7 +117,7 @@ namespace tgui
         }
 
         // Draw the window with all objects inside it
-        drawObjectGroup(this, states);
+        drawObjectGroup(this, sf::RenderStates::Default);
 
         // Check if clipping was previously enabled
         if (clippingEnabled)
