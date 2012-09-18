@@ -185,7 +185,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the filenames that were used to load the pictures.
         ///
-        /// When no picture has not been loaded yet then this function will return an empty vector.
+        /// When no picture has been loaded yet then this function will return an empty vector.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::vector<std::string> getLoadedFilenames() const;
 

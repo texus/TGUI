@@ -124,7 +124,7 @@ namespace tgui
         /// \brief Sets a maximum value.
         ///
         /// When the value is too big then it will be changed to this maximum.
-        /// The default maximum value is 100.
+        /// The default maximum value is 10.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setMaximum(const unsigned int maximum);
 
@@ -148,7 +148,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the maximum value.
         ///
-        /// The default maximum value 0.
+        /// The default maximum value 10.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getMaximum() const;
 

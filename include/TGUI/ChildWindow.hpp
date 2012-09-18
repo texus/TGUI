@@ -118,6 +118,9 @@ namespace tgui
         /// \brief Changes the transparency of the window.
         ///
         /// By default all objects in the window are drawn fully opaque, but with this function you can make them semi-transparent.
+        ///
+        /// \warning This function no longer works like expected. This is the cost for the performance improvements that I made.
+        ///          The next version of tgui will reimplement transparency (but for ALL objects) without losing performance while not used.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTransparency(const unsigned char transparency);
 

@@ -94,8 +94,6 @@ namespace tgui
         ///
         /// \warning This function will return NULL when an unknown object name was passed.
         ///
-        /// \warning Don't pass an empty string to this function. Objects with empty names are sometimes used internally.
-        ///
         /// Usage example:
         /// \code tgui::Picture* pic = group.get<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
