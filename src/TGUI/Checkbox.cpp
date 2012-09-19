@@ -378,7 +378,7 @@ namespace tgui
             if (allowTextClick)
             {
                 sf::FloatRect bounds = m_Text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y))
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }
