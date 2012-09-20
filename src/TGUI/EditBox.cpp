@@ -353,7 +353,10 @@ namespace tgui
         {
             // load the required texture
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            {
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
+                m_Size = Vector2f(m_TextureNormal_M->getSize());
+            }
             else
                 return false;
 

@@ -209,8 +209,8 @@ namespace tgui
         // Check if a key was released
         else if (event.type == sf::Event::KeyReleased)
         {
-            // We don't handle the tab key as it is an exception
-            if (event.key.code != sf::Keyboard::Tab)
+            // We don't handle the tab key as it is an exception and we can't do anything with an unknown key either
+            if ((event.key.code != sf::Keyboard::Tab) && (event.key.code != sf::Keyboard::Unknown))
             {
                 // Check if nothing happend since the key was pressed
                 if (m_KeyPress[event.key.code] == true)
