@@ -172,31 +172,35 @@ namespace tgui
         // Check if a key was pressed
         else if (event.type == sf::Event::KeyPressed)
         {
-            // Mark the key as down
-            m_KeyPress[event.key.code] = true;
-
-            // Check if there is a focused object
-            if (m_FocusedObject)
+            // Only continue when the character was recognised
+            if (event.key.code != sf::Keyboard::Unknown)
             {
-                // Check if the object is a group
-                if (m_Objects[m_FocusedObject-1]->m_GroupObject)
+                // Mark the key as down
+                m_KeyPress[event.key.code] = true;
+
+                // Check if there is a focused object
+                if (m_FocusedObject)
                 {
-                    // Make the event handler of the group do the rest
-                    static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
-                }
-                else // The event has to be send to a normal object
-                {
-                    // Some keys may be repeated
-                    if ((event.key.code == sf::Keyboard::Left)
-                     || (event.key.code == sf::Keyboard::Right)
-                     || (event.key.code == sf::Keyboard::Up)
-                     || (event.key.code == sf::Keyboard::Down)
-                     || (event.key.code == sf::Keyboard::BackSpace)
-                     || (event.key.code == sf::Keyboard::Delete)
-                     || (event.key.code == sf::Keyboard::Return))
+                    // Check if the object is a group
+                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                     {
-                        // Tell the object that the key was pressed
-                        m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
+                        // Make the event handler of the group do the rest
+                        static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
+                    }
+                    else // The event has to be send to a normal object
+                    {
+                        // Some keys may be repeated
+                        if ((event.key.code == sf::Keyboard::Left)
+                         || (event.key.code == sf::Keyboard::Right)
+                         || (event.key.code == sf::Keyboard::Up)
+                         || (event.key.code == sf::Keyboard::Down)
+                         || (event.key.code == sf::Keyboard::BackSpace)
+                         || (event.key.code == sf::Keyboard::Delete)
+                         || (event.key.code == sf::Keyboard::Return))
+                        {
+                            // Tell the object that the key was pressed
+                            m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
+                        }
                     }
                 }
             }

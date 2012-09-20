@@ -310,6 +310,10 @@ namespace tgui
                 m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
                 m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
+
+                // Set the size of the edit box
+                m_Size.x = static_cast<float>(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
+                m_Size.y = static_cast<float>(m_TextureNormal_M->getSize().y);
             }
             else
                 return false;

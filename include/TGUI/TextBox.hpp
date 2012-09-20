@@ -209,7 +209,6 @@ namespace tgui
         /// \param textColor                            The color of the text
         /// \param selectedTextColor                    The color of the text when it is selected
         /// \param selectedTextBackgroundColor          The color of the background of the text that is selected
-        /// \param unfocusedSelectedTextBackgroundColor The color of the background of the text that is selected when the text box is not focused
         /// \param borderColor                          The color of the borders
         /// \param selectionPointColor                  The color of the flickering selection point
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
