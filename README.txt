@@ -14,6 +14,8 @@ You can download the latest release on Github (https://github.com/texus/TGUI).
 You will need to build TGUI with CMake before you can use it or you can use the source code directly in your project.
 Using CMake is pretty easy and you can find tutorials on my site (http://tgui.weebly.com/tutorials.html).
 
+This download contains TGUI v0.4.
+
 
 
 Tutorials
