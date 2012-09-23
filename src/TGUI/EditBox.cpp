@@ -428,7 +428,7 @@ namespace tgui
 
     Vector2f EditBox::getScaledSize() const
     {
-        return Vector2f(m_Size.x * getScale().x, m_Size.y * getSize().y);
+        return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
