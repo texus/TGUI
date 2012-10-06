@@ -131,7 +131,7 @@ if [[ $(uname) == "Linux" ]]; then
 
         echo "Linking tgui ..."
             
-            if ( ! (g++ -shared -o "lib/libtgui.so" \
+            if ( ! (g++ -shared -o "lib/libtgui.so.0.5" \
                         "lib/obj/TGUI.o" \
                         "lib/obj/Objects.o" \
                         "lib/obj/Label.o" \
@@ -167,8 +167,9 @@ if [[ $(uname) == "Linux" ]]; then
                 exit
             fi
 
-        echo "Root permissions are needed to install 'lib/libtgui.so' to '/usr/local/lib' and to run ldconfig."
-            sudo cp "lib/libtgui.so" "/usr/local/lib"
+        echo "Root permissions are needed to install tgui to '/usr/lib' and to run ldconfig."
+            sudo cp "lib/libtgui.so.0.5" "/usr/lib"
+            sudo ln -sf libtgui.so.0.5 /usr/lib/libtgui.so
             sudo ldconfig
 
         echo "Do you want to build the Form Builder? [Y/n]"
