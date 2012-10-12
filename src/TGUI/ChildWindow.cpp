@@ -301,8 +301,9 @@ namespace tgui
         // Remember the new title bar height
         m_TitleBarHeight = height;
 
-        // Set the scale of the close button
-        m_CloseButton->setScale(static_cast<float>(height) / m_TextureTitleBar_M->getSize().y, static_cast<float>(height) / m_TextureTitleBar_M->getSize().y);
+        // Set the size of the close button
+        m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().x,
+                               static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
