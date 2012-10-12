@@ -520,6 +520,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Get the current position and scale
+        Vector2f position = getPosition();
+        Vector2f curScale = getScale();
+
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
@@ -527,26 +531,26 @@ namespace tgui
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPanelPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * getScale().x) + viewPosition.x,
-                                                                        getPosition().y + ((m_TitleBarHeight + m_TopBorder) * getScale().x) + viewPosition.y);
-        Vector2f bottomRightPanelPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder) * getScale().x) + viewPosition.x,
-                                                                            getPosition().y + ((m_TitleBarHeight + m_Size.y - m_BottomBorder) * getScale().y) + viewPosition.y);
+        Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + (m_LeftBorder * curScale.x) + viewPosition.x,
+                                                                        position.y + ((m_TitleBarHeight + m_TopBorder) * curScale.y) + viewPosition.y);
+        Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + ((m_Size.x - m_RightBorder) * curScale.x) + viewPosition.x,
+                                                                            position.y + ((m_TitleBarHeight + m_Size.y - m_BottomBorder) * curScale.y) + viewPosition.y);
         Vector2f topLeftTitleBarPosition;
         Vector2f bottomRightTitleBarPosition;
 
         if (layout == LayoutRight)
         {
-            topLeftTitleBarPosition = states.transform.transformPoint(getPosition().x + distanceToSide + viewPosition.x,
-                                                                      getPosition().y + viewPosition.y);
-            bottomRightTitleBarPosition = states.transform.transformPoint(getPosition().x + m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x + viewPosition.x,
-                                                                          getPosition().y + m_TitleBarHeight + viewPosition.y);
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + distanceToSide + viewPosition.x,
+                                                                      position.y + viewPosition.y);
+            bottomRightTitleBarPosition = states.transform.transformPoint(position.x + ((m_Size.x - (2*distanceToSide) - m_CloseButton->getScaledSize().x) * curScale.x) + viewPosition.x,
+                                                                          position.y + (m_TitleBarHeight * curScale.y) + viewPosition.y);
         }
         else // if (layout == LayoutLeft)
         {
-            topLeftTitleBarPosition = states.transform.transformPoint(getPosition().x + (2*distanceToSide) + m_CloseButton->getScaledSize().x + viewPosition.x,
-                                                                      getPosition().y + viewPosition.y);
-            bottomRightTitleBarPosition = states.transform.transformPoint(getPosition().x - distanceToSide + m_Size.x + viewPosition.x,
-                                                                          getPosition().y + m_TitleBarHeight + viewPosition.y);
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + (2*distanceToSide) + m_CloseButton->getScaledSize().x + viewPosition.x,
+                                                                      position.y + viewPosition.y);
+            bottomRightTitleBarPosition = states.transform.transformPoint(position.x + ((m_Size.x - distanceToSide) * curScale.x) + viewPosition.x,
+                                                                          position.y + (m_TitleBarHeight * curScale.y) + viewPosition.y);
         }
 
 
