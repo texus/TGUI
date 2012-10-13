@@ -154,7 +154,7 @@ int main()
     tgui::Window window(sf::VideoMode(800, 600), "TGUI v0.5");
 
     // Set the font for all the objects.
-    window.globalFont.loadFromFile("../Fonts/DejaVuSans.ttf") == false)
+    if (window.globalFont.loadFromFile("../Fonts/DejaVuSans.ttf") == false)
     {
        // Error
     }
