@@ -2376,7 +2376,7 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = origTransform;
-            states.transform.translate((m_Size.x - m_RightBorder) - static_cast<float>(m_Scroll->getSize().x), m_TopBorder * getScale().y);
+            states.transform.translate((m_Size.x - m_RightBorder) - static_cast<float>(m_Scroll->getSize().x), m_TopBorder);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
