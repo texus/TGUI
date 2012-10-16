@@ -2239,6 +2239,9 @@ namespace tgui
             // Check if the name matches
             if (m_ObjName[i].toWideString().compare(objectName) == 0)
             {
+                // Unfocus the object, just in case it was focused
+                m_EventManager.unfocusObject(m_EventManager.m_Objects[i]);
+
                 // Remove the object
                 delete m_EventManager.m_Objects[i];
                 m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
