@@ -1608,7 +1608,7 @@ namespace tgui
 
         // Reset the transformation to draw the text
         states.transform = oldTransform;
-        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition, m_TopBorder * scaling.y);
+        states.transform.translate(std::floor(m_LeftBorder * borderScale - m_TextCropPosition + 0.5f), std::floor(m_TopBorder * scaling.y + 0.5f));
 
         // Check if the layout wasn't left
         if (textAlignment != Alignment::Left)
@@ -1624,9 +1624,9 @@ namespace tgui
             {
                 // Put the text on the correct position
                 if (textAlignment == Alignment::Center)
-                    states.transform.translate((width - textWidth) / 2.f, 0);
+                    states.transform.translate(std::floor((width - textWidth) / 2.f + 0.5f), 0);
                 else // if (textAlignment == Alignment::Right)
-                    states.transform.translate(width - textWidth, 0);
+                    states.transform.translate(std::floor(width - textWidth + 0.5f), 0);
             }
         }
 
@@ -1664,7 +1664,7 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                states.transform.translate(std::floor(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize()) + 0.5f), 0);
 
             // Draw the selected text
             states.transform.translate(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
@@ -1672,10 +1672,10 @@ namespace tgui
 
             // Watch out for kerning
             if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+                states.transform.translate(std::floor(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize()) + 0.5f), 0);
 
             // Draw the text behind the selected text
-            states.transform.translate(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, 0);
+            states.transform.translate(std::floor(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x + 0.5f), 0);
             target.draw(m_TextAfterSelection, states);
         }
 
