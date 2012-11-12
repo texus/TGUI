@@ -90,6 +90,12 @@ namespace tgui
             event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
             event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
         }
+        else if (event.type == sf::Event::MouseWheelMoved)
+        {
+            // Adjust the mouse position of the event
+            event.mouseWheel.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
+            event.mouseWheel.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+        }
 
         // Let the event manager handle the event
         m_EventManager.handleEvent(event);

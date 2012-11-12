@@ -229,6 +229,7 @@ namespace tgui
         virtual void mouseMoved(float x, float y);
         virtual void keyPressed(sf::Keyboard::Key key);
         virtual void textEntered(sf::Uint32 key);
+        virtual void mouseWheelMoved(int delta);
         virtual void objectFocused();
         virtual void objectUnfocused();
 

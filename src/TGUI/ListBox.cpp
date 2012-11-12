@@ -1029,6 +1029,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::mouseWheelMoved(int delta)
+    {
+        // Only do something when there is a scrollbar
+        if (m_Scroll != NULL)
+        {
+            if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
+            {
+                // Check if you are scrolling down
+                if (delta < 0)
+                {
+                    // Scroll down
+                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ItemHeight / 2)) );
+                }
+                else // You are scrolling up
+                {
+                    unsigned int change = static_cast<unsigned int>(delta) * (m_ItemHeight / 2);
+
+                    // Scroll up
+                    if (change < m_Scroll->getValue())
+                        m_Scroll->setValue( m_Scroll->getValue() - change );
+                    else
+                        m_Scroll->setValue(0);
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::mouseNotOnObject()
     {
         m_MouseHover = false;

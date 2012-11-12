@@ -277,6 +277,24 @@ namespace tgui
                 }
             }
         }
+
+        // Check for mouse wheel scrolling
+        else if (event.type == sf::Event::MouseWheelMoved)
+        {
+            // Find the object under the mouse
+            unsigned int objectNr;
+            if (mouseOnObject(objectNr, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)))
+            {
+                // Check if the object is a group
+                if (m_Objects[objectNr]->m_GroupObject)
+                {
+                    // Make the event handler of the group do the rest
+                    static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+                }
+                else // Send the event to the object
+                    m_Objects[objectNr]->mouseWheelMoved(event.mouseWheel.delta);
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

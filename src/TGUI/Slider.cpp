@@ -662,6 +662,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::mouseWheelMoved(int delta)
+    {
+        if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
+            m_Value = m_Minimum;
+        else
+            setValue(static_cast<unsigned int>(m_Value - delta));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Slider::objectFocused()
     {
         // A slider can't be focused (yet)

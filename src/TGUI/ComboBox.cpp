@@ -750,6 +750,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::mouseWheelMoved(int delta)
+    {
+        // Check if the list is displayed
+        if (m_ShowList)
+        {
+            // Only do something when there is a scrollbar
+            if (m_ListBox->m_Scroll != NULL)
+            {
+                if (m_ListBox->m_Scroll->getLowValue() < m_ListBox->m_Scroll->getMaximum())
+                {
+                    // Check if you are scrolling down
+                    if (delta < 0)
+                    {
+                        // Scroll down
+                        m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ListBox->m_ItemHeight / 2)) );
+                    }
+                    else // You are scrolling up
+                    {
+                        unsigned int change = static_cast<unsigned int>(delta) * (m_ListBox->m_ItemHeight / 2);
+
+                        // Scroll up
+                        if (change < m_ListBox->m_Scroll->getValue())
+                            m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() - change );
+                        else
+                            m_ListBox->m_Scroll->setValue(0);
+                    }
+                }
+            }
+        }
+        else // The list isn't visible
+        {
+            // Check if you are scrolling down
+            if (delta < 0)
+            {
+                // select the next item
+                if (m_ListBox->getSelectedItemID() < m_ListBox->m_Items.size())
+                    m_ListBox->setSelectedItem(m_ListBox->getSelectedItemID()+1);
+            }
+            else // You are scrolling up
+            {
+                // select the previous item
+                if (m_ListBox->getSelectedItemID() > 1)
+                    m_ListBox->setSelectedItem(m_ListBox->getSelectedItemID()-1);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::mouseNoLongerDown()
     {
         // Make sure that the mouse went down on top of the combo box
