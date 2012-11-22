@@ -54,7 +54,7 @@ namespace tgui
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)
         {
-            Vector2f mouseCoords = m_Window->convertCoords(Vector2i(event.mouseMove.x, event.mouseMove.y));
+            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y));
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -62,7 +62,7 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            Vector2f mouseCoords = m_Window->convertCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
+            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
