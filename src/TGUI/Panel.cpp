@@ -198,6 +198,10 @@ namespace tgui
         if (m_Texture != NULL)
             TGUI_TextureManager.removeTexture(m_Texture);
 
+        // Don't continue loading when the string was empty
+        if (m_LoadedBackgroundImageFilename == "")
+            return true;
+
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
