@@ -285,6 +285,38 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ChildWindow::setBackgroundImage(const std::string filename)
+    {
+        // Remember the background image filename
+        m_LoadedBackgroundImageFilename = filename;
+
+        // If we have already loaded a background image then first delete it
+        if (m_Texture != NULL)
+            TGUI_TextureManager.removeTexture(m_Texture);
+
+        // Don't continue loading when the string was empty
+        if (m_LoadedBackgroundImageFilename == "")
+            return true;
+
+        // Try to load the texture from the file
+        if (TGUI_TextureManager.getTexture(filename, m_Texture))
+        {
+            // Set the texture for the sprite
+            m_Sprite.setTexture(*m_Texture, true);
+
+            // Set the size of the sprite
+            m_Sprite.setScale((m_Size.x - m_LeftBorder - m_RightBorder) / m_Texture->getSize().x,
+                              (m_Size.y - m_TopBorder - m_BottomBorder) / m_Texture->getSize().y);
+
+            m_Loaded = true;
+            return true;
+        }
+        else // The texture was not loaded
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::string ChildWindow::getLoadedPathname() const
     {
         return m_LoadedPathname;
