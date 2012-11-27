@@ -224,6 +224,10 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Don't continue when the picture wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
         states.transform *= getTransform();
         states.transform.scale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
         target.draw(m_Sprite, states);
