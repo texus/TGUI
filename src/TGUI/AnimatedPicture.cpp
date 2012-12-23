@@ -383,6 +383,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool AnimatedPicture::mouseOnObject(float x, float y)
+    {
+        // Don't do anything when the image wasn't loaded
+        if (m_Loaded == false)
+            return false;
+
+        // Check if the mouse is on top of the picture
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+            return true;
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void AnimatedPicture::update()
     {
         // Only continue when you are playing
