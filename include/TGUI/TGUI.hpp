@@ -55,11 +55,16 @@ namespace tgui
     struct EditBox;
     struct Slider;
     struct Scrollbar;
-    struct Listbox;
+    struct ListBox;
     struct LoadingBar;
     struct ComboBox;
     struct TextBox;
     struct SpriteSheet;
+    struct AnimatedPicture;
+    struct AnimatedButton;
+    struct SpinButton;
+    struct Slider2D;
+    struct Tab;
 
     struct InfoFileParser;
     struct EventManager;
@@ -67,6 +72,8 @@ namespace tgui
 
     struct Group;
     struct Panel;
+    struct ChildWindow;
+    struct Grid;
     struct Window;
 
 
@@ -81,16 +88,67 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    enum ObjectPhase
+    {
+        ObjectPhase_Hover     = 1,
+        ObjectPhase_MouseDown = 2,
+        ObjectPhase_Focused   = 4,
+        ObjectPhase_Selected  = 8
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief A list of all objects in tgui.
+    ///
+    /// It is used to identify an object.
+    /// However I am trying to remove the use of these types as much as possible because it limits to use of custom objects.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    enum ObjectTypes
+    {
+        window,
+        picture,
+        button,
+        checkbox,
+        radioButton,
+        label,
+        editBox,
+        listBox,
+        comboBox,
+        slider,
+        scrollbar,
+        loadingBar,
+        textBox,
+        spriteSheet,
+        animatedPicture,
+        animatedButton,
+        spinButton,
+        slider2D,
+        tab,
+
+        panel,
+        childWindow,
+        grid,
+
+        custom
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
-extern tgui::TextureManager     TGUI_TextureManager;
+#include <TGUI/Config.hpp>
+
+namespace tgui
+{
+    /// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
+    extern TGUI_API TextureManager TGUI_TextureManager;
+
+    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
+    extern TGUI_API bool tabKeyUsageEnabled;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Config.hpp>
 #include <TGUI/Vectors.hpp>
 
 #include <TGUI/Objects.hpp>
@@ -102,23 +160,34 @@ extern tgui::TextureManager     TGUI_TextureManager;
 #include <TGUI/EditBox.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
-#include <TGUI/Listbox.hpp>
+#include <TGUI/ListBox.hpp>
 #include <TGUI/LoadingBar.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>
 #include <TGUI/SpriteSheet.hpp>
+#include <TGUI/AnimatedPicture.hpp>
+#include <TGUI/AnimatedButton.hpp>
+#include <TGUI/SpinButton.hpp>
+#include <TGUI/Slider2D.hpp>
+#include <TGUI/Tab.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>
 #include <TGUI/TextureManager.hpp>
 
 #include <TGUI/Group.hpp>
+#include <TGUI/GroupObject.hpp>
 #include <TGUI/Panel.hpp>
+#include <TGUI/ChildWindow.hpp>
+#include <TGUI/Grid.hpp>
 #include <TGUI/Window.hpp>
+#include <TGUI/Form.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_OUTPUT(x)       sf::err() << x << std::endl;
+#ifndef TGUI_OUTPUT
+    #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
+#endif
 
 #define TGUI_MINIMUM(x, y)   (x < y) ? x : y
 
@@ -128,11 +197,12 @@ extern tgui::TextureManager     TGUI_TextureManager;
 
 #define TGUI_MAX_OBJECTS     10000
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*! \mainpage TGUI Documentation
  *
- * These pages contain the description of all usable functions and members in TGUI v0.4.0.\n
+ * These pages contain the description of all usable functions and members in TGUI v0.5.\n
  * The private and protected ones are hidden, like a few other functions that you should not use.
  *
  * Tutorials can be found on the tutorial section of my page (http://tgui.weebly.com/tutorials.html).

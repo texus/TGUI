@@ -10,31 +10,46 @@ set(TGUI_SRC
     EditBox.cpp
     Slider.cpp
     Scrollbar.cpp
-    Listbox.cpp
+    ListBox.cpp
     LoadingBar.cpp
     ComboBox.cpp
     TextBox.cpp
     SpriteSheet.cpp
+    AnimatedPicture.cpp
+    AnimatedButton.cpp
+    SpinButton.cpp
+    Slider2D.cpp
+    Tab.cpp
     InfoFileParser.cpp
     EventManager.cpp
     TextureManager.cpp
     Group.cpp
+    GroupObject.cpp
     Panel.cpp
+    ChildWindow.cpp
+    Grid.cpp
     Window.cpp
+    Form.cpp
 )
 
 # add the sfml and tgui include directories
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
 
+# OpenGL is required (due to a temporary fix)
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR})
+
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${TGUI_SRC})
     set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -d )
+    set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${MAJOR_VERSION}.${MINOR_VERSION} )
 
     # the library should be linked to sfml, unless you are on linux
     if (NOT LINUX)
-        target_link_libraries( ${PROJECT_NAME} ${SFML_LIBRARIES} )
+        set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
+        target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
 
         # on Windows/gcc get rid of "lib" prefix for shared libraries,
         # and transform the ".dll.a" suffix into ".a" for import libraries
@@ -86,6 +101,12 @@ if (TGUI_BUILD_FORM_BUILDER)
     target_link_libraries(FormBuilder ${PROJECT_NAME})
     target_link_libraries(FormBuilder ${SFML_LIBRARIES})
 
+    # On mac, also link with the Foundation framework
+    if (MACOSX)
+        find_library(FOUNDATION_LIB Foundation VARIANT framework)
+        target_link_libraries(FormBuilder ${FOUNDATION_LIB})
+    endif()
+
     # The Form Builder must remember the location of the libraries, even when installed
     if (LINUX)
         set_property(TARGET FormBuilder PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -102,6 +123,13 @@ if (TGUI_BUILD_FORM_BUILDER)
         # Put the tgui.dll file in the Form Builder folder
         install( FILES "${PROJECT_BINARY_DIR}/lib/tgui.dll" DESTINATION "${CMAKE_SOURCE_DIR}/Form Builder" )
 
+    endif()
+
+    # Copy the resource files to the bundle on mac
+    if (MACOSX)
+        install( DIRECTORY "${PROJECT_SOURCE_DIR}/Form Builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
+        install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
+        install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/FormObjectsWindow.txt" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
     endif()
 
 endif()

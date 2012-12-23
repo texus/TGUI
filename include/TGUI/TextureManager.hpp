@@ -28,6 +28,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <list>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,51 +39,58 @@ namespace tgui
     struct TGUI_API TextureManager : public sf::NonCopyable
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Destructor. Removes all remaining textures.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~TextureManager();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// This will load a texture from a file an return it.
+        /// \brief This will load a texture from a file an return it.
+        ///
         /// If the texture was already loaded then it won't be loaded again and this function just returns the same texture.
         ///
-        /// You MUST call removeTexture when you don"t need the texture anymore.
+        /// \remarks You MUST call removeTexture when you don"t need the texture anymore (ONLY when function returned true).
         ///
-        /// return:  true when the image was loaded successfully
-        ///          Note that when the texture is already in use then this function will always return true.
+        /// \return
+        ///         - true when the image was loaded successfully
+        ///         - false when the image couldn't be loaded (probalby file not found)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getTexture(const std::string filename, sf::Texture*& textureToLoad);
+        virtual bool getTexture(const std::string filename, sf::Texture*& textureToLoad);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Tell the event manager that the texture is now also used somewhere else and may thus not be deleted if only one of
-        /// the places is done with it.
+        /// \brief Tell the event manager that the texture is now also used somewhere else and may thus not be deleted if only one of the places is done with it.
+        ///
         /// Regardless of what the function returns, NewTexture will be the same as TextureToCopy.
         ///
-        /// You MUST call removeTexture when you don"t need the texture anymore.
+        /// \remarks You MUST call removeTexture when you don"t need the texture anymore (ONLY when function returned true).
         ///
-        /// return: true when the texture was loaded before by TextureManager
-        ///         false otherwise
+        /// \return
+        ///         - true when the texture was loaded before by TextureManager
+        ///         - false when the texture was never loaded (or already removed) by TextureManager
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool copyTexture(sf::Texture* textureToCopy, sf::Texture*& newTexture);
+        virtual bool copyTexture(sf::Texture* const textureToCopy, sf::Texture*& newTexture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// When the texture is no longer needed then this function is called.
+        /// \brief When the texture is no longer needed then this function is called.
+        ///
         /// When the same texture is still in use somewhere else then the texture will not be deleted.
         ///
-        /// For EVERY call to getTexture or copyTexture (that returned true) this function MUST be called.
+        /// \remarks For EVERY call to getTexture or copyTexture (that returned true) this function MUST be called.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeTexture(sf::Texture*& textureToRemove);
+        virtual void removeTexture(sf::Texture*& textureToRemove);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+        /// \brief Checks if the color on the given position is transparent.
+        ///
+        /// When the texture was not in the list (or when it is NULL), this function will always return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool isTransparentPixel(const sf::Texture* const texture, unsigned int x, unsigned int y);
 
-        std::vector<std::string>    m_Filename;   // The filename of the texture
-        std::vector<sf::Texture*>   m_Texture;    // The SFML texture
-        std::vector<unsigned int>   m_Users;      // The number of times this texture is used
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        std::vector<std::string>   m_Filenames;  // The filenames of the texture
+        std::vector<sf::Image>     m_Images;     // The SFML images
+        std::list<sf::Texture>     m_Textures;   // The SFML textures
+        std::vector<unsigned int>  m_Users;      // The number of times this texture is used
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

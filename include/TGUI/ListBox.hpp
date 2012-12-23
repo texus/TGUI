@@ -26,329 +26,396 @@
 #ifndef _TGUI_LISTBOX_INCLUDED_
 #define _TGUI_LISTBOX_INCLUDED_
 
+/// \todo  ListBox shouldn't work with ids. Instead an index should be used like in Tab.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TGUI_API Listbox : public OBJECT, OBJECT_BORDERS
+    struct TGUI_API ListBox : public OBJECT, OBJECT_BORDERS
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Default constructor
+        /// \brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox();
+        ListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Copy constructor
+        /// \brief Copy constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox(const Listbox& copy);
+        ListBox(const ListBox& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Destructor
+        /// \brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~Listbox();
+        virtual ~ListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Overload of assignment operator
+        /// \brief Overload of assignment operator
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Listbox& operator= (const Listbox& right);
+        ListBox& operator= (const ListBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Creates the listbox.
-        /// The width and height parameters constain the size before scaling.
-        /// The ScrollbarPathname is the pathname needed to load the scrollbar. If not provided then there will be no possibility
-        /// to scroll, thus no items will be added when the listbox is full.
-        /// The ItemHeight parameter tells what the height of every item in the list will be. The text size will be based on this,
-        /// but will be a little smaller. If ItemHeight is 0 then it will become a tenth of the height of the listbox.
+        /// \internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void initialize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ListBox* clone();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Creates the list box.
         ///
-        /// The listbox may resize a little bit. It might be bigger or smaller than the size passed to this function.
+        /// The list box may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
+        ///
+        /// \param width              The width of the list box (borders included).
+        /// \param height             The height of the list box (borders included).
+        /// \param scrollbarPathname  The pathname needed to load the scrollbar.
+        ///                           If not provided then there will be no possibility to scroll, thus no items will be added when the list box is full.
+        /// \param itemHeight         The height of a single item in the list box. The text size will be based on this, but will be a little smaller.
+        ///                           If ItemHeight is 0 then it will become a tenth of the height of the list box.
+        ///
+        /// \return
+        ///        - true on success
+        ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(unsigned int width,
-                  unsigned int height,
-                  const std::string scrollbarPathname = "",
-                  unsigned int itemHeight = 0);
+        virtual bool load(unsigned int width,
+                          unsigned int height,
+                          const std::string scrollbarPathname = "",
+                          unsigned int itemHeight = 0);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the size of the listbox. Note that this function will undo all scaling.
-        /// You are advised to use this function over the setScale function.
-        /// Note that the listbox has to be loaded correctly before calling this function.
+        /// \brief Changes the size of the list box.
+        ///
+        /// \param width   The new width of the list box
+        /// \param height  The new height of the list box
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(float width, float height);
+        virtual void setSize(float width, float height);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the size of the listbox, unaffected by scaling.
+        /// \brief Returns the size of the list box, unaffected by scaling.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2u getSize() const;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the size of the listbox, after the scaling transformation.
+        /// \brief Returns the size of the list box, after the scaling transformation.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getScaledSize() const;
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the pathname that was used to load the scrollbar.
+        /// \brief Returns the pathname that was used to load the scrollbar.
+        ///
         /// When no scrollbar was loaded then this function will return an empty string.
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getLoadedScrollbarPathname();
+        virtual std::string getLoadedScrollbarPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the colors of the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
-                          const sf::Color& textColor               = sf::Color::Black,
-                          const sf::Color& selectedBackgroundColor = sf::Color(50, 100, 200),
-                          const sf::Color& selectedTextColor       = sf::Color::White,
-                          const sf::Color& borderColor             = sf::Color::Black);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Set the background color that will be used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Set the text color that will be used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Set the background color of the selected text that will be used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Set the text color of the selected text that will be used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Set the border color text that will be used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the background color that is currently being used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the text color that is currently being used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the background color of the selected text that is currently being used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedBackgroundColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the text color of the selected text that is currently being used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the border color that is currently being used inside the listbox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBorderColor();
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the font of the items. When you don't call this function then the global font will be use.
-        /// This global font can be changed by calling the setGlobalFont function from Panel.
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the font of the items.
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font& getTextFont();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Adds an item to the list.
+        /// \brief Changes the colors used in the list box.
         ///
-        /// When the text doesn't fit inside the listbox then the last characters are removed when cropText is true. Trying to
-        /// find the item with the full text later will of course fail. If the text may not be clipped for this reason then you
-        /// can set cropText to false, but this might cost some speed when drawing (it has to be clipped there every frame).
-        /// If you do decide to clip the text here than make sure that the scaling to the listbox is already done.
-        ///
-        ///
-        /// Return: - 0 when the listbox is full (m_MaxItems constains the maximum amount, zero means no limit). Note that the
-        ///           listbox can also be full when no scrollbar was loaded and the text no longer fits inside the listbox.
-        ///         - The id of the item otherwise (when it was successfully added). You will need this id when removing it from
-        ///           the listbox (when using a name to remove it you might remove other items that have the same name).
-        ///           Note that this id is no longer correct when an item is removed. Use it immediately or don't use it at all.
+        /// \param backgroundColor          The color of the background of the list box
+        /// \param textColor                The color of the text
+        /// \param selectedBackgroundColor  The color of the background of the selected item
+        /// \param selectedTextColor        The color of the text when it is selected
+        /// \param borderColor              The color of the borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int addItem(const std::string itemName, bool cropText = false);
+        virtual void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
+                                  const sf::Color& textColor               = sf::Color::Black,
+                                  const sf::Color& selectedBackgroundColor = sf::Color(50, 100, 200),
+                                  const sf::Color& selectedTextColor       = sf::Color::White,
+                                  const sf::Color& borderColor             = sf::Color::Black);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the background color that will be used inside the list box.
+        ///
+        /// \see changeColors
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setBackgroundColor(const sf::Color& backgroundColor);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the text color that will be used inside the list box.
+        ///
+        /// \see changeColors
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setTextColor(const sf::Color& textColor);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the background color of the selected text that will be used inside the list box.
+        ///
+        /// \see changeColors
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the text color of the selected text that will be used inside the list box.
+        ///
+        /// \see changeColors
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSelectedTextColor(const sf::Color& selectedTextColor);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the border color text that will be used inside the list box.
+        ///
+        /// \see changeColors
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setBorderColor(const sf::Color& borderColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// None of the items is selected by default. If you want to select an item then call this function.
+        /// \brief Get the background color that is currently being used inside the list box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Color& getBackgroundColor() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Get the text color that is currently being used inside the list box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Color& getTextColor() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Get the background color of the selected text that is currently being used inside the list box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Color& getSelectedBackgroundColor() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Get the text color of the selected text that is currently being used inside the list box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Color& getSelectedTextColor() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Get the border color that is currently being used inside the list box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Color& getBorderColor() const;
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the font of the items.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed by changing \a gloabalFont from the parent.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setTextFont(const sf::Font& font);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the font of the items.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Font* getTextFont() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Adds an item to the list.
+        ///
+        /// \param itemName The name of the item you want to add (this is the text that will be displayed inside the list box)
+        ///
+        /// \return
+        ///         - 0 when the list box is full (you have set a maximum item limit and you are trying to add more items)
+        ///         - 0 when there is no scrollbar and you try to have more items than fit inside the list box
+        ///         - The id of the item when it was successfully added.
+        ///
+        /// \warning The id returned by this function is no longer correct when an item is removed. Use it immediately or don't use it at all.
+        ///
+        /// \see setMaximumItems
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual unsigned int addItem(const sf::String itemName);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Selects an item in the list box.
+        ///
+        /// When adding items to the list box with the addItem function, none of them will be selected.
+        /// If you want a default item selected then you can use this function to select it.
         /// The first item that matches the name will be selected.
         ///
-        /// return: true on success
-        ///         false when the name was not found
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItem(const std::string itemName);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// None of the items is selected by default. If you want to select an item then call this function.
+        /// \return
+        ///         - true on success
+        ///         - false when none of the items matches the name
         ///
-        /// return: true on success
-        ///         false when the id was too high
+        /// \see setSelectedItem(unsigned int)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItem(unsigned int id);
+        virtual bool setSelectedItem(const sf::String itemName);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Selects an item in the list box.
+        ///
+        /// When adding items to the list box with the addItem function, none of them will be selected.
+        /// If you want a default item selected then you can use this function to select it.
+        ///
+        /// The id starts counting from 1. If you pass 0 to this function then none of the items will be selected.
+        ///
+        /// \return
+        ///         - true on success
+        ///         - false when the id was too high
+        ///
+        /// \see setSelectedItem(sf::String)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setSelectedItem(const unsigned int id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Removes an item from the list with a given id.
+        /// \brief Removes an item from the list with a given id.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeItem(unsigned int id);
+        virtual void removeItem(const unsigned int id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Removes all items from the list with a given name.
+        /// \brief Removes all items from the list with a given name.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeItem(const std::string itemName);
+        virtual void removeItem(const sf::String itemName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Removes all items from the list.
+        /// \brief Removes all items from the list.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeAllItems();
+        virtual void removeAllItems();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the item name of the given id. The string will be empty when the id was too high or when it was 0.
+        /// \brief Returns the item name of the given id.
+        ///
+        /// The string will be empty when the id was too high or when it was 0.
+        ///
+        /// \see getItemID
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getItem(unsigned int id);
+        virtual sf::String getItem(const unsigned int id) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the id of the first item with the given name. If none of the items matches then the id will be 0.
-        /// Note that this id is no longer correct when an item is removed.
+        /// \brief Returns the id of the first item with the given name.
+        ///
+        /// If none of the items matches then the id will be 0.
+        ///
+        /// \warning This id will become wrong when an item is removed from the list. Use it immediately or don't use it at all.
+        ///
+        /// \see getItem
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemID(const std::string itemName);
+        virtual unsigned int getItemID(const sf::String itemName) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the list that constains all the items.
+        /// \brief Returns the list that constains all the items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<std::string>& getItems();
+        virtual std::vector<sf::String>& getItems();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the currently selected item.
+        /// \brief Returns the currently selected item.
+        ///
         /// When no item was selected then this function will return an empty string.
+        ///
+        /// \see getSelectedItemID
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getSelectedItem() const;
+        virtual sf::String getSelectedItem() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Get the id of the selected item. Note that this id will become wrong when an item is removed from the listbox.
+        /// \brief Get the id of the selected item.
+        ///
         /// When no item was selected then this function returns 0.
+        ///
+        /// \warning This id will become wrong when an item is removed from the list. Use it immediately or don't use it at all.
+        ///
+        /// \see getSelectedItem
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getSelectedItemID();
+        virtual unsigned int getSelectedItemID() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the scrollbar of the listbox.
-        /// Only needed when this wasn't done when creating the listbox or if the scrollbar should be changed.
+        /// \brief Changes the scrollbar of the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setScrollbar(const std::string scrollbarPathname);
+        virtual bool setScrollbar(const std::string scrollbarPathname);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Removes the scrollbar from the listbox (if there is one). When there are too many items to fit in the listbox then
-        /// the items will be removed.
+        /// \brief Removes the scrollbar from the list box (if there is one).
+        ///
+        /// When there are too many items to fit in the list box then the items will be removed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeScrollbar();
+        virtual void removeScrollbar();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the height of one item. This is always a little big greater than the text size.
-        /// Note that when changing the item height the scaling will be taken into account during the calculations.
-        /// When there is no scrollbar this will be important because the items will be removed when they no longer fit inside the listbox.
+        /// \brief Changes the height of the items in the list box.
+        ///
+        /// This size is always a little big greater than the text size.
+        /// When there is no scrollbar then the items will be removed when they no longer fit inside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setItemHeight(unsigned int itemHeight);
+        virtual void setItemHeight(const unsigned int itemHeight);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the height of one item. This is always a little big greater than the text size.
+        /// \brief Returns the height of the items in the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemHeight();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the height of the text. This is always a little big smaller than the item height.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextSize(unsigned int size);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the height of the text. This is always a little big smaller than the item height.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize();
+        virtual unsigned int getItemHeight() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the maximum items that the listbox can contain. If 0 then there is no limit.
-        /// If no scrollbar was loaded then there is always a limitation because the text can't go outside the listbox.
+        /// \brief Changes the maximum items that the list box can contain.
+        ///
+        /// If this function returns 0 then there is no limit.
+        /// If no scrollbar was loaded then there is always a limitation because the text can't go outside the list box.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumItems(unsigned int maximumItems = 0);
+        virtual void setMaximumItems(const unsigned int maximumItems = 0);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Returns the maximum items that the listbox can contain. If 0 then there is no limit.
+        /// \brief Returns the maximum items that the list box can contain. If 0 then there is no limit.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximumItems();
+        virtual unsigned int getMaximumItems() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Changes the size of the borders.
-        /// Note that these borders are scaled together with the listbox!
+        /// \brief Changes the size of the borders.
+        ///
+        /// \param leftBorder    The width of the left border
+        /// \param topBorder     The height of the top border
+        /// \param rightBorder   The width of the right border
+        /// \param bottomBorder  The height of the bottom border
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorders(unsigned int leftBorder   = 0,
-                        unsigned int topBorder    = 0,
-                        unsigned int rightBorder  = 0,
-                        unsigned int bottomBorder = 0);
+        virtual void setBorders(const unsigned int leftBorder   = 0,
+                                const unsigned int topBorder    = 0,
+                                const unsigned int rightBorder  = 0,
+                                const unsigned int bottomBorder = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // These functions are used to receive callback from the EventManager.
         // You normally don't need them, but you can use them to simulate an event.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool mouseOnObject(float x, float y);
-        void leftMousePressed(float x, float y);
-        void leftMouseReleased(float x, float y);
-        void mouseMoved(float x, float y);
-        void mouseNotOnObject();
-        void mouseNoLongerDown();
+        virtual bool mouseOnObject(float x, float y);
+        virtual void leftMousePressed(float x, float y);
+        virtual void leftMouseReleased(float x, float y);
+        virtual void mouseMoved(float x, float y);
+        virtual void mouseWheelMoved(int delta);
+        virtual void mouseNotOnObject();
+        virtual void mouseNoLongerDown();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the listbox on the render target.
+        // This function will be called and it will draw the list box on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
-        // This contains the different items in the listbox
-        std::vector<std::string> m_Items;
+        // This contains the different items in the list box
+        std::vector<sf::String> m_Items;
 
         // What is the id of the selected item?
         unsigned int m_SelectedItem;
@@ -359,7 +426,7 @@ namespace tgui
 
         unsigned int m_TextSize;
 
-        // This will store the maximum number of items in the listbox (zero by default, meaning that there is no limit)
+        // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
         unsigned int m_MaxItems;
 
         // When there are too many items a scrollbar will be shown
@@ -368,7 +435,7 @@ namespace tgui
         // The pathname of the loaded scrollbar (if there is one)
         std::string m_LoadedScrollbarPathname;
 
-        // These colors are used to draw the listbox
+        // These colors are used to draw the list box
         sf::Color m_BackgroundColor;
         sf::Color m_TextColor;
         sf::Color m_SelectedBackgroundColor;
@@ -377,9 +444,6 @@ namespace tgui
 
         // The font used to draw the text
         sf::Font m_TextFont;
-
-        // The render texture, used to draw the text on (this allows to display only a part of the text)
-        sf::RenderTexture* m_RenderTexture;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend struct ComboBox;

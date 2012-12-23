@@ -1,1 +1,2 @@
-Phases  = Hover
+Phases         = Hover
+VerticalScroll = true

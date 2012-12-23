@@ -25,6 +25,8 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -32,14 +34,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox() :
-    allowTextClick    (true),
-    m_Checked           (false),
-    m_TextSize          (0),
-    m_TextureUnchecked  (NULL),
-    m_TextureChecked    (NULL),
-    m_TextureMouseHover (NULL),
-    m_TextureFocused    (NULL),
-    m_LoadedPathname    ("")
+    allowTextClick     (true),
+    m_Checked          (false),
+    m_TextSize         (0),
+    m_TextureUnchecked (NULL),
+    m_TextureChecked   (NULL),
+    m_TextureMouseHover(NULL),
+    m_TextureFocused   (NULL),
+    m_LoadedPathname   ("")
     {
         m_ObjectType = checkbox;
 
@@ -54,6 +56,7 @@ namespace tgui
     m_Checked       (copy.m_Checked),
     m_Text          (copy.m_Text),
     m_TextSize      (copy.m_TextSize),
+    m_Size          (copy.m_Size),
     m_LoadedPathname(copy.m_LoadedPathname)
     {
         // Copy the textures
@@ -86,6 +89,7 @@ namespace tgui
             std::swap(m_Checked,           temp.m_Checked);
             std::swap(m_Text,              temp.m_Text);
             std::swap(m_TextSize,          temp.m_TextSize);
+            std::swap(m_Size,              temp.m_Size);
             std::swap(m_TextureUnchecked,  temp.m_TextureUnchecked);
             std::swap(m_TextureChecked,    temp.m_TextureChecked);
             std::swap(m_TextureMouseHover, temp.m_TextureMouseHover);
@@ -98,6 +102,20 @@ namespace tgui
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::initialize()
+    {
+        m_Text.setFont(m_Parent->globalFont);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Checkbox* Checkbox::clone()
+    {
+        return new Checkbox(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +133,7 @@ namespace tgui
         m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
             m_LoadedPathname.push_back('/');
 
         // Open the info file
@@ -165,14 +183,14 @@ namespace tgui
         {
             m_SpriteChecked.setTexture(*m_TextureChecked, true);
             m_SpriteUnchecked.setTexture(*m_TextureUnchecked, true);
+
+            m_Size = Vector2f(m_TextureUnchecked->getSize());
         }
         else
             return false;
 
-        bool error = false;
-
         // load the optional textures
-        if (m_ObjectPhase & objectPhase::focused)
+        if (m_ObjectPhase & ObjectPhase_Focused)
         {
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused))
             {
@@ -180,20 +198,20 @@ namespace tgui
                 m_AllowFocus = true;
             }
             else
-                error = true;
+                return false;
         }
 
-        if (m_ObjectPhase & objectPhase::hover)
+        if (m_ObjectPhase & ObjectPhase_Hover)
         {
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover))
                 m_SpriteMouseHover.setTexture(*m_TextureMouseHover, true);
             else
-                error = true;
+                return false;
         }
 
         // When there is no error we will return true
-        m_Loaded = !error;
-        return !error;
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,8 +226,13 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Set the new scale factors
-        setScale(width / m_TextureUnchecked->getSize().x, height / m_TextureUnchecked->getSize().y);
+        // Set the size of the checkbox
+        m_Size.x = width;
+        m_Size.y = height;
+
+        // If the text is auto sized then recalculate the size
+        if (m_TextSize == 0)
+            setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +240,7 @@ namespace tgui
     Vector2u Checkbox::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_TextureUnchecked->getSize().x, m_TextureUnchecked->getSize().y);
+            return Vector2u(m_Size);
         else
             return Vector2u(0, 0);
     }
@@ -227,14 +250,14 @@ namespace tgui
     Vector2f Checkbox::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_TextureUnchecked->getSize().x * getScale().x, m_TextureUnchecked->getSize().y * getScale().y);
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
         else
             return Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Checkbox::getLoadedPathname()
+    std::string Checkbox::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
@@ -255,14 +278,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::isChecked()
+    bool Checkbox::isChecked() const
     {
         return m_Checked;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::setText(const std::string text)
+    void Checkbox::setText(const sf::String text)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
         if (m_Loaded == false)
@@ -275,7 +298,8 @@ namespace tgui
         if (m_TextSize == 0)
         {
             // Set the text size
-            m_Text.setCharacterSize(m_TextureUnchecked->getSize().y);
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_Size.y));
+            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
         }
         else // When the text has a fixed size
         {
@@ -286,9 +310,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Checkbox::getText()
+    sf::String Checkbox::getText() const
     {
-        return m_Text.getString().toAnsiString();
+        return m_Text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +324,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& Checkbox::getTextFont()
+    const sf::Font* Checkbox::getTextFont() const
     {
         return m_Text.getFont();
     }
@@ -314,7 +338,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Checkbox::getTextColor()
+    const sf::Color& Checkbox::getTextColor() const
     {
         return m_Text.getColor();
     }
@@ -327,14 +351,14 @@ namespace tgui
         m_TextSize = size;
 
         // Call setText to reposition the text
-        setText(m_Text.getString().toAnsiString());
+        setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Checkbox::getTextSize()
+    unsigned int Checkbox::getTextSize() const
     {
-        return m_TextSize;
+        return m_Text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +377,8 @@ namespace tgui
             // Check if the mouse is on top of the text
             if (allowTextClick)
             {
-                if (m_Text.getGlobalBounds().contains(x - (getPosition().x + (m_TextureUnchecked->getSize().x * 11.0f / 10.0f * getScale().x)), y - getPosition().y))
+                sf::FloatRect bounds = m_Text.getLocalBounds();
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }
@@ -394,6 +419,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::mouseClick;
                 callback.checked    = m_Checked;
@@ -431,6 +457,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Space;
                 callback.checked    = m_Checked;
@@ -449,6 +476,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::keyPress_Return;
                 callback.checked    = m_Checked;
@@ -462,8 +490,8 @@ namespace tgui
     void Checkbox::objectFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_ObjectPhase & objectPhase::focused) == 0)
-            m_Parent->unfocus(this);
+        if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
+            m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -476,6 +504,12 @@ namespace tgui
 
         // Adjust the transformation
         states.transform *= getTransform();
+
+        // Remember the current transformation
+        sf::Transform oldTransform = states.transform;
+
+        // Give the checkbox the correct size
+        states.transform.scale(m_Size.x / m_TextureUnchecked->getSize().x, m_Size.y / m_TextureUnchecked->getSize().y);
 
         // Check if the checkbox was checked
         if (m_Checked)
@@ -493,28 +527,26 @@ namespace tgui
             target.draw(m_SpriteUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
-        if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+        if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
             target.draw(m_SpriteFocused, states);
 
         // When the mouse is on top of the checkbox then draw an extra image
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteMouseHover, states);
 
 
+        // Restore the old transformation
+        states.transform = oldTransform;
+
+        // Get the bounds of the text
         sf::FloatRect textBounds = m_Text.getGlobalBounds();
 
         // Set the position of the text
-        states.transform.translate(m_TextureUnchecked->getSize().x * 11.0f / 10.0f,
-                                   ((m_TextureUnchecked->getSize().y - textBounds.height) / 2.0f) - textBounds.top);
-
-        // Change the scale to draw the text
-        states.transform.scale(getScale().y / getScale().x, 1);
+        states.transform.translate(std::floor(m_Size.x * 11.0f / 10.0f - textBounds.left), std::floor(((m_Size.y - textBounds.height) / 2.0f) - textBounds.top));
 
         // Draw the text
         target.draw(m_Text, states);
-
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

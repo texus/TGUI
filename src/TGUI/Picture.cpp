@@ -33,6 +33,7 @@ namespace tgui
 
     Picture::Picture() :
     m_Texture       (NULL),
+    m_Size          (0, 0),
     m_LoadedFilename("")
     {
         m_ObjectType = picture;
@@ -42,6 +43,7 @@ namespace tgui
 
     Picture::Picture(const Picture& copy) :
     OBJECT          (copy),
+    m_Size          (copy.m_Size),
     m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
@@ -70,6 +72,7 @@ namespace tgui
 
             std::swap(m_Texture,        temp.m_Texture);
             std::swap(m_Sprite,         temp.m_Sprite);
+            std::swap(m_Size,           temp.m_Size);
             std::swap(m_LoadedFilename, temp.m_LoadedFilename);
         }
 
@@ -78,10 +81,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Picture* Picture::clone()
+    {
+        return new Picture(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Picture::load(const std::string filename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
+        m_Size.x = 0;
+        m_Size.y = 0;
 
         // Make sure that the filename isn't empty
         if (filename.empty())
@@ -97,8 +109,11 @@ namespace tgui
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
-            // Set the texture for the sprite
+            // Set the texture
             m_Sprite.setTexture(*m_Texture, true);
+
+            // Remember the size of the texture
+            m_Size = Vector2f(m_Texture->getSize());
 
             // Return true to indicate that nothing went wrong
             m_Loaded = true;
@@ -116,8 +131,9 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Set the new scale
-        setScale(width / m_Texture->getSize().x, height / m_Texture->getSize().y);
+        // Store the new size
+        m_Size.x = width;
+        m_Size.y = height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +141,7 @@ namespace tgui
     Vector2u Picture::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Texture->getSize().x, m_Texture->getSize().y);
+            return Vector2u(m_Size);
         else
             return Vector2u(0, 0);
     }
@@ -135,14 +151,14 @@ namespace tgui
     Vector2f Picture::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Texture->getSize().x * getScale().x, m_Texture->getSize().y * getScale().y);
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
         else
             return Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Picture::getLoadedFilename()
+    std::string Picture::getLoadedFilename() const
     {
         return m_LoadedFilename;
     }
@@ -157,7 +173,14 @@ namespace tgui
 
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
+        {
+            Vector2f scaling;
+            scaling.x = m_Size.x / m_Texture->getSize().x * getScale().x;
+            scaling.y = m_Size.y / m_Texture->getSize().y * getScale().y;
+
+            // Only return true when the pixel under the mouse isn't transparent
+            return !TGUI_TextureManager.isTransparentPixel(m_Texture, static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y));
+        }
         else
             return false;
     }
@@ -184,6 +207,7 @@ namespace tgui
             if (callbackID > 0)
             {
                 Callback callback;
+                callback.object      = this;
                 callback.callbackID  = callbackID;
                 callback.trigger     = Callback::mouseClick;
                 callback.mouseButton = sf::Mouse::Left;
@@ -200,14 +224,12 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Do not even try to draw when no image was loaded
+        // Don't continue when the picture wasn't loaded correctly
         if (m_Loaded == false)
             return;
 
-        // Adjust the transformation
         states.transform *= getTransform();
-
-        // Draw the sprite
+        states.transform.scale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
         target.draw(m_Sprite, states);
     }
 

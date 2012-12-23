@@ -25,61 +25,7 @@
 
 #include <TGUI/TGUI.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Many functions inside the Group struct look at each other but use different types of objects.
-// These defines will avoid that there are too many copies of the code and thus will keep my code shorter.
-
-#define TGUI_GROUP_ADD_FUNCTION(StructName) \
-StructName* Group::add##StructName(const std::string objectName) \
-{ \
-    StructName* new##StructName = new StructName(); \
-    new##StructName->m_Parent = this; \
-    m_EventManager.addObject(new##StructName); \
-  \
-    m_Objects.push_back(new##StructName); \
-    m_ObjName.push_back(objectName); \
-  \
-    return new##StructName; \
-}
-
-#define TGUI_GROUP_ADD_FUNCTION_WITH_FONT(StructName) \
-StructName* Group::add##StructName(const std::string objectName) \
-{ \
-    StructName* new##StructName = new StructName(); \
-    new##StructName->m_Parent = this; \
-    new##StructName->setTextFont(globalFont); \
-    m_EventManager.addObject(new##StructName); \
-  \
-    m_Objects.push_back(new##StructName); \
-    m_ObjName.push_back(objectName); \
-  \
-    return new##StructName; \
-}
-
-#define TGUI_GROUP_COPY_FUNCTION_BY_NAME(StructName, EnumName) \
-StructName* Group::copy##StructName(const std::string oldObjectName, const std::string newObjectName) \
-{ \
-    for (unsigned int i=0; i<m_ObjName.size(); ++i) \
-    { \
-        if ((m_Objects[i]->m_ObjectType == EnumName) && (m_ObjName[i].compare(oldObjectName) == 0)) \
-            return copyObject(static_cast<StructName*>(m_Objects[i]), newObjectName); \
-    } \
-  \
-    return NULL; \
-}
-
-#define TGUI_GROUP_GET_FUNCTION(StructName, EnumName) \
-StructName* Group::get##StructName(const std::string objectName) \
-{ \
-    for (unsigned int i=0; i<m_ObjName.size(); ++i) \
-    { \
-        if ((m_Objects[i]->m_ObjectType == EnumName) && (m_ObjName[i].compare(objectName) == 0)) \
-            return static_cast<StructName*>(m_Objects[i]); \
-    } \
-  \
-    return NULL; \
-}
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,45 +35,22 @@ namespace tgui
 
     Group::Group()
     {
-        globalFont = sf::Font::getDefaultFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group(const Group& copy) :
-    globalFont(copy.globalFont)
+    Group::Group(const Group& groupToCopy) :
+    globalFont(groupToCopy.globalFont)
     {
         // Copy all the objects
-        for (unsigned int i=0; i<copy.m_Objects.size(); ++i)
+        for (unsigned int i=0; i<groupToCopy.m_EventManager.m_Objects.size(); ++i)
         {
-            if (copy.m_Objects[i]->m_ObjectType == picture)
-                copyObject(static_cast<Picture*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == button)
-                copyObject(static_cast<Button*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == checkbox)
-                copyObject(static_cast<Checkbox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == radioButton)
-                copyObject(static_cast<RadioButton*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == label)
-                copyObject(static_cast<Label*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == editBox)
-                copyObject(static_cast<EditBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == listbox)
-                copyObject(static_cast<Listbox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == comboBox)
-                copyObject(static_cast<ComboBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == slider)
-                copyObject(static_cast<Slider*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == scrollbar)
-                copyObject(static_cast<Scrollbar*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == loadingBar)
-                copyObject(static_cast<LoadingBar*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == textBox)
-                copyObject(static_cast<TextBox*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == panel)
-                copyObject(static_cast<Panel*>(copy.m_Objects[i]));
-            if (copy.m_Objects[i]->m_ObjectType == spriteSheet)
-                copyObject(static_cast<SpriteSheet*>(copy.m_Objects[i]));
+            OBJECT* newObject = static_cast<OBJECT*>(groupToCopy.m_EventManager.m_Objects[i]->clone());
+            m_EventManager.m_Objects.push_back(newObject);
+            m_ObjName.push_back(groupToCopy.m_ObjName[i]);
+
+            newObject->m_Parent = this;
+            newObject->initialize();
         }
     }
 
@@ -148,37 +71,18 @@ namespace tgui
             // Copy the font
             globalFont = right.globalFont;
 
+            // Remove all the old objects
+            removeAllObjects();
+
             // Copy all the objects
-            for (unsigned int i=0; i<right.m_Objects.size(); ++i)
+            for (unsigned int i=0; i<right.m_EventManager.m_Objects.size(); ++i)
             {
-                if (right.m_Objects[i]->m_ObjectType == picture)
-                    copyObject(static_cast<Picture*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == button)
-                    copyObject(static_cast<Button*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == checkbox)
-                    copyObject(static_cast<Checkbox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == radioButton)
-                    copyObject(static_cast<RadioButton*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == label)
-                    copyObject(static_cast<Label*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == editBox)
-                    copyObject(static_cast<EditBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == listbox)
-                    copyObject(static_cast<Listbox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == comboBox)
-                    copyObject(static_cast<ComboBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == slider)
-                    copyObject(static_cast<Slider*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == scrollbar)
-                    copyObject(static_cast<Scrollbar*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == loadingBar)
-                    copyObject(static_cast<LoadingBar*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == textBox)
-                    copyObject(static_cast<TextBox*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == panel)
-                    copyObject(static_cast<Panel*>(right.m_Objects[i]));
-                if (right.m_Objects[i]->m_ObjectType == spriteSheet)
-                    copyObject(static_cast<SpriteSheet*>(right.m_Objects[i]));
+                OBJECT* newObject = static_cast<OBJECT*>(right.m_EventManager.m_Objects[i]->clone());
+                m_EventManager.m_Objects.push_back(newObject);
+                m_ObjName.push_back(right.m_ObjName[i]);
+
+                newObject->m_Parent = this;
+                newObject->initialize();
             }
         }
 
@@ -187,112 +91,2186 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel* Group::addPanel(const std::string objectName)
+    struct Operation
     {
-        Panel* newPanel = new Panel();
-        newPanel->m_Parent = this;
-        newPanel->globalFont = globalFont;
-        m_EventManager.addObject(newPanel);
+        enum ops
+        {
+            Add,
+            Subtract,
+            Multiply,
+            Divide
+        };
+    };
 
-        m_Objects.push_back(newPanel);
-        m_ObjName.push_back(objectName);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return newPanel;
+    float evaluate(std::string expression)
+    {
+        std::string::size_type openingBracketPos;
+        std::string::size_type closingBracketPos;
+
+        std::vector<float> numbers;
+        std::vector<Operation::ops> operations;
+
+        bool readingNumber = false;
+        bool commaFound = false;
+        bool numbersBehindComma = 0;
+
+        // Search for an opening bracket
+        openingBracketPos = expression.rfind('(');
+
+        // Check if a bracket was found
+        while (openingBracketPos != std::string::npos)
+        {
+            // There has to be a closing bracket
+            closingBracketPos = expression.find(')', openingBracketPos+1);
+
+            // Give an error when there was no closing bracket
+            if (closingBracketPos == std::string::npos)
+            {
+                TGUI_OUTPUT("TGUI error: Failed to parse string, missing closing bracket.");
+                return 0;
+            }
+
+            // Evaluate the sting between the brackets
+            float factor = evaluate(expression.substr(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1));
+
+            // Replace the brackets with the factor
+            expression.erase(openingBracketPos, closingBracketPos - openingBracketPos + 1);
+            expression.insert(openingBracketPos, to_string(factor));
+
+            // Find the next opening bracket
+            openingBracketPos = expression.rfind('(');
+        }
+
+        // Loop through all characters
+        for (std::string::iterator it = expression.begin(); it != expression.end(); ++it)
+        {
+            // Read the string character by character
+            char nextChar = *it;
+
+            // Check if the character is a number
+            if ((nextChar > 47) && (nextChar < 58))
+            {
+                // Check if we were already reading a number
+                if (readingNumber)
+                {
+                    // Check if a comma was found before the character
+                    if (commaFound)
+                    {
+                        // Add the number
+                        ++numbersBehindComma;
+                        numbers.back() += (nextChar - 48) / pow(10.f, numbersBehindComma);
+                    }
+                    else // No comma
+                    {
+                        // Append the number
+                        numbers.back() *= 10;
+                        numbers.back() += nextChar - 48;
+                    }
+                }
+                else // This is the start of the number
+                {
+                    // Add this new number
+                    numbers.push_back(nextChar - 48.f);
+                    readingNumber = true;
+                }
+            }
+
+            // Check if the character is a comma
+            else if ((nextChar == 44) || (nextChar == 46))
+            {
+                // From now on, all new numbers will be behind the comma
+                commaFound = true;
+
+                // If your number starts with a comma then add a zero
+                if (readingNumber == false)
+                {
+                    numbers.push_back(0);
+                    readingNumber = true;
+                }
+            }
+
+            // The character wasn't a number
+            else
+            {
+                // Ignore spaces
+                if (nextChar == 32)
+                    continue;
+
+                // If you were not reading a number yet then this might be a unary operator
+                if (readingNumber == false)
+                {
+                    // Ignore a plus
+                    if (nextChar == 43)
+                        break;
+
+                    // Handle subtraction
+                    else if (nextChar == 45)
+                    {
+                        numbers.push_back(0);
+                        operations.push_back(Operation::Subtract);
+                    }
+                }
+                else // We were reading a number
+                {
+                    // Reset some data
+                    readingNumber = false;
+                    commaFound = false;
+                    numbersBehindComma = 0;
+                }
+
+                // Find out what the operation is
+                if (nextChar == 43)
+                    operations.push_back(Operation::Add);
+                else if (nextChar == 45)
+                    operations.push_back(Operation::Subtract);
+                else if ((nextChar == 42) || (nextChar == 120))
+                    operations.push_back(Operation::Multiply);
+                else if (nextChar == 47)
+                    operations.push_back(Operation::Divide);
+                else
+                {
+                    // An unknow character was found
+                    TGUI_OUTPUT(std::string("TGUI error: Failed to parse string, unknown character found: '") + nextChar + "'.");
+                    return 0;
+                }
+            }
+        }
+
+        // Make sure the number of operators is correct
+        if (numbers.size() != operations.size() + 1)
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse string, incorrect number of operators.");
+            return 0;
+        }
+
+        // Look for the multiplication or divide operations
+        unsigned int i = 0;
+        while (i<operations.size())
+        {
+            if (operations[i] == Operation::Multiply)
+            {
+                // Multiply the numbers
+                numbers[i] *= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else if (operations[i] == Operation::Divide)
+            {
+                // Divide the numbers
+                numbers[i] /= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else
+                ++i;
+        }
+
+        // Look for the add or subtract operations
+        i = 0;
+        while (i<operations.size())
+        {
+            if (operations[i] == Operation::Add)
+            {
+                // Add the numbers
+                numbers[i] += numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else if (operations[i] == Operation::Subtract)
+            {
+                // Subtract the numbers
+                numbers[i] -= numbers[i+1];
+
+                // Remove it from the list
+                numbers.erase(numbers.begin()+i+1);
+                operations.erase(operations.begin()+i);
+            }
+            else
+                ++i;
+        }
+
+        // When passing here, i should be 0, there should be one answer left and there shouldn't be any operations left
+        if ((i == 0) && (numbers.size() == 1) && (operations.empty()))
+            return numbers[0];
+        else
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse string, incorrect result.");
+            return 0;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_GROUP_ADD_FUNCTION (Picture)
-    TGUI_GROUP_ADD_FUNCTION (Slider)
-    TGUI_GROUP_ADD_FUNCTION (Scrollbar)
-    TGUI_GROUP_ADD_FUNCTION (LoadingBar)
-    TGUI_GROUP_ADD_FUNCTION (SpriteSheet)
+    float readFloat(std::string expression)
+    {
+        // Check if the expression is empty
+        if (expression.empty())
+        {
+            TGUI_OUTPUT("TGUI error: Empty expression, using 0 as result value.");
+            return 0;
+        }
 
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Label)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Button)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Checkbox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (RadioButton)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (EditBox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (Listbox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (ComboBox)
-    TGUI_GROUP_ADD_FUNCTION_WITH_FONT (TextBox)
+        // Look for quotes
+        if ((expression[0] == '"') && (expression[expression.length()-1] == '"'))
+        {
+            // When quotes are found then erase them
+            expression.erase(0, 1);
+            expression.erase(expression.length()-1, 1);
+
+            // The expression should still contain something
+            if (expression.empty())
+            {
+                TGUI_OUTPUT("TGUI error: Expression with empty string or single quote.");
+                return 0;
+            }
+
+            // Calculate the value
+            return evaluate(expression);
+        }
+        else
+            return static_cast<float>(atof(expression.c_str()));
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_GROUP_GET_FUNCTION (Label,       label)
-    TGUI_GROUP_GET_FUNCTION (Picture,     picture)
-    TGUI_GROUP_GET_FUNCTION (Button,      button)
-    TGUI_GROUP_GET_FUNCTION (Checkbox,    checkbox)
-    TGUI_GROUP_GET_FUNCTION (RadioButton, radioButton)
-    TGUI_GROUP_GET_FUNCTION (EditBox,     editBox)
-    TGUI_GROUP_GET_FUNCTION (Slider,      slider)
-    TGUI_GROUP_GET_FUNCTION (Scrollbar,   scrollbar)
-    TGUI_GROUP_GET_FUNCTION (Listbox,     listbox)
-    TGUI_GROUP_GET_FUNCTION (LoadingBar,  loadingBar)
-    TGUI_GROUP_GET_FUNCTION (Panel,       panel)
-    TGUI_GROUP_GET_FUNCTION (ComboBox,    comboBox)
-    TGUI_GROUP_GET_FUNCTION (TextBox,     textBox)
-    TGUI_GROUP_GET_FUNCTION (SpriteSheet, spriteSheet)
+    int readInt(std::string expression)
+    {
+        // Check if the expression is empty
+        if (expression.empty())
+        {
+            TGUI_OUTPUT("TGUI error: Empty expression, using 0 as result value.");
+            return 0;
+        }
+
+        // Look for quotes
+        if ((expression[0] == '"') && (expression[expression.length()-1] == '"'))
+        {
+            // When quotes are found then erase them
+            expression.erase(0, 1);
+            expression.erase(expression.length()-1, 1);
+
+            // The expression should still contain something
+            if (expression.empty())
+            {
+                TGUI_OUTPUT("TGUI error: Expression with empty string or single quote.");
+                return 0;
+            }
+
+            // Calculate the value
+            return static_cast<int>(evaluate(expression) + 0.5f);
+        }
+        else
+            return atoi(expression.c_str());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Group::loadObjectsFromFile(const std::string filename)
+    {
+        // I wrote these defines to avoid having the same code over and over again
+        #define CHECK_SHARED_PROPERTIES(name) \
+            if (line.substr(0, 5).compare("size=") == 0) \
+            { \
+                Vector2f size; \
+                if (extractVector2f(line.erase(0, 5), size) == false) \
+                    goto LoadingFailed; \
+              \
+                name->setSize(size.x, size.y); \
+            } \
+            else if (line.substr(0, 6).compare("width=") == 0) \
+            { \
+                line.erase(0, 6); \
+                name->setSize(readFloat(line.c_str()), static_cast<float>(name->getSize().y)); \
+            } \
+            else if (line.substr(0, 7).compare("height=") == 0) \
+            { \
+                line.erase(0, 7); \
+                name->setSize(static_cast<float>(name->getSize().x), readFloat(line.c_str())); \
+            } \
+            else if (line.substr(0, 6).compare("scale=") == 0) \
+            { \
+                line.erase(0, 6); \
+                Vector2f objScale; \
+                if (extractVector2f(line, objScale)) \
+                    name->setScale(objScale); \
+                else \
+                    goto LoadingFailed; \
+            } \
+            else if (line.substr(0, 9).compare("position=") == 0) \
+            { \
+                line.erase(0, 9); \
+                Vector2f position; \
+                if (extractVector2f(line, position)) \
+                    name->setPosition(position); \
+                else \
+                    goto LoadingFailed; \
+            } \
+            else if (line.substr(0, 5).compare("left=") == 0) \
+            { \
+                line.erase(0, 5); \
+                name->setPosition(readFloat(line.c_str()), name->getPosition().y); \
+            } \
+            else if (line.substr(0, 4).compare("top=") == 0) \
+            { \
+                line.erase(0, 4); \
+                name->setPosition(name->getPosition().x, readFloat(line.c_str())); \
+            } \
+            else if (line.substr(0, 11).compare("callbackid=") == 0) \
+            { \
+                line.erase(0, 11); \
+                name->callbackID = readInt(line.c_str()); \
+            }
+
+        #define CHECK_FOR_QUOTES \
+            if (line.empty() == true) \
+                goto LoadingFailed; \
+             \
+            if ((line[0] == '"') && (line[line.length()-1] == '"')) \
+            { \
+                line.erase(0, 1); \
+                line.erase(line.length()-1, 1); \
+            } \
+            else \
+                goto LoadingFailed;
+
+        #define CHECK_BOOL(boolean) \
+            if (line.compare("true") == 0) \
+                boolean = true; \
+            else if (line.compare("false") == 0) \
+                boolean = false; \
+            else \
+            { \
+                if (atoi(line.c_str())) \
+                    boolean = true; \
+                else \
+                    boolean = false; \
+            }
+
+         #define COMPARE_OBJECT(length, name, objectName, id) \
+            if (line.substr(0, length).compare(name) == 0) \
+            { \
+                line.erase(0, length); \
+              \
+                if (line.empty() == false) \
+                { \
+                    CHECK_FOR_QUOTES \
+                } \
+              \
+                extraPtr = static_cast<void*>(parentPtr.top()->add<objectName>(line)); \
+                objectID = id + 1; \
+                progress.push(0); \
+            }
+
+        #define START_LOADING_OBJECT \
+            if (progress.top() == 0) \
+            { \
+                if (line.compare("{") == 0) \
+                { \
+                    progress.pop(); \
+                    progress.push(1); \
+                    break; \
+                } \
+                else \
+                    goto LoadingFailed; \
+            } \
+            else \
+            { \
+                if (line.compare("}") == 0) \
+                { \
+                    objectID = parentID.top(); \
+                    parentID.pop(); \
+                    parentPtr.pop(); \
+                    progress.pop(); \
+                    break; \
+                } \
+            }
+
+        // During the process some variables are needed to store what exactly was going on.
+        std::stack<Group*> parentPtr;
+        std::stack<unsigned int> parentID;
+        std::stack<unsigned int> progress;
+        unsigned int objectID = 0;
+        void* extraPtr = NULL;
+        bool multilineComment = false;
+
+        std::vector<std::string> defineTokens;
+        std::vector<std::string> defineValues;
+
+        // Create a file object
+        std::ifstream m_File;
+
+        // Open the file
+        m_File.open(filename.c_str(), std::ifstream::in);
+
+        // Check if the file was not opened
+        if (m_File.is_open() == false)
+            return false;
+
+        // Stop reading when we reach the end of the file
+        while (!m_File.eof())
+        {
+            // Get the next line
+            std::string line;
+            std::getline(m_File, line);
+
+            // Check if there is a multiline comment
+            if (multilineComment)
+            {
+                // Search for an asterisk
+                std::string::size_type commentPos = line.find('*');
+
+                // Check if there is an asterisk
+                if (commentPos != std::string::npos)
+                {
+                    // Make sure the asterisk is not the last character on the line
+                    if (line.length() > commentPos + 1)
+                    {
+                        // Check if the next character is a slash
+                        if (line[commentPos+1] == '/')
+                        {
+                            // Erase the first part of the line
+                            line.erase(0, commentPos + 2);
+
+                            // The multiline comment has been processed
+                            multilineComment = false;
+
+                            // Continue like normal
+                            goto multilineCommentProcessed;
+                        }
+                        else // There is no end of the comment in this line
+                            line = "";
+                    }
+                    else // There is no end of the comment in this line
+                        line = "";
+                }
+                else // There is no end of the comment in this line
+                    line = "";
+            }
+            else // There is no multiline comment
+            {
+              multilineCommentProcessed:
+
+                // Search for a quote
+                std::string::size_type quotePos1 = line.find('"');
+
+                // Check if the quote was found or not
+                if (quotePos1 == std::string::npos)
+                {
+                    // Remove all spaces and tabs from the whole line
+                    line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
+                    line.erase(std::remove(line.begin(), line.end(), '\t'), line.end());
+                    line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+
+                    // Search for comments
+                    std::string::size_type commentPos = line.find('/');
+
+                    // Check if a slash was found
+                    if (commentPos != std::string::npos)
+                    {
+                        // Make sure the slash is not the last character on the line
+                        if (line.length() > commentPos + 1)
+                        {
+                            // Erase the comment (if there is one)
+                            if (line[commentPos+1] == '/')
+                                line.erase(commentPos);
+                            else if (line[commentPos+1] == '*')
+                            {
+                                // Remove the rest of the line
+                                line.erase(commentPos);
+
+                                // From now on, everything is comment
+                                multilineComment = true;
+                            }
+                            else // There is a slash in the middle of nowhere. It shouldn't be there.
+                                goto LoadingFailed;
+                        }
+                        else // There is a slash on the end of the line. It shouldn't be there.
+                            goto LoadingFailed;
+                    }
+
+                    // Convert the whole line to lowercase
+                    for (unsigned int i = 0; i < line.length(); i++)
+                    {
+                        if ((line[i] > 64) && (line[i] < 91))
+                            line[i] += 32;
+                    }
+                }
+                else
+                {
+                    // Only remove spaces until the quote
+                    line.erase(std::remove(line.begin(), line.begin() + quotePos1, ' '), line.begin() + quotePos1);
+
+                    // Search for the quote again, because the position might have changed
+                    quotePos1 = line.find('"');
+
+                    // Only remove tabs until the quote
+                    line.erase(std::remove(line.begin(), line.begin() + quotePos1, '\t'), line.begin() + quotePos1);
+
+                    // Search for the quote again, because the position might have changed
+                    quotePos1 = line.find('"');
+
+                    // Search for comments
+                    std::string::size_type commentPos = line.substr(0, quotePos1).find('/');
+
+                    // Check if a slash was found
+                    if (commentPos != std::string::npos)
+                    {
+                        // Erase the comment (if there is one)
+                        if (line[commentPos+1] == '/')
+                            line.erase(commentPos);
+                        else if (line[commentPos+1] == '*')
+                        {
+                            // Remove the rest of the line
+                            line.erase(commentPos);
+
+                            // From now on, everything is comment
+                            multilineComment = true;
+                        }
+                        else // There is a slash in the middle of nowhere. It shouldn't be there.
+                            goto LoadingFailed;
+                    }
+
+                    // Search for the quote again, because the position might have changed
+                    quotePos1 = line.find('"');
+
+                    // The quote might have been behind the comment
+                    if (quotePos1 != std::string::npos)
+                    {
+                        // Convert the part before the quote to lowercase
+                        for (unsigned int i = 0; i < quotePos1; i++)
+                        {
+                            if ((line[i] > 64) && (line[i] < 91))
+                                line[i] += 32;
+                        }
+
+                        // Search for a second quote
+                        std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
+
+                        // There must always be a second quote
+                        if (quotePos2 == std::string::npos)
+                            goto LoadingFailed;
+
+                        // Remove all spaces and tabs after the quote
+                        line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
+                        line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
+                        line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
+
+                        // Search for comments
+                        commentPos = line.find('/', quotePos2 + 1);
+
+                        // Check if a slash was found
+                        if (commentPos != std::string::npos)
+                        {
+                            // Make sure the slash is not the last character on the line
+                            if (line.length() > commentPos + 1)
+                            {
+                                // Erase the comment (if there is one)
+                                if (line[commentPos+1] == '/')
+                                    line.erase(commentPos);
+                                else if (line[commentPos+1] == '*')
+                                {
+                                    // Remove the rest of the line
+                                    line.erase(commentPos);
+
+                                    // From now on, everything is comment
+                                    multilineComment = true;
+                                }
+                                else // There is a slash in the middle of nowhere. It shouldn't be there.
+                                    goto LoadingFailed;
+                            }
+                            else // There is a slash on the end of the line. It shouldn't be there.
+                                goto LoadingFailed;
+                        }
+
+                        // Search for the quote again, because the position might have changed
+                        quotePos2 = line.find('"', quotePos1 + 1);
+
+                        // Search for backslashes between the quotes
+                        std::string::size_type backslashPos = line.find('\\', quotePos1);
+
+                        // Check if a backlash was found before the second quote
+                        while (backslashPos < quotePos2)
+                        {
+                            // Check for special characters
+                            if (line[backslashPos + 1] == 'n')
+                            {
+                                line[backslashPos] = '\n';
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == 't')
+                            {
+                                line[backslashPos] = '\t';
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == '\\')
+                            {
+                                line.erase(backslashPos + 1, 1);
+                                --quotePos2;
+                            }
+                            else if (line[backslashPos + 1] == '"')
+                            {
+                                line[backslashPos] = '"';
+                                line.erase(backslashPos + 1, 1);
+
+                                // Find the next quote
+                                quotePos2 = line.find('"', backslashPos + 1);
+
+                                if (quotePos2 == std::string::npos)
+                                    goto LoadingFailed;
+                            }
+
+                            // Find the next backslash
+                            backslashPos = line.find('\\', backslashPos + 1);
+                        }
+
+                        // There may never be more than two quotes
+                        if (line.find('"', quotePos2 + 1) != std::string::npos)
+                            goto LoadingFailed;
+
+                        // Convert the part behind the quote to lowercase
+                        for (unsigned int i = quotePos2; i < line.length(); i++)
+                        {
+                            if ((line[i] > 64) && (line[i] < 91))
+                                line[i] += 32;
+                        }
+                    }
+                }
+            }
+
+            // Only continue when the line is not empty
+            if (!line.empty())
+            {
+                // Check if something was defined
+                if (defineTokens.empty() == false)
+                {
+                    // Loop through all tokens
+                    for (unsigned int i=0; i<defineTokens.size(); ++i)
+                    {
+                        // Search for every token in the line
+                        std::string::size_type tokenPos = line.find(defineTokens[i]);
+
+                        // Check if a token was found
+                        while (tokenPos != std::string::npos)
+                        {
+                            // Replace the token with the corresponding value
+                            line.erase(tokenPos, defineTokens[i].length());
+                            line.insert(tokenPos, defineValues[i]);
+
+                            // Search again for the next token
+                            tokenPos = line.find(defineTokens[i]);
+                        }
+                    }
+                }
+
+                // What happens now depends on the process
+                switch (objectID)
+                {
+                    case 0: // Done nothing yet
+                    {
+                        // Check if this is the first line
+                        if (progress.empty())
+                        {
+                            // The first line should contain 'window' or 'define'
+                            if (line.substr(0, 7).compare("window:") == 0)
+                            {
+                                objectID = 0;
+                                progress.push(1);
+                            }
+                            else if (line.substr(0, 7).compare("define:") == 0)
+                            {
+                                line.erase(0, 7);
+
+                                // Search the equals sign
+                                std::string::size_type equalsSignPos = line.find('=');
+                                if (equalsSignPos != std::string::npos)
+                                {
+                                    // Store the define
+                                    defineTokens.push_back(line.substr(0, equalsSignPos));
+                                    defineValues.push_back(line.erase(0, equalsSignPos + 1));
+                                }
+                                else // The equals sign is missing
+                                    goto LoadingFailed;
+                            }
+                            else // The second line is wrong
+                                goto LoadingFailed;
+                        }
+                        else // This is the second line
+                        {
+                            // The second line should contain "{"
+                            if (line.compare("{") == 0)
+                            {
+                                objectID = window + 1;
+                                progress.pop();
+                            }
+                            else // The second line is wrong
+                                goto LoadingFailed;
+                        }
+
+                        break;
+                    }
+                    case window + 1: // The window was found
+                    {
+                        // Find out if the loading is done
+                        if (line.compare("}") == 0)
+                            goto LoadingSucceeded;
+
+                        // The next object will have the window as its parent
+                        parentID.push(window + 1);
+                        parentPtr.push(this);
+
+                        // The line doesn't contain a '}', so check what object it contains
+                        COMPARE_OBJECT(4, "tab:", Tab, tab)
+                        else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                        else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                        else COMPARE_OBJECT(6, "label:", Label, label)
+                        else COMPARE_OBJECT(7, "button:", Button, button)
+                        else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                        else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                        else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                        else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                        else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                        else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                        else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                        else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case tab + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the tab back
+                        Tab* tab = static_cast<Tab*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the tab
+                            tab->load(line);
+                        }
+                        else if (line.substr(0, 10).compare("tabheight=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 10);
+                            tab->setTabHeight(atoi(line.c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            tab->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            tab->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("distancetoside=") == 0)
+                        {
+                            line.erase(0, 15);
+                            tab->distanceToSide = atoi(line.c_str());
+                        }
+                        else if (line.substr(0, 4).compare("tab=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 4);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Add the item to the list box
+                            tab->add(line);
+                        }
+                        else if (line.substr(0, 12).compare("selectedtab=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 12);
+
+                            // The line must contain something
+                            if (line.empty() == true)
+                                goto LoadingFailed;
+
+                            // Check if there are quotes
+                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            {
+                                line.erase(0, 1);
+                                line.erase(line.length()-1, 1);
+
+                                // Select the item
+                                tab->select(line);
+                            }
+                            else // There were no quotes
+                            {
+                                // Select the item
+                                tab->select(atoi(line.c_str()));
+                            }
+                        }
+                        else CHECK_SHARED_PROPERTIES(tab)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case grid + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        TGUI_OUTPUT("TGUI warning: Grid cannot be loaded from an Object File yet.");
+                    }
+                    case panel + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the panel back
+                        Panel* panelPtr = static_cast<Panel*>(extraPtr);
+
+                        CHECK_SHARED_PROPERTIES(panelPtr)
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            panelPtr->backgroundColor = extractColor(line.erase(0, 16));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 16);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the image
+                            panelPtr->setBackgroundImage(line);
+                        }
+                        else
+                        {
+                            // All newly created objects must be part of the panel
+                            parentID.push(panel + 1);
+                            parentPtr.push(panelPtr);
+
+                            COMPARE_OBJECT(4, "tab:", Tab, tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                            else COMPARE_OBJECT(6, "label:", Label, label)
+                            else COMPARE_OBJECT(7, "button:", Button, button)
+                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                            else // The line was wrong
+                                goto LoadingFailed;
+                        }
+
+                        break;
+                    }
+                    case label + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the label back
+                        Label* label = static_cast<Label*>(extraPtr);
+
+                        if (line.substr(0, 9).compare("autosize=") == 0)
+                        {
+                            label->setAutoSize(!!atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the text
+                            label->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            label->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            label->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            label->backgroundColor = extractColor(line.erase(0, 16));
+                        }
+                        else CHECK_SHARED_PROPERTIES(label)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case button + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the button back
+                        Button* button = static_cast<Button*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the button
+                            button->load(line);
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the caption
+                            button->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            button->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            button->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else CHECK_SHARED_PROPERTIES(button)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case slider + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the slider back
+                        Slider* slider = static_cast<Slider*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the slider
+                            slider->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            slider->setValue(atoi(line.erase(0, 6).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            slider->setMinimum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            slider->setMaximum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("verticalscroll=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool vericalScroll;
+                            CHECK_BOOL(vericalScroll)
+
+                            slider->setVerticalScroll(vericalScroll);
+                        }
+                        else CHECK_SHARED_PROPERTIES(slider)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case picture + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the picture back
+                        Picture* picture = static_cast<Picture*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("filename=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the picture
+                            picture->load(line);
+                        }
+                        else CHECK_SHARED_PROPERTIES(picture)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case listBox + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the list box back
+                        ListBox* listBox = static_cast<ListBox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 11).compare("itemheight=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 11);
+
+                            // Set the item height
+                            listBox->setItemHeight(atoi(line.c_str()));
+                        }
+                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the scrollbar
+                            listBox->setScrollbar(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                listBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            listBox->setBackgroundColor(extractColor(line.erase(0, 16)));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            listBox->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
+                        {
+                            listBox->setSelectedBackgroundColor(extractColor(line.erase(0, 24)));
+                        }
+                        else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
+                        {
+                            listBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
+                        }
+                        else if (line.substr(0, 12).compare("bordercolor=") == 0)
+                        {
+                            listBox->setBorderColor(extractColor(line.erase(0, 12)));
+                        }
+                        else if (line.substr(0, 13).compare("maximumitems=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 13);
+
+                            // Set the maximum items
+                            listBox->setMaximumItems(atoi(line.c_str()));
+                        }
+                        else if (line.substr(0, 5).compare("item=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Add the item to the list box
+                            listBox->addItem(line);
+                        }
+                        else if (line.substr(0, 13).compare("selecteditem=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 13);
+
+                            // The line must contain something
+                            if (line.empty() == true)
+                                goto LoadingFailed;
+
+                            // Check if there are quotes
+                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            {
+                                line.erase(0, 1);
+                                line.erase(line.length()-1, 1);
+
+                                // Select the item
+                                listBox->setSelectedItem(line);
+                            }
+                            else // There were no quotes
+                            {
+                                // Select the item
+                                listBox->setSelectedItem(atoi(line.c_str()));
+                            }
+                        }
+                        else CHECK_SHARED_PROPERTIES(listBox)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case editBox + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the edit box back
+                        EditBox* editBox = static_cast<EditBox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the edit box
+                            editBox->load(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                editBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the text
+                            editBox->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            editBox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            editBox->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
+                        {
+                            // Change the selected text color (black on error)
+                            editBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
+                        }
+                        else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
+                        {
+                            // Change the selected text background color (black on error)
+                            editBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
+                        }
+                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
+                        {
+                            TGUI_OUTPUT("TGUI warning: EditBox no longer has a selection background color when unfocused.");
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
+                        {
+                            // Change the selection pointer color (black on error)
+                            editBox->selectionPointColor = extractColor(line.erase(0, 20));
+                        }
+                        else if (line.substr(0, 13).compare("passwordchar=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 13);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Make sure that the string is not empty
+                            if (line.empty() == false)
+                            {
+                                // Set the password character
+                                editBox->setPasswordChar(line[0]);
+                            }
+                            else // The string is empty
+                                editBox->setPasswordChar('\0');
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 20);
+
+                            // Read the selection point width (0 and thus no selection point when it goes wrong)
+                            editBox->selectionPointWidth = atoi(line.c_str());
+                        }
+                        else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // Read the maximum characters (0 and thus no limit when it goes wrong)
+                            editBox->setMaximumCharacters(atoi(line.c_str()));
+                        }
+                        else CHECK_SHARED_PROPERTIES(editBox)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case textBox + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the text box back
+                        TextBox* textBox = static_cast<TextBox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the scrollbar
+                            textBox->setScrollbar(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                textBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the text
+                            textBox->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            textBox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            textBox->setBackgroundColor(extractColor(line.erase(0, 16)));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            textBox->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
+                        {
+                            // Change the selected text color (black on error)
+                            textBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
+                        }
+                        else if (line.substr(0, 28).compare("selectedtextbackgroundcolor=") == 0)
+                        {
+                            // Change the selected text background color (black on error)
+                            textBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
+                        }
+                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
+                        {
+                            TGUI_OUTPUT("TGUI warning: TextBox no longer has a selection background color when unfocused.");
+                        }
+                        else if (line.substr(0, 12).compare("bordercolor=") == 0)
+                        {
+                            // Change the border color (black on error)
+                            textBox->setBorderColor(extractColor(line.erase(0, 12)));
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
+                        {
+                            // Change the selection pointer color (black on error)
+                            textBox->selectionPointColor = extractColor(line.erase(0, 20));
+                        }
+                        else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 20);
+
+                            // Read the selection point width (0 and thus no selection point when it goes wrong)
+                            textBox->selectionPointWidth = atoi(line.c_str());
+                        }
+                        else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // Read the maximum characters (0 and thus no limit when it goes wrong)
+                            textBox->setMaximumCharacters(atoi(line.c_str()));
+                        }
+                        else CHECK_SHARED_PROPERTIES(textBox)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case checkbox + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the checkbox back
+                        Checkbox* checkbox = static_cast<Checkbox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the checkbox
+                            checkbox->load(line);
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the caption
+                            checkbox->setText(line);
+                        }
+                        else if (line.substr(0, 8).compare("checked=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 8);
+
+                            // Check if the value is true or false
+                            bool checked;
+                            CHECK_BOOL(checked)
+
+                            // Check or uncheck the checkbox
+                            if (checked)
+                                checkbox->check();
+                            else
+                                checkbox->uncheck();
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            checkbox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            checkbox->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else CHECK_SHARED_PROPERTIES(checkbox)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case comboBox + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the combo box back
+                        ComboBox* comboBox = static_cast<ComboBox*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the combo box
+                            comboBox->load(line, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
+                        }
+                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 18);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the scrollbar
+                            comboBox->setScrollbar(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                comboBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            comboBox->setBackgroundColor(extractColor(line.erase(0, 16)));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            comboBox->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 24).compare("selectedbackgroundcolor=") == 0)
+                        {
+                            comboBox->setSelectedBackgroundColor(extractColor(line.erase(0, 24)));
+                        }
+                        else if (line.substr(0, 18).compare("selectedtextcolor=") == 0)
+                        {
+                            comboBox->setSelectedTextColor(extractColor(line.erase(0, 18)));
+                        }
+                        else if (line.substr(0, 12).compare("bordercolor=") == 0)
+                        {
+                            comboBox->setBorderColor(extractColor(line.erase(0, 12)));
+                        }
+                        else if (line.substr(0, 15).compare("itemstodisplay=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Set the nr of items to display
+                            comboBox->setItemsToDisplay(atoi(line.c_str()));
+                        }
+                        else if (line.substr(0, 5).compare("item=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Add the item to the combo box
+                            comboBox->addItem(line);
+                        }
+                        else if (line.substr(0, 13).compare("selecteditem=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 13);
+
+                            // The line must contain something
+                            if (line.empty() == true)
+                                goto LoadingFailed;
+
+                            // Check if there are quotes
+                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            {
+                                line.erase(0, 1);
+                                line.erase(line.length()-1, 1);
+
+                                // Select the item
+                                comboBox->setSelectedItem(line);
+                            }
+                            else // There were no quotes
+                            {
+                                // Select the item
+                                comboBox->setSelectedItem(atoi(line.c_str()));
+                            }
+                        }
+                        else CHECK_SHARED_PROPERTIES(comboBox)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case slider2D + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the slider back
+                        Slider2D* slider = static_cast<Slider2D*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the slider
+                            slider->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            Vector2f value;
+                            if (extractVector2f(line.erase(0, 6), value) == false)
+                                goto LoadingFailed;
+
+                            slider->setValue(value);
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            Vector2f minimum;
+                            if (extractVector2f(line.erase(0, 8), minimum) == false)
+                                goto LoadingFailed;
+
+                            slider->setMinimum(minimum);
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            Vector2f maximum;
+                            if (extractVector2f(line.erase(0, 8), maximum) == false)
+                                goto LoadingFailed;
+
+                            slider->setMaximum(maximum);
+                        }
+                        else if (line.substr(0, 15).compare("returntocenter=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool returnToCenter;
+                            CHECK_BOOL(returnToCenter)
+
+                            slider->returnToCenter = returnToCenter;
+                        }
+                        else if (line.substr(0, 15).compare("fixedthumbsize=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool fixedThumbSize;
+                            CHECK_BOOL(fixedThumbSize)
+
+                            slider->fixedThumbSize = fixedThumbSize;
+                        }
+                        else CHECK_SHARED_PROPERTIES(slider)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case scrollbar + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the scrollbar back
+                        Scrollbar* scrollbar = static_cast<Scrollbar*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the scrollbar
+                            scrollbar->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            scrollbar->setValue(atoi(line.erase(0, 6).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            scrollbar->setMaximum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 9).compare("lowvalue=") == 0)
+                        {
+                            scrollbar->setLowValue(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("verticalscroll=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool vericalScroll;
+                            CHECK_BOOL(vericalScroll)
+
+                            scrollbar->setVerticalScroll(vericalScroll);
+                        }
+                        else CHECK_SHARED_PROPERTIES(scrollbar)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case loadingBar + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the loading bar back
+                        LoadingBar* loadingBar = static_cast<LoadingBar*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the loading bar
+                            loadingBar->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            loadingBar->setValue(atoi(line.erase(0, 6).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            loadingBar->setMinimum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            loadingBar->setMaximum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else CHECK_SHARED_PROPERTIES(loadingBar)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case spinButton + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the spin button back
+                        SpinButton* spinButton = static_cast<SpinButton*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the spin button
+                            spinButton->load(line);
+                        }
+                        else if (line.substr(0, 6).compare("value=") == 0)
+                        {
+                            spinButton->setValue(atoi(line.erase(0, 6).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("minimum=") == 0)
+                        {
+                            spinButton->setMinimum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("maximum=") == 0)
+                        {
+                            spinButton->setMaximum(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 15).compare("verticalscroll=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 15);
+
+                            // Check if the value is true or false
+                            bool vericalScroll;
+                            CHECK_BOOL(vericalScroll)
+
+                            spinButton->verticalScroll = vericalScroll;
+                        }
+                        else CHECK_SHARED_PROPERTIES(spinButton)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case radioButton + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the radio button back
+                        RadioButton* radioButton = static_cast<RadioButton*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the radio button
+                            radioButton->load(line);
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the caption
+                            radioButton->setText(line);
+                        }
+                        else if (line.substr(0, 8).compare("checked=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 8);
+
+                            // Check if the value is true or false
+                            bool checked;
+                            CHECK_BOOL(checked)
+
+                            // Check or uncheck the radio button
+                            if (checked)
+                                radioButton->check();
+                            else
+                                radioButton->uncheck();
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            radioButton->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            radioButton->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else CHECK_SHARED_PROPERTIES(radioButton)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case childWindow + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the child window back
+                        ChildWindow* child = static_cast<ChildWindow*>(extraPtr);
+
+                        CHECK_SHARED_PROPERTIES(child)
+                        else if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the child window
+                            if (child->load(static_cast<float>(child->getSize().x), static_cast<float>(child->getSize().y), child->backgroundColor, line) == false)
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
+                        {
+                            // Change the background color (black on error)
+                            child->backgroundColor = extractColor(line.erase(0, 16));
+                        }
+                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 16);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the image
+                            child->setBackgroundImage(line);
+                        }
+                        else if (line.substr(0, 8).compare("borders=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 8);
+
+                            // Get the borders
+                            Vector4u borders;
+                            if (extractVector4u(line, borders))
+                                child->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 13).compare("transparency=") == 0)
+                        {
+                            child->setTransparency(static_cast<unsigned char>(atoi(line.erase(0, 13).c_str())));
+                        }
+                        else if (line.substr(0, 15).compare("titlebarheight=") == 0)
+                        {
+                            child->setTitlebarHeight(atoi(line.erase(0, 15).c_str()));
+                        }
+                        else if (line.substr(0, 7).compare("layout=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 7);
+
+                            // Check what the layout is
+                            if (line.compare("left") == 0)
+                                child->layout = ChildWindow::LayoutLeft;
+                            else if (line.compare("right") == 0)
+                                child->layout = ChildWindow::LayoutRight;
+                            else
+                                goto LoadingFailed;
+                        }
+                        else
+                        {
+                            // All newly created objects must be part of the panel
+                            parentID.push(childWindow + 1);
+                            parentPtr.push(child);
+
+                            COMPARE_OBJECT(4, "tab:", Tab, tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
+                            else COMPARE_OBJECT(6, "label:", Label, label)
+                            else COMPARE_OBJECT(7, "button:", Button, button)
+                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                            else // The line was wrong
+                                goto LoadingFailed;
+                        }
+
+                        break;
+                    }
+                    case spriteSheet + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the sprite sheet back
+                        SpriteSheet* spriteSheet = static_cast<SpriteSheet*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("filename=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The filename must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the sprite sheet
+                            spriteSheet->load(line);
+                        }
+                        else if (line.substr(0, 5).compare("rows=") == 0)
+                        {
+                            spriteSheet->setRows(atoi(line.erase(0, 5).c_str()));
+                        }
+                        else if (line.substr(0, 8).compare("columns=") == 0)
+                        {
+                            spriteSheet->setColumns(atoi(line.erase(0, 8).c_str()));
+                        }
+                        else if (line.substr(0, 6).compare("cells=") == 0)
+                        {
+                            Vector2u cells;
+                            if (extractVector2u(line.erase(0, 6), cells) == false)
+                                goto LoadingFailed;
+
+                            // Set the cells
+                            spriteSheet->setCells(cells.x, cells.y);
+                        }
+                        else if (line.substr(0, 12).compare("visiblecell=") == 0)
+                        {
+                            Vector2u cell;
+                            if (extractVector2u(line.erase(0, 12), cell) == false)
+                                goto LoadingFailed;
+
+                            spriteSheet->setVisibleCell(cell.x, cell.y);
+                        }
+                        else CHECK_SHARED_PROPERTIES(spriteSheet)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case animatedButton + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the animated button back
+                        AnimatedButton* button = static_cast<AnimatedButton*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 9);
+
+                            // The pathname must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the animated button
+                            if (button->load(line) == false)
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("text=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 5);
+
+                            // The text must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Change the caption
+                            button->setText(line);
+                        }
+                        else if (line.substr(0, 9).compare("textsize=") == 0)
+                        {
+                            // Change the text size
+                            button->setTextSize(atoi(line.erase(0, 9).c_str()));
+                        }
+                        else if (line.substr(0, 10).compare("textcolor=") == 0)
+                        {
+                            // Change the text color (black on error)
+                            button->setTextColor(extractColor(line.erase(0, 10)));
+                        }
+                        else if (line.substr(0, 13).compare("currentframe=") == 0)
+                        {
+                            button->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
+                        }
+                        else CHECK_SHARED_PROPERTIES(button)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                    case animatedPicture + 1:
+                    {
+                        START_LOADING_OBJECT
+
+                        // Get the pointer to the sprite animated picture
+                        AnimatedPicture* animatedPicture = static_cast<AnimatedPicture*>(extraPtr);
+
+                        // Find out what the next property is
+                        if (line.substr(0, 6).compare("frame=") == 0)
+                        {
+                            line.erase(0, 6);
+
+                            // Make sure that the string isn't empty
+                            if (line.empty() == false)
+                            {
+                                // The first and last character have to be brackets
+                                if ((line[0] == '(') && (line[line.length()-1] == ')'))
+                                {
+                                    // Remove the brackets
+                                    line.erase(0, 1);
+                                    line.erase(line.length()-1);
+
+                                    // Search for the first comma
+                                    std::string::size_type commaPos = line.find(',');
+                                    if (commaPos != std::string::npos)
+                                    {
+                                        // Get the frame duration
+                                        int duration = atoi(line.substr(commaPos+1).c_str());
+                                        line.erase(commaPos);
+
+                                        // The filename must start and end with quotes
+                                        CHECK_FOR_QUOTES
+
+                                        // Add the frame to the animated picture
+                                        if (animatedPicture->addFrame(line, sf::milliseconds(duration)) == false)
+                                            goto LoadingFailed;
+                                    }
+                                    else
+                                        goto LoadingFailed;
+                                }
+                                else
+                                    goto LoadingFailed;
+                            }
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 5).compare("loop=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 5);
+
+                            // Check if the value is true or false
+                            bool loop;
+                            CHECK_BOOL(loop)
+
+                            animatedPicture->loop = loop;
+                        }
+                        else if (line.substr(0, 8).compare("playing=") == 0)
+                        {
+                            // Remove the first part of the string
+                            line.erase(0, 8);
+
+                            // Check if the value is true or false
+                            bool playing;
+                            CHECK_BOOL(playing)
+
+                            if (playing)
+                                animatedPicture->play();
+                        }
+                        else if (line.substr(0, 13).compare("currentframe=") == 0)
+                        {
+                            animatedPicture->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
+                        }
+                        else CHECK_SHARED_PROPERTIES(animatedPicture)
+                        else // The line was wrong
+                            goto LoadingFailed;
+
+                        break;
+                    }
+                };
+            }
+        }
+
+
+      LoadingSucceeded:
+
+        m_File.close();
+        return true;
+
+      LoadingFailed:
+
+        m_File.close();
+        return false;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::vector<OBJECT*>& Group::getObjects()
     {
-        return m_Objects;
+        return m_EventManager.m_Objects;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string>& Group::getObjectNames()
+    std::vector<sf::String>& Group::getObjectNames()
     {
         return m_ObjName;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    template <typename T>
-    T* Group::copyObject(T* oldObject, const std::string newObjectName)
-    {
-        T* newObject = new T(*oldObject);
-        m_EventManager.addObject(newObject);
-
-        m_Objects.push_back(newObject);
-        m_ObjName.push_back(newObjectName);
-
-        return newObject;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Label,       label)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Picture,     picture)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Button,      button)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Checkbox,    checkbox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (RadioButton, radioButton)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (EditBox,     editBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Slider,      slider)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Scrollbar,   scrollbar)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Listbox,     listbox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (LoadingBar,  loadingBar)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (Panel,       panel)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (ComboBox,    comboBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (TextBox,     textBox)
-    TGUI_GROUP_COPY_FUNCTION_BY_NAME (SpriteSheet, spriteSheet)
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Group::removeObject(const std::string objectName)
+    void Group::remove(const sf::String objectName)
     {
         // Loop through every object
         for (unsigned int i=0; i<m_ObjName.size(); ++i)
         {
             // Check if the name matches
-            if (m_ObjName[i].compare(objectName) == 0)
+            if (m_ObjName[i].toWideString().compare(objectName) == 0)
             {
+                // Unfocus the object, just in case it was focused
+                m_EventManager.unfocusObject(m_EventManager.m_Objects[i]);
+
                 // Remove the object
-                m_EventManager.removeObject(m_Objects[i]->getObjectID());
-                delete m_Objects[i];
-                m_Objects.erase(m_Objects.begin() + i);
+                delete m_EventManager.m_Objects[i];
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+
+                // Also emove the name it from the list
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Group::remove(OBJECT* object)
+    {
+        // Loop through every object
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        {
+            // Check if the pointer matches
+            if (m_EventManager.m_Objects[i] == object)
+            {
+                // Unfocus the object, just in case it was focused
+                m_EventManager.unfocusObject(object);
+
+                // Remove the object
+                delete m_EventManager.m_Objects[i];
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+                object = NULL;
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);
@@ -306,16 +2284,16 @@ namespace tgui
 
     void Group::removeAllObjects()
     {
-        // Remove all the objects from the event and animation manager
-        m_EventManager.removeAllObjects();
-
         // Delete all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
-            delete m_Objects[i];
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+            delete m_EventManager.m_Objects[i];
 
         // Clear the lists
-        m_Objects.clear();
+        m_EventManager.m_Objects.clear();
         m_ObjName.clear();
+
+        // There are no more objects, so none of the objects can be focused
+        m_EventManager.m_FocusedObject = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,39 +2301,92 @@ namespace tgui
     void Group::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
         {
-            if (m_Objects[i]->m_ObjectType == radioButton)
-                static_cast<RadioButton*>(m_Objects[i])->m_Checked = false;
+            if (m_EventManager.m_Objects[i]->m_ObjectType == radioButton)
+                static_cast<RadioButton*>(m_EventManager.m_Objects[i])->m_Checked = false;
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::focus(OBJECT* object)
+    void Group::focusObject(OBJECT* object)
     {
-        m_EventManager.setFocus(object->getObjectID());
+        m_EventManager.focusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::unfocus(OBJECT* object)
+    void Group::unfocusObject(OBJECT* object)
     {
         m_EventManager.unfocusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Group::unfocusAllObjects()
+    {
+        m_EventManager.unfocusAllObjects();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Group::moveObjectToFront(OBJECT* object)
     {
-        m_EventManager.moveObjectToFront(object);
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        {
+            // Check if the object is found
+            if (m_EventManager.m_Objects[i] == object)
+            {
+                // Copy the object
+                m_EventManager.m_Objects.push_back(m_EventManager.m_Objects[i]);
+                m_ObjName.push_back(m_ObjName[i]);
+
+                // Focus the correct object
+                if ((m_EventManager.m_FocusedObject == 0) || (m_EventManager.m_FocusedObject == i+1))
+                    m_EventManager.m_FocusedObject = m_EventManager.m_Objects.size()-1;
+                else if (m_EventManager.m_FocusedObject > i+1)
+                    --m_EventManager.m_FocusedObject;
+
+                // Remove the old object
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Group::moveObjectToBack(OBJECT* object)
     {
-        m_EventManager.moveObjectToBack(object);
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        {
+            // Check if the object is found
+            if (m_EventManager.m_Objects[i] == object)
+            {
+                // Copy the object
+                OBJECT* obj = m_EventManager.m_Objects[i];
+                std::string name = m_ObjName[i];
+                m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), obj);
+                m_ObjName.insert(m_ObjName.begin(), name);
+
+                // Focus the correct object
+                if (m_EventManager.m_FocusedObject == i+1)
+                    m_EventManager.m_FocusedObject = 1;
+                else if (m_EventManager.m_FocusedObject)
+                    ++m_EventManager.m_FocusedObject;
+
+                // Remove the old object
+                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i + 1);
+                m_ObjName.erase(m_ObjName.begin() + i + 1);
+
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,48 +2400,12 @@ namespace tgui
 
     void Group::drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states) const
     {
-        unsigned int objectID = 0;
-        unsigned int highestID = TGUI_MAX_OBJECTS;
-        unsigned int lowestID = 0;
-
-        bool allObjectsInvisible = true;
-
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all objects
+        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
         {
-            // Loop through all objects
-            for (unsigned int j=0; j<m_Objects.size(); ++j)
-            {
-                // Check if the visible object has a higher id
-                if ((m_Objects[j]->isVisible()) && (m_Objects[j]->m_ObjectID > lowestID))
-                {
-                    // Make sure that the object id is the smallest
-                    if (m_Objects[j]->m_ObjectID < highestID)
-                    {
-                        // Remember the new highers id
-                        highestID = m_Objects[j]->m_ObjectID;
-
-                        // Remember the object that has to be drawn
-                        objectID = j;
-
-                        // We have found an object that is visible
-                        allObjectsInvisible = false;
-                    }
-                }
-            }
-
-            // When none of the objects is visible then don't draw anything.
-            if (allObjectsInvisible == true)
-                break;
-
-            // Draw the object if it is allowed
-            if (lowestID < m_Objects[objectID]->m_ObjectID)
-                target->draw(*m_Objects[objectID], states);
-
-            // Remember the new lowest id
-            lowestID = m_Objects[objectID]->m_ObjectID;
-
-            // Reset the highest id
-            highestID = TGUI_MAX_OBJECTS;
+            // Draw the object if it is visible
+            if (m_EventManager.m_Objects[i]->m_Visible)
+                target->draw(*m_EventManager.m_Objects[i], states);
         }
     }
 
@@ -418,4 +2413,3 @@ namespace tgui
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

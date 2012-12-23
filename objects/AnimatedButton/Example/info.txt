@@ -1,0 +1,29 @@
+TextColor    = (255, 255, 255)
+
+# The info.txt files are currently very limited if it comes to strings.
+# Image filenames must NOT contain spaces.
+# Image filenames must NOT contain capital letters.
+# Image filenames must ALWAYS start and end with a double quote.
+NormalImage1 = "1.png"
+NormalImage2 = "2.png"
+NormalImage3 = "3.png"
+NormalImage4 = "4.png"
+NormalImage5 = "5.png"
+
+HoverImage1  = "5.png"
+HoverImage2  = "4.png"
+HoverImage3  = "3.png"
+HoverImage4  = "2.png"
+HoverImage5  = "1.png"
+
+DownImage1   = "down.png"
+
+# Frame duration, in milliseconds.
+# Note that this line will erase all previous durations.
+FrameDuration = 50;
+
+# The animation should only be played once, so we set the duration of the last frame to 0.
+# All the other frames will use the default frame duration that was set with 'FrameDuration'.
+NormalDuration5 = 0
+HoverDuration5  = 0
+DownDuration1   = 0

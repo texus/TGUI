@@ -69,14 +69,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpriteSheet* SpriteSheet::clone()
+    {
+        return new SpriteSheet(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpriteSheet::setSize(float width, float height)
     {
         // Make sure that the picture was already loaded
         if (m_Loaded == false)
             return;
 
-        // Set the new scale
-        setScale(m_Columns * width / m_Texture->getSize().x, m_Rows * height / m_Texture->getSize().y);
+        // Store the new size
+        m_Size.x = m_Columns * width;
+        m_Size.y = m_Rows * height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +92,7 @@ namespace tgui
     Vector2u SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Texture->getSize().x / m_Columns, m_Texture->getSize().y / m_Rows);
+            return Vector2u(static_cast<unsigned int>(m_Size.x / m_Columns), static_cast<unsigned int>(m_Size.y / m_Rows));
         else
             return Vector2u(0, 0);
     }
@@ -94,7 +102,7 @@ namespace tgui
     Vector2f SpriteSheet::getScaledSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Texture->getSize().x * getScale().x / m_Columns, m_Texture->getSize().y * getScale().y / m_Rows);
+            return Vector2f(m_Size.x * getScale().x / m_Columns, m_Size.y * getScale().y / m_Rows);
         else
             return Vector2f(0, 0);
     }
@@ -150,7 +158,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SpriteSheet::getRows()
+    unsigned int SpriteSheet::getRows() const
     {
         return m_Rows;
     }
@@ -179,7 +187,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SpriteSheet::getColumns()
+    unsigned int SpriteSheet::getColumns() const
     {
         return m_Columns;
     }
@@ -217,7 +225,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2u SpriteSheet::getVisibleCell()
+    sf::Vector2u SpriteSheet::getVisibleCell() const
     {
         return m_VisibleCell;
     }
@@ -226,4 +234,3 @@ namespace tgui
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

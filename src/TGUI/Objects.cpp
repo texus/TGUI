@@ -32,35 +32,41 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT() :
-    callbackID   (0),
-    m_Enabled    (true),
-    m_Visible    (true),
-    m_Loaded     (false),
-    m_ObjectPhase(0),
-    m_Parent     (NULL),
-    m_MouseHover (false),
-    m_MouseDown  (false),
-    m_ObjectID   (0),
-    m_Focused    (false),
-    m_AllowFocus (false)
+    callbackID       (0),
+    m_Enabled        (true),
+    m_Visible        (true),
+    m_Loaded         (false),
+    m_ObjectPhase    (0),
+    m_Parent         (NULL),
+    m_MouseHover     (false),
+    m_MouseDown      (false),
+    m_Focused        (false),
+    m_AllowFocus     (false),
+    m_AnimatedObject (false),
+    m_DraggableObject(false),
+    m_GroupObject    (false)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     OBJECT::OBJECT(const OBJECT& copy) :
-    callbackID   (copy.callbackID),
-    m_Enabled    (copy.m_Enabled),
-    m_Visible    (copy.m_Visible),
-    m_Loaded     (copy.m_Loaded),
-    m_ObjectPhase(copy.m_ObjectPhase),
-    m_Parent     (copy.m_Parent),
-    m_MouseHover (false),
-    m_MouseDown  (false),
-    m_ObjectID   (0),
-    m_Focused    (false),
-    m_AllowFocus (copy.m_AllowFocus),
-    m_ObjectType (copy.m_ObjectType)
+    sf::Drawable     (copy),
+    sf::Transformable(copy),
+    callbackID       (copy.callbackID),
+    m_Enabled        (copy.m_Enabled),
+    m_Visible        (copy.m_Visible),
+    m_Loaded         (copy.m_Loaded),
+    m_ObjectPhase    (copy.m_ObjectPhase),
+    m_Parent         (copy.m_Parent),
+    m_MouseHover     (false),
+    m_MouseDown      (false),
+    m_Focused        (false),
+    m_AllowFocus     (copy.m_AllowFocus),
+    m_ObjectType     (copy.m_ObjectType),
+    m_AnimatedObject (copy.m_AnimatedObject),
+    m_DraggableObject(copy.m_DraggableObject),
+    m_GroupObject    (copy.m_GroupObject)
     {
     }
 
@@ -77,23 +83,33 @@ namespace tgui
         // Make sure it is not the same object
         if (this != &right)
         {
-            callbackID    = right.callbackID;
-            m_Enabled     = right.m_Enabled;
-            m_Visible     = right.m_Visible;
-            m_Loaded      = right.m_Loaded;
-            m_ObjectPhase = right.m_ObjectPhase;
-            m_Parent      = right.m_Parent;
-            m_MouseHover  = false;
-            m_MouseDown   = false;
-            m_ObjectID    = 0;
-            m_Focused     = false;
-            m_AllowFocus  = right.m_AllowFocus;
-            m_ObjectType  = right.m_ObjectType;
+            this->sf::Drawable::operator=(right);
+            this->sf::Transformable::operator=(right);
+
+            callbackID        = right.callbackID;
+            m_Enabled         = right.m_Enabled;
+            m_Visible         = right.m_Visible;
+            m_Loaded          = right.m_Loaded;
+            m_ObjectPhase     = right.m_ObjectPhase;
+            m_Parent          = right.m_Parent;
+            m_MouseHover      = false;
+            m_MouseDown       = false;
+            m_Focused         = false;
+            m_AllowFocus      = right.m_AllowFocus;
+            m_ObjectType      = right.m_ObjectType;
+            m_AnimatedObject  = right.m_AnimatedObject;
+            m_DraggableObject = right.m_DraggableObject;
+            m_GroupObject     = right.m_GroupObject;
         }
 
         return *this;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::initialize()
+    {
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,18 +124,13 @@ namespace tgui
     {
         m_Visible = false;
 
-        // Change the mouse button state.
-        // If we don't do this then we might redraw the wrong image when the object becomes visible again.
-        m_MouseHover = false;
-        m_MouseDown = false;
-
         // If the object is focused then it must be unfocused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isVisible()
+    bool OBJECT::isVisible() const
     {
         return m_Visible;
     }
@@ -138,40 +149,32 @@ namespace tgui
         m_Enabled = false;
 
         // Change the mouse button state.
-        // If we don't do this then we might redraw the wrong image when the object becomes visible again.
         m_MouseHover = false;
         m_MouseDown = false;
 
         // If the object is focused then it must be unfocused
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isEnabled()
+    bool OBJECT::isEnabled() const
     {
         return m_Enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isDisabled()
+    bool OBJECT::isDisabled() const
     {
         return !m_Enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isLoaded()
+    bool OBJECT::isLoaded() const
     {
         return m_Loaded;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int OBJECT::getObjectID()
-    {
-        return m_ObjectID;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,11 +210,13 @@ namespace tgui
 
             // Store the phase
             if (SinglePhase.compare("hover") == 0)
-                m_ObjectPhase |= objectPhase::hover;
+                m_ObjectPhase |= ObjectPhase_Hover;
             else if (SinglePhase.compare("focus") == 0)
-                m_ObjectPhase |= objectPhase::focused;
+                m_ObjectPhase |= ObjectPhase_Focused;
             else if (SinglePhase.compare("down") == 0)
-                m_ObjectPhase |= objectPhase::mouseDown;
+                m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (SinglePhase.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             // Remove this phase from the string
             phases.erase(0, commaPos+1);
@@ -222,11 +227,13 @@ namespace tgui
         {
             // Store the phase
             if (phases.compare("hover") == 0)
-                m_ObjectPhase |= objectPhase::hover;
+                m_ObjectPhase |= ObjectPhase_Hover;
             else if (phases.compare("focus") == 0)
-                m_ObjectPhase |= objectPhase::focused;
+                m_ObjectPhase |= ObjectPhase_Focused;
             else if (phases.compare("down") == 0)
-                m_ObjectPhase |= objectPhase::mouseDown;
+                m_ObjectPhase |= ObjectPhase_MouseDown;
+            else if (phases.compare("selected") == 0)
+                m_ObjectPhase |= ObjectPhase_Selected;
 
             return;
         }
@@ -234,14 +241,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool OBJECT::isFocused()
+    void OBJECT::focus()
+    {
+        m_Parent->focusObject(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::unfocus()
+    {
+        m_Parent->unfocusAllObjects();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::focusNextObject()
+    {
+        m_Parent->unfocusObject(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool OBJECT::isFocused() const
     {
         return m_Focused;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectTypes OBJECT::getObjectType()
+    ObjectTypes OBJECT::getObjectType() const
     {
         return m_ObjectType;
     }
@@ -289,9 +317,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void OBJECT::textEntered(char key)
+    void OBJECT::textEntered(sf::Uint32 key)
     {
         TGUI_UNUSED_PARAM(key);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void OBJECT::mouseWheelMoved(int delta)
+    {
+        TGUI_UNUSED_PARAM(delta);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +368,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector4u OBJECT_BORDERS::getBorders()
+    Vector4u OBJECT_BORDERS::getBorders() const
     {
         return Vector4u(m_LeftBorder, m_TopBorder, m_RightBorder, m_BottomBorder);
     }
@@ -447,6 +482,40 @@ namespace tgui
 
                     // Get the y value
                     vector.y = static_cast<float>(atof(string.c_str()));
+
+                    return true;
+                }
+            }
+        }
+
+        // If you pass here then something is wrong with the string
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool extractVector2u(std::string string, Vector2u& vector)
+    {
+        // Make sure that the string isn't empty
+        if (string.empty() == false)
+        {
+            // The first and last character have to be brackets
+            if ((string[0] == '(') && (string[string.length()-1] == ')'))
+            {
+                // Remove the brackets
+                string.erase(0, 1);
+                string.erase(string.length()-1);
+
+                // Search for the first comma
+                std::string::size_type commaPos = string.find(',');
+                if (commaPos != std::string::npos)
+                {
+                    // Get the x value and delete this part of the string
+                    vector.x = static_cast<unsigned int>(atoi(string.substr(0, commaPos).c_str()));
+                    string.erase(0, commaPos+1);
+
+                    // Get the y value
+                    vector.y = static_cast<unsigned int>(atoi(string.c_str()));
 
                     return true;
                 }

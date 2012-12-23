@@ -70,10 +70,12 @@ enum Properties
     Property_Label_Top,
     Property_Label_Width,
     Property_Label_Height,
+    Property_Label_AutoSize,
     Property_Label_Text,
     Property_Label_TextSize,
     Property_Label_TextColor,
     Property_Label_TextFont,
+    Property_Label_BackgroundColor,
     Property_Label_CallbackID,
 
     Property_EditBox_Name = 0,
@@ -91,29 +93,28 @@ enum Properties
     Property_EditBox_TextColor,
     Property_EditBox_SelectedTextColor,
     Property_EditBox_SelectedTextBackgroundColor,
-    Property_EditBox_UnfocusedSelectedTextBackgroundColor,
     Property_EditBox_SelectionPointColor,
     Property_EditBox_SelectionPointWidth,
     Property_EditBox_CallbackID,
 
-    Property_Listbox_Name = 0,
-    Property_Listbox_Left,
-    Property_Listbox_Top,
-    Property_Listbox_Width,
-    Property_Listbox_Height,
-    Property_Listbox_ScrollbarPathname,
-    Property_Listbox_ItemHeight,
-    Property_Listbox_MaximumItems,
-    Property_Listbox_Borders,
-    Property_Listbox_BackgroundColor,
-    Property_Listbox_TextColor,
-    Property_Listbox_SelectedBackgroundColor,
-    Property_Listbox_SelectedTextColor,
-    Property_Listbox_BorderColor,
-    Property_Listbox_Items,
-    Property_Listbox_SelectedItem,
-    Property_Listbox_TextFont,
-    Property_Listbox_CallbackID,
+    Property_ListBox_Name = 0,
+    Property_ListBox_Left,
+    Property_ListBox_Top,
+    Property_ListBox_Width,
+    Property_ListBox_Height,
+    Property_ListBox_ScrollbarPathname,
+    Property_ListBox_ItemHeight,
+    Property_ListBox_MaximumItems,
+    Property_ListBox_Borders,
+    Property_ListBox_BackgroundColor,
+    Property_ListBox_TextColor,
+    Property_ListBox_SelectedBackgroundColor,
+    Property_ListBox_SelectedTextColor,
+    Property_ListBox_BorderColor,
+    Property_ListBox_Items,
+    Property_ListBox_SelectedItem,
+    Property_ListBox_TextFont,
+    Property_ListBox_CallbackID,
 
     Property_ComboBox_Name = 0,
     Property_ComboBox_Pathname,
@@ -184,7 +185,6 @@ enum Properties
     Property_TextBox_TextColor,
     Property_TextBox_SelectedTextColor,
     Property_TextBox_SelectedTextBackgroundColor,
-    Property_TextBox_UnfocusedSelectedTextBackgroundColor,
     Property_TextBox_BorderColor,
     Property_TextBox_SelectionPointColor,
     Property_TextBox_SelectionPointWidth,
@@ -313,6 +313,14 @@ struct PropertyHeight : public PropertyValueFloat
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+struct PropertyAutoSize : public PropertyValueBool
+{
+    PropertyAutoSize();
+    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 struct PropertyText : public PropertyValueString
 {
     PropertyText();
@@ -348,14 +356,6 @@ struct PropertySelectedTextColor : public PropertyValueString
 struct PropertySelectedTextBackgroundColor : public PropertyValueString
 {
     PropertySelectedTextBackgroundColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-struct PropertyUnfocusedSelectedTextBackgroundColor : public PropertyValueString
-{
-    PropertyUnfocusedSelectedTextBackgroundColor();
     void addProperty(tgui::Window& window, unsigned int propertyNumber);
 };
 
@@ -650,17 +650,19 @@ struct PropertiesLabel
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 
-    unsigned int       id;
-    PropertyName       name;
-    PropertyLeft       left;
-    PropertyTop        top;
-    PropertyWidth      width;
-    PropertyHeight     height;
-    PropertyText       text;
-    PropertyTextSize   textSize;
-    PropertyTextColor  textColor;
-    PropertyTextFont   textFont;
-    PropertyCallbackID callbackID;
+    unsigned int            id;
+    PropertyName            name;
+    PropertyLeft            left;
+    PropertyTop             top;
+    PropertyWidth           width;
+    PropertyHeight          height;
+    PropertyAutoSize        autoSize;
+    PropertyText            text;
+    PropertyTextSize        textSize;
+    PropertyTextColor       textColor;
+    PropertyTextFont        textFont;
+    PropertyBackgroundColor backgroundColor;
+    PropertyCallbackID      callbackID;
 };
 
 
@@ -688,7 +690,6 @@ struct PropertiesEditBox
     PropertyTextColor           textColor;
     PropertySelectedTextColor   selectedTextColor;
     PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
-    PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;
     PropertyCallbackID          callbackID;
@@ -699,9 +700,9 @@ struct PropertiesEditBox
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertiesListbox
+struct PropertiesListBox
 {
-    PropertiesListbox();
+    PropertiesListBox();
     void addProperties(tgui::Window& window);
     void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
 
@@ -860,7 +861,6 @@ struct PropertiesTextBox
     PropertyTextColor           textColor;
     PropertySelectedTextColor   selectedTextColor;
     PropertySelectedTextBackgroundColor selectedTextBackgroundColor;
-    PropertyUnfocusedSelectedTextBackgroundColor unfocusedSelectedTextBackgroundColor;
     PropertyBorderColor         borderColor;
     PropertySelectionPointColor selectionPointColor;
     PropertySelectionPointWidth selectionPointWidth;

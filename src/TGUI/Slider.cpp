@@ -32,11 +32,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider() :
-    verticalScroll        (true),
     m_MouseDownOnThumb    (false),
     m_Minimum             (  0),
     m_Maximum             (100),
     m_Value               (  0),
+    m_VerticalScroll      (true),
     m_VerticalImage       (true),
     m_SplitImage          (false),
     m_SeparateHoverImage  (false),
@@ -51,21 +51,24 @@ namespace tgui
     m_LoadedPathname      ("")
     {
         m_ObjectType = slider;
+        m_DraggableObject = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider(const Slider& copy) :
     OBJECT               (copy),
-    verticalScroll       (copy.verticalScroll),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
     m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
+    m_VerticalScroll     (copy.m_VerticalScroll),
     m_VerticalImage      (copy.m_VerticalImage),
     m_SplitImage         (copy.m_SplitImage),
     m_SeparateHoverImage (copy.m_SeparateHoverImage),
+    m_Size               (copy.m_Size),
+    m_ThumbSize          (copy.m_ThumbSize),
     m_LoadedPathname     (copy.m_LoadedPathname)
     {
         // Copy the textures
@@ -104,15 +107,17 @@ namespace tgui
             Slider temp(right);
             this->OBJECT::operator=(right);
 
-            std::swap(verticalScroll,         temp.verticalScroll);
             std::swap(m_MouseDownOnThumb,     temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos,  temp.m_MouseDownOnThumbPos);
             std::swap(m_Minimum,              temp.m_Minimum);
             std::swap(m_Maximum,              temp.m_Maximum);
             std::swap(m_Value,                temp.m_Value);
+            std::swap(m_VerticalScroll,       temp.m_VerticalScroll);
             std::swap(m_VerticalImage,        temp.m_VerticalImage);
             std::swap(m_SplitImage,           temp.m_SplitImage);
             std::swap(m_SeparateHoverImage,   temp.m_SeparateHoverImage);
+            std::swap(m_Size,                 temp.m_Size);
+            std::swap(m_ThumbSize,            temp.m_ThumbSize);
             std::swap(m_TextureTrackNormal_L, temp.m_TextureTrackNormal_L);
             std::swap(m_TextureTrackHover_L,  temp.m_TextureTrackHover_L);
             std::swap(m_TextureTrackNormal_M, temp.m_TextureTrackNormal_M);
@@ -137,6 +142,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Slider* Slider::clone()
+    {
+        return new Slider(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Slider::load(const std::string pathname)
     {
         // When everything is loaded successfully, this will become true.
@@ -150,14 +162,14 @@ namespace tgui
         m_LoadedPathname = pathname;
 
         // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname.at(m_LoadedPathname.length()-1) != '/')
+        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
             m_LoadedPathname.push_back('/');
 
         // Open the info file
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
             return false;
         }
 
@@ -165,6 +177,10 @@ namespace tgui
         std::string value;
 
         std::string imageExtension = "png";
+
+        // m_VerticalScroll will be true unless said otherwise
+        m_VerticalImage = true;
+        m_VerticalScroll = true;
 
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
@@ -181,12 +197,16 @@ namespace tgui
             }
             else if (property.compare("verticalscroll") == 0)
             {
-                if (value.compare("true") == 0)
-                    m_VerticalImage = true;
-                else if (value.compare("false") == 0)
+                if ((value.compare("false") == 0) || (value.compare("0") == 0))
+                {
                     m_VerticalImage = false;
-
-                verticalScroll = m_VerticalImage;
+                    m_VerticalScroll = false;
+                }
+                else
+                {
+                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                }
             }
             else if (property.compare("splitimage") == 0)
             {
@@ -202,6 +222,8 @@ namespace tgui
                 else if (value.compare("false") == 0)
                     m_SeparateHoverImage = false;
             }
+            else
+                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
         }
 
         // Close the info file
@@ -217,9 +239,6 @@ namespace tgui
         if (m_TextureThumbNormal != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
         if (m_TextureThumbHover != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
-
-        bool error = false;
-
         // Check if the image is split
         if (m_SplitImage)
         {
@@ -233,12 +252,21 @@ namespace tgui
                 m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
                 m_SpriteTrackNormal_R.setTexture(*m_TextureTrackNormal_R, true);
                 m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
+
+                // Set the size of the slider
+                if (m_VerticalImage)
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M->getSize().x), static_cast<float>(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y));
+                else
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x), static_cast<float>(m_TextureTrackNormal_M->getSize().y));
+
+                // Set the thumb size
+                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
             }
             else
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Track_Hover." + imageExtension, m_TextureTrackHover_L))
                  && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Track_Hover." + imageExtension, m_TextureTrackHover_M))
@@ -251,23 +279,29 @@ namespace tgui
                      m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
                  }
                 else
-                    error = true;
+                    return false;
             }
         }
         else // The image isn't split
         {
             // load the required textures
             if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal_M))
-            && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
+             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
             {
                 m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
                 m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
+
+                // Set the size of the slider
+                m_Size = Vector2f(m_TextureTrackNormal_M->getSize());
+
+                // Set the thumb size
+                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
             }
             else
                 return false;
 
             // load the optional textures
-            if (m_ObjectPhase & objectPhase::hover)
+            if (m_ObjectPhase & ObjectPhase_Hover)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover_M))
                  && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
@@ -276,13 +310,13 @@ namespace tgui
                      m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
                  }
                 else
-                    error = true;
+                    return false;
             }
         }
 
         // When there is no error we will return true
-        m_Loaded = !error;
-        return !error;
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,28 +327,40 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
+        // Set the size of the slider
+        m_Size.x = width;
+        m_Size.y = height;
 
-        // Check if the image is split
-        if (m_SplitImage)
+        // A negative size is not allowed for this object
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+
+        // Set the thumb size
+        if (m_VerticalImage == m_VerticalScroll)
         {
-            // Set the new scale factors
-            if (verticalScroll == m_VerticalImage)
-                setScale(width / (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x),
-                         height / m_TextureTrackNormal_M->getSize().y);
+            if (m_VerticalScroll)
+            {
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
+            }
             else
-                setScale(width / (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y),
-                         height / m_TextureTrackNormal_M->getSize().x);
+            {
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
+            }
         }
-        else // The image is not split
+        else
         {
-            // Set the new scale factors
-            if (verticalScroll == m_VerticalImage)
-                setScale(width / m_TextureTrackNormal_M->getSize().x, height / m_TextureTrackNormal_M->getSize().y);
+            if (m_VerticalScroll)
+            {
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
+            }
             else
-                setScale(width / m_TextureTrackNormal_M->getSize().y, height / m_TextureTrackNormal_M->getSize().x);
+            {
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
+            }
         }
     }
 
@@ -322,70 +368,32 @@ namespace tgui
 
     Vector2u Slider::getSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2u(m_Size);
+        else
             return Vector2u(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the track
-            if (verticalScroll == m_VerticalImage)
-                return Vector2u(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x,
-                                m_TextureTrackNormal_M->getSize().y);
-            else
-                return Vector2u(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y,
-                                m_TextureTrackNormal_M->getSize().x);
-        }
-        else // The image is not split
-        {
-            // Return the size of the track
-            if (verticalScroll == m_VerticalImage)
-                return Vector2u(m_TextureTrackNormal_M->getSize().x, m_TextureTrackNormal_M->getSize().y);
-            else
-                return Vector2u(m_TextureTrackNormal_M->getSize().y, m_TextureTrackNormal_M->getSize().x);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Vector2f Slider::getScaledSize() const
     {
-        // Don't continue when the slider wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_Loaded)
+            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+        else
             return Vector2f(0, 0);
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
-            // Return the size of the track
-            if (verticalScroll == m_VerticalImage)
-                return Vector2f((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * getScale().x,
-                                m_TextureTrackNormal_M->getSize().y * getScale().y);
-            else
-                return Vector2f((m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * getScale().x,
-                                m_TextureTrackNormal_M->getSize().x * getScale().y);
-        }
-        else // The image is not split
-        {
-            // Return the size of the track
-            if (verticalScroll == m_VerticalImage)
-                return Vector2f(m_TextureTrackNormal_M->getSize().x * getScale().x, m_TextureTrackNormal_M->getSize().y * getScale().y);
-            else
-                return Vector2f(m_TextureTrackNormal_M->getSize().y * getScale().x, m_TextureTrackNormal_M->getSize().x * getScale().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Slider::getLoadedPathname()
+    std::string Slider::getLoadedPathname() const
     {
         return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMinimum(unsigned int minimum)
+    void Slider::setMinimum(const unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -397,7 +405,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMaximum(unsigned int maximum)
+    void Slider::setMaximum(const unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -412,7 +420,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setValue(unsigned int value)
+    void Slider::setValue(const unsigned int value)
     {
         // Set the new value
         m_Value = value;
@@ -426,37 +434,60 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setVerticalScroll( bool vertical )
+    void Slider::setVerticalScroll(bool verticalScroll)
     {
-        verticalScroll = vertical;
-    }
+        // Only continue when the value changed
+        if (m_VerticalScroll != verticalScroll)
+        {
+            // Change the internal value
+            m_VerticalScroll = verticalScroll;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getMinimum()
-    {
-        return m_Minimum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getMaximum()
-    {
-        return m_Maximum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getValue()
-    {
-        return m_Value;
+            // Swap the width and height if needed
+            if (m_VerticalScroll)
+            {
+                if (m_Size.x > m_Size.y)
+                {
+                    m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
+                }
+            }
+            else // The slider lies horizontal
+            {
+                if (m_Size.y > m_Size.x)
+                {
+                    m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
+                }
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Slider::getVerticalScroll()
     {
-        return verticalScroll;
+        return m_VerticalScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Slider::getMinimum() const
+    {
+        return m_Minimum;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Slider::getMaximum() const
+    {
+        return m_Maximum;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Slider::getValue() const
+    {
+        return m_Value;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,62 +498,36 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
+        // Calculate the thumb size and position
+        float thumbWidth, thumbHeight;
+        float thumbLeft,  thumbTop;
+
         // Get the current position and scale
         Vector2f position = getPosition();
         Vector2f curScale = getScale();
 
-
-        // Calculate the track size, thumb size and thumb position
-        float trackWidth, trackHeight;
-        float thumbWidth, thumbHeight;
-        float thumbLeft,  thumbTop;
-
         // The size is different when the image is rotated
-        if (m_VerticalImage == verticalScroll)
+        if (m_VerticalImage == m_VerticalScroll)
         {
-            if (m_SplitImage)
-            {
-                trackWidth = (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * curScale.x;
-                trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
-            }
-            else
-            {
-                trackWidth = m_TextureTrackNormal_M->getSize().x * curScale.x;
-                trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
-            }
-
-            thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().x);
-            thumbHeight = static_cast<float>(m_TextureThumbNormal->getSize().y);
+            thumbWidth = m_ThumbSize.x * curScale.x;
+            thumbHeight = m_ThumbSize.y * curScale.y;
         }
         else
         {
-            if (m_SplitImage)
-            {
-                trackWidth = (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * curScale.x;
-                trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
-            }
-            else
-            {
-                trackWidth = m_TextureTrackNormal_M->getSize().y * curScale.x;
-                trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
-            }
-
-            thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().y);
-            thumbHeight = static_cast<float>(m_TextureThumbNormal->getSize().x);
+            thumbWidth = m_ThumbSize.y * curScale.x;
+            thumbHeight = m_ThumbSize.x * curScale.y;
         }
 
-        // The scaling depends on how the slider lies
-        if (verticalScroll)
+        // Calculate the thumb position
+        if (m_VerticalScroll)
         {
-            // Calculate the thumb position
-            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackHeight) - (thumbHeight * curScale.x * 0.5f);
-            thumbLeft = (trackWidth - (thumbWidth * curScale.x)) * 0.5f;
+            thumbLeft = ((m_Size.x * curScale.x) - thumbWidth) * 0.5f;
+            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * (m_Size.y * curScale.y)) - (thumbHeight * 0.5f);
         }
         else // The slider lies horizontal
         {
-            // Calculate the thumb position
-            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackWidth) - (thumbWidth * curScale.y * 0.5f);
-            thumbTop = (trackHeight - (thumbHeight * curScale.y)) * 0.5f;
+            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * (m_Size.x * curScale.x)) - (thumbWidth * 0.5f);
+            thumbTop = ((m_Size.y * curScale.y) - thumbHeight) * 0.5f;
         }
 
         // Check if the mouse is on top of the thumb
@@ -537,7 +542,7 @@ namespace tgui
             m_MouseDownOnThumb = false;
 
         // Check if the mouse is on top of the track
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
 
         // The mouse is not on top of the slider
@@ -586,30 +591,17 @@ namespace tgui
         if (m_MouseDown)
         {
             // Check in which direction the slider goes
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
-                // Calculate the track height
-                float trackHeight;
-
-                if (m_VerticalImage == verticalScroll)
-                    trackHeight = m_TextureTrackNormal_M->getSize().y * curScale.y;
-                else
-                    trackHeight = m_TextureTrackNormal_M->getSize().x * curScale.y;
-
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
                 {
                     // Calculate the thumb height
-                    float  thumbHeight;
-
-                    if (m_VerticalImage == verticalScroll)
-                        thumbHeight = m_TextureThumbNormal->getSize().y * curScale.x;
-                    else
-                        thumbHeight = m_TextureThumbNormal->getSize().x * curScale.x;
+                    float thumbHeight = m_ThumbSize.y * curScale.y;
 
                     // Set the new value
                     if ((y - m_MouseDownOnThumbPos.y + (thumbHeight / 2.0f) - position.y) > 0)
-                        setValue(static_cast <unsigned int> ((((y - m_MouseDownOnThumbPos.y + (thumbHeight / 2.0f) - position.y) / trackHeight) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                        setValue(static_cast <unsigned int> ((((y - m_MouseDownOnThumbPos.y + (thumbHeight / 2.0f) - position.y) / (m_Size.y * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else
                         setValue(m_Minimum);
                 }
@@ -617,53 +609,30 @@ namespace tgui
                 {
                     // If the position is positive then calculate the correct value
                     if ((y - position.y) > 0)
-                            setValue(static_cast <unsigned int> ((((y - position.y) / trackHeight) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                        setValue(static_cast <unsigned int> ((((y - position.y) / (m_Size.y * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
                         m_Value = m_Minimum;
                 }
             }
             else // the slider lies horizontal
             {
-                // Calculate the track width
-                float trackWidth;
-
-                if (m_SplitImage)
-                {
-                    if (m_VerticalImage == verticalScroll)
-                        trackWidth = (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * curScale.x;
-                    else
-                        trackWidth = (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * curScale.x;
-                }
-                else
-                {
-                    if (m_VerticalImage == verticalScroll)
-                        trackWidth = m_TextureTrackNormal_M->getSize().x * curScale.x;
-                    else
-                        trackWidth = m_TextureTrackNormal_M->getSize().y * curScale.x;
-                }
-
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
                 {
                     // Calculate the thumb width
-                    float thumbWidth;
-
-                    if (m_VerticalImage == verticalScroll)
-                        thumbWidth = m_TextureThumbNormal->getSize().x * curScale.y;
-                    else
-                        thumbWidth = m_TextureThumbNormal->getSize().y * curScale.y;
+                    float thumbWidth = m_ThumbSize.x * curScale.x;
 
                     // Set the new value
                     if ((x - m_MouseDownOnThumbPos.x + (thumbWidth / 2.0f) - position.x) > 0)
-                        setValue(static_cast <unsigned int> ((((x - m_MouseDownOnThumbPos.x + (thumbWidth / 2.0f) - position.x) / trackWidth) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                        setValue(static_cast <unsigned int> ((((x - m_MouseDownOnThumbPos.x + (thumbWidth / 2.0f) - position.x) / (m_Size.x * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else
                         setValue(m_Minimum);
                 }
                 else // The click occured on the track
                 {
                     // If the position is positive then calculate the correct value
-                    if ((x - position.x) > 0)
-                            setValue(static_cast <unsigned int> ((((x - position.x) / trackWidth) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                    if (x - position.x > 0)
+                        setValue(static_cast<unsigned int>((((x - position.x) / (m_Size.x * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
                         m_Value = m_Minimum;
                 }
@@ -674,6 +643,7 @@ namespace tgui
         if ((callbackID > 0) && (oldValue != m_Value))
         {
             Callback callback;
+            callback.object     = this;
             callback.callbackID = callbackID;
             callback.trigger    = Callback::valueChanged;
             callback.value      = m_Value;
@@ -685,9 +655,19 @@ namespace tgui
 
     void Slider::keyPressed(sf::Keyboard::Key key)
     {
-        /// TODO: Respond on arrow presses
+        // TODO: Respond on arrow presses
 
         TGUI_UNUSED_PARAM(key);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::mouseWheelMoved(int delta)
+    {
+        if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
+            m_Value = m_Minimum;
+        else
+            setValue(static_cast<unsigned int>(m_Value - delta));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -695,7 +675,7 @@ namespace tgui
     void Slider::objectFocused()
     {
         // A slider can't be focused (yet)
-        m_Parent->unfocus(this);
+        m_Parent->unfocusObject(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -706,101 +686,47 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        float trackWidth, trackHeight;
-        float thumbWidth, thumbHeight;
+        Vector2f scaling;
 
-        // Get the current position and scale
-        Vector2f curScale = getScale();
+        // Apply the transformation
+        states.transform *= getTransform();
 
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Adjust the transformation
-        states.transform *= getTransform();
-
-        // It is possible that the image is not drawn in the same direction than the loaded image
-        if (m_VerticalImage != verticalScroll)
+        // Check if the image is split
+        if (m_SplitImage)
         {
-            // Calculate the thumb size
-            thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().y);
-            thumbHeight = static_cast<float>(m_TextureThumbNormal->getSize().x);
-
-            // Check if the image is split
-            if (m_SplitImage)
+            // Get the scale factors
+            if (m_VerticalScroll == m_VerticalImage)
+            {
+                scaling.x = m_Size.x / (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x);
+                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+            }
+            else
             {
                 // Check in what direction the slider should rotate
-                if ((m_VerticalImage == true) && (verticalScroll == false))
+                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
                 {
                     // Set the rotation
                     states.transform.rotate(-90,
                                             (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * 0.5f,
                                             m_TextureTrackNormal_M->getSize().x * 0.5f);
-
-                    // Calculate the track size
-                    trackWidth = static_cast<float>(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
-                    trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
                 }
-                else // if ((m_VerticalImage == false) && (verticalScroll == true))
+                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
                 {
                     // Set the rotation
                     states.transform.rotate(90,
                                             (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * 0.5f,
                                             m_TextureTrackNormal_M->getSize().y * 0.5f);
-
-                    // Calculate the track size
-                    trackWidth = static_cast<float>(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
-                    trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
                 }
-            }
-            else // The image is not split
-            {
-                // Check in what direction the slider should rotate
-                if ((m_VerticalImage == true) && (verticalScroll == false))
-                {
-                    // Set the rotation
-                    states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
 
-                    // Calculate the track size
-                    trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
-                    trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
-                }
-                else // if ((m_VerticalImage == false) && (verticalScroll == true))
-                {
-                    // Set the rotation
-                    states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
-
-                    // Calculate the track size
-                    trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
-                    trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
-                }
+                scaling.x = m_Size.x / (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
+                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().x;
             }
-        }
-        else // The image is drawn in the same direction than it was loaded
-        {
-            // Calculate the thumb size
-            thumbWidth = static_cast<float>(m_TextureThumbNormal->getSize().x);
-            thumbHeight = static_cast<float>(m_TextureThumbNormal->getSize().y);
 
-            // Check if the image is split
-            if (m_SplitImage)
-            {
-                // Calculate the track size
-                trackWidth = static_cast<float>(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x);
-                trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
-            }
-            else // The image is not split
-            {
-                // Calculate the track size
-                trackWidth = static_cast<float>(m_TextureTrackNormal_M->getSize().x);
-                trackHeight = static_cast<float>(m_TextureTrackNormal_M->getSize().y);
-            }
-        }
-
-        // Check if the image is split
-        if (m_SplitImage)
-        {
             // Set the scale for the left image
-            states.transform.scale(curScale.y / curScale.x, curScale.y);
+            states.transform.scale(scaling.y, scaling.y);
 
             // Draw the left image
             {
@@ -808,7 +734,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_L, states);
                     else
                         target.draw(m_SpriteTrackNormal_L, states);
@@ -819,29 +745,29 @@ namespace tgui
                     target.draw(m_SpriteTrackNormal_L, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_L, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                    target.draw(m_SpriteFocused_L, states);
             }
 
             // Check if the middle image may be drawn
-            if ((curScale.y * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x))
-                < curScale.x * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x))
+            if ((scaling.y * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x))
+                < scaling.x * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x))
             {
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x)  * curScale.x)
-                                 - ((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x) * curScale.y))
+                float scaleX = (((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x)  * scaling.x)
+                                 - ((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x) * scaling.y))
                                / m_TextureTrackNormal_M->getSize().x;
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureTrackNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / curScale.y, 1);
+                states.transform.scale(scaleX / scaling.y, 1);
 
                 // Draw the middle image
                 {
@@ -849,7 +775,7 @@ namespace tgui
                     if (m_SeparateHoverImage)
                     {
                         // Draw the correct image
-                        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                             target.draw(m_SpriteTrackHover_M, states);
                         else
                             target.draw(m_SpriteTrackNormal_M, states);
@@ -860,12 +786,12 @@ namespace tgui
                         target.draw(m_SpriteTrackNormal_M, states);
 
                         // When the mouse is on top of the slider then draw the hover image
-                        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                             target.draw(m_SpriteTrackHover_M, states);
                     }
 
                     // When the slider is focused then draw an extra image
-//                    if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                        target.draw(m_SpriteFocused_M, states);
                 }
 
@@ -873,7 +799,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureTrackNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(curScale.y / scaleX, 1);
+                states.transform.scale(scaling.y / scaleX, 1);
             }
             else // The middle image is not drawn
                 states.transform.translate(static_cast<float>(m_TextureTrackNormal_L->getSize().x), 0);
@@ -884,7 +810,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_R, states);
                     else
                         target.draw(m_SpriteTrackNormal_R, states);
@@ -895,58 +821,76 @@ namespace tgui
                     target.draw(m_SpriteTrackNormal_R, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         target.draw(m_SpriteTrackHover_R, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & objectPhase::focused))
+//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
 //                    target.draw(m_SpriteFocused_R, states);
             }
         }
         else // The image is not split
         {
+            if (m_VerticalScroll == m_VerticalImage)
+            {
+                // Set the scaling
+                scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().x;
+                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                states.transform.scale(scaling);
+            }
+            else
+            {
+                // Set the scaling
+                scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().y;
+                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+                states.transform.scale(scaling);
+
+                // Set the rotation
+                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
+                    states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
+                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
+                    states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
+            }
+
             // Draw the normal track image
             target.draw(m_SpriteTrackNormal_M, states);
 
             // When the mouse is on top of the slider then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 target.draw(m_SpriteTrackHover_M, states);
         }
 
         // Reset the transform
         states.transform = oldTransform;
-        states.transform.translate(getPosition());
 
         // The thumb will be on a different position when we are scrolling vertically or not
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
             // Set the translation and scale for the thumb
-            states.transform.translate(static_cast<int>(trackWidth - thumbWidth) * 0.5f * curScale.x,
-                                       ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackHeight * curScale.y)
-                                        - (thumbHeight * 0.5f * curScale.x));
+            states.transform.translate(static_cast<int>(m_Size.x - m_ThumbSize.x) * 0.5f,
+                                       ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (m_ThumbSize.y * 0.5f));
 
             // Set the scale for the thumb
-            states.transform.scale(curScale.x, curScale.x);
+            states.transform.scale(scaling.x, scaling.x);
         }
         else // the slider lies horizontal
         {
             // Set the translation and scale for the thumb
-            states.transform.translate(((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * trackWidth * curScale.x)
-                                        - (thumbWidth * 0.5f * curScale.y),
-                                       static_cast<int>(trackHeight - thumbHeight) * 0.5f * curScale.y);
+            states.transform.translate(((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (m_ThumbSize.x * 0.5f),
+                                        (m_Size.y - m_ThumbSize.y) * 0.5f);
 
             // Set the scale for the thumb
-            states.transform.scale(curScale.y, curScale.y);
+            states.transform.scale(scaling.y, scaling.y);
         }
 
         // It is possible that the image is not drawn in the same direction than the loaded image
-        if ((m_VerticalImage == true) && (verticalScroll == false))
+        if ((m_VerticalImage == true) && (m_VerticalScroll == false))
         {
             // Set the rotation
             states.transform.rotate(-90, m_TextureThumbNormal->getSize().x * 0.5f, m_TextureThumbNormal->getSize().x * 0.5f);
         }
-        else if ((m_VerticalImage == false) && (verticalScroll == true))
+        else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
         {
             // Set the rotation
             states.transform.rotate(90, m_TextureThumbNormal->getSize().y * 0.5f, m_TextureThumbNormal->getSize().y * 0.5f);
@@ -956,7 +900,7 @@ namespace tgui
         target.draw(m_SpriteThumbNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & objectPhase::hover))
+        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_SpriteThumbHover, states);
     }
 

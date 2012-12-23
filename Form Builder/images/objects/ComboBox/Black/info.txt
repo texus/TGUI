@@ -1,1 +1,6 @@
 Phases  = Hover
+BackgroundColor         = ( 50,  50,  50)
+TextColor               = (200, 200, 200)
+SelectedBackgroundColor = ( 10, 110, 255)
+SelectedTextColor       = (255, 255, 255)
+BorderColor             = (  0,   0,   0)

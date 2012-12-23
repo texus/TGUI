@@ -25,13 +25,16 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <SFML/OpenGL.hpp>
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Listbox::Listbox() :
+    ListBox::ListBox() :
     m_SelectedItem           (0),
     m_Size                   (50, 100),
     m_ItemHeight             (24),
@@ -40,18 +43,18 @@ namespace tgui
     m_Scroll                 (NULL),
     m_LoadedScrollbarPathname("")
     {
-        m_ObjectType = listbox;
+        m_ObjectType = listBox;
+        m_DraggableObject = true;
         m_Loaded = true;
 
         changeColors();
-
-        m_RenderTexture = new sf::RenderTexture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Listbox::Listbox(const Listbox& copy) :
+    ListBox::ListBox(const ListBox& copy) :
     OBJECT                   (copy),
+    OBJECT_BORDERS           (copy),
     m_Items                  (copy.m_Items),
     m_SelectedItem           (copy.m_SelectedItem),
     m_Size                   (copy.m_Size),
@@ -66,10 +69,6 @@ namespace tgui
     m_BorderColor            (copy.m_BorderColor),
     m_TextFont               (copy.m_TextFont)
     {
-        // Copy the render texture
-        if (m_RenderTexture->create(copy.m_RenderTexture->getSize().x, copy.m_RenderTexture->getSize().y) == false)
-            m_Loaded = false;
-
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != NULL)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
@@ -79,22 +78,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Listbox::~Listbox()
+    ListBox::~ListBox()
     {
         if (m_Scroll != NULL)
             delete m_Scroll;
-
-        delete m_RenderTexture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Listbox& Listbox::operator= (const Listbox& right)
+    ListBox& ListBox::operator= (const ListBox& right)
     {
         if (this != &right)
         {
-            Listbox temp(right);
+            ListBox temp(right);
             this->OBJECT::operator=(right);
+            this->OBJECT_BORDERS::operator=(right);
 
             // If there already was a scrollbar then delete it now
             if (m_Scroll != NULL)
@@ -117,7 +115,6 @@ namespace tgui
             std::swap(m_SelectedTextColor,       temp.m_SelectedTextColor);
             std::swap(m_BorderColor,             temp.m_BorderColor);
             std::swap(m_TextFont,                temp.m_TextFont);
-            std::swap(m_RenderTexture,           temp.m_RenderTexture);
         }
 
         return *this;
@@ -125,11 +122,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::load(unsigned int width, unsigned int height, const std::string scrollbarPathname, unsigned int itemHeight)
+    void ListBox::initialize()
     {
-        // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        setTextFont(m_Parent->globalFont);
+    }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ListBox* ListBox::clone()
+    {
+        return new ListBox(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListBox::load(unsigned int width, unsigned int height, const std::string scrollbarPathname, unsigned int itemHeight)
+    {
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
         {
@@ -155,7 +163,7 @@ namespace tgui
             else // the item height is ok, now calculate the text size
                 textSize = static_cast<unsigned int>(itemHeight * 0.8f);
 
-            // There is also a minimum listbox height
+            // There is also a minimum list box height
             if (height < (itemHeight + m_TopBorder + m_BottomBorder))
             {
                 height = itemHeight + m_TopBorder + m_BottomBorder;
@@ -188,7 +196,7 @@ namespace tgui
         }
         else // no item height was given
         {
-            // There is a minimum listbox height
+            // There is a minimum list box height
             if (height < (100 + m_TopBorder + m_BottomBorder))
             {
                 // Calculate the height
@@ -219,10 +227,6 @@ namespace tgui
         m_ItemHeight = itemHeight;
         m_LoadedScrollbarPathname = scrollbarPathname;
 
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            return false;
-
         // If there is a scrollbar then load it
         if (scrollbarPathname.empty() == false)
         {
@@ -238,36 +242,26 @@ namespace tgui
             }
             else // The scrollbar was loaded successfully
             {
-                // The scrollbar has to be vertical
-                m_Scroll->verticalScroll = true;
-
-                // Set the low value
+                // Initialize the scrollbar
+                m_Scroll->setVerticalScroll(true);
+                m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-                // Set the maximum
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
-                m_Loaded = true;
                 return true;
             }
         }
         else
-        {
-            m_Loaded = true;
             return true;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setSize(float width, float height)
+    void ListBox::setSize(float width, float height)
     {
         // A negative size is not allowed for this object
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
-
-        // Reset the scale
-        setScale(1, 1);
 
         // The calculations require an unsigned integer
         unsigned int uiHeight = static_cast<unsigned int>(height);
@@ -276,9 +270,9 @@ namespace tgui
         if (m_Scroll == NULL)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
         else
-            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->m_TextureArrowNormal->getSize().x, width);
+            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
-        // There is also a minimum listbox height
+        // There is also a minimum list box height
         if (uiHeight < (m_ItemHeight + m_TopBorder + m_BottomBorder))
         {
             uiHeight = m_ItemHeight + m_TopBorder + m_BottomBorder;
@@ -313,42 +307,38 @@ namespace tgui
         m_Size.x = static_cast<unsigned int>(width);
         m_Size.y = uiHeight;
 
-        // Create the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
-
-        // If there is a scrollbar then change it
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u Listbox::getSize() const
+    Vector2u ListBox::getSize() const
     {
         return m_Size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Listbox::getScaledSize() const
+    Vector2f ListBox::getScaledSize() const
     {
         return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Listbox::getLoadedScrollbarPathname()
+    std::string ListBox::getLoadedScrollbarPathname() const
     {
         return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::changeColors(const sf::Color& backgroundColor,         const sf::Color& textColor,
+    void ListBox::changeColors(const sf::Color& backgroundColor,         const sf::Color& textColor,
                                const sf::Color& selectedBackgroundColor, const sf::Color& selectedTextColor,
                                const sf::Color& borderColor)
     {
@@ -362,175 +352,132 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setBackgroundColor(const sf::Color& backgroundColor)
+    void ListBox::setBackgroundColor(const sf::Color& backgroundColor)
     {
         m_BackgroundColor = backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setTextColor(const sf::Color& textColor)
+    void ListBox::setTextColor(const sf::Color& textColor)
     {
         m_TextColor = textColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
+    void ListBox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
     {
         m_SelectedBackgroundColor = selectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setSelectedTextColor(const sf::Color& selectedTextColor)
+    void ListBox::setSelectedTextColor(const sf::Color& selectedTextColor)
     {
         m_SelectedTextColor = selectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setBorderColor(const sf::Color& borderColor)
+    void ListBox::setBorderColor(const sf::Color& borderColor)
     {
         m_BorderColor = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Listbox::getBackgroundColor()
+    const sf::Color& ListBox::getBackgroundColor() const
     {
         return m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Listbox::getTextColor()
+    const sf::Color& ListBox::getTextColor() const
     {
         return m_TextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Listbox::getSelectedBackgroundColor()
+    const sf::Color& ListBox::getSelectedBackgroundColor() const
     {
         return m_SelectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Listbox::getSelectedTextColor()
+    const sf::Color& ListBox::getSelectedTextColor() const
     {
         return m_SelectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Listbox::getBorderColor()
+    const sf::Color& ListBox::getBorderColor() const
     {
         return m_BorderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setTextFont(const sf::Font& font)
+    void ListBox::setTextFont(const sf::Font& font)
     {
         m_TextFont = font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& Listbox::getTextFont()
+    const sf::Font* ListBox::getTextFont() const
     {
-        return m_TextFont;
+        return &m_TextFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::addItem(const std::string itemName, bool cropText)
+    unsigned int ListBox::addItem(const sf::String itemName)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
         {
             // If there is a scrollbar then there is no limit
-            if (m_Scroll != NULL)
+            if (m_Scroll == NULL)
             {
-                goto addTheItem;
-            }
-            else // There is no scrollbar
-            {
-                // Calculate the amount of items that fit in the listbox
+                // Calculate the amount of items that fit in the list box
                 unsigned int maximumItems = m_Size.y / m_ItemHeight;
 
-                // Check if the item still fits in the listbox
-                if (m_Items.size() < maximumItems)
-                {
-                    goto addTheItem;
-                }
-                else // The item no longer fits inside the listbox
+                // Check if the item still fits in the list box
+                if (m_Items.size() == maximumItems)
                     return 0;
-            }
-        }
-        else // The item limit was reached
-            return 0;
-
-      addTheItem:
-
-        // Check if the string should be cropped when it is too long
-        if (cropText)
-        {
-            // Create a copy of the string (because the original can't be changed)
-            std::string itemNameCopy = itemName;
-
-            // Create a text object
-            sf::Text tempText(itemNameCopy);
-            tempText.setCharacterSize(static_cast<unsigned int>(m_TextSize * getScale().y));
-
-            // Calculate the maximum text width (the text must fit inside the listbox)
-            float maximumTextWidth;
-
-            if (m_Scroll == NULL)
-                maximumTextWidth = (m_Size.x - (m_LeftBorder - m_RightBorder)) * getScale().x;
-            else
-                maximumTextWidth = ((m_Size.x - (m_LeftBorder - m_RightBorder)) * getScale().x) - m_Scroll->getSize().x;
-
-            // Check if the text is too long to fit inside the listbox
-            while (tempText.getGlobalBounds().width > maximumTextWidth)
-            {
-                // Make sure that the string is not empty already
-                if (itemNameCopy.empty() == false)
-                    break;
-
-                // Remove the last character
-                itemNameCopy.erase(itemNameCopy.length() -1);
-                tempText.setString(itemNameCopy);
             }
 
             // Add the item to the list
-            m_Items.push_back(itemNameCopy);
-        }
-        else // Just add the item to the list
             m_Items.push_back(itemName);
 
-        // If there is a scrollbar then tell it that another item was added
-        if (m_Scroll != NULL)
-            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
+            // If there is a scrollbar then tell it that another item was added
+            if (m_Scroll != NULL)
+                m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
-        // Return the item id
-        return m_Items.size();
+            // Return the item id
+            return m_Items.size();
+        }
+        else // The item limit was reached
+            return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::setSelectedItem(const std::string itemName)
+    bool ListBox::setSelectedItem(const sf::String itemName)
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // Check if a match was found
-            if (m_Items[x].compare(itemName) == 0)
+            if (m_Items[i].toWideString().compare(itemName) == 0)
             {
                 // Select the item
-                m_SelectedItem = x + 1;
+                m_SelectedItem = i + 1;
                 return true;
             }
         }
@@ -542,7 +489,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::setSelectedItem(unsigned int id)
+    bool ListBox::setSelectedItem(unsigned int id)
     {
         // Make sure that the id is not too high
         if (id <= m_Items.size())
@@ -560,7 +507,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::removeItem(unsigned int id)
+    void ListBox::removeItem(unsigned int id)
     {
         // If the id is valid then remove the item
         if (id <= m_Items.size())
@@ -575,22 +522,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::removeItem(const std::string itemName)
+    void ListBox::removeItem(const sf::String itemName)
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then delete the item
-            if (m_Items[x].compare(itemName))
+            if (m_Items[i].toWideString().compare(itemName))
             {
-                m_Items.erase(m_Items.begin() + x);
+                m_Items.erase(m_Items.begin() + i);
 
                 // If the removed item was selected then unselect it
-                if (m_SelectedItem == x + 1)
+                if (m_SelectedItem == i + 1)
                     m_SelectedItem = 0;
 
                 // If the selected item was after the removed item then move it
-                if (m_SelectedItem > x + 1)
+                if (m_SelectedItem > i + 1)
                     --m_SelectedItem;
 
                 // If there is a scrollbar then tell it that an item was removed
@@ -602,7 +549,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::removeAllItems()
+    void ListBox::removeAllItems()
     {
         // Clear the list, remove all items
         m_Items.clear();
@@ -617,7 +564,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Listbox::getItem(unsigned int id)
+    sf::String ListBox::getItem(const unsigned int id) const
     {
         // Check if the id is valid
         if ((id > 0) && (id <= m_Items.size()))
@@ -626,20 +573,20 @@ namespace tgui
             return m_Items[id - 1];
         }
         else // The id is outside the range
-            return std::string("");
+            return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::getItemID(const std::string itemName)
+    unsigned int ListBox::getItemID(const sf::String itemName) const
     {
         // Loop through all items
-        for (unsigned int x=0; x<m_Items.size(); ++x)
+        for (unsigned int i=0; i<m_Items.size(); ++i)
         {
             // When the name matches then return the IDd you have requested that you be notified on this event. You can view your new message by clicking on the following link:
 
-            if (m_Items[x].compare(itemName))
-                return x + 1;
+            if (m_Items[i].toWideString().compare(itemName))
+                return i + 1;
         }
 
         // No match was found
@@ -648,14 +595,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string>& Listbox::getItems()
+    std::vector<sf::String>& ListBox::getItems()
     {
         return m_Items;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Listbox::getSelectedItem() const
+    sf::String ListBox::getSelectedItem() const
     {
         // Make sure that an item is selected
         if (m_SelectedItem > 0)
@@ -673,15 +620,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::getSelectedItemID()
+    unsigned int ListBox::getSelectedItemID() const
     {
         return m_SelectedItem;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::setScrollbar(const std::string scrollbarPathname)
+    bool ListBox::setScrollbar(const std::string scrollbarPathname)
     {
+        // Store the pathname
+        m_LoadedScrollbarPathname = scrollbarPathname;
+
         // Calling setScrollbar with an empty string does the same as removeScrollbar
         if (scrollbarPathname.empty() == true)
         {
@@ -708,11 +658,11 @@ namespace tgui
         }
         else // The scrollbar was loaded successfully
         {
-            // The scrollbar has to be vertical
-            m_Scroll->verticalScroll = true;
-
-            // Set the low value
+            // Initialize the scrollbar
+            m_Scroll->setVerticalScroll(true);
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
             return true;
         }
@@ -720,7 +670,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::removeScrollbar()
+    void ListBox::removeScrollbar()
     {
         // There is no more scrollbar, so the string should be empty
         m_LoadedScrollbarPathname = "";
@@ -728,11 +678,21 @@ namespace tgui
         // Delete the scrollbar
         delete m_Scroll;
         m_Scroll = NULL;
+
+        // When the items no longer fit inside the list box then we need to remove some
+        if ((m_Items.size() * m_ItemHeight) > m_Size.y)
+        {
+            // Calculate ho many items fit inside the list box
+            m_MaxItems = m_Size.y / m_ItemHeight;
+
+            // Remove the items that didn't fit inside the list box
+            m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setItemHeight(unsigned int itemHeight)
+    void ListBox::setItemHeight(unsigned int itemHeight)
     {
         // There is a minimum height
         if (itemHeight < 10)
@@ -748,15 +708,14 @@ namespace tgui
         // Some items might be removed when there is no scrollbar
         if (m_Scroll == NULL)
         {
-            // When the items no longer fit inside the listbox then we need to remove some
+            // When the items no longer fit inside the list box then we need to remove some
             if ((m_Items.size() * m_ItemHeight) > m_Size.y)
             {
-                // Calculate ho many items fit inside the listbox
+                // Calculate ho many items fit inside the list box
                 m_MaxItems = m_Size.y / m_ItemHeight;
 
-                // Remove the items that didn't fit inside the listbox
-                for (unsigned int x=m_MaxItems; x<m_Items.size(); ++x)
-                    m_Items.erase(m_Items.begin() + x);
+                // Remove the items that didn't fit inside the list box
+                m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
             }
         }
         else // There is a scrollbar
@@ -768,29 +727,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::getItemHeight()
+    unsigned int ListBox::getItemHeight() const
     {
         return m_ItemHeight;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setTextSize(unsigned int textSize)
-    {
-        // Set the item size (all calculations are done there, there is no reason to copy them)
-        setItemHeight(static_cast<unsigned int>(textSize * 1.25f));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Listbox::getTextSize()
-    {
-        return m_TextSize;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Listbox::setMaximumItems(unsigned int maximumItems)
+    void ListBox::setMaximumItems(const unsigned int maximumItems)
     {
         // Set the new limit
         m_MaxItems = maximumItems;
@@ -798,12 +742,8 @@ namespace tgui
         // Check if we already passed the limit
         if ((m_MaxItems > 0) && (m_MaxItems < m_Items.size()))
         {
-            // Copy the list of items
-            std::vector<std::string> items = getItems();
-
             // Remove the items that passed the limitation
-            for (unsigned int x=m_MaxItems; x<items.size(); ++x)
-                m_Items.erase(m_Items.begin() + x);
+            m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
 
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_Scroll != NULL)
@@ -813,14 +753,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Listbox::getMaximumItems()
+    unsigned int ListBox::getMaximumItems() const
     {
         return m_MaxItems;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
+    void ListBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
     {
         // Set the new border size
         m_LeftBorder   = leftBorder;
@@ -835,7 +775,7 @@ namespace tgui
         // There is also a minimum height (when there is no scrollbar)
         if (m_Scroll == NULL)
         {
-            // If there are items then they should still fit inside the listbox
+            // If there are items then they should still fit inside the list box
             if (m_Items.size() > 0)
             {
                 if (m_Size.y < ((m_Items.size() * m_ItemHeight) - m_TopBorder - m_BottomBorder))
@@ -843,7 +783,7 @@ namespace tgui
             }
             else // There are no items
             {
-                // At least one item should fit inside the listbox
+                // At least one item should fit inside the list box
                 if (m_Size.y < (m_ItemHeight - m_TopBorder - m_BottomBorder))
                     m_Size.y = m_ItemHeight - m_TopBorder - m_BottomBorder;
             }
@@ -872,24 +812,17 @@ namespace tgui
         else
             m_Size.y = height2 + m_TopBorder + m_BottomBorder;
 
-        // Recreate the render texture
-        if (m_RenderTexture->create(m_Size.x - m_LeftBorder - m_RightBorder, m_Size.y - m_TopBorder - m_BottomBorder) == false)
-            m_Loaded = false;
-
-        // Check if there is a scrollbar
+        // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
-            // Set the low value
+            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-
-            // Tell the scrollbar how many items there are
-            m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Listbox::mouseOnObject(float x, float y)
+    bool ListBox::mouseOnObject(float x, float y)
     {
         // Get the current position and scale
         Vector2f position = getPosition();
@@ -899,8 +832,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
@@ -910,10 +843,10 @@ namespace tgui
             m_Scroll->setScale(1, 1);
         }
 
-        // Check if the mouse is on top of the listbox
-        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(getSize().x - m_LeftBorder - m_RightBorder), static_cast<float>(getSize().y - m_TopBorder - m_BottomBorder))).contains(x, y))
+        // Check if the mouse is on top of the list box
+        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
             return true;
-        else // The mouse is not on top of the listbox
+        else // The mouse is not on top of the list box
         {
             m_MouseHover = false;
             return false;
@@ -922,13 +855,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::leftMousePressed(float x, float y)
+    void ListBox::leftMousePressed(float x, float y)
     {
         // Set the mouse down flag to true
         m_MouseDown = true;
 
         // This will be true when the click didn't occur on the scrollbar
-        bool clickedOnListbox = true;
+        bool clickedOnListBox = true;
 
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
@@ -937,14 +870,14 @@ namespace tgui
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
             {
                 m_Scroll->leftMousePressed(x, y);
-                clickedOnListbox = false;
+                clickedOnListBox = false;
             }
 
             // Reset the position and scale
@@ -952,37 +885,34 @@ namespace tgui
             m_Scroll->setScale(1, 1);
         }
 
-        // If the click occured on the listbox
-        if (clickedOnListbox)
+        // If the click occured on the list box
+        if (clickedOnListBox)
         {
             // Remember the old selected item
             unsigned int oldSelectedItem = m_SelectedItem;
 
-            // Set the mouse down flag to true
-            m_MouseDown = true;
-
             // Check if there is a scrollbar or whether it is hidden
-            if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
+            if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
-                if ((y - getPosition().y - m_TopBorder) <= (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight)))
+                if ((y - getPosition().y - m_TopBorder) / getScale().y <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
                 {
                     // We clicked on the first visible item
-                    m_SelectedItem = m_Scroll->m_Value / m_ItemHeight + 1;
+                    m_SelectedItem = m_Scroll->getValue() / m_ItemHeight + 1;
                 }
                 else // We didn't click on the first visible item
                 {
                     // Calculate on what item we clicked
-                    if ((m_Scroll->m_Value % m_ItemHeight) == 0)
-                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 1);
+                    if ((m_Scroll->getValue() % m_ItemHeight) == 0)
+                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight)) + (m_Scroll->getValue() / m_ItemHeight) + 1);
                     else
-                        m_SelectedItem = static_cast<unsigned int>(((y - getPosition().y - m_TopBorder - (m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->m_Value / m_ItemHeight) + 2);
+                        m_SelectedItem = static_cast<unsigned int>(((((y - getPosition().y - m_TopBorder) / getScale().y) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 2);
                 }
             }
             else // There is no scrollbar or it is not displayed
             {
                 // Calculate on which item we clicked
-                m_SelectedItem = static_cast<unsigned int> ((y - getPosition().y - m_TopBorder) / (m_ItemHeight * getScale().y)) + 1;
+                m_SelectedItem = static_cast<unsigned int>((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight)) + 1;
 
                 // When you clicked behind the last item then unselect the selected item
                 if (m_SelectedItem > m_Items.size())
@@ -994,6 +924,7 @@ namespace tgui
             if ((callbackID > 0) && (oldSelectedItem != m_SelectedItem))
             {
                 Callback callback;
+                callback.object     = this;
                 callback.callbackID = callbackID;
                 callback.trigger    = Callback::itemSelected;
 
@@ -1006,7 +937,7 @@ namespace tgui
                 else // an item was selected
                 {
                     callback.value = m_SelectedItem;
-                    callback.text  = m_Items.at(m_SelectedItem-1);
+                    callback.text  = m_Items[m_SelectedItem-1];
                 }
 
                 m_Parent->addCallback(callback);
@@ -1016,20 +947,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::leftMouseReleased(float x, float y)
+    void ListBox::leftMouseReleased(float x, float y)
     {
         // If there is a scrollbar then pass it the event
         if (m_Scroll != NULL)
         {
             // Remember the old scrollbar value
-            unsigned int oldValue = m_Scroll->m_Value;
+            unsigned int oldValue = m_Scroll->getValue();
 
             // Get the current scale
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->leftMouseReleased(x, y);
@@ -1039,24 +970,24 @@ namespace tgui
             m_Scroll->setScale(1, 1);
 
             // Check if the scrollbar value was incremented (you have pressed on the down arrow)
-            if (m_Scroll->m_Value == oldValue + 1)
+            if (m_Scroll->getValue() == oldValue + 1)
             {
                 // Decrement the value
-                --m_Scroll->m_Value;
+                m_Scroll->setValue(m_Scroll->getValue()-1);
 
                 // Scroll down with the whole item height instead of with a single pixel
-                m_Scroll->setValue(m_Scroll->m_Value + m_ItemHeight - (m_Scroll->m_Value % m_ItemHeight));
+                m_Scroll->setValue(m_Scroll->getValue() + m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight));
             }
-            else if (m_Scroll->m_Value == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
+            else if (m_Scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
             {
                 // increment the value
-                ++m_Scroll->m_Value;
+                m_Scroll->setValue(m_Scroll->getValue()+1);
 
                 // Scroll up with the whole item height instead of with a single pixel
-                if (m_Scroll->m_Value % m_ItemHeight > 0)
-                    m_Scroll->setValue(m_Scroll->m_Value - (m_Scroll->m_Value % m_ItemHeight));
+                if (m_Scroll->getValue() % m_ItemHeight > 0)
+                    m_Scroll->setValue(m_Scroll->getValue() - (m_Scroll->getValue() % m_ItemHeight));
                 else
-                    m_Scroll->setValue(m_Scroll->m_Value - m_ItemHeight);
+                    m_Scroll->setValue(m_Scroll->getValue() - m_ItemHeight);
             }
         }
 
@@ -1065,7 +996,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::mouseMoved(float x, float y)
+    void ListBox::mouseMoved(float x, float y)
     {
         // Get the current scale
         Vector2f curScale = getScale();
@@ -1074,8 +1005,8 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, getPosition().y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y- m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setScale(curScale);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -1098,7 +1029,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::mouseNotOnObject()
+    void ListBox::mouseWheelMoved(int delta)
+    {
+        // Only do something when there is a scrollbar
+        if (m_Scroll != NULL)
+        {
+            if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
+            {
+                // Check if you are scrolling down
+                if (delta < 0)
+                {
+                    // Scroll down
+                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ItemHeight / 2)) );
+                }
+                else // You are scrolling up
+                {
+                    unsigned int change = static_cast<unsigned int>(delta) * (m_ItemHeight / 2);
+
+                    // Scroll up
+                    if (change < m_Scroll->getValue())
+                        m_Scroll->setValue( m_Scroll->getValue() - change );
+                    else
+                        m_Scroll->setValue(0);
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::mouseNotOnObject()
     {
         m_MouseHover = false;
 
@@ -1108,7 +1068,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::mouseNoLongerDown()
+    void ListBox::mouseNoLongerDown()
     {
         m_MouseDown = false;
 
@@ -1118,99 +1078,115 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Listbox::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Get the current position and scale
-        Vector2f position = getPosition();
+        // Get the current scale
         Vector2f curScale = getScale();
 
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
+        // Calculate the scale factor of the view
+        float scaleViewX = target.getSize().x / target.getView().getSize().x;
+        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+
+        // Get the global position
+        Vector2f topLeftPosition;
+        Vector2f bottomRightPosition;
+
+        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+
+        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
+        {
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * curScale.y) + viewPosition.y);
+        }
+        else
+        {
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) + viewPosition);
+        }
 
         // Adjust the transformation
         states.transform *= getTransform();
 
+        // Remember the current transformation
+        sf::Transform oldTransform = states.transform;
+
         // Draw the borders
         {
-            sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
-            Back.setFillColor(m_BorderColor);
-            target.draw(Back, states);
+            sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
+            back.setFillColor(m_BorderColor);
+            target.draw(back, states);
         }
 
         // Move the front rect a little bit
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
-        // Draw the listbox
+        // Draw the background
         {
-            sf::RectangleShape Front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
+            sf::RectangleShape front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
                                               static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
-            Front.setFillColor(m_BackgroundColor);
-            target.draw(Front, states);
+            front.setFillColor(m_BackgroundColor);
+            target.draw(front, states);
         }
 
-        // Change the scale factors
-        states.transform.scale(curScale.y / curScale.x, 1);
+        // Get the old clipping area
+        GLint scissor[4];
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+        // Calculate the clipping area
+        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+        // If the object outside the window then don't draw anything
+        if (scissorRight < scissorLeft)
+            scissorRight = scissorLeft;
+        else if (scissorBottom < scissorTop)
+            scissorTop = scissorBottom;
 
         // Create a text object to draw the items
         sf::Text text("", m_TextFont, m_TextSize);
 
         // Check if there is a scrollbar and whether it isn't hidden
-        if ((m_Scroll != NULL) && (m_Scroll->m_LowValue < m_Scroll->m_Maximum))
+        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
-            // Store the transformation (without translation)
-            states.transform = oldTransform;
-            oldTransform.scale(curScale.x, curScale.y);
+            // Store the transformation
             sf::Transform storedTransform = states.transform;
 
             // Find out which items should be drawn
-            unsigned int firstItem = m_Scroll->m_Value / m_ItemHeight;
-            unsigned int lastItem = (m_Scroll->m_Value + m_Scroll->m_LowValue) / m_ItemHeight;
+            unsigned int firstItem = m_Scroll->getValue() / m_ItemHeight;
+            unsigned int lastItem = (m_Scroll->getValue() + m_Scroll->getLowValue()) / m_ItemHeight;
 
             // Show another item when the scrollbar is standing between two items
-            if ((m_Scroll->m_Value + m_Scroll->m_LowValue) % m_ItemHeight != 0)
+            if ((m_Scroll->getValue() + m_Scroll->getLowValue()) % m_ItemHeight != 0)
                 ++lastItem;
 
-            // Clear the render texture that we will be drawing on
-            m_RenderTexture->clear(sf::Color::Transparent);
+            // Set the clipping area
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-            for (unsigned int x=firstItem; x<lastItem; ++x)
+            for (unsigned int i=firstItem; i<lastItem; ++i)
             {
                 // Restore the transformations
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_Items[x]);
+                text.setString(m_Items[i]);
 
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
 
-                // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = ((m_Size.x - m_LeftBorder - m_RightBorder - 4) * (curScale.x / curScale.y)) - (m_Scroll->getSize().x / curScale.y);
-
-                // Check if the text is too long to fit inside the listbox
-                while (bounds.width > maximumTextWidth)
-                {
-                    // Remove the last character
-                    std::string tempString = text.getString().toAnsiString();
-                    tempString.erase(tempString.length() -1);
-                    text.setString(tempString);
-
-                    // Recalculate the size
-                    bounds = text.getGlobalBounds();
-                }
-
                 // Check if we are drawing the selected item
-                if ((m_SelectedItem - 1) == x)
+                if ((m_SelectedItem - 1) == i)
                 {
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top)))).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue())).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
-                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
-                        Back.setFillColor(m_SelectedBackgroundColor);
-                        m_RenderTexture->draw(Back, states);
+                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        back.setFillColor(m_SelectedBackgroundColor);
+                        target.draw(back, states);
 
                         // Restore the transformation
                         states.transform = storedTransform;
@@ -1223,49 +1199,40 @@ namespace tgui
                     text.setColor(m_TextColor);
 
                 // Set the translation for the text
-                states.transform.translate(2, (static_cast<float>(static_cast<int>((x * m_ItemHeight) - m_Scroll->m_Value) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top))));
+                states.transform.translate(2, std::floor(static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue() + ((m_ItemHeight - bounds.height) / 2.0f) - bounds.top));
 
-                // Draw the text on the render texture
-                m_RenderTexture->draw(text, states);
+                // Draw the text
+                target.draw(text, states);
             }
-
-            // Display the render texture
-            m_RenderTexture->display();
-
-            // Restore the old transformation
-            states.transform = oldTransform;
-            states.transform *= getTransform();
-            states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
-
-            // Draw the text on the window
-            sf::Sprite sprite(m_RenderTexture->getTexture());
-            target.draw(sprite, states);
         }
         else // There is no scrollbar or it is invisible
         {
+            // Set the clipping area
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+
             // Store the current transformations
             sf::Transform storedTransform = states.transform;
 
-            for (unsigned int x=0; x<m_Items.size(); ++x)
+            for (unsigned int i=0; i<m_Items.size(); ++i)
             {
                 // Restore the transformations
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_Items[x]);
+                text.setString(m_Items[i]);
 
                 // Check if we are drawing the selected item
-                if ((m_SelectedItem - 1) == x)
+                if ((m_SelectedItem - 1) == i)
                 {
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, static_cast<float>(x * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, static_cast<float>(i * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
 
                         // Create and draw the background
-                        sf::RectangleShape Back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
-                        Back.setFillColor(m_SelectedBackgroundColor);
-                        target.draw(Back, states);
+                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        back.setFillColor(m_SelectedBackgroundColor);
+                        target.draw(back, states);
 
                         // Restore the transformation
                         states.transform = storedTransform;
@@ -1280,47 +1247,30 @@ namespace tgui
                 // Get the global bounds
                 sf::FloatRect bounds = text.getGlobalBounds();
 
-                // Calculate the maximum text width (the text must fit inside the listbox)
-                float maximumTextWidth = (m_Size.x - m_LeftBorder - m_RightBorder - 4) * curScale.x / curScale.y;
-
-                // Check if the text is too long to fit inside the listbox
-                while (bounds.width > maximumTextWidth)
-                {
-                    // Remove the last character
-                    std::string tempString = text.getString().toAnsiString();
-                    tempString.erase(tempString.length() -1);
-                    text.setString(tempString);
-
-                    // Recalculate the size
-                    bounds = text.getGlobalBounds();
-                }
-
                 // Set the translation for the text
-                states.transform.translate(2, (x * m_ItemHeight) + ((m_ItemHeight / 2.0f) - (bounds.height / 2.0f) - bounds.top));
+                states.transform.translate(2, std::floor((i * m_ItemHeight) + ((m_ItemHeight - bounds.height) / 2.0f) - bounds.top));
 
                 // Draw the text
                 target.draw(text, states);
             }
         }
 
+        // Reset the old clipping area
+        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+
         // Check if there is a scrollbar
         if (m_Scroll != NULL)
         {
             // Reset the transformation
             states.transform = oldTransform;
-            states.transform.translate(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getSize().x, position.y + (m_TopBorder * curScale.y));
-            m_Scroll->setScale(1, (curScale.y * (m_Size.y - m_TopBorder - m_BottomBorder)) / m_Scroll->getSize().y);
+            states.transform.translate(static_cast<float>(m_Size.x) - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
-
-            // Reset the scale of the scrollbar
-            m_Scroll->setScale(1, 1);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
