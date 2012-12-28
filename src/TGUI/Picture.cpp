@@ -88,7 +88,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::load(const std::string filename)
+    bool Picture::load(const std::string& filename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;

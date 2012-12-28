@@ -202,7 +202,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::load(const std::string pathname)
+    bool EditBox::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -440,7 +440,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setText(const sf::String text)
+    void EditBox::setText(const sf::String& text)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -551,7 +551,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setTextSize(const unsigned int size)
+    void EditBox::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -586,7 +586,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPasswordChar(const char passwordChar)
+    void EditBox::setPasswordChar(char passwordChar)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -608,7 +608,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setMaximumCharacters(const unsigned int maxChars)
+    void EditBox::setMaximumCharacters(unsigned int maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_MaxChars = maxChars;

@@ -166,7 +166,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::load(const std::string pathname)
+    bool Button::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -407,7 +407,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setText(const sf::String text)
+    void Button::setText(const sf::String& text)
     {
         // Don't do anything when the button wasn't loaded correctly
         if (m_Loaded == false)
@@ -476,7 +476,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setTextSize(const unsigned int size)
+    void Button::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;

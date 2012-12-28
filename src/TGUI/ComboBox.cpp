@@ -125,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string pathname, float width, float height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
+    bool ComboBox::load(const std::string& pathname, float width, float height, unsigned int nrOfItemsInList, const std::string& scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -443,7 +443,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::addItem(const sf::String item)
+    unsigned int ComboBox::addItem(const sf::String& item)
     {
         // An item can only be added when the combo box was loaded correctly
         if (m_Loaded == false)
@@ -459,7 +459,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(const sf::String itemName)
+    bool ComboBox::setSelectedItem(const sf::String& itemName)
     {
         return m_ListBox->setSelectedItem(itemName);
     }
@@ -480,7 +480,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::removeItem(const sf::String itemName)
+    void ComboBox::removeItem(const sf::String& itemName)
     {
         m_ListBox->removeItem(itemName);
     }
@@ -494,14 +494,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getItem(const unsigned int id) const
+    sf::String ComboBox::getItem(unsigned int id) const
     {
         return m_ListBox->getItem(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getItemID(const sf::String itemName) const
+    unsigned int ComboBox::getItemID(const sf::String& itemName) const
     {
         return m_ListBox->getItemID(itemName);
     }
@@ -529,7 +529,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setScrollbar(const std::string scrollbarPathname)
+    bool ComboBox::setScrollbar(const std::string& scrollbarPathname)
     {
         // Remember the scrollbar pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
@@ -551,7 +551,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setMaximumItems(const unsigned int maximumItems)
+    void ComboBox::setMaximumItems(unsigned int maximumItems)
     {
         m_ListBox->setMaximumItems(maximumItems);
     }

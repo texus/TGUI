@@ -89,7 +89,7 @@ namespace tgui
         ///        - false when the info.txt file was not found
         ///        - false when the images couldn't be loaded
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const float width, const float height, const sf::Color& backgroundColor, const std::string pathname);
+        virtual bool load(float width, float height, const sf::Color& backgroundColor, const std::string& pathname);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace tgui
         /// This image will be scaled to fill the whole window.
         /// Passing an empty string to this function will remove the current background image.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setBackgroundImage(const std::string filename = "");
+        virtual bool setBackgroundImage(const std::string& filename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ namespace tgui
         ///
         /// The default height is the height of the title bar image that is loaded with the load function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTitlebarHeight(const unsigned int height);
+        virtual void setTitlebarHeight(unsigned int height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ namespace tgui
         /// \warning This function no longer works like expected. This is the cost for the performance improvements that I made.
         ///          The next version of tgui will reimplement transparency (but for ALL objects) without losing performance while not used.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTransparency(const unsigned char transparency);
+        virtual void setTransparency(unsigned char transparency);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,10 +148,10 @@ namespace tgui
         /// \param rightBorder   The width of the right border
         /// \param bottomBorder  The height of the bottom border
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(const unsigned int leftBorder   = 0,
-                                const unsigned int topBorder    = 0,
-                                const unsigned int rightBorder  = 0,
-                                const unsigned int bottomBorder = 0);
+        virtual void setBorders(unsigned int leftBorder   = 0,
+                                unsigned int topBorder    = 0,
+                                unsigned int rightBorder  = 0,
+                                unsigned int bottomBorder = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Send the event to all underlying objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void handleEvent(sf::Event& event, const float mouseX = 0, const float mouseY = 0);
+        virtual void handleEvent(sf::Event& event, float mouseX = 0, float mouseY = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

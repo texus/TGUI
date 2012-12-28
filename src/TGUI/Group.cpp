@@ -373,7 +373,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::loadObjectsFromFile(const std::string filename)
+    bool Group::loadObjectsFromFile(const std::string& filename)
     {
         // I wrote these defines to avoid having the same code over and over again
         #define CHECK_SHARED_PROPERTIES(name) \
@@ -2231,7 +2231,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(const sf::String objectName)
+    void Group::remove(const sf::String& objectName)
     {
         // Loop through every object
         for (unsigned int i=0; i<m_ObjName.size(); ++i)

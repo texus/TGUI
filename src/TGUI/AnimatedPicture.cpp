@@ -116,7 +116,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedPicture::addFrame(const std::string filename, const sf::Time frameDurarion)
+    unsigned int AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDurarion)
     {
         // Check if the filename is empty
         if (filename.empty() == true)
@@ -258,7 +258,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setFrameDuration(unsigned int frame, const sf::Time frameDuration)
+    void AnimatedPicture::setFrameDuration(unsigned int frame, sf::Time frameDuration)
     {
         // Only continue when there are frames
         if (m_Textures.empty())

@@ -149,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::load(const std::string pathname)
+    bool Slider::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -393,7 +393,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMinimum(const unsigned int minimum)
+    void Slider::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -405,7 +405,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMaximum(const unsigned int maximum)
+    void Slider::setMaximum(unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -420,7 +420,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setValue(const unsigned int value)
+    void Slider::setValue(unsigned int value)
     {
         // Set the new value
         m_Value = value;

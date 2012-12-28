@@ -282,7 +282,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addToRow(OBJECT* const object, const Vector4u& borders, const Layout::layouts layout)
+    void Grid::addToRow(OBJECT* const object, const Vector4u& borders, Layout::layouts layout)
     {
         // If there is no row yet then create one
         if (m_GridObjects.empty())
@@ -307,7 +307,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addRow(const unsigned int rowHeight)
+    void Grid::addRow(unsigned int rowHeight)
     {
         m_GridObjects.push_back( std::vector<OBJECT*>() );
         m_ObjBorders.push_back( std::vector<Vector4u>() );
@@ -359,7 +359,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::changeObjectLayout(const OBJECT* const object, const Layout::layouts layout)
+    void Grid::changeObjectLayout(const OBJECT* const object, Layout::layouts layout)
     {
         // Find the object in the grid
         for (unsigned int row=0; row < m_GridObjects.size(); ++row)

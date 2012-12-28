@@ -31,7 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::getTexture(const std::string filename, sf::Texture*& textureToLoad)
+    bool TextureManager::getTexture(const std::string& filename, sf::Texture*& textureToLoad)
     {
         // Loop all our textures to check if we already have this one
         std::list<sf::Texture>::iterator it = m_Textures.begin();

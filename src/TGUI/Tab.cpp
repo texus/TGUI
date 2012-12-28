@@ -145,7 +145,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::load(const std::string pathname)
+    bool Tab::load(const std::string& pathname)
     {
         // Until the loading succeeds, the tab object will be marked as unloaded
         m_Loaded = false;
@@ -362,7 +362,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Tab::add(const sf::String name, const bool selectTab)
+    unsigned int Tab::add(const sf::String& name, bool selectTab)
     {
         // Add the tab
         m_TabNames.push_back(name);
@@ -381,7 +381,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::select(const sf::String name)
+    void Tab::select(const sf::String& name)
     {
         // Loop through all tabs
         for (unsigned int i=0; i<m_TabNames.size(); ++i)
@@ -400,7 +400,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::select(const unsigned int index)
+    void Tab::select(unsigned int index)
     {
         // If the index is too big then do nothing
         if (index > m_TabNames.size()-1)
@@ -422,7 +422,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::remove(const sf::String name)
+    void Tab::remove(const sf::String& name)
     {
         // Loop through all tabs
         for (unsigned int i=0; i<m_TabNames.size(); ++i)
@@ -449,7 +449,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::remove(const unsigned int index)
+    void Tab::remove(unsigned int index)
     {
         // The index can't be too high
         if (index > m_TabNames.size()-1)
@@ -525,7 +525,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setTextSize(const unsigned int size)
+    void Tab::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;

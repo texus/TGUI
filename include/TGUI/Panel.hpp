@@ -77,7 +77,7 @@ namespace tgui
         ///        - true on success
         ///        - false when background image couldn't be loaded (only if \a backgroundImageFilename isn't empty)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const float width, const float height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string backgroundImageFilename = "");
+        virtual bool load(float width, float height, const sf::Color& backgroundColor = sf::Color::Transparent, const std::string& backgroundImageFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace tgui
         /// This image will be scaled to fill the whole panel.
         /// Passing an empty string to this function will remove the current background image.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setBackgroundImage(const std::string filename = "");
+        virtual bool setBackgroundImage(const std::string& filename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

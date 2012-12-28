@@ -177,7 +177,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedButton::load(const std::string pathname)
+    bool AnimatedButton::load(const std::string& pathname)
     {
         unsigned int i;
 
@@ -568,7 +568,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::setText(const sf::String text)
+    void AnimatedButton::setText(const sf::String& text)
     {
         // Don't do anything when the button wasn't loaded correctly
         if (m_Loaded == false)
@@ -637,7 +637,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::setTextSize(const unsigned int size)
+    void AnimatedButton::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -824,7 +824,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedButton::getLoadingID(std::string property)
+    unsigned int AnimatedButton::getLoadingID(const std::string& property)
     {
         // Get the image id
         unsigned int id = atoi(property.c_str());

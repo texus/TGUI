@@ -112,7 +112,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::load(const std::string pathname)
+    bool SpinButton::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -265,7 +265,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMinimum(const unsigned int minimum)
+    void SpinButton::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -277,7 +277,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMaximum(const unsigned int maximum)
+    void SpinButton::setMaximum(unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -292,7 +292,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setValue(const unsigned int value)
+    void SpinButton::setValue(unsigned int value)
     {
         // Set the new value
         m_Value = value;

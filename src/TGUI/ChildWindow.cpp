@@ -130,7 +130,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::load(float width, float height, const sf::Color& bkgColor, const std::string pathname)
+    bool ChildWindow::load(float width, float height, const sf::Color& bkgColor, const std::string& pathname)
     {
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
@@ -285,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::setBackgroundImage(const std::string filename)
+    bool ChildWindow::setBackgroundImage(const std::string& filename)
     {
         // Remember the background image filename
         m_LoadedBackgroundImageFilename = filename;
@@ -378,7 +378,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::handleEvent(sf::Event& event, const float mouseX, const float mouseY)
+    void ChildWindow::handleEvent(sf::Event& event, float mouseX, float mouseY)
     {
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)

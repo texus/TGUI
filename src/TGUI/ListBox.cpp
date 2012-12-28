@@ -136,7 +136,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::load(unsigned int width, unsigned int height, const std::string scrollbarPathname, unsigned int itemHeight)
+    bool ListBox::load(unsigned int width, unsigned int height, const std::string& scrollbarPathname, unsigned int itemHeight)
     {
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
@@ -436,7 +436,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::addItem(const sf::String itemName)
+    unsigned int ListBox::addItem(const sf::String& itemName)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
@@ -468,7 +468,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItem(const sf::String itemName)
+    bool ListBox::setSelectedItem(const sf::String& itemName)
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
@@ -522,7 +522,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::removeItem(const sf::String itemName)
+    void ListBox::removeItem(const sf::String& itemName)
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
@@ -564,7 +564,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getItem(const unsigned int id) const
+    sf::String ListBox::getItem(unsigned int id) const
     {
         // Check if the id is valid
         if ((id > 0) && (id <= m_Items.size()))
@@ -578,7 +578,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getItemID(const sf::String itemName) const
+    unsigned int ListBox::getItemID(const sf::String& itemName) const
     {
         // Loop through all items
         for (unsigned int i=0; i<m_Items.size(); ++i)
@@ -627,7 +627,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setScrollbar(const std::string scrollbarPathname)
+    bool ListBox::setScrollbar(const std::string& scrollbarPathname)
     {
         // Store the pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
@@ -734,7 +734,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setMaximumItems(const unsigned int maximumItems)
+    void ListBox::setMaximumItems(unsigned int maximumItems)
     {
         // Set the new limit
         m_MaxItems = maximumItems;

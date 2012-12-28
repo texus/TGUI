@@ -164,7 +164,7 @@ namespace tgui
         /// \param layout   Where the object is located in the square.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addToRow(OBJECT* const object, const Vector4u& borders = Vector4u(0, 0, 0, 0), const Layout::layouts layout = Layout::Center);
+        virtual void addToRow(OBJECT* const object, const Vector4u& borders = Vector4u(0, 0, 0, 0), Layout::layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ namespace tgui
         /// \param rowHeight  The height of the row when it stays empty, or the minimum height when objects are added to the row.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addRow(const unsigned int rowHeight = 0);
+        virtual void addRow(unsigned int rowHeight = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ namespace tgui
         /// \brief Changes the layout of a given object.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void changeObjectLayout(const OBJECT* const object, const Layout::layouts layout = Layout::Center);
+        virtual void changeObjectLayout(const OBJECT* const object, Layout::layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

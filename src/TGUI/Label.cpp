@@ -96,7 +96,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setText(const sf::String string)
+    void Label::setText(const sf::String& string)
     {
         m_Text.setString(string);
 
@@ -145,7 +145,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextSize(const unsigned int size)
+    void Label::setTextSize(unsigned int size)
     {
         m_Text.setCharacterSize(size);
 

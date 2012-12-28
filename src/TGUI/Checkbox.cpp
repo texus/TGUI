@@ -120,7 +120,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::load(const std::string pathname)
+    bool Checkbox::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -285,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::setText(const sf::String text)
+    void Checkbox::setText(const sf::String& text)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
         if (m_Loaded == false)
@@ -345,7 +345,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::setTextSize(const unsigned int size)
+    void Checkbox::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;

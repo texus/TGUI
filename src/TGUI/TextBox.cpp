@@ -183,7 +183,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string scrollbarPathname)
+    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -355,7 +355,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setText(const sf::String text)
+    void TextBox::setText(const sf::String& text)
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
@@ -370,7 +370,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::addText(const sf::String text)
+    void TextBox::addText(const sf::String& text)
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
@@ -410,7 +410,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setTextSize(const unsigned int size)
+    void TextBox::setTextSize(unsigned int size)
     {
         // Store the new text size
         m_TextSize = size;
@@ -485,7 +485,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setMaximumCharacters(const unsigned int maxChars)
+    void TextBox::setMaximumCharacters(unsigned int maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_MaxChars = maxChars;
@@ -759,7 +759,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::setScrollbar(const std::string scrollbarPathname)
+    bool TextBox::setScrollbar(const std::string& scrollbarPathname)
     {
         // Store the pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
@@ -807,7 +807,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectionPointWidth(const unsigned int width)
+    void TextBox::setSelectionPointWidth(unsigned int width)
     {
         selectionPointWidth = width;
     }

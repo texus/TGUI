@@ -97,7 +97,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::load(const float width, const float height, const sf::Color& bkgColor, const std::string filename)
+    bool Panel::load(float width, float height, const sf::Color& bkgColor, const std::string& filename)
     {
         // Until the loading succeeds, the panel will be marked as unloaded
         m_Loaded = false;
@@ -189,7 +189,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::setBackgroundImage(const std::string filename)
+    bool Panel::setBackgroundImage(const std::string& filename)
     {
         // Remember the background image filename
         m_LoadedBackgroundImageFilename = filename;

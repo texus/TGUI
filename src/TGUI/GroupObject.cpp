@@ -75,7 +75,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::handleEvent(sf::Event& event, const float mouseX, const float mouseY)
+    void GroupObject::handleEvent(sf::Event& event, float mouseX, float mouseY)
     {
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)

@@ -70,7 +70,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.add<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* add(const sf::String objectName = "")
+        T* add(const sf::String& objectName = "")
         {
             T* newObject = new T();
             newObject->m_Parent = this;
@@ -98,7 +98,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.get<tgui::Picture>("picName"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* get(const sf::String objectName) const
+        T* get(const sf::String& objectName) const
         {
             for (unsigned int i=0; i<m_ObjName.size(); ++i)
             {
@@ -120,7 +120,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.copy(pictureToCopy, "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* copy(T* oldObject, const sf::String newObjectName = "")
+        T* copy(T* oldObject, const sf::String& newObjectName = "")
         {
             T* newObject = new T(*oldObject);
 
@@ -143,7 +143,7 @@ namespace tgui
         /// \code tgui::Picture* pic = group.copy<tgui::Picture>("PicToCopy", "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        T* copy(const sf::String oldObjectName, const sf::String newObjectName = "")
+        T* copy(const sf::String& oldObjectName, const sf::String& newObjectName = "")
         {
             for (unsigned int i=0; i<m_ObjName.size(); ++i)
             {
@@ -174,7 +174,7 @@ namespace tgui
         ///        - false when the file contains a mistake
         ///        - false when one of the objects couldn't be loaded
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadObjectsFromFile(const std::string filename);
+        virtual bool loadObjectsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// \see remove(OBJECT*)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const sf::String objectName);
+        virtual void remove(const sf::String& objectName);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

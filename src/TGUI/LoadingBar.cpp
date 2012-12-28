@@ -138,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::load(const std::string pathname)
+    bool LoadingBar::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -404,7 +404,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setText(const sf::String text)
+    void LoadingBar::setText(const sf::String& text)
     {
         // Don't do anything when the loading bar wasn't loaded correctly
         if (m_Loaded == false)
@@ -473,7 +473,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setTextSize(const unsigned int size)
+    void LoadingBar::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;

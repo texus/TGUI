@@ -40,7 +40,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool InfoFileParser::openFile(const std::string filename)
+    bool InfoFileParser::openFile(const std::string& filename)
     {
         // If a file is already open then close it
         if (m_File.is_open())

@@ -49,7 +49,7 @@ namespace tgui
         ///         - true when the image was loaded successfully
         ///         - false when the image couldn't be loaded (probalby file not found)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool getTexture(const std::string filename, sf::Texture*& textureToLoad);
+        virtual bool getTexture(const std::string& filename, sf::Texture*& textureToLoad);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
