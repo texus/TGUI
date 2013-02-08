@@ -30,5 +30,5 @@ About me
 --------
 
 Name:     Bruno Van de Velde
-E-mail:   vdv_b@hotmail.com
+E-mail:   vdv_b@lavabit.com
 Location: Belgium
