@@ -43,6 +43,14 @@ namespace tgui
             LayoutRight
         };
 
+        // Title alignments
+        enum TitleAlignment
+        {
+            TitleAlignmentLeft,
+            TitleAlignmentCentered,
+            TitleAlignmentRight
+        };
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
@@ -181,6 +189,9 @@ namespace tgui
 
         /// Should the close button be on the right side or on the left side of the title bar?
         Layout layout;
+
+        /// Should the text be on the left or the right or should it be centered?
+        TitleAlignment titleAlignment;
 
         /// The distance between the side of the title bar and the close button.
         unsigned int distanceToSide;

@@ -34,7 +34,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    layout             (ChildWindow::LayoutRight),
+    layout             (LayoutRight),
+    titleAlignment     (TitleAlignmentLeft),
     distanceToSide     (5),
     borderColor        (0, 0, 0),
     title              (""),
@@ -57,6 +58,7 @@ namespace tgui
     Panel             (childWindowToCopy),
     OBJECT_BORDERS    (childWindowToCopy),
     layout            (childWindowToCopy.layout),
+    titleAlignment    (childWindowToCopy.titleAlignment),
     distanceToSide    (childWindowToCopy.distanceToSide),
     borderColor       (childWindowToCopy.borderColor),
     title             (childWindowToCopy.title),
@@ -108,6 +110,7 @@ namespace tgui
             delete m_CloseButton;
 
             std::swap(layout,              temp.layout);
+            std::swap(titleAlignment,      temp.titleAlignment);
             std::swap(distanceToSide,      temp.distanceToSide);
             std::swap(borderColor,         temp.borderColor);
             std::swap(title,               temp.title);
@@ -638,10 +641,25 @@ namespace tgui
                 // Set the clipping area
                 glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-                // Draw the text
-                states.transform.translate(static_cast<float>(distanceToSide), 0);
-                target.draw(text, states);
-                states.transform.translate(-static_cast<float>(distanceToSide), 0);
+                // Draw the text, depending on the alignment
+                if (titleAlignment == TitleAlignmentLeft)
+                {
+                    states.transform.translate(static_cast<float>(distanceToSide), 0);
+                    target.draw(text, states);
+                    states.transform.translate(-static_cast<float>(distanceToSide), 0);
+                }
+                else if (titleAlignment == TitleAlignmentCentered)
+                {
+                    states.transform.translate(distanceToSide + ((m_Size.x - 3*distanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f), 0);
+                    target.draw(text, states);
+                    states.transform.translate(-(distanceToSide + ((m_Size.x - 3*distanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f)), 0);
+                }
+                else // if (titleAlignment == TitleAlignmentRight)
+                {
+                    states.transform.translate(m_Size.x - 2*distanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width, 0);
+                    target.draw(text, states);
+                    states.transform.translate(-m_Size.x + 2*distanceToSide + m_CloseButton->getScaledSize().x + text.getGlobalBounds().width, 0);
+                }
             }
             else // if (layout == LayoutLeft)
             {
@@ -660,10 +678,25 @@ namespace tgui
                 // Set the clipping area
                 glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-                // Draw the text
-                states.transform.translate(m_CloseButton->getScaledSize().x + (2*distanceToSide), 0);
-                target.draw(text, states);
-                states.transform.translate(-m_CloseButton->getScaledSize().x - (2*distanceToSide), 0);
+                // Draw the text, depending on the alignment
+                if (titleAlignment == TitleAlignmentLeft)
+                {
+                    states.transform.translate(m_CloseButton->getScaledSize().x + (2*distanceToSide), 0);
+                    target.draw(text, states);
+                    states.transform.translate(-m_CloseButton->getScaledSize().x - (2*distanceToSide), 0);
+                }
+                else if (titleAlignment == TitleAlignmentCentered)
+                {
+                    states.transform.translate(2*distanceToSide + m_CloseButton->getScaledSize().x + ((m_Size.x - 3*distanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f), 0);
+                    target.draw(text, states);
+                    states.transform.translate(-(2*distanceToSide + m_CloseButton->getScaledSize().x + ((m_Size.x - 3*distanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f)), 0);
+                }
+                else // if (titleAlignment == TitleAlignmentRight)
+                {
+                    states.transform.translate(m_Size.x - distanceToSide - text.getGlobalBounds().width, 0);
+                    target.draw(text, states);
+                    states.transform.translate(-m_Size.x + distanceToSide + text.getGlobalBounds().width, 0);
+                }
             }
 
             // Reset the old clipping area
