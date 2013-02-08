@@ -250,7 +250,8 @@ namespace tgui
 
     void OBJECT::unfocus()
     {
-        m_Parent->unfocusAllObjects();
+        if (m_Focused)
+            m_Parent->unfocusAllObjects();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
