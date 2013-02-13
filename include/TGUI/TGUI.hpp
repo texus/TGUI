@@ -132,7 +132,7 @@ extern tgui::TextureManager     TGUI_TextureManager;
 
 /*! \mainpage TGUI Documentation
  *
- * These pages contain the description of all usable functions and members in TGUI v0.4.0.\n
+ * These pages contain the description of all usable functions and members in TGUI v0.4.2.\n
  * The private and protected ones are hidden, like a few other functions that you should not use.
  *
  * Tutorials can be found on the tutorial section of my page (http://tgui.weebly.com/tutorials.html).
