@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,7 +25,9 @@
 
 #include <TGUI/TGUI.hpp>
 
+#include <stack>
 #include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,17 +42,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Group::Group(const Group& groupToCopy) :
-    globalFont(groupToCopy.globalFont)
+    m_GlobalFont             (groupToCopy.m_GlobalFont),
+    m_GlobalCallbackFunctions(groupToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the objects
-        for (unsigned int i=0; i<groupToCopy.m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < groupToCopy.m_EventManager.m_Objects.size(); ++i)
         {
-            OBJECT* newObject = static_cast<OBJECT*>(groupToCopy.m_EventManager.m_Objects[i]->clone());
-            m_EventManager.m_Objects.push_back(newObject);
+            m_EventManager.m_Objects.push_back(groupToCopy.m_EventManager.m_Objects[i].clone());
             m_ObjName.push_back(groupToCopy.m_ObjName[i]);
 
-            newObject->m_Parent = this;
-            newObject->initialize();
+            m_EventManager.m_Objects.back()->m_Parent = this;
         }
     }
 
@@ -68,8 +69,9 @@ namespace tgui
         // Make sure it is not the same object
         if (this != &right)
         {
-            // Copy the font
-            globalFont = right.globalFont;
+            // Copy the font and the callback functions
+            m_GlobalFont = right.m_GlobalFont;
+            m_GlobalCallbackFunctions = right.m_GlobalCallbackFunctions;
 
             // Remove all the old objects
             removeAllObjects();
@@ -77,12 +79,10 @@ namespace tgui
             // Copy all the objects
             for (unsigned int i=0; i<right.m_EventManager.m_Objects.size(); ++i)
             {
-                OBJECT* newObject = static_cast<OBJECT*>(right.m_EventManager.m_Objects[i]->clone());
-                m_EventManager.m_Objects.push_back(newObject);
+                m_EventManager.m_Objects.push_back(right.m_EventManager.m_Objects[i].clone());
                 m_ObjName.push_back(right.m_ObjName[i]);
 
-                newObject->m_Parent = this;
-                newObject->initialize();
+                m_EventManager.m_Objects.back()->m_Parent = this;
             }
         }
 
@@ -91,9 +91,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Group::setGlobalFont(const std::string& filename)
+    {
+        return m_GlobalFont.loadFromFile(filename);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Group::setGlobalFont(const sf::Font& font)
+    {
+        m_GlobalFont = font;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Font& Group::getGlobalFont() const
+    {
+        return m_GlobalFont;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     struct Operation
     {
-        enum ops
+        enum Ops
         {
             Add,
             Subtract,
@@ -106,11 +127,13 @@ namespace tgui
 
     float evaluate(std::string expression)
     {
+        /// TODO: Rewrite to use postfix instead of infix
+
         std::string::size_type openingBracketPos;
         std::string::size_type closingBracketPos;
 
         std::vector<float> numbers;
-        std::vector<Operation::ops> operations;
+        std::vector<Operation::Ops> operations;
 
         bool readingNumber = false;
         bool commaFound = false;
@@ -373,8 +396,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::loadObjectsFromFile(const std::string filename)
+    bool Group::loadObjectsFromFile(const std::string& filename)
     {
+///!!!  Make some adjustments in the loading process.
+///!!!  This is the only function where goto is still used, the goto statements should be removed.
+///!!!  All objects must be capable of loading themselves out of a string.
+///!!!  Perhaps it would be better to switch to xml parsing.
+
         // I wrote these defines to avoid having the same code over and over again
         #define CHECK_SHARED_PROPERTIES(name) \
             if (line.substr(0, 5).compare("size=") == 0) \
@@ -384,16 +412,6 @@ namespace tgui
                     goto LoadingFailed; \
               \
                 name->setSize(size.x, size.y); \
-            } \
-            else if (line.substr(0, 6).compare("width=") == 0) \
-            { \
-                line.erase(0, 6); \
-                name->setSize(readFloat(line.c_str()), static_cast<float>(name->getSize().y)); \
-            } \
-            else if (line.substr(0, 7).compare("height=") == 0) \
-            { \
-                line.erase(0, 7); \
-                name->setSize(static_cast<float>(name->getSize().x), readFloat(line.c_str())); \
             } \
             else if (line.substr(0, 6).compare("scale=") == 0) \
             { \
@@ -413,20 +431,10 @@ namespace tgui
                 else \
                     goto LoadingFailed; \
             } \
-            else if (line.substr(0, 5).compare("left=") == 0) \
-            { \
-                line.erase(0, 5); \
-                name->setPosition(readFloat(line.c_str()), name->getPosition().y); \
-            } \
-            else if (line.substr(0, 4).compare("top=") == 0) \
-            { \
-                line.erase(0, 4); \
-                name->setPosition(name->getPosition().x, readFloat(line.c_str())); \
-            } \
             else if (line.substr(0, 11).compare("callbackid=") == 0) \
             { \
                 line.erase(0, 11); \
-                name->callbackID = readInt(line.c_str()); \
+                name->setCallbackId(readInt(line.c_str())); \
             }
 
         #define CHECK_FOR_QUOTES \
@@ -454,7 +462,7 @@ namespace tgui
                     boolean = false; \
             }
 
-         #define COMPARE_OBJECT(length, name, objectName, id) \
+         #define COMPARE_OBJECT(length, name, objectName) \
             if (line.substr(0, length).compare(name) == 0) \
             { \
                 line.erase(0, length); \
@@ -464,8 +472,8 @@ namespace tgui
                     CHECK_FOR_QUOTES \
                 } \
               \
-                extraPtr = static_cast<void*>(parentPtr.top()->add<objectName>(line)); \
-                objectID = id + 1; \
+                extraPtr = objectName::Ptr(*parentPtr.top(), line); \
+                objectID = Type_##objectName + 1; \
                 progress.push(0); \
             }
 
@@ -498,7 +506,7 @@ namespace tgui
         std::stack<unsigned int> parentID;
         std::stack<unsigned int> progress;
         unsigned int objectID = 0;
-        void* extraPtr = NULL;
+        SharedObjectPtr<Object> extraPtr;
         bool multilineComment = false;
 
         std::vector<std::string> defineTokens;
@@ -809,7 +817,7 @@ namespace tgui
                             // The second line should contain "{"
                             if (line.compare("{") == 0)
                             {
-                                objectID = window + 1;
+                                objectID = Type_Unknown + 1;
                                 progress.pop();
                             }
                             else // The second line is wrong
@@ -818,49 +826,49 @@ namespace tgui
 
                         break;
                     }
-                    case window + 1: // The window was found
+                    case Type_Unknown + 1: // The window was found
                     {
                         // Find out if the loading is done
                         if (line.compare("}") == 0)
                             goto LoadingSucceeded;
 
                         // The next object will have the window as its parent
-                        parentID.push(window + 1);
+                        parentID.push(Type_Unknown + 1);
                         parentPtr.push(this);
 
                         // The line doesn't contain a '}', so check what object it contains
-                        COMPARE_OBJECT(4, "tab:", Tab, tab)
-                        else COMPARE_OBJECT(5, "grid:", Grid, grid)
-                        else COMPARE_OBJECT(6, "panel:", Panel, panel)
-                        else COMPARE_OBJECT(6, "label:", Label, label)
-                        else COMPARE_OBJECT(7, "button:", Button, button)
-                        else COMPARE_OBJECT(7, "slider:", Slider, slider)
-                        else COMPARE_OBJECT(8, "picture:", Picture, picture)
-                        else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
-                        else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
-                        else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
-                        else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
-                        else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
-                        else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
-                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
-                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
-                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
-                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
-                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
-                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
-                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
-                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                        COMPARE_OBJECT(4, "tab:", Tab)
+                        else COMPARE_OBJECT(5, "grid:", Grid)
+                        else COMPARE_OBJECT(6, "panel:", Panel)
+                        else COMPARE_OBJECT(6, "label:", Label)
+                        else COMPARE_OBJECT(7, "button:", Button)
+                        else COMPARE_OBJECT(7, "slider:", Slider)
+                        else COMPARE_OBJECT(8, "picture:", Picture)
+                        else COMPARE_OBJECT(8, "listbox:", ListBox)
+                        else COMPARE_OBJECT(8, "editbox:", EditBox)
+                        else COMPARE_OBJECT(8, "textbox:", TextBox)
+                        else COMPARE_OBJECT(9, "checkbox:", Checkbox)
+                        else COMPARE_OBJECT(9, "combobox:", ComboBox)
+                        else COMPARE_OBJECT(9, "slider2d:", Slider2d)
+                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
+                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
+                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
+                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
+                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
+                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
+                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
+                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                         else // The line was wrong
                             goto LoadingFailed;
 
                         break;
                     }
-                    case tab + 1:
+                    case Type_Tab + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the tab back
-                        Tab* tab = static_cast<Tab*>(extraPtr);
+                        Tab::Ptr tab = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -891,7 +899,7 @@ namespace tgui
                         else if (line.substr(0, 15).compare("distancetoside=") == 0)
                         {
                             line.erase(0, 15);
-                            tab->distanceToSide = atoi(line.c_str());
+                            tab->setDistanceToSide(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 4).compare("tab=") == 0)
                         {
@@ -928,81 +936,92 @@ namespace tgui
                                 tab->select(atoi(line.c_str()));
                             }
                         }
-                        else CHECK_SHARED_PROPERTIES(tab)
+                        else if (line.substr(0, 6).compare("scale=") == 0)
+                        {
+                            line.erase(0, 6);
+                            Vector2f objScale;
+                            if (extractVector2f(line, objScale))
+                                tab->setScale(objScale);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 9).compare("position=") == 0)
+                        {
+                            line.erase(0, 9);
+                            Vector2f position;
+                            if (extractVector2f(line, position))
+                                tab->setPosition(position);
+                            else
+                                goto LoadingFailed;
+                        }
+                        else if (line.substr(0, 11).compare("callbackid=") == 0)
+                        {
+                            line.erase(0, 11);
+                            tab->setCallbackId(readInt(line.c_str()));
+                        }
                         else // The line was wrong
                             goto LoadingFailed;
 
                         break;
                     }
-                    case grid + 1:
+                    case Type_Grid + 1:
                     {
                         START_LOADING_OBJECT
 
                         TGUI_OUTPUT("TGUI warning: Grid cannot be loaded from an Object File yet.");
                     }
-                    case panel + 1:
+                    case Type_Panel + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the panel back
-                        Panel* panelPtr = static_cast<Panel*>(extraPtr);
+                        Panel::Ptr panelPtr = extraPtr;
 
                         CHECK_SHARED_PROPERTIES(panelPtr)
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            panelPtr->backgroundColor = extractColor(line.erase(0, 16));
-                        }
-                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 16);
-
-                            // The pathname must start and end with quotes
-                            CHECK_FOR_QUOTES
-
-                            // Load the image
-                            panelPtr->setBackgroundImage(line);
+                            panelPtr->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else
                         {
                             // All newly created objects must be part of the panel
-                            parentID.push(panel + 1);
-                            parentPtr.push(panelPtr);
+                            parentID.push(Type_Panel + 1);
+                            parentPtr.push(panelPtr.get());
 
-                            COMPARE_OBJECT(4, "tab:", Tab, tab)
-                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
-                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
-                            else COMPARE_OBJECT(6, "label:", Label, label)
-                            else COMPARE_OBJECT(7, "button:", Button, button)
-                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                            COMPARE_OBJECT(4, "tab:", Tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel)
+                            else COMPARE_OBJECT(6, "label:", Label)
+                            else COMPARE_OBJECT(7, "button:", Button)
+                            else COMPARE_OBJECT(7, "slider:", Slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2d)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
                                 goto LoadingFailed;
                         }
 
                         break;
                     }
-                    case label + 1:
+                    case Type_Label + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the label back
-                        Label* label = static_cast<Label*>(extraPtr);
+                        Label::Ptr label = extraPtr;
 
                         if (line.substr(0, 9).compare("autosize=") == 0)
                         {
@@ -1032,7 +1051,7 @@ namespace tgui
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            label->backgroundColor = extractColor(line.erase(0, 16));
+                            label->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else CHECK_SHARED_PROPERTIES(label)
                         else // The line was wrong
@@ -1040,12 +1059,12 @@ namespace tgui
 
                         break;
                     }
-                    case button + 1:
+                    case Type_Button + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the button back
-                        Button* button = static_cast<Button*>(extraPtr);
+                        Button::Ptr button = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1086,12 +1105,12 @@ namespace tgui
 
                         break;
                     }
-                    case slider + 1:
+                    case Type_Slider + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the slider back
-                        Slider* slider = static_cast<Slider*>(extraPtr);
+                        Slider::Ptr slider = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1134,12 +1153,12 @@ namespace tgui
 
                         break;
                     }
-                    case picture + 1:
+                    case Type_Picture + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the picture back
-                        Picture* picture = static_cast<Picture*>(extraPtr);
+                        Picture::Ptr picture = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("filename=") == 0)
@@ -1159,12 +1178,12 @@ namespace tgui
 
                         break;
                     }
-                    case listBox + 1:
+                    case Type_ListBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the list box back
-                        ListBox* listBox = static_cast<ListBox*>(extraPtr);
+                        ListBox::Ptr listBox = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 11).compare("itemheight=") == 0)
@@ -1267,12 +1286,12 @@ namespace tgui
 
                         break;
                     }
-                    case editBox + 1:
+                    case Type_EditBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the edit box back
-                        EditBox* editBox = static_cast<EditBox*>(extraPtr);
+                        EditBox::Ptr editBox = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1329,14 +1348,10 @@ namespace tgui
                             // Change the selected text background color (black on error)
                             editBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
                         }
-                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
-                        {
-                            TGUI_OUTPUT("TGUI warning: EditBox no longer has a selection background color when unfocused.");
-                        }
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
                             // Change the selection pointer color (black on error)
-                            editBox->selectionPointColor = extractColor(line.erase(0, 20));
+                            editBox->setSelectionPointColor(extractColor(line.erase(0, 20)));
                         }
                         else if (line.substr(0, 13).compare("passwordchar=") == 0)
                         {
@@ -1361,7 +1376,7 @@ namespace tgui
                             line.erase(0, 20);
 
                             // Read the selection point width (0 and thus no selection point when it goes wrong)
-                            editBox->selectionPointWidth = atoi(line.c_str());
+                            editBox->setSelectionPointWidth(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
                         {
@@ -1377,12 +1392,12 @@ namespace tgui
 
                         break;
                     }
-                    case textBox + 1:
+                    case Type_TextBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the text box back
-                        TextBox* textBox = static_cast<TextBox*>(extraPtr);
+                        TextBox::Ptr textBox = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
@@ -1444,10 +1459,6 @@ namespace tgui
                             // Change the selected text background color (black on error)
                             textBox->setSelectedTextBackgroundColor(extractColor(line.erase(0, 28)));
                         }
-                        else if (line.substr(0, 37).compare("unfocusedselectedtextbackgroundcolor=") == 0)
-                        {
-                            TGUI_OUTPUT("TGUI warning: TextBox no longer has a selection background color when unfocused.");
-                        }
                         else if (line.substr(0, 12).compare("bordercolor=") == 0)
                         {
                             // Change the border color (black on error)
@@ -1456,7 +1467,7 @@ namespace tgui
                         else if (line.substr(0, 20).compare("selectionpointcolor=") == 0)
                         {
                             // Change the selection pointer color (black on error)
-                            textBox->selectionPointColor = extractColor(line.erase(0, 20));
+                            textBox->setSelectionPointColor(extractColor(line.erase(0, 20)));
                         }
                         else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
                         {
@@ -1464,7 +1475,7 @@ namespace tgui
                             line.erase(0, 20);
 
                             // Read the selection point width (0 and thus no selection point when it goes wrong)
-                            textBox->selectionPointWidth = atoi(line.c_str());
+                            textBox->setSelectionPointWidth(atoi(line.c_str()));
                         }
                         else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
                         {
@@ -1480,12 +1491,12 @@ namespace tgui
 
                         break;
                     }
-                    case checkbox + 1:
+                    case Type_Checkbox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the checkbox back
-                        Checkbox* checkbox = static_cast<Checkbox*>(extraPtr);
+                        Checkbox::Ptr checkbox = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1541,12 +1552,12 @@ namespace tgui
 
                         break;
                     }
-                    case comboBox + 1:
+                    case Type_ComboBox + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the combo box back
-                        ComboBox* comboBox = static_cast<ComboBox*>(extraPtr);
+                        ComboBox::Ptr comboBox = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1558,7 +1569,7 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the combo box
-                            comboBox->load(line, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
+                            comboBox->load(line, comboBox->getSize().x, comboBox->getSize().y);
                         }
                         else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
                         {
@@ -1652,12 +1663,12 @@ namespace tgui
 
                         break;
                     }
-                    case slider2D + 1:
+                    case Type_Slider2d + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the slider back
-                        Slider2D* slider = static_cast<Slider2D*>(extraPtr);
+                        Slider2d::Ptr slider = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1704,7 +1715,7 @@ namespace tgui
                             bool returnToCenter;
                             CHECK_BOOL(returnToCenter)
 
-                            slider->returnToCenter = returnToCenter;
+                            slider->enableThumbCenter(returnToCenter);
                         }
                         else if (line.substr(0, 15).compare("fixedthumbsize=") == 0)
                         {
@@ -1715,7 +1726,7 @@ namespace tgui
                             bool fixedThumbSize;
                             CHECK_BOOL(fixedThumbSize)
 
-                            slider->fixedThumbSize = fixedThumbSize;
+                            slider->setFixedThumbSize(fixedThumbSize);
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
                         else // The line was wrong
@@ -1723,12 +1734,12 @@ namespace tgui
 
                         break;
                     }
-                    case scrollbar + 1:
+                    case Type_Scrollbar + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the scrollbar back
-                        Scrollbar* scrollbar = static_cast<Scrollbar*>(extraPtr);
+                        Scrollbar::Ptr scrollbar = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1771,12 +1782,12 @@ namespace tgui
 
                         break;
                     }
-                    case loadingBar + 1:
+                    case Type_LoadingBar + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the loading bar back
-                        LoadingBar* loadingBar = static_cast<LoadingBar*>(extraPtr);
+                        LoadingBar::Ptr loadingBar = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1808,12 +1819,12 @@ namespace tgui
 
                         break;
                     }
-                    case spinButton + 1:
+                    case Type_SpinButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the spin button back
-                        SpinButton* spinButton = static_cast<SpinButton*>(extraPtr);
+                        SpinButton::Ptr spinButton = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1848,7 +1859,7 @@ namespace tgui
                             bool vericalScroll;
                             CHECK_BOOL(vericalScroll)
 
-                            spinButton->verticalScroll = vericalScroll;
+                            spinButton->setVerticalScroll(vericalScroll);
                         }
                         else CHECK_SHARED_PROPERTIES(spinButton)
                         else // The line was wrong
@@ -1856,12 +1867,12 @@ namespace tgui
 
                         break;
                     }
-                    case radioButton + 1:
+                    case Type_RadioButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the radio button back
-                        RadioButton* radioButton = static_cast<RadioButton*>(extraPtr);
+                        RadioButton::Ptr radioButton = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1917,12 +1928,12 @@ namespace tgui
 
                         break;
                     }
-                    case childWindow + 1:
+                    case Type_ChildWindow + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the child window back
-                        ChildWindow* child = static_cast<ChildWindow*>(extraPtr);
+                        ChildWindow::Ptr child = extraPtr;
 
                         CHECK_SHARED_PROPERTIES(child)
                         else if (line.substr(0, 9).compare("pathname=") == 0)
@@ -1934,24 +1945,13 @@ namespace tgui
                             CHECK_FOR_QUOTES
 
                             // Load the child window
-                            if (child->load(static_cast<float>(child->getSize().x), static_cast<float>(child->getSize().y), child->backgroundColor, line) == false)
+                            if (child->load(line, child->getSize().x, child->getSize().y, child->getBackgroundColor()) == false)
                                 goto LoadingFailed;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
                             // Change the background color (black on error)
-                            child->backgroundColor = extractColor(line.erase(0, 16));
-                        }
-                        else if (line.substr(0, 16).compare("backgroundimage=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 16);
-
-                            // The pathname must start and end with quotes
-                            CHECK_FOR_QUOTES
-
-                            // Load the image
-                            child->setBackgroundImage(line);
+                            child->setBackgroundColor(extractColor(line.erase(0, 16)));
                         }
                         else if (line.substr(0, 8).compare("borders=") == 0)
                         {
@@ -1973,58 +1973,45 @@ namespace tgui
                         {
                             child->setTitlebarHeight(atoi(line.erase(0, 15).c_str()));
                         }
-                        else if (line.substr(0, 7).compare("layout=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 7);
-
-                            // Check what the layout is
-                            if (line.compare("left") == 0)
-                                child->layout = ChildWindow::LayoutLeft;
-                            else if (line.compare("right") == 0)
-                                child->layout = ChildWindow::LayoutRight;
-                            else
-                                goto LoadingFailed;
-                        }
                         else
                         {
                             // All newly created objects must be part of the panel
-                            parentID.push(childWindow + 1);
-                            parentPtr.push(child);
+                            parentID.push(Type_ChildWindow + 1);
+                            parentPtr.push(child.get());
 
-                            COMPARE_OBJECT(4, "tab:", Tab, tab)
-                            else COMPARE_OBJECT(5, "grid:", Grid, grid)
-                            else COMPARE_OBJECT(6, "panel:", Panel, panel)
-                            else COMPARE_OBJECT(6, "label:", Label, label)
-                            else COMPARE_OBJECT(7, "button:", Button, button)
-                            else COMPARE_OBJECT(7, "slider:", Slider, slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture, picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox, listBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox, editBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox, textBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox, checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox, comboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2D, slider2D)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar, scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar, loadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton, spinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton, radioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow, childWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet, spriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton, animatedButton)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture, animatedPicture)
+                            COMPARE_OBJECT(4, "tab:", Tab)
+                            else COMPARE_OBJECT(5, "grid:", Grid)
+                            else COMPARE_OBJECT(6, "panel:", Panel)
+                            else COMPARE_OBJECT(6, "label:", Label)
+                            else COMPARE_OBJECT(7, "button:", Button)
+                            else COMPARE_OBJECT(7, "slider:", Slider)
+                            else COMPARE_OBJECT(8, "picture:", Picture)
+                            else COMPARE_OBJECT(8, "listbox:", ListBox)
+                            else COMPARE_OBJECT(8, "editbox:", EditBox)
+                            else COMPARE_OBJECT(8, "textbox:", TextBox)
+                            else COMPARE_OBJECT(9, "checkbox:", Checkbox)
+                            else COMPARE_OBJECT(9, "combobox:", ComboBox)
+                            else COMPARE_OBJECT(9, "slider2d:", Slider2d)
+                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
+                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
+                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
+                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
+                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
+                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
+                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
+                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
                                 goto LoadingFailed;
                         }
 
                         break;
                     }
-                    case spriteSheet + 1:
+                    case Type_SpriteSheet + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the sprite sheet back
-                        SpriteSheet* spriteSheet = static_cast<SpriteSheet*>(extraPtr);
+                        SpriteSheet::Ptr spriteSheet = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("filename=") == 0)
@@ -2069,12 +2056,12 @@ namespace tgui
 
                         break;
                     }
-                    case animatedButton + 1:
+                    case Type_AnimatedButton + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the animated button back
-                        AnimatedButton* button = static_cast<AnimatedButton*>(extraPtr);
+                        AnimatedButton::Ptr button = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 9).compare("pathname=") == 0)
@@ -2120,12 +2107,12 @@ namespace tgui
 
                         break;
                     }
-                    case animatedPicture + 1:
+                    case Type_AnimatedPicture + 1:
                     {
                         START_LOADING_OBJECT
 
                         // Get the pointer to the sprite animated picture
-                        AnimatedPicture* animatedPicture = static_cast<AnimatedPicture*>(extraPtr);
+                        AnimatedPicture::Ptr animatedPicture = extraPtr;
 
                         // Find out what the next property is
                         if (line.substr(0, 6).compare("frame=") == 0)
@@ -2175,7 +2162,7 @@ namespace tgui
                             bool loop;
                             CHECK_BOOL(loop)
 
-                            animatedPicture->loop = loop;
+                            animatedPicture->setLooping(loop);
                         }
                         else if (line.substr(0, 8).compare("playing=") == 0)
                         {
@@ -2212,12 +2199,46 @@ namespace tgui
       LoadingFailed:
 
         m_File.close();
+
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<OBJECT*>& Group::getObjects()
+    void Group::add(const Object::Ptr& objectPtr, const sf::String& objectName)
+    {
+        assert(objectPtr != NULL);
+
+        objectPtr->initialize(this);
+        m_EventManager.m_Objects.push_back(objectPtr);
+        m_ObjName.push_back(objectName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Object::Ptr Group::get(const sf::String& objectName) const
+    {
+        for (unsigned int i = 0; i < m_ObjName.size(); ++i)
+        {
+            if (m_ObjName[i] == objectName)
+                return m_EventManager.m_Objects[i];
+        }
+
+        return Object::Ptr();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Object::Ptr Group::copy(const Object::Ptr& oldObject, const sf::String& newObjectName)
+    {
+        Object::Ptr newObject = oldObject.clone();
+        add(newObject, newObjectName);
+        return newObject;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<Object::Ptr>& Group::getObjects()
     {
         return m_EventManager.m_Objects;
     }
@@ -2231,32 +2252,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(const sf::String objectName)
+    void Group::remove(const Object::Ptr& object)
     {
-        // Loop through every object
-        for (unsigned int i=0; i<m_ObjName.size(); ++i)
-        {
-            // Check if the name matches
-            if (m_ObjName[i].toWideString().compare(objectName) == 0)
-            {
-                // Remove the object
-                delete m_EventManager.m_Objects[i];
-                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
-
-                // Also emove the name it from the list
-                m_ObjName.erase(m_ObjName.begin() + i);
-
-                break;
-            }
-        }
+        remove(object.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(OBJECT* object)
+    void Group::remove(Object* object)
     {
         // Loop through every object
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
             // Check if the pointer matches
             if (m_EventManager.m_Objects[i] == object)
@@ -2265,9 +2271,7 @@ namespace tgui
                 m_EventManager.unfocusObject(object);
 
                 // Remove the object
-                delete m_EventManager.m_Objects[i];
                 m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
-                object = NULL;
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);
@@ -2281,10 +2285,6 @@ namespace tgui
 
     void Group::removeAllObjects()
     {
-        // Delete all objects
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
-            delete m_EventManager.m_Objects[i];
-
         // Clear the lists
         m_EventManager.m_Objects.clear();
         m_ObjName.clear();
@@ -2298,23 +2298,23 @@ namespace tgui
     void Group::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
-            if (m_EventManager.m_Objects[i]->m_ObjectType == radioButton)
-                static_cast<RadioButton*>(m_EventManager.m_Objects[i])->m_Checked = false;
+            if (m_EventManager.m_Objects[i]->m_Callback.objectType == Type_RadioButton)
+                static_cast<RadioButton::Ptr>(m_EventManager.m_Objects[i])->forceUncheck();
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::focusObject(OBJECT* object)
+    void Group::focusObject(Object *const object)
     {
         m_EventManager.focusObject(object);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::unfocusObject(OBJECT* object)
+    void Group::unfocusObject(Object *const object)
     {
         m_EventManager.unfocusObject(object);
     }
@@ -2328,13 +2328,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::moveObjectToFront(OBJECT* object)
+    void Group::moveObjectToFront(Object *const object)
     {
         // Loop through all objects
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
             // Check if the object is found
-            if (m_EventManager.m_Objects[i] == object)
+            if (m_EventManager.m_Objects[i].get() == object)
             {
                 // Copy the object
                 m_EventManager.m_Objects.push_back(m_EventManager.m_Objects[i]);
@@ -2357,22 +2357,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::moveObjectToBack(OBJECT* object)
+    void Group::moveObjectToBack(Object *const object)
     {
         // Loop through all objects
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
             // Check if the object is found
-            if (m_EventManager.m_Objects[i] == object)
+            if (m_EventManager.m_Objects[i].get() == object)
             {
                 // Copy the object
-                OBJECT* obj = m_EventManager.m_Objects[i];
+                Object::Ptr obj = m_EventManager.m_Objects[i];
                 std::string name = m_ObjName[i];
                 m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), obj);
                 m_ObjName.insert(m_ObjName.begin(), name);
 
                 // Focus the correct object
-                if (m_EventManager.m_FocusedObject == i+1)
+                if (m_EventManager.m_FocusedObject == i + 1)
                     m_EventManager.m_FocusedObject = 1;
                 else if (m_EventManager.m_FocusedObject)
                     ++m_EventManager.m_FocusedObject;
@@ -2388,19 +2388,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::updateTime(const sf::Time& elapsedTime)
+    void Group::bindGlobalCallback(boost::function<void(const tgui::Callback&)> func)
     {
-        m_EventManager.updateTime(elapsedTime);
+        m_GlobalCallbackFunctions.push_back(func);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Group::unbindGlobalCallback()
+    {
+        m_GlobalCallbackFunctions.clear();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Group::getDisplaySize()
+    {
+        return Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Group::drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states) const
     {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_EventManager.m_Objects.size(); ++i)
+        // Draw all objects when they are visible
+        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
-            // Draw the object if it is visible
             if (m_EventManager.m_Objects[i]->m_Visible)
                 target->draw(*m_EventManager.m_Objects[i], states);
         }

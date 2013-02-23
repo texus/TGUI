@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/AnimatedPicture.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,29 +34,27 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimatedPicture::AnimatedPicture() :
-    loop             (false),
     m_Textures       (),
     m_Sprites        (),
     m_LoadedFilenames(),
     m_FrameDuration  (),
     m_CurrentFrame   (0),
-    m_Playing        (false)
+    m_Playing        (false),
+    m_Looping        (false)
     {
-        m_ObjectType = animatedPicture;
+        m_Callback.objectType = Type_AnimatedPicture;
         m_AnimatedObject = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
-    OBJECT           (copy),
-    OBJECT_ANIMATION (copy),
-    loop             (copy.loop),
-    m_Size           (copy.m_Size),
+    ClickableObject  (copy),
     m_LoadedFilenames(copy.m_LoadedFilenames),
     m_FrameDuration  (copy.m_FrameDuration),
     m_CurrentFrame   (copy.m_CurrentFrame),
-    m_Playing        (copy.m_Playing)
+    m_Playing        (copy.m_Playing),
+    m_Looping        (copy.m_Looping)
     {
         // Copy the textures
         for (unsigned int i=0; i< copy.m_Textures.size(); ++i)
@@ -87,21 +87,19 @@ namespace tgui
         if (this != &right)
         {
             AnimatedPicture temp(right);
-            this->OBJECT::operator=(right);
-            this->OBJECT_ANIMATION::operator=(right);
+            this->ClickableObject::operator=(right);
 
             // If there already were frames then remove them now
             for (unsigned int i=0; i< m_Textures.size(); ++i)
                 TGUI_TextureManager.removeTexture(m_Textures[i]);
 
-            std::swap(loop,              temp.loop);
-            std::swap(m_Size,            temp.m_Size);
             std::swap(m_Textures,        temp.m_Textures);
             std::swap(m_Sprites,         temp.m_Sprites);
             std::swap(m_LoadedFilenames, temp.m_LoadedFilenames);
             std::swap(m_FrameDuration,   temp.m_FrameDuration);
             std::swap(m_CurrentFrame,    temp.m_CurrentFrame);
             std::swap(m_Playing,         temp.m_Playing);
+            std::swap(m_Looping,         temp.m_Looping);
         }
 
         return *this;
@@ -116,7 +114,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedPicture::addFrame(const std::string filename, const sf::Time frameDurarion)
+    unsigned int AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDurarion)
     {
         // Check if the filename is empty
         if (filename.empty() == true)
@@ -132,7 +130,7 @@ namespace tgui
             {
                 m_CurrentFrame = 1;
 
-                // Remeber the size of this image
+                // Remember the size of this image
                 m_Size = Vector2f(tempTexture->getSize());
             }
 
@@ -153,7 +151,10 @@ namespace tgui
             return true;
         }
         else // The texture was not loaded
+        {
+            m_Loaded = true;
             return false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,20 +172,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u AnimatedPicture::getSize() const
+    Vector2f AnimatedPicture::getSize() const
     {
         if (m_Textures.empty() == false)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f AnimatedPicture::getScaledSize() const
-    {
-        if (m_Textures.empty() == false)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+            return Vector2f(m_Size.x, m_Size.y);
         else
             return Vector2f(0, 0);
     }
@@ -258,7 +249,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setFrameDuration(unsigned int frame, const sf::Time frameDuration)
+    void AnimatedPicture::setFrameDuration(unsigned int frame, sf::Time frameDuration)
     {
         // Only continue when there are frames
         if (m_Textures.empty())
@@ -383,6 +374,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void AnimatedPicture::setLooping(bool loop)
+    {
+        m_Looping = loop;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool AnimatedPicture::getLooping() const
+    {
+        return m_Looping;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void AnimatedPicture::update()
     {
         // Only continue when you are playing
@@ -404,7 +409,7 @@ namespace tgui
                 else
                 {
                     // If looping is enabled then stat over
-                    if (loop == true)
+                    if (m_Looping == true)
                         m_CurrentFrame = 1;
                     else
                     {
@@ -414,14 +419,12 @@ namespace tgui
                     }
 
                     // The animation has finished, send a callback if needed
-                    if (callbackID > 0)
+                    if (m_CallbackFunctions[AnimationFinished].empty() == false)
                     {
-                        Callback callback;
-                        callback.object     = this;
-                        callback.callbackID = callbackID;
-                        callback.trigger    = Callback::animationFinished;
-                        m_Parent->addCallback(callback);
+                        m_Callback.trigger = AnimationFinished;
+                        addCallback();
                     }
+
                 }
             }
             else // The frame has to remain visible

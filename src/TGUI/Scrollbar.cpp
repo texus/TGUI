@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/Slider.hpp>
+#include <TGUI/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,13 +34,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar() :
-    autoHide            (true),
     m_LowValue          (0),
+    m_AutoHide          (true),
     m_MouseDownOnArrow  (false),
     m_TextureArrowNormal(NULL),
     m_TextureArrowHover (NULL)
     {
-        m_ObjectType = scrollbar;
+        m_Callback.objectType = Type_Scrollbar;
         m_DraggableObject = true;
 
         m_Maximum = 0;
@@ -48,8 +50,8 @@ namespace tgui
 
     Scrollbar::Scrollbar(const Scrollbar& copy) :
     Slider            (copy),
-    autoHide          (copy.autoHide),
     m_LowValue        (copy.m_LowValue),
+    m_AutoHide        (copy.m_AutoHide),
     m_MouseDownOnArrow(copy.m_MouseDownOnArrow)
     {
         if (TGUI_TextureManager.copyTexture(copy.m_TextureArrowNormal, m_TextureArrowNormal)) m_SpriteArrowNormal.setTexture(*m_TextureArrowNormal);
@@ -74,8 +76,8 @@ namespace tgui
             Scrollbar temp(right);
             this->Slider::operator=(right);
 
-            std::swap(autoHide,             temp.autoHide);
             std::swap(m_LowValue,           temp.m_LowValue);
+            std::swap(m_AutoHide,           temp.m_AutoHide);
             std::swap(m_MouseDownOnArrow,   temp.m_MouseDownOnArrow);
             std::swap(m_TextureArrowNormal, temp.m_TextureArrowNormal);
             std::swap(m_TextureArrowHover,  temp.m_TextureArrowHover);
@@ -95,7 +97,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::load(const std::string pathname)
+    bool Scrollbar::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -115,7 +117,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -212,10 +214,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setMinimum(unsigned int minimum)
+    void Scrollbar::setMinimum(unsigned int)
     {
         // Do nothing. The minimum may not be changed.
-        TGUI_UNUSED_PARAM(minimum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,6 +248,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::setAutoHide(bool autoHide)
+    {
+        m_AutoHide = autoHide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::getAutoHide() const
+    {
+        return m_AutoHide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Scrollbar::mouseOnObject(float x, float y)
     {
         // Don't do anything when the scrollbar wasn't loaded correctly
@@ -254,7 +269,7 @@ namespace tgui
             return false;
 
         // Don't make any calculations when no scrollbar is needed
-        if ((m_Maximum <= m_LowValue) && (autoHide == true))
+        if ((m_Maximum <= m_LowValue) && (m_AutoHide == true))
             return false;
 
         // Check if the mouse is on top of the scrollbar
@@ -338,6 +353,9 @@ namespace tgui
 
             return true;
         }
+
+        if (m_MouseHover)
+            mouseLeftObject();
 
         // The mouse is not on top of the scrollbar
         m_MouseHover = false;
@@ -500,15 +518,12 @@ namespace tgui
                     }
                 }
 
-                // Add the callback (if the user requested it and the value has changed)
-                if ((callbackID > 0) && (oldValue != m_Value))
+                // Add the callback (if the user requested it)
+                if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
                 {
-                    Callback callback;
-                    callback.object     = this;
-                    callback.callbackID = callbackID;
-                    callback.trigger    = Callback::valueChanged;
-                    callback.value      = m_Value;
-                    m_Parent->addCallback(callback);
+                    m_Callback.trigger = ValueChanged;
+                    m_Callback.value   = static_cast<int>(m_Value);
+                    addCallback();
                 }
             }
         }
@@ -525,13 +540,16 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        if (m_MouseHover == false)
+            mouseEnteredObject();
+
         m_MouseHover = true;
 
         // Check if the mouse button went down on top of the track (or thumb)
         if ((m_MouseDown) && (m_MouseDownOnArrow == false))
         {
             // Don't continue if the calculations can't be made
-            if ((m_Maximum <= m_LowValue) && (autoHide == false))
+            if ((m_Maximum <= m_LowValue) && (m_AutoHide == false))
                 return;
 
             // Get the current position and scale
@@ -673,15 +691,12 @@ namespace tgui
                 }
             }
 
-            // Add the callback (if the user requested it and the value has changed)
-            if ((callbackID > 0) && (oldValue != m_Value))
+            // Add the callback (if the user requested it)
+            if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::valueChanged;
-                callback.value      = m_Value;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ValueChanged;
+                m_Callback.value   = static_cast<int>(m_Value);
+                addCallback();
             }
         }
     }
@@ -695,7 +710,7 @@ namespace tgui
             return;
 
         // Don't draw the loading bar when it isn't needed
-        if ((autoHide == true) && (m_Maximum <= m_LowValue))
+        if ((m_AutoHide == true) && (m_Maximum <= m_LowValue))
             return;
 
         Vector2f scaling;
@@ -756,7 +771,7 @@ namespace tgui
 
                 // Calculate the scaling factor
                 float scaleY;
-                if ((autoHide == false) && (m_Maximum <= m_LowValue))
+                if ((m_AutoHide == false) && (m_Maximum <= m_LowValue))
                     scaleY = realTrackHeight / m_ThumbSize.y;
                 else
                     scaleY = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackHeight) / m_ThumbSize.y;
@@ -842,7 +857,7 @@ namespace tgui
 
                 // Calculate the scaling factor
                 float scaleX;
-                if ((autoHide == false) && (m_Maximum <= m_LowValue))
+                if ((m_AutoHide == false) && (m_Maximum <= m_LowValue))
                     scaleX = realTrackWidth / m_ThumbSize.x;
                 else
                     scaleX = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackWidth) / m_ThumbSize.x;

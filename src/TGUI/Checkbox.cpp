@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Checkbox.hpp>
 
 #include <cmath>
 
@@ -34,8 +36,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox() :
-    allowTextClick     (true),
     m_Checked          (false),
+    m_AllowTextClick   (true),
     m_TextSize         (0),
     m_TextureUnchecked (NULL),
     m_TextureChecked   (NULL),
@@ -43,20 +45,18 @@ namespace tgui
     m_TextureFocused   (NULL),
     m_LoadedPathname   ("")
     {
-        m_ObjectType = checkbox;
-
+        m_Callback.objectType = Type_Checkbox;
         m_Text.setColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox(const Checkbox& copy) :
-    OBJECT          (copy),
-    allowTextClick  (copy.allowTextClick),
+    ClickableObject (copy),
     m_Checked       (copy.m_Checked),
+    m_AllowTextClick(copy.m_AllowTextClick),
     m_Text          (copy.m_Text),
     m_TextSize      (copy.m_TextSize),
-    m_Size          (copy.m_Size),
     m_LoadedPathname(copy.m_LoadedPathname)
     {
         // Copy the textures
@@ -83,13 +83,12 @@ namespace tgui
         if (this != &right)
         {
             Checkbox temp(right);
-            this->OBJECT::operator=(right);
+            this->ClickableObject::operator=(right);
 
-            std::swap(allowTextClick,      temp.allowTextClick);
             std::swap(m_Checked,           temp.m_Checked);
+            std::swap(m_AllowTextClick,    temp.m_AllowTextClick);
             std::swap(m_Text,              temp.m_Text);
             std::swap(m_TextSize,          temp.m_TextSize);
-            std::swap(m_Size,              temp.m_Size);
             std::swap(m_TextureUnchecked,  temp.m_TextureUnchecked);
             std::swap(m_TextureChecked,    temp.m_TextureChecked);
             std::swap(m_TextureMouseHover, temp.m_TextureMouseHover);
@@ -106,13 +105,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Checkbox* Checkbox::clone()
     {
         return new Checkbox(*this);
@@ -120,7 +112,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::load(const std::string pathname)
+    bool Checkbox::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -140,7 +132,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -237,26 +229,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u Checkbox::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Checkbox::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string Checkbox::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -266,6 +238,17 @@ namespace tgui
 
     void Checkbox::check()
     {
+        if (m_Checked == false)
+        {
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[Checked].empty() == false)
+            {
+                m_Callback.trigger = Checked;
+                m_Callback.checked = true;
+                addCallback();
+            }
+        }
+
         m_Checked = true;
     }
 
@@ -273,6 +256,17 @@ namespace tgui
 
     void Checkbox::uncheck()
     {
+        if (m_Checked)
+        {
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[Unchecked].empty() == false)
+            {
+                m_Callback.trigger = Unchecked;
+                m_Callback.checked = false;
+                addCallback();
+            }
+        }
+
         m_Checked = false;
     }
 
@@ -285,7 +279,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::setText(const sf::String text)
+    void Checkbox::setText(const sf::String& text)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
         if (m_Loaded == false)
@@ -345,7 +339,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::setTextSize(const unsigned int size)
+    void Checkbox::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -363,6 +357,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Checkbox::allowTextClick(bool acceptTextClick)
+    {
+        m_AllowTextClick = acceptTextClick;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Checkbox::mouseOnObject(float x, float y)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
@@ -370,41 +371,40 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the image
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
         else
         {
             // Check if the mouse is on top of the text
-            if (allowTextClick)
+            if (m_AllowTextClick)
             {
                 sf::FloatRect bounds = m_Text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y))
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }
 
-        // The mouse is not on top of the checkox
+        if (m_MouseHover == true)
+            mouseLeftObject();
+
+        // The mouse is not on top of the checkbox
         m_MouseHover = false;
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::leftMousePressed(float x, float y)
-    {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
-        // Set the mouse down flag
-        m_MouseDown = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Checkbox::leftMouseReleased(float x, float y)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
+        {
+            m_Callback.trigger = LeftMouseReleased;
+            m_Callback.checked = m_Checked;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
 
         // Check if we clicked on the button (not just mouse release)
         if (m_MouseDown == true)
@@ -416,28 +416,17 @@ namespace tgui
                 check();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[LeftMouseClicked].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::mouseClick;
-                callback.checked    = m_Checked;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = LeftMouseClicked;
+                m_Callback.checked = m_Checked;
+                m_Callback.mouse.x = x - getPosition().x;
+                m_Callback.mouse.y = y - getPosition().y;
+                addCallback();
             }
 
             m_MouseDown = false;
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Checkbox::mouseMoved(float x, float y)
-    {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
-        m_MouseHover = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,14 +443,11 @@ namespace tgui
                 check();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[SpaceKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Space;
-                callback.checked    = m_Checked;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = SpaceKeyPressed;
+                m_Callback.checked = m_Checked;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::Return)
@@ -473,14 +459,11 @@ namespace tgui
                 check();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Return;
-                callback.checked    = m_Checked;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ReturnKeyPressed;
+                m_Callback.checked = m_Checked;
+                addCallback();
             }
         }
     }
@@ -492,6 +475,16 @@ namespace tgui
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
             m_Parent->unfocusObject(this);
+        else
+            Object::objectFocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Checkbox::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/LoadingBar.hpp>
 
 #include <cmath>
 
@@ -47,18 +49,17 @@ namespace tgui
     m_TextSize      (0),
     m_LoadedPathname("")
     {
-        m_ObjectType = loadingBar;
+        m_Callback.objectType = Type_LoadingBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LoadingBar::LoadingBar(const LoadingBar& copy) :
-    OBJECT          (copy),
+    ClickableObject (copy),
     m_Minimum       (copy.m_Minimum),
     m_Maximum       (copy.m_Maximum),
     m_Value         (copy.m_Value),
     m_SplitImage    (copy.m_SplitImage),
-    m_Size          (copy.m_Size),
     m_Text          (copy.m_Text),
     m_TextSize      (copy.m_TextSize),
     m_LoadedPathname(copy.m_LoadedPathname)
@@ -95,13 +96,12 @@ namespace tgui
         if (this != &right)
         {
             LoadingBar temp(right);
-            this->OBJECT::operator=(right);
+            this->ClickableObject::operator=(right);
 
             std::swap(m_Minimum,        temp.m_Minimum);
             std::swap(m_Maximum,        temp.m_Maximum);
             std::swap(m_Value,          temp.m_Value);
             std::swap(m_SplitImage,     temp.m_SplitImage);
-            std::swap(m_Size,           temp.m_Size);
             std::swap(m_TextureBack_L,  temp.m_TextureBack_L);
             std::swap(m_TextureBack_M,  temp.m_TextureBack_M);
             std::swap(m_TextureBack_R,  temp.m_TextureBack_R);
@@ -124,13 +124,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     LoadingBar* LoadingBar::clone()
     {
         return new LoadingBar(*this);
@@ -138,7 +131,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::load(const std::string pathname)
+    bool LoadingBar::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -158,7 +151,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -272,27 +265,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u LoadingBar::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f LoadingBar::getScaledSize() const
-    {
-        // Don't continue when the loading bar wasn't loaded correctly
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().y, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string LoadingBar::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -362,20 +334,29 @@ namespace tgui
         {
             ++m_Value;
 
-            // The value has changed, so send a callback (if needed)
-            if (callbackID > 0)
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[ValueChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::valueChanged;
-                callback.value      = m_Value;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ValueChanged;
+                m_Callback.value   = static_cast<int>(m_Value);
+                addCallback();
             }
-        }
 
-        // Recalculate the size of the front image (the size of the part that will be drawn)
-        recalculateSize();
+            // Check if the loading bar is now full
+            if (m_Value == m_Maximum)
+            {
+                // Add the callback (if the user requested it)
+                if (m_CallbackFunctions[LoadingBarFull].empty() == false)
+                {
+                    m_Callback.trigger = LoadingBarFull;
+                    m_Callback.value   = static_cast<int>(m_Value);
+                    addCallback();
+                }
+            }
+
+            // Recalculate the size of the front image (the size of the part that will be drawn)
+            recalculateSize();
+        }
 
         // return the new value
         return m_Value;
@@ -404,7 +385,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setText(const sf::String text)
+    void LoadingBar::setText(const sf::String& text)
     {
         // Don't do anything when the loading bar wasn't loaded correctly
         if (m_Loaded == false)
@@ -473,7 +454,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setTextSize(const unsigned int size)
+    void LoadingBar::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -487,24 +468,6 @@ namespace tgui
     unsigned int LoadingBar::getTextSize() const
     {
         return m_Text.getCharacterSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool LoadingBar::mouseOnObject(float x, float y)
-    {
-        // Don't do anything when the loading bar wasn't loaded correctly
-        if (m_Loaded == false)
-            return false;
-
-        // Check if the mouse is on top of the button
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
-        else
-        {
-            m_MouseHover = false;
-            return false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -600,6 +563,14 @@ namespace tgui
             // Set the size of the front image
             m_SpriteFront_M.setTextureRect(frontBounds);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

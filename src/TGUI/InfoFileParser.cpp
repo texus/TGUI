@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Defines.hpp>
+#include <TGUI/InfoFileParser.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +41,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool InfoFileParser::openFile(const std::string filename)
+    bool InfoFileParser::openFile(const std::string& filename)
     {
         // If a file is already open then close it
         if (m_File.is_open())
@@ -60,10 +61,8 @@ namespace tgui
 
     bool InfoFileParser::readProperty(std::string& property, std::string& value)
     {
-      readNextLine:
-
         // Stop reading when we reach the end of the file
-        if (!m_File.eof())
+        while (!m_File.eof())
         {
             // Get the next line
             std::string line;
@@ -81,35 +80,32 @@ namespace tgui
                 line.erase(commentPos);
 
             // Only continue when the line is not empty
-            if (line.empty())
-                goto readNextLine;
-
-            // Convert the whole line to lowercase
-            unsigned int len = line.length();
-            for (unsigned int i = 0; i < len; i++)
+            if (line.empty() == false)
             {
-                if ((line[i] > 64) && (line[i] < 91))
-                    line[i] += 32;
-            }
+                // Convert the whole line to lowercase
+                unsigned int len = line.length();
+                for (unsigned int i = 0; i < len; i++)
+                {
+                    if ((line[i] > 64) && (line[i] < 91))
+                        line[i] += 32;
+                }
 
-            // Search for the equal mark in the line
-            std::string::size_type equalMarkPos = line.find('=', 0);
+                // Search for the equal mark in the line
+                std::string::size_type equalMarkPos = line.find('=', 0);
 
-            // Only continue when it was found
-            if (equalMarkPos != std::string::npos)
-            {
-                // Split the line in two parts
-                property = line.substr(0, equalMarkPos);
-                value = line.substr(equalMarkPos + 1);
+                // Only continue when it was found
+                if (equalMarkPos != std::string::npos)
+                {
+                    // Split the line in two parts
+                    property = line.substr(0, equalMarkPos);
+                    value = line.substr(equalMarkPos + 1);
+                    return true;
+                }
             }
-            else // The line is corrupted -> read the next one
-                goto readNextLine;
         }
-        else // The end was reached
-            return false;
 
-        // The line has been read
-        return true;
+        // The end of the file was reached
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

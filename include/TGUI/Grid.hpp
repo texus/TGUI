@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,11 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _TGUI_GRID_INCLUDED_
-#define _TGUI_GRID_INCLUDED_
-
-
-/// \todo  Add more layouts in Grid.
+#ifndef TGUI_GRID_HPP
+#define TGUI_GRID_HPP
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,25 +32,50 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TGUI_API Grid : public GroupObject
+    class TGUI_API Grid : public GroupObject
     {
+      public:
+
+        typedef SharedObjectPtr<Grid> Ptr;
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief The layout of the object.
         ///
-        /// Is the object drawn in the top left corner of the grid square or in the center of the grid square?
+        /// Where in the cell is the object located?
+        /// The object is centered by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Layout
         {
-            enum layouts
+            enum Layouts
             {
-                /// Draw the object in the top left corner of the cell
-                TopLeft,
+                /// Draw the object in the upper left corner of the cell
+                UpperLeft,
+
+                /// Draw the object at the upper side of the cell (horizontally centered)
+                Up,
+
+                /// Draw the object in the upper right corner of the cell
+                UpperRight,
+
+                /// Draw the object at the right side of the cell (vertically centered)
+                Right,
+
+                /// Draw the object in the bottom right corner of the cell
+                BottomRight,
+
+                /// Draw the object at the bottom of the cell (horizontally centered)
+                Bottom,
+
+                /// Draw the object in the bottom left corner of the cell
+                BottomLeft,
+
+                /// Draw the object at the left side of the cell (vertically centered)
+                Left,
 
                 /// Center the object in the cell
                 Center
-
-                // TODO: Add more layouts
             };
         };
 
@@ -93,12 +115,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is created (when it is added to a group).
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the object by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,47 +122,45 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the grid.
-        ///
-        /// By default, the grid will have the size of the objects that were added to it.
-        /// When changing this size, all objects will be scaled to fit inside the grid with this fixed size.
-        ///
-        /// This function will change the scale factors.
-        ///
-        /// \param width   Sets the new width of the grid.
-        /// \param height  Sets the new height of the grid.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the grid, unaffected by scaling.
+        /// \brief Returns the size of the grid.
         ///
         /// \return Size of the grid
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2u getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the grid, after the scaling transformation.
-        ///
-        /// \return Size of the grid
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getScaledSize() const;
+        virtual Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a single object that was added to the group.
         ///
-        /// \param object  Pointer to an object that was added to the group with the add function.
+        /// \param object  Pointer to the object to remove
         ///
         /// \see remove(sf::String)
         ///
+        /// Usage example:
+        /// \code
+        /// tgui::Picture::Ptr pic(grid, "picName");
+        /// tgui::Picture::Ptr pic2(grid, "picName2");
+        /// grid.remove(pic);
+        /// grid.remove(grid.get("picName2"));
+        /// \endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(OBJECT* object);
+        virtual void remove(const Object::Ptr& object);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Removes a single object that was added to the group.
+        ///
+        /// \param object  Pointer to the object to remove
+        ///
+        /// This function is provided for internal use.
+        /// The other remove function will probably be easier to use, but in the end they do exactly the same.
+        ///
+        /// \see remove(Object::Ptr)
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void remove(Object* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +178,7 @@ namespace tgui
         /// \param layout   Where the object is located in the square.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addToRow(OBJECT* const object, const Vector4u& borders = Vector4u(0, 0, 0, 0), const Layout::layouts layout = Layout::Center);
+        virtual void addToRow(const Object::Ptr& object, const Vector4u& borders = Vector4u(0, 0, 0, 0), Layout::Layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +187,7 @@ namespace tgui
         /// \param rowHeight  The height of the row when it stays empty, or the minimum height when objects are added to the row.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addRow(const unsigned int rowHeight = 0);
+        virtual void addRow(unsigned int rowHeight = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,13 +203,11 @@ namespace tgui
         /// \brief Changes the layout of a given object.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void changeObjectLayout(const OBJECT* const object, const Layout::layouts layout = Layout::Center);
+        virtual void changeObjectLayout(const Object::Ptr& object, Layout::Layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are used to receive callback from EventManager.
-        // These events are send to the childs of the grid by it's own EventManager.
-        // You normally don't need them, but you can use these functions to simulate an event.
+        // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnObject(float x, float y);
         virtual void objectFocused();
@@ -203,20 +215,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The objects inside the grid use this function to send their callbacks.
-        // This function will alert the window (or any other parent of this grid) about the callback.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addCallback(const Callback& callback);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Updates the position of one of the objects.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void updatePosition(unsigned int row, unsigned int column);
+      protected:
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,23 +225,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this struct is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the grid object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+      public:
 
-        std::vector< std::vector<OBJECT*> >  m_GridObjects;
-        std::vector< std::vector<Vector4u> > m_ObjBorders;
-        std::vector< std::vector<Layout::layouts> >  m_ObjLayout;
+        enum GridCallbacks
+        {
+            AllGridCallbacks = GroupObjectCallbacksCount - 1,
+            GridCallbacksCount = GroupObjectCallbacksCount
+        };
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      protected:
+
+        std::vector< std::vector<Object::Ptr> >     m_GridObjects;
+        std::vector< std::vector<Vector4u> >        m_ObjBorders;
+        std::vector< std::vector<Layout::Layouts> > m_ObjLayout;
 
         std::vector<unsigned int> m_RowHeight;
         std::vector<unsigned int> m_ColumnWidth;
 
-        Vector2u  m_Size;
+        Vector2f  m_Size;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,4 +262,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_TGUI_GRID_INCLUDED_
+#endif // TGUI_GRID_HPP

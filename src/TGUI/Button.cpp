@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Button.hpp>
 
 #include <cmath>
 
@@ -51,16 +53,14 @@ namespace tgui
     m_SeparateHoverImage (false),
     m_TextSize           (0)
     {
-        m_ObjectType = button;
-
+        m_Callback.objectType = Type_Button;
         m_Text.setColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button(const Button& copy) :
-    OBJECT              (copy),
-    m_Size              (copy.m_Size),
+    ClickableObject     (copy),
     m_LoadedPathname    (copy.m_LoadedPathname),
     m_SplitImage        (copy.m_SplitImage),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
@@ -113,9 +113,8 @@ namespace tgui
         if (this != &right)
         {
             Button temp(right);
-            this->OBJECT::operator=(right);
+            this->ClickableObject::operator=(right);
 
-            std::swap(m_Size,                temp.m_Size);
             std::swap(m_TextureNormal_L,     temp.m_TextureNormal_L);
             std::swap(m_TextureNormal_M,     temp.m_TextureNormal_M);
             std::swap(m_TextureNormal_R,     temp.m_TextureNormal_R);
@@ -152,13 +151,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Button* Button::clone()
     {
         return new Button(*this);
@@ -166,7 +158,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::load(const std::string pathname)
+    bool Button::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -186,7 +178,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -195,6 +187,7 @@ namespace tgui
 
         // Set some default settings
         m_SplitImage = false;
+        m_SeparateHoverImage = true;
         std::string imageExtension = "png";
 
         // Read untill the end of the file
@@ -203,18 +196,23 @@ namespace tgui
             // Check what the property is
             if (property.compare("splitimage") == 0)
             {
-                // Find out if it is split or not
-                if (value.compare("true") == 0)
+                if ((value.compare("true") == 0) || (value.compare("1") == 0))
                     m_SplitImage = true;
-                else if (value.compare("false") == 0)
-                    m_SplitImage = false;
+                else
+                {
+                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
+                }
             }
             else if (property.compare("separatehoverimage") == 0)
             {
-                if (value.compare("true") == 0)
-                    m_SeparateHoverImage = true;
-                else if (value.compare("false") == 0)
+                if ((value.compare("false") == 0) || (value.compare("0") == 0))
                     m_SeparateHoverImage = false;
+                else
+                {
+                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SeparateHoverImage: \"" + value + "\".");
+                }
             }
             else if (property.compare("phases") == 0)
             {
@@ -251,7 +249,7 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            // load the required texture
+            // Load the required texture
             if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Normal." + imageExtension, m_TextureNormal_L))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Normal." + imageExtension, m_TextureNormal_M))
              && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Normal." + imageExtension, m_TextureNormal_R)))
@@ -267,7 +265,7 @@ namespace tgui
             else
                 return false;
 
-            // load the optional textures
+            // Load the optional textures
             if (m_ObjectPhase & ObjectPhase_Focused)
             {
                 if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Focus." + imageExtension, m_TextureFocused_L))
@@ -311,14 +309,10 @@ namespace tgui
                 else
                     return false;
             }
-
-            // When there is no error we will return true
-            m_Loaded = true;
-            return true;
         }
         else // The image isn't split
         {
-            // load the required texture
+            // Load the required texture
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
             {
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
@@ -327,7 +321,7 @@ namespace tgui
             else
                 return false;
 
-            // load the optional textures
+            // Load the optional textures
             if (m_ObjectPhase & ObjectPhase_Focused)
             {
                 if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused_M))
@@ -354,11 +348,11 @@ namespace tgui
                 else
                     return false;
             }
-
-            // When there is no error we will return true
-            m_Loaded = true;
-            return true;
         }
+
+        // When there is no error we will return true
+        m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -380,26 +374,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u Button::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Button::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string Button::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -407,7 +381,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setText(const sf::String text)
+    void Button::setText(const sf::String& text)
     {
         // Don't do anything when the button wasn't loaded correctly
         if (m_Loaded == false)
@@ -428,7 +402,7 @@ namespace tgui
             if (m_Text.getGlobalBounds().width > (m_Size.x * 0.8f))
             {
                 // The text is too width, so make it smaller
-                m_Text.setCharacterSize(static_cast<unsigned int>(size / (m_Text.getGlobalBounds().width / (m_Size.x * 0.8f))));
+                m_Text.setCharacterSize(static_cast<unsigned int>(size * m_Size.x * 0.8f / m_Text.getGlobalBounds().width));
                 m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
             }
         }
@@ -476,7 +450,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setTextSize(const unsigned int size)
+    void Button::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -494,104 +468,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::mouseOnObject(float x, float y)
-    {
-        // Don't do anything when the button wasn't loaded correctly
-        if (m_Loaded == false)
-            return false;
-
-        // Check if the mouse is on top of the button
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
-        else
-        {
-            m_MouseHover = false;
-            return false;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::leftMousePressed(float x, float y)
-    {
-        // Set the mouse down flag
-        m_MouseDown = true;
-
-        // Add the callback (if the user requested it)
-        if (callbackID > 0)
-        {
-            Callback callback;
-            callback.object      = this;
-            callback.callbackID  = callbackID;
-            callback.trigger     = Callback::mouseDown;
-            callback.mouseButton = sf::Mouse::Left;
-            callback.mouseX      = x - getPosition().x;
-            callback.mouseY      = y - getPosition().y;
-            m_Parent->addCallback(callback);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::leftMouseReleased(float x, float y)
-    {
-        // Check if we clicked on the button (not just mouse release)
-        if (m_MouseDown == true)
-        {
-            // Add the callback (if the user requested it)
-            if (callbackID > 0)
-            {
-                Callback callback;
-                callback.object      = this;
-                callback.callbackID  = callbackID;
-                callback.trigger     = Callback::mouseClick;
-                callback.mouseButton = sf::Mouse::Left;
-                callback.mouseX      = x - getPosition().x;
-                callback.mouseY      = y - getPosition().y;
-                m_Parent->addCallback(callback);
-            }
-
-            m_MouseDown = false;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::mouseMoved(float x, float y)
-    {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
-        m_MouseHover = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::keyPressed(sf::Keyboard::Key key)
     {
         // Check if the space key or the return key was pressed
         if (key == sf::Keyboard::Space)
         {
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[SpaceKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Space;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = SpaceKeyPressed;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::Return)
         {
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Return;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ReturnKeyPressed;
+                addCallback();
             }
         }
     }
@@ -603,6 +498,16 @@ namespace tgui
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
             m_Parent->unfocusObject(this);
+        else
+            Object::objectFocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -613,6 +518,9 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Calculate the scaling
+        Vector2f scaling(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
+
         // Apply the transformations
         states.transform *= getTransform();
 
@@ -622,10 +530,8 @@ namespace tgui
         // Drawing the button image will be different when the image is split
         if (m_SplitImage)
         {
-            float scalingY = m_Size.y / m_TextureNormal_M->getSize().y;
-
             // Set the scaling
-            states.transform.scale(scalingY, scalingY);
+            states.transform.scale(scaling.y, scaling.y);
 
             // Draw the left image
             {
@@ -663,16 +569,16 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((scalingY * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
+            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = (m_Size.x - ((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY)) / m_TextureNormal_M->getSize().x;
+                float scaleX = scaling.x - (((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y) / m_TextureNormal_M->getSize().x);
 
                 // Put the middle image on the correct position
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
 
                 // Set the scale for the middle image
-                states.transform.scale(scaleX / scalingY, 1);
+                states.transform.scale(scaleX / scaling.y, 1);
 
                 // Draw the middle image
                 {
@@ -713,7 +619,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
 
                 // Set the scale for the right image
-                states.transform.scale(scalingY / scaleX, 1);
+                states.transform.scale(scaling.y / scaleX, 1);
             }
             else // The middle image is not drawn
                 states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);

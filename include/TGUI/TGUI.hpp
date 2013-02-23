@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -22,136 +22,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _TGUI_INCLUDED_
-#define _TGUI_INCLUDED_
+#ifndef TGUI_TGUI_HPP
+#define TGUI_TGUI_HPP
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#include <iostream>
-
-#include <fstream>
-#include <string>
-#include <sstream>
-
-#include <queue>
-#include <stack>
-
-#include <SFML/Graphics.hpp>
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace tgui
-{
-    struct OBJECT;
-    struct OBJECT_BORDERS;
-    struct OBJECT_ANIMATION;
-    struct Callback;
-
-    struct Label;
-    struct Picture;
-    struct Button;
-    struct Checkbox;
-    struct RadioButton;
-    struct EditBox;
-    struct Slider;
-    struct Scrollbar;
-    struct ListBox;
-    struct LoadingBar;
-    struct ComboBox;
-    struct TextBox;
-    struct SpriteSheet;
-    struct AnimatedPicture;
-    struct AnimatedButton;
-    struct SpinButton;
-    struct Slider2D;
-    struct Tab;
-
-    struct InfoFileParser;
-    struct EventManager;
-    struct TextureManager;
-
-    struct Group;
-    struct Panel;
-    struct ChildWindow;
-    struct Grid;
-    struct Window;
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    std::string to_string(T value)
-    {
-        std::ostringstream oss;
-        oss << value;
-        return oss.str();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    enum ObjectPhase
-    {
-        ObjectPhase_Hover     = 1,
-        ObjectPhase_MouseDown = 2,
-        ObjectPhase_Focused   = 4,
-        ObjectPhase_Selected  = 8
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief A list of all objects in tgui.
-    ///
-    /// It is used to identify an object.
-    /// However I am trying to remove the use of these types as much as possible because it limits to use of custom objects.
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    enum ObjectTypes
-    {
-        window,
-        picture,
-        button,
-        checkbox,
-        radioButton,
-        label,
-        editBox,
-        listBox,
-        comboBox,
-        slider,
-        scrollbar,
-        loadingBar,
-        textBox,
-        spriteSheet,
-        animatedPicture,
-        animatedButton,
-        spinButton,
-        slider2D,
-        tab,
-
-        panel,
-        childWindow,
-        grid,
-
-        custom
-    };
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#include <TGUI/Config.hpp>
-
-namespace tgui
-{
-    /// The texture manager will not only load the textures, but will also make sure that the textures are only loaded once.
-    extern TGUI_API TextureManager TGUI_TextureManager;
-
-    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
-    extern TGUI_API bool tabKeyUsageEnabled;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#include <TGUI/Vectors.hpp>
 
 #include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/Button.hpp>
@@ -168,14 +45,11 @@ namespace tgui
 #include <TGUI/AnimatedPicture.hpp>
 #include <TGUI/AnimatedButton.hpp>
 #include <TGUI/SpinButton.hpp>
-#include <TGUI/Slider2D.hpp>
+#include <TGUI/Slider2d.hpp>
 #include <TGUI/Tab.hpp>
+#include <TGUI/MenuBar.hpp>
+#include <TGUI/ChatBox.hpp>
 
-#include <TGUI/InfoFileParser.hpp>
-#include <TGUI/EventManager.hpp>
-#include <TGUI/TextureManager.hpp>
-
-#include <TGUI/Group.hpp>
 #include <TGUI/GroupObject.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
@@ -183,32 +57,18 @@ namespace tgui
 #include <TGUI/Window.hpp>
 #include <TGUI/Form.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_OUTPUT
-    #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
-#endif
-
-#define TGUI_MINIMUM(x, y)   (x < y) ? x : y
-
-#define TGUI_MAXIMUM(x, y)   (x > y) ? x : y
-
-#define TGUI_UNUSED_PARAM(x) (void)x
-
-#define TGUI_MAX_OBJECTS     10000
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*! \mainpage TGUI Documentation
  *
- * These pages contain the description of all usable functions and members in TGUI v0.5.\n
- * The private and protected ones are hidden, like a few other functions that you should not use.
+ * These pages contain the description of all usable functions and members in TGUI v0.6.\n
+ * The few functions that you should not use are hidden.
  *
  * Tutorials can be found on the tutorial section of my page (http://tgui.weebly.com/tutorials.html).
  *
  * More information can be found on the TGUI home page (http://tgui.weebly.com).
  */
 
-#endif //_TGUI_INCLUDED_
+#endif // TGUI_TGUI_HPP
 

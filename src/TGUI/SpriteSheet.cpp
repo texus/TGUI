@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Picture.hpp>
+#include <TGUI/SpriteSheet.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +39,7 @@ namespace tgui
     m_Columns    (1),
     m_VisibleCell(1, 1)
     {
-        m_ObjectType = spriteSheet;
+        m_Callback.objectType = Type_SpriteSheet;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,20 +92,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u SpriteSheet::getSize() const
+    Vector2f SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(static_cast<unsigned int>(m_Size.x / m_Columns), static_cast<unsigned int>(m_Size.y / m_Rows));
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f SpriteSheet::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x / m_Columns, m_Size.y * getScale().y / m_Rows);
+            return Vector2f(m_Size.x / m_Columns, m_Size.y / m_Rows);
         else
             return Vector2f(0, 0);
     }
@@ -228,6 +221,19 @@ namespace tgui
     sf::Vector2u SpriteSheet::getVisibleCell() const
     {
         return m_VisibleCell;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpriteSheet::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Don't continue when the sprite sheet wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        states.transform *= getTransform();
+        states.transform.scale(m_Size.x / (m_Texture->getSize().x * m_Columns), m_Size.y / (m_Texture->getSize().y * m_Rows));
+        target.draw(m_Sprite, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

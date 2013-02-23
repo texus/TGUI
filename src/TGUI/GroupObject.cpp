@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/GroupObject.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -34,13 +35,14 @@ namespace tgui
     GroupObject::GroupObject()
     {
         m_GroupObject = true;
+        m_AnimatedObject = true;
         m_EventManager.m_Parent = this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GroupObject::GroupObject(const GroupObject& groupToCopy) :
-    OBJECT                         (groupToCopy),
+    Object                         (groupToCopy),
     Group                          (groupToCopy)
     {
         m_GroupObject = true;
@@ -59,7 +61,7 @@ namespace tgui
     {
         if (this != &right)
         {
-            this->OBJECT::operator=(right);
+            this->Object::operator=(right);
             this->Group::operator=(right);
         }
 
@@ -68,27 +70,96 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::initialize()
+    void GroupObject::addChildCallback(Callback& callback)
     {
-        globalFont = m_Parent->globalFont;
+        // If there is no global callback function then send the callback to the parent
+        if (m_GlobalCallbackFunctions.empty())
+            m_Parent->addChildCallback(callback);
+        else
+        {
+            // Loop through all callback functions and call them
+            for (std::list< boost::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
+                (*it)(callback);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::handleEvent(sf::Event& event, const float mouseX, const float mouseY)
+    void GroupObject::initialize(tgui::Group *const parent)
     {
-        // Check if the event is a mouse move or mouse down/press
+        m_Parent = parent;
+        setGlobalFont(m_Parent->getGlobalFont());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void GroupObject::update()
+    {
+        m_EventManager.updateTime( m_AnimationTimeElapsed );
+        m_AnimationTimeElapsed = sf::Time();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void GroupObject::handleEvent(sf::Event& event, float mouseX, float mouseY)
+    {
+        // Adjust the mouse position of the event when the event is about the mouse
         if (event.type == sf::Event::MouseMoved)
         {
-            // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
             event.mouseMove.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
         }
-        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
+        else if (event.type == sf::Event::MouseButtonPressed)
         {
-            // Adjust the mouse position of the event
+            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
+            {
+                m_MouseDown = true;
+
+                if (!m_CallbackFunctions[LeftMousePressed].empty())
+                {
+                    m_Callback.trigger = LeftMousePressed;
+                    m_Callback.mouse.x = mouseX - getPosition().x;
+                    m_Callback.mouse.y = mouseY - getPosition().y;
+                    addCallback();
+                }
+            }
+
             event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
             event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+        }
+        else if (event.type == sf::Event::MouseButtonReleased)
+        {
+            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
+            {
+                if (!m_CallbackFunctions[LeftMouseReleased].empty())
+                {
+                    m_Callback.trigger = LeftMouseReleased;
+                    m_Callback.mouse.x = mouseX - getPosition().x;
+                    m_Callback.mouse.y = mouseY - getPosition().y;
+                    addCallback();
+                }
+
+                if (m_MouseDown)
+                {
+                    if (!m_CallbackFunctions[LeftMouseClicked].empty())
+                    {
+                        m_Callback.trigger = LeftMouseClicked;
+                        m_Callback.mouse.x = mouseX - getPosition().x;
+                        m_Callback.mouse.y = mouseY - getPosition().y;
+                        addCallback();
+                    }
+                }
+            }
+
+            m_MouseDown = false;
+
+            event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
+            event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+        }
+        else if (event.type == sf::Event::MouseWheelMoved)
+        {
+            event.mouseWheel.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
+            event.mouseWheel.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
         }
 
         // Let the event manager handle the event

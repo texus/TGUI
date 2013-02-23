@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/GroupObject.hpp>
+#include <TGUI/Panel.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -34,38 +36,31 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel() :
-    backgroundColor                (sf::Color::Transparent),
     m_Size                         (100, 100),
-    m_Texture                      (NULL),
-    m_LoadedBackgroundImageFilename("")
+    m_BackgroundColor              (sf::Color::Transparent),
+    m_Texture                      (NULL)
     {
-        m_ObjectType = panel;
+        m_Callback.objectType = Type_Panel;
         m_AllowFocus = true;
+        m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
     GroupObject                    (panelToCopy),
-    backgroundColor                (panelToCopy.backgroundColor),
     m_Size                         (panelToCopy.m_Size),
-    m_LoadedBackgroundImageFilename(panelToCopy.m_LoadedBackgroundImageFilename)
+    m_BackgroundColor              (panelToCopy.m_BackgroundColor),
+    m_Texture                      (panelToCopy.m_Texture)
     {
-        // Copy the texture of te background image
-        if (TGUI_TextureManager.copyTexture(panelToCopy.m_Texture, m_Texture))
-        {
+        if (m_Texture)
             m_Sprite.setTexture(*m_Texture);
-            m_Sprite.setScale(static_cast<float>(m_Size.x) / m_Texture->getSize().x, static_cast<float>(m_Size.y) / m_Texture->getSize().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::~Panel()
     {
-        // Delete the texture of our background image
-        if (m_Texture != NULL)
-            TGUI_TextureManager.removeTexture(m_Texture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,11 +73,10 @@ namespace tgui
             Panel temp(right);
             this->GroupObject::operator=(right);
 
-            std::swap(backgroundColor,                 temp.backgroundColor);
             std::swap(m_Size,                          temp.m_Size);
+            std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
             std::swap(m_Texture,                       temp.m_Texture);
             std::swap(m_Sprite,                        temp.m_Sprite);
-            std::swap(m_LoadedBackgroundImageFilename, temp.m_LoadedBackgroundImageFilename);
         }
 
         return *this;
@@ -97,49 +91,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::load(const float width, const float height, const sf::Color& bkgColor, const std::string filename)
+    void Panel::load(float width, float height, const sf::Color& bkgColor)
     {
-        // Until the loading succeeds, the panel will be marked as unloaded
-        m_Loaded = false;
-
         // Set the background color of the panel
-        backgroundColor = bkgColor;
-
-        // Store the filename
-        m_LoadedBackgroundImageFilename = filename;
+        m_BackgroundColor = bkgColor;
 
         // Set the size of the panel
         m_Size.x = width;
         m_Size.y = height;
-
-        // If we have already loaded a background image then first delete it
-        if (m_Texture != NULL)
-            TGUI_TextureManager.removeTexture(m_Texture);
-
-        // Check if a filename was given
-        if (filename.empty() == false)
-        {
-            // Try to load the texture from the file
-            if (TGUI_TextureManager.getTexture(filename, m_Texture))
-            {
-                // Set the texture for the sprite
-                m_Sprite.setTexture(*m_Texture, true);
-
-                // Set the size of the sprite
-                m_Sprite.setScale(width / m_Texture->getSize().x, height / m_Texture->getSize().y);
-
-                // Return true to indicate that nothing went wrong
-                m_Loaded = true;
-                return true;
-            }
-            else // The texture was not loaded
-                return false;
-        }
-        else // No image has to be loaded
-        {
-            m_Loaded = true;
-            return true;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,71 +113,59 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        // If there is no background image then te panel can be considered loaded
-        if (m_LoadedBackgroundImageFilename.empty())
-            m_Loaded = true;
-        else
-        {
-            // Set the size of the sprite
-            if (m_Loaded)
-                m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::addCallback(const Callback& callback)
-    {
-        // Pass the callback to the parent. It has to get to the main window eventually.
-        m_Parent->addCallback(callback);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2u Panel::getSize() const
-    {
-        return Vector2u(m_Size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Panel::getScaledSize() const
-    {
-        return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Panel::setBackgroundImage(const std::string filename)
-    {
-        // Remember the background image filename
-        m_LoadedBackgroundImageFilename = filename;
-
-        // If we have already loaded a background image then first delete it
-        if (m_Texture != NULL)
-            TGUI_TextureManager.removeTexture(m_Texture);
-
-        // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(filename, m_Texture))
-        {
-            // Set the texture for the sprite
-            m_Sprite.setTexture(*m_Texture, true);
-
-            // Set the size of the sprite
+        // If there is a background texture then resize it
+        if (m_Texture)
             m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
-
-            m_Loaded = true;
-            return true;
-        }
-        else // The texture was not loaded
-            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Panel::getLoadedBackgroundImageFilename() const
+    Vector2f Panel::getSize() const
     {
-        return m_LoadedBackgroundImageFilename;
+        return Vector2f(m_Size.x, m_Size.y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::setBackgroundTexture(sf::Texture *const texture)
+    {
+        // Store the texture
+        m_Texture = texture;
+
+        // Set the texture for the sprite
+        if (m_Texture)
+        {
+            m_Sprite.setTexture(*m_Texture, true);
+            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Texture* Panel::getBackgroundTexture()
+    {
+        return m_Texture;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::setBackgroundColor(const sf::Color& backgroundColor)
+    {
+        m_BackgroundColor = backgroundColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& Panel::getBackgroundColor() const
+    {
+        return m_BackgroundColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Panel::getDisplaySize()
+    {
+        return m_Size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,12 +177,16 @@ namespace tgui
             return false;
 
         // Check if the mouse is inside the panel
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
         else
         {
+            if (m_MouseHover)
+                mouseLeftObject();
+
             // Tell the objects inside the panel that the mouse is no longer on top of them
             m_EventManager.mouseNotOnObject();
+            m_MouseHover = false;
             return false;
         }
     }
@@ -293,15 +244,15 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw the background
-        if (backgroundColor != sf::Color::Transparent)
+        if (m_BackgroundColor != sf::Color::Transparent)
         {
             sf::RectangleShape background(m_Size);
-            background.setFillColor(backgroundColor);
+            background.setFillColor(m_BackgroundColor);
             target.draw(background, states);
         }
 
-        // Draw the background image if there is one
-        if (m_Texture != NULL)
+        // Draw the background texture if there is one
+        if (m_Texture)
             target.draw(m_Sprite, states);
 
         // Draw the objects

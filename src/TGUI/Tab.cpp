@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Tab.hpp>
 
 #include <SFML/OpenGL.hpp>
 #include <cmath>
@@ -35,13 +37,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::Tab() :
-    distanceToSide         (0),
-    maximumTabWidth        (0),
     m_LoadedPathname       (""),
     m_SplitImage           (false),
     m_SeparateSelectedImage(true),
     m_TabHeight            (0),
     m_TextSize             (0),
+    m_MaximumTabWidth      (0),
+    m_DistanceToSide       (0),
     m_SelectedTab          (0),
     m_TextureNormal_L      (NULL),
     m_TextureNormal_M      (NULL),
@@ -50,20 +52,20 @@ namespace tgui
     m_TextureSelected_M    (NULL),
     m_TextureSelected_R    (NULL)
     {
-        m_ObjectType = tab;
+        m_Callback.objectType = Type_Tab;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::Tab(const Tab& copy) :
-    OBJECT                 (copy),
-    distanceToSide         (copy.distanceToSide),
-    maximumTabWidth        (copy.maximumTabWidth),
+    Object                 (copy),
     m_LoadedPathname       (copy.m_LoadedPathname),
     m_SplitImage           (copy.m_SplitImage),
     m_SeparateSelectedImage(copy.m_SeparateSelectedImage),
     m_TabHeight            (copy.m_TabHeight),
     m_TextSize             (copy.m_TextSize),
+    m_MaximumTabWidth      (copy.m_MaximumTabWidth),
+    m_DistanceToSide       (copy.m_DistanceToSide),
     m_SelectedTab          (copy.m_SelectedTab),
     m_TabNames             (copy.m_TabNames),
     m_NameWidth            (copy.m_NameWidth),
@@ -93,35 +95,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Tab* Tab::clone()
-    {
-        return new Tab(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Tab& Tab::operator= (const Tab& right)
     {
         // Make sure it is not the same object
         if (this != &right)
         {
             Tab temp(right);
-            this->OBJECT::operator=(right);
+            this->Object::operator=(right);
 
-            std::swap(distanceToSide,          temp.distanceToSide);
-            std::swap(maximumTabWidth,         temp.maximumTabWidth);
             std::swap(m_LoadedPathname,        temp.m_LoadedPathname);
             std::swap(m_SplitImage,            temp.m_SplitImage);
             std::swap(m_SeparateSelectedImage, temp.m_SeparateSelectedImage);
             std::swap(m_TabHeight,             temp.m_TabHeight);
             std::swap(m_TextSize,              temp.m_TextSize);
+            std::swap(m_MaximumTabWidth,       temp.m_MaximumTabWidth);
+            std::swap(m_DistanceToSide,        temp.m_DistanceToSide);
             std::swap(m_SelectedTab,           temp.m_SelectedTab);
             std::swap(m_TabNames,              temp.m_TabNames);
             std::swap(m_NameWidth,             temp.m_NameWidth);
@@ -145,7 +133,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::load(const std::string pathname)
+    Tab* Tab::clone()
+    {
+        return new Tab(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Tab::load(const std::string& pathname)
     {
         // Until the loading succeeds, the tab object will be marked as unloaded
         m_Loaded = false;
@@ -175,7 +170,7 @@ namespace tgui
         // Set some default settings
         m_SplitImage = false;
         m_SeparateSelectedImage = true;
-        distanceToSide = 5;
+        m_DistanceToSide = 5;
         std::string imageExtension = "png";
 
         // Read untill the end of the file
@@ -213,11 +208,11 @@ namespace tgui
             }
             else if (property.compare("distancetoside") == 0)
             {
-                distanceToSide = atoi(value.c_str());
+                m_DistanceToSide = atoi(value.c_str());
             }
             else if (property.compare("maximumtabwidth") == 0)
             {
-                maximumTabWidth = atoi(value.c_str());
+                m_MaximumTabWidth = atoi(value.c_str());
             }
             else if (property.compare("textcolor") == 0)
             {
@@ -318,39 +313,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setSize(float width, float height)
-    {
-        maximumTabWidth = static_cast<unsigned int>(width);
-        setTabHeight(static_cast<unsigned int>(height));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2u Tab::getSize() const
+    Vector2f Tab::getSize() const
     {
         // Make sure the tab has been loaded
         if (m_Loaded == false)
-            return Vector2u(0, 0);
+            return Vector2f(0, 0);
 
         // Add the width of all the tabs together
         float width = 0;
         for (unsigned int i=0; i<m_NameWidth.size(); ++i)
         {
             if (m_SplitImage)
-                width += TGUI_MAXIMUM(maximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * distanceToSide), maximumTabWidth) : m_NameWidth[i] + (2 * distanceToSide),
-                                       (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y)));
+                width += TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
+                                      (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y)));
             else
-                width += maximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * distanceToSide), maximumTabWidth) : m_NameWidth[i] + (2 * distanceToSide);
+                width += m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide);
         }
 
-        return Vector2u(static_cast<unsigned int>(width), m_TabHeight);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Tab::getScaledSize() const
-    {
-        return Vector2f(getSize().x * getScale().x, m_TabHeight * getScale().y);
+        return Vector2f(width, m_TabHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,7 +342,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Tab::add(const sf::String name, const bool selectTab)
+    unsigned int Tab::add(const sf::String& name, bool selectTab)
     {
         // Add the tab
         m_TabNames.push_back(name);
@@ -381,7 +361,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::select(const sf::String name)
+    void Tab::select(const sf::String& name)
     {
         // Loop through all tabs
         for (unsigned int i=0; i<m_TabNames.size(); ++i)
@@ -400,7 +380,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::select(const unsigned int index)
+    void Tab::select(unsigned int index)
     {
         // If the index is too big then do nothing
         if (index > m_TabNames.size()-1)
@@ -422,7 +402,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::remove(const sf::String name)
+    void Tab::remove(const sf::String& name)
     {
         // Loop through all tabs
         for (unsigned int i=0; i<m_TabNames.size(); ++i)
@@ -449,7 +429,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::remove(const unsigned int index)
+    void Tab::remove(unsigned int index)
     {
         // The index can't be too high
         if (index > m_TabNames.size()-1)
@@ -525,7 +505,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setTextSize(const unsigned int size)
+    void Tab::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -583,16 +563,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tab::setMaximumTabWidth(unsigned int maximumWidth)
+    {
+        m_MaximumTabWidth = maximumWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Tab::getMaximumTabWidth() const
+    {
+        return m_MaximumTabWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::setDistanceToSide(unsigned int distanceToSide)
+    {
+        m_DistanceToSide = distanceToSide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Tab::getDistanceToSide() const
+    {
+        return m_DistanceToSide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Tab::mouseOnObject(float x, float y)
     {
         // Check if the mouse is on top of the tab
         if (m_Loaded)
         {
-            sf::Vector2u size = getSize();
-            if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(size.x), static_cast<float>(size.y))).contains(x, y))
+            sf::Vector2f size = getSize();
+            size.x /= getScale().x;
+            size.y /= getScale().y;
+            if (getTransform().transformRect(sf::FloatRect(0, 0, size.x, size.y)).contains(x, y))
                 return true;
         }
 
+        if (m_MouseHover)
+            mouseLeftObject();
+
+        m_MouseHover = false;
         return false;
     }
 
@@ -600,8 +614,6 @@ namespace tgui
 
     void Tab::leftMousePressed(float x, float y)
     {
-        TGUI_UNUSED_PARAM(y);
-
         float width = getPosition().x;
 
         // Loop through all tabs
@@ -609,10 +621,10 @@ namespace tgui
         {
             // Append the width of the tab
             if (m_SplitImage)
-                width += (TGUI_MAXIMUM(maximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * distanceToSide), maximumTabWidth) : m_NameWidth[i] + (2 * distanceToSide),
+                width += (TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
                                        (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y)))) * getScale().x;
             else
-                width += (maximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * distanceToSide), maximumTabWidth) : m_NameWidth[i] + (2 * distanceToSide)) * getScale().x;
+                width += (m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide)) * getScale().x;
 
             // Check if the mouse went down on the tab
             if (x < width)
@@ -620,22 +632,29 @@ namespace tgui
                 // Select this tab
                 m_SelectedTab = i;
 
-                // Send a callback if the user requested it
-                if (callbackID)
+                // Add the callback (if the user requested it)
+                if (m_CallbackFunctions[TabChanged].empty() == false)
                 {
-                    Callback callback;
-                    callback.object     = this;
-                    callback.trigger    = Callback::valueChanged;
-                    callback.callbackID = callbackID;
-                    callback.value      = m_SelectedTab;
-                    callback.text       = m_TabNames[i];
-                    m_Parent->addCallback(callback);
+                    m_Callback.trigger = TabChanged;
+                    m_Callback.value   = m_SelectedTab;
+                    m_Callback.text    = m_TabNames[i];
+                    m_Callback.mouse.x = x - getPosition().x;
+                    m_Callback.mouse.y = y - getPosition().y;
+                    addCallback();
                 }
 
                 // The tab was found
                 break;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -672,22 +691,22 @@ namespace tgui
         for (unsigned int i=0; i<m_TabNames.size(); ++i)
         {
             // Find the tab height
-            if (maximumTabWidth)
+            if (m_MaximumTabWidth)
             {
-                if (maximumTabWidth < m_NameWidth[i] + (2 * distanceToSide))
+                if (m_MaximumTabWidth < m_NameWidth[i] + (2 * m_DistanceToSide))
                 {
-                    tabWidth = maximumTabWidth;
+                    tabWidth = m_MaximumTabWidth;
                     clippingRequired = true;
                 }
                 else
-                    tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * distanceToSide));
+                    tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * m_DistanceToSide));
             }
             else
-                tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * distanceToSide));
+                tabWidth = static_cast<unsigned int>(m_NameWidth[i] + (2 * m_DistanceToSide));
 
             // There is a minimum tab width
-            if (tabWidth < 2 * distanceToSide)
-                tabWidth = 2 * distanceToSide;
+            if (tabWidth < 2 * m_DistanceToSide)
+                tabWidth = 2 * m_DistanceToSide;
 
             // Check if the image is split
             if (m_SplitImage)
@@ -832,7 +851,7 @@ namespace tgui
                 if ((m_SplitImage) && (tabWidth == (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY))
                     realRect.left = ((tabWidth - realRect.width) / 2.f) - realRect.left;
                 else
-                    realRect.left = distanceToSide - realRect.left;
+                    realRect.left = m_DistanceToSide - realRect.left;
                 realRect.top = ((m_TabHeight - defaultRect.height) / 2.f) - defaultRect.top;
 
                 // Move the text to the correct position
@@ -846,7 +865,7 @@ namespace tgui
 
                     // Get the global position
                     Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    Vector2f bottomRightPosition = states.transform.transformPoint(Vector2f((tabWidth - (2 * distanceToSide)) * getScale().x, ((m_TabHeight + defaultRect.height) / 2.f) * getScale().y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    Vector2f bottomRightPosition = states.transform.transformPoint(Vector2f((tabWidth - (2 * m_DistanceToSide)) * getScale().x, ((m_TabHeight + defaultRect.height) / 2.f) * getScale().y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

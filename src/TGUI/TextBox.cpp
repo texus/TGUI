@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/Slider.hpp>
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/TextBox.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -34,8 +37,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox() :
-    selectionPointColor       (110, 110, 255),
-    selectionPointWidth       (2),
     m_Size                    (360, 200),
     m_Text                    (""),
     m_DisplayedText           (""),
@@ -50,12 +51,14 @@ namespace tgui
     m_SelEnd                  (0),
     m_SelectionPointPosition  (0, 0),
     m_SelectionPointVisible   (true),
+    m_SelectionPointColor     (110, 110, 255),
+    m_SelectionPointWidth     (2),
     m_SelectionTextsNeedUpdate(true),
     m_Scroll                  (NULL),
     m_LoadedScrollbarPathname (""),
     m_PossibleDoubleClick     (false)
     {
-        m_ObjectType = textBox;
+        m_Callback.objectType = Type_TextBox;
         m_AnimatedObject = true;
         m_DraggableObject = true;
 
@@ -68,11 +71,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox(const TextBox& copy) :
-    OBJECT                       (copy),
-    OBJECT_BORDERS               (copy),
-    OBJECT_ANIMATION             (copy),
-    selectionPointColor          (copy.selectionPointColor),
-    selectionPointWidth          (copy.selectionPointWidth),
+    Object                       (copy),
+    ObjectBorders                (copy),
     m_Size                       (copy.m_Size),
     m_Text                       (copy.m_Text),
     m_DisplayedText              (copy.m_DisplayedText),
@@ -87,6 +87,8 @@ namespace tgui
     m_SelEnd                     (copy.m_SelEnd),
     m_SelectionPointPosition     (copy.m_SelectionPointPosition),
     m_SelectionPointVisible      (copy.m_SelectionPointVisible),
+    m_SelectionPointColor        (copy.m_SelectionPointColor),
+    m_SelectionPointWidth        (copy.m_SelectionPointWidth),
     m_SelectionTextsNeedUpdate   (copy.m_SelectionTextsNeedUpdate),
     m_BackgroundColor            (copy.m_BackgroundColor),
     m_SelectedTextBgrColor       (copy.m_SelectedTextBgrColor),
@@ -129,12 +131,9 @@ namespace tgui
             }
 
             TextBox temp(right);
-            this->OBJECT::operator=(right);
-            this->OBJECT_BORDERS::operator=(right);
-            this->OBJECT_ANIMATION::operator=(right);
+            this->Object::operator=(right);
+            this->ObjectBorders::operator=(right);
 
-            std::swap(selectionPointColor,           temp.selectionPointColor);
-            std::swap(selectionPointWidth,           temp.selectionPointWidth);
             std::swap(m_Size,                        temp.m_Size);
             std::swap(m_Text,                        temp.m_Text);
             std::swap(m_DisplayedText,               temp.m_DisplayedText);
@@ -149,8 +148,10 @@ namespace tgui
             std::swap(m_SelEnd,                      temp.m_SelEnd);
             std::swap(m_SelectionPointPosition,      temp.m_SelectionPointPosition);
             std::swap(m_SelectionPointVisible,       temp.m_SelectionPointVisible);
-            std::swap(m_BackgroundColor,             temp.m_BackgroundColor);
+            std::swap(m_SelectionPointColor,         temp.m_SelectionPointColor);
+            std::swap(m_SelectionPointWidth,         temp.m_SelectionPointWidth);
             std::swap(m_SelectionTextsNeedUpdate,    temp.m_SelectionTextsNeedUpdate);
+            std::swap(m_BackgroundColor,             temp.m_BackgroundColor);
             std::swap(m_SelectedTextBgrColor,        temp.m_SelectedTextBgrColor);
             std::swap(m_BorderColor,                 temp.m_BorderColor);
             std::swap(m_TextBeforeSelection,         temp.m_TextBeforeSelection);
@@ -169,13 +170,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::initialize()
-    {
-        setTextFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     TextBox* TextBox::clone()
     {
         return new TextBox(*this);
@@ -183,7 +177,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string scrollbarPathname)
+    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -229,7 +223,7 @@ namespace tgui
                 // Initialize the scrollbar
                 m_Scroll->setVerticalScroll(true);
                 m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-                m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
+                m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
             }
         }
 
@@ -324,7 +318,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The size of the textbox has changed, update the text
@@ -334,16 +328,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u TextBox::getSize() const
+    Vector2f TextBox::getSize() const
     {
-        return m_Size;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f TextBox::getScaledSize() const
-    {
-        return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+        return Vector2f(m_Size.x, m_Size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,7 +342,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setText(const sf::String text)
+    void TextBox::setText(const sf::String& text)
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
@@ -370,7 +357,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::addText(const sf::String text)
+    void TextBox::addText(const sf::String& text)
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
@@ -410,7 +397,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setTextSize(const unsigned int size)
+    void TextBox::setTextSize(unsigned int size)
     {
         // Store the new text size
         m_TextSize = size;
@@ -468,7 +455,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The size has changed, update the text
@@ -485,7 +472,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setMaximumCharacters(const unsigned int maxChars)
+    void TextBox::setMaximumCharacters(unsigned int maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_MaxChars = maxChars;
@@ -574,7 +561,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
         }
 
         // The space for the text has changed, so update the text
@@ -589,7 +576,7 @@ namespace tgui
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
                                const sf::Color& borderColor,
-                               const sf::Color& newSelectionPointColor)
+                               const sf::Color& selectionPointColor)
     {
         m_TextBeforeSelection.setColor(color);
         m_TextSelection1.setColor(selectedColor);
@@ -597,7 +584,7 @@ namespace tgui
         m_TextAfterSelection1.setColor(color);
         m_TextAfterSelection2.setColor(color);
 
-        selectionPointColor             = newSelectionPointColor;
+        m_SelectionPointColor           = selectionPointColor;
         m_BackgroundColor               = backgroundColor;
         m_SelectedTextBgrColor          = selectedBgrColor;
         m_BorderColor                   = borderColor;
@@ -643,6 +630,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setSelectionPointColor(const sf::Color& selectionPointColor)
+    {
+        m_SelectionPointColor = selectionPointColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const sf::Color& TextBox::getBackgroundColor() const
     {
         return m_BackgroundColor;
@@ -674,6 +668,13 @@ namespace tgui
     const sf::Color& TextBox::getBorderColor() const
     {
         return m_BorderColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& TextBox::getSelectionPointColor() const
+    {
+        return m_SelectionPointColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -759,7 +760,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::setScrollbar(const std::string scrollbarPathname)
+    bool TextBox::setScrollbar(const std::string& scrollbarPathname)
     {
         // Store the pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
@@ -786,7 +787,7 @@ namespace tgui
         {
             // Initialize the scrollbar
             m_Scroll->setVerticalScroll(true);
-            m_Scroll->setSize(static_cast<float>(m_Scroll->getSize().x), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setMaximum(m_Lines * m_LineHeight);
 
@@ -807,9 +808,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectionPointWidth(const unsigned int width)
+    void TextBox::setSelectionPointWidth(unsigned int width)
     {
-        selectionPointWidth = width;
+        m_SelectionPointWidth = width;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int TextBox::getSelectionPointWidth() const
+    {
+        return m_SelectionPointWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -829,7 +837,7 @@ namespace tgui
         {
             // Temporarily set the position and scale of the scroll
             m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, position.y + (m_TopBorder * curScale.y));
+            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
@@ -844,6 +852,9 @@ namespace tgui
             return true;
         else // The mouse is not on top of the list box
         {
+            if (m_MouseHover)
+                mouseLeftObject();
+
             m_MouseHover = false;
             return false;
         }
@@ -874,7 +885,7 @@ namespace tgui
 
             // Temporarily set the position and scale of the scroll
             m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -1013,7 +1024,7 @@ namespace tgui
 
                 // Temporarily set the position and scale of the scroll
                 m_Scroll->setScale(curScale);
-                m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
+                m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
                 // Pass the event
                 m_Scroll->leftMouseReleased(x, y);
@@ -1062,6 +1073,9 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        if (m_MouseHover == false)
+            mouseEnteredObject();
+
         // Set the mouse move flag
         m_MouseHover = true;
 
@@ -1076,7 +1090,7 @@ namespace tgui
         {
             // Temporarily set the position and scale of the scroll
             m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder) * curScale.x) - m_Scroll->getScaledSize().x, getPosition().y + (m_TopBorder * curScale.y));
+            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -1118,6 +1132,9 @@ namespace tgui
 
     void TextBox::mouseNotOnObject()
     {
+        if (m_MouseHover)
+            mouseLeftObject();
+
         m_MouseHover = false;
 
         if (m_Scroll != NULL)
@@ -1437,30 +1454,19 @@ namespace tgui
                     }
                 }
             }
-            else // When you did select some characters
-            {
-              deleteSelectedCharacters:
-
-                // Erase the characters
-                m_Text.erase(TGUI_MINIMUM(m_SelStart, m_SelEnd), m_SelChars);
-
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(TGUI_MINIMUM(m_SelStart, m_SelEnd));
-            }
+            else // When you did select some characters then delete them
+                deleteSelectedCharacters();
 
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[TextChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::textChanged;
-                callback.text       = m_Text;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = TextChanged;
+                m_Callback.text    = m_Text;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::Delete)
@@ -1492,25 +1498,19 @@ namespace tgui
                     }
                 }
             }
-            else // You did select some characters
-            {
-                // This code is exactly the same as when pressing backspace
-                goto deleteSelectedCharacters;
-            }
+            else // You did select some characters, so remove them
+                deleteSelectedCharacters();
 
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[TextChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::textChanged;
-                callback.text       = m_Text;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = TextChanged;
+                m_Callback.text    = m_Text;
+                addCallback();
             }
         }
     }
@@ -1524,8 +1524,7 @@ namespace tgui
             return;
 
         // If there were selected characters then delete them first
-        if (m_SelChars != 0)
-            keyPressed(sf::Keyboard::BackSpace);
+        deleteSelectedCharacters();
 
         // Make sure we don't exceed our maximum characters limit
         if ((m_MaxChars > 0) && (m_Text.getSize() + 1 > m_MaxChars))
@@ -1602,14 +1601,40 @@ namespace tgui
         m_AnimationTimeElapsed = sf::Time();
 
         // Add the callback (if the user requested it)
-        if (callbackID > 0)
+        if (m_CallbackFunctions[TextChanged].empty() == false)
         {
-            Callback callback;
-            callback.object     = this;
-            callback.callbackID = callbackID;
-            callback.trigger    = Callback::textChanged;
-            callback.text       = m_Text;
-            m_Parent->addCallback(callback);
+            m_Callback.trigger = TextChanged;
+            m_Callback.text    = m_Text;
+            addCallback();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::mouseWheelMoved(int delta)
+    {
+        // Only do something when there is a scrollbar
+        if (m_Scroll != NULL)
+        {
+            if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
+            {
+                // Check if you are scrolling down
+                if (delta < 0)
+                {
+                    // Scroll down
+                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_LineHeight / 2)) );
+                }
+                else // You are scrolling up
+                {
+                    unsigned int change = static_cast<unsigned int>(delta) * (m_LineHeight / 2);
+
+                    // Scroll up
+                    if (change < m_Scroll->getValue())
+                        m_Scroll->setValue( m_Scroll->getValue() - change );
+                    else
+                        m_Scroll->setValue(0);
+                }
+            }
         }
     }
 
@@ -1859,6 +1884,17 @@ namespace tgui
                 updateDisplayedText();
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::deleteSelectedCharacters()
+    {
+        // Erase the characters
+        m_Text.erase(TGUI_MINIMUM(m_SelStart, m_SelEnd), m_SelChars);
+
+        // Set the selection point back on the correct position
+        setSelectionPointPosition(TGUI_MINIMUM(m_SelStart, m_SelEnd));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2154,6 +2190,16 @@ namespace tgui
         // If there is a selection then undo it now
         if (m_SelChars)
             setSelectionPointPosition(m_SelEnd);
+
+        Object::objectUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2172,7 +2218,7 @@ namespace tgui
             return;
 
         // Switch the value of the visible flag
-        m_SelectionPointVisible = m_SelectionPointVisible ? false : true;
+        m_SelectionPointVisible = !m_SelectionPointVisible;
 
         // Too slow for double clicking
         m_PossibleDoubleClick = false;
@@ -2350,7 +2396,7 @@ namespace tgui
         }
 
         // Only draw the selection point if it has a width
-        if (selectionPointWidth > 0)
+        if (m_SelectionPointWidth > 0)
         {
             // Only draw it when needed
             if ((m_Focused) && (m_SelectionPointVisible))
@@ -2359,9 +2405,9 @@ namespace tgui
                 states.transform = oldTransform;
 
                 // Create the selection point rectangle
-                sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(selectionPointWidth), static_cast<float>(m_LineHeight)));
-                selectionPoint.setPosition(m_SelectionPointPosition.x - (selectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y));
-                selectionPoint.setFillColor(selectionPointColor);
+                sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(m_SelectionPointWidth), static_cast<float>(m_LineHeight)));
+                selectionPoint.setPosition(m_SelectionPointPosition.x - (m_SelectionPointWidth * 0.5f), static_cast<float>(m_SelectionPointPosition.y));
+                selectionPoint.setFillColor(m_SelectionPointColor);
 
                 // Draw the selection point
                 target.draw(selectionPoint, states);
@@ -2376,7 +2422,7 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = origTransform;
-            states.transform.translate((m_Size.x - m_RightBorder) - static_cast<float>(m_Scroll->getSize().x), m_TopBorder * getScale().y);
+            states.transform.translate(m_Size.x - m_RightBorder - m_Scroll->getSize().x, m_TopBorder);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);

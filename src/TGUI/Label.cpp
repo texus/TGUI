@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Label.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -34,19 +36,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Label::Label() :
-    backgroundColor(sf::Color::Transparent),
-    m_Size    (0, 0),
-    m_AutoSize(true)
+    m_BackgroundColor(sf::Color::Transparent),
+    m_AutoSize       (true)
     {
-        m_ObjectType = label;
+        m_Callback.objectType = Type_Label;
         m_Loaded = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,20 +55,20 @@ namespace tgui
     void Label::load(float width, float height, const sf::Color& bkgColor)
     {
         setSize(width, height);
-        backgroundColor = bkgColor;
+        m_BackgroundColor = bkgColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setSize(float width, float height)
     {
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // Change the size of the label
         m_Size.x = width;
         m_Size.y = height;
+
+        // A negative size is not allowed for this object
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
 
         // You are no longer auto-sizing
         m_AutoSize = false;
@@ -82,21 +76,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u Label::getSize() const
-    {
-        return Vector2u(m_Size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Label::getScaledSize() const
-    {
-        return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setText(const sf::String string)
+    void Label::setText(const sf::String& string)
     {
         m_Text.setString(string);
 
@@ -145,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextSize(const unsigned int size)
+    void Label::setTextSize(unsigned int size)
     {
         m_Text.setCharacterSize(size);
 
@@ -187,48 +167,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::mouseOnObject(float x, float y)
+    void Label::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        // Check if the mouse is on top of the label
-        if (sf::FloatRect(0, 0, m_Size.x, m_Size.y).contains(x - getPosition().x, y - getPosition().y))
-            return true;
-        else
-            return false;
+        m_BackgroundColor = backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::leftMousePressed(float x, float y)
+    const sf::Color& Label::getBackgroundColor() const
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
-        // Set the mouse down flag
-        m_MouseDown = true;
+        return m_BackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::leftMouseReleased(float x, float y)
+    void Label::initialize(tgui::Group *const parent)
     {
-        // Check if we clicked on the label (not just mouse release)
-        if (m_MouseDown == true)
-        {
-            // Add the callback (if the user requested it)
-            if (callbackID > 0)
-            {
-                Callback callback;
-                callback.object      = this;
-                callback.callbackID  = callbackID;
-                callback.trigger     = Callback::mouseClick;
-                callback.mouseButton = sf::Mouse::Left;
-                callback.mouseX      = x - getPosition().x;
-                callback.mouseY      = y - getPosition().y;
-                m_Parent->addCallback(callback);
-            }
 
-            m_MouseDown = false;
-        }
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,11 +227,11 @@ namespace tgui
         states.transform *= getTransform();
 
         // If there is a background color then draw the background
-        if (backgroundColor != sf::Color::Transparent)
+        if (m_BackgroundColor != sf::Color::Transparent)
         {
             sf::RectangleShape back(sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height));
             back.setPosition(m_Text.getLocalBounds().left, m_Text.getLocalBounds().top);
-            back.setFillColor(backgroundColor);
+            back.setFillColor(m_BackgroundColor);
             target.draw(back, states);
         }
 

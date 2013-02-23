@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/Slider.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,14 +51,14 @@ namespace tgui
     m_TextureThumbHover   (NULL),
     m_LoadedPathname      ("")
     {
-        m_ObjectType = slider;
+        m_Callback.objectType = Type_Slider;
         m_DraggableObject = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider(const Slider& copy) :
-    OBJECT               (copy),
+    Object               (copy),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
     m_Minimum            (copy.m_Minimum),
@@ -105,7 +106,7 @@ namespace tgui
         if (this != &right)
         {
             Slider temp(right);
-            this->OBJECT::operator=(right);
+            this->Object::operator=(right);
 
             std::swap(m_MouseDownOnThumb,     temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos,  temp.m_MouseDownOnThumbPos);
@@ -149,7 +150,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::load(const std::string pathname)
+    bool Slider::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -169,7 +170,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -366,20 +367,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u Slider::getSize() const
+    Vector2f Slider::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Slider::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
+            return Vector2f(m_Size.x, m_Size.y);
         else
             return Vector2f(0, 0);
     }
@@ -393,7 +384,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMinimum(const unsigned int minimum)
+    void Slider::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -401,11 +392,15 @@ namespace tgui
         // When the value is below the minimum then adjust it
         if (m_Value < m_Minimum)
             m_Value = m_Minimum;
+
+        // The maximum can't be below the minimum
+        if (m_Maximum < m_Minimum)
+            m_Maximum = m_Minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMaximum(const unsigned int maximum)
+    void Slider::setMaximum(unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -416,11 +411,15 @@ namespace tgui
         // When the value is above the maximum then adjust it
         if (m_Value > m_Maximum)
             m_Value = m_Maximum;
+
+        // The minimum can't be below the maximum
+        if (m_Minimum > m_Maximum)
+            m_Minimum = m_Maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setValue(const unsigned int value)
+    void Slider::setValue(unsigned int value)
     {
         // Set the new value
         m_Value = value;
@@ -464,7 +463,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::getVerticalScroll()
+    bool Slider::getVerticalScroll() const
     {
         return m_VerticalScroll;
     }
@@ -545,6 +544,9 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
 
+        if (m_MouseHover)
+            mouseLeftObject();
+
         // The mouse is not on top of the slider
         m_MouseHover = false;
         return false;
@@ -562,11 +564,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMouseReleased(float x, float y)
+    void Slider::leftMouseReleased(float, float)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
         m_MouseDown = false;
     }
 
@@ -577,6 +576,9 @@ namespace tgui
         // Don't do anything when the slider wasn't loaded correctly
         if (m_Loaded == false)
             return;
+
+        if (m_MouseHover == false)
+            mouseEnteredObject();
 
         m_MouseHover = true;
 
@@ -639,25 +641,30 @@ namespace tgui
             }
         }
 
-        // Add the callback (if the user requested it and the value has changed)
-        if ((callbackID > 0) && (oldValue != m_Value))
+        // Add the callback (if the user requested it)
+        if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
         {
-            Callback callback;
-            callback.object     = this;
-            callback.callbackID = callbackID;
-            callback.trigger    = Callback::valueChanged;
-            callback.value      = m_Value;
-            m_Parent->addCallback(callback);
+            m_Callback.trigger = ValueChanged;
+            m_Callback.value   = static_cast<int>(m_Value);
+            addCallback();
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::keyPressed(sf::Keyboard::Key key)
+    void Slider::keyPressed(sf::Keyboard::Key)
     {
-        // TODO: Respond on arrow presses
+        /// TODO: Respond on arrow presses
+    }
 
-        TGUI_UNUSED_PARAM(key);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::mouseWheelMoved(int delta)
+    {
+        if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
+            m_Value = m_Minimum;
+        else
+            setValue(static_cast<unsigned int>(m_Value - delta));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

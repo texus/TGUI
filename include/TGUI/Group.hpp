@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,64 +23,108 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _TGUI_GROUP_INCLUDED_
-#define _TGUI_GROUP_INCLUDED_
+#ifndef TGUI_GROUP_HPP
+#define TGUI_GROUP_HPP
 
 #include <list>
+
+#include <TGUI/EventManager.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Parent struct for objects that store multiple objects.
+    /// \brief Parent class for objects that store multiple objects.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    struct TGUI_API Group
+    class TGUI_API Group
     {
+      public:
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Copy constructor
+        ///
+        /// \param copy  Instance to copy
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group(const Group& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ~Group();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Overload of assignment operator
+        ///
+        /// \param right  Instance to assign
+        ///
+        /// \return Reference to itself
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Group& operator= (const Group& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates and adds an object to the group.
+        /// \brief Changes the global font.
         ///
-        /// \param objectName  If you want to access the object later then you must do this with this name.
+        /// This font will be used by all objects that are created after calling this function.
+        ///
+        /// \param filename  Path of the font file to load
+        ///
+        /// \return True if loading succeeded, false if it failed
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setGlobalFont(const std::string& filename);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the global font.
+        ///
+        /// This font will be used by all objects that are created after calling this function.
+        ///
+        /// \param font  Font to copy
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setGlobalFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the global font.
+        ///
+        /// This is the font that is used for newly created object by default.
+        ///
+        /// \return global font
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual const sf::Font& getGlobalFont() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Adds an object to the group.
+        ///
+        /// \param objectPtr   Pointer to the object you would like to add
+        /// \param objectName  If you want to access the object later then you must do this with this name
         ///
         /// Usage example:
-        /// \code tgui::Picture* pic = group.add<tgui::Picture>("picName"); \endcode
+        /// \code
+        /// tgui::Picture::Ptr pic(group); // Create a picture and add it to the group
+        /// group.remove(pic);             // Remove the picture from the group
+        /// group.add(pic);                // Add the picture to the group again
+        /// \endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T>
-        T* add(const sf::String objectName = "")
-        {
-            T* newObject = new T();
-            newObject->m_Parent = this;
-            m_EventManager.m_Objects.push_back(newObject);
-            m_ObjName.push_back(objectName);
-
-            newObject->initialize();
-
-            return newObject;
-        }
+        void add(const SharedObjectPtr<Object>& objectPtr, const sf::String& objectName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,80 +132,37 @@ namespace tgui
         ///
         /// \param objectName The name that was given to the object when it was added to the group.
         ///
-        /// \warning Make sure that the name belongs to the object you are trying to get.
-        ///         Behaviour is undefined when e.g. calling this function to get a picture but
-        ///         when passing a name that was given to a button.
+        /// \return Pointer to the earlier created object
         ///
         /// \warning This function will return NULL when an unknown object name was passed.
         ///
-        /// \warning Don't pass an empty string to this function. Objects with empty names are sometimes used internally.
-        ///
         /// Usage example:
-        /// \code tgui::Picture* pic = group.get<tgui::Picture>("picName"); \endcode
+        /// \code
+        /// tgui::Picture::Ptr pic(group, "picName");
+        /// tgui::Picture::Ptr pic2 = group.get("picName");
+        /// \endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T>
-        T* get(const sf::String objectName) const
-        {
-            for (unsigned int i=0; i<m_ObjName.size(); ++i)
-            {
-                if (m_ObjName[i].toWideString().compare(objectName) == 0)
-                    return static_cast<T*>(m_EventManager.m_Objects[i]);
-            }
-
-            return NULL;
-        }
+        SharedObjectPtr<Object> get(const sf::String& objectName) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Makes a copy of any existing object and returns the pointer to the new object.
         ///
         /// \param oldObject     A pointer to the old object.
-        /// \param newObjectName If you want to access the object later then you must do this with this name.
+        /// \param newObjectName If you want to access the object later then you must do this with this name
+        ///
+        /// \return Pointer to the new object
         ///
         /// Usage example:
-        /// \code tgui::Picture* pic = group.copy(pictureToCopy, "NameOfNewPic"); \endcode
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T>
-        T* copy(T* oldObject, const sf::String newObjectName = "")
-        {
-            T* newObject = new T(*oldObject);
-
-            m_EventManager.m_Objects.push_back(newObject);
-            m_ObjName.push_back(newObjectName);
-
-            return newObject;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Makes a copy of any existing object and returns the pointer to the new object.
+        /// \code
+        /// tgui::Picture::Ptr pic(group, "picName");
+        /// tgui::Picture::Ptr pic2 = group.copy(pic, "picName_2");
+        /// tgui::Picture::Ptr pic3 = group.copy(group.get("picName"), "picName_3");
+        /// \endcode
         ///
-        /// \param oldObjectName The name that was given to the object when it was added to the group.
-        /// \param newObjectName If you want to access the copied object later then you must do this with this name.
-        ///
-        /// \warning This function will return NULL when an unknown object name was passed.
-        ///
-        /// Usage example:
-        /// \code tgui::Picture* pic = group.copy<tgui::Picture>("PicToCopy", "NameOfNewPic"); \endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T>
-        T* copy(const sf::String oldObjectName, const sf::String newObjectName = "")
-        {
-            for (unsigned int i=0; i<m_ObjName.size(); ++i)
-            {
-                if (m_ObjName[i].toWideString().compare(oldObjectName) == 0)
-                {
-                    T* newObject = new T(*static_cast<T*>(m_EventManager.m_Objects[i]));
-
-                    m_EventManager.m_Objects.push_back(newObject);
-                    m_ObjName.push_back(newObjectName);
-
-                    return newObject;
-                }
-            }
-
-            return NULL;
-        }
+        SharedObjectPtr<Object> copy(const SharedObjectPtr<Object>& oldObject, const sf::String& newObjectName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,23 +171,32 @@ namespace tgui
         /// The objects will be loaded and added to the group.
         /// Note that even when this function fails, some objects might have been loaded already.
         ///
+        /// \param filename  Filename of the object file that is to be loaded
+        ///
         /// \return
         ///        - true on success
         ///        - false when the file could not be opened
         ///        - false when the file contains a mistake
         ///        - false when one of the objects couldn't be loaded
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadObjectsFromFile(const std::string filename);
+        virtual bool loadObjectsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns a list of all the objects.
+        ///
+        /// \return Vector of all object pointers
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::vector<OBJECT*>& getObjects();
+        virtual std::vector< SharedObjectPtr<Object> >& getObjects();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns a list of the names of all the objects.
+        ///
+        /// \return Vector of all object names
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::vector<sf::String>& getObjectNames();
 
@@ -194,23 +204,39 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a single object that was added to the group.
         ///
-        /// If there are multiple objects with the same name then only the first matching object will be removed.
+        /// \param object  Pointer to the object to remove
         ///
-        /// \see remove(OBJECT*)
+        /// \see remove(sf::String)
+        ///
+        /// Usage example:
+        /// \code
+        /// tgui::Picture::Ptr pic(group, "picName");
+        /// tgui::Picture::Ptr pic2(group, "picName2");
+        /// group.remove(pic);
+        /// group.remove(group.get("picName2"));
+        /// \endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const sf::String objectName);
+        virtual void remove(const SharedObjectPtr<Object>& object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a single object that was added to the group.
         ///
-        /// \see remove(sf::String)
+        /// \param object  Pointer to the object to remove
+        ///
+        /// This function is provided for internal use.
+        /// The other remove function will probably be easier to use, but in the end they do exactly the same.
+        ///
+        /// \see remove(SharedObjectPtr<Object>)
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(OBJECT* object);
+        virtual void remove(Object* object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes all objects that were added to the group.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllObjects();
 
@@ -226,11 +252,11 @@ namespace tgui
         /// \see unfocusAllObjects
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void focusObject(OBJECT* const object);
+        virtual void focusObject(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocuses an object.
+        /// \brief Unfocus an object.
         ///
         /// The next object will be focused.
         ///
@@ -240,11 +266,11 @@ namespace tgui
         /// \see unfocusAllObjects
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void unfocusObject(OBJECT* const object);
+        virtual void unfocusObject(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocuses all the objects.
+        /// \brief Unfocus all the objects.
         ///
         /// \see focusObject
         /// \see unfocusObject
@@ -255,38 +281,79 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Uncheck all the radio buttons.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void uncheckRadioButtons();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a callback to the list in tgui::Window.
-        ///
-        /// This callback can be obtained by calling the getCallback function of the window.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addCallback(const Callback& callback) = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Update the internal clock to make animation possible.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void updateTime(const sf::Time& elapsedTime);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Places an object before all other objects.
+        ///
+        /// \param object  The object that should be moved to the front
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void moveObjectToFront(OBJECT* object);
+        virtual void moveObjectToFront(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Places an object behind all other objects.
+        ///
+        /// \param object  The object that should be moved to the back
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void moveObjectToBack(OBJECT* object);
+        virtual void moveObjectToBack(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+        // This function is used internally by child object to alert there parent about a callback.
+        // If it reaches the window, then the callback can be obtained by calling the getCallback function of the window.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void addChildCallback(Callback& callback) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Bind a function to the callbacks of all child objects.
+        ///
+        /// When a child object tells this object about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this object.
+        ///
+        /// \param func  Pointer to a free function with a reference to a Callback object as parameter.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void bindGlobalCallback(boost::function<void(const tgui::Callback&)> func);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Bind a function to the callbacks of all child objects.
+        ///
+        /// When a child object tells this object about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this object.
+        ///
+        /// \param func  Pointer to a member function with a reference to a Callback object as parameter.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        void bindGlobalCallback(void (T::*func)(const tgui::Callback&), const T* const c)
+        {
+            m_GlobalCallbackFunctions.push_back(boost::bind(func, c, _1));
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Unbind the global callback function(s).
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void unbindGlobalCallback();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Used internally to get the size of a group object.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Vector2f getDisplaySize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will call the draw function from all the objects in the correct order.
@@ -295,22 +362,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /// The internal font, used by all objects by default. If not changed then this is the default SFML font.
-        sf::Font globalFont;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+      protected:
 
         std::vector<sf::String>  m_ObjName;
+
+        sf::Font m_GlobalFont;
 
         // The internal event manager
         EventManager m_EventManager;
 
         // Is the group focused? If so, then one of the objects inside the group may be focused
         bool m_GroupFocused;
+
+        // A list that stores all functions that receive callbacks triggered by child objects
+        std::list< boost::function<void(const Callback&)> > m_GlobalCallbackFunctions;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,4 +386,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_TGUI_GROUP_INCLUDED_
+#endif // TGUI_GROUP_HPP

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Slider.hpp>
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/ListBox.hpp>
+#include <TGUI/ComboBox.hpp>
 
 #include <SFML/OpenGL.hpp>
 #include <cmath>
@@ -42,24 +47,20 @@ namespace tgui
     m_TextureHover      (NULL),
     m_LoadedPathname    ("")
     {
-        m_ObjectType = comboBox;
+        m_Callback.objectType = Type_ComboBox;
         m_DraggableObject = true;
 
         m_ListBox = new ListBox();
         m_ListBox->setSize(50, 24);
         m_ListBox->setItemHeight(24);
-        m_ListBox->changeColors(sf::Color(255, 255, 255),
-                                sf::Color(  0,   0,   0),
-                                sf::Color( 50, 100, 200),
-                                sf::Color(255, 255, 255),
-                                sf::Color(  0,   0,   0));
+        m_ListBox->changeColors();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& copy) :
-    OBJECT              (copy),
-    OBJECT_BORDERS      (copy),
+    Object              (copy),
+    ObjectBorders       (copy),
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListBox    (copy.m_MouseOnListBox),
     m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),
@@ -89,8 +90,8 @@ namespace tgui
         if (this != &right)
         {
             ComboBox temp(right);
-            this->OBJECT::operator=(right);
-            this->OBJECT_BORDERS::operator=(right);
+            this->Object::operator=(right);
+            this->ObjectBorders::operator=(right);
 
             // Delete the old list box
             delete m_ListBox;
@@ -111,13 +112,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::initialize()
-    {
-        m_ListBox->setTextFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ComboBox* ComboBox::clone()
     {
         return new ComboBox(*this);
@@ -125,7 +119,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string pathname, float width, float height, unsigned int nrOfItemsInList, const std::string scrollbarPathname)
+    bool ComboBox::load(const std::string& pathname, float width, float height, unsigned int nrOfItemsInList, const std::string& scrollbarPathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -271,20 +265,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u ComboBox::getSize() const
+    Vector2f ComboBox::getSize() const
     {
         if (m_Loaded)
-            return Vector2u(m_ListBox->getSize().x, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f ComboBox::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_ListBox->getSize().x * getScale().x, (m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y);
+            return Vector2f(m_ListBox->getSize().x, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
         else
             return Vector2f(0, 0);
     }
@@ -435,7 +419,7 @@ namespace tgui
 
         // There is a minimum width
         if (m_ListBox->getSize().x < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
-            m_ListBox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x, static_cast<float>(m_ListBox->getSize().y));
+            m_ListBox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x, m_ListBox->getSize().y);
 
         // The item height needs to change
         m_ListBox->setItemHeight(itemHeight);
@@ -443,7 +427,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::addItem(const sf::String item)
+    int ComboBox::addItem(const sf::String& item)
     {
         // An item can only be added when the combo box was loaded correctly
         if (m_Loaded == false)
@@ -451,7 +435,7 @@ namespace tgui
 
         // Make room to add another item, until there are enough items
         if (m_NrOfItemsToDisplay > m_ListBox->getItems().size())
-            m_ListBox->setSize(static_cast<float>(m_ListBox->getSize().x), (m_ListBox->getItemHeight() * getScale().y * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * getScale().y * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
 
         // Add the item
         return m_ListBox->addItem(item);
@@ -459,30 +443,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(const sf::String itemName)
+    bool ComboBox::setSelectedItem(const sf::String& itemName)
     {
         return m_ListBox->setSelectedItem(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(unsigned int id)
+    bool ComboBox::setSelectedItem(unsigned int index)
     {
-        return m_ListBox->setSelectedItem(id);
+        return m_ListBox->setSelectedItem(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::removeItem(unsigned int id)
+    void ComboBox::deselectItem()
     {
-        m_ListBox->removeItem(id);
+        m_ListBox->deselectItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::removeItem(const sf::String itemName)
+    bool ComboBox::removeItem(unsigned int index)
     {
-        m_ListBox->removeItem(itemName);
+        return m_ListBox->removeItem(index);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::removeItem(const sf::String& itemName)
+    {
+        return m_ListBox->removeItem(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -494,16 +485,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ComboBox::getItem(const unsigned int id) const
+    sf::String ComboBox::getItem(unsigned int index) const
     {
-        return m_ListBox->getItem(id);
+        return m_ListBox->getItem(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getItemID(const sf::String itemName) const
+    int ComboBox::getItemIndex(const sf::String& itemName) const
     {
-        return m_ListBox->getItemID(itemName);
+        return m_ListBox->getItemIndex(itemName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -522,14 +513,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getSelectedItemID() const
+    int ComboBox::getSelectedItemIndex() const
     {
-        return m_ListBox->getSelectedItemID();
+        return m_ListBox->getSelectedItemIndex();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setScrollbar(const std::string scrollbarPathname)
+    bool ComboBox::setScrollbar(const std::string& scrollbarPathname)
     {
         // Remember the scrollbar pathname
         m_LoadedScrollbarPathname = scrollbarPathname;
@@ -551,7 +542,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setMaximumItems(const unsigned int maximumItems)
+    void ComboBox::setMaximumItems(unsigned int maximumItems)
     {
         m_ListBox->setMaximumItems(maximumItems);
     }
@@ -595,8 +586,9 @@ namespace tgui
                 // Pass the event to the list box
                 if (m_ListBox->mouseOnObject(x, y))
                 {
-                    // Reset the position
+                    // Reset the position and scale of the list box
                     m_ListBox->setPosition(0, 0);
+                    m_ListBox->setScale(1, 1);
 
                     m_MouseOnListBox = true;
                     return true;
@@ -607,6 +599,9 @@ namespace tgui
                 m_ListBox->setScale(1, 1);
             }
         }
+
+        if (m_MouseHover)
+            mouseLeftObject();
 
         // The mouse is not on top of the combo box
         m_MouseHover = false;
@@ -621,16 +616,13 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
         m_MouseDown = true;
 
         // Check if the list is visible and the mouse went down on top of the list box
         if ((m_ShowList == true) && (m_MouseOnListBox == true))
         {
             // Store the current selected item
-            unsigned int oldItem = m_ListBox->getSelectedItemID();
+            int oldItem = m_ListBox->getSelectedItemIndex();
 
             // Temporarily set the position and scale for the list box
             m_ListBox->setScale(getScale());
@@ -643,16 +635,13 @@ namespace tgui
             m_ListBox->setPosition(0, 0);
             m_ListBox->setScale(1, 1);
 
-            // Check if the callback should be sent to the window
-            if ((callbackID > 0) && (oldItem != m_ListBox->getSelectedItemID()))
+            // Add the callback (if the user requested it)
+            if ((oldItem != m_ListBox->getSelectedItemIndex()) && (m_CallbackFunctions[ItemSelected].empty() == false))
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::itemSelected;
-                callback.value      = m_ListBox->getSelectedItemID();
-                callback.text       = m_ListBox->getSelectedItem();
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ItemSelected;
+                m_Callback.value   = m_ListBox->getSelectedItemIndex();
+                m_Callback.text    = m_ListBox->getSelectedItem();
+                addCallback();
             }
         }
     }
@@ -707,8 +696,8 @@ namespace tgui
                 if (m_ListBox->m_Scroll != NULL)
                 {
                     // If the selected item is not visible then change the value of the scrollbar
-                    if (m_ListBox->getSelectedItemID() > m_NrOfItemsToDisplay)
-                        m_ListBox->m_Scroll->setValue((m_ListBox->getSelectedItemID() - m_NrOfItemsToDisplay) * m_ListBox->getItemHeight());
+                    if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) > m_NrOfItemsToDisplay)
+                        m_ListBox->m_Scroll->setValue((static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()) - m_NrOfItemsToDisplay + 1) * m_ListBox->getItemHeight());
                     else
                         m_ListBox->m_Scroll->setValue(0);
                 }
@@ -727,8 +716,8 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
+        if (m_MouseHover == false)
+            mouseEnteredObject();
 
         m_MouseHover = true;
 
@@ -745,6 +734,55 @@ namespace tgui
             // Reset the position and scale of the list box
             m_ListBox->setPosition(0, 0);
             m_ListBox->setScale(1, 1);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::mouseWheelMoved(int delta)
+    {
+        // Check if the list is displayed
+        if (m_ShowList)
+        {
+            // Only do something when there is a scrollbar
+            if (m_ListBox->m_Scroll != NULL)
+            {
+                if (m_ListBox->m_Scroll->getLowValue() < m_ListBox->m_Scroll->getMaximum())
+                {
+                    // Check if you are scrolling down
+                    if (delta < 0)
+                    {
+                        // Scroll down
+                        m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ListBox->m_ItemHeight / 2)) );
+                    }
+                    else // You are scrolling up
+                    {
+                        unsigned int change = static_cast<unsigned int>(delta) * (m_ListBox->m_ItemHeight / 2);
+
+                        // Scroll up
+                        if (change < m_ListBox->m_Scroll->getValue())
+                            m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() - change );
+                        else
+                            m_ListBox->m_Scroll->setValue(0);
+                    }
+                }
+            }
+        }
+        else // The list isn't visible
+        {
+            // Check if you are scrolling down
+            if (delta < 0)
+            {
+                // select the next item
+                if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) < m_ListBox->m_Items.size())
+                    m_ListBox->setSelectedItem(static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()+1));
+            }
+            else // You are scrolling up
+            {
+                // select the previous item
+                if (m_ListBox->getSelectedItemIndex() > 0)
+                    m_ListBox->setSelectedItem(static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()-1));
+            }
         }
     }
 
@@ -784,6 +822,14 @@ namespace tgui
         m_ListBox->mouseNoLongerDown();
 
         m_ShowList = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_ListBox->setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

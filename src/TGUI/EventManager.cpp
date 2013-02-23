@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/GroupObject.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,9 +36,6 @@ namespace tgui
     m_FocusedObject(0),
     m_Parent       (NULL)
     {
-        // Reset all the key flags
-        for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
-            m_KeyPress[i] = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,23 +62,21 @@ namespace tgui
                     else if (m_Objects[i]->m_GroupObject)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                        static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
                 }
             }
 
-
-            unsigned int objectNr;
-
             // Check if the mouse is on top of an object
+            unsigned int objectNr;
             if (mouseOnObject(objectNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
             {
                 // Check if the object is a group
                 if (m_Objects[objectNr]->m_GroupObject)
                 {
                     // Make the event handler of the group do the rest
-                    static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                    static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 }
                 else // Send the event to the object
                     m_Objects[objectNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
@@ -93,13 +89,12 @@ namespace tgui
             // Check if the left mouse was pressed
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                unsigned int objectNr;
-
                 // Check if the mouse is on top of an object
+                unsigned int objectNr;
                 if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
                     // Focus the object
-                    focusObject(m_Objects[objectNr]);
+                    focusObject(m_Objects[objectNr].get());
 
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_GroupObject)
@@ -113,7 +108,7 @@ namespace tgui
                         }
 
                         // Make the event handler of the group do the rest
-                        static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // The event has to be sent to an object
                         m_Objects[objectNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
@@ -129,16 +124,15 @@ namespace tgui
             // Check if the left mouse was released
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                unsigned int objectNr;
-
                 // Check if the mouse is on top of an object
+                unsigned int objectNr;
                 if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
                     // Check if the object is a group
                     if (m_Objects[objectNr]->m_GroupObject)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<GroupObject*>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // Send the event to the object
                         m_Objects[objectNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
@@ -149,7 +143,7 @@ namespace tgui
                         if (i != objectNr)
                         {
                             if (m_Objects[i]->m_GroupObject)
-                                static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                                static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                             else
                                 m_Objects[i]->mouseNoLongerDown();
                         }
@@ -161,7 +155,7 @@ namespace tgui
                     for (unsigned int i=0; i<m_Objects.size(); ++i)
                     {
                         if (m_Objects[i]->m_GroupObject)
-                            static_cast<GroupObject*>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                            static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                         else
                             m_Objects[i]->mouseNoLongerDown();
                     }
@@ -172,31 +166,33 @@ namespace tgui
         // Check if a key was pressed
         else if (event.type == sf::Event::KeyPressed)
         {
-            // Mark the key as down
-            m_KeyPress[event.key.code] = true;
-
-            // Check if there is a focused object
-            if (m_FocusedObject)
+            // Only continue when the character was recognised
+            if (event.key.code != sf::Keyboard::Unknown)
             {
-                // Check if the object is a group
-                if (m_Objects[m_FocusedObject-1]->m_GroupObject)
+                // Check if there is a focused object
+                if (m_FocusedObject)
                 {
-                    // Make the event handler of the group do the rest
-                    static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
-                }
-                else // The event has to be send to a normal object
-                {
-                    // Some keys may be repeated
-                    if ((event.key.code == sf::Keyboard::Left)
-                     || (event.key.code == sf::Keyboard::Right)
-                     || (event.key.code == sf::Keyboard::Up)
-                     || (event.key.code == sf::Keyboard::Down)
-                     || (event.key.code == sf::Keyboard::BackSpace)
-                     || (event.key.code == sf::Keyboard::Delete)
-                     || (event.key.code == sf::Keyboard::Return))
+                    // Check if the object is a group
+                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                     {
-                        // Tell the object that the key was pressed
-                        m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
+                        // Make the event handler of the group do the rest
+                        static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->handleEvent(event);
+                    }
+                    else // The event has to be send to a normal object
+                    {
+                        // Check the pressed key
+                        if ((event.key.code == sf::Keyboard::Left)
+                         || (event.key.code == sf::Keyboard::Right)
+                         || (event.key.code == sf::Keyboard::Up)
+                         || (event.key.code == sf::Keyboard::Down)
+                         || (event.key.code == sf::Keyboard::BackSpace)
+                         || (event.key.code == sf::Keyboard::Delete)
+                         || (event.key.code == sf::Keyboard::Space)
+                         || (event.key.code == sf::Keyboard::Return))
+                        {
+                            // Tell the object that the key was pressed
+                            m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
+                        }
                     }
                 }
             }
@@ -205,55 +201,12 @@ namespace tgui
         // Check if a key was released
         else if (event.type == sf::Event::KeyReleased)
         {
-            // We don't handle the tab key as it is an exception
-            if (event.key.code != sf::Keyboard::Tab)
-            {
-                // Check if nothing happend since the key was pressed
-                if (m_KeyPress[event.key.code] == true)
-                {
-                    // Mark the key as released
-                    m_KeyPress[event.key.code] = false;
-
-                    // Check if there is a focused object
-                    if (m_FocusedObject)
-                    {
-                        // Check if the object is a group
-                        if (m_Objects[m_FocusedObject-1]->m_GroupObject)
-                        {
-                            // Make the event handler of the group do the rest
-                            static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
-                        }
-                        else // The event has to be send to a normal object
-                        {
-                            // Avoid double callback with keys that can be repeated
-                            if ((event.key.code != sf::Keyboard::Left)
-                             && (event.key.code != sf::Keyboard::Right)
-                             && (event.key.code != sf::Keyboard::Up)
-                             && (event.key.code != sf::Keyboard::Down)
-                             && (event.key.code != sf::Keyboard::BackSpace)
-                             && (event.key.code != sf::Keyboard::Delete)
-                             && (event.key.code != sf::Keyboard::Return))
-                            {
-                                // Tell the object that the key was pressed
-                                m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
-                            }
-                        }
-                    }
-                }
-            }
-            // Also check the tab key
-            else if (event.key.code == sf::Keyboard::Tab)
-            {
-                // Check if nothing happend since the tab key was pressed
-                if (m_KeyPress[sf::Keyboard::Tab] == true)
-                {
-                    // Change the focus to another object
-                    tabKeyPressed();
-                }
-            }
+            // Change the focus to another object when the tab key was pressed
+            if (event.key.code == sf::Keyboard::Tab)
+                tabKeyPressed();
         }
 
-        // Also chack if text was entered (not a special key)
+        // Also check if text was entered (not a special key)
         else if (event.type == sf::Event::TextEntered)
         {
             // Check if the character that we pressed is allowed
@@ -266,24 +219,42 @@ namespace tgui
                     if (m_Objects[m_FocusedObject-1]->m_GroupObject)
                     {
                         // Make the event handler of the group do the rest
-                        static_cast<GroupObject*>(m_Objects[m_FocusedObject-1])->handleEvent(event);
+                        static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->handleEvent(event);
                     }
                     else // Tell the object that the key was pressed
                         m_Objects[m_FocusedObject-1]->textEntered(event.text.unicode);
                 }
             }
         }
+
+        // Check for mouse wheel scrolling
+        else if (event.type == sf::Event::MouseWheelMoved)
+        {
+            // Find the object under the mouse
+            unsigned int objectNr;
+            if (mouseOnObject(objectNr, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)))
+            {
+                // Check if the object is a group
+                if (m_Objects[objectNr]->m_GroupObject)
+                {
+                    // Make the event handler of the group do the rest
+                    static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+                }
+                else // Send the event to the object
+                    m_Objects[objectNr]->mouseWheelMoved(event.mouseWheel.delta);
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::focusObject(OBJECT* object)
+    void EventManager::focusObject(Object *const object)
     {
         // Loop all the objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_Objects.size(); ++i)
         {
             // Search for the object that has to be focused
-            if (m_Objects[i] == object)
+            if (m_Objects[i].get() == object)
             {
                 // Only continue when the object wasn't already focused
                 if (m_FocusedObject != i+1)
@@ -297,15 +268,9 @@ namespace tgui
 
                     // Focus the new object
                     m_FocusedObject = i+1;
-                    m_Objects[i]->m_Focused = true;
-                    m_Objects[i]->objectFocused();
+                    object->m_Focused = true;
+                    object->objectFocused();
                 }
-                else
-                    m_Objects[i]->m_Focused = true;
-
-                // Another object is focused. Clear all key flags
-                for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
-                    m_KeyPress[j] = false;
 
                 break;
             }
@@ -314,7 +279,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::unfocusObject(OBJECT* object)
+    void EventManager::unfocusObject(Object *const object)
     {
         // Check if the object is focused
         if (object->m_Focused)
@@ -326,7 +291,7 @@ namespace tgui
             if (object->m_Focused)
             {
                 object->m_Focused = false;
-                m_Objects[m_FocusedObject-1]->objectUnfocused();
+                object->objectUnfocused();
                 m_FocusedObject = 0;
             }
         }
@@ -352,16 +317,11 @@ namespace tgui
         for (unsigned int i=0; i<m_Objects.size(); ++i)
         {
             // Check if the object is a group or an object that uses the time
-            if (m_Objects[i]->m_GroupObject)
-                dynamic_cast<Group*>(m_Objects[i])->updateTime(elapsedTime);
-            else if (m_Objects[i]->m_AnimatedObject)
+            if (m_Objects[i]->m_AnimatedObject)
             {
-                // Convert the object
-                OBJECT_ANIMATION* object = dynamic_cast<OBJECT_ANIMATION*>(m_Objects[i]);
-
                 // Update the elapsed time
-                object->m_AnimationTimeElapsed += elapsedTime;
-                object->update();
+                m_Objects[i]->m_AnimationTimeElapsed += elapsedTime;
+                m_Objects[i]->update();
             }
         }
     }
@@ -380,15 +340,8 @@ namespace tgui
             if (m_Objects[m_FocusedObject-1]->m_GroupObject)
             {
                 // Focus the next object in group
-                if (static_cast<tgui::GroupObject*>(m_Objects[m_FocusedObject-1])->focusNextObject())
-                {
-                    // Another object is focused. Clear all key flags
-                    for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
-                        m_KeyPress[i] = false;
-
-                    // Don't continue, the group has made the needed changes in his event manager
+                if (static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->focusNextObject())
                     return;
-                }
             }
         }
 
@@ -412,11 +365,6 @@ namespace tgui
                     m_FocusedObject = i+1;
                     m_Objects[i]->m_Focused = true;
                     m_Objects[i]->objectFocused();
-
-                    // Another object is focused. Clear all key flags
-                    for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
-                        m_KeyPress[j] = false;
-
                     return;
                 }
             }
@@ -441,11 +389,6 @@ namespace tgui
                         m_FocusedObject = i+1;
                         m_Objects[i]->m_Focused = true;
                         m_Objects[i]->objectFocused();
-
-                        // Another object is focused. Clear all key flags
-                        for (unsigned int j=0; j<sf::Keyboard::KeyCount; ++j)
-                            m_KeyPress[j] = false;
-
                         return;
                     }
                 }
@@ -460,10 +403,6 @@ namespace tgui
         // Don't do anything when the tab key usage is disabled
         if (tabKeyUsageEnabled == false)
             return false;
-
-        // Another object will be focused. Clear all key flags
-        for (unsigned int i=0; i<sf::Keyboard::KeyCount; ++i)
-        m_KeyPress[i] = false;
 
         // Loop through all objects
         for (unsigned int i=m_FocusedObject; i<m_Objects.size(); ++i)

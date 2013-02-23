@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Checkbox.hpp>
+#include <TGUI/RadioButton.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +36,7 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_ObjectType = radioButton;
+        m_Callback.objectType = Type_RadioButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +73,7 @@ namespace tgui
         m_Parent->uncheckRadioButtons();
 
         // Check this radio button
-        m_Checked = true;
+        Checkbox::check();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +81,24 @@ namespace tgui
     void RadioButton::uncheck()
     {
         // The radio button can't be unchecked, so we override the original function with an empty one.
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RadioButton::forceUncheck()
+    {
+        if (m_Checked)
+        {
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[Unchecked].empty() == false)
+            {
+                m_Callback.trigger = Unchecked;
+                m_Callback.checked = false;
+                addCallback();
+            }
+        }
+
+        m_Checked = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

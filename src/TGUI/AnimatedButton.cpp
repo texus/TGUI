@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/AnimatedButton.hpp>
 
 #include <cmath>
 
@@ -39,7 +41,7 @@ namespace tgui
     m_TextSize          (0),
     m_CurrentFrame      (1)
     {
-        m_ObjectType = animatedButton;
+        m_Callback.objectType = Type_AnimatedButton;
         m_AnimatedObject = true;
 
         m_Text.setColor(sf::Color::Black);
@@ -48,9 +50,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimatedButton::AnimatedButton(const AnimatedButton& copy) :
-    OBJECT               (copy),
-    OBJECT_ANIMATION     (copy),
-    m_Size               (copy.m_Size),
+    ClickableObject      (copy),
     m_DurationsNormal    (copy.m_DurationsNormal),
     m_DurationsMouseHover(copy.m_DurationsMouseHover),
     m_DurationsMouseDown (copy.m_DurationsMouseDown),
@@ -135,10 +135,8 @@ namespace tgui
         if (this != &right)
         {
             AnimatedButton temp(right);
-            this->OBJECT::operator=(right);
-            this->OBJECT_ANIMATION::operator=(right);
+            this->ClickableObject::operator=(right);
 
-            std::swap(m_Size,                temp.m_Size);
             std::swap(m_TexturesNormal,      temp.m_TexturesNormal);
             std::swap(m_TexturesMouseHover,  temp.m_TexturesMouseHover);
             std::swap(m_TexturesMouseDown,   temp.m_TexturesMouseDown);
@@ -163,13 +161,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::initialize()
-    {
-        m_Text.setFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     AnimatedButton* AnimatedButton::clone()
     {
         return new AnimatedButton(*this);
@@ -177,7 +168,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedButton::load(const std::string pathname)
+    bool AnimatedButton::load(const std::string& pathname)
     {
         unsigned int i;
 
@@ -501,7 +492,7 @@ namespace tgui
                     m_DurationsFocused[id-1] = atoi(value.c_str());
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI warning: Option not recognized: \"" + property + "\".");
         }
 
         // Close the info file
@@ -541,26 +532,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u AnimatedButton::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f AnimatedButton::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string AnimatedButton::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -568,7 +539,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::setText(const sf::String text)
+    void AnimatedButton::setText(const sf::String& text)
     {
         // Don't do anything when the button wasn't loaded correctly
         if (m_Loaded == false)
@@ -637,7 +608,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::setTextSize(const unsigned int size)
+    void AnimatedButton::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -696,12 +667,13 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the button
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
         else
         {
             if (m_MouseHover == true)
             {
+                mouseLeftObject();
                 m_MouseHover = false;
                 m_CurrentFrame = 1;
             }
@@ -713,32 +685,44 @@ namespace tgui
 
     void AnimatedButton::leftMousePressed(float x, float y)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
         // Set the mouse down flag
         m_MouseDown = true;
         m_CurrentFrame = 1;
+
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMousePressed].empty() == false)
+        {
+            m_Callback.trigger = LeftMousePressed;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void AnimatedButton::leftMouseReleased(float x, float y)
     {
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
+        {
+            m_Callback.trigger = LeftMouseReleased;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
+
         // Check if we clicked on the button (not just mouse release)
         if (m_MouseDown == true)
         {
+
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[LeftMouseClicked].empty() == false)
             {
-                Callback callback;
-                callback.object      = this;
-                callback.callbackID  = callbackID;
-                callback.trigger     = Callback::mouseClick;
-                callback.mouseButton = sf::Mouse::Left;
-                callback.mouseX      = x - getPosition().x;
-                callback.mouseY      = y - getPosition().y;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = LeftMouseClicked;
+                m_Callback.mouse.x = x - getPosition().x;
+                m_Callback.mouse.y = y - getPosition().y;
+                addCallback();
             }
 
             m_MouseDown = false;
@@ -748,13 +732,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedButton::mouseMoved(float x, float y)
+    void AnimatedButton::mouseMoved(float, float)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
         if (m_MouseHover == false)
         {
+            mouseEnteredObject();
             m_MouseHover = true;
             m_CurrentFrame = 1;
         }
@@ -768,25 +750,19 @@ namespace tgui
         if (key == sf::Keyboard::Space)
         {
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[SpaceKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Space;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = SpaceKeyPressed;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::Return)
         {
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Return;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ReturnKeyPressed;
+                addCallback();
             }
         }
     }
@@ -798,6 +774,8 @@ namespace tgui
         // We can't be focused when we don't have a focus image
         if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
             m_Parent->unfocusObject(this);
+        else
+            Object::objectFocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -806,6 +784,7 @@ namespace tgui
     {
         if (m_MouseHover == true)
         {
+            mouseLeftObject();
             m_MouseHover = false;
             m_CurrentFrame = 1;
         }
@@ -824,7 +803,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedButton::getLoadingID(std::string property)
+    unsigned int AnimatedButton::getLoadingID(const std::string& property)
     {
         // Get the image id
         unsigned int id = atoi(property.c_str());
@@ -842,6 +821,14 @@ namespace tgui
         }
 
         return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void AnimatedButton::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        m_Text.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

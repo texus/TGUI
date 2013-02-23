@@ -49,9 +49,9 @@ int main()
         std::cerr << "Failed to load DejaVuSans.ttf" << std::endl;
         return 1;
     }
-    app.mainWindow.globalFont = font;
-    app.propertyWindow.globalFont = font;
-    app.objectsWindow.globalFont = font;
+    app.mainWindow.setGlobalFont(font);
+    app.propertyWindow.setGlobalFont(font);
+    app.objectsWindow.setGlobalFont(font);
 
     // Initialize the objects window
     if (!app.objectsWindow.loadObjectsFromFile("FormObjectsWindow.txt"))
@@ -60,8 +60,15 @@ int main()
         return 1;
     }
 
+    // The objects loaded from the file should send callback
+    std::vector<tgui::Object::Ptr> objects = app.objectsWindow.getObjects();
+    for (unsigned int i = 0; i < objects.size(); ++i)
+    {
+        objects[i]->bindCallback(tgui::ClickableObject::LeftMouseClicked);
+    }
+
     // Select the window by default
-    app.newObject(tgui::window);
+    app.newObject(tgui::Type_Unknown);
 
     // Quit when the window is closed
     while (app.mainWindow.isOpen())
@@ -89,7 +96,7 @@ int main()
                     app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                     // Change the size of the transparent image
-                    app.mainWindow.get<tgui::Picture>("1")->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+                    static_cast<tgui::Picture::Ptr>(app.mainWindow.get("1"))->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
 
                     // Pass the change to tgui
                     app.mainWindow.handleEvent(event);
@@ -486,27 +493,27 @@ int main()
         tgui::Callback callback;
 
         // Get the callback from the objects window
-        while (app.objectsWindow.getCallback(callback))
+        while (app.objectsWindow.pollCallback(callback))
         {
             // Check if the load of save button was pressed
-            if (callback.callbackID == 20)
+            if (callback.callbackId == 20)
                 app.loadForm();
-            else if (callback.callbackID == 21)
+            else if (callback.callbackId == 21)
                 app.saveForm();
             else // Add an object to the form
-                app.newObject(callback.callbackID);
+                app.newObject(callback.callbackId);
         }
 
         // Get the callback from the property window
-        while (app.propertyWindow.getCallback(callback))
+        while (app.propertyWindow.pollCallback(callback))
         {
             // Check if you clicked the delete button
-            if (callback.callbackID == 50)
+            if (callback.callbackId == 50)
                 app.deleteObject();
             else // A property was changed
             {
                 // Update the property
-                app.updateProperty(callback.callbackID - 1);
+                app.updateProperty(callback.callbackId - 1);
 
                 // Just in case the width of height would have changed, store the aspect ratio
                 app.storeObjectsNewAspectRatio();
@@ -533,3 +540,4 @@ int main()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

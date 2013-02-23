@@ -7,7 +7,7 @@
 # When you try to locate the SFML libraries, you must specify which modules you want to use (system, window, graphics, network, audio, main).
 # If none is given, the SFML_LIBRARIES variable will be empty and you'll end up linking to nothing.
 # example:
-#   find_package(SFML COMPONENTS system window graphics) // find the system, graphics and window modules
+#   find_package(SFML COMPONENTS graphics window system) // find the graphics, window and system modules
 #
 # You can enforce a specific version, either MAJOR.MINOR or only MAJOR.
 # If nothing is specified, the version won't be checked (ie. any version will be accepted).
@@ -21,14 +21,14 @@
 # In case of static linking, the SFML_STATIC macro will also be defined by this script.
 # example:
 #   set(SFML_STATIC_LIBRARIES TRUE)
-#   find_package(SFML 2 COMPONENTS system network)
+#   find_package(SFML 2 COMPONENTS network system)
 #
 # On Mac OS X if SFML_STATIC_LIBRARIES is not set to TRUE then by default CMake will search for frameworks unless
 # CMAKE_FIND_FRAMEWORK is set to "NEVER" for example. Please refer to CMake documentation for more details.
 # Moreover, keep in mind that SFML frameworks are only available as release libraries unlike dylibs which
 # are available for both release and debug modes.
 #
-# If SFML is not installed in a standard path, you can use the SFMLDIR CMake (or environment) variable
+# If SFML is not installed in a standard path, you can use the SFML_ROOT CMake (or environment) variable
 # to tell CMake where SFML is.
 #
 # Output
@@ -65,8 +65,8 @@ endif()
 find_path(SFML_INCLUDE_DIR SFML/Config.hpp
           PATH_SUFFIXES include
           PATHS
-          ${SFMLDIR}
-          $ENV{SFMLDIR}
+          ${SFML_ROOT}
+          $ENV{SFML_ROOT}
           ~/Library/Frameworks
           /Library/Frameworks
           /usr/local/
@@ -80,7 +80,13 @@ find_path(SFML_INCLUDE_DIR SFML/Config.hpp
 set(SFML_VERSION_OK TRUE)
 if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
     # extract the major and minor version numbers from SFML/Config.hpp
-    FILE(READ "${SFML_INCLUDE_DIR}/SFML/Config.hpp" SFML_CONFIG_HPP_CONTENTS)
+    # we have to handle framework a little bit differently :
+    if("${SFML_INCLUDE_DIR}" MATCHES "SFML.framework")
+        set(SFML_CONFIG_HPP_INPUT "${SFML_INCLUDE_DIR}/Headers/Config.hpp")
+    else()
+        set(SFML_CONFIG_HPP_INPUT "${SFML_INCLUDE_DIR}/SFML/Config.hpp")
+    endif()
+    FILE(READ "${SFML_CONFIG_HPP_INPUT}" SFML_CONFIG_HPP_CONTENTS)
     STRING(REGEX MATCH ".*#define SFML_VERSION_MAJOR ([0-9]+).*#define SFML_VERSION_MINOR ([0-9]+).*" SFML_CONFIG_HPP_CONTENTS "${SFML_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define SFML_VERSION_MAJOR ([0-9]+).*" "\\1" SFML_VERSION_MAJOR "${SFML_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define SFML_VERSION_MINOR ([0-9]+).*" "\\1" SFML_VERSION_MINOR "${SFML_CONFIG_HPP_CONTENTS}")
@@ -108,8 +114,8 @@ endif()
 # find the requested modules
 set(SFML_FOUND TRUE) # will be set to false if one of the required modules is not found
 set(FIND_SFML_LIB_PATHS
-    ${SFMLDIR}
-    $ENV{SFMLDIR}
+    ${SFML_ROOT}
+    $ENV{SFML_ROOT}
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local
@@ -199,5 +205,5 @@ endif()
 
 # handle success
 if(SFML_FOUND)
-    message("Found SFML: ${SFML_INCLUDE_DIR}")
+    message(STATUS "Found SFML ${SFML_VERSION_MAJOR}.${SFML_VERSION_MINOR} in ${SFML_INCLUDE_DIR}")
 endif()

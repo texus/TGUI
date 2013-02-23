@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,25 +23,31 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _TGUI_EVENT_MANAGER_INCLUDED_
-#define _TGUI_EVENT_MANAGER_INCLUDED_
+#ifndef TGUI_EVENT_MANAGER_HPP
+#define TGUI_EVENT_MANAGER_HPP
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    template <class T>
+    class SharedObjectPtr;
+
+    class Object;
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  Keeps track of all objects and passes the events to them.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    struct TGUI_API EventManager : public sf::NonCopyable
+    class TGUI_API EventManager : public sf::NonCopyable
     {
+      public:
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // The default constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         EventManager();
 
-
-    protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // When this function is called then all the objects receive the event (if there are objects).
@@ -53,17 +59,17 @@ namespace tgui
         // You can use this function to change the focus to another object.
         // You cannot manually call this function. You should call the focus function from the object's parent instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void focusObject(OBJECT* const object);
+        virtual void focusObject(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Unfocuses the given object.
+        // Unfocus the given object.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void unfocusObject(OBJECT* const object);
+        virtual void unfocusObject(Object *const object);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Unfocuses all the objects.
+        // Unfocus all the objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void unfocusAllObjects();
 
@@ -112,33 +118,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+      protected:
 
         // This vector will hold all objects
-        std::vector<OBJECT*> m_Objects;
+        std::vector< SharedObjectPtr<Object> > m_Objects;
 
         // The id of the focused object
         unsigned int m_FocusedObject;
 
-        // When one of the elements of the array becomes true then the key is held down.
-        // When nothing happend (e.g. focus another object) and it goes up again then the focused object receives a signal.
-        // When something happens then this key will also becomes false again (while the key is still down).
-        // Not all elements are used, only a few elements of the array are changed.
-        bool m_KeyPress[sf::Keyboard::KeyCount];
-
-        // A pointer to the struct that owns the event manager (NULL when it is the window)
-        OBJECT* m_Parent;
+        // A pointer to the class that owns the event manager (NULL when it is the window)
+        Object* m_Parent;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // The event handler can only be used by objects and by the window
-        friend struct Group;
-        friend struct GroupObject;
-        friend struct Panel;
-        friend struct ChildWindow;
-        friend struct Grid;
-        friend struct Window;
-        friend struct Form;
+        // The event handler can only be used by group objects and by the window
+        friend class Grid;
+        friend class Group;
+        friend class GroupObject;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -149,5 +145,5 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_TGUI_EVENT_MANAGER_INCLUDED_
+#endif // TGUI_EVENT_MANAGER_HPP
 

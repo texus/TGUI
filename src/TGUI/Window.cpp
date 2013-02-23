@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/Window.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -74,7 +75,7 @@ namespace tgui
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)
         {
-            Vector2f mouseCoords = convertCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), getView());
+            Vector2f mouseCoords = mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), getView());
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -82,7 +83,7 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            Vector2f mouseCoords = convertCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), getView());
+            Vector2f mouseCoords = mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), getView());
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -95,7 +96,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Window::drawGUI(const sf::RenderStates& states)
+    void Window::drawGUI()
     {
         // Update the time
         updateTime(m_Clock.restart());
@@ -117,7 +118,7 @@ namespace tgui
         }
 
         // Draw the window with all objects inside it
-        drawObjectGroup(this, states);
+        drawObjectGroup(this, sf::RenderStates::Default);
 
         // Check if clipping was previously enabled
         if (clippingEnabled)
@@ -134,7 +135,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Window::getCallback(Callback& callback)
+    bool Window::pollCallback(Callback& callback)
     {
         // Check if the callback queue is empty
         if (m_Callback.empty())
@@ -153,10 +154,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Window::addCallback(const Callback& callback)
+    void Window::updateTime(const sf::Time& elapsedTime)
     {
-        // Add the callback to the list
-        m_Callback.push(callback);
+        m_EventManager.updateTime(elapsedTime);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::addChildCallback(Callback& callback)
+    {
+        // If there is no global callback function then add the callback to the queue
+        if (m_GlobalCallbackFunctions.empty())
+            m_Callback.push(callback);
+        else
+        {
+            // Loop through all callback functions and call them
+            for (std::list< boost::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
+                (*it)(callback);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Window::getDisplaySize()
+    {
+        return Vector2f(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

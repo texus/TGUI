@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Picture.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,17 +35,15 @@ namespace tgui
 
     Picture::Picture() :
     m_Texture       (NULL),
-    m_Size          (0, 0),
     m_LoadedFilename("")
     {
-        m_ObjectType = picture;
+        m_Callback.objectType = Type_Picture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
-    OBJECT          (copy),
-    m_Size          (copy.m_Size),
+    ClickableObject (copy),
     m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
@@ -68,11 +68,10 @@ namespace tgui
         if (this != &right)
         {
             Picture temp(right);
-            this->OBJECT::operator=(right);
+            this->ClickableObject::operator=(right);
 
             std::swap(m_Texture,        temp.m_Texture);
             std::swap(m_Sprite,         temp.m_Sprite);
-            std::swap(m_Size,           temp.m_Size);
             std::swap(m_LoadedFilename, temp.m_LoadedFilename);
         }
 
@@ -88,7 +87,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::load(const std::string filename)
+    bool Picture::load(const std::string& filename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -125,39 +124,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setSize(float width, float height)
-    {
-        // Make sure that the picture was already loaded
-        if (m_Loaded == false)
-            return;
-
-        // Store the new size
-        m_Size.x = width;
-        m_Size.y = height;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2u Picture::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f Picture::getScaledSize() const
-    {
-        if (m_Loaded)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string Picture::getLoadedFilename() const
     {
         return m_LoadedFilename;
@@ -172,58 +138,32 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the picture
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
             Vector2f scaling;
             scaling.x = m_Size.x / m_Texture->getSize().x * getScale().x;
             scaling.y = m_Size.y / m_Texture->getSize().y * getScale().y;
 
             // Only return true when the pixel under the mouse isn't transparent
-            return !TGUI_TextureManager.isTransparentPixel(m_Texture, static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y));
+            if (!TGUI_TextureManager.isTransparentPixel(m_Texture, static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+                return true;
         }
-        else
-            return false;
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (m_MouseHover == true)
+            mouseLeftObject();
 
-    void Picture::leftMousePressed(float x, float y)
-    {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
-
-        // Set the mouse down flag
-        m_MouseDown = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Picture::leftMouseReleased(float x, float y)
-    {
-        // Check if we clicked on the picture (not just mouse release)
-        if (m_MouseDown == true)
-        {
-            // Add the callback (if the user requested it)
-            if (callbackID > 0)
-            {
-                Callback callback;
-                callback.object      = this;
-                callback.callbackID  = callbackID;
-                callback.trigger     = Callback::mouseClick;
-                callback.mouseButton = sf::Mouse::Left;
-                callback.mouseX      = x - getPosition().x;
-                callback.mouseY      = y - getPosition().y;
-                m_Parent->addCallback(callback);
-            }
-
-            m_MouseDown = false;
-        }
+        m_MouseHover = false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Don't continue when the picture wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
         states.transform *= getTransform();
         states.transform.scale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
         target.draw(m_Sprite, states);

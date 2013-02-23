@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/EditBox.hpp>
 
 #include <SFML/OpenGL.hpp>
 #include <cmath>
@@ -35,13 +37,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox() :
-    selectionPointWidth     (2),
-    textAlignment           (Alignment::Left),
     m_SelectionPointVisible (true),
+    m_SelectionPointWidth   (1),
     m_LimitTextWidth        (false),
     m_DisplayedText         (""),
     m_Text                  (""),
     m_TextSize              (0),
+    m_TextAlignment         (Alignment::Left),
     m_SelChars              (0),
     m_SelStart              (0),
     m_SelEnd                (0),
@@ -61,7 +63,7 @@ namespace tgui
     m_LoadedPathname        (""),
     m_PossibleDoubleClick   (false)
     {
-        m_ObjectType = editBox;
+        m_Callback.objectType = Type_EditBox;
         m_AnimatedObject = true;
         m_DraggableObject = true;
 
@@ -71,17 +73,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox(const EditBox& copy) :
-    OBJECT                  (copy),
-    OBJECT_BORDERS          (copy),
-    OBJECT_ANIMATION        (copy),
-    selectionPointColor     (copy.selectionPointColor),
-    selectionPointWidth     (copy.selectionPointWidth),
-    textAlignment           (copy.textAlignment),
+    ClickableObject         (copy),
+    ObjectBorders           (copy),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
+    m_SelectionPointColor   (copy.m_SelectionPointColor),
+    m_SelectionPointWidth   (copy.m_SelectionPointWidth),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
     m_Text                  (copy.m_Text),
     m_TextSize              (copy.m_TextSize),
+    m_TextAlignment         (copy.m_TextAlignment),
     m_SelChars              (copy.m_SelChars),
     m_SelStart              (copy.m_SelStart),
     m_SelEnd                (copy.m_SelEnd),
@@ -90,7 +91,6 @@ namespace tgui
     m_SplitImage            (copy.m_SplitImage),
     m_TextCropPosition      (copy.m_TextCropPosition),
     m_SelectedTextBgrColor  (copy.m_SelectedTextBgrColor),
-    m_Size                  (copy.m_Size),
     m_TextBeforeSelection   (copy.m_TextBeforeSelection),
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
@@ -136,18 +136,17 @@ namespace tgui
         if (this != &right)
         {
             EditBox temp(right);
-            this->OBJECT::operator=(right);
-            this->OBJECT_BORDERS::operator=(right);
-            this->OBJECT_ANIMATION::operator=(right);
+            this->ClickableObject::operator=(right);
+            this->ObjectBorders::operator=(right);
 
-            std::swap(selectionPointColor,      temp.selectionPointColor);
-            std::swap(selectionPointWidth,      temp.selectionPointWidth);
-            std::swap(textAlignment,            temp.textAlignment);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
+            std::swap(m_SelectionPointColor,    temp.m_SelectionPointColor);
+            std::swap(m_SelectionPointWidth,    temp.m_SelectionPointWidth);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
             std::swap(m_Text,                   temp.m_Text);
             std::swap(m_TextSize,               temp.m_TextSize);
+            std::swap(m_TextAlignment,          temp.m_TextAlignment);
             std::swap(m_SelChars,               temp.m_SelChars);
             std::swap(m_SelStart,               temp.m_SelStart);
             std::swap(m_SelEnd,                 temp.m_SelEnd);
@@ -156,7 +155,6 @@ namespace tgui
             std::swap(m_SplitImage,             temp.m_SplitImage);
             std::swap(m_TextCropPosition,       temp.m_TextCropPosition);
             std::swap(m_SelectedTextBgrColor,   temp.m_SelectedTextBgrColor);
-            std::swap(m_Size,                   temp.m_Size);
             std::swap(m_TextBeforeSelection,    temp.m_TextBeforeSelection);
             std::swap(m_TextSelection,          temp.m_TextSelection);
             std::swap(m_TextAfterSelection,     temp.m_TextAfterSelection);
@@ -188,13 +186,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::initialize()
-    {
-        setTextFont(m_Parent->globalFont);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     EditBox* EditBox::clone()
     {
         return new EditBox(*this);
@@ -202,7 +193,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::load(const std::string pathname)
+    bool EditBox::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -224,7 +215,7 @@ namespace tgui
         InfoFileParser infoFile;
         if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
         {
-            TGUI_OUTPUT((((std::string("TGUI error: Failed to open ")).append(m_LoadedPathname)).append("info.txt")).c_str());
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
             return false;
         }
 
@@ -241,9 +232,13 @@ namespace tgui
             // Check what the property is
             if (property.compare("splitimage") == 0)
             {
-                // Enable SplitImage if needed
                 if ((value.compare("true") == 0) || (value.compare("1") == 0))
                     m_SplitImage = true;
+                else
+                {
+                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
+                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
+                }
             }
             else if (property.compare("phases") == 0)
             {
@@ -265,7 +260,6 @@ namespace tgui
                 sf::Color color = extractColor(value);
                 m_TextBeforeSelection.setColor(color);
                 m_TextAfterSelection.setColor(color);
-                m_TextFull.setColor(color);
             }
             else if (property.compare("selectedtextcolor") == 0)
             {
@@ -277,7 +271,11 @@ namespace tgui
             }
             else if (property.compare("selectionpointcolor") == 0)
             {
-                selectionPointColor = extractColor(value);
+                m_SelectionPointColor = extractColor(value);
+            }
+            else if (property.compare("selectionpointwidth") == 0)
+            {
+                m_SelectionPointWidth = static_cast<unsigned int>(abs(atoi(value.c_str())));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
@@ -310,6 +308,10 @@ namespace tgui
                 m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
                 m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
+
+                // Set the size of the edit box
+                m_Size.x = static_cast<float>(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
+                m_Size.y = static_cast<float>(m_TextureNormal_M->getSize().y);
             }
             else
                 return false;
@@ -349,7 +351,10 @@ namespace tgui
         {
             // load the required texture
             if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            {
                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
+                m_Size = Vector2f(m_TextureNormal_M->getSize());
+            }
             else
                 return false;
 
@@ -374,7 +379,7 @@ namespace tgui
             }
         }
 
-        // Auto scale the text
+        // Auto-size the text
         setTextSize(0);
 
         // When there is no error we will return true
@@ -412,20 +417,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u EditBox::getSize() const
-    {
-        return Vector2u(m_Size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f EditBox::getScaledSize() const
-    {
-        return Vector2f(m_Size.x * getScale().x, m_Size.y * getSize().y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string EditBox::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -433,7 +424,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setText(const sf::String text)
+    void EditBox::setText(const sf::String& text)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -544,7 +535,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setTextSize(const unsigned int size)
+    void EditBox::setTextSize(unsigned int size)
     {
         // Change the text size
         m_TextSize = size;
@@ -579,7 +570,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPasswordChar(const char passwordChar)
+    void EditBox::setPasswordChar(char passwordChar)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -601,7 +592,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setMaximumCharacters(const unsigned int maxChars)
+    void EditBox::setMaximumCharacters(unsigned int maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_MaxChars = maxChars;
@@ -656,7 +647,7 @@ namespace tgui
         m_TextSelection.setColor(selectedColor);
         m_TextAfterSelection.setColor(color);
 
-        selectionPointColor = newSelectionPointColor;
+        m_SelectionPointColor = newSelectionPointColor;
         m_SelectedTextBgrColor = selectedBgrColor;
     }
 
@@ -684,6 +675,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::setSelectionPointColor(const sf::Color& selectionPointColor)
+    {
+        m_SelectionPointColor = selectionPointColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const sf::Color& EditBox::getTextColor() const
     {
         return m_TextBeforeSelection.getColor();
@@ -701,6 +699,13 @@ namespace tgui
     const sf::Color& EditBox::getSelectedTextBackgroundColor() const
     {
         return m_SelectedTextBgrColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& EditBox::getSelectionPointColor() const
+    {
+        return m_SelectionPointColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -795,135 +800,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::findSelectionPointPosition(float posX)
+    void EditBox::setSelectionPointWidth(unsigned int width)
     {
-        // Take the scaling into account
-        posX /= getScale().x;
-
-        // This code will crash when the editbox is empty. We need to avoid this.
-        if (m_DisplayedText.isEmpty())
-            return 0;
-
-        // Find out what the first visible character is
-        unsigned int firstVisibleChar;
-        if (m_TextCropPosition)
-        {
-            // Start searching near the selection point to quickly find the character even in a very long string
-            firstVisibleChar = m_SelEnd;
-
-            // Go backwards to find the character
-            while (m_TextFull.findCharacterPos(firstVisibleChar-1).x > m_TextCropPosition)
-                --firstVisibleChar;
-        }
-        else // If the first part is visible then the first character is also visible
-            firstVisibleChar = 0;
-
-        sf::String tempString;
-        float textWidthWithoutLastChar;
-        float fullTextWidth;
-        float halfOfLastCharWidth;
-        unsigned int lastVisibleChar;
-
-        // Calculate the space inside the edit box
-        float width;
-        if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
-        else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
-
-        // If the width is negative then the editBox is too small to be displayed
-        if (width < 0)
-            width = 0;
-
-        // Find out how many pixels the text is moved
-        float pixelsToMove = 0;
-        if (textAlignment != Alignment::Left)
-        {
-            // Calculate the text width
-            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
-
-            // Check if a layout would make sense
-            if (textWidth < width)
-            {
-                // Set the number of pixels to move
-                if (textAlignment == Alignment::Center)
-                    pixelsToMove = (width - textWidth) / 2.f;
-                else // if (textAlignment == Alignment::Right)
-                    pixelsToMove = width - textWidth;
-            }
-        }
-
-        // Find out what the last visible character is, starting from the selection point
-        lastVisibleChar = m_SelEnd;
-
-        // Go forward to find the character
-        while (m_TextFull.findCharacterPos(lastVisibleChar+1).x < m_TextCropPosition + width)
-        {
-            if (lastVisibleChar == m_DisplayedText.getSize())
-                break;
-
-            ++lastVisibleChar;
-        }
-
-        // Set the first part of the text
-        tempString = m_DisplayedText.toWideString().substr(0, firstVisibleChar);
-        m_TextFull.setString(tempString);
-
-        // Calculate the first position
-        fullTextWidth = m_TextFull.findCharacterPos(firstVisibleChar).x;
-
-        // for all the other characters, check where you have clicked.
-        for (unsigned int i = firstVisibleChar; i < lastVisibleChar; ++i)
-        {
-            // Add the next character to the temporary string
-            tempString += m_DisplayedText[i];
-            m_TextFull.setString(tempString);
-
-            // Make some calculations
-            textWidthWithoutLastChar = fullTextWidth;
-            fullTextWidth = m_TextFull.findCharacterPos(i + 1).x;
-            halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
-
-            // Check if you have clicked on the first halve of that character
-            if (posX < textWidthWithoutLastChar + pixelsToMove + halfOfLastCharWidth - m_TextCropPosition)
-            {
-                m_TextFull.setString(m_DisplayedText);
-                return i;
-            }
-        }
-
-        // If you pass here then you clicked behind all the characters
-        m_TextFull.setString(m_DisplayedText);
-        return lastVisibleChar;
+        m_SelectionPointWidth = width;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::mouseOnObject(float x, float y)
+    unsigned int EditBox::getSelectionPointWidth() const
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_Loaded == false)
-            return false;
-
-        // Check if the mouse is on top of the edit box
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
-        else
-        {
-            m_MouseHover = false;
-            return false;
-        }
+        return m_SelectionPointWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::leftMousePressed(float x, float y)
     {
-        TGUI_UNUSED_PARAM(y);
-
-        unsigned int selectionPointPosition;
-        float positionX;
-
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
@@ -936,23 +828,20 @@ namespace tgui
             width = 0;
 
         // Find the selection point position
+        float positionX;
         if (m_SplitImage)
-        {
             positionX = x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M->getSize().y));
-            selectionPointPosition = findSelectionPointPosition(positionX);
-        }
         else
-        {
             positionX = x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x));
-            selectionPointPosition = findSelectionPointPosition(positionX);
-        }
+
+        unsigned int selectionPointPosition = findSelectionPointPosition(positionX);
 
         // When clicking on the left of the first character, move the pointer to the left
         if ((positionX < 0) && (selectionPointPosition > 0))
             --selectionPointPosition;
 
         // When clicking on the right of the right character, move the pointer to the right
-        if ((positionX > width) && (selectionPointPosition < m_DisplayedText.getSize()))
+        else if ((positionX > width) && (selectionPointPosition < m_DisplayedText.getSize()))
             ++selectionPointPosition;
 
         // Check if this is a double click
@@ -986,6 +875,15 @@ namespace tgui
         // Set the mouse down flag
         m_MouseDown = true;
 
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMousePressed].empty() == false)
+        {
+            m_Callback.trigger = LeftMousePressed;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
+
         // The selection point should be visible
         m_SelectionPointVisible = true;
         m_AnimationTimeElapsed = sf::Time();
@@ -993,21 +891,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::leftMouseReleased(float x, float y)
+    void EditBox::mouseMoved(float x, float)
     {
-        TGUI_UNUSED_PARAM(x);
-        TGUI_UNUSED_PARAM(y);
+        if (m_MouseHover == false)
+            mouseEnteredObject();
 
-        m_MouseDown = false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::mouseMoved(float x, float y)
-    {
-        TGUI_UNUSED_PARAM(y);
-
-        // Set the mouse move flag
+        // Set the mouse hover flag
         m_MouseHover = true;
 
         // The mouse has moved so a double click is no longer possible
@@ -1041,7 +930,7 @@ namespace tgui
                     width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
                 }
 
-                // If the width is negative then the editBox is too small to be displayed
+                // If the width is negative then the edit box is too small to be displayed
                 if (width < 0)
                     width = 0;
 
@@ -1200,14 +1089,11 @@ namespace tgui
         else if (key == sf::Keyboard::Return)
         {
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::keyPress_Return;
-                callback.text       = m_Text;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ReturnKeyPressed;
+                m_Callback.text    = m_Text;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::BackSpace)
@@ -1225,64 +1111,43 @@ namespace tgui
 
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
-            }
-            else // When you did select some characters
-            {
-            deleteSelectedCharacters:
 
-                // Check if they were selected from left to right
-                if (m_SelStart < m_SelEnd)
+                // Calculate the space inside the edit box
+                float width;
+                if (m_SplitImage)
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                else
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+                // If the width is negative then the edit box is too small to be displayed
+                if (width < 0)
+                    width = 0;
+
+                // Calculate the text width
+                float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+                // If the text can be moved to the right then do so
+                if (textWidth > width)
                 {
-                    // Erase the characters
-                    m_Text.erase(m_SelStart, m_SelChars);
-                    m_DisplayedText.erase(m_SelStart, m_SelChars);
-
-                    // Set the selection point back on the correct position
-                    setSelectionPointPosition(m_SelStart);
+                    if (textWidth - m_TextCropPosition < width)
+                        m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
                 }
-                else // When the text is selected from right to left
-                {
-                    // Erase the characters
-                    m_Text.erase(m_SelEnd, m_SelChars);
-                    m_DisplayedText.erase(m_SelEnd, m_SelChars);
-
-                    // Set the selection point back on the correct position
-                    setSelectionPointPosition(m_SelEnd);
-                }
+                else
+                    m_TextCropPosition = 0;
             }
-
-            // Calculate the space inside the edit box
-            float width;
-            if (m_SplitImage)
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
-            else
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
-
-            // Calculate the text width
-            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
-
-            // If the text can be moved to the right then do so
-            if (textWidth > width)
-            {
-                if (textWidth - m_TextCropPosition < width)
-                    m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
-            }
-            else
-                m_TextCropPosition = 0;
+            else // When you did select some characters, delete them
+                deleteSelectedCharacters();
 
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[TextChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::textChanged;
-                callback.text       = m_Text;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = TextChanged;
+                m_Callback.text    = m_Text;
+                addCallback();
             }
         }
         else if (key == sf::Keyboard::Delete)
@@ -1308,6 +1173,10 @@ namespace tgui
                 else
                     width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
 
+                // If the width is negative then the edit box is too small to be displayed
+                if (width < 0)
+                    width = 0;
+
                 // Calculate the text width
                 float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
 
@@ -1320,25 +1189,19 @@ namespace tgui
                 else
                     m_TextCropPosition = 0;
             }
-            else // You did select some characters
-            {
-                // This code is exactly the same as when pressing backspace
-                goto deleteSelectedCharacters;
-            }
+            else // You did select some characters, delete them
+                deleteSelectedCharacters();
 
             // The selection point should be visible again
             m_SelectionPointVisible = true;
             m_AnimationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
-            if (callbackID > 0)
+            if (m_CallbackFunctions[TextChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::textChanged;
-                callback.text       = m_Text;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = TextChanged;
+                m_Callback.text    = m_Text;
+                addCallback();
             }
         }
     }
@@ -1353,8 +1216,8 @@ namespace tgui
             return;
 
         // If there are selected characters then delete them first
-        if (m_SelChars != 0)
-            keyPressed(sf::Keyboard::BackSpace);
+        if (m_SelChars > 0)
+            deleteSelectedCharacters();
 
         // Make sure we don't exceed our maximum characters limit
         if ((m_MaxChars > 0) && (m_Text.getSize() + 1 > m_MaxChars))
@@ -1400,14 +1263,11 @@ namespace tgui
         m_AnimationTimeElapsed = sf::Time();
 
         // Add the callback (if the user requested it)
-        if (callbackID > 0)
+        if (m_CallbackFunctions[TextChanged].empty() == false)
         {
-            Callback callback;
-            callback.object     = this;
-            callback.callbackID = callbackID;
-            callback.trigger    = Callback::textChanged;
-            callback.text       = m_Text;
-            m_Parent->addCallback(callback);
+            m_Callback.trigger = TextChanged;
+            m_Callback.text    = m_Text;
+            addCallback();
         }
     }
 
@@ -1418,6 +1278,168 @@ namespace tgui
         // If there is a selection then undo it now
         if (m_SelChars)
             setSelectionPointPosition(m_SelEnd);
+
+        Object::objectUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int EditBox::findSelectionPointPosition(float posX)
+    {
+        // Take the scaling into account
+        posX /= getScale().x;
+
+        // This code will crash when the editbox is empty. We need to avoid this.
+        if (m_DisplayedText.isEmpty())
+            return 0;
+
+        // Find out what the first visible character is
+        unsigned int firstVisibleChar;
+        if (m_TextCropPosition)
+        {
+            // Start searching near the selection point to quickly find the character even in a very long string
+            firstVisibleChar = m_SelEnd;
+
+            // Go backwards to find the character
+            while (m_TextFull.findCharacterPos(firstVisibleChar-1).x > m_TextCropPosition)
+                --firstVisibleChar;
+        }
+        else // If the first part is visible then the first character is also visible
+            firstVisibleChar = 0;
+
+        sf::String tempString;
+        float textWidthWithoutLastChar;
+        float fullTextWidth;
+        float halfOfLastCharWidth;
+        unsigned int lastVisibleChar;
+
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+        // If the width is negative then the editBox is too small to be displayed
+        if (width < 0)
+            width = 0;
+
+        // Find out how many pixels the text is moved
+        float pixelsToMove = 0;
+        if (m_TextAlignment != Alignment::Left)
+        {
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // Check if a layout would make sense
+            if (textWidth < width)
+            {
+                // Set the number of pixels to move
+                if (m_TextAlignment == Alignment::Center)
+                    pixelsToMove = (width - textWidth) / 2.f;
+                else // if (textAlignment == Alignment::Right)
+                    pixelsToMove = width - textWidth;
+            }
+        }
+
+        // Find out what the last visible character is, starting from the selection point
+        lastVisibleChar = m_SelEnd;
+
+        // Go forward to find the character
+        while (m_TextFull.findCharacterPos(lastVisibleChar+1).x < m_TextCropPosition + width)
+        {
+            if (lastVisibleChar == m_DisplayedText.getSize())
+                break;
+
+            ++lastVisibleChar;
+        }
+
+        // Set the first part of the text
+        tempString = m_DisplayedText.toWideString().substr(0, firstVisibleChar);
+        m_TextFull.setString(tempString);
+
+        // Calculate the first position
+        fullTextWidth = m_TextFull.findCharacterPos(firstVisibleChar).x;
+
+        // for all the other characters, check where you have clicked.
+        for (unsigned int i = firstVisibleChar; i < lastVisibleChar; ++i)
+        {
+            // Add the next character to the temporary string
+            tempString += m_DisplayedText[i];
+            m_TextFull.setString(tempString);
+
+            // Make some calculations
+            textWidthWithoutLastChar = fullTextWidth;
+            fullTextWidth = m_TextFull.findCharacterPos(i + 1).x;
+            halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
+
+            // Check if you have clicked on the first halve of that character
+            if (posX < textWidthWithoutLastChar + pixelsToMove + halfOfLastCharWidth - m_TextCropPosition)
+            {
+                m_TextFull.setString(m_DisplayedText);
+                return i;
+            }
+        }
+
+        // If you pass here then you clicked behind all the characters
+        m_TextFull.setString(m_DisplayedText);
+        return lastVisibleChar;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::deleteSelectedCharacters()
+    {
+        // Check if the characters were selected from left to right
+        if (m_SelStart < m_SelEnd)
+        {
+            // Erase the characters
+            m_Text.erase(m_SelStart, m_SelChars);
+            m_DisplayedText.erase(m_SelStart, m_SelChars);
+
+            // Set the selection point back on the correct position
+            setSelectionPointPosition(m_SelStart);
+        }
+        else // When the text is selected from right to left
+        {
+            // Erase the characters
+            m_Text.erase(m_SelEnd, m_SelChars);
+            m_DisplayedText.erase(m_SelEnd, m_SelChars);
+
+            // Set the selection point back on the correct position
+            setSelectionPointPosition(m_SelEnd);
+        }
+
+        // Calculate the space inside the edit box
+        float width;
+        if (m_SplitImage)
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+        else
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+
+        // If the width is negative then the edit box is too small to be displayed
+        if (width < 0)
+            width = 0;
+
+        // Calculate the text width
+        float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+        // If the text can be moved to the right then do so
+        if (textWidth > width)
+        {
+            if (textWidth - m_TextCropPosition < width)
+                m_TextCropPosition = static_cast<unsigned int>(textWidth - width);
+        }
+        else
+            m_TextCropPosition = 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1436,7 +1458,7 @@ namespace tgui
             return;
 
         // Switch the value of the visible flag
-        m_SelectionPointVisible = m_SelectionPointVisible ? false : true;
+        m_SelectionPointVisible = !m_SelectionPointVisible;
 
         // Too slow for double clicking
         m_PossibleDoubleClick = false;
@@ -1451,9 +1473,7 @@ namespace tgui
             return;
 
         // Calculate the scaling
-        Vector2f scaling;
-        scaling.x = m_Size.x / m_TextureNormal_M->getSize().x;
-        scaling.y = m_Size.y / m_TextureNormal_M->getSize().y;
+        Vector2f scaling(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
 
         // Calculate the scale of the left and right border
         float borderScale;
@@ -1504,7 +1524,7 @@ namespace tgui
 
             // Draw the left image
             {
-                // When the normal edit box
+                // Draw the normal image
                 target.draw(m_SpriteNormal_L, states);
 
                 // When the edit box is focused then draw an extra image
@@ -1604,7 +1624,7 @@ namespace tgui
         states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition, m_TopBorder * scaling.y);
 
         // Check if the layout wasn't left
-        if (textAlignment != Alignment::Left)
+        if (m_TextAlignment != Alignment::Left)
         {
             // Calculate the space inside the edit box
             float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
@@ -1616,7 +1636,7 @@ namespace tgui
             if (textWidth < width)
             {
                 // Put the text on the correct position
-                if (textAlignment == Alignment::Center)
+                if (m_TextAlignment == Alignment::Center)
                     states.transform.translate((width - textWidth) / 2.f, 0);
                 else // if (textAlignment == Alignment::Right)
                     states.transform.translate(width - textWidth, 0);
@@ -1677,13 +1697,13 @@ namespace tgui
 
         // Reset the transformation to draw the selection point
         states.transform = oldTransform;
-        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (selectionPointWidth*0.5f), m_TopBorder * scaling.y);
+        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (m_SelectionPointWidth*0.5f), m_TopBorder * scaling.y);
 
         // Also draw the selection point (if needed)
         if ((m_Focused) && (m_SelectionPointVisible))
         {
             // Check if the layout wasn't left
-            if (textAlignment != Alignment::Left)
+            if (m_TextAlignment != Alignment::Left)
             {
                 // Calculate the space inside the edit box
                 float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
@@ -1695,7 +1715,7 @@ namespace tgui
                 if (textWidth < width)
                 {
                     // Put the selection point on the correct position
-                    if (textAlignment == Alignment::Center)
+                    if (m_TextAlignment == Alignment::Center)
                         states.transform.translate((width - textWidth) / 2.f, 0);
                     else // if (textAlignment == Alignment::Right)
                         states.transform.translate(width - textWidth, 0);
@@ -1703,8 +1723,8 @@ namespace tgui
             }
 
             // Draw the selection point
-            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(selectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scaling.y)));
-            SelectionPoint.setFillColor(selectionPointColor);
+            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(m_SelectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scaling.y)));
+            SelectionPoint.setFillColor(m_SelectionPointColor);
             target.draw(SelectionPoint, states);
         }
     }

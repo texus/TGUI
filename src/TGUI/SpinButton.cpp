@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// Copyright (C) 2012 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Objects.hpp>
+#include <TGUI/ClickableObject.hpp>
+#include <TGUI/SpinButton.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,8 +34,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton() :
-    verticalScroll        (true),
-    m_Size                (0, 0),
+    m_VerticalScroll      (true),
     m_Minimum             (0),
     m_Maximum             (10),
     m_Value               (0),
@@ -44,15 +45,14 @@ namespace tgui
     m_TextureHover        (NULL),
     m_LoadedPathname      ("")
     {
-        m_ObjectType = spinButton;
+        m_Callback.objectType = Type_SpinButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton(const SpinButton& copy) :
-    OBJECT                (copy),
-    verticalScroll        (copy.verticalScroll),
-    m_Size                (copy.m_Size),
+    ClickableObject       (copy),
+    m_VerticalScroll      (copy.m_VerticalScroll),
     m_Minimum             (copy.m_Minimum),
     m_Maximum             (copy.m_Maximum),
     m_Value               (copy.m_Value),
@@ -83,10 +83,9 @@ namespace tgui
         if (this != &right)
         {
             SpinButton temp(right);
-            this->OBJECT::operator=(right);
+            this->ClickableObject::operator=(right);
 
-            std::swap(verticalScroll,         temp.verticalScroll);
-            std::swap(m_Size,                 temp.m_Size);
+            std::swap(m_VerticalScroll,       temp.m_VerticalScroll);
             std::swap(m_Minimum,              temp.m_Minimum);
             std::swap(m_Maximum,              temp.m_Maximum);
             std::swap(m_Value,                temp.m_Value);
@@ -112,7 +111,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::load(const std::string pathname)
+    bool SpinButton::load(const std::string& pathname)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -141,7 +140,7 @@ namespace tgui
 
         // Set some default values
         std::string imageExtension = "png";
-        verticalScroll = true;
+        m_VerticalScroll = true;
 
         // Read untill the end of the file
         while (infoFile.readProperty(property, value))
@@ -159,7 +158,7 @@ namespace tgui
             else if (property.compare("verticalscroll") == 0)
             {
                 if ((value.compare("false") == 0) || (value.compare("0") == 0))
-                    verticalScroll = false;
+                    m_VerticalScroll = false;
                 else
                 {
                     if ((value.compare("true") != 0) && (value.compare("1") != 0))
@@ -191,7 +190,7 @@ namespace tgui
             m_SpriteNormal.setTexture(*m_TextureNormal, true);
 
             // Store the size of the spin button
-            if (verticalScroll)
+            if (m_VerticalScroll)
             {
                 m_Size.x = static_cast<float>(m_TextureNormal->getSize().x);
                 m_Size.y = m_TextureNormal->getSize().y * 2.f;
@@ -237,27 +236,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2u SpinButton::getSize() const
-    {
-        if (m_Loaded)
-            return Vector2u(m_Size);
-        else
-            return Vector2u(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f SpinButton::getScaledSize() const
-    {
-        // Don't continue when the spin button wasn't loaded correctly
-        if (m_Loaded == false)
-            return Vector2f(m_Size.x * getScale().x, m_Size.y * getScale().y);
-        else
-            return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     std::string SpinButton::getLoadedPathname() const
     {
         return m_LoadedPathname;
@@ -265,7 +243,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMinimum(const unsigned int minimum)
+    void SpinButton::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -277,7 +255,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMaximum(const unsigned int maximum)
+    void SpinButton::setMaximum(unsigned int maximum)
     {
         // Set the new maximum
         if (maximum > 0)
@@ -292,7 +270,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setValue(const unsigned int value)
+    void SpinButton::setValue(unsigned int value)
     {
         // Set the new value
         m_Value = value;
@@ -327,19 +305,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::mouseOnObject(float x, float y)
+    void SpinButton::setVerticalScroll(bool verticalScroll)
     {
-        // Don't do anything when the spin button wasn't loaded correctly
-        if (m_Loaded == false)
-            return false;
+        m_VerticalScroll = verticalScroll;
+    }
 
-        // Check if the mouse is on top of the spin button
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y))).contains(x, y))
-            return true;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // The mouse is not on top of the spin button
-        m_MouseHover = false;
-        return false;
+    bool SpinButton::getVerticalScroll() const
+    {
+        return m_VerticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,16 +324,16 @@ namespace tgui
         m_MouseDown = true;
 
         // Check if the mouse is on top of the upper/right arrow
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), getSize().y / 2.f)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y))
                 m_MouseDownOnTopArrow = true;
             else
                 m_MouseDownOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, static_cast<float>(getSize().y))).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))
                 m_MouseDownOnTopArrow = false;
             else
                 m_MouseDownOnTopArrow = true;
@@ -378,8 +353,8 @@ namespace tgui
             if (m_MouseDownOnTopArrow)
             {
                 // Check if the mouse went up on the same arrow
-                if (((verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), getSize().y / 2.f)).contains(x, y)))
-                 || ((verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, static_cast<float>(getSize().y))).contains(x, y) == false)))
+                if (((m_VerticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y)))
+                 || ((m_VerticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y) == false)))
                 {
                     // Increment the value
                     if (m_Value < m_Maximum)
@@ -393,8 +368,8 @@ namespace tgui
             else // The mouse went down on the bottom/left arrow
             {
                 // Check if the mouse went up on the same arrow
-                if (((verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), getSize().y / 2.f)).contains(x, y) == false))
-                 || ((verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, static_cast<float>(getSize().y))).contains(x, y))))
+                if (((m_VerticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y) == false))
+                 || ((m_VerticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))))
                 {
                     // Decrement the value
                     if (m_Value > m_Minimum)
@@ -406,15 +381,12 @@ namespace tgui
                     return;
             }
 
-            // Check if the user requested a callback
-            if (callbackID)
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[ValueChanged].empty() == false)
             {
-                Callback callback;
-                callback.object     = this;
-                callback.callbackID = callbackID;
-                callback.trigger    = Callback::valueChanged;
-                callback.value      = m_Value;
-                m_Parent->addCallback(callback);
+                m_Callback.trigger = ValueChanged;
+                m_Callback.value   = static_cast<int>(m_Value);
+                addCallback();
             }
         }
     }
@@ -424,20 +396,23 @@ namespace tgui
     void SpinButton::mouseMoved(float x, float y)
     {
         // Check if the mouse is on top of the upper/right arrow
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(getSize().x), getSize().y / 2.f)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y))
                 m_MouseHoverOnTopArrow = true;
             else
                 m_MouseHoverOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, static_cast<float>(getSize().y))).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))
                 m_MouseHoverOnTopArrow = false;
             else
                 m_MouseHoverOnTopArrow = true;
         }
+
+        if (m_MouseHover == false)
+            mouseEnteredObject();
 
         m_MouseHover = true;
     }
@@ -461,15 +436,11 @@ namespace tgui
         // Adjust the transformation
         states.transform *= getTransform();
 
-        // Set the scaling
-        if (verticalScroll)
-            states.transform.scale(m_Size.x / m_TextureNormal->getSize().x, m_Size.y / (m_TextureNormal->getSize().y * 2.f));
-        else
-            states.transform.scale(m_Size.x / (m_TextureNormal->getSize().y * 2.f), m_Size.y / m_TextureNormal->getSize().x);
-
         // Check if the image is drawn in the same direction than it was loaded
-        if (verticalScroll)
+        if (m_VerticalScroll)
         {
+            states.transform.scale(m_Size.x / m_TextureNormal->getSize().x, m_Size.y / (m_TextureNormal->getSize().y * 2.f));
+
             // Draw the normal image
             target.draw(m_SpriteNormal, states);
 
@@ -498,6 +469,8 @@ namespace tgui
         }
         else // The image is not drawn in the same direction than the loaded image
         {
+            states.transform.scale(m_Size.x / (m_TextureNormal->getSize().y * 2.f), m_Size.y / m_TextureNormal->getSize().x);
+
             // Rotate the arrow
             states.transform.rotate(-90, static_cast<float>(m_TextureNormal->getSize().x), static_cast<float>(m_TextureNormal->getSize().y));
 
