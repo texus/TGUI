@@ -11,7 +11,7 @@ Window:
     
     Button:
     {
-        Pathname  = "TGUI/objects/Button/Black"
+        Pathname  = "../../objects/Button/Black"
         TextColor = (200, 200, 200)
         Text      = "Button"
         Size      = (160, 40)
@@ -20,7 +20,7 @@ Window:
 
     Checkbox:
     {
-        Pathname  = "TGUI/objects/Checkbox/Black"
+        Pathname  = "../../objects/Checkbox/Black"
         TextColor = (200, 200, 200)
         Text      = "Checkbox"
         Checked   = true
@@ -29,7 +29,7 @@ Window:
 
     RadioButton:
     {
-        Pathname  = "TGUI/objects/RadioButton/Black"
+        Pathname  = "../../objects/RadioButton/Black"
         TextColor = (200, 200, 200)
         Text      = "Radio button 1"
         Position  = (20, 100)
@@ -37,7 +37,7 @@ Window:
 
     RadioButton:
     {
-        Pathname  = "TGUI/objects/RadioButton/Black"
+        Pathname  = "../../objects/RadioButton/Black"
         TextColor = (200, 200, 200)
         Text      = "Radio button 2"
         Position  = (20, 150)
@@ -45,7 +45,7 @@ Window:
 
     EditBox:
     {
-        Pathname                    = "TGUI/objects/EditBox/Black"
+        Pathname                    = "../../objects/EditBox/Black"
         Text                        = "This text is too long to fit inside the EditBox."
 //        PasswordChar                = "*"
 //        MaximumCharacters           = 4
@@ -61,7 +61,7 @@ Window:
 
     Slider:
     {
-        Pathname       = "TGUI/objects/Slider/Black"
+        Pathname       = "../../objects/Slider/Black"
         Minimum        = 0
         Maximum        = 100
         Value          = 30
@@ -71,7 +71,7 @@ Window:
 
     LoadingBar:
     {
-        Pathname   = "TGUI/objects/LoadingBar/Black"
+        Pathname   = "../../objects/LoadingBar/Black"
         Position   = (20, 400)
         Maximum    = 500
         CallbackId = 1
@@ -79,7 +79,7 @@ Window:
 
     Scrollbar:
     {
-        Pathname   = "TGUI/objects/Scrollbar/Black"
+        Pathname   = "../../objects/Scrollbar/Black"
         Position  = (20, 480)
         LowValue  = 4
         Maximum   = 5
@@ -91,7 +91,7 @@ Window:
         Position                = (300, 20)
         Size                    = (260, 200)
         ItemHeight              = 40
-        ScrollbarPathname       = "TGUI/objects/Scrollbar/Black"
+        ScrollbarPathname       = "../../objects/Scrollbar/Black"
         Borders                 = (2, 2, 2, 2)
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
@@ -110,10 +110,10 @@ Window:
 
     ComboBox:
     {
-        Pathname                = "TGUI/objects/ComboBox/Black"
+        Pathname                = "../../objects/ComboBox/Black"
         Size                    = (260, 40)
         ItemsToDisplay          = 3
-        ScrollbarPathname       = "TGUI/objects/Scrollbar/Black"
+        ScrollbarPathname       = "../../objects/Scrollbar/Black"
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
         SelectedBackgroundColor = ( 10, 110, 255)
@@ -123,7 +123,7 @@ Window:
         Item                    = "First"
         Item                    = "Second"
         Item                    = "Third"
-        SelectedItem            = 4
+        SelectedItem            = 2
         Position                = (500, 330)
     }
 }
