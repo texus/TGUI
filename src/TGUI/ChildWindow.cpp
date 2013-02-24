@@ -475,14 +475,14 @@ namespace tgui
                 {
                      m_MouseDown = false;
 
-                    // Send the mouse release event to the close button
-                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                    // Check if the close button was clicked
+                    if (m_CloseButton->m_MouseDown == true)
                     {
-                        // Check if the close button was clicked
-                        if (m_CloseButton->m_MouseDown == true)
-                        {
-                            m_CloseButton->m_MouseDown = false;
+                        m_CloseButton->m_MouseDown = false;
 
+                        // Check if the mouse is still on the close button
+                        if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                        {
                             // If a callback was requested then send it
                             if (m_CallbackFunctions[Closed].empty() == false)
                             {
