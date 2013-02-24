@@ -236,8 +236,8 @@ namespace tgui
 
         enum GridCallbacks
         {
-            AllGridCallbacks = GroupObjectCallbacksCount - 1,
-            GridCallbacksCount = GroupObjectCallbacksCount
+            AllGridCallbacks = ObjectCallbacksCount - 1,
+            GridCallbacksCount = ObjectCallbacksCount
         };
 
 

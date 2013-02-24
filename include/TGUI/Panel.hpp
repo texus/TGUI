@@ -174,6 +174,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Send the event to all underlying objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void handleEvent(sf::Event& event, float mouseX = 0, float mouseY = 0);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
@@ -187,8 +192,11 @@ namespace tgui
 
         enum PanelCallbacks
         {
-            AllPanelCallbacks = GroupObjectCallbacksCount - 1,
-            PanelCallbacksCount = GroupObjectCallbacksCount
+            LeftMousePressed = ObjectCallbacksCount * 1,
+            LeftMouseReleased = ObjectCallbacksCount * 2,
+            LeftMouseClicked = ObjectCallbacksCount * 4,
+            AllPanelCallbacks = ObjectCallbacksCount * 8 - 1,
+            PanelCallbacksCount = ObjectCallbacksCount * 8
         };
 
 

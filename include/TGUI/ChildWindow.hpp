@@ -367,11 +367,11 @@ namespace tgui
 
         enum ChildWindowCallbacks
         {
-            Closed = GroupObjectCallbacksCount * 1,
-            Moved = GroupObjectCallbacksCount * 2,
-//            Resized = GroupObjectCallbacksCount * 4,
-            AllChildWindowCallbacks = GroupObjectCallbacksCount * 8 - 1,
-            ChildWindowCallbacksCount = GroupObjectCallbacksCount * 8
+            Closed = ObjectCallbacksCount * 1,
+            Moved = ObjectCallbacksCount * 2,
+//            Resized = ObjectCallbacksCount * 4,
+            AllChildWindowCallbacks = ObjectCallbacksCount * 8 - 1,
+            ChildWindowCallbacksCount = ObjectCallbacksCount * 8
         };
 
 

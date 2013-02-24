@@ -111,16 +111,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      public:
-
-        enum GroupObjectCallbacks
-        {
-            LeftMousePressed = ObjectCallbacksCount * 1,
-            LeftMouseReleased = ObjectCallbacksCount * 2,
-            LeftMouseClicked = ObjectCallbacksCount * 4,
-            AllGroupObjectCallbacks = ObjectCallbacksCount * 8 - 1,
-            GroupObjectCallbacksCount = ObjectCallbacksCount * 8
-        };
 
 
         friend class EventManager;

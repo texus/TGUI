@@ -109,50 +109,8 @@ namespace tgui
             event.mouseMove.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
             event.mouseMove.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
         }
-        else if (event.type == sf::Event::MouseButtonPressed)
+        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
-            {
-                m_MouseDown = true;
-
-                if (!m_CallbackFunctions[LeftMousePressed].empty())
-                {
-                    m_Callback.trigger = LeftMousePressed;
-                    m_Callback.mouse.x = mouseX - getPosition().x;
-                    m_Callback.mouse.y = mouseY - getPosition().y;
-                    addCallback();
-                }
-            }
-
-            event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
-            event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
-        }
-        else if (event.type == sf::Event::MouseButtonReleased)
-        {
-            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
-            {
-                if (!m_CallbackFunctions[LeftMouseReleased].empty())
-                {
-                    m_Callback.trigger = LeftMouseReleased;
-                    m_Callback.mouse.x = mouseX - getPosition().x;
-                    m_Callback.mouse.y = mouseY - getPosition().y;
-                    addCallback();
-                }
-
-                if (m_MouseDown)
-                {
-                    if (!m_CallbackFunctions[LeftMouseClicked].empty())
-                    {
-                        m_Callback.trigger = LeftMouseClicked;
-                        m_Callback.mouse.x = mouseX - getPosition().x;
-                        m_Callback.mouse.y = mouseY - getPosition().y;
-                        addCallback();
-                    }
-                }
-            }
-
-            m_MouseDown = false;
-
             event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
             event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
         }
