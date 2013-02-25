@@ -39,7 +39,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_Title            (""),
     m_TitleBarHeight   (0),
     m_LoadedPathname   (""),
     m_SplitImage       (false),
@@ -60,7 +59,7 @@ namespace tgui
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
     GroupObject       (childWindowToCopy),
     ObjectBorders     (childWindowToCopy),
-    m_Title           (childWindowToCopy.m_Title),
+    m_TitleText       (childWindowToCopy.m_TitleText),
     m_TitleBarHeight  (childWindowToCopy.m_TitleBarHeight),
     m_LoadedPathname  (childWindowToCopy.m_LoadedPathname),
     m_SplitImage      (childWindowToCopy.m_SplitImage),
@@ -104,7 +103,7 @@ namespace tgui
             // Delete the old close button
             delete m_CloseButton;
 
-            std::swap(m_Title,             temp.m_Title);
+            std::swap(m_TitleText,         temp.m_TitleText);
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
             std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
             std::swap(m_SplitImage,        temp.m_SplitImage);
@@ -238,6 +237,8 @@ namespace tgui
                 return false;
         }
 
+        m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
+
         // When there is no error we will return true
         return m_Loaded = true;
     }
@@ -309,6 +310,9 @@ namespace tgui
         // Set the size of the close button
         m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().x,
                                static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().y);
+
+        // Set the size of the text in the title bar
+        m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,14 +371,14 @@ namespace tgui
 
     void ChildWindow::setTitle(const sf::String& title)
     {
-        m_Title = title;
+        m_TitleText.setString(title);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::String& ChildWindow::getTitle() const
     {
-        return m_Title;
+        return m_TitleText.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,6 +404,89 @@ namespace tgui
         m_TopBorder    = topBorder;
         m_RightBorder  = rightBorder;
         m_BottomBorder = bottomBorder;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setDistanceToSide(unsigned int distanceToSide)
+    {
+        m_DistanceToSide = distanceToSide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ChildWindow::getDistanceToSide() const
+    {
+        return m_DistanceToSide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setTitleAlignment(TitleAlignment alignment)
+    {
+        m_TitleAlignment = alignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindow::TitleAlignment ChildWindow::getTitleAlignment() const
+    {
+        return m_TitleAlignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::destroy()
+    {
+        m_Parent->remove(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f ChildWindow::getDisplaySize()
+    {
+        return m_Size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::mouseOnObject(float x, float y)
+    {
+        // Don't continue when the child window has not been loaded yet
+        if (m_Loaded == false)
+            return false;
+
+        // Check if the mouse is on top of the title bar
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
+        {
+            m_EventManager.mouseNotOnObject();
+            return true;
+        }
+        else
+        {
+            // Check if the mouse is inside the child window
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder)).contains(x, y - m_TitleBarHeight))
+                return true;
+            else
+            {
+                if (m_MouseHover)
+                    mouseLeftObject();
+
+                // Tell the objects inside the child window that the mouse is no longer on top of them
+                m_EventManager.mouseNotOnObject();
+                m_MouseHover = false;
+                return false;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::initialize(tgui::Group *const parent)
+    {
+        m_Parent = parent;
+        setGlobalFont(m_Parent->getGlobalFont());
+        m_TitleText.setFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -535,80 +622,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setDistanceToSide(unsigned int distanceToSide)
-    {
-        m_DistanceToSide = distanceToSide;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ChildWindow::getDistanceToSide() const
-    {
-        return m_DistanceToSide;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setTitleAlignment(TitleAlignment alignment)
-    {
-        m_TitleAlignment = alignment;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ChildWindow::TitleAlignment ChildWindow::getTitleAlignment() const
-    {
-        return m_TitleAlignment;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::destroy()
-    {
-        m_Parent->remove(this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Vector2f ChildWindow::getDisplaySize()
-    {
-        return m_Size;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ChildWindow::mouseOnObject(float x, float y)
-    {
-        // Don't continue when the child window has not been loaded yet
-        if (m_Loaded == false)
-            return false;
-
-        // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
-        {
-            m_EventManager.mouseNotOnObject();
-            return true;
-        }
-        else
-        {
-            // Check if the mouse is inside the child window
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder)).contains(x, y - m_TitleBarHeight))
-                return true;
-            else
-            {
-                if (m_MouseHover)
-                    mouseLeftObject();
-
-                // Tell the objects inside the child window that the mouse is no longer on top of them
-                m_EventManager.mouseNotOnObject();
-                m_MouseHover = false;
-                return false;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the child window wasn't created
@@ -666,14 +679,8 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Check if there is a title
-        if (m_Title.isEmpty() == false)
+        if (m_TitleText.getString().isEmpty() == false)
         {
-///!!!  TODO: Instead of storing the title string, store the sf::Text object to avoid recreating every frame.
-
-            // Create the text object
-            sf::Text text(m_Title, getGlobalFont());
-            text.setCharacterSize(m_TitleBarHeight * 8 / 10);
-
             // Calculate the clipping area
             GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftTitleBarPosition.x * scaleViewX), scissor[0]);
             GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftTitleBarPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
@@ -693,20 +700,20 @@ namespace tgui
             if (m_TitleAlignment == TitleAlignmentLeft)
             {
                 states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
-                target.draw(text, states);
+                target.draw(m_TitleText, states);
                 states.transform.translate(-static_cast<float>(m_DistanceToSide), 0);
             }
             else if (m_TitleAlignment == TitleAlignmentCentered)
             {
-                states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f), 0);
-                target.draw(text, states);
-                states.transform.translate(-(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width) / 2.0f)), 0);
+                states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                target.draw(m_TitleText, states);
+                states.transform.translate(-(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f)), 0);
             }
             else // if (m_TitleAlignment == TitleAlignmentRight)
             {
-                states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - text.getGlobalBounds().width, 0);
-                target.draw(text, states);
-                states.transform.translate(-(m_Size.x + m_LeftBorder + m_RightBorder) + 2*m_DistanceToSide + m_CloseButton->getScaledSize().x + text.getGlobalBounds().width, 0);
+                states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                target.draw(m_TitleText, states);
+                states.transform.translate(-(m_Size.x + m_LeftBorder + m_RightBorder) + 2*m_DistanceToSide + m_CloseButton->getScaledSize().x + m_TitleText.getGlobalBounds().width, 0);
             }
 
             // Reset the old clipping area
