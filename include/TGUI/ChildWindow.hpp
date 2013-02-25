@@ -403,9 +403,10 @@ namespace tgui
       protected:
 
         Vector2f       m_Size;
+
         sf::Color      m_BackgroundColor;
-        sf::Texture*   m_Texture;
-        sf::Sprite     m_Sprite;
+        sf::Texture*   m_BackgroundTexture;
+        sf::Sprite     m_BackgroundSprite;
 
         sf::Text       m_TitleText;
         unsigned int   m_TitleBarHeight;

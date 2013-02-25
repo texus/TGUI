@@ -57,17 +57,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-    GroupObject       (childWindowToCopy),
-    ObjectBorders     (childWindowToCopy),
-    m_TitleText       (childWindowToCopy.m_TitleText),
-    m_TitleBarHeight  (childWindowToCopy.m_TitleBarHeight),
-    m_LoadedPathname  (childWindowToCopy.m_LoadedPathname),
-    m_SplitImage      (childWindowToCopy.m_SplitImage),
-    m_DraggingPosition(childWindowToCopy.m_DraggingPosition),
-    m_Opacity         (childWindowToCopy.m_Opacity),
-    m_DistanceToSide  (childWindowToCopy.m_DistanceToSide),
-    m_TitleAlignment  (childWindowToCopy.m_TitleAlignment),
-    m_BorderColor     (childWindowToCopy.m_BorderColor)
+    GroupObject        (childWindowToCopy),
+    ObjectBorders      (childWindowToCopy),
+    m_BackgtoundTexture(childWindowToCopy.m_BackgroundTexture),
+    m_TitleText        (childWindowToCopy.m_TitleText),
+    m_TitleBarHeight   (childWindowToCopy.m_TitleBarHeight),
+    m_LoadedPathname   (childWindowToCopy.m_LoadedPathname),
+    m_SplitImage       (childWindowToCopy.m_SplitImage),
+    m_DraggingPosition (childWindowToCopy.m_DraggingPosition),
+    m_Opacity          (childWindowToCopy.m_Opacity),
+    m_DistanceToSide   (childWindowToCopy.m_DistanceToSide),
+    m_TitleAlignment   (childWindowToCopy.m_TitleAlignment),
+    m_BorderColor      (childWindowToCopy.m_BorderColor)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L))   m_SpriteTitleBar_L.setTexture(*m_TextureTitleBar_L);
@@ -256,8 +257,8 @@ namespace tgui
         m_Size.y = height;
 
         // If there is a background texture then resize it
-        if (m_Texture)
-            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+        if (m_BackgroundTexture)
+            m_BackgroundSprite.setScale(m_Size.x / m_BackgroundTexture->getSize().x, m_Size.y / m_BackgroundTexture->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,13 +280,13 @@ namespace tgui
     void ChildWindow::setBackgroundTexture(sf::Texture *const texture)
     {
         // Store the texture
-        m_Texture = texture;
+        m_BackgroundTexture = texture;
 
         // Set the texture for the sprite
-        if (m_Texture)
+        if (m_BackgroundTexture)
         {
-            m_Sprite.setTexture(*m_Texture, true);
-            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+            m_BackgroundSprite.setTexture(*m_BackgroundTexture, true);
+            m_BackgroundSprite.setScale(m_Size.x / m_BackgroundTexture->getSize().x, m_Size.y / m_BackgroundTexture->getSize().y);
         }
     }
 
@@ -293,7 +294,7 @@ namespace tgui
 
     sf::Texture* ChildWindow::getBackgroundTexture()
     {
-        return m_Texture;
+        return m_BackgroundTexture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -760,8 +761,8 @@ namespace tgui
         }
 
         // Draw the background image if there is one
-        if (m_Texture != NULL)
-            target.draw(m_Sprite, states);
+        if (m_BackgroundTexture != NULL)
+            target.draw(m_BackgroundSprite, states);
 
         // Calculate the clipping area
         GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPanelPosition.x * scaleViewX), scissor[0]);
