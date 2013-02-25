@@ -341,6 +341,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the icon in the top left corner of the child window.
+        ///
+        /// \param filename  Filename of the icon image
+        ///
+        /// There is no icon by default.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setIcon(const std::string& filename);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Removes the icon in the top left corner of the child window.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void removeIcon();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destroys the window.
         ///
         /// When no callback is requested when closing the window, this function will be called automatically.
@@ -407,6 +425,9 @@ namespace tgui
         sf::Color      m_BackgroundColor;
         sf::Texture*   m_BackgroundTexture;
         sf::Sprite     m_BackgroundSprite;
+
+        sf::Texture*   m_IconTexture;
+        sf::Sprite     m_IconSprite;
 
         sf::Text       m_TitleText;
         unsigned int   m_TitleBarHeight;

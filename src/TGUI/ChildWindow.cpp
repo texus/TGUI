@@ -41,6 +41,7 @@ namespace tgui
     ChildWindow::ChildWindow() :
     m_Size             (0, 0),
     m_BackgroundTexture(NULL),
+    m_IconTexture      (NULL),
     m_TitleBarHeight   (0),
     m_LoadedPathname   (""),
     m_SplitImage       (false),
@@ -76,6 +77,7 @@ namespace tgui
     m_BorderColor      (childWindowToCopy.m_BorderColor)
     {
         // Copy the textures
+        if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture))               m_IconSprite.setTexture(*m_IconTexture);
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L))   m_SpriteTitleBar_L.setTexture(*m_TextureTitleBar_L);
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_M, m_TextureTitleBar_M))   m_SpriteTitleBar_M.setTexture(*m_TextureTitleBar_M);
         if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R))   m_SpriteTitleBar_R.setTexture(*m_TextureTitleBar_R);
@@ -117,6 +119,8 @@ namespace tgui
             std::swap(m_BackgroundColor,   temp.m_BackgroundColor);
             std::swap(m_BackgroundTexture, temp.m_BackgroundTexture);
             std::swap(m_BackgroundSprite,  temp.m_BackgroundSprite);
+            std::swap(m_IconTexture,       temp.m_IconTexture);
+            std::swap(m_IconSprite,        temp.m_IconSprite);
             std::swap(m_TitleText,         temp.m_TitleText);
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
             std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
@@ -464,6 +468,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setIcon(const std::string& filename)
+    {
+        // If a texture has already been loaded then remove it first
+        if (m_IconTexture)
+            TGUI_TextureManager.removeTexture(m_IconTexture);
+
+        // Load the icon image
+        if (TGUI_TextureManager.getTexture(filename, m_IconTexture))
+        {
+            m_IconSprite.setTexture(*m_IconTexture, true);
+            m_IconSprite.setScale(static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y,
+                                  static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y);
+        }
+        else // Loading failed
+            TGUI_OUTPUT("Failed to load \"" + filename + "\" as icon for the ChildWindow");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::removeIcon()
+    {
+        if (m_IconTexture)
+            TGUI_TextureManager.removeTexture(m_IconTexture);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::destroy()
     {
         m_Parent->remove(this);
@@ -674,8 +705,11 @@ namespace tgui
         Vector2f topLeftTitleBarPosition;
         Vector2f bottomRightTitleBarPosition;
 
-        topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_DistanceToSide + viewPosition.x,
-                                                                  position.y + viewPosition.y);
+        if (m_IconTexture)
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_DistanceToSide + (m_IconTexture->getSize().x * m_IconSprite.getScale().x) + viewPosition.x, position.y + viewPosition.y);
+        else
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_DistanceToSide + viewPosition.x, position.y + viewPosition.y);
+
         bottomRightTitleBarPosition = states.transform.transformPoint(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - (2*m_DistanceToSide) - m_CloseButton->getScaledSize().x) * curScale.x) + viewPosition.x,
                                                                       position.y + (m_TitleBarHeight * curScale.y) + viewPosition.y);
 
@@ -700,6 +734,14 @@ namespace tgui
 
             // Undo the scaling
             states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / (m_Size.x + m_LeftBorder + m_RightBorder), static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
+        }
+
+        // Draw a window icon if one was set
+        if (m_IconTexture)
+        {
+            states.transform.translate(static_cast<float>(m_DistanceToSide), (m_TitleBarHeight - (m_IconTexture->getSize().y * m_IconSprite.getScale().y)) / 2.f);
+            target.draw(m_IconSprite, states);
+            states.transform.translate(m_IconTexture->getSize().x * m_IconSprite.getScale().x, (m_TitleBarHeight - (m_IconTexture->getSize().y * m_IconSprite.getScale().y)) / -2.f);
         }
 
         // Get the old clipping area
@@ -729,19 +771,24 @@ namespace tgui
             {
                 states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
                 target.draw(m_TitleText, states);
-                states.transform.translate(-static_cast<float>(m_DistanceToSide), 0);
             }
             else if (m_TitleAlignment == TitleAlignmentCentered)
             {
-                states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                if (m_IconTexture)
+                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture->getSize().x * m_IconSprite.getScale().x) - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                else
+                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+
                 target.draw(m_TitleText, states);
-                states.transform.translate(-(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f)), 0);
             }
             else // if (m_TitleAlignment == TitleAlignmentRight)
             {
-                states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                if (m_IconTexture)
+                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture->getSize().x * m_IconSprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                else
+                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+
                 target.draw(m_TitleText, states);
-                states.transform.translate(-(m_Size.x + m_LeftBorder + m_RightBorder) + 2*m_DistanceToSide + m_CloseButton->getScaledSize().x + m_TitleText.getGlobalBounds().width, 0);
             }
 
             // Reset the old clipping area
@@ -749,6 +796,7 @@ namespace tgui
         }
 
         // Move the close button to the correct position
+        states.transform = oldTransform;
         states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - m_DistanceToSide - m_CloseButton->getSize().x, (m_TitleBarHeight - m_CloseButton->getSize().y) / 2.f);
 
         // Draw the close button
