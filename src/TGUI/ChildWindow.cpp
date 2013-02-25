@@ -39,9 +39,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
+    m_Size             (0, 0),
+    m_BackgroundTexture(NULL),
     m_TitleBarHeight   (0),
     m_LoadedPathname   (""),
     m_SplitImage       (false),
+    m_DraggingPosition (0, 0),
     m_Opacity          (255),
     m_DistanceToSide   (5),
     m_TitleAlignment   (TitleAlignmentCentered),
@@ -59,7 +62,9 @@ namespace tgui
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
     GroupObject        (childWindowToCopy),
     ObjectBorders      (childWindowToCopy),
-    m_BackgtoundTexture(childWindowToCopy.m_BackgroundTexture),
+    m_Size             (childWindowToCopy.m_Size),
+    m_BackgroundColor  (childWindowToCopy.m_BackgroundColor),
+    m_BackgroundTexture(childWindowToCopy.m_BackgroundTexture),
     m_TitleText        (childWindowToCopy.m_TitleText),
     m_TitleBarHeight   (childWindowToCopy.m_TitleBarHeight),
     m_LoadedPathname   (childWindowToCopy.m_LoadedPathname),
@@ -77,6 +82,10 @@ namespace tgui
 
         // Copy the button
         m_CloseButton = new tgui::Button(*childWindowToCopy.m_CloseButton);
+
+        // Set the bakground sprite, if there is a background texture
+        if (m_BackgroundTexture)
+            m_BackgroundSprite.setTexture(*m_BackgroundTexture, true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +113,10 @@ namespace tgui
             // Delete the old close button
             delete m_CloseButton;
 
+            std::swap(m_Size,              temp.m_Size);
+            std::swap(m_BackgroundColor,   temp.m_BackgroundColor);
+            std::swap(m_BackgroundTexture, temp.m_BackgroundTexture);
+            std::swap(m_BackgroundSprite,  temp.m_BackgroundSprite);
             std::swap(m_TitleText,         temp.m_TitleText);
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
             std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
