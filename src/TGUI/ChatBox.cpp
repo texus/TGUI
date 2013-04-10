@@ -235,6 +235,23 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text, const sf::Color& color)
     {
+        // Call this function for every line in the text
+        std::string::size_type newlinePos = text.find("\n");
+        if (newlinePos != std::string::npos)
+        {
+            std::string::size_type lastNewlinePos = 0;
+            while (newlinePos != std::string::npos)
+            {
+                addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
+
+                lastNewlinePos = newlinePos + 1;
+                newlinePos = text.find("\n", lastNewlinePos);
+            }
+
+            addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
+            return;
+        }
+
         tgui::Label::Ptr label(*m_Panel);
         label->setText(text);
         label->setTextColor(color);
