@@ -30,7 +30,6 @@ set(TGUI_SRC
     ChildWindow.cpp
     Grid.cpp
     Window.cpp
-    Form.cpp
     ClickableObject.cpp
     MenuBar.cpp
     ChatBox.cpp

@@ -36,8 +36,27 @@ namespace tgui
 
     Window::Window()
     {
+        // Create the window
+        m_Window = new sf::RenderWindow();
+
         // The main window is always focused
         m_GroupFocused = true;
+
+        // We created the window
+        m_OwningWindow = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Window::Window(sf::RenderWindow& window)
+    {
+        m_Window = &window;
+
+        // The main window is always focused
+        m_GroupFocused = true;
+
+        // We do not own the sfml window
+        m_OwningWindow = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,10 +64,13 @@ namespace tgui
     Window::Window(sf::VideoMode mode, const std::string& title, sf::Uint32 style, const sf::ContextSettings& settings)
     {
         // Create the window
-        this->RenderWindow::create(mode, title, style, settings);
+        m_Window = new sf::RenderWindow(mode, title, style, settings);
 
         // The main window is always focused
         m_GroupFocused = true;
+
+        // We created the window
+        m_OwningWindow = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,16 +78,21 @@ namespace tgui
     Window::Window(sf::WindowHandle handle, const sf::ContextSettings& settings)
     {
         // Create the window
-        this->RenderWindow::create(handle, settings);
+        m_Window = new sf::RenderWindow(handle, settings);
 
         // The main window is always focused
         m_GroupFocused = true;
+
+        // We created the window
+        m_OwningWindow = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Window::~Window()
     {
+        if (m_OwningWindow)
+            delete m_Window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +102,7 @@ namespace tgui
         // Check if the event is a mouse move or mouse down/press
         if (event.type == sf::Event::MouseMoved)
         {
-            Vector2f mouseCoords = mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), getView());
+            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -83,7 +110,7 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            Vector2f mouseCoords = mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), getView());
+            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -114,11 +141,11 @@ namespace tgui
         {
             // Enable clipping
             glEnable(GL_SCISSOR_TEST);
-            glScissor(0, 0, getSize().x, getSize().y);
+            glScissor(0, 0, m_Window->getSize().x, m_Window->getSize().y);
         }
 
         // Draw the window with all objects inside it
-        drawObjectGroup(this, sf::RenderStates::Default);
+        drawObjectGroup(m_Window, sf::RenderStates::Default);
 
         // Check if clipping was previously enabled
         if (clippingEnabled)
@@ -178,7 +205,266 @@ namespace tgui
 
     Vector2f Window::getDisplaySize()
     {
-        return Vector2f(getSize());
+        return Vector2f(m_Window->getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::create(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
+    {
+        m_Window->create(mode, title, style, settings);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::create(sf::WindowHandle handle, const sf::ContextSettings& settings)
+    {
+        m_Window->create(handle, settings);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2u Window::getSize() const
+    {
+        return m_Window->getSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Image Window::capture() const
+    {
+        return m_Window->capture();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::close()
+    {
+        m_Window->close();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Window::isOpen() const
+    {
+        return m_Window->isOpen();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::ContextSettings& Window::getSettings() const
+    {
+        return m_Window->getSettings();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Window::pollEvent(sf::Event& event)
+    {
+        return m_Window->pollEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Window::waitEvent(sf::Event& event)
+    {
+        return m_Window->waitEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2i Window::getPosition() const
+    {
+        return m_Window->getPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setPosition(const Vector2i& position)
+    {
+        m_Window->setPosition(position);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setSize(const Vector2u size)
+    {
+        m_Window->setSize(size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setTitle(const sf::String& title)
+    {
+        m_Window->setTitle(title);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setIcon(unsigned int width, unsigned int height, const sf::Uint8* pixels)
+    {
+        m_Window->setIcon(width, height, pixels);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setVisible(bool visible)
+    {
+        m_Window->setVisible(visible);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setVerticalSyncEnabled(bool enabled)
+    {
+        m_Window->setVerticalSyncEnabled(enabled);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setMouseCursorVisible(bool visible)
+    {
+        m_Window->setMouseCursorVisible(visible);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setKeyRepeatEnabled(bool enabled)
+    {
+        m_Window->setKeyRepeatEnabled(enabled);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setFramerateLimit(unsigned int limit)
+    {
+        m_Window->setFramerateLimit(limit);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setJoystickThreshold(float threshold)
+    {
+        m_Window->setJoystickThreshold(threshold);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Window::setActive(bool active) const
+    {
+        return m_Window->setActive(active);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::display()
+    {
+        m_Window->display();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::WindowHandle Window::getSystemHandle() const
+    {
+        return m_Window->getSystemHandle();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::clear(const sf::Color& color)
+    {
+        m_Window->clear(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::setView(const sf::View& view)
+    {
+        m_Window->setView(view);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::View& Window::getView() const
+    {
+        return m_Window->getView();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::View& Window::getDefaultView() const
+    {
+        return m_Window->getDefaultView();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::IntRect Window::getViewport(const sf::View& view) const
+    {
+        return m_Window->getViewport(view);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Window::mapPixelToCoords(const Vector2i& point) const
+    {
+        return m_Window->mapPixelToCoords(point);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Window::mapPixelToCoords(const Vector2i& point, const sf::View& view) const
+    {
+        return m_Window->mapPixelToCoords(point, view);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2i Window::mapCoordsToPixel(const Vector2f& point) const
+    {
+        return m_Window->mapCoordsToPixel(point);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2i Window::mapCoordsToPixel(const Vector2f& point, const sf::View& view) const
+    {
+        return m_Window->mapCoordsToPixel(point, view);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
+    {
+        return m_Window->draw(drawable, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::draw(const sf::Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+    {
+        return m_Window->draw(vertices, vertexCount, type, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::pushGLStates()
+    {
+        return m_Window->pushGLStates();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::popGLStates()
+    {
+        return m_Window->popGLStates();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::resetGLStates()
+    {
+        return m_Window->resetGLStates();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
