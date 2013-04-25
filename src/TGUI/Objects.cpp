@@ -48,7 +48,7 @@ namespace tgui
     {
         m_Callback.object = this;
         m_Callback.objectType = Type_Unknown;
-        m_Callback.callbackId = 0;
+        m_Callback.id = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace tgui
     {
         m_Callback.object = this;
         m_Callback.objectType = copy.m_Callback.objectType;
-        m_Callback.callbackId = 0;
+        m_Callback.id = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace tgui
             m_Callback            = Callback();
             m_Callback.object     = this;
             m_Callback.objectType = right.m_Callback.objectType;
-            m_Callback.callbackId = right.m_Callback.callbackId;
+            m_Callback.id         = right.m_Callback.id;
         }
 
         return *this;
@@ -294,14 +294,14 @@ namespace tgui
 
     void Object::setCallbackId(unsigned int callbackId)
     {
-        m_Callback.callbackId = callbackId;
+        m_Callback.id = callbackId;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int Object::getCallbackId()
     {
-        return m_Callback.callbackId;
+        return m_Callback.id;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
