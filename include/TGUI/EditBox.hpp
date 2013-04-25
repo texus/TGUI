@@ -45,6 +45,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Alignment
         {
+            /// \brief The text alignment
             enum Alignments
             {
                 /// Put the text on the left side (default)

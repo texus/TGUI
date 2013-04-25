@@ -329,13 +329,14 @@ namespace tgui
         /// When a child object tells this object about the callback then the global callback function(s) will be called.
         /// If no global callback function has been bound then the callback is passed to the parent of this object.
         ///
-        /// \param func  Pointer to a member function with a reference to a Callback object as parameter.
+        /// \param func      Pointer to a member function with a reference to a Callback object as parameter.
+        /// \param classPtr  Pointer to the object of the class.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        void bindGlobalCallback(void (T::*func)(const tgui::Callback&), const T* const c)
+        void bindGlobalCallback(void (T::*func)(const tgui::Callback&), const T* const classPtr)
         {
-            m_GlobalCallbackFunctions.push_back(boost::bind(func, c, _1));
+            m_GlobalCallbackFunctions.push_back(boost::bind(func, classPtr, _1));
         }
 
 

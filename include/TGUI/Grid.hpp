@@ -48,6 +48,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Layout
         {
+            /// \brief The layout of the object.
             enum Layouts
             {
                 /// Draw the object in the upper left corner of the cell

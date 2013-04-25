@@ -83,14 +83,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Loads the combo box.
         ///
-        /// \param comboBoxPathname   The path to the folder that contains the arrow image(s).
-        ///                           The folder must also contain an info.txt file, which will give more information about the comb box.
-        /// \param width              The width of the combo box (borders included).
-        /// \param height             The height of the combo box (borders included).
-        /// \param nrOfItemsToDisplay The amount of items that are displayed when you click on the arrow.
-        ///                           If there is no scrollbar then this will also be the maximum amount of items that the combo box can contain.
-        /// \param scrollbarPathname  The ScrollbarPathname is the pathname needed to load the scrollbar.
-        ///                           If not provided then there will be no possibility to scroll, thus no items will be added when the combo box is full.
+        /// \param comboBoxPathname         The path to the folder that contains the arrow image(s).
+        ///                                 The folder must also contain an info.txt file, which will give more information about the combo box.
+        /// \param width                    The width of the combo box (borders included).
+        /// \param height                   The height of the combo box (borders included).
+        /// \param nrOfItemsInListToDisplay The amount of items that are displayed when you click on the arrow.
+        ///                                 If there is no scrollbar then this will also be the maximum amount of items that the
+        ///                                 combo box can contain.
+        /// \param scrollbarPathname        The ScrollbarPathname is the pathname needed to load the scrollbar.
+        ///                                 If not provided then there will be no possibility to scroll, thus no items will
+        ///                                 be added when the combo box is full.
         /// \return
         ///        - true on success
         ///        - false when the pathname is empty
