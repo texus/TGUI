@@ -2,17 +2,14 @@ TGUI - Texus's Graphical User Interface
 =======================================
 
 In one line: TGUI is an easy to use, cross-platform, c++ GUI for SFML.
-For more information, take a look at the website (http://tgui.weebly.com).
+For more information, take a look at the website (http://tgui.eu).
 
 
 
-Download & Install
-------------------
+Download
+--------
 
 You can download the latest release on Github (https://github.com/texus/TGUI).
-
-You will need to build TGUI with CMake before you can use it or you can use the source code directly in your project.
-Using CMake is pretty easy and you can find tutorials on my site (http://tgui.weebly.com/tutorials-v06.html).
 
 This download contains the latest development snapshot of TGUI v0.6.
 
@@ -21,8 +18,8 @@ This download contains the latest development snapshot of TGUI v0.6.
 Tutorials
 ---------
 
-Tutorials can be found on the tutorial section on my site (http://tgui.weebly.com/tutorials-v06.html).
-You can also find richly commented example code there (http://tgui.weebly.com/tgui-v06-dev.html).
+Tutorials can be found on my site (http://tgui.eu/tutorials/v06/).
+You can also find example code there (http://tgui.eu/example-code/v06/).
 
 
 
@@ -30,6 +27,6 @@ About me
 --------
 
 Name:     Bruno Van de Velde
-E-mail:   vdv_b@lavabit.com
+E-mail:   vdv_b@tgui.eu
 Location: Belgium
 
