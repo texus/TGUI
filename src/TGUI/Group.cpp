@@ -402,7 +402,7 @@ namespace tgui
 ///!!!  This is the only function where goto is still used, the goto statements should be removed.
 ///!!!  All objects must be capable of loading themselves out of a string.
 ///!!!  Perhaps it would be better to switch to xml parsing.
-
+/*
         // I wrote these defines to avoid having the same code over and over again
         #define CHECK_SHARED_PROPERTIES(name) \
             if (line.substr(0, 5).compare("size=") == 0) \
@@ -2199,7 +2199,7 @@ namespace tgui
       LoadingFailed:
 
         m_File.close();
-
+*/
         return false;
     }
 

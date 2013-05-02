@@ -22,8 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Special thanks to Dmitry for the Slider2d object !
-
 
 #include <TGUI/Objects.hpp>
 #include <TGUI/ClickableObject.hpp>
@@ -42,12 +40,7 @@ namespace tgui
     m_Maximum            (1, 1),
     m_Value              (0, 0),
     m_ReturnThumbToCenter(false),
-    m_FixedThumbSize     (true),
-    m_TextureThumbNormal (NULL),
-    m_TextureThumbHover  (NULL),
-    m_TextureTrackNormal (NULL),
-    m_TextureTrackHover  (NULL),
-    m_LoadedPathname     ("")
+    m_FixedThumbSize     (true)
     {
         m_Callback.objectType = Type_Slider2d;
         m_DraggableObject = true;
@@ -61,14 +54,12 @@ namespace tgui
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
     m_ReturnThumbToCenter(copy.m_ReturnThumbToCenter),
-    m_FixedThumbSize     (copy.m_FixedThumbSize),
-    m_LoadedPathname     (copy.m_LoadedPathname)
+    m_FixedThumbSize     (copy.m_FixedThumbSize)
     {
-        // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal, m_TextureTrackNormal))   m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover, m_TextureTrackHover))     m_SpriteTrackHover.setTexture(*m_TextureTrackHover);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureThumbNormal, m_TextureThumbNormal))   m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureThumbHover, m_TextureThumbHover))     m_SpriteThumbHover.setTexture(*m_TextureThumbHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal, m_TextureTrackNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover, m_TextureTrackHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbNormal, m_TextureThumbNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbHover, m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,10 +67,10 @@ namespace tgui
     Slider2d::~Slider2d()
     {
         // Remove all the textures
-        if (m_TextureTrackNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackNormal);
-        if (m_TextureTrackHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackHover);
-        if (m_TextureThumbNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureTrackNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackNormal);
+        if (m_TextureTrackHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackHover);
+        if (m_TextureThumbNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,11 +92,6 @@ namespace tgui
             std::swap(m_TextureTrackHover,   temp.m_TextureTrackHover);
             std::swap(m_TextureThumbNormal,  temp.m_TextureThumbNormal);
             std::swap(m_TextureThumbHover,   temp.m_TextureThumbHover);
-            std::swap(m_SpriteTrackNormal,   temp.m_SpriteTrackNormal);
-            std::swap(m_SpriteTrackHover,    temp.m_SpriteTrackHover);
-            std::swap(m_SpriteThumbNormal,   temp.m_SpriteThumbNormal);
-            std::swap(m_SpriteThumbHover,    temp.m_SpriteThumbHover);
-            std::swap(m_LoadedPathname,      temp.m_LoadedPathname);
         }
 
         return *this;
@@ -120,88 +106,104 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider2d::load(const std::string& pathname)
+    bool Slider2d::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
-
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
-            return false;
-        }
-
-        std::string property;
-        std::string value;
-
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
-        {
-            // Check what the property is
-            if (property.compare("phases") == 0)
-            {
-                // Get and store the different phases
-                extractPhases(value);
-            }
-            else if (property.compare("extension") == 0)
-            {
-                imageExtension = value;
-            }
-        }
-
-        // Close the info file
-        infoFile.closeFile();
-
         // Remove all textures if they were loaded before
-        if (m_TextureTrackNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackNormal);
-        if (m_TextureTrackHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackHover);
-        if (m_TextureThumbNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureTrackNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackNormal);
+        if (m_TextureTrackHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackHover);
+        if (m_TextureThumbNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
-        // load the required textures
-        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal))
-            && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            m_SpriteTrackNormal.setTexture(*m_TextureTrackNormal, true);
-            m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
 
-            // Store the size of the slider
-            m_Size = Vector2f(m_TextureTrackNormal->getSize());
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Slider2d", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+///!!! TODO  Add SeperateHoverImage option
+
+            if (property == "tracknormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage in section Slider2d in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "trackhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage in section Slider2d in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            if (property == "thumbnormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureThumbNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbNormalImage in section Slider2d in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "thumbhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureThumbHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbHoverImage in section Slider2d in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+        }
+
+        // Make sure the required textures were loaded
+        if ((m_TextureTrackNormal.data != NULL) && (m_TextureThumbNormal.data != NULL))
+        {
+            // Set the size of the slider
+            m_Size = Vector2f(m_TextureTrackNormal.getSize());
         }
         else
-            return false;
-
-        // load the optional textures
-        if (m_ObjectPhase & ObjectPhase_Hover)
         {
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover))
-                && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
-            {
-                m_SpriteTrackHover.setTexture(*m_TextureTrackHover, true);
-                m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
-            }
-            else
-                return false;
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the slider. Is the Slider2d section in " + configFileFilename + " complete?");
+            return false;
         }
 
-        // When there is no error we will return true
-        m_Loaded = true;
-        return true;
+        // Check if optional textures were loaded
+        if ((m_TextureTrackHover.data != NULL) && (m_TextureThumbHover.data != NULL))
+        {
+            m_ObjectPhase |= ObjectPhase_Hover;
+        }
+
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,13 +221,6 @@ namespace tgui
         // Store the size of the slider
         m_Size.x = width;
         m_Size.y = height;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Slider2d::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,18 +450,18 @@ namespace tgui
 
         // Calculate the scale of the slider
         Vector2f scaling;
-        scaling.x = m_Size.x / m_TextureTrackNormal->getSize().x;
-        scaling.y = m_Size.y / m_TextureTrackNormal->getSize().y;
+        scaling.x = m_Size.x / m_TextureTrackNormal.getSize().x;
+        scaling.y = m_Size.y / m_TextureTrackNormal.getSize().y;
 
         // Set the scale of the slider
         states.transform.scale(scaling);
 
         // Draw the normal track image
-        target.draw(m_SpriteTrackNormal, states);
+        target.draw(m_TextureTrackNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_SpriteTrackHover, states);
+            target.draw(m_TextureTrackHover, states);
 
         // Undo the scale
         states.transform.scale(1.f / scaling.x, 1.f / scaling.y);
@@ -474,13 +469,13 @@ namespace tgui
         // Check if the thumb should be scaled together with the slider
         if (m_FixedThumbSize)
         {
-            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * scaling.x) - (m_TextureThumbNormal->getSize().x * 0.5f),
-                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * scaling.y) - (m_TextureThumbNormal->getSize().y * 0.5f));
+            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal.getSize().x * scaling.x) - (m_TextureThumbNormal.getSize().x * 0.5f),
+                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal.getSize().y * scaling.y) - (m_TextureThumbNormal.getSize().y * 0.5f));
         }
         else // The thumb must be scaled
         {
-            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal->getSize().x * scaling.x) - (m_TextureThumbNormal->getSize().x * 0.5f * scaling.y),
-                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal->getSize().y * scaling.y) - (m_TextureThumbNormal->getSize().y * 0.5f * scaling.x));
+            states.transform.translate((((m_Value.x - m_Minimum.x) / (m_Maximum.x - m_Minimum.x)) * m_TextureTrackNormal.getSize().x * scaling.x) - (m_TextureThumbNormal.getSize().x * 0.5f * scaling.y),
+                                       (((m_Value.y - m_Minimum.y) / (m_Maximum.y - m_Minimum.y)) * m_TextureTrackNormal.getSize().y * scaling.y) - (m_TextureThumbNormal.getSize().y * 0.5f * scaling.x));
 
             // Set the scale for the thumb
             states.transform.scale(scaling);
@@ -506,11 +501,11 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the normal thumb image
-        target.draw(m_SpriteThumbNormal, states);
+        target.draw(m_TextureThumbNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_SpriteThumbHover, states);
+            target.draw(m_TextureThumbHover, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

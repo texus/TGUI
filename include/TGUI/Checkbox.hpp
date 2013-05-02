@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,16 +105,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the checkbox.
-        ///
-        /// \return Pathname used to load the checkbox.
-        ///         When the checkbox has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,20 +269,10 @@ namespace tgui
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_TextSize;
 
-        // The SFML textures
-        sf::Texture* m_TextureUnchecked;
-        sf::Texture* m_TextureChecked;
-        sf::Texture* m_TextureMouseHover;
-        sf::Texture* m_TextureFocused;
-
-        // The SFML sprites
-        sf::Sprite  m_SpriteUnchecked;
-        sf::Sprite  m_SpriteChecked;
-        sf::Sprite  m_SpriteMouseHover;
-        sf::Sprite  m_SpriteFocused;
-
-        // The pathname used to load the checkbox
-        std::string m_LoadedPathname;
+        Texture m_TextureUnchecked;
+        Texture m_TextureChecked;
+        Texture m_TextureHover;
+        Texture m_TextureFocused;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

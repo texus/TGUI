@@ -38,7 +38,6 @@ namespace tgui
     MenuBar::MenuBar() :
     m_VisibleMenu     (-1),
     m_TextFont           (NULL),
-    m_LoadedPathname     (""),
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
     {
@@ -60,6 +59,8 @@ namespace tgui
 
     void MenuBar::load(float height)
     {
+///!!!  TODO: Use images instead of a simple color
+
         m_Size.y = height;
 
         setTextSize(static_cast<unsigned int>(height * 0.85f));
@@ -80,13 +81,6 @@ namespace tgui
     Vector2f MenuBar::getSize() const
     {
         return m_Size;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string MenuBar::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

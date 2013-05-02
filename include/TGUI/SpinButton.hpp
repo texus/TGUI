@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Change description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,16 +105,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the spin button.
-        ///
-        /// \return Pathname used to load the spin button.
-        ///         When the spin button has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,14 +241,10 @@ namespace tgui
         bool m_MouseHoverOnTopArrow;
         bool m_MouseDownOnTopArrow;
 
-        sf::Texture* m_TextureNormal;
-        sf::Texture* m_TextureHover;
-
-        sf::Sprite   m_SpriteNormal;
-        sf::Sprite   m_SpriteHover;
-
-        // The pathname used to load the spin button
-        std::string m_LoadedPathname;
+        Texture m_TextureArrowUpNormal;
+        Texture m_TextureArrowUpHover;
+        Texture m_TextureArrowDownNormal;
+        Texture m_TextureArrowDownHover;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

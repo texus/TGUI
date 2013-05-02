@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,12 +204,11 @@ namespace tgui
         // Did the mouse went down on one of the arrows?
         bool m_MouseDownOnArrow;
 
-        sf::Texture* m_TextureArrowNormal;
-        sf::Texture* m_TextureArrowHover;
+        Texture m_TextureArrowUpNormal;
+        Texture m_TextureArrowUpHover;
 
-        sf::Sprite   m_SpriteArrowNormal;
-        sf::Sprite   m_SpriteArrowHover;
-
+        Texture m_TextureArrowDownNormal;
+        Texture m_TextureArrowDownHover;
 
         // ListBox, ComboBox and TextBox can access the scrollbar directly
         friend class ListBox;

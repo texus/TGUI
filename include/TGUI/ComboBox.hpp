@@ -99,11 +99,12 @@ namespace tgui
         ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& comboBoxPathname,
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& comboBoxConfigFileFilename,
                           float width,
                           float height,
                           unsigned int nrOfItemsInListToDisplay = 10,
-                          const std::string& scrollbarPathname = "");
+                          const std::string& scrollbarConfigFileFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,26 +124,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the combo box.
-        ///
-        /// \return The pathname used to load the combo box.
-        ///         When the combo box has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the scrollbar.
-        ///
-        /// \return The pathname used to load the scrollbar.
-        ///         When no scrollbar was loaded then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedScrollbarPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,19 +547,11 @@ namespace tgui
         // Internally a list box is used to store all items
         ListBox*     m_ListBox;
 
-        // The pathname of the loaded scrollbar
-        std::string  m_LoadedScrollbarPathname;
-
         // The textures for the arrow image
-        sf::Texture* m_TextureNormal;
-        sf::Texture* m_TextureHover;
-
-        // The sprites for the arrow image
-        sf::Sprite   m_SpriteNormal;
-        sf::Sprite   m_SpriteHover;
-
-        // The pathname that was used to load the combo box
-        std::string  m_LoadedPathname;
+        Texture m_TextureArrowUpNormal;
+        Texture m_TextureArrowUpHover;
+        Texture m_TextureArrowDownNormal;
+        Texture m_TextureArrowDownHover;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

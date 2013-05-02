@@ -93,16 +93,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the menu bar.
-        ///
-        /// \return Pathname used to load the menu bar.
-        ///         When the menu bar has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Adds a new menu.
         ///
         /// \param text  The text written on the menu
@@ -377,8 +367,6 @@ namespace tgui
         Vector2f     m_Size;
 
         unsigned int m_TextSize;
-
-        std::string  m_LoadedPathname;
 
         unsigned int m_DistanceToSide;
 

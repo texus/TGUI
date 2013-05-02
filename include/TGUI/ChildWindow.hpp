@@ -113,7 +113,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname, float width, float height, const sf::Color& backgroundColor = sf::Color::White);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename, float width, float height, const sf::Color& backgroundColor = sf::Color::White);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,16 +138,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the child window.
-        ///
-        /// \return Pathname used to load the child window.
-        ///         When the child window has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,12 +417,10 @@ namespace tgui
         sf::Texture*   m_BackgroundTexture;
         sf::Sprite     m_BackgroundSprite;
 
-        sf::Texture*   m_IconTexture;
-        sf::Sprite     m_IconSprite;
+        Texture        m_IconTexture;
 
         sf::Text       m_TitleText;
         unsigned int   m_TitleBarHeight;
-        std::string    m_LoadedPathname;
         bool           m_SplitImage;
         Vector2f       m_DraggingPosition;
         unsigned char  m_Opacity;
@@ -439,13 +428,9 @@ namespace tgui
         TitleAlignment m_TitleAlignment;
         sf::Color      m_BorderColor;
 
-        sf::Texture*   m_TextureTitleBar_L;
-        sf::Texture*   m_TextureTitleBar_M;
-        sf::Texture*   m_TextureTitleBar_R;
-
-        sf::Sprite     m_SpriteTitleBar_L;
-        sf::Sprite     m_SpriteTitleBar_M;
-        sf::Sprite     m_SpriteTitleBar_R;
+        Texture   m_TextureTitleBar_L;
+        Texture   m_TextureTitleBar_M;
+        Texture   m_TextureTitleBar_R;
 
         tgui::Button*  m_CloseButton;
 

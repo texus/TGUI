@@ -34,7 +34,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture() :
-    m_Texture       (NULL),
     m_LoadedFilename("")
     {
         m_Callback.objectType = Type_Picture;
@@ -47,8 +46,7 @@ namespace tgui
     m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
-        if (TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture))
-            m_Sprite.setTexture(*m_Texture);
+        TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +54,7 @@ namespace tgui
     Picture::~Picture()
     {
         // Remove the texture (if we are the only one using it)
-        if (m_Texture != NULL)
+        if (m_Texture.data != NULL)
             TGUI_TextureManager.removeTexture(m_Texture);
     }
 
@@ -71,7 +69,6 @@ namespace tgui
             this->ClickableObject::operator=(right);
 
             std::swap(m_Texture,        temp.m_Texture);
-            std::swap(m_Sprite,         temp.m_Sprite);
             std::swap(m_LoadedFilename, temp.m_LoadedFilename);
         }
 
@@ -102,21 +99,17 @@ namespace tgui
         m_LoadedFilename = filename;
 
         // If we have already loaded a texture then first delete it
-        if (m_Texture != NULL)
+        if (m_Texture.data != NULL)
             TGUI_TextureManager.removeTexture(m_Texture);
 
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
-            // Set the texture
-            m_Sprite.setTexture(*m_Texture, true);
-
             // Remember the size of the texture
-            m_Size = Vector2f(m_Texture->getSize());
+            m_Size = Vector2f(m_Texture.getSize());
 
             // Return true to indicate that nothing went wrong
-            m_Loaded = true;
-            return true;
+            return m_Loaded = true;
         }
         else // The texture was not loaded
             return false;
@@ -141,11 +134,11 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
             Vector2f scaling;
-            scaling.x = m_Size.x / m_Texture->getSize().x * getScale().x;
-            scaling.y = m_Size.y / m_Texture->getSize().y * getScale().y;
+            scaling.x = m_Size.x / m_Texture.getSize().x * getScale().x;
+            scaling.y = m_Size.y / m_Texture.getSize().y * getScale().y;
 
             // Only return true when the pixel under the mouse isn't transparent
-            if (!TGUI_TextureManager.isTransparentPixel(m_Texture, static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+            if (!m_Texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
                 return true;
         }
 
@@ -165,8 +158,8 @@ namespace tgui
             return;
 
         states.transform *= getTransform();
-        states.transform.scale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
-        target.draw(m_Sprite, states);
+        states.transform.scale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
+        target.draw(m_Texture, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

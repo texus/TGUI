@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,16 +105,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the loading bar.
-        ///
-        /// \return Pathname used to load the loading bar.
-        ///         When the loading bar has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,26 +302,16 @@ namespace tgui
         // If it is false then the button is just one big image that will be stored in the M image.
         bool m_SplitImage;
 
-        sf::Texture* m_TextureBack_L;
-        sf::Texture* m_TextureBack_M;
-        sf::Texture* m_TextureBack_R;
-        sf::Texture* m_TextureFront_L;
-        sf::Texture* m_TextureFront_M;
-        sf::Texture* m_TextureFront_R;
-
-        sf::Sprite   m_SpriteBack_L;
-        sf::Sprite   m_SpriteBack_M;
-        sf::Sprite   m_SpriteBack_R;
-        sf::Sprite   m_SpriteFront_L;
-        sf::Sprite   m_SpriteFront_M;
-        sf::Sprite   m_SpriteFront_R;
+        Texture  m_TextureBack_L;
+        Texture  m_TextureBack_M;
+        Texture  m_TextureBack_R;
+        Texture  m_TextureFront_L;
+        Texture  m_TextureFront_M;
+        Texture  m_TextureFront_R;
 
         // The text that is (optionally) drawn on top of the loading bar
         sf::Text     m_Text;
         unsigned int m_TextSize;
-
-        // The pathname used to load the loading bar
-        std::string m_LoadedPathname;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

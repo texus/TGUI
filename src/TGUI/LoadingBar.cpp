@@ -40,14 +40,7 @@ namespace tgui
     m_Maximum       (100),
     m_Value         (  0),
     m_SplitImage    (false),
-    m_TextureBack_L (NULL),
-    m_TextureBack_M (NULL),
-    m_TextureBack_R (NULL),
-    m_TextureFront_L(NULL),
-    m_TextureFront_M(NULL),
-    m_TextureFront_R(NULL),
-    m_TextSize      (0),
-    m_LoadedPathname("")
+    m_TextSize      (0)
     {
         m_Callback.objectType = Type_LoadingBar;
     }
@@ -61,16 +54,15 @@ namespace tgui
     m_Value         (copy.m_Value),
     m_SplitImage    (copy.m_SplitImage),
     m_Text          (copy.m_Text),
-    m_TextSize      (copy.m_TextSize),
-    m_LoadedPathname(copy.m_LoadedPathname)
+    m_TextSize      (copy.m_TextSize)
     {
         // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_L, m_TextureBack_L))     m_SpriteBack_L.setTexture(*m_TextureBack_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_M, m_TextureBack_M))     m_SpriteBack_M.setTexture(*m_TextureBack_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureBack_R, m_TextureBack_R))     m_SpriteBack_R.setTexture(*m_TextureBack_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_L, m_TextureFront_L))   m_SpriteFront_L.setTexture(*m_TextureFront_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_M, m_TextureFront_M))   m_SpriteFront_M.setTexture(*m_TextureFront_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFront_R, m_TextureFront_R))   m_SpriteFront_R.setTexture(*m_TextureFront_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureBack_L, m_TextureBack_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureBack_M, m_TextureBack_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureBack_R, m_TextureBack_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFront_L, m_TextureFront_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFront_M, m_TextureFront_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFront_R, m_TextureFront_R);
 
         recalculateSize();
     }
@@ -79,13 +71,13 @@ namespace tgui
 
     LoadingBar::~LoadingBar()
     {
-        if (m_TextureBack_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
-        if (m_TextureBack_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
-        if (m_TextureBack_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
+        if (m_TextureBack_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
+        if (m_TextureBack_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
+        if (m_TextureBack_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
 
-        if (m_TextureFront_L != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
-        if (m_TextureFront_M != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
-        if (m_TextureFront_R != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
+        if (m_TextureFront_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
+        if (m_TextureFront_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
+        if (m_TextureFront_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,15 +100,8 @@ namespace tgui
             std::swap(m_TextureFront_L, temp.m_TextureFront_L);
             std::swap(m_TextureFront_M, temp.m_TextureFront_M);
             std::swap(m_TextureFront_R, temp.m_TextureFront_R);
-            std::swap(m_SpriteBack_L,   temp.m_SpriteBack_L);
-            std::swap(m_SpriteBack_M,   temp.m_SpriteBack_M);
-            std::swap(m_SpriteBack_R,   temp.m_SpriteBack_R);
-            std::swap(m_SpriteFront_L,  temp.m_SpriteFront_L);
-            std::swap(m_SpriteFront_M,  temp.m_SpriteFront_M);
-            std::swap(m_SpriteFront_R,  temp.m_SpriteFront_R);
             std::swap(m_Text,           temp.m_Text);
             std::swap(m_TextSize,       temp.m_TextSize);
-            std::swap(m_LoadedPathname, temp.m_LoadedPathname);
         }
 
         return *this;
@@ -131,113 +116,158 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::load(const std::string& pathname)
+    bool LoadingBar::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
-
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
-            return false;
-        }
-
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        m_SplitImage = false;
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
-        {
-            if (property.compare("splitimage") == 0)
-            {
-                // Find out if it is split or not
-                if (value.compare("true") == 0)
-                    m_SplitImage = true;
-                else if (value.compare("false") == 0)
-                    m_SplitImage = false;
-            }
-            else if (property.compare("extension") == 0)
-            {
-                imageExtension = value;
-            }
-        }
-
-        // Close the info file
-        infoFile.closeFile();
-
         // Remove all textures if they were loaded before
-        if (m_TextureBack_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
-        if (m_TextureBack_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
-        if (m_TextureBack_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
-        if (m_TextureFront_L != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
-        if (m_TextureFront_M != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
-        if (m_TextureFront_R != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
+        if (m_TextureBack_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
+        if (m_TextureBack_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
+        if (m_TextureBack_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
+        if (m_TextureFront_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
+        if (m_TextureFront_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
+        if (m_TextureFront_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
 
-        // Load multiple images when the image is split
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
+
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("LoadingBar", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "backimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureBack_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = false;
+            }
+            else if (property == "frontimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFront_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "backimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureBack_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_L in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "backimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureBack_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_M in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
+            }
+            else if (property == "backimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureBack_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_R in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "frontimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFront_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_L in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "frontimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFront_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_M in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "frontimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFront_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_R in section LoadingBar in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section LoadingBar in " + configFileFilename + ".");
+        }
+
+        // Check if the image is split
         if (m_SplitImage)
         {
-            // load the required textures
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Back." + imageExtension, m_TextureBack_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Back." + imageExtension, m_TextureBack_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Back." + imageExtension, m_TextureBack_R))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Front." + imageExtension, m_TextureFront_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Front." + imageExtension, m_TextureFront_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Front." + imageExtension, m_TextureFront_R)))
+            // Make sure the required textures were loaded
+            if ((m_TextureBack_L.data != NULL) && (m_TextureBack_M.data != NULL) && (m_TextureBack_R.data != NULL)
+             && (m_TextureFront_L.data != NULL) && (m_TextureFront_M.data != NULL) && (m_TextureFront_R.data != NULL))
             {
-                m_SpriteBack_L.setTexture(*m_TextureBack_L, true);
-                m_SpriteBack_M.setTexture(*m_TextureBack_M, true);
-                m_SpriteBack_R.setTexture(*m_TextureBack_R, true);
-
-                m_SpriteFront_L.setTexture(*m_TextureFront_L, true);
-                m_SpriteFront_M.setTexture(*m_TextureFront_M, true);
-                m_SpriteFront_R.setTexture(*m_TextureFront_R, true);
-
-                // Set the size of the loading bar
-                m_Size.x = static_cast<float>(m_TextureBack_L->getSize().x + m_TextureBack_M->getSize().x + m_TextureBack_R->getSize().x);
-                m_Size.y = static_cast<float>(m_TextureBack_M->getSize().y);
+                m_Size.x = static_cast<float>(m_TextureBack_L.getSize().x + m_TextureBack_M.getSize().x + m_TextureBack_R.getSize().x);
+                m_Size.y = static_cast<float>(m_TextureBack_M.getSize().y);
             }
             else
+            {
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + configFileFilename + " complete?");
                 return false;
+            }
         }
-        else // The image is not split
+        else // The image isn't split
         {
-            // load the required textures
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Back." + imageExtension, m_TextureBack_M))
-            && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Front." + imageExtension, m_TextureFront_M)))
+            // Make sure the required textures were loaded
+            if ((m_TextureBack_M.data != NULL) && (m_TextureFront_M.data != NULL))
             {
-                m_SpriteBack_M.setTexture(*m_TextureBack_M, true);
-                m_SpriteFront_M.setTexture(*m_TextureFront_M, true);
-
-                // Set the size of the loading bar
-                m_Size = Vector2f(m_TextureBack_M->getSize());
+                m_Size = Vector2f(m_TextureBack_M.getSize());
             }
             else
+            {
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + configFileFilename + " complete?");
                 return false;
+            }
         }
 
         // Calculate the size of the front image (the size of the part that will be drawn)
         recalculateSize();
 
         // Loading has succeeded
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,13 +291,6 @@ namespace tgui
 
         // Recalculate the text size
         setText(m_Text.getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string LoadingBar::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,13 +504,14 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Get the current scale
-            float scalingY = m_Size.y / m_TextureBack_M->getSize().y;
-
             // Get the bounds of the sprites
-            sf::FloatRect backBounds_L = m_SpriteBack_L.getLocalBounds();
-            sf::FloatRect backBounds_M = m_SpriteBack_M.getLocalBounds();
-            sf::FloatRect backBounds_R = m_SpriteBack_R.getLocalBounds();
+            sf::IntRect bounds_L = m_TextureFront_L.sprite.getTextureRect();
+            sf::IntRect bounds_M = m_TextureFront_M.sprite.getTextureRect();
+            sf::IntRect bounds_R = m_TextureFront_R.sprite.getTextureRect();
+
+            bounds_L.width = m_TextureBack_L.sprite.getTextureRect().width;
+            bounds_M.width = m_TextureBack_M.sprite.getTextureRect().width;
+            bounds_R.width = m_TextureBack_R.sprite.getTextureRect().width;
 
             // Calculate the necessary sizes
             float totalWidth;
@@ -495,14 +519,14 @@ namespace tgui
             float frontSize;
 
             // Check if the middle image is drawn
-            if ((scalingY * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x)) < m_Size.x)
+            if (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x < m_Size.x)
             {
-                totalWidth = m_Size.x;
-                middleTextureWidth = totalWidth - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY);
+                totalWidth = bounds_L.width + bounds_M.width + bounds_R.width;
+                middleTextureWidth = totalWidth - (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x);
             }
             else // The loading bar is too small
             {
-                totalWidth = (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY;
+                totalWidth = bounds_L.width + bounds_R.width;
                 middleTextureWidth = 0;
             }
 
@@ -516,52 +540,52 @@ namespace tgui
             if (frontSize > 0)
             {
                 // Check if a piece of the middle part should be drawn
-                if (frontSize > m_TextureBack_L->getSize().x * scalingY)
+                if (frontSize > m_TextureBack_L.getSize().x)
                 {
                     // Check if a piece of the right part should be drawn
-                    if (frontSize > (m_TextureBack_L->getSize().x * scalingY) + middleTextureWidth)
+                    if (frontSize > m_TextureBack_L.getSize().x + middleTextureWidth)
                     {
                         // Check if the bar is not full
                         if (frontSize < totalWidth)
-                            backBounds_R.width = frontSize - ((m_TextureBack_L->getSize().x * scalingY) + middleTextureWidth);
+                            bounds_R.width = static_cast<int>(frontSize - ((m_TextureBack_L.getSize().x) + middleTextureWidth));
                     }
                     else // Only a part of the middle image should be drawn
                     {
-                        backBounds_M.width = (frontSize - (m_TextureBack_L->getSize().x * scalingY)) / middleTextureWidth * m_TextureBack_M->getSize().x;
-                        backBounds_R.width = 0;
+                        bounds_M.width = static_cast<int>((frontSize - (m_TextureBack_L.getSize().x)) / middleTextureWidth * m_TextureBack_M.getSize().x);
+                        bounds_R.width = 0;
                     }
                 }
                 else // Only a part of the left piece should be drawn
                 {
-                    backBounds_L.width = frontSize;
-                    backBounds_M.width = 0;
-                    backBounds_R.width = 0;
+                    bounds_L.width = frontSize;
+                    bounds_M.width = 0;
+                    bounds_R.width = 0;
                 }
             }
             else // Nothing should be drawn
             {
-                backBounds_L.width = 0;
-                backBounds_M.width = 0;
-                backBounds_R.width = 0;
+                bounds_L.width = 0;
+                bounds_M.width = 0;
+                bounds_R.width = 0;
             }
 
-            m_SpriteFront_L.setTextureRect(sf::IntRect(backBounds_L));
-            m_SpriteFront_M.setTextureRect(sf::IntRect(backBounds_M));
-            m_SpriteFront_R.setTextureRect(sf::IntRect(backBounds_R));
+            m_TextureFront_L.sprite.setTextureRect(bounds_L);
+            m_TextureFront_M.sprite.setTextureRect(bounds_M);
+            m_TextureFront_R.sprite.setTextureRect(bounds_R);
         }
         else // The image is not split
         {
             // Calculate the size of the front sprite
-            sf::IntRect frontBounds(m_SpriteBack_M.getLocalBounds());
+            sf::IntRect frontBounds(m_TextureFront_M.sprite.getTextureRect());
 
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
+                frontBounds.width = static_cast<int>(m_TextureBack_M.getSize().x * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
             else
-                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x);
+                frontBounds.width = static_cast<int>(m_TextureBack_M.getSize().x);
 
             // Set the size of the front image
-            m_SpriteFront_M.setTextureRect(frontBounds);
+            m_TextureFront_M.sprite.setTextureRect(frontBounds);
         }
     }
 
@@ -591,59 +615,59 @@ namespace tgui
         if (m_SplitImage)
         {
             // Get the scale the images
-            float scalingY = m_Size.y / m_TextureBack_M->getSize().y;
+            float scalingY = m_Size.y / m_TextureBack_M.getSize().y;
 
             // Scale the image
             states.transform.scale(scalingY, scalingY);
 
             // Draw the left image of the loading bar
-            target.draw(m_SpriteBack_L, states);
-            target.draw(m_SpriteFront_L, states);
+            target.draw(m_TextureBack_L, states);
+            target.draw(m_TextureFront_L, states);
 
             // Check if the middle image may be drawn
-            if ((scalingY * (m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x)) < m_Size.x)
+            if ((scalingY * (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x)) < m_Size.x)
             {
                 // Put the middle image on the correct position
-                states.transform.translate(m_SpriteBack_L.getGlobalBounds().width, 0);
+                states.transform.translate(m_TextureBack_L.sprite.getGlobalBounds().width, 0);
 
                 // Calculate the scale for our middle image
-                float scaleX = (m_Size.x - ((m_TextureBack_L->getSize().x + m_TextureBack_R->getSize().x) * scalingY)) / m_TextureBack_M->getSize().x;
+                float scaleX = (m_Size.x - ((m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * scalingY)) / m_TextureBack_M.getSize().x;
 
                 // Set the scale for the middle image
                 states.transform.scale(scaleX / scalingY, 1);
 
                 // Draw the middle image
-                target.draw(m_SpriteBack_M, states);
-                target.draw(m_SpriteFront_M, states);
+                target.draw(m_TextureBack_M, states);
+                target.draw(m_TextureFront_M, states);
 
                 // Put the right image on the correct position
-                states.transform.translate(m_SpriteBack_M.getGlobalBounds().width, 0);
+                states.transform.translate(m_TextureBack_M.sprite.getGlobalBounds().width, 0);
 
                 // Set the scale for the right image
                 states.transform.scale(scalingY / scaleX, 1);
 
                 // Draw the right image
-                target.draw(m_SpriteBack_R, states);
-                target.draw(m_SpriteFront_R, states);
+                target.draw(m_TextureBack_R, states);
+                target.draw(m_TextureFront_R, states);
             }
             else // The loading bar isn't width enough, we will draw it at minimum size
             {
                 // Put the right image on the correct position
-                states.transform.translate(m_SpriteBack_L.getGlobalBounds().width, 0);
+                states.transform.translate(m_TextureBack_L.sprite.getGlobalBounds().width, 0);
 
                 // Draw the right image
-                target.draw(m_SpriteBack_R, states);
-                target.draw(m_SpriteFront_R, states);
+                target.draw(m_TextureBack_R, states);
+                target.draw(m_TextureFront_R, states);
             }
         }
         else // The image is not split
         {
             // Scale the image
-            states.transform.scale(m_Size.x / m_TextureBack_M->getSize().x, m_Size.y / m_TextureBack_M->getSize().y);
+            states.transform.scale(m_Size.x / m_TextureBack_M.getSize().x, m_Size.y / m_TextureBack_M.getSize().y);
 
             // Draw the loading bar
-            target.draw(m_SpriteBack_M, states);
-            target.draw(m_SpriteFront_M, states);
+            target.draw(m_TextureBack_M, states);
+            target.draw(m_TextureFront_M, states);
         }
 
         // Check if there is a text to draw

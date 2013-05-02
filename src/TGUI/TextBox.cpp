@@ -30,6 +30,9 @@
 
 #include <SFML/OpenGL.hpp>
 
+///!!! TODO: Make TextBox load from config file.
+///!!!       Size and text size can be set later.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -55,7 +58,6 @@ namespace tgui
     m_SelectionPointWidth     (2),
     m_SelectionTextsNeedUpdate(true),
     m_Scroll                  (NULL),
-    m_LoadedScrollbarPathname (""),
     m_PossibleDoubleClick     (false)
     {
         m_Callback.objectType = Type_TextBox;
@@ -99,7 +101,6 @@ namespace tgui
     m_TextAfterSelection1        (copy.m_TextAfterSelection1),
     m_TextAfterSelection2        (copy.m_TextAfterSelection2),
     m_MultilineSelectionRectWidth(copy.m_MultilineSelectionRectWidth),
-    m_LoadedScrollbarPathname    (copy.m_LoadedScrollbarPathname),
     m_PossibleDoubleClick        (copy.m_PossibleDoubleClick)
     {
         // If there is a scrollbar then copy it
@@ -161,7 +162,6 @@ namespace tgui
             std::swap(m_TextAfterSelection2,         temp.m_TextAfterSelection2);
             std::swap(m_MultilineSelectionRectWidth, temp.m_MultilineSelectionRectWidth);
             std::swap(m_Scroll,                      temp.m_Scroll);
-            std::swap(m_LoadedScrollbarPathname,     temp.m_LoadedScrollbarPathname);
             std::swap(m_PossibleDoubleClick,         temp.m_PossibleDoubleClick);
         }
 
@@ -177,7 +177,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarPathname)
+    bool TextBox::load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarConfigFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -200,17 +200,16 @@ namespace tgui
         // Store the values
         m_Size.x = width;
         m_Size.y = height;
-        m_LoadedScrollbarPathname = scrollbarPathname;
 
         // Set the text size
         setTextSize(textSize);
 
         // If there is a scrollbar then load it
-        if (scrollbarPathname.empty() == false)
+        if (scrollbarConfigFileFilename.empty() == false)
         {
             // load the scrollbar and check if it failed
             m_Scroll = new Scrollbar();
-            if (m_Scroll->load(scrollbarPathname) == false)
+            if (m_Scroll->load(scrollbarConfigFileFilename) == false)
             {
                 // The scrollbar couldn't be loaded so it must be deleted
                 delete m_Scroll;
@@ -331,13 +330,6 @@ namespace tgui
     Vector2f TextBox::getSize() const
     {
         return Vector2f(m_Size.x, m_Size.y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string TextBox::getLoadedScrollbarPathname() const
-    {
-        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -760,13 +752,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::setScrollbar(const std::string& scrollbarPathname)
+    bool TextBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        // Store the pathname
-        m_LoadedScrollbarPathname = scrollbarPathname;
-
         // Do nothing when the string is empty
-        if (scrollbarPathname.empty() == true)
+        if (scrollbarConfigFileFilename.empty() == true)
             return false;
 
         // If the scrollbar was already created then delete it first
@@ -775,7 +764,7 @@ namespace tgui
 
         // load the scrollbar and check if it failed
         m_Scroll = new Scrollbar();
-        if(m_Scroll->load(scrollbarPathname) == false)
+        if(m_Scroll->load(scrollbarConfigFileFilename) == false)
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;

@@ -1,5 +1,0 @@
-SplitImage      = false        # The TitleBar image is not split in multiple images
-BackgroundImage = ""           # The window doesn't has a background image (by default)
-Layout          = right        # The close button is drawn on the right side of the title bar
-DistanceToSide  = 5            # There are 5 pixels between the right side of the title bar and the close button.
-Borders         = (2, 0, 2, 2) # The window has borders of 2 pixels thick (no top border).

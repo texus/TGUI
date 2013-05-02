@@ -35,8 +35,6 @@ namespace tgui
 
     AnimatedPicture::AnimatedPicture() :
     m_Textures       (),
-    m_Sprites        (),
-    m_LoadedFilenames(),
     m_FrameDuration  (),
     m_CurrentFrame   (0),
     m_Playing        (false),
@@ -50,7 +48,6 @@ namespace tgui
 
     AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
     ClickableObject  (copy),
-    m_LoadedFilenames(copy.m_LoadedFilenames),
     m_FrameDuration  (copy.m_FrameDuration),
     m_CurrentFrame   (copy.m_CurrentFrame),
     m_Playing        (copy.m_Playing),
@@ -58,10 +55,7 @@ namespace tgui
     {
         // Copy the textures
         for (unsigned int i=0; i< copy.m_Textures.size(); ++i)
-        {
-            if (TGUI_TextureManager.copyTexture(copy.m_Textures[i], m_Textures[i]))
-                m_Sprites[i].setTexture(*m_Textures[i]);
-        }
+            TGUI_TextureManager.copyTexture(copy.m_Textures[i], m_Textures[i]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,8 +68,6 @@ namespace tgui
 
         // Clear the vectors
         m_Textures.clear();
-        m_Sprites.clear();
-        m_LoadedFilenames.clear();
         m_FrameDuration.clear();
     }
 
@@ -94,8 +86,6 @@ namespace tgui
                 TGUI_TextureManager.removeTexture(m_Textures[i]);
 
             std::swap(m_Textures,        temp.m_Textures);
-            std::swap(m_Sprites,         temp.m_Sprites);
-            std::swap(m_LoadedFilenames, temp.m_LoadedFilenames);
             std::swap(m_FrameDuration,   temp.m_FrameDuration);
             std::swap(m_CurrentFrame,    temp.m_CurrentFrame);
             std::swap(m_Playing,         temp.m_Playing);
@@ -120,7 +110,7 @@ namespace tgui
         if (filename.empty() == true)
             return false;
 
-        sf::Texture* tempTexture;
+        Texture tempTexture;
 
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, tempTexture))
@@ -131,29 +121,21 @@ namespace tgui
                 m_CurrentFrame = 1;
 
                 // Remember the size of this image
-                m_Size = Vector2f(tempTexture->getSize());
+                m_Size = Vector2f(tempTexture.getSize());
             }
 
             // Add the texture
             m_Textures.push_back(tempTexture);
 
-            // Add the sprite
-            m_Sprites.push_back(sf::Sprite(*tempTexture));
-
-            // Store the filename
-            m_LoadedFilenames.push_back(filename);
-
             // Store the frame duration
             m_FrameDuration.push_back(frameDurarion);
 
             // Return true to indicate that nothing went wrong
-            m_Loaded = true;
-            return true;
+            return m_Loaded = true;
         }
         else // The texture was not loaded
         {
-            m_Loaded = true;
-            return false;
+            return m_Loaded = false;
         }
     }
 
@@ -290,13 +272,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string> AnimatedPicture::getLoadedFilenames() const
-    {
-        return m_LoadedFilenames;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void AnimatedPicture::removeFrame(unsigned int frame)
     {
         // If there are no frames then there isn't much to do
@@ -315,8 +290,6 @@ namespace tgui
         {
             // Remove the last frame
             m_Textures.pop_back();
-            m_Sprites.pop_back();
-            m_LoadedFilenames.pop_back();
             m_FrameDuration.pop_back();
 
             // You can't display a frame that was removed
@@ -330,8 +303,6 @@ namespace tgui
             {
                 // Remove the first frame
                 m_Textures.erase(m_Textures.begin(), m_Textures.begin()+1);
-                m_Sprites.erase(m_Sprites.begin(), m_Sprites.begin()+1);
-                m_LoadedFilenames.erase(m_LoadedFilenames.begin(), m_LoadedFilenames.begin()+1);
                 m_FrameDuration.erase(m_FrameDuration.begin(), m_FrameDuration.begin()+1);
 
                 // Unless the removed frame was displayed, the displayed frame is now on another position in the vectors
@@ -342,8 +313,6 @@ namespace tgui
             {
                 // Remove the requested frame
                 m_Textures.erase(m_Textures.begin()+frame, m_Textures.begin()+frame+1);
-                m_Sprites.erase(m_Sprites.begin()+frame, m_Sprites.begin()+frame+1);
-                m_LoadedFilenames.erase(m_LoadedFilenames.begin()+frame, m_LoadedFilenames.begin()+frame+1);
                 m_FrameDuration.erase(m_FrameDuration.begin()+frame, m_FrameDuration.begin()+frame+1);
 
                 // If the displayed frame was behind the deleted one, then it should be shifted
@@ -363,8 +332,6 @@ namespace tgui
 
         // Clear the vectors
         m_Textures.clear();
-        m_Sprites.clear();
-        m_LoadedFilenames.clear();
         m_FrameDuration.clear();
 
         // Reset the animation
@@ -444,10 +411,10 @@ namespace tgui
         states.transform *= getTransform();
 
         // Set the scaling
-        states.transform.scale(m_Size.x / m_Textures[0]->getSize().x, m_Size.y / m_Textures[0]->getSize().y);
+        states.transform.scale(m_Size.x / m_Textures[0].getSize().x, m_Size.y / m_Textures[0].getSize().y);
 
         // Draw the frame
-        target.draw(m_Sprites[m_CurrentFrame-1], states);
+        target.draw(m_Textures[m_CurrentFrame-1], states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

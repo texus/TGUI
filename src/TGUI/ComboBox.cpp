@@ -33,6 +33,10 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
+///!!! TODO: Make ComboBox load from config file.
+///!!!       Size and text size can be set later.
+///!!! TODO: Instead of ignoring the up arrow, use it instead of just flipping the down arrow.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -42,10 +46,7 @@ namespace tgui
     ComboBox::ComboBox() :
     m_ShowList          (false),
     m_MouseOnListBox    (false),
-    m_NrOfItemsToDisplay(1),
-    m_TextureNormal     (NULL),
-    m_TextureHover      (NULL),
-    m_LoadedPathname    ("")
+    m_NrOfItemsToDisplay(1)
     {
         m_Callback.objectType = Type_ComboBox;
         m_DraggableObject = true;
@@ -63,11 +64,12 @@ namespace tgui
     ObjectBorders       (copy),
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListBox    (copy.m_MouseOnListBox),
-    m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),
-    m_LoadedPathname    (copy.m_LoadedPathname)
+    m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay)
     {
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal, m_TextureNormal)) m_SpriteNormal.setTexture(*m_TextureNormal);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover))   m_SpriteHover.setTexture(*m_TextureHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpNormal, m_TextureArrowUpNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpHover, m_TextureArrowUpHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownNormal, m_TextureArrowDownNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownHover, m_TextureArrowDownHover);
 
         // Copy the list box
         m_ListBox = new tgui::ListBox(*copy.m_ListBox);
@@ -77,8 +79,10 @@ namespace tgui
 
     ComboBox::~ComboBox()
     {
-        if (m_TextureNormal != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL)      TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
         delete m_ListBox;
     }
@@ -96,15 +100,14 @@ namespace tgui
             // Delete the old list box
             delete m_ListBox;
 
-            std::swap(m_ShowList,           temp.m_ShowList);
-            std::swap(m_MouseOnListBox,     temp.m_MouseOnListBox);
-            std::swap(m_NrOfItemsToDisplay, temp.m_NrOfItemsToDisplay);
-            std::swap(m_ListBox,            temp.m_ListBox);
-            std::swap(m_TextureNormal,      temp.m_TextureNormal);
-            std::swap(m_TextureHover,       temp.m_TextureHover);
-            std::swap(m_SpriteNormal,       temp.m_SpriteNormal);
-            std::swap(m_SpriteHover,        temp.m_SpriteHover);
-            std::swap(m_LoadedPathname,     temp.m_LoadedPathname);
+            std::swap(m_ShowList,               temp.m_ShowList);
+            std::swap(m_MouseOnListBox,         temp.m_MouseOnListBox);
+            std::swap(m_NrOfItemsToDisplay,     temp.m_NrOfItemsToDisplay);
+            std::swap(m_ListBox,                temp.m_ListBox);
+            std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
+            std::swap(m_TextureArrowUpHover,    temp.m_TextureArrowUpHover);
+            std::swap(m_TextureArrowDownNormal, temp.m_TextureArrowDownNormal);
+            std::swap(m_TextureArrowDownHover,  temp.m_TextureArrowDownHover);
         }
 
         return *this;
@@ -119,91 +122,122 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string& pathname, float width, float height, unsigned int nrOfItemsInList, const std::string& scrollbarPathname)
+    bool ComboBox::load(const std::string& configFileFilename, float width, float height, unsigned int nrOfItemsInList, const std::string& scrollbarConfigFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // Remove all textures if they were loaded before
+        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open \"" + m_LoadedPathname + "info.txt\".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("ComboBox", properties, values))
         {
-            // Check what the property is
-            if (property.compare("phases") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+///!!!  TODO: Add SeparateHoverImage option
+            /*if (property == "separatehoverimage")
             {
-                // Get and store the different phases
-                extractPhases(value);
+                m_SeparateHoverImage = configFile.readBool(value, false);
             }
-            else if (property.compare("backgroundcolor") == 0)
+            else */if (property == "backgroundcolor")
             {
-                m_ListBox->setBackgroundColor(extractColor(value));
+                setBackgroundColor(configFile.readColor(value));
             }
-            else if (property.compare("textcolor") == 0)
+            else if (property == "textcolor")
             {
-                m_ListBox->setTextColor(extractColor(value));
+                setTextColor(configFile.readColor(value));
             }
-            else if (property.compare("selectedbackgroundcolor") == 0)
+            else if (property == "selectedbackgroundcolor")
             {
-                m_ListBox->setSelectedBackgroundColor(extractColor(value));
+                setSelectedBackgroundColor(configFile.readColor(value));
             }
-            else if (property.compare("selectedtextcolor") == 0)
+            else if (property == "selectedtextcolor")
             {
-                m_ListBox->setSelectedTextColor(extractColor(value));
+                setSelectedTextColor(configFile.readColor(value));
             }
-            else if (property.compare("bordercolor") == 0)
+            else if (property == "bordercolor")
             {
-                m_ListBox->setBorderColor(extractColor(value));
+                setBorderColor(configFile.readColor(value));
+            }
+            else if (property == "arrowupnormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section ComboBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "arrowuphoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section ComboBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "arrowdownnormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section ComboBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "arrowdownhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section ComboBox in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section ComboBox in " + configFileFilename + ".");
         }
 
-        // Close the info file
-        infoFile.closeFile();
-
-        // If the button was loaded before then remove the old textures first
-        if (m_TextureNormal != NULL)  TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL)   TGUI_TextureManager.removeTexture(m_TextureHover);
-
-        // load the required texture
-        if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal))
-            m_SpriteNormal.setTexture(*m_TextureNormal, true);
-        else
-            return false;
-
-        // load the optional texture
-        if (m_ObjectPhase & ObjectPhase_Hover)
+        // Make sure the required textures were loaded
+        if ((m_TextureArrowUpNormal.data == NULL) || (m_TextureArrowDownNormal.data == NULL))
         {
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover))
-                m_SpriteHover.setTexture(*m_TextureHover, true);
-            else
-                return false;
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + configFileFilename + " complete?");
+            return false;
         }
 
+        // Check if optional textures were loaded
+        if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+        {
+            m_ObjectPhase |= ObjectPhase_Hover;
+        }
 
         // Remove all items (in case this is the second time that the load function was called)
         m_ListBox->removeAllItems();
@@ -212,33 +246,20 @@ namespace tgui
         if (nrOfItemsInList < 1)
             nrOfItemsInList = 1;
 
-        // The combo box is loaded
-        m_Loaded = true;
-
-        // Remember the scrollbar pathname
-        m_LoadedScrollbarPathname = scrollbarPathname;
+        // Check if a scrollbar should be loaded
+        if (scrollbarConfigFileFilename.empty() == false)
+        {
+            // Try to load the scrollbar
+            if (!m_ListBox->setScrollbar(scrollbarConfigFileFilename))
+                return false;
+        }
 
         // Make the changes
+        m_Loaded = true;
         m_NrOfItemsToDisplay = nrOfItemsInList;
         setSize(width, height);
 
-        // Check if a scrollbar should be loaded
-        if (scrollbarPathname.empty() == false)
-        {
-            // Try to load the scrollbar
-            if (m_ListBox->setScrollbar(scrollbarPathname))
-            {
-                // The scrollbar was loaded successfully
-                return true;
-            }
-            else // Loading the scrollbar failed
-            {
-                m_Loaded = false;
-                return false;
-            }
-        }
-        else // No scrollbar is needed
-            return true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,20 +292,6 @@ namespace tgui
             return Vector2f(m_ListBox->getSize().x, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
         else
             return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string ComboBox::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string ComboBox::getLoadedScrollbarPathname() const
-    {
-        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,8 +425,8 @@ namespace tgui
             return;
 
         // There is a minimum width
-        if (m_ListBox->getSize().x < (50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x))
-            m_ListBox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureNormal->getSize().x) * getScale().x, m_ListBox->getSize().y);
+        if (m_ListBox->getSize().x < (50 + (m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x) * getScale().x))
+            m_ListBox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x) * getScale().x, m_ListBox->getSize().y);
 
         // The item height needs to change
         m_ListBox->setItemHeight(itemHeight);
@@ -522,10 +529,6 @@ namespace tgui
 
     bool ComboBox::setScrollbar(const std::string& scrollbarPathname)
     {
-        // Remember the scrollbar pathname
-        m_LoadedScrollbarPathname = scrollbarPathname;
-
-        // Set the new scrollbar
         return m_ListBox->setScrollbar(scrollbarPathname);
     }
 
@@ -533,10 +536,6 @@ namespace tgui
 
     void ComboBox::removeScrollbar()
     {
-        // There is no scrollbar loaded so the string should be empty
-        m_LoadedScrollbarPathname = "";
-
-        // Remove the scrollbar
         m_ListBox->removeScrollbar();
     }
 
@@ -851,7 +850,7 @@ namespace tgui
 
         // Get the global position
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_ListBox->getSize().x - m_RightBorder - (m_TextureNormal->getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureNormal->getSize().y))) * curScale.x) + viewPosition.x,
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y))) * curScale.x) + viewPosition.x,
                                                                        getPosition().y + ((m_ListBox->getSize().y - m_BottomBorder) * curScale.y) + viewPosition.y);
 
         // Adjust the transformation
@@ -913,23 +912,23 @@ namespace tgui
         // Set the arrow like it should (down when list box is invisible, up when it is visible)
         if (m_ShowList)
         {
-            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureNormal->getSize().y;
-            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureNormal->getSize().x * scaleFactor), (m_TextureNormal->getSize().y * scaleFactor) + m_TopBorder);
+            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y;
+            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * scaleFactor), (m_TextureArrowDownNormal.getSize().y * scaleFactor) + m_TopBorder);
             states.transform.scale(scaleFactor, -scaleFactor);
         }
         else
         {
-            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureNormal->getSize().y;
-            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureNormal->getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
+            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y;
+            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
             states.transform.scale(scaleFactor, scaleFactor);
         }
 
         // Draw the arrow
-        target.draw(m_SpriteNormal, states);
+        target.draw(m_TextureArrowDownNormal, states);
 
         // If the mouse is on top of the combo box then draw another arrow image (if allowed)
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
-            target.draw(m_SpriteHover, states);
+            target.draw(m_TextureArrowDownHover, states);
 
         // If the list box should be visible then draw it
         if (m_ShowList)

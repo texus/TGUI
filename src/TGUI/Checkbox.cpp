@@ -38,12 +38,7 @@ namespace tgui
     Checkbox::Checkbox() :
     m_Checked          (false),
     m_AllowTextClick   (true),
-    m_TextSize         (0),
-    m_TextureUnchecked (NULL),
-    m_TextureChecked   (NULL),
-    m_TextureMouseHover(NULL),
-    m_TextureFocused   (NULL),
-    m_LoadedPathname   ("")
+    m_TextSize         (0)
     {
         m_Callback.objectType = Type_Checkbox;
         m_Text.setColor(sf::Color::Black);
@@ -56,24 +51,23 @@ namespace tgui
     m_Checked       (copy.m_Checked),
     m_AllowTextClick(copy.m_AllowTextClick),
     m_Text          (copy.m_Text),
-    m_TextSize      (copy.m_TextSize),
-    m_LoadedPathname(copy.m_LoadedPathname)
+    m_TextSize      (copy.m_TextSize)
     {
         // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked))   m_SpriteUnchecked.setTexture(*m_TextureUnchecked);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureChecked, m_TextureChecked))       m_SpriteChecked.setTexture(*m_TextureChecked);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseHover, m_TextureMouseHover)) m_SpriteMouseHover.setTexture(*m_TextureMouseHover);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused, m_TextureFocused))       m_SpriteFocused.setTexture(*m_TextureFocused);
+        TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked);
+        TGUI_TextureManager.copyTexture(copy.m_TextureChecked, m_TextureChecked);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused, m_TextureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::~Checkbox()
     {
-        if (m_TextureUnchecked != NULL)   TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked != NULL)     TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureMouseHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseHover);
-        if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
+        if (m_TextureUnchecked.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureHover.data != NULL)      TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureFocused.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,19 +79,14 @@ namespace tgui
             Checkbox temp(right);
             this->ClickableObject::operator=(right);
 
-            std::swap(m_Checked,           temp.m_Checked);
-            std::swap(m_AllowTextClick,    temp.m_AllowTextClick);
-            std::swap(m_Text,              temp.m_Text);
-            std::swap(m_TextSize,          temp.m_TextSize);
-            std::swap(m_TextureUnchecked,  temp.m_TextureUnchecked);
-            std::swap(m_TextureChecked,    temp.m_TextureChecked);
-            std::swap(m_TextureMouseHover, temp.m_TextureMouseHover);
-            std::swap(m_TextureFocused,    temp.m_TextureFocused);
-            std::swap(m_SpriteUnchecked,   temp.m_SpriteUnchecked);
-            std::swap(m_SpriteChecked,     temp.m_SpriteChecked);
-            std::swap(m_SpriteMouseHover,  temp.m_SpriteMouseHover);
-            std::swap(m_SpriteFocused,     temp.m_SpriteFocused);
-            std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
+            std::swap(m_Checked,          temp.m_Checked);
+            std::swap(m_AllowTextClick,   temp.m_AllowTextClick);
+            std::swap(m_Text,             temp.m_Text);
+            std::swap(m_TextSize,         temp.m_TextSize);
+            std::swap(m_TextureUnchecked, temp.m_TextureUnchecked);
+            std::swap(m_TextureChecked,   temp.m_TextureChecked);
+            std::swap(m_TextureHover,     temp.m_TextureHover);
+            std::swap(m_TextureFocused,   temp.m_TextureFocused);
         }
 
         return *this;
@@ -112,98 +101,113 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::load(const std::string& pathname)
+    bool Checkbox::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+         // If the checkbox was loaded before then remove the old textures
+        if (m_TextureUnchecked.data != NULL) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureFocused.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused);
 
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Checkbox", properties, values))
         {
-            // Check what the property is
-            if (property.compare("phases") == 0)
-            {
-                // Get and store the different phases
-                extractPhases(value);
-            }
-            else if (property.compare("textcolor") == 0)
-            {
-                m_Text.setColor(extractColor(value));
-            }
-            else if (property.compare("extension") == 0)
-            {
-                imageExtension = value;
-            }
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
         }
 
-        // Close the info file
-        infoFile.closeFile();
+        // Close the config file
+        configFile.close();
 
-        // If the checkbox was loaded before then remove the old textures
-        if (m_TextureUnchecked != NULL)   TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked != NULL)     TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureMouseHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseHover);
-        if (m_TextureFocused != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused);
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
 
-        // load the required textures
-        if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Checked." + imageExtension, m_TextureChecked))
-         && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Unchecked." + imageExtension, m_TextureUnchecked)))
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
         {
-            m_SpriteChecked.setTexture(*m_TextureChecked, true);
-            m_SpriteUnchecked.setTexture(*m_TextureUnchecked, true);
+            std::string property = properties[i];
+            std::string value = values[i];
 
-            m_Size = Vector2f(m_TextureUnchecked->getSize());
+            if (property == "textcolor")
+            {
+                m_Text.setColor(configFile.readColor(value));
+            }
+            else if (property == "checkedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureChecked))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section Checkbox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "uncheckedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureUnchecked))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section Checkbox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Checkbox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Checkbox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section Checkbox in " + configFileFilename + ".");
+        }
+
+        // Make sure the required texture was loaded
+        if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
+        {
+            m_Size = Vector2f(m_TextureChecked.getSize());
         }
         else
-            return false;
-
-        // load the optional textures
-        if (m_ObjectPhase & ObjectPhase_Focused)
         {
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused))
-            {
-                m_SpriteFocused.setTexture(*m_TextureFocused, true);
-                m_AllowFocus = true;
-            }
-            else
-                return false;
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the checkbox. Is the Checkbox section in " + configFileFilename + " complete?");
+            return false;
         }
 
-        if (m_ObjectPhase & ObjectPhase_Hover)
+        // Check if optional textures were loaded
+        if (m_TextureFocused.data != NULL)
         {
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover))
-                m_SpriteMouseHover.setTexture(*m_TextureMouseHover, true);
-            else
-                return false;
+            m_AllowFocus = true;
+            m_ObjectPhase |= ObjectPhase_Focused;
+        }
+        if (m_TextureHover.data != NULL)
+        {
+            m_ObjectPhase |= ObjectPhase_Hover;
         }
 
         // When there is no error we will return true
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,13 +229,6 @@ namespace tgui
         // If the text is auto sized then recalculate the size
         if (m_TextSize == 0)
             setText(m_Text.getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Checkbox::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,7 +403,7 @@ namespace tgui
             addCallback();
         }
 
-        // Check if we clicked on the button (not just mouse release)
+        // Check if we clicked on the checkbox (not just mouse release)
         if (m_MouseDown == true)
         {
             // Check or uncheck the checkbox
@@ -502,30 +499,30 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Give the checkbox the correct size
-        states.transform.scale(m_Size.x / m_TextureUnchecked->getSize().x, m_Size.y / m_TextureUnchecked->getSize().y);
+        states.transform.scale(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
 
         // Check if the checkbox was checked
         if (m_Checked)
         {
             // The checked image may be a little bigger than the unchecked one, so put it on the right position
-            states.transform.translate(0, m_SpriteUnchecked.getGlobalBounds().height - m_SpriteChecked.getGlobalBounds().height);
+            states.transform.translate(0, static_cast<float>(m_TextureUnchecked.getHeight()) - m_TextureChecked.getHeight());
 
             // Draw the image of the checked checkbox
-            target.draw(m_SpriteChecked, states);
+            target.draw(m_TextureChecked, states);
 
             // Undo the translation
-            states.transform.translate(0, m_SpriteChecked.getGlobalBounds().height - m_SpriteUnchecked.getGlobalBounds().height);
+            states.transform.translate(0, static_cast<float>(m_TextureChecked.getHeight()) - m_TextureUnchecked.getHeight());
         }
         else // The checkbox was unchecked, just draw it
-            target.draw(m_SpriteUnchecked, states);
+            target.draw(m_TextureUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
         if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-            target.draw(m_SpriteFocused, states);
+            target.draw(m_TextureFocused, states);
 
         // When the mouse is on top of the checkbox then draw an extra image
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_SpriteMouseHover, states);
+            target.draw(m_TextureHover, states);
 
 
         // Restore the old transformation

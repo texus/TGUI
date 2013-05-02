@@ -41,18 +41,13 @@ namespace tgui
     ChildWindow::ChildWindow() :
     m_Size             (0, 0),
     m_BackgroundTexture(NULL),
-    m_IconTexture      (NULL),
     m_TitleBarHeight   (0),
-    m_LoadedPathname   (""),
     m_SplitImage       (false),
     m_DraggingPosition (0, 0),
     m_Opacity          (255),
     m_DistanceToSide   (5),
     m_TitleAlignment   (TitleAlignmentCentered),
-    m_BorderColor      (0, 0, 0),
-    m_TextureTitleBar_L(NULL),
-    m_TextureTitleBar_M(NULL),
-    m_TextureTitleBar_R(NULL)
+    m_BorderColor      (0, 0, 0)
     {
         m_Callback.objectType = Type_ChildWindow;
         m_CloseButton = new tgui::Button();
@@ -68,7 +63,6 @@ namespace tgui
     m_BackgroundTexture(childWindowToCopy.m_BackgroundTexture),
     m_TitleText        (childWindowToCopy.m_TitleText),
     m_TitleBarHeight   (childWindowToCopy.m_TitleBarHeight),
-    m_LoadedPathname   (childWindowToCopy.m_LoadedPathname),
     m_SplitImage       (childWindowToCopy.m_SplitImage),
     m_DraggingPosition (childWindowToCopy.m_DraggingPosition),
     m_Opacity          (childWindowToCopy.m_Opacity),
@@ -77,10 +71,10 @@ namespace tgui
     m_BorderColor      (childWindowToCopy.m_BorderColor)
     {
         // Copy the textures
-        if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture))               m_IconSprite.setTexture(*m_IconTexture);
-        if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L))   m_SpriteTitleBar_L.setTexture(*m_TextureTitleBar_L);
-        if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_M, m_TextureTitleBar_M))   m_SpriteTitleBar_M.setTexture(*m_TextureTitleBar_M);
-        if (TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R))   m_SpriteTitleBar_R.setTexture(*m_TextureTitleBar_R);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_M, m_TextureTitleBar_M);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R);
 
         // Copy the button
         m_CloseButton = new tgui::Button(*childWindowToCopy.m_CloseButton);
@@ -94,9 +88,9 @@ namespace tgui
 
     ChildWindow::~ChildWindow()
     {
-        if (m_TextureTitleBar_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
-        if (m_TextureTitleBar_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
-        if (m_TextureTitleBar_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
+        if (m_TextureTitleBar_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
+        if (m_TextureTitleBar_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
+        if (m_TextureTitleBar_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
 
         delete m_CloseButton;
     }
@@ -120,10 +114,8 @@ namespace tgui
             std::swap(m_BackgroundTexture, temp.m_BackgroundTexture);
             std::swap(m_BackgroundSprite,  temp.m_BackgroundSprite);
             std::swap(m_IconTexture,       temp.m_IconTexture);
-            std::swap(m_IconSprite,        temp.m_IconSprite);
             std::swap(m_TitleText,         temp.m_TitleText);
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
-            std::swap(m_LoadedPathname,    temp.m_LoadedPathname);
             std::swap(m_SplitImage,        temp.m_SplitImage);
             std::swap(m_DraggingPosition,  temp.m_DraggingPosition);
             std::swap(m_Opacity,           temp.m_Opacity);
@@ -133,9 +125,6 @@ namespace tgui
             std::swap(m_TextureTitleBar_L, temp.m_TextureTitleBar_L);
             std::swap(m_TextureTitleBar_M, temp.m_TextureTitleBar_M);
             std::swap(m_TextureTitleBar_R, temp.m_TextureTitleBar_R);
-            std::swap(m_SpriteTitleBar_L,  temp.m_SpriteTitleBar_L);
-            std::swap(m_SpriteTitleBar_M,  temp.m_SpriteTitleBar_M);
-            std::swap(m_SpriteTitleBar_R,  temp.m_SpriteTitleBar_R);
             std::swap(m_CloseButton,       temp.m_CloseButton);
         }
 
@@ -151,110 +140,120 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::load(const std::string& pathname, float width, float height, const sf::Color& bkgColor)
+    bool ChildWindow::load(const std::string& configFileFilename, float width, float height, const sf::Color& bkgColor)
     {
+///!!!  TODO: Add SplitImage to title bar
+///!!!  TODO: Remove all unneeded parameters.
+///!!!        Size can be set with setSize later and the background color could be loaded from the file or also set later.
+
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
-
         // Set the background color of the child window
         m_BackgroundColor = bkgColor;
-
-        // Store the filename
-        m_LoadedPathname = pathname;
 
         // Set the size of the child window
         m_Size.x = width;
         m_Size.y = height;
 
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        m_SplitImage = false;
-        m_DistanceToSide = 5;
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("ChildWindow", properties, values))
         {
-            // Check what the property is
-            if (property.compare("splitimage") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        bool closeButtonLoaded = false;
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "textcolor")
             {
-                if ((value.compare("true") == 0) || (value.compare("1") == 0))
+                m_TitleText.setColor(configFile.readColor(value));
+            }
+            else if (property == "bordercolor")
+            {
+                setBorderColor(configFile.readColor(value));
+            }
+            else if (property == "titlebarimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_M))
                 {
-                    /// TODO: Support SplitImage
-                    TGUI_OUTPUT("TGUI fixme: SplitImage is not supported yet.");
-//                    m_SplitImage = true;
-                }
-                else
-                {
-                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + configFileFilename + ".");
+                    return false;
                 }
             }
-            else if (property.compare("extension") == 0)
+            else if (property == "closebutton")
             {
-                imageExtension = value;
+                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButton in section ChildWindow in " + configFileFilename + ".");
+                    return false;
+                }
+
+                if (!m_CloseButton->load(configFileFolder + value.substr(1, value.length()-2)))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to load the close button of the child window.");
+                    return false;
+                }
+
+                closeButtonLoaded = true;
             }
-            else if (property.compare("borders") == 0)
+            else if (property == "borders")
             {
-                // Get the borders
                 Vector4u borders;
                 if (extractVector4u(value, borders))
                     setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
             }
-            else if (property.compare("distancetoside") == 0)
+            else if (property == "distancetoside")
             {
-                m_DistanceToSide = atoi(value.c_str());
-            }
-        }
-
-        // Close the info file
-        infoFile.closeFile();
-
-        // Remove the textures when they were loaded before
-        if (m_TextureTitleBar_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
-        if (m_TextureTitleBar_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
-        if (m_TextureTitleBar_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
-
-        // Check if the title bar image is split
-        if (m_SplitImage)
-        {
-            /// TODO: Support SplitImage
-            return false;
-        }
-        else // The title bar image isn't split
-        {
-            // Load the required texture
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "TitleBar." + imageExtension, m_TextureTitleBar_M)))
-            {
-                 m_SpriteTitleBar_M.setTexture(*m_TextureTitleBar_M, true);
-                 m_TitleBarHeight = m_TextureTitleBar_M->getSize().y;
+                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
             else
-                return false;
-
-            // Load the close button
-            if (m_CloseButton->load(m_LoadedPathname + "/Close") == false)
-                return false;
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
         }
 
+        if (!closeButtonLoaded)
+        {
+            TGUI_OUTPUT("TGUI error: Missing a CloseButton property in section ChildWindow in " + configFileFilename + ".");
+            return false;
+        }
+
+        // Make sure the required texture was loaded
+        if ((m_TextureTitleBar_M.data != NULL))
+        {
+            m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
+        }
+        else
+        {
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
+            return false;
+        }
+
+        // Set the size of the title text
         m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
 
         // When there is no error we will return true
@@ -283,13 +282,6 @@ namespace tgui
     Vector2f ChildWindow::getSize() const
     {
         return Vector2f(m_Size.x, m_Size.y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string ChildWindow::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,8 +318,8 @@ namespace tgui
         m_TitleBarHeight = height;
 
         // Set the size of the close button
-        m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().x,
-                               static_cast<float>(height) / m_TextureTitleBar_M->getSize().y * m_CloseButton->getSize().y);
+        m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->getSize().x,
+                               static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->getSize().y);
 
         // Set the size of the text in the title bar
         m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
@@ -361,21 +353,21 @@ namespace tgui
         // Store the new transparency
         m_Opacity = transparency;
 
-        m_SpriteTitleBar_L.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_SpriteTitleBar_M.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_SpriteTitleBar_R.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTitleBar_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTitleBar_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTitleBar_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
-        m_CloseButton->m_SpriteNormal_L.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteNormal_M.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteNormal_R.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
-        m_CloseButton->m_SpriteMouseHover_L.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteMouseHover_M.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteMouseHover_R.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
-        m_CloseButton->m_SpriteMouseDown_L.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteMouseDown_M.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_SpriteMouseDown_R.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureDown_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_CloseButton->m_TextureDown_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,15 +463,14 @@ namespace tgui
     void ChildWindow::setIcon(const std::string& filename)
     {
         // If a texture has already been loaded then remove it first
-        if (m_IconTexture)
+        if (m_IconTexture.data)
             TGUI_TextureManager.removeTexture(m_IconTexture);
 
         // Load the icon image
         if (TGUI_TextureManager.getTexture(filename, m_IconTexture))
         {
-            m_IconSprite.setTexture(*m_IconTexture, true);
-            m_IconSprite.setScale(static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y,
-                                  static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y);
+            m_IconTexture.sprite.setScale(static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y,
+                                          static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
         }
         else // Loading failed
             TGUI_OUTPUT("Failed to load \"" + filename + "\" as icon for the ChildWindow");
@@ -489,7 +480,7 @@ namespace tgui
 
     void ChildWindow::removeIcon()
     {
-        if (m_IconTexture)
+        if (m_IconTexture.data)
             TGUI_TextureManager.removeTexture(m_IconTexture);
     }
 
@@ -705,8 +696,9 @@ namespace tgui
         Vector2f topLeftTitleBarPosition;
         Vector2f bottomRightTitleBarPosition;
 
-        if (m_IconTexture)
-            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_DistanceToSide + (m_IconTexture->getSize().x * m_IconSprite.getScale().x) + viewPosition.x, position.y + viewPosition.y);
+        if (m_IconTexture.data)
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_DistanceToSide + (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) + viewPosition.x,
+                                                                      position.y + viewPosition.y);
         else
             topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_DistanceToSide + viewPosition.x, position.y + viewPosition.y);
 
@@ -727,21 +719,21 @@ namespace tgui
         else // The title bar image isn't split
         {
             // Scale the title bar
-            states.transform.scale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M->getSize().x, static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M->getSize().y);
+            states.transform.scale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M.getSize().x, static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
 
             // Draw the title bar
-            target.draw(m_SpriteTitleBar_M, states);
+            target.draw(m_TextureTitleBar_M, states);
 
             // Undo the scaling
-            states.transform.scale(static_cast<float>(m_TextureTitleBar_M->getSize().x) / (m_Size.x + m_LeftBorder + m_RightBorder), static_cast<float>(m_TextureTitleBar_M->getSize().y) / m_TitleBarHeight);
+            states.transform.scale(static_cast<float>(m_TextureTitleBar_M.getSize().x) / (m_Size.x + m_LeftBorder + m_RightBorder), static_cast<float>(m_TextureTitleBar_M.getSize().y) / m_TitleBarHeight);
         }
 
         // Draw a window icon if one was set
-        if (m_IconTexture)
+        if (m_IconTexture.data)
         {
-            states.transform.translate(static_cast<float>(m_DistanceToSide), (m_TitleBarHeight - (m_IconTexture->getSize().y * m_IconSprite.getScale().y)) / 2.f);
-            target.draw(m_IconSprite, states);
-            states.transform.translate(m_IconTexture->getSize().x * m_IconSprite.getScale().x, (m_TitleBarHeight - (m_IconTexture->getSize().y * m_IconSprite.getScale().y)) / -2.f);
+            states.transform.translate(static_cast<float>(m_DistanceToSide), (m_TitleBarHeight - (m_IconTexture.getSize().y * m_IconTexture.sprite.getScale().y)) / 2.f);
+            target.draw(m_IconTexture, states);
+            states.transform.translate(m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x, (m_TitleBarHeight - (m_IconTexture.getSize().y * m_IconTexture.sprite.getScale().y)) / -2.f);
         }
 
         // Get the old clipping area
@@ -774,8 +766,8 @@ namespace tgui
             }
             else if (m_TitleAlignment == TitleAlignmentCentered)
             {
-                if (m_IconTexture)
-                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture->getSize().x * m_IconSprite.getScale().x) - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                if (m_IconTexture.data)
+                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
                 else
                     states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
 
@@ -783,8 +775,8 @@ namespace tgui
             }
             else // if (m_TitleAlignment == TitleAlignmentRight)
             {
-                if (m_IconTexture)
-                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture->getSize().x * m_IconSprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                if (m_IconTexture.data)
+                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
                 else
                     states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
 

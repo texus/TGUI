@@ -67,6 +67,116 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool RadioButton::load(const std::string& configFileFilename)
+    {
+        // When everything is loaded successfully, this will become true.
+        m_Loaded = false;
+
+         // If the radio button was loaded before then remove the old textures
+        if (m_TextureUnchecked.data != NULL) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureFocused.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused);
+
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
+
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("RadioButton", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "textcolor")
+            {
+                m_Text.setColor(configFile.readColor(value));
+            }
+            else if (property == "checkedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureChecked))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section RadioButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "uncheckedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureUnchecked))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section RadioButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section RadioButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section RadioButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section RadioButton in " + configFileFilename + ".");
+        }
+
+        // Make sure the required texture was loaded
+        if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
+        {
+            m_Size = Vector2f(m_TextureChecked.getSize());
+        }
+        else
+        {
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the radio button. Is the RadioButton section in " + configFileFilename + " complete?");
+            return false;
+        }
+
+        // Check if optional textures were loaded
+        if (m_TextureFocused.data != NULL)
+        {
+            m_AllowFocus = true;
+            m_ObjectPhase |= ObjectPhase_Focused;
+        }
+        if (m_TextureHover.data != NULL)
+        {
+            m_ObjectPhase |= ObjectPhase_Hover;
+        }
+
+        return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RadioButton::check()
     {
         // Tell our parent that all the radio buttons should be unchecked

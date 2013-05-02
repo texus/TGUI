@@ -97,9 +97,10 @@ namespace tgui
         ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///!!!  TODO: Change description
         virtual bool load(unsigned int width,
                           unsigned int height,
-                          const std::string& scrollbarPathname = "",
+                          const std::string& scrollbarConfigFileFilename = "",
                           unsigned int itemHeight = 0);
 
 
@@ -120,16 +121,6 @@ namespace tgui
         ///
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the scrollbar.
-        ///
-        /// \return The pathname used to load the scrollbar.
-        ///         When no scrollbar was loaded then this function will return an empty string.
-        ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedScrollbarPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -430,7 +421,8 @@ namespace tgui
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setScrollbar(const std::string& scrollbarPathname);
+///!!!  TODO: Adjust description
+        virtual bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,9 +550,6 @@ namespace tgui
 
         // When there are too many items a scrollbar will be shown
         Scrollbar* m_Scroll;
-
-        // The pathname of the loaded scrollbar (if there is one)
-        std::string m_LoadedScrollbarPathname;
 
         // These colors are used to draw the list box
         sf::Color m_BackgroundColor;

@@ -214,16 +214,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filenames that were used to load the pictures.
-        ///
-        /// \return Vector of strings with the filenames used to load the pictures.
-        ///         When no picture has been loaded yet then this function will return an empty vector.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::vector<std::string> getLoadedFilenames() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Removes a frame from the animation.
         ///
         /// \param frame  The number of the frame to remove
@@ -297,10 +287,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::vector<sf::Texture*> m_Textures;
-        std::vector<sf::Sprite>   m_Sprites;
-        std::vector<std::string>  m_LoadedFilenames;
-        std::vector<sf::Time>     m_FrameDuration;
+        std::vector<Texture>  m_Textures;
+        std::vector<sf::Time> m_FrameDuration;
 
         unsigned int m_CurrentFrame;
 

@@ -51,16 +51,6 @@ namespace tgui
     m_MaxChars              (0),
     m_SplitImage            (false),
     m_TextCropPosition      (0),
-    m_TextureNormal_L       (NULL),
-    m_TextureNormal_M       (NULL),
-    m_TextureNormal_R       (NULL),
-    m_TextureHover_L        (NULL),
-    m_TextureHover_M        (NULL),
-    m_TextureHover_R        (NULL),
-    m_TextureFocused_L      (NULL),
-    m_TextureFocused_M      (NULL),
-    m_TextureFocused_R      (NULL),
-    m_LoadedPathname        (""),
     m_PossibleDoubleClick   (false)
     {
         m_Callback.objectType = Type_EditBox;
@@ -95,38 +85,34 @@ namespace tgui
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
     m_TextFull              (copy.m_TextFull),
-    m_LoadedPathname        (copy.m_LoadedPathname),
     m_PossibleDoubleClick   (copy.m_PossibleDoubleClick)
     {
-        // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))       m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M))       m_SpriteNormal_M.setTexture(*m_TextureNormal_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R))       m_SpriteNormal_R.setTexture(*m_TextureNormal_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureHover_L, m_TextureHover_L))         m_SpriteHover_L.setTexture(*m_TextureHover_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureHover_M, m_TextureHover_M))         m_SpriteHover_M.setTexture(*m_TextureHover_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureHover_R, m_TextureHover_R))         m_SpriteHover_R.setTexture(*m_TextureHover_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_L, m_TextureFocused_L))     m_SpriteFocused_L.setTexture(*m_TextureFocused_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_M, m_TextureFocused_M))     m_SpriteFocused_M.setTexture(*m_TextureFocused_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_R, m_TextureFocused_R))     m_SpriteFocused_R.setTexture(*m_TextureFocused_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_L, m_TextureHover_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_M, m_TextureHover_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_R, m_TextureHover_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_L, m_TextureFocused_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_M, m_TextureFocused_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_R, m_TextureFocused_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::~EditBox()
     {
-        // Remove all the textures
+        if (m_TextureNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
 
-        if (m_TextureNormal_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureHover_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_R);
 
-        if (m_TextureHover_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
-        if (m_TextureHover_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
-        if (m_TextureHover_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
-
-        if (m_TextureFocused_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureFocused_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,16 +154,6 @@ namespace tgui
             std::swap(m_TextureFocused_L,       temp.m_TextureFocused_L);
             std::swap(m_TextureFocused_M,       temp.m_TextureFocused_M);
             std::swap(m_TextureFocused_R,       temp.m_TextureFocused_R);
-            std::swap(m_SpriteNormal_L,         temp.m_SpriteNormal_L);
-            std::swap(m_SpriteNormal_M,         temp.m_SpriteNormal_M);
-            std::swap(m_SpriteNormal_R,         temp.m_SpriteNormal_R);
-            std::swap(m_SpriteHover_L,          temp.m_SpriteHover_L);
-            std::swap(m_SpriteHover_M,          temp.m_SpriteHover_M);
-            std::swap(m_SpriteHover_R,          temp.m_SpriteHover_R);
-            std::swap(m_SpriteFocused_L,        temp.m_SpriteFocused_L);
-            std::swap(m_SpriteFocused_M,        temp.m_SpriteFocused_M);
-            std::swap(m_SpriteFocused_R,        temp.m_SpriteFocused_R);
-            std::swap(m_LoadedPathname,         temp.m_LoadedPathname);
             std::swap(m_PossibleDoubleClick,    temp.m_PossibleDoubleClick);
         }
 
@@ -193,61 +169,77 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::load(const std::string& pathname)
+    bool EditBox::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
         m_Size.x = 0;
         m_Size.y = 0;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // Remove the textures when they were loaded before
+        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureHover_L.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
+        if (m_TextureFocused_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_R);
 
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        m_SplitImage = false;
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("EditBox", properties, values))
         {
-            // Check what the property is
-            if (property.compare("splitimage") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "textcolor")
             {
-                if ((value.compare("true") == 0) || (value.compare("1") == 0))
-                    m_SplitImage = true;
-                else
-                {
-                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
-                }
+                sf::Color color = extractColor(value);
+                m_TextBeforeSelection.setColor(color);
+                m_TextAfterSelection.setColor(color);
             }
-            else if (property.compare("phases") == 0)
+            else if (property == "selectedtextcolor")
             {
-                // Get and store the different phases
-                extractPhases(value);
+                m_TextSelection.setColor(extractColor(value));
             }
-            else if (property.compare("extension") == 0)
+            else if (property == "selectedtextbackgroundcolor")
             {
-                imageExtension = value;
+                m_SelectedTextBgrColor = extractColor(value);
+            }
+            else if (property == "selectionpointcolor")
+            {
+                m_SelectionPointColor = extractColor(value);
+            }
+            else if (property == "selectionpointwidth")
+            {
+                m_SelectionPointWidth = static_cast<unsigned int>(abs(atoi(value.c_str())));
             }
             else if (property.compare("borders") == 0)
             {
@@ -255,127 +247,159 @@ namespace tgui
                 if (extractVector4u(value, borders))
                     setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
             }
-            else if (property.compare("textcolor") == 0)
+            else if (property == "normalimage")
             {
-                sf::Color color = extractColor(value);
-                m_TextBeforeSelection.setColor(color);
-                m_TextAfterSelection.setColor(color);
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = false;
             }
-            else if (property.compare("selectedtextcolor") == 0)
+            else if (property == "hoverimage")
             {
-                m_TextSelection.setColor(extractColor(value));
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("selectedtextbackgroundcolor") == 0)
+            else if (property == "focusedimage")
             {
-                m_SelectedTextBgrColor = extractColor(value);
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("selectionpointcolor") == 0)
+            else if (property == "normalimage_l")
             {
-                m_SelectionPointColor = extractColor(value);
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("selectionpointwidth") == 0)
+            else if (property == "normalimage_m")
             {
-                m_SelectionPointWidth = static_cast<unsigned int>(abs(atoi(value.c_str())));
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
+            }
+            else if (property == "normalimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_L in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_M in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_R in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_L in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_M in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_R in section EditBox in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section EditBox in " + configFileFilename + ".");
         }
-
-        // Close the info file
-        infoFile.closeFile();
-
-        // Remove the textures when they were loaded before
-        if (m_TextureNormal_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
-        if (m_TextureHover_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
-        if (m_TextureHover_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
-        if (m_TextureHover_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
-        if (m_TextureFocused_L != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_R);
-
-        bool error = false;
 
         // Check if the image is split
         if (m_SplitImage)
         {
-            // load the required texture
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Normal." + imageExtension, m_TextureNormal_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Normal." + imageExtension, m_TextureNormal_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Normal." + imageExtension, m_TextureNormal_R)))
+            // Make sure the required textures were loaded
+            if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
-                m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
-
                 // Set the size of the edit box
-                m_Size.x = static_cast<float>(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
-                m_Size.y = static_cast<float>(m_TextureNormal_M->getSize().y);
+                m_Size.x = static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x);
+                m_Size.y = static_cast<float>(m_TextureNormal_M.getSize().y);
             }
             else
-                return false;
-
-            // load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Focused)
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Focus." + imageExtension, m_TextureFocused_L))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Focus." + imageExtension, m_TextureFocused_M))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Focus." + imageExtension, m_TextureFocused_R)))
-                {
-                    m_SpriteFocused_L.setTexture(*m_TextureFocused_L, true);
-                    m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
-                    m_SpriteFocused_R.setTexture(*m_TextureFocused_R, true);
-
-                    m_AllowFocus = true;
-                }
-                else
-                    error = true;
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the edit box. Is the EditBox section in " + configFileFilename + " complete?");
+                return false;
             }
 
-            if (m_ObjectPhase & ObjectPhase_Hover)
+            // Check if optional textures were loaded
+            if ((m_TextureFocused_L.data != NULL) && (m_TextureFocused_M.data != NULL) && (m_TextureFocused_R.data != NULL))
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Hover." + imageExtension, m_TextureHover_L))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Hover." + imageExtension, m_TextureHover_M))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Hover." + imageExtension, m_TextureHover_R)))
-                {
-                    m_SpriteHover_L.setTexture(*m_TextureHover_L, true);
-                    m_SpriteHover_M.setTexture(*m_TextureHover_M, true);
-                    m_SpriteHover_R.setTexture(*m_TextureHover_R, true);
-                }
-                else
-                    error = true;
+                m_AllowFocus = true;
+                m_ObjectPhase |= ObjectPhase_Focused;
+            }
+            if ((m_TextureHover_L.data != NULL) && (m_TextureHover_M.data != NULL) && (m_TextureHover_R.data != NULL))
+            {
+                m_ObjectPhase |= ObjectPhase_Hover;
             }
         }
         else // The image isn't split
         {
-            // load the required texture
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            // Make sure the required texture was loaded
+            if (m_TextureNormal_M.data != NULL)
             {
-                m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                m_Size = Vector2f(m_TextureNormal_M->getSize());
+                m_Size = Vector2f(m_TextureNormal_M.getSize());
             }
             else
-                return false;
-
-            // load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Focused)
             {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused_M))
-                {
-                    m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
-                    m_AllowFocus = true;
-                }
-                else
-                    error = true;
+                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the EditBox section in " + configFileFilename + " complete?");
+                return false;
             }
 
-            if (m_ObjectPhase & ObjectPhase_Hover)
+            // Check if optional textures were loaded
+            if (m_TextureFocused_M.data != NULL)
             {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover_M))
-                    m_SpriteHover_M.setTexture(*m_TextureHover_M, true);
-                else
-                    error = true;
+                m_AllowFocus = true;
+                m_ObjectPhase |= ObjectPhase_Focused;
+            }
+            if (m_TextureHover_M.data != NULL)
+            {
+                m_ObjectPhase |= ObjectPhase_Hover;
             }
         }
 
@@ -383,8 +407,7 @@ namespace tgui
         setTextSize(0);
 
         // When there is no error we will return true
-        m_Loaded = !error;
-        return !error;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,20 +429,13 @@ namespace tgui
         // When using splitimage, make sure that the width isn't too small
         if (m_SplitImage)
         {
-            if ((m_Size.y / m_TextureNormal_M->getSize().y) * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) > m_Size.x)
-                m_Size.x = (m_Size.y / m_TextureNormal_M->getSize().y) * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x);
+            if ((m_Size.y / m_TextureNormal_M.getSize().y) * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) > m_Size.x)
+                m_Size.x = (m_Size.y / m_TextureNormal_M.getSize().y) * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x);
         }
 
         // Recalculate the text size when auto scaling
         if (m_TextSize == 0)
             setText(m_Text);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string EditBox::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +451,7 @@ namespace tgui
         {
             // Calculate the text size
             m_TextFull.setString("kg");
-            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_Size.y - ((m_TopBorder + m_BottomBorder) * (m_Size.y / m_TextureNormal_M->getSize().y))));
+            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_Size.y - ((m_TopBorder + m_BottomBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
             m_TextFull.setCharacterSize(static_cast<unsigned int>(m_TextFull.getCharacterSize() - m_TextFull.getLocalBounds().top));
             m_TextFull.setString(m_DisplayedText);
 
@@ -482,9 +498,9 @@ namespace tgui
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         // If the width is negative then the editBox is too small to be displayed
         if (width < 0)
@@ -720,9 +736,9 @@ namespace tgui
             // Calculate the space inside the edit box
             float width;
             if (m_SplitImage)
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
             else
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
             // If the width is negative then the editBox is too small to be displayed
             if (width < 0)
@@ -774,9 +790,9 @@ namespace tgui
             // Calculate the space inside the edit box
             float width;
             if (m_SplitImage)
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
             else
-                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+                width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
             // If the width is negative then the editBox is too small to be displayed
             if (width < 0)
@@ -819,9 +835,9 @@ namespace tgui
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         // If the width is negative then the editBox is too small to be displayed
         if (width < 0)
@@ -830,9 +846,9 @@ namespace tgui
         // Find the selection point position
         float positionX;
         if (m_SplitImage)
-            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M->getSize().y));
+            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x));
+            positionX = x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         unsigned int selectionPointPosition = findSelectionPointPosition(positionX);
 
@@ -910,9 +926,9 @@ namespace tgui
             {
                 // Find out between which characters the mouse is standing
                 if (m_SplitImage)
-                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M->getSize().y)));
+                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.y / m_TextureNormal_M.getSize().y)));
                 else
-                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M->getSize().x)));
+                    m_SelEnd = findSelectionPointPosition(x - getPosition().x - (m_LeftBorder * (m_Size.x / m_TextureNormal_M.getSize().x)));
             }
             else // Scrolling is enabled
             {
@@ -921,12 +937,12 @@ namespace tgui
 
                 if (m_SplitImage)
                 {
-                    scalingX = m_Size.y / m_TextureNormal_M->getSize().y;
+                    scalingX = m_Size.y / m_TextureNormal_M.getSize().y;
                     width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
                 }
                 else
                 {
-                    scalingX = m_Size.x / m_TextureNormal_M->getSize().x;
+                    scalingX = m_Size.x / m_TextureNormal_M.getSize().x;
                     width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
                 }
 
@@ -1115,9 +1131,9 @@ namespace tgui
                 // Calculate the space inside the edit box
                 float width;
                 if (m_SplitImage)
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
                 else
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
                 // If the width is negative then the edit box is too small to be displayed
                 if (width < 0)
@@ -1169,9 +1185,9 @@ namespace tgui
                 // Calculate the space inside the edit box
                 float width;
                 if (m_SplitImage)
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
                 else
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
                 // If the width is negative then the edit box is too small to be displayed
                 if (width < 0)
@@ -1238,9 +1254,9 @@ namespace tgui
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         // When there is a text width limit then reverse what we just did
         if (m_LimitTextWidth)
@@ -1316,9 +1332,9 @@ namespace tgui
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         // If the width is negative then the editBox is too small to be displayed
         if (width < 0)
@@ -1413,9 +1429,9 @@ namespace tgui
         // Calculate the space inside the edit box
         float width;
         if (m_SplitImage)
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M->getSize().y));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.y / m_TextureNormal_M.getSize().y));
         else
-            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M->getSize().x));
+            width = m_Size.x - ((m_LeftBorder + m_RightBorder) * (m_Size.x / m_TextureNormal_M.getSize().x));
 
         // If the width is negative then the edit box is too small to be displayed
         if (width < 0)
@@ -1473,7 +1489,7 @@ namespace tgui
             return;
 
         // Calculate the scaling
-        Vector2f scaling(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
+        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
 
         // Calculate the scale of the left and right border
         float borderScale;
@@ -1525,25 +1541,25 @@ namespace tgui
             // Draw the left image
             {
                 // Draw the normal image
-                target.draw(m_SpriteNormal_L, states);
+                target.draw(m_TextureNormal_L, states);
 
                 // When the edit box is focused then draw an extra image
                 if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_SpriteFocused_L, states);
+                    target.draw(m_TextureFocused_L, states);
 
                 // When the mouse is on top of the edit box then draw an extra image
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_SpriteHover_L, states);
+                    target.draw(m_TextureHover_L, states);
             }
 
             // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
+            if ((scaling.y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = scaling.x - (((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y) / m_TextureNormal_M->getSize().x);
+                float scaleX = scaling.x - (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scaling.y) / m_TextureNormal_M.getSize().x);
 
                 // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
                 // Set the scale for the middle image
                 states.transform.scale(scaleX / scaling.y, 1);
@@ -1551,19 +1567,19 @@ namespace tgui
                 // Draw the middle image
                 {
                     // Draw the normal image
-                    target.draw(m_SpriteNormal_M, states);
+                    target.draw(m_TextureNormal_M, states);
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_SpriteFocused_M, states);
+                        target.draw(m_TextureFocused_M, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteHover_M, states);
+                        target.draw(m_TextureHover_M, states);
                 }
 
                 // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_M.getSize().x), 0);
 
                 // Set the scale for the right image
                 states.transform.scale(scaling.y / scaleX, 1);
@@ -1571,34 +1587,34 @@ namespace tgui
                 // Draw the right image
                 {
                     // Draw the normal image
-                    target.draw(m_SpriteNormal_R, states);
+                    target.draw(m_TextureNormal_R, states);
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_SpriteFocused_R, states);
+                        target.draw(m_TextureFocused_R, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteHover_R, states);
+                        target.draw(m_TextureHover_R, states);
                 }
             }
             else // The edit box isn't width enough, we will draw it at minimum size
             {
                 // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
                 // Draw the right image
                 {
                     // Draw the normal image
-                    target.draw(m_SpriteNormal_R, states);
+                    target.draw(m_TextureNormal_R, states);
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_SpriteFocused_R, states);
+                        target.draw(m_TextureFocused_R, states);
 
                     // When the mouse is on top of the edit box then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteHover_R, states);
+                        target.draw(m_TextureHover_R, states);
                 }
             }
         }
@@ -1608,15 +1624,15 @@ namespace tgui
             states.transform.scale(scaling);
 
             // Draw the edit box
-            target.draw(m_SpriteNormal_M, states);
+            target.draw(m_TextureNormal_M, states);
 
             // When the edit box is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                target.draw(m_SpriteFocused_M, states);
+                target.draw(m_TextureFocused_M, states);
 
             // When the mouse is on top of the edit boc then draw an extra image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                target.draw(m_SpriteHover_M, states);
+                target.draw(m_TextureHover_M, states);
         }
 
         // Reset the transformation to draw the text

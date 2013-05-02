@@ -27,6 +27,8 @@
 
 /// \todo  Double clicking should only select one word in EditBox. To select the whole text, you should click 3 times.
 
+///!!! TODO  add seperateHoverImage option
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -113,7 +115,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,16 +127,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the edit box.
-        ///
-        /// \return Pathname used to load the edit box.
-        ///        When the edit box has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,39 +497,22 @@ namespace tgui
         sf::Color     m_SelectedTextBgrColor;
 
         // We need three SFML texts to draw our text, and one more for calculations.
-        sf::Text      m_TextBeforeSelection;
-        sf::Text      m_TextSelection;
-        sf::Text      m_TextAfterSelection;
-        sf::Text      m_TextFull;
+        sf::Text m_TextBeforeSelection;
+        sf::Text m_TextSelection;
+        sf::Text m_TextAfterSelection;
+        sf::Text m_TextFull;
 
-        // The SFML textures
-        sf::Texture*  m_TextureNormal_L;
-        sf::Texture*  m_TextureNormal_M;
-        sf::Texture*  m_TextureNormal_R;
+        Texture  m_TextureNormal_L;
+        Texture  m_TextureNormal_M;
+        Texture  m_TextureNormal_R;
 
-        sf::Texture*  m_TextureHover_L;
-        sf::Texture*  m_TextureHover_M;
-        sf::Texture*  m_TextureHover_R;
+        Texture  m_TextureHover_L;
+        Texture  m_TextureHover_M;
+        Texture  m_TextureHover_R;
 
-        sf::Texture*  m_TextureFocused_L;
-        sf::Texture*  m_TextureFocused_M;
-        sf::Texture*  m_TextureFocused_R;
-
-        // The SFML sprites
-        sf::Sprite   m_SpriteNormal_L;
-        sf::Sprite   m_SpriteNormal_M;
-        sf::Sprite   m_SpriteNormal_R;
-
-        sf::Sprite   m_SpriteHover_L;
-        sf::Sprite   m_SpriteHover_M;
-        sf::Sprite   m_SpriteHover_R;
-
-        sf::Sprite   m_SpriteFocused_L;
-        sf::Sprite   m_SpriteFocused_M;
-        sf::Sprite   m_SpriteFocused_R;
-
-        // The pathname used to load the edit box
-        std::string m_LoadedPathname;
+        Texture  m_TextureFocused_L;
+        Texture  m_TextureFocused_M;
+        Texture  m_TextureFocused_R;
 
         // Is there a possibility that the user is going to double click?
         bool m_PossibleDoubleClick;

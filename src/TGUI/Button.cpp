@@ -36,19 +36,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button() :
-    m_TextureNormal_L    (NULL),
-    m_TextureMouseHover_L(NULL),
-    m_TextureMouseDown_L (NULL),
-    m_TextureFocused_L   (NULL),
-    m_TextureNormal_M    (NULL),
-    m_TextureMouseHover_M(NULL),
-    m_TextureMouseDown_M (NULL),
-    m_TextureFocused_M   (NULL),
-    m_TextureNormal_R    (NULL),
-    m_TextureMouseHover_R(NULL),
-    m_TextureMouseDown_R (NULL),
-    m_TextureFocused_R   (NULL),
-    m_LoadedPathname     (""),
     m_SplitImage         (false),
     m_SeparateHoverImage (false),
     m_TextSize           (0)
@@ -61,25 +48,24 @@ namespace tgui
 
     Button::Button(const Button& copy) :
     ClickableObject     (copy),
-    m_LoadedPathname    (copy.m_LoadedPathname),
     m_SplitImage        (copy.m_SplitImage),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
     m_Text              (copy.m_Text),
     m_TextSize          (copy.m_TextSize)
     {
         // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))         m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M))         m_SpriteNormal_M.setTexture(*m_TextureNormal_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R))         m_SpriteNormal_R.setTexture(*m_TextureNormal_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseHover_L, m_TextureMouseHover_L)) m_SpriteMouseHover_L.setTexture(*m_TextureMouseHover_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseHover_M, m_TextureMouseHover_M)) m_SpriteMouseHover_M.setTexture(*m_TextureMouseHover_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseHover_R, m_TextureMouseHover_R)) m_SpriteMouseHover_R.setTexture(*m_TextureMouseHover_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseDown_L, m_TextureMouseDown_L))   m_SpriteMouseDown_L.setTexture(*m_TextureMouseDown_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseDown_M, m_TextureMouseDown_M))   m_SpriteMouseDown_M.setTexture(*m_TextureMouseDown_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureMouseDown_R, m_TextureMouseDown_R))   m_SpriteMouseDown_R.setTexture(*m_TextureMouseDown_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_L, m_TextureFocused_L))       m_SpriteFocused_L.setTexture(*m_TextureFocused_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_M, m_TextureFocused_M))       m_SpriteFocused_M.setTexture(*m_TextureFocused_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureFocused_R, m_TextureFocused_R))       m_SpriteFocused_R.setTexture(*m_TextureFocused_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_L, m_TextureHover_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_M, m_TextureHover_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureHover_R, m_TextureHover_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureDown_L, m_TextureDown_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureDown_M, m_TextureDown_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureDown_R, m_TextureDown_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_L, m_TextureFocused_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_M, m_TextureFocused_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureFocused_R, m_TextureFocused_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,21 +74,21 @@ namespace tgui
     {
         // Remove all the textures from memory (if we are the only one who use the textures)
 
-        if (m_TextureNormal_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
 
-        if (m_TextureMouseHover_L != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_L);
-        if (m_TextureMouseHover_M != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_M);
-        if (m_TextureMouseHover_R != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_R);
+        if (m_TextureHover_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_R);
 
-        if (m_TextureMouseDown_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_L);
-        if (m_TextureMouseDown_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_M);
-        if (m_TextureMouseDown_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_R);
+        if (m_TextureDown_L.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_L);
+        if (m_TextureDown_M.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_M);
+        if (m_TextureDown_R.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_R);
 
-        if (m_TextureFocused_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureFocused_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,35 +101,22 @@ namespace tgui
             Button temp(right);
             this->ClickableObject::operator=(right);
 
-            std::swap(m_TextureNormal_L,     temp.m_TextureNormal_L);
-            std::swap(m_TextureNormal_M,     temp.m_TextureNormal_M);
-            std::swap(m_TextureNormal_R,     temp.m_TextureNormal_R);
-            std::swap(m_TextureMouseHover_L, temp.m_TextureMouseHover_L);
-            std::swap(m_TextureMouseHover_M, temp.m_TextureMouseHover_M);
-            std::swap(m_TextureMouseHover_R, temp.m_TextureMouseHover_R);
-            std::swap(m_TextureMouseDown_L,  temp.m_TextureMouseDown_L);
-            std::swap(m_TextureMouseDown_M,  temp.m_TextureMouseDown_M);
-            std::swap(m_TextureMouseDown_R,  temp.m_TextureMouseDown_R);
-            std::swap(m_TextureFocused_L,    temp.m_TextureFocused_L);
-            std::swap(m_TextureFocused_M,    temp.m_TextureFocused_M);
-            std::swap(m_TextureFocused_R,    temp.m_TextureFocused_R);
-            std::swap(m_SpriteNormal_L,      temp.m_SpriteNormal_L);
-            std::swap(m_SpriteNormal_M,      temp.m_SpriteNormal_M);
-            std::swap(m_SpriteNormal_R,      temp.m_SpriteNormal_R);
-            std::swap(m_SpriteMouseHover_L,  temp.m_SpriteMouseHover_L);
-            std::swap(m_SpriteMouseHover_M,  temp.m_SpriteMouseHover_M);
-            std::swap(m_SpriteMouseHover_R,  temp.m_SpriteMouseHover_R);
-            std::swap(m_SpriteMouseDown_L,   temp.m_SpriteMouseDown_L);
-            std::swap(m_SpriteMouseDown_M,   temp.m_SpriteMouseDown_M);
-            std::swap(m_SpriteMouseDown_R,   temp.m_SpriteMouseDown_R);
-            std::swap(m_SpriteFocused_L,     temp.m_SpriteFocused_L);
-            std::swap(m_SpriteFocused_M,     temp.m_SpriteFocused_M);
-            std::swap(m_SpriteFocused_R,     temp.m_SpriteFocused_R);
-            std::swap(m_LoadedPathname,      temp.m_LoadedPathname);
-            std::swap(m_SplitImage,          temp.m_SplitImage);
-            std::swap(m_SeparateHoverImage,  temp.m_SeparateHoverImage);
-            std::swap(m_Text,                temp.m_Text);
-            std::swap(m_TextSize,            temp.m_TextSize);
+            std::swap(m_TextureNormal_L,    temp.m_TextureNormal_L);
+            std::swap(m_TextureNormal_M,    temp.m_TextureNormal_M);
+            std::swap(m_TextureNormal_R,    temp.m_TextureNormal_R);
+            std::swap(m_TextureHover_L,     temp.m_TextureHover_L);
+            std::swap(m_TextureHover_M,     temp.m_TextureHover_M);
+            std::swap(m_TextureHover_R,     temp.m_TextureHover_R);
+            std::swap(m_TextureDown_L,      temp.m_TextureDown_L);
+            std::swap(m_TextureDown_M,      temp.m_TextureDown_M);
+            std::swap(m_TextureDown_R,      temp.m_TextureDown_R);
+            std::swap(m_TextureFocused_L,   temp.m_TextureFocused_L);
+            std::swap(m_TextureFocused_M,   temp.m_TextureFocused_M);
+            std::swap(m_TextureFocused_R,   temp.m_TextureFocused_R);
+            std::swap(m_SplitImage,         temp.m_SplitImage);
+            std::swap(m_SeparateHoverImage, temp.m_SeparateHoverImage);
+            std::swap(m_Text,               temp.m_Text);
+            std::swap(m_TextSize,           temp.m_TextSize);
         }
 
         return *this;
@@ -158,201 +131,262 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::load(const std::string& pathname)
+    bool Button::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
-
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
-            return false;
-        }
-
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        m_SplitImage = false;
-        m_SeparateHoverImage = true;
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
-        {
-            // Check what the property is
-            if (property.compare("splitimage") == 0)
-            {
-                if ((value.compare("true") == 0) || (value.compare("1") == 0))
-                    m_SplitImage = true;
-                else
-                {
-                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
-                }
-            }
-            else if (property.compare("separatehoverimage") == 0)
-            {
-                if ((value.compare("false") == 0) || (value.compare("0") == 0))
-                    m_SeparateHoverImage = false;
-                else
-                {
-                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SeparateHoverImage: \"" + value + "\".");
-                }
-            }
-            else if (property.compare("phases") == 0)
-            {
-                // Get and store the different phases
-                extractPhases(value);
-            }
-            else if (property.compare("textcolor") == 0)
-            {
-                m_Text.setColor(extractColor(value));
-            }
-            else if (property.compare("extension") == 0)
-            {
-                imageExtension = value;
-            }
-        }
-
-        // Close the info file
-        infoFile.closeFile();
-
         // If the button was loaded before then remove the old textures first
-        if (m_TextureNormal_L != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)     TGUI_TextureManager.removeTexture(m_TextureNormal_R);
-        if (m_TextureMouseHover_L != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_L);
-        if (m_TextureMouseHover_M != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_M);
-        if (m_TextureMouseHover_R != NULL) TGUI_TextureManager.removeTexture(m_TextureMouseHover_R);
-        if (m_TextureMouseDown_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_L);
-        if (m_TextureMouseDown_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_M);
-        if (m_TextureMouseDown_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureMouseDown_R);
-        if (m_TextureFocused_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureHover_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_R);
+        if (m_TextureDown_L.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_L);
+        if (m_TextureDown_M.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_M);
+        if (m_TextureDown_R.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureDown_R);
+        if (m_TextureFocused_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
+
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Button", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "separatehoverimage")
+            {
+                m_SeparateHoverImage = configFile.readBool(value, false);
+            }
+            else if (property == "textcolor")
+            {
+                m_Text.setColor(configFile.readColor(value));
+            }
+            else if (property == "normalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = false;
+            }
+            else if (property == "hoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "downimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureDown_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "normalimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "normalimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
+            }
+            else if (property == "normalimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_L in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_M in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "hoverimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureHover_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_R in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "downimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureDown_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_L in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "downimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureDown_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_M in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "downimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureDown_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_R in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_L in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_M in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "focusedimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_R in section Button in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section Button in " + configFileFilename + ".");
+        }
 
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Load the required texture
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Normal." + imageExtension, m_TextureNormal_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Normal." + imageExtension, m_TextureNormal_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Normal." + imageExtension, m_TextureNormal_R)))
+            // Make sure the required textures were loaded
+            if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
-                m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
-
-                // Set the size of the button
-                m_Size.x = static_cast<float>(m_TextureNormal_L->getSize().x + m_TextureNormal_M->getSize().x + m_TextureNormal_R->getSize().x);
-                m_Size.y = static_cast<float>(m_TextureNormal_M->getSize().y);
+                m_Size.x = static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x);
+                m_Size.y = static_cast<float>(m_TextureNormal_M.getSize().y);
             }
             else
+            {
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the button. Is the Button section in " + configFileFilename + " complete?");
                 return false;
-
-            // Load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Focused)
-            {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Focus." + imageExtension, m_TextureFocused_L))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Focus." + imageExtension, m_TextureFocused_M))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Focus." + imageExtension, m_TextureFocused_R)))
-                {
-                    m_SpriteFocused_L.setTexture(*m_TextureFocused_L, true);
-                    m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
-                    m_SpriteFocused_R.setTexture(*m_TextureFocused_R, true);
-
-                    m_AllowFocus = true;
-                }
-                else
-                    return false;
             }
 
-            if (m_ObjectPhase & ObjectPhase_Hover)
+            // Check if optional textures were loaded
+            if ((m_TextureFocused_L.data != NULL) && (m_TextureFocused_M.data != NULL) && (m_TextureFocused_R.data != NULL))
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Hover." + imageExtension, m_TextureMouseHover_L))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Hover." + imageExtension, m_TextureMouseHover_M))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Hover." + imageExtension, m_TextureMouseHover_R)))
-                {
-                    m_SpriteMouseHover_L.setTexture(*m_TextureMouseHover_L, true);
-                    m_SpriteMouseHover_M.setTexture(*m_TextureMouseHover_M, true);
-                    m_SpriteMouseHover_R.setTexture(*m_TextureMouseHover_R, true);
-                }
-                else
-                    return false;
+                m_AllowFocus = true;
+                m_ObjectPhase |= ObjectPhase_Focused;
             }
-
-            if (m_ObjectPhase & ObjectPhase_MouseDown)
+            if ((m_TextureHover_L.data != NULL) && (m_TextureHover_M.data != NULL) && (m_TextureHover_R.data != NULL))
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Down." + imageExtension, m_TextureMouseDown_L))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Down." + imageExtension, m_TextureMouseDown_M))
-                    && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Down." + imageExtension, m_TextureMouseDown_R)))
-                {
-                    m_SpriteMouseDown_L.setTexture(*m_TextureMouseDown_L, true);
-                    m_SpriteMouseDown_M.setTexture(*m_TextureMouseDown_M, true);
-                    m_SpriteMouseDown_R.setTexture(*m_TextureMouseDown_R, true);
-                }
-                else
-                    return false;
+                m_ObjectPhase |= ObjectPhase_Hover;
+            }
+            if ((m_TextureDown_L.data != NULL) && (m_TextureDown_M.data != NULL) && (m_TextureDown_R.data != NULL))
+            {
+                m_ObjectPhase |= ObjectPhase_MouseDown;
             }
         }
         else // The image isn't split
         {
-            // Load the required texture
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            // Make sure the required texture was loaded
+            if (m_TextureNormal_M.data != NULL)
             {
-                m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                m_Size = Vector2f(m_TextureNormal_M->getSize());
+                m_Size = Vector2f(m_TextureNormal_M.getSize());
             }
             else
+            {
+                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Button section in " + configFileFilename + " complete?");
                 return false;
-
-            // Load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Focused)
-            {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Focus." + imageExtension, m_TextureFocused_M))
-                {
-                    m_SpriteFocused_M.setTexture(*m_TextureFocused_M, true);
-                    m_AllowFocus = true;
-                }
-                else
-                    return false;
             }
 
-            if (m_ObjectPhase & ObjectPhase_Hover)
+            // Check if optional textures were loaded
+            if (m_TextureFocused_M.data != NULL)
             {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureMouseHover_M))
-                    m_SpriteMouseHover_M.setTexture(*m_TextureMouseHover_M, true);
-                else
-                    return false;
+                m_AllowFocus = true;
+                m_ObjectPhase |= ObjectPhase_Focused;
             }
-
-            if (m_ObjectPhase & ObjectPhase_MouseDown)
+            if (m_TextureHover_M.data != NULL)
             {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Down." + imageExtension, m_TextureMouseDown_M))
-                    m_SpriteMouseDown_M.setTexture(*m_TextureMouseDown_M, true);
-                else
-                    return false;
+                m_ObjectPhase |= ObjectPhase_Hover;
+            }
+            if (m_TextureDown_M.data != NULL)
+            {
+                m_ObjectPhase |= ObjectPhase_MouseDown;
             }
         }
 
         // When there is no error we will return true
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,13 +404,6 @@ namespace tgui
         // Recalculate the text size when auto sizing
         if (m_TextSize == 0)
             setText(m_Text.getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Button::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +546,7 @@ namespace tgui
             return;
 
         // Calculate the scaling
-        Vector2f scaling(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
+        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
 
         // Apply the transformations
         states.transform *= getTransform();
@@ -541,41 +568,41 @@ namespace tgui
                     // Draw the correct image
                     if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
                     {
-                        target.draw(m_SpriteMouseDown_L, states);
+                        target.draw(m_TextureDown_L, states);
                     }
                     else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     {
-                        target.draw(m_SpriteMouseHover_L, states);
+                        target.draw(m_TextureHover_L, states);
                     }
                     else
-                        target.draw(m_SpriteNormal_L, states);
+                        target.draw(m_TextureNormal_L, states);
                 }
                 else
                 {
                     // When the button is down then draw another image
                     if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                        target.draw(m_SpriteMouseDown_L, states);
+                        target.draw(m_TextureDown_L, states);
                     else
-                        target.draw(m_SpriteNormal_L, states);
+                        target.draw(m_TextureNormal_L, states);
 
                     // When the mouse is on top of the button then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteMouseHover_L, states);
+                        target.draw(m_TextureHover_L, states);
                 }
 
                 // When the button is focused then draw an extra image
                 if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_SpriteFocused_L, states);
+                    target.draw(m_TextureFocused_L, states);
             }
 
             // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < m_Size.x)
+            if ((scaling.y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
             {
                 // Calculate the scale for our middle image
-                float scaleX = scaling.x - (((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scaling.y) / m_TextureNormal_M->getSize().x);
+                float scaleX = scaling.x - (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scaling.y) / m_TextureNormal_M.getSize().x);
 
                 // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
                 // Set the scale for the middle image
                 states.transform.scale(scaleX / scaling.y, 1);
@@ -588,41 +615,41 @@ namespace tgui
                         // Draw the correct image
                         if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
                         {
-                            target.draw(m_SpriteMouseDown_M, states);
+                            target.draw(m_TextureDown_M, states);
                         }
                         else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                         {
-                            target.draw(m_SpriteMouseHover_M, states);
+                            target.draw(m_TextureHover_M, states);
                         }
                         else
-                            target.draw(m_SpriteNormal_M, states);
+                            target.draw(m_TextureNormal_M, states);
                     }
                     else
                     {
                         // When the button is down then draw another image
                         if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                            target.draw(m_SpriteMouseDown_M, states);
+                            target.draw(m_TextureDown_M, states);
                         else
-                            target.draw(m_SpriteNormal_M, states);
+                            target.draw(m_TextureNormal_M, states);
 
                         // When the mouse is on top of the button then draw an extra image
                         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_SpriteMouseHover_M, states);
+                            target.draw(m_TextureHover_M, states);
                     }
 
                     // When the button is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_SpriteFocused_M, states);
+                        target.draw(m_TextureFocused_M, states);
                 }
 
                 // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_M.getSize().x), 0);
 
                 // Set the scale for the right image
                 states.transform.scale(scaling.y / scaleX, 1);
             }
             else // The middle image is not drawn
-                states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
             // Draw the right image
             {
@@ -632,37 +659,37 @@ namespace tgui
                     // Draw the correct image
                     if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
                     {
-                        target.draw(m_SpriteMouseDown_R, states);
+                        target.draw(m_TextureDown_R, states);
                     }
                     else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     {
-                        target.draw(m_SpriteMouseHover_R, states);
+                        target.draw(m_TextureHover_R, states);
                     }
                     else
-                        target.draw(m_SpriteNormal_R, states);
+                        target.draw(m_TextureNormal_R, states);
                 }
                 else
                 {
                     // When the button is down then draw another image
                     if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                        target.draw(m_SpriteMouseDown_R, states);
+                        target.draw(m_TextureDown_R, states);
                     else
-                        target.draw(m_SpriteNormal_R, states);
+                        target.draw(m_TextureNormal_R, states);
 
                     // When the mouse is on top of the button then draw an extra image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteMouseHover_R, states);
+                        target.draw(m_TextureHover_R, states);
                 }
 
                 // When the button is focused then draw an extra image
                 if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_SpriteFocused_R, states);
+                    target.draw(m_TextureFocused_R, states);
             }
         }
         else // The image is not split
         {
             // Draw the button at the correct size
-            states.transform.scale(m_Size.x / m_TextureNormal_M->getSize().x, m_Size.y / m_TextureNormal_M->getSize().y);
+            states.transform.scale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
 
             // Check if there is a separate hover image
             if (m_SeparateHoverImage)
@@ -670,31 +697,31 @@ namespace tgui
                 // Draw the correct image
                 if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
                 {
-                    target.draw(m_SpriteMouseDown_M, states);
+                    target.draw(m_TextureDown_M, states);
                 }
                 else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 {
-                    target.draw(m_SpriteMouseHover_M, states);
+                    target.draw(m_TextureHover_M, states);
                 }
                 else
-                    target.draw(m_SpriteNormal_M, states);
+                    target.draw(m_TextureNormal_M, states);
             }
             else
             {
                 // Draw the button
                 if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                    target.draw(m_SpriteMouseDown_M, states);
+                    target.draw(m_TextureDown_M, states);
                 else
-                    target.draw(m_SpriteNormal_M, states);
+                    target.draw(m_TextureNormal_M, states);
 
                 // When the mouse is on top of the button then draw an extra image
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_SpriteMouseHover_M, states);
+                    target.draw(m_TextureHover_M, states);
             }
 
             // When the button is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                target.draw(m_SpriteFocused_M, states);
+                target.draw(m_TextureFocused_M, states);
         }
 
         // If the button has a text then also draw the text

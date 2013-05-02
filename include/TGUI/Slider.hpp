@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,16 +114,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the slider.
-        ///
-        /// \return Pathname used to load the slider.
-        ///         When the slider has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,26 +266,14 @@ namespace tgui
         Vector2f m_Size;
         Vector2f m_ThumbSize;
 
-        sf::Texture* m_TextureTrackNormal_L;
-        sf::Texture* m_TextureTrackHover_L;
-        sf::Texture* m_TextureTrackNormal_M;
-        sf::Texture* m_TextureTrackHover_M;
-        sf::Texture* m_TextureTrackNormal_R;
-        sf::Texture* m_TextureTrackHover_R;
-        sf::Texture* m_TextureThumbNormal;
-        sf::Texture* m_TextureThumbHover;
-
-        sf::Sprite   m_SpriteTrackNormal_L;
-        sf::Sprite   m_SpriteTrackHover_L;
-        sf::Sprite   m_SpriteTrackNormal_M;
-        sf::Sprite   m_SpriteTrackHover_M;
-        sf::Sprite   m_SpriteTrackNormal_R;
-        sf::Sprite   m_SpriteTrackHover_R;
-        sf::Sprite   m_SpriteThumbNormal;
-        sf::Sprite   m_SpriteThumbHover;
-
-        // The pathname used to load the slider
-        std::string m_LoadedPathname;
+        Texture m_TextureTrackNormal_L;
+        Texture m_TextureTrackHover_L;
+        Texture m_TextureTrackNormal_M;
+        Texture m_TextureTrackHover_M;
+        Texture m_TextureTrackNormal_R;
+        Texture m_TextureTrackHover_R;
+        Texture m_TextureThumbNormal;
+        Texture m_TextureThumbHover;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

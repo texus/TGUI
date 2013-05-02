@@ -1,8 +1,0 @@
-SplitImage = true                   # There is a left, a middle and a right part
-Phases     = Hover, Focus   	    # The Editbox has two optional phases
-TextColor  = (200, 200, 200)
-SelectedTextColor  = (255, 255, 255)
-SelectedTextBackgroundColor = ( 10, 110, 255)
-SelectionPointColor = (110, 110, 255)
-SelectionPointWidth = 2
-Borders = (6, 4, 6, 4)

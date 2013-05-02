@@ -104,7 +104,8 @@ namespace tgui
         ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarPathname = "");
+///!!!  TODO: Adjust description
+        virtual bool load(unsigned int width, unsigned int height, unsigned int textSize, const std::string& scrollbarConfigFileFilename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,16 +125,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the scrollbar.
-        ///
-        /// \return Pathname used to load the scrollbar.
-        ///         When no scrollbar was loaded then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedScrollbarPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,7 +381,8 @@ namespace tgui
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setScrollbar(const std::string& scrollbarPathname);
+///!!!  TODO: Adjust description
+        virtual bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,9 +550,6 @@ namespace tgui
 
         // The scrollbar
         Scrollbar* m_Scroll;
-
-        // The pathname used to load the scrollbar (if there is one)
-        std::string m_LoadedScrollbarPathname;
 
         // Is there a possibility that the user is going to double click?
         bool m_PossibleDoubleClick;

@@ -133,8 +133,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        sf::Texture* m_Texture;
-        sf::Sprite   m_Sprite;
+        Texture m_Texture;
 
         // The filename used to load the picture
         std::string m_LoadedFilename;

@@ -97,7 +97,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,16 +108,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the tab.
-        ///
-        /// \return Pathname used to load the tab.
-        ///         When the tab has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +370,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string   m_LoadedPathname;
         bool          m_SplitImage;
         bool          m_SeparateSelectedImage;
 
@@ -396,19 +386,12 @@ namespace tgui
         std::vector<sf::String> m_TabNames;
         std::vector<float>      m_NameWidth;
 
-        sf::Texture*  m_TextureNormal_L;
-        sf::Texture*  m_TextureNormal_M;
-        sf::Texture*  m_TextureNormal_R;
-        sf::Texture*  m_TextureSelected_L;
-        sf::Texture*  m_TextureSelected_M;
-        sf::Texture*  m_TextureSelected_R;
-
-        sf::Sprite    m_SpriteNormal_L;
-        sf::Sprite    m_SpriteNormal_M;
-        sf::Sprite    m_SpriteNormal_R;
-        sf::Sprite    m_SpriteSelected_L;
-        sf::Sprite    m_SpriteSelected_M;
-        sf::Sprite    m_SpriteSelected_R;
+        Texture  m_TextureNormal_L;
+        Texture  m_TextureNormal_M;
+        Texture  m_TextureNormal_R;
+        Texture  m_TextureSelected_L;
+        Texture  m_TextureSelected_M;
+        Texture  m_TextureSelected_R;
 
         sf::Text      m_Text;
 

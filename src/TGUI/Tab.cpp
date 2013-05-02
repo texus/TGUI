@@ -37,20 +37,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::Tab() :
-    m_LoadedPathname       (""),
     m_SplitImage           (false),
     m_SeparateSelectedImage(true),
     m_TabHeight            (0),
     m_TextSize             (0),
     m_MaximumTabWidth      (0),
-    m_DistanceToSide       (0),
-    m_SelectedTab          (0),
-    m_TextureNormal_L      (NULL),
-    m_TextureNormal_M      (NULL),
-    m_TextureNormal_R      (NULL),
-    m_TextureSelected_L    (NULL),
-    m_TextureSelected_M    (NULL),
-    m_TextureSelected_R    (NULL)
+    m_DistanceToSide       (5),
+    m_SelectedTab          (0)
     {
         m_Callback.objectType = Type_Tab;
     }
@@ -59,7 +52,6 @@ namespace tgui
 
     Tab::Tab(const Tab& copy) :
     Object                 (copy),
-    m_LoadedPathname       (copy.m_LoadedPathname),
     m_SplitImage           (copy.m_SplitImage),
     m_SeparateSelectedImage(copy.m_SeparateSelectedImage),
     m_TabHeight            (copy.m_TabHeight),
@@ -71,26 +63,26 @@ namespace tgui
     m_NameWidth            (copy.m_NameWidth),
     m_Text                 (copy.m_Text)
     {
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))      m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M))      m_SpriteNormal_M.setTexture(*m_TextureNormal_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R))      m_SpriteNormal_R.setTexture(*m_TextureNormal_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R);
 
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureSelected_L, m_TextureSelected_L))  m_SpriteSelected_L.setTexture(*m_TextureSelected_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureSelected_M, m_TextureSelected_M))  m_SpriteSelected_M.setTexture(*m_TextureSelected_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureSelected_R, m_TextureSelected_R))  m_SpriteSelected_R.setTexture(*m_TextureSelected_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureSelected_L, m_TextureSelected_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureSelected_M, m_TextureSelected_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureSelected_R, m_TextureSelected_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::~Tab()
     {
-        if (m_TextureNormal_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
 
-        if (m_TextureSelected_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
-        if (m_TextureSelected_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
-        if (m_TextureSelected_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
+        if (m_TextureSelected_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
+        if (m_TextureSelected_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
+        if (m_TextureSelected_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +95,6 @@ namespace tgui
             Tab temp(right);
             this->Object::operator=(right);
 
-            std::swap(m_LoadedPathname,        temp.m_LoadedPathname);
             std::swap(m_SplitImage,            temp.m_SplitImage);
             std::swap(m_SeparateSelectedImage, temp.m_SeparateSelectedImage);
             std::swap(m_TabHeight,             temp.m_TabHeight);
@@ -119,12 +110,6 @@ namespace tgui
             std::swap(m_TextureSelected_L,     temp.m_TextureSelected_L);
             std::swap(m_TextureSelected_M,     temp.m_TextureSelected_M);
             std::swap(m_TextureSelected_R,     temp.m_TextureSelected_R);
-            std::swap(m_SpriteNormal_L,        temp.m_SpriteNormal_L);
-            std::swap(m_SpriteNormal_M,        temp.m_SpriteNormal_M);
-            std::swap(m_SpriteNormal_R,        temp.m_SpriteNormal_R);
-            std::swap(m_SpriteSelected_L,      temp.m_SpriteSelected_L);
-            std::swap(m_SpriteSelected_M,      temp.m_SpriteSelected_M);
-            std::swap(m_SpriteSelected_R,      temp.m_SpriteSelected_R);
             std::swap(m_Text,                  temp.m_Text);
         }
 
@@ -140,175 +125,184 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::load(const std::string& pathname)
+    bool Tab::load(const std::string& configFileFilename)
     {
-        // Until the loading succeeds, the tab object will be marked as unloaded
+        // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // If the button was loaded before then remove the old textures first
+        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureSelected_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
+        if (m_TextureSelected_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
+        if (m_TextureSelected_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
 
-        // Store the filename
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open \"" + m_LoadedPathname + "info.txt\".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        // Set some default settings
-        m_SplitImage = false;
-        m_SeparateSelectedImage = true;
-        m_DistanceToSide = 5;
-        std::string imageExtension = "png";
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Tab", properties, values))
         {
-            // Check what the property is
-            if (property.compare("splitimage") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "separateselectedimage")
             {
-                if ((value.compare("true") == 0) || (value.compare("1") == 0))
-                    m_SplitImage = true;
-                else
+                m_SeparateSelectedImage = configFile.readBool(value, false);
+            }
+            else if (property == "textcolor")
+            {
+                m_Text.setColor(configFile.readColor(value));
+            }
+            else if (property == "distancetoside")
+            {
+                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+            }
+            else if (property == "normalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
                 {
-                    if ((value.compare("false") != 0) && (value.compare("0") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SplitImage: \"" + value + "\".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = false;
+            }
+            else if (property == "selectedimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage in section Tab in " + configFileFilename + ".");
+                    return false;
                 }
             }
-            else if (property.compare("separateselectedimage") == 0)
+            else if (property == "normalimage_l")
             {
-                if ((value.compare("false") == 0) || (value.compare("0") == 0))
-                    m_SeparateSelectedImage = false;
-                else
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_L))
                 {
-                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to SeparateSelectedImage: \"" + value + "\".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section Tab in " + configFileFilename + ".");
+                    return false;
                 }
             }
-            else if (property.compare("phases") == 0)
+            else if (property == "normalimage_m")
             {
-                // Get and store the different phases
-                extractPhases(value);
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
             }
-            else if (property.compare("extension") == 0)
+            else if (property == "normalimage_r")
             {
-                imageExtension = value;
+                if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("distancetoside") == 0)
+            else if (property == "selectedimage_l")
             {
-                m_DistanceToSide = atoi(value.c_str());
+                if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_L in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("maximumtabwidth") == 0)
+            else if (property == "selectedimage_m")
             {
-                m_MaximumTabWidth = atoi(value.c_str());
+                if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_M in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("textcolor") == 0)
+            else if (property == "selectedimage_r")
             {
-                m_Text.setColor(extractColor(value));
+                if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_R in section Tab in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section Tab in " + configFileFilename + ".");
         }
-
-        // Close the info file
-        infoFile.closeFile();
-
-        // Remove the textures when they were loaded before
-        if (m_TextureNormal_L != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
-        if (m_TextureSelected_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
-        if (m_TextureSelected_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
-        if (m_TextureSelected_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
 
         // Clear the vectors
         m_TabNames.clear();
         m_NameWidth.clear();
 
-        // Check if the tab image is split
+        // Check if the image is split
         if (m_SplitImage)
         {
-            // Load the required textures
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Normal." + imageExtension, m_TextureNormal_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Normal." + imageExtension, m_TextureNormal_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Normal." + imageExtension, m_TextureNormal_R)))
+            // Make sure the required textures were loaded
+            if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                m_SpriteNormal_L.setTexture(*m_TextureNormal_L, true);
-                m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                m_SpriteNormal_R.setTexture(*m_TextureNormal_R, true);
-
-                m_TabHeight = m_TextureNormal_M->getSize().y;
+                m_TabHeight = static_cast<float>(m_TextureNormal_M.getSize().y);
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Failed to load \"" + m_LoadedPathname + "*_Normal." + imageExtension + "\".");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the tab. Is the Tab section in " + configFileFilename + " complete?");
                 return false;
             }
 
-            // load the optional texture
-            if (m_ObjectPhase & ObjectPhase_Selected)
+            // Check if optional textures were loaded
+            if ((m_TextureSelected_L.data != NULL) && (m_TextureSelected_M.data != NULL) && (m_TextureSelected_R.data != NULL))
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Selected." + imageExtension, m_TextureSelected_L))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Selected." + imageExtension, m_TextureSelected_M))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Selected." + imageExtension, m_TextureSelected_R)))
-                {
-                    m_SpriteSelected_L.setTexture(*m_TextureSelected_L, true);
-                    m_SpriteSelected_M.setTexture(*m_TextureSelected_M, true);
-                    m_SpriteSelected_R.setTexture(*m_TextureSelected_R, true);
-                }
-                else
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to load \"" + m_LoadedPathname + "*_Selected." + imageExtension + "\".");
-                    return false;
-                }
+                m_ObjectPhase |= ObjectPhase_Selected;
             }
         }
-        else // The tab image isn't split
+        else // The image isn't split
         {
-            // Load the required texture
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal_M))
+            // Make sure the required texture was loaded
+            if (m_TextureNormal_M.data != NULL)
             {
-                 m_SpriteNormal_M.setTexture(*m_TextureNormal_M, true);
-                 m_TabHeight = m_TextureNormal_M->getSize().y;
+                m_TabHeight = m_TextureNormal_M.getSize().y;
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Failed to load \"" + m_LoadedPathname + "Normal." + imageExtension + "\".");
+                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Tab section in " + configFileFilename + " complete?");
                 return false;
             }
 
-            // load the optional texture
-            if (m_ObjectPhase & ObjectPhase_Selected)
+            // Check if optional textures were loaded
+            if (m_TextureSelected_M.data != NULL)
             {
-                if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Selected." + imageExtension, m_TextureSelected_M))
-                    m_SpriteSelected_M.setTexture(*m_TextureSelected_M, true);
-                else
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to load \"" + m_LoadedPathname + "Selected." + imageExtension + "\".");
-                    return false;
-                }
+                m_ObjectPhase |= ObjectPhase_Selected;
             }
         }
 
-        // Recalculate the size when auto sizing
+        // Recalculate the text size when auto sizing
         if (m_TextSize == 0)
             setTextSize(0);
 
-        // When there is no error we will return true
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,19 +319,12 @@ namespace tgui
         {
             if (m_SplitImage)
                 width += TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
-                                      (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y)));
+                                      (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y)));
             else
                 width += m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide);
         }
 
         return Vector2f(width, m_TabHeight);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Tab::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -622,7 +609,7 @@ namespace tgui
             // Append the width of the tab
             if (m_SplitImage)
                 width += (TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
-                                       (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y)))) * getScale().x;
+                                       (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y)))) * getScale().x;
             else
                 width += (m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide)) * getScale().x;
 
@@ -676,7 +663,7 @@ namespace tgui
         // Apply the transformations
         states.transform *= getTransform();
 
-        float scalingY = m_TabHeight / static_cast<float>(m_TextureNormal_M->getSize().y);
+        float scalingY = m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y);
         bool clippingRequired = false;
         unsigned int tabWidth;
         sf::FloatRect realRect;
@@ -712,7 +699,7 @@ namespace tgui
             if (m_SplitImage)
             {
                 // There is another minimum when using SplitImage
-                float minimumWidth = (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY;
+                float minimumWidth = (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scalingY;
                 if (tabWidth < minimumWidth)
                     tabWidth = static_cast<unsigned int>(minimumWidth);
 
@@ -723,26 +710,26 @@ namespace tgui
                 if (m_SeparateSelectedImage)
                 {
                     if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                        target.draw(m_SpriteSelected_L, states);
+                        target.draw(m_TextureSelected_L, states);
                     else
-                        target.draw(m_SpriteNormal_L, states);
+                        target.draw(m_TextureNormal_L, states);
                 }
                 else // There is no separate selected image
                 {
-                    target.draw(m_SpriteNormal_L, states);
+                    target.draw(m_TextureNormal_L, states);
 
                     if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                        target.draw(m_SpriteSelected_L, states);
+                        target.draw(m_TextureSelected_L, states);
                 }
 
                 // Check if the middle image may be drawn
-                if ((scalingY * (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x)) < tabWidth)
+                if ((scalingY * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < tabWidth)
                 {
                     // Calculate the scale for our middle image
-                    float scaleX = (tabWidth / static_cast<float>(m_TextureNormal_M->getSize().x)) - (((m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY) / m_TextureNormal_M->getSize().x);
+                    float scaleX = (tabWidth / static_cast<float>(m_TextureNormal_M.getSize().x)) - (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scalingY) / m_TextureNormal_M.getSize().x);
 
                     // Put the middle image on the correct position
-                    states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                    states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
                     // Set the scale for the middle image
                     states.transform.scale(scaleX / scalingY, 1);
@@ -751,20 +738,20 @@ namespace tgui
                     if (m_SeparateSelectedImage)
                     {
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_M, states);
+                            target.draw(m_TextureSelected_M, states);
                         else
-                            target.draw(m_SpriteNormal_M, states);
+                            target.draw(m_TextureNormal_M, states);
                     }
                     else // There is no separate selected image
                     {
-                        target.draw(m_SpriteNormal_M, states);
+                        target.draw(m_TextureNormal_M, states);
 
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_M, states);
+                            target.draw(m_TextureSelected_M, states);
                     }
 
                     // Put the right image on the correct position
-                    states.transform.translate(static_cast<float>(m_TextureNormal_M->getSize().x), 0);
+                    states.transform.translate(static_cast<float>(m_TextureNormal_M.getSize().x), 0);
 
                     // Set the scale for the right image
                     states.transform.scale(scalingY / scaleX, 1);
@@ -773,44 +760,44 @@ namespace tgui
                     if (m_SeparateSelectedImage)
                     {
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_R, states);
+                            target.draw(m_TextureSelected_R, states);
                         else
-                            target.draw(m_SpriteNormal_R, states);
+                            target.draw(m_TextureNormal_R, states);
                     }
                     else // There is no separate selected image
                     {
-                        target.draw(m_SpriteNormal_R, states);
+                        target.draw(m_TextureNormal_R, states);
 
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_R, states);
+                            target.draw(m_TextureSelected_R, states);
                     }
 
                     // Undo the translation
-                    states.transform.translate(-(m_TextureNormal_L->getSize().x + (m_TextureNormal_M->getSize().x * scaleX / scalingY)), 0);
+                    states.transform.translate(-(m_TextureNormal_L.getSize().x + (m_TextureNormal_M.getSize().x * scaleX / scalingY)), 0);
                 }
                 else // The edit box isn't width enough, we will draw it at minimum size
                 {
                     // Put the right image on the correct position
-                    states.transform.translate(static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                    states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
 
                     // Draw the right tab image
                     if (m_SeparateSelectedImage)
                     {
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_R, states);
+                            target.draw(m_TextureSelected_R, states);
                         else
-                            target.draw(m_SpriteNormal_R, states);
+                            target.draw(m_TextureNormal_R, states);
                     }
                     else // There is no separate selected image
                     {
-                        target.draw(m_SpriteNormal_R, states);
+                        target.draw(m_TextureNormal_R, states);
 
                         if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                            target.draw(m_SpriteSelected_R, states);
+                            target.draw(m_TextureSelected_R, states);
                     }
 
                     // Undo the translation
-                    states.transform.translate(-static_cast<float>(m_TextureNormal_L->getSize().x), 0);
+                    states.transform.translate(-static_cast<float>(m_TextureNormal_L.getSize().x), 0);
                 }
 
                 // Undo the scaling of the split images
@@ -819,26 +806,26 @@ namespace tgui
             else // The image isn't split
             {
                 // Set the scaling
-                states.transform.scale(tabWidth / static_cast<float>(m_TextureNormal_M->getSize().x), scalingY);
+                states.transform.scale(tabWidth / static_cast<float>(m_TextureNormal_M.getSize().x), scalingY);
 
                 // Draw the tab image
                 if (m_SeparateSelectedImage)
                 {
                     if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                        target.draw(m_SpriteSelected_M, states);
+                        target.draw(m_TextureSelected_M, states);
                     else
-                        target.draw(m_SpriteNormal_M, states);
+                        target.draw(m_TextureNormal_M, states);
                 }
                 else // There is no separate selected image
                 {
-                    target.draw(m_SpriteNormal_M, states);
+                    target.draw(m_TextureNormal_M, states);
 
                     if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
-                        target.draw(m_SpriteSelected_M, states);
+                        target.draw(m_TextureSelected_M, states);
                 }
 
                 // Undo the scaling
-                states.transform.scale(static_cast<float>(m_TextureNormal_M->getSize().x) / tabWidth, 1.f / scalingY);
+                states.transform.scale(static_cast<float>(m_TextureNormal_M.getSize().x) / tabWidth, 1.f / scalingY);
             }
 
             // Draw the text
@@ -848,7 +835,7 @@ namespace tgui
                 realRect = tempText.getLocalBounds();
 
                 // Calculate the new position for the text
-                if ((m_SplitImage) && (tabWidth == (m_TextureNormal_L->getSize().x + m_TextureNormal_R->getSize().x) * scalingY))
+                if ((m_SplitImage) && (tabWidth == (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scalingY))
                     realRect.left = ((tabWidth - realRect.width) / 2.f) - realRect.left;
                 else
                     realRect.left = m_DistanceToSide - realRect.left;

@@ -31,6 +31,9 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
+///!!! TODO: Make ListBox load from config file.
+///!!!       Size and text size can be set later.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -43,8 +46,7 @@ namespace tgui
     m_ItemHeight             (24),
     m_TextSize               (20),
     m_MaxItems               (0),
-    m_Scroll                 (NULL),
-    m_LoadedScrollbarPathname("")
+    m_Scroll                 (NULL)
     {
         m_Callback.objectType = Type_ListBox;
         m_DraggableObject = true;
@@ -64,7 +66,6 @@ namespace tgui
     m_ItemHeight             (copy.m_ItemHeight),
     m_TextSize               (copy.m_TextSize),
     m_MaxItems               (copy.m_MaxItems),
-    m_LoadedScrollbarPathname(copy.m_LoadedScrollbarPathname),
     m_BackgroundColor        (copy.m_BackgroundColor),
     m_TextColor              (copy.m_TextColor),
     m_SelectedBackgroundColor(copy.m_SelectedBackgroundColor),
@@ -111,7 +112,6 @@ namespace tgui
             std::swap(m_TextSize,                temp.m_TextSize);
             std::swap(m_MaxItems,                temp.m_MaxItems);
             std::swap(m_Scroll,                  temp.m_Scroll);
-            std::swap(m_LoadedScrollbarPathname, temp.m_LoadedScrollbarPathname);
             std::swap(m_BackgroundColor,         temp.m_BackgroundColor);
             std::swap(m_TextColor,               temp.m_TextColor);
             std::swap(m_SelectedBackgroundColor, temp.m_SelectedBackgroundColor);
@@ -132,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::load(unsigned int width, unsigned int height, const std::string& scrollbarPathname, unsigned int itemHeight)
+    bool ListBox::load(unsigned int width, unsigned int height, const std::string& scrollbarConfigFileFilename, unsigned int itemHeight)
     {
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
@@ -221,14 +221,13 @@ namespace tgui
         m_Size.y = height;
         m_TextSize = textSize;
         m_ItemHeight = itemHeight;
-        m_LoadedScrollbarPathname = scrollbarPathname;
 
         // If there is a scrollbar then load it
-        if (scrollbarPathname.empty() == false)
+        if (scrollbarConfigFileFilename.empty() == false)
         {
             // load the scrollbar and check if it failed
             m_Scroll = new Scrollbar();
-            if(m_Scroll->load(scrollbarPathname) == false)
+            if(m_Scroll->load(scrollbarConfigFileFilename) == false)
             {
                 // The scrollbar couldn't be loaded so it must be deleted
                 delete m_Scroll;
@@ -316,13 +315,6 @@ namespace tgui
     Vector2f ListBox::getSize() const
     {
         return Vector2f(m_Size.x, m_Size.y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string ListBox::getLoadedScrollbarPathname() const
-    {
-        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -632,13 +624,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setScrollbar(const std::string& scrollbarPathname)
+    bool ListBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        // Store the pathname
-        m_LoadedScrollbarPathname = scrollbarPathname;
-
         // Calling setScrollbar with an empty string does the same as removeScrollbar
-        if (scrollbarPathname.empty() == true)
+        if (scrollbarConfigFileFilename.empty() == true)
         {
             removeScrollbar();
             return true;
@@ -648,12 +637,9 @@ namespace tgui
         if (m_Scroll != NULL)
             delete m_Scroll;
 
-        // Remember the scrollbar pathname
-        m_LoadedScrollbarPathname = "";
-
         // load the scrollbar and check if it failed
         m_Scroll = new Scrollbar();
-        if(m_Scroll->load(scrollbarPathname) == false)
+        if(m_Scroll->load(scrollbarConfigFileFilename) == false)
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;
@@ -677,9 +663,6 @@ namespace tgui
 
     void ListBox::removeScrollbar()
     {
-        // There is no more scrollbar, so the string should be empty
-        m_LoadedScrollbarPathname = "";
-
         // Delete the scrollbar
         delete m_Scroll;
         m_Scroll = NULL;

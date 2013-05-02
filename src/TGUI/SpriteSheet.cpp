@@ -121,10 +121,10 @@ namespace tgui
         m_Columns = columns;
 
         // Make the correct part of the image visible
-        m_Sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture->getSize().x / m_Columns,
-                                            (m_VisibleCell.y-1) * m_Texture->getSize().y / m_Rows,
-                                            static_cast<int>(m_Texture->getSize().x / m_Columns),
-                                            static_cast<int>(m_Texture->getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,10 +143,10 @@ namespace tgui
         m_Rows = rows;
 
         // Make the correct part of the image visible
-        m_Sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture->getSize().x / m_Columns,
-                                            (m_VisibleCell.y-1) * m_Texture->getSize().y / m_Rows,
-                                            static_cast<int>(m_Texture->getSize().x / m_Columns),
-                                            static_cast<int>(m_Texture->getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,10 +172,10 @@ namespace tgui
         m_Columns = columns;
 
         // Make the correct part of the image visible
-        m_Sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture->getSize().x / m_Columns,
-                                            (m_VisibleCell.y-1) * m_Texture->getSize().y / m_Rows,
-                                            static_cast<int>(m_Texture->getSize().x / m_Columns),
-                                            static_cast<int>(m_Texture->getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,10 +210,10 @@ namespace tgui
         m_VisibleCell.y = row;
 
         // Make the correct part of the image visible
-        m_Sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture->getSize().x / m_Columns,
-                                            (m_VisibleCell.y-1) * m_Texture->getSize().y / m_Rows,
-                                            static_cast<int>(m_Texture->getSize().x / m_Columns),
-                                            static_cast<int>(m_Texture->getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,8 +232,8 @@ namespace tgui
             return;
 
         states.transform *= getTransform();
-        states.transform.scale(m_Size.x / (m_Texture->getSize().x * m_Columns), m_Size.y / (m_Texture->getSize().y * m_Rows));
-        target.draw(m_Sprite, states);
+        states.transform.scale(m_Size.x / (m_Texture.getSize().x * m_Columns), m_Size.y / (m_Texture.getSize().y * m_Rows));
+        target.draw(m_Texture, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -43,8 +43,7 @@ namespace tgui
     ChatBox::ChatBox() :
     m_TextSize               (15),
     m_BorderColor            (sf::Color::Black),
-    m_Scroll                 (NULL),
-    m_LoadedScrollbarPathname("")
+    m_Scroll                 (NULL)
     {
         m_Callback.objectType = Type_Unknown;
         m_DraggableObject = true;
@@ -62,8 +61,7 @@ namespace tgui
     Object                   (copy),
     ObjectBorders            (copy),
     m_TextSize               (copy.m_TextSize),
-    m_BorderColor            (copy.m_BorderColor),
-    m_LoadedScrollbarPathname(copy.m_LoadedScrollbarPathname)
+    m_BorderColor            (copy.m_BorderColor)
     {
         m_Panel = new Panel(*copy.m_Panel);
 
@@ -101,11 +99,10 @@ namespace tgui
             this->Object::operator=(right);
             this->ObjectBorders::operator=(right);
 
-            std::swap(m_TextSize,                temp.m_TextSize);
-            std::swap(m_BorderColor,             temp.m_BorderColor);
-            std::swap(m_Panel,                   temp.m_Panel);
-            std::swap(m_Scroll,                  temp.m_Scroll);
-            std::swap(m_LoadedScrollbarPathname, temp.m_LoadedScrollbarPathname);
+            std::swap(m_TextSize,    temp.m_TextSize);
+            std::swap(m_BorderColor, temp.m_BorderColor);
+            std::swap(m_Panel,       temp.m_Panel);
+            std::swap(m_Scroll,      temp.m_Scroll);
         }
 
         return *this;
@@ -120,7 +117,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::load(float width, float height, unsigned int textSize, const std::string& scrollbarPathname)
+    bool ChatBox::load(float width, float height, unsigned int textSize, const std::string& scrollbarConfigFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -142,17 +139,16 @@ namespace tgui
 
         // Store the values
         m_Panel->setSize(width, height);
-        m_LoadedScrollbarPathname = scrollbarPathname;
 
         // Set the text size
         setTextSize(textSize);
 
         // If there is a scrollbar then load it
-        if (scrollbarPathname.empty() == false)
+        if (scrollbarConfigFileFilename.empty() == false)
         {
             // load the scrollbar and check if it failed
             m_Scroll = new Scrollbar();
-            if (m_Scroll->load(scrollbarPathname) == false)
+            if (m_Scroll->load(scrollbarConfigFileFilename) == false)
             {
                 // The scrollbar couldn't be loaded so it must be deleted
                 delete m_Scroll;
@@ -170,8 +166,7 @@ namespace tgui
             }
         }
 
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,13 +217,6 @@ namespace tgui
     Vector2f ChatBox::getSize() const
     {
         return m_Panel->getSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string ChatBox::getLoadedScrollbarPathname() const
-    {
-        return m_LoadedScrollbarPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,13 +379,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::setScrollbar(const std::string& scrollbarPathname)
+    bool ChatBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        // Store the pathname
-        m_LoadedScrollbarPathname = scrollbarPathname;
-
         // Do nothing when the string is empty
-        if (scrollbarPathname.empty() == true)
+        if (scrollbarConfigFileFilename.empty() == true)
             return false;
 
         // If the scrollbar was already created then delete it first
@@ -406,7 +391,7 @@ namespace tgui
 
         // load the scrollbar and check if it failed
         m_Scroll = new Scrollbar();
-        if(m_Scroll->load(scrollbarPathname) == false)
+        if(m_Scroll->load(scrollbarConfigFileFilename) == false)
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;

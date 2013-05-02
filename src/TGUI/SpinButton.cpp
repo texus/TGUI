@@ -27,6 +27,9 @@
 #include <TGUI/ClickableObject.hpp>
 #include <TGUI/SpinButton.hpp>
 
+///!!!  TODO: Instead of ignoring the down arrow, use it instead of just flipping the up arrow.
+///!!!  TODO: Allow images next to each other (e.g. plus and minus icon).
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -40,10 +43,7 @@ namespace tgui
     m_Value               (0),
     m_SeparateHoverImage  (false),
     m_MouseHoverOnTopArrow(false),
-    m_MouseDownOnTopArrow (false),
-    m_TextureNormal       (NULL),
-    m_TextureHover        (NULL),
-    m_LoadedPathname      ("")
+    m_MouseDownOnTopArrow (false)
     {
         m_Callback.objectType = Type_SpinButton;
     }
@@ -58,21 +58,22 @@ namespace tgui
     m_Value               (copy.m_Value),
     m_SeparateHoverImage  (copy.m_SeparateHoverImage),
     m_MouseHoverOnTopArrow(copy.m_MouseHoverOnTopArrow),
-    m_MouseDownOnTopArrow (copy.m_MouseDownOnTopArrow),
-    m_LoadedPathname      (copy.m_LoadedPathname)
+    m_MouseDownOnTopArrow (copy.m_MouseDownOnTopArrow)
     {
-        // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal, m_TextureNormal))  m_SpriteNormal.setTexture(*m_TextureNormal);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover))    m_SpriteHover.setTexture(*m_TextureHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpNormal, m_TextureArrowUpNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpHover, m_TextureArrowUpHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownNormal, m_TextureArrowDownNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownHover, m_TextureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::~SpinButton()
     {
-        // Remove all the textures
-        if (m_TextureNormal != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,18 +86,17 @@ namespace tgui
             SpinButton temp(right);
             this->ClickableObject::operator=(right);
 
-            std::swap(m_VerticalScroll,       temp.m_VerticalScroll);
-            std::swap(m_Minimum,              temp.m_Minimum);
-            std::swap(m_Maximum,              temp.m_Maximum);
-            std::swap(m_Value,                temp.m_Value);
-            std::swap(m_SeparateHoverImage,   temp.m_SeparateHoverImage);
-            std::swap(m_MouseHoverOnTopArrow, temp.m_MouseHoverOnTopArrow);
-            std::swap(m_MouseDownOnTopArrow,  temp.m_MouseDownOnTopArrow);
-            std::swap(m_TextureNormal,        temp.m_TextureNormal);
-            std::swap(m_TextureHover,         temp.m_TextureHover);
-            std::swap(m_SpriteNormal,         temp.m_SpriteNormal);
-            std::swap(m_SpriteHover,          temp.m_SpriteHover);
-            std::swap(m_LoadedPathname,       temp.m_LoadedPathname);
+            std::swap(m_VerticalScroll,         temp.m_VerticalScroll);
+            std::swap(m_Minimum,                temp.m_Minimum);
+            std::swap(m_Maximum,                temp.m_Maximum);
+            std::swap(m_Value,                  temp.m_Value);
+            std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
+            std::swap(m_MouseHoverOnTopArrow,   temp.m_MouseHoverOnTopArrow);
+            std::swap(m_MouseDownOnTopArrow,    temp.m_MouseDownOnTopArrow);
+            std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
+            std::swap(m_TextureArrowUpHover,    temp.m_TextureArrowUpHover);
+            std::swap(m_TextureArrowDownNormal, temp.m_TextureArrowDownNormal);
+            std::swap(m_TextureArrowDownHover,  temp.m_TextureArrowDownHover);
         }
 
         return *this;
@@ -111,110 +111,108 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::load(const std::string& pathname)
+    bool SpinButton::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // If the button was loaded before then remove the old textures first
+        if (m_TextureArrowUpNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != NULL) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        // Set some default values
-        std::string imageExtension = "png";
-        m_VerticalScroll = true;
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("SpinButton", properties, values))
         {
-            // Check what the property is
-            if (property.compare("phases") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "separatehoverimage")
             {
-                // Get and store the different phases
-                extractPhases(value);
+                m_SeparateHoverImage = configFile.readBool(value, false);
             }
-            else if (property.compare("extension") == 0)
+            else if (property == "arrowupnormalimage")
             {
-                imageExtension = value;
-            }
-            else if (property.compare("verticalscroll") == 0)
-            {
-                if ((value.compare("false") == 0) || (value.compare("0") == 0))
-                    m_VerticalScroll = false;
-                else
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpNormal))
                 {
-                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section SpinButton in " + configFileFilename + ".");
+                    return false;
                 }
             }
-            else if (property.compare("separatehoverimage") == 0)
+            else if (property == "arrowuphoverimage")
             {
-                if (value.compare("true") == 0)
-                    m_SeparateHoverImage = true;
-                else if (value.compare("false") == 0)
-                    m_SeparateHoverImage = false;
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section SpinButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "arrowdownnormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section SpinButton in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "arrowdownhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section SpinButton in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section SpinButton in " + configFileFilename + ".");
         }
 
-        // Close the info file
-        infoFile.closeFile();
-
-        // Remove all textures if they were loaded before
-        if (m_TextureNormal != NULL) TGUI_TextureManager.removeTexture(m_TextureNormal);
-        if (m_TextureHover != NULL)  TGUI_TextureManager.removeTexture(m_TextureHover);
-
-
-        // load the required texture
-        if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Normal." + imageExtension, m_TextureNormal))
+        // Make sure the required textures were loaded
+        if ((m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
         {
-            m_SpriteNormal.setTexture(*m_TextureNormal, true);
-
-            // Store the size of the spin button
-            if (m_VerticalScroll)
-            {
-                m_Size.x = static_cast<float>(m_TextureNormal->getSize().x);
-                m_Size.y = m_TextureNormal->getSize().y * 2.f;
-            }
-            else
-            {
-                m_Size.x = static_cast<float>(m_TextureNormal->getSize().y);
-                m_Size.y = m_TextureNormal->getSize().x * 2.f;
-            }
+            m_Size.x = m_TextureArrowUpNormal.getSize().x;
+            m_Size.y = m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y;
         }
         else
-            return false;
-
-        // load the optional textures
-        if (m_ObjectPhase & ObjectPhase_Hover)
         {
-            if (TGUI_TextureManager.getTexture(m_LoadedPathname + "Hover." + imageExtension, m_TextureHover))
-                 m_SpriteHover.setTexture(*m_TextureHover, true);
-            else
-                return false;
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the spin button. Is the SpinButton section in " + configFileFilename + " complete?");
+            return false;
         }
 
-        m_Loaded = true;
-        return true;
+        // Check if optional textures were loaded
+        if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+        {
+            m_ObjectPhase |= ObjectPhase_Hover;
+        }
+
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,13 +230,6 @@ namespace tgui
         // A negative size is not allowed for this object
         if (m_Size.x < 0) m_Size.x = -m_Size.x;
         if (m_Size.y < 0) m_Size.y = -m_Size.y;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string SpinButton::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,68 +430,68 @@ namespace tgui
         // Check if the image is drawn in the same direction than it was loaded
         if (m_VerticalScroll)
         {
-            states.transform.scale(m_Size.x / m_TextureNormal->getSize().x, m_Size.y / (m_TextureNormal->getSize().y * 2.f));
+            states.transform.scale(m_Size.x / m_TextureArrowUpNormal.getSize().x, m_Size.y / (m_TextureArrowUpNormal.getSize().y * 2.f));
 
             // Draw the normal image
-            target.draw(m_SpriteNormal, states);
+            target.draw(m_TextureArrowUpNormal, states);
 
             // When the mouse is on top of the upper arrow then draw the hover image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             {
                 if (m_MouseHoverOnTopArrow)
-                    target.draw(m_SpriteHover, states);
+                    target.draw(m_TextureArrowUpHover, states);
             }
 
             // Set the second arrow on the correct position
-            states.transform.translate(0, 2.f * m_TextureNormal->getSize().y);
+            states.transform.translate(0, 2.f * m_TextureArrowUpNormal.getSize().y);
 
             // Flip the image
             states.transform.scale(1, -1);
 
             // Draw the normal image
-            target.draw(m_SpriteNormal, states);
+            target.draw(m_TextureArrowUpNormal, states);
 
             // When the mouse is on top of the bottom arow then draw the hover image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             {
                 if (m_MouseHoverOnTopArrow == false)
-                    target.draw(m_SpriteHover, states);
+                    target.draw(m_TextureArrowUpHover, states);
             }
         }
         else // The image is not drawn in the same direction than the loaded image
         {
-            states.transform.scale(m_Size.x / (m_TextureNormal->getSize().y * 2.f), m_Size.y / m_TextureNormal->getSize().x);
+            states.transform.scale(m_Size.x / (m_TextureArrowUpNormal.getSize().y * 2.f), m_Size.y / m_TextureArrowUpNormal.getSize().x);
 
             // Rotate the arrow
-            states.transform.rotate(-90, static_cast<float>(m_TextureNormal->getSize().x), static_cast<float>(m_TextureNormal->getSize().y));
+            states.transform.rotate(-90, static_cast<float>(m_TextureArrowUpNormal.getSize().x), static_cast<float>(m_TextureArrowUpNormal.getSize().y));
 
             // Set the left arrow on the correct position
-            states.transform.translate(static_cast<float>(m_TextureNormal->getSize().y), 0);
+            states.transform.translate(static_cast<float>(m_TextureArrowUpNormal.getSize().y), 0);
 
             // Draw the normal image
-            target.draw(m_SpriteNormal, states);
+            target.draw(m_TextureArrowUpNormal, states);
 
             // When the mouse is on top of the left arrow then draw the hover image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             {
                 if (m_MouseHoverOnTopArrow == false)
-                    target.draw(m_SpriteHover, states);
+                    target.draw(m_TextureArrowUpHover, states);
             }
 
             // Set the right arrow on the correct position
-            states.transform.translate(0, 2.f * m_TextureNormal->getSize().y);
+            states.transform.translate(0, 2.f * m_TextureArrowUpNormal.getSize().y);
 
             // Flip the image
             states.transform.scale(1, -1);
 
             // Draw the normal image
-            target.draw(m_SpriteNormal, states);
+            target.draw(m_TextureArrowUpNormal, states);
 
             // When the mouse is on top of the right arow then draw the hover image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             {
                 if (m_MouseHoverOnTopArrow)
-                    target.draw(m_SpriteHover, states);
+                    target.draw(m_TextureArrowUpHover, states);
             }
         }
     }

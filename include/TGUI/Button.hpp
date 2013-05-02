@@ -93,7 +93,8 @@ namespace tgui
         ///        - false when the images couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& pathname);
+///!!!  TODO: Adjust description
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,16 +105,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the pathname that was used to load the button.
-        ///
-        /// \return Pathname used to load the button.
-        ///         When the button has not been loaded yet then this function will return an empty string.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string getLoadedPathname() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,40 +221,20 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        // The SFML textures
-        sf::Texture* m_TextureNormal_L;
-        sf::Texture* m_TextureMouseHover_L;
-        sf::Texture* m_TextureMouseDown_L;
-        sf::Texture* m_TextureFocused_L;
+        Texture m_TextureNormal_L;
+        Texture m_TextureHover_L;
+        Texture m_TextureDown_L;
+        Texture m_TextureFocused_L;
 
-        sf::Texture* m_TextureNormal_M;
-        sf::Texture* m_TextureMouseHover_M;
-        sf::Texture* m_TextureMouseDown_M;
-        sf::Texture* m_TextureFocused_M;
+        Texture m_TextureNormal_M;
+        Texture m_TextureHover_M;
+        Texture m_TextureDown_M;
+        Texture m_TextureFocused_M;
 
-        sf::Texture* m_TextureNormal_R;
-        sf::Texture* m_TextureMouseHover_R;
-        sf::Texture* m_TextureMouseDown_R;
-        sf::Texture* m_TextureFocused_R;
-
-        // The SFML sprites
-        sf::Sprite  m_SpriteNormal_L;
-        sf::Sprite  m_SpriteMouseHover_L;
-        sf::Sprite  m_SpriteMouseDown_L;
-        sf::Sprite  m_SpriteFocused_L;
-
-        sf::Sprite  m_SpriteNormal_M;
-        sf::Sprite  m_SpriteMouseHover_M;
-        sf::Sprite  m_SpriteMouseDown_M;
-        sf::Sprite  m_SpriteFocused_M;
-
-        sf::Sprite  m_SpriteNormal_R;
-        sf::Sprite  m_SpriteMouseHover_R;
-        sf::Sprite  m_SpriteMouseDown_R;
-        sf::Sprite  m_SpriteFocused_R;
-
-        // The pathname used to load the button
-        std::string m_LoadedPathname;
+        Texture m_TextureNormal_R;
+        Texture m_TextureHover_R;
+        Texture m_TextureDown_R;
+        Texture m_TextureFocused_R;
 
         // If this is true then the L, M and R images will be used.
         // If it is false then the button is just one big image that will be stored in the M image.

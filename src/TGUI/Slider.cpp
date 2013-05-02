@@ -40,16 +40,7 @@ namespace tgui
     m_VerticalScroll      (true),
     m_VerticalImage       (true),
     m_SplitImage          (false),
-    m_SeparateHoverImage  (false),
-    m_TextureTrackNormal_L(NULL),
-    m_TextureTrackHover_L (NULL),
-    m_TextureTrackNormal_M(NULL),
-    m_TextureTrackHover_M (NULL),
-    m_TextureTrackNormal_R(NULL),
-    m_TextureTrackHover_R (NULL),
-    m_TextureThumbNormal  (NULL),
-    m_TextureThumbHover   (NULL),
-    m_LoadedPathname      ("")
+    m_SeparateHoverImage  (false)
     {
         m_Callback.objectType = Type_Slider;
         m_DraggableObject = true;
@@ -69,18 +60,18 @@ namespace tgui
     m_SplitImage         (copy.m_SplitImage),
     m_SeparateHoverImage (copy.m_SeparateHoverImage),
     m_Size               (copy.m_Size),
-    m_ThumbSize          (copy.m_ThumbSize),
-    m_LoadedPathname     (copy.m_LoadedPathname)
+    m_ThumbSize          (copy.m_ThumbSize)
     {
+
         // Copy the textures
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_L, m_TextureTrackNormal_L)) m_SpriteTrackNormal_L.setTexture(*m_TextureTrackNormal_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_L, m_TextureTrackHover_L))   m_SpriteTrackHover_L.setTexture(*m_TextureTrackHover_L);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_M, m_TextureTrackNormal_M)) m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_M, m_TextureTrackHover_M))   m_SpriteTrackHover_M.setTexture(*m_TextureTrackHover_M);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_R, m_TextureTrackNormal_R)) m_SpriteTrackNormal_R.setTexture(*m_TextureTrackNormal_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_R, m_TextureTrackHover_R))   m_SpriteTrackHover_R.setTexture(*m_TextureTrackHover_R);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureThumbNormal, m_TextureThumbNormal))     m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal);
-        if (TGUI_TextureManager.copyTexture(copy.m_TextureThumbHover, m_TextureThumbHover))       m_SpriteThumbHover.setTexture(*m_TextureThumbHover);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_L, m_TextureTrackNormal_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_L, m_TextureTrackHover_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_M, m_TextureTrackNormal_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_M, m_TextureTrackHover_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_R, m_TextureTrackNormal_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_R, m_TextureTrackHover_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbNormal, m_TextureThumbNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbHover, m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,14 +79,14 @@ namespace tgui
     Slider::~Slider()
     {
         // Remove all the textures
-        if (m_TextureTrackNormal_L != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
-        if (m_TextureTrackHover_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
-        if (m_TextureTrackNormal_M != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
-        if (m_TextureTrackHover_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
-        if (m_TextureTrackNormal_R != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
-        if (m_TextureTrackHover_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
-        if (m_TextureThumbNormal != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureTrackNormal_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,15 +118,6 @@ namespace tgui
             std::swap(m_TextureTrackHover_R,  temp.m_TextureTrackHover_R);
             std::swap(m_TextureThumbNormal,   temp.m_TextureThumbNormal);
             std::swap(m_TextureThumbHover,    temp.m_TextureThumbHover);
-            std::swap(m_SpriteTrackNormal_L,  temp.m_SpriteTrackNormal_L);
-            std::swap(m_SpriteTrackHover_L,   temp.m_SpriteTrackHover_L);
-            std::swap(m_SpriteTrackNormal_M,  temp.m_SpriteTrackNormal_M);
-            std::swap(m_SpriteTrackHover_M,   temp.m_SpriteTrackHover_M);
-            std::swap(m_SpriteTrackNormal_R,  temp.m_SpriteTrackNormal_R);
-            std::swap(m_SpriteTrackHover_R,   temp.m_SpriteTrackHover_R);
-            std::swap(m_SpriteThumbNormal,    temp.m_SpriteThumbNormal);
-            std::swap(m_SpriteThumbHover,     temp.m_SpriteThumbHover);
-            std::swap(m_LoadedPathname,       temp.m_LoadedPathname);
         }
 
         return *this;
@@ -150,174 +132,204 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::load(const std::string& pathname)
+    bool Slider::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Make sure that the pathname isn't empty
-        if (pathname.empty())
-            return false;
+        // Remove all textures if they were loaded before
+        if (m_TextureTrackNormal_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
-        // Store the pathname
-        m_LoadedPathname = pathname;
-
-        // When the pathname does not end with a "/" then we will add it
-        if (m_LoadedPathname[m_LoadedPathname.length()-1] != '/')
-            m_LoadedPathname.push_back('/');
-
-        // Open the info file
-        InfoFileParser infoFile;
-        if (infoFile.openFile(m_LoadedPathname + "info.txt") == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedPathname + "info.txt");
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
             return false;
         }
 
-        std::string property;
-        std::string value;
-
-        std::string imageExtension = "png";
-
-        // m_VerticalScroll will be true unless said otherwise
-        m_VerticalImage = true;
-        m_VerticalScroll = true;
-
-        // Read untill the end of the file
-        while (infoFile.readProperty(property, value))
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Slider", properties, values))
         {
-            // Check what the property is
-            if (property.compare("phases") == 0)
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "separatehoverimage")
             {
-                // Get and store the different phases
-                extractPhases(value);
+                m_SeparateHoverImage = configFile.readBool(value, false);
             }
-            else if (property.compare("extension") == 0)
+            else if (property == "verticalscroll")
             {
-                imageExtension = value;
+                m_VerticalScroll = configFile.readBool(value, false);
+                m_VerticalImage = m_VerticalScroll;
             }
-            else if (property.compare("verticalscroll") == 0)
+            else if (property == "tracknormalimage")
             {
-                if ((value.compare("false") == 0) || (value.compare("0") == 0))
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal_M))
                 {
-                    m_VerticalImage = false;
-                    m_VerticalScroll = false;
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage in section Slider in " + configFileFilename + ".");
+                    return false;
                 }
-                else
+
+                m_SplitImage = false;
+            }
+            else if (property == "trackhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackHover_M))
                 {
-                    if ((value.compare("true") != 0) && (value.compare("1") != 0))
-                        TGUI_OUTPUT("TGUI warning: Wrong value passed to VerticalScroll: \"" + value + "\".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage in section Slider in " + configFileFilename + ".");
+                    return false;
                 }
             }
-            else if (property.compare("splitimage") == 0)
+            else if (property == "thumbnormalimage")
             {
-                if (value.compare("true") == 0)
-                    m_SplitImage = true;
-                else if (value.compare("false") == 0)
-                    m_SplitImage = false;
+                if (!configFile.readTexture(value, configFileFolder, m_TextureThumbNormal))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbNormalImage in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
             }
-            else if (property.compare("separatehoverimage") == 0)
+            else if (property == "thumbhoverimage")
             {
-                if (value.compare("true") == 0)
-                    m_SeparateHoverImage = true;
-                else if (value.compare("false") == 0)
-                    m_SeparateHoverImage = false;
+                if (!configFile.readTexture(value, configFileFolder, m_TextureThumbHover))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbHoverImage in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "tracknormalimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage_L in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "tracknormalimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage_M in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
+            }
+            else if (property == "tracknormalimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage_R in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "trackhoverimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackHover_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage_L in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "trackhoverimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackHover_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage_M in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "trackhoverimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTrackHover_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage_R in section Slider in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Option not recognised: \"" + property + "\".");
+                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section Slider in " + configFileFilename + ".");
         }
-
-        // Close the info file
-        infoFile.closeFile();
-
-        // Remove all textures if they were loaded before
-        if (m_TextureTrackNormal_L != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
-        if (m_TextureTrackHover_L != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
-        if (m_TextureTrackNormal_M != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
-        if (m_TextureTrackHover_M != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
-        if (m_TextureTrackNormal_R != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
-        if (m_TextureTrackHover_R != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
-        if (m_TextureThumbNormal != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
         // Check if the image is split
         if (m_SplitImage)
         {
-            // load the required textures
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Track_Normal." + imageExtension, m_TextureTrackNormal_L))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Track_Normal." + imageExtension, m_TextureTrackNormal_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Track_Normal." + imageExtension, m_TextureTrackNormal_R))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
+            // Make sure the required textures were loaded
+            if ((m_TextureTrackNormal_L.data != NULL) && (m_TextureTrackNormal_M.data != NULL)
+             && (m_TextureTrackNormal_R.data != NULL) && (m_TextureThumbNormal.data != NULL))
             {
-                m_SpriteTrackNormal_L.setTexture(*m_TextureTrackNormal_L, true);
-                m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
-                m_SpriteTrackNormal_R.setTexture(*m_TextureTrackNormal_R, true);
-                m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
-
                 // Set the size of the slider
                 if (m_VerticalImage)
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M->getSize().x), static_cast<float>(m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y));
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y));
                 else
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x), static_cast<float>(m_TextureTrackNormal_M->getSize().y));
+                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
+                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
             }
             else
-                return false;
-
-            // load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Hover)
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "L_Track_Hover." + imageExtension, m_TextureTrackHover_L))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "M_Track_Hover." + imageExtension, m_TextureTrackHover_M))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "R_Track_Hover." + imageExtension, m_TextureTrackHover_R))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
-                 {
-                     m_SpriteTrackHover_L.setTexture(*m_TextureTrackHover_L, true);
-                     m_SpriteTrackHover_M.setTexture(*m_TextureTrackHover_M, true);
-                     m_SpriteTrackHover_R.setTexture(*m_TextureTrackHover_R, true);
-                     m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
-                 }
-                else
-                    return false;
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the slider. Is the Slider section in " + configFileFilename + " complete?");
+                return false;
+            }
+
+            // Check if optional textures were loaded
+            if ((m_TextureTrackHover_L.data != NULL) && (m_TextureTrackHover_M.data != NULL)
+             && (m_TextureTrackHover_R.data != NULL) && (m_TextureThumbHover.data != NULL))
+            {
+                m_ObjectPhase |= ObjectPhase_Hover;
             }
         }
         else // The image isn't split
         {
-            // load the required textures
-            if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Normal." + imageExtension, m_TextureTrackNormal_M))
-             && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Normal." + imageExtension, m_TextureThumbNormal)))
+            // Make sure the required textures were loaded
+            if ((m_TextureTrackNormal_M.data != NULL) && (m_TextureThumbNormal.data != NULL))
             {
-                m_SpriteTrackNormal_M.setTexture(*m_TextureTrackNormal_M, true);
-                m_SpriteThumbNormal.setTexture(*m_TextureThumbNormal, true);
-
                 // Set the size of the slider
-                m_Size = Vector2f(m_TextureTrackNormal_M->getSize());
+                m_Size = Vector2f(m_TextureTrackNormal_M.getSize());
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal->getSize());
+                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
             }
             else
-                return false;
-
-            // load the optional textures
-            if (m_ObjectPhase & ObjectPhase_Hover)
             {
-                if ((TGUI_TextureManager.getTexture(m_LoadedPathname + "Track_Hover." + imageExtension, m_TextureTrackHover_M))
-                 && (TGUI_TextureManager.getTexture(m_LoadedPathname + "Thumb_Hover." + imageExtension, m_TextureThumbHover)))
-                 {
-                     m_SpriteTrackHover_M.setTexture(*m_TextureTrackHover_M, true);
-                     m_SpriteThumbHover.setTexture(*m_TextureThumbHover, true);
-                 }
-                else
-                    return false;
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the slider. Is the Slider section in " + configFileFilename + " complete?");
+                return false;
+            }
+
+            // Check if optional textures were loaded
+            if ((m_TextureTrackHover_M.data != NULL) && (m_TextureThumbHover.data != NULL))
+            {
+                m_ObjectPhase |= ObjectPhase_Hover;
             }
         }
 
-        // When there is no error we will return true
-        m_Loaded = true;
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,27 +352,27 @@ namespace tgui
         if (m_VerticalImage == m_VerticalScroll)
         {
             if (m_VerticalScroll)
-            {
-                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
-                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
+            {;
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
             }
             else
             {
-                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
-                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
             }
         }
         else
         {
             if (m_VerticalScroll)
             {
-                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
-                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
             }
             else
             {
-                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
-                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
             }
         }
     }
@@ -373,13 +385,6 @@ namespace tgui
             return Vector2f(m_Size.x, m_Size.y);
         else
             return Vector2f(0, 0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string Slider::getLoadedPathname() const
-    {
-        return m_LoadedPathname;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -697,8 +702,8 @@ namespace tgui
             // Get the scale factors
             if (m_VerticalScroll == m_VerticalImage)
             {
-                scaling.x = m_Size.x / (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x);
-                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                scaling.x = m_Size.x / (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x);
+                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
             }
             else
             {
@@ -707,19 +712,19 @@ namespace tgui
                 {
                     // Set the rotation
                     states.transform.rotate(-90,
-                                            (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x) * 0.5f,
-                                            m_TextureTrackNormal_M->getSize().x * 0.5f);
+                                            (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x) * 0.5f,
+                                            m_TextureTrackNormal_M.getSize().x * 0.5f);
                 }
                 else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
                 {
                     // Set the rotation
                     states.transform.rotate(90,
-                                            (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y) * 0.5f,
-                                            m_TextureTrackNormal_M->getSize().y * 0.5f);
+                                            (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y) * 0.5f,
+                                            m_TextureTrackNormal_M.getSize().y * 0.5f);
                 }
 
-                scaling.x = m_Size.x / (m_TextureTrackNormal_L->getSize().y + m_TextureTrackNormal_M->getSize().y + m_TextureTrackNormal_R->getSize().y);
-                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+                scaling.x = m_Size.x / (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y);
+                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
             }
 
             // Set the scale for the left image
@@ -732,18 +737,18 @@ namespace tgui
                 {
                     // Draw the correct image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteTrackHover_L, states);
+                        target.draw(m_TextureTrackHover_L, states);
                     else
-                        target.draw(m_SpriteTrackNormal_L, states);
+                        target.draw(m_TextureTrackNormal_L, states);
                 }
                 else
                 {
                     // Draw the normal track image
-                    target.draw(m_SpriteTrackNormal_L, states);
+                    target.draw(m_TextureTrackNormal_L, states);
 
                     // When the mouse is on top of the slider then draw the hover image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteTrackHover_L, states);
+                        target.draw(m_TextureTrackHover_L, states);
                 }
 
                 // When the slider is focused then draw an extra image
@@ -752,16 +757,16 @@ namespace tgui
             }
 
             // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x))
-                < scaling.x * (m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x))
+            if ((scaling.y * (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x))
+                < scaling.x * (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x))
             {
                 // Calculate the scale for our middle image
-                float scaleX = (((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_M->getSize().x + m_TextureTrackNormal_R->getSize().x)  * scaling.x)
-                                 - ((m_TextureTrackNormal_L->getSize().x + m_TextureTrackNormal_R->getSize().x) * scaling.y))
-                               / m_TextureTrackNormal_M->getSize().x;
+                float scaleX = (((m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x)  * scaling.x)
+                                 - ((m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scaling.y))
+                               / m_TextureTrackNormal_M.getSize().x;
 
                 // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L.getSize().x), 0);
 
                 // Set the scale for the middle image
                 states.transform.scale(scaleX / scaling.y, 1);
@@ -773,18 +778,18 @@ namespace tgui
                     {
                         // Draw the correct image
                         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_SpriteTrackHover_M, states);
+                            target.draw(m_TextureTrackHover_M, states);
                         else
-                            target.draw(m_SpriteTrackNormal_M, states);
+                            target.draw(m_TextureTrackNormal_M, states);
                     }
                     else
                     {
                         // Draw the normal track image
-                        target.draw(m_SpriteTrackNormal_M, states);
+                        target.draw(m_TextureTrackNormal_M, states);
 
                         // When the mouse is on top of the slider then draw the hover image
                         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_SpriteTrackHover_M, states);
+                            target.draw(m_TextureTrackHover_M, states);
                     }
 
                     // When the slider is focused then draw an extra image
@@ -793,13 +798,13 @@ namespace tgui
                 }
 
                 // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_M->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureTrackNormal_M.getSize().x), 0);
 
                 // Set the scale for the right image
                 states.transform.scale(scaling.y / scaleX, 1);
             }
             else // The middle image is not drawn
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L->getSize().x), 0);
+                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L.getSize().x), 0);
 
             // Draw the right image
             {
@@ -808,18 +813,18 @@ namespace tgui
                 {
                     // Draw the correct image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteTrackHover_R, states);
+                        target.draw(m_TextureTrackHover_R, states);
                     else
-                        target.draw(m_SpriteTrackNormal_R, states);
+                        target.draw(m_TextureTrackNormal_R, states);
                 }
                 else
                 {
                     // Draw the normal track image
-                    target.draw(m_SpriteTrackNormal_R, states);
+                    target.draw(m_TextureTrackNormal_R, states);
 
                     // When the mouse is on top of the slider then draw the hover image
                     if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_SpriteTrackHover_R, states);
+                        target.draw(m_TextureTrackHover_R, states);
                 }
 
                 // When the slider is focused then draw an extra image
@@ -832,30 +837,30 @@ namespace tgui
             if (m_VerticalScroll == m_VerticalImage)
             {
                 // Set the scaling
-                scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().x;
-                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().y;
+                scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
                 states.transform.scale(scaling);
             }
             else
             {
                 // Set the scaling
-                scaling.x = m_Size.x / m_TextureTrackNormal_M->getSize().y;
-                scaling.y = m_Size.y / m_TextureTrackNormal_M->getSize().x;
+                scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
+                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
                 states.transform.scale(scaling);
 
                 // Set the rotation
                 if ((m_VerticalImage == true) && (m_VerticalScroll == false))
-                    states.transform.rotate(-90, m_TextureTrackNormal_M->getSize().x * 0.5f, m_TextureTrackNormal_M->getSize().x * 0.5f);
+                    states.transform.rotate(-90, m_TextureTrackNormal_M.getSize().x * 0.5f, m_TextureTrackNormal_M.getSize().x * 0.5f);
                 else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
-                    states.transform.rotate(90, m_TextureTrackNormal_M->getSize().y * 0.5f, m_TextureTrackNormal_M->getSize().y * 0.5f);
+                    states.transform.rotate(90, m_TextureTrackNormal_M.getSize().y * 0.5f, m_TextureTrackNormal_M.getSize().y * 0.5f);
             }
 
             // Draw the normal track image
-            target.draw(m_SpriteTrackNormal_M, states);
+            target.draw(m_TextureTrackNormal_M, states);
 
             // When the mouse is on top of the slider then draw the hover image
             if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                target.draw(m_SpriteTrackHover_M, states);
+                target.draw(m_TextureTrackHover_M, states);
         }
 
         // Reset the transform
@@ -885,20 +890,20 @@ namespace tgui
         if ((m_VerticalImage == true) && (m_VerticalScroll == false))
         {
             // Set the rotation
-            states.transform.rotate(-90, m_TextureThumbNormal->getSize().x * 0.5f, m_TextureThumbNormal->getSize().x * 0.5f);
+            states.transform.rotate(-90, m_TextureThumbNormal.getSize().x * 0.5f, m_TextureThumbNormal.getSize().x * 0.5f);
         }
         else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
         {
             // Set the rotation
-            states.transform.rotate(90, m_TextureThumbNormal->getSize().y * 0.5f, m_TextureThumbNormal->getSize().y * 0.5f);
+            states.transform.rotate(90, m_TextureThumbNormal.getSize().y * 0.5f, m_TextureThumbNormal.getSize().y * 0.5f);
         }
 
         // Draw the normal thumb image
-        target.draw(m_SpriteThumbNormal, states);
+        target.draw(m_TextureThumbNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_SpriteThumbHover, states);
+            target.draw(m_TextureThumbHover, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
