@@ -61,7 +61,8 @@ namespace tgui
     m_TextureFocused_M      (NULL),
     m_TextureFocused_R      (NULL),
     m_LoadedPathname        (""),
-    m_PossibleDoubleClick   (false)
+    m_PossibleDoubleClick   (false),
+    m_NumbersOnly           (false)
     {
         m_Callback.objectType = Type_EditBox;
         m_AnimatedObject = true;
@@ -96,7 +97,8 @@ namespace tgui
     m_TextAfterSelection    (copy.m_TextAfterSelection),
     m_TextFull              (copy.m_TextFull),
     m_LoadedPathname        (copy.m_LoadedPathname),
-    m_PossibleDoubleClick   (copy.m_PossibleDoubleClick)
+    m_PossibleDoubleClick   (copy.m_PossibleDoubleClick),
+    m_NumbersOnly           (copy.m_NumbersOnly)
     {
         // Copy the textures
         if (TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L))       m_SpriteNormal_L.setTexture(*m_TextureNormal_L);
@@ -179,6 +181,7 @@ namespace tgui
             std::swap(m_SpriteFocused_R,        temp.m_SpriteFocused_R);
             std::swap(m_LoadedPathname,         temp.m_LoadedPathname);
             std::swap(m_PossibleDoubleClick,    temp.m_PossibleDoubleClick);
+            std::swap(m_NumbersOnly,            temp.m_NumbersOnly);
         }
 
         return *this;
@@ -812,6 +815,11 @@ namespace tgui
         return m_SelectionPointWidth;
     }
 
+    void EditBox::setNumbersOnly(bool numbersOnly)
+    {
+        m_NumbersOnly = numbersOnly;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::leftMousePressed(float x, float y)
@@ -1214,6 +1222,13 @@ namespace tgui
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
             return;
+
+        // If only numbers are supported then make sure the input is valid
+        if (m_NumbersOnly)
+        {
+            if ((key < '1') || (key > '9'))
+                return;
+        }
 
         // If there are selected characters then delete them first
         if (m_SelChars > 0)
