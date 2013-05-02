@@ -496,24 +496,24 @@ int main()
         while (app.objectsWindow.pollCallback(callback))
         {
             // Check if the load of save button was pressed
-            if (callback.callbackId == 20)
+            if (callback.id == 20)
                 app.loadForm();
-            else if (callback.callbackId == 21)
+            else if (callback.id == 21)
                 app.saveForm();
             else // Add an object to the form
-                app.newObject(callback.callbackId);
+                app.newObject(callback.id);
         }
 
         // Get the callback from the property window
         while (app.propertyWindow.pollCallback(callback))
         {
             // Check if you clicked the delete button
-            if (callback.callbackId == 50)
+            if (callback.id == 50)
                 app.deleteObject();
             else // A property was changed
             {
                 // Update the property
-                app.updateProperty(callback.callbackId - 1);
+                app.updateProperty(callback.id - 1);
 
                 // Just in case the width of height would have changed, store the aspect ratio
                 app.storeObjectsNewAspectRatio();

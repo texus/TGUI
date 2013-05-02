@@ -582,6 +582,7 @@ namespace tgui
 
                 // Draw the background of the menu
                 background = sf::RectangleShape(sf::Vector2f(menuWidth, m_Size.y * m_Menus[i].menuItems.size()));
+                background.setFillColor(m_BackgroundColor);
                 target.draw(background, states);
 
                 // If there is a selected menu item then draw its background

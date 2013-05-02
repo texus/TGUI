@@ -45,8 +45,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API Callback
     {
-        // The id that was passed to the object. It is used to identify from what object the callback came from.
-        unsigned int callbackId;
+        // The callback id that was passed to the object. It is used to identify from what object the callback came from.
+        unsigned int id;
 
         // How did the callbak occur?
         unsigned int trigger;

@@ -454,7 +454,7 @@ addProperty_String(Items)
 PropertySelectedItem::PropertySelectedItem()
 {
     description = "Selected item";
-    value = 0;
+    value = -1;
 }
 
 addProperty_Value(SelectedItem)
@@ -1977,7 +1977,7 @@ PropertiesListBox::PropertiesListBox()
     selectedTextColor.value = "255, 255, 255";
     borderColor.value = "0, 0, 0";
     items.value = "";
-    selectedItem.value = 0;
+    selectedItem.value = -1;
     textFont.value = "Global";
     callbackID.value = 0;
 
@@ -2373,14 +2373,14 @@ void PropertiesListBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         }
 
         // Check if an item has to be selected
-        if (selectedItem.value > 0)
+        if (selectedItem.value >= 0)
         {
             // Change the selected item
             if (listBox->setSelectedItem(selectedItem.value) == false)
             {
-                // If the id was too high then set the property back to 0
-                selectedItem.value = 0;
-                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->setText("0");
+                // If the id was too high then set the property back to -1
+                selectedItem.value = -1;
+                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->setText("-1");
             }
         }
     }
@@ -2390,7 +2390,10 @@ void PropertiesListBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
         selectedItem.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->getText().toAnsiString().c_str());
 
         // Change the selected item in the list box
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+        if (selectedItem.value >= 0)
+            static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+        else
+            static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->deselectItem();
     }
     else if (propertyNumber == Property_ListBox_TextFont)
     {
@@ -2451,7 +2454,7 @@ PropertiesComboBox::PropertiesComboBox()
     selectedTextColor.value = "255, 255, 255";
     borderColor.value = "0, 0, 0";
     items.value = "";
-    selectedItem.value = 0;
+    selectedItem.value = -1;
     itemsToDisplay.value = 10;
     textFont.value = "Global";
     callbackID.value = 0;
@@ -2794,14 +2797,14 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
         }
 
         // Check if an item has to be selected
-        if (selectedItem.value > 0)
+        if (selectedItem.value >= 0)
         {
             // Change the selected item
             if (comboBox->setSelectedItem(selectedItem.value) == false)
             {
-                // If the id was too high then set the property back to 0
-                selectedItem.value = 0;
-                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->setText("0");
+                // If the id was too high then set the property back to -1
+                selectedItem.value = -1;
+                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->setText("-1");
             }
         }
     }
@@ -2811,7 +2814,10 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
         selectedItem.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedItem"))->getText().toAnsiString().c_str());
 
         // Change the selected item in the combo box
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+        if (selectedItem.value >= 0)
+            static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+        else
+            static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->deselectItem();
     }
     else if (propertyNumber == Property_ComboBox_ItemsToDisplay)
     {

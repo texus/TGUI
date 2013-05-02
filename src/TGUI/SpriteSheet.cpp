@@ -232,7 +232,7 @@ namespace tgui
             return;
 
         states.transform *= getTransform();
-        states.transform.scale(m_Size.x / (m_Texture.getSize().x * m_Columns), m_Size.y / (m_Texture.getSize().y * m_Rows));
+        states.transform.scale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
         target.draw(m_Texture, states);
     }
 

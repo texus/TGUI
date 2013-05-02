@@ -255,8 +255,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the character size of the text.
         ///
-        /// \param textSize  The new size of the text.
-        ///                  If the size is 0 (default) then the text will be scaled to fit in the menu bar.
+        /// \param size  The new size of the text.
+        ///              If the size is 0 (default) then the text will be scaled to fit in the menu bar.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTextSize(unsigned int size);

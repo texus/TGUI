@@ -1454,20 +1454,14 @@ void Builder::saveForm()
             line.append(pictures[objectIndex].filename.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
-            line.append(tgui::to_string(pictures[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position   = ";
+            line.append("(").append(tgui::to_string(pictures[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(pictures[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
-            line.append(tgui::to_string(pictures[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width      = ";
-            line.append(tgui::to_string(pictures[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height     = ";
-            line.append(tgui::to_string(pictures[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size       = ";
+            line.append("(").append(tgui::to_string(pictures[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(pictures[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
@@ -1487,20 +1481,14 @@ void Builder::saveForm()
             line.append(buttons[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
-            line.append(tgui::to_string(buttons[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position   = ";
+            line.append("(").append(tgui::to_string(buttons[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(buttons[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
-            line.append(tgui::to_string(buttons[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width      = ";
-            line.append(tgui::to_string(buttons[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height     = ";
-            line.append(tgui::to_string(buttons[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size       = ";
+            line.append("(").append(tgui::to_string(buttons[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(buttons[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text       = \"";
@@ -1533,20 +1521,14 @@ void Builder::saveForm()
             line.append(checkboxes[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
-            line.append(tgui::to_string(checkboxes[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position   = ";
+            line.append("(").append(tgui::to_string(checkboxes[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(checkboxes[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
-            line.append(tgui::to_string(checkboxes[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width      = ";
-            line.append(tgui::to_string(checkboxes[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height     = ";
-            line.append(tgui::to_string(checkboxes[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size       = ";
+            line.append("(").append(tgui::to_string(checkboxes[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(checkboxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Checked    = ";
@@ -1583,20 +1565,14 @@ void Builder::saveForm()
             line.append(radioButtons[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
-            line.append(tgui::to_string(radioButtons[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position   = ";
+            line.append("(").append(tgui::to_string(radioButtons[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(radioButtons[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
-            line.append(tgui::to_string(radioButtons[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width      = ";
-            line.append(tgui::to_string(radioButtons[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height     = ";
-            line.append(tgui::to_string(radioButtons[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size       = ";
+            line.append("(").append(tgui::to_string(radioButtons[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(radioButtons[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Checked    = ";
@@ -1629,20 +1605,14 @@ void Builder::saveForm()
             line.append(labels[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left             = ";
-            line.append(tgui::to_string(labels[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position         = ";
+            line.append("(").append(tgui::to_string(labels[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(labels[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top              = ";
-            line.append(tgui::to_string(labels[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width            = ";
-            line.append(tgui::to_string(labels[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height           = ";
-            line.append(tgui::to_string(labels[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size             = ";
+            line.append("(").append(tgui::to_string(labels[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(labels[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "AutoSize         = ";
@@ -1684,20 +1654,14 @@ void Builder::saveForm()
             line.append(editBoxes[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left                = ";
-            line.append(tgui::to_string(editBoxes[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position            = ";
+            line.append("(").append(tgui::to_string(editBoxes[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(editBoxes[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top                 = ";
-            line.append(tgui::to_string(editBoxes[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width               = ";
-            line.append(tgui::to_string(editBoxes[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height              = ";
-            line.append(tgui::to_string(editBoxes[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size                = ";
+            line.append("(").append(tgui::to_string(editBoxes[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(editBoxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text                = \"";
@@ -1762,20 +1726,14 @@ void Builder::saveForm()
             line.append(listBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left                    = ";
-            line.append(tgui::to_string(listBoxes[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position                = ";
+            line.append("(").append(tgui::to_string(listBoxes[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(listBoxes[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top                     = ";
-            line.append(tgui::to_string(listBoxes[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width                   = ";
-            line.append(tgui::to_string(listBoxes[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height                  = ";
-            line.append(tgui::to_string(listBoxes[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size                    = ";
+            line.append("(").append(tgui::to_string(listBoxes[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(listBoxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ScrollbarPathname       = \"";
@@ -1879,20 +1837,14 @@ void Builder::saveForm()
             line.append(comboBoxes[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left                    = ";
-            line.append(tgui::to_string(comboBoxes[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position                = ";
+            line.append("(").append(tgui::to_string(comboBoxes[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(comboBoxes[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top                     = ";
-            line.append(tgui::to_string(comboBoxes[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width                   = ";
-            line.append(tgui::to_string(comboBoxes[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height                  = ";
-            line.append(tgui::to_string(comboBoxes[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size                    = ";
+            line.append("(").append(tgui::to_string(comboBoxes[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(comboBoxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ScrollbarPathname       = \"";
@@ -1996,20 +1948,14 @@ void Builder::saveForm()
             line.append(tgui::to_string(sliders[objectIndex].verticalScroll.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left           = ";
-            line.append(tgui::to_string(sliders[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position       = ";
+            line.append("(").append(tgui::to_string(sliders[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(sliders[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top            = ";
-            line.append(tgui::to_string(sliders[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width          = ";
-            line.append(tgui::to_string(sliders[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height         = ";
-            line.append(tgui::to_string(sliders[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size           = ";
+            line.append("(").append(tgui::to_string(sliders[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(sliders[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Value          = ";
@@ -2045,20 +1991,14 @@ void Builder::saveForm()
             line.append(tgui::to_string(scrollbars[objectIndex].verticalScroll.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left           = ";
-            line.append(tgui::to_string(scrollbars[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position       = ";
+            line.append("(").append(tgui::to_string(scrollbars[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(scrollbars[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top            = ";
-            line.append(tgui::to_string(scrollbars[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width          = ";
-            line.append(tgui::to_string(scrollbars[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height         = ";
-            line.append(tgui::to_string(scrollbars[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size           = ";
+            line.append("(").append(tgui::to_string(scrollbars[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(scrollbars[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "LowValue       = ";
@@ -2090,20 +2030,14 @@ void Builder::saveForm()
             line.append(loadingBars[objectIndex].pathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left       = ";
-            line.append(tgui::to_string(loadingBars[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position   = ";
+            line.append("(").append(tgui::to_string(loadingBars[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(loadingBars[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top        = ";
-            line.append(tgui::to_string(loadingBars[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width      = ";
-            line.append(tgui::to_string(loadingBars[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height     = ";
-            line.append(tgui::to_string(loadingBars[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size       = ";
+            line.append("(").append(tgui::to_string(loadingBars[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(loadingBars[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Minimum    = ";
@@ -2131,20 +2065,14 @@ void Builder::saveForm()
             line.append(textBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Left                = ";
-            line.append(tgui::to_string(textBoxes[objectIndex].left.value)).append("\n");
+            line = TAB TAB "Position            = ";
+            line.append("(").append(tgui::to_string(textBoxes[objectIndex].left.value)).append(",");
+            line.append(tgui::to_string(textBoxes[objectIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Top                 = ";
-            line.append(tgui::to_string(textBoxes[objectIndex].top.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Width               = ";
-            line.append(tgui::to_string(textBoxes[objectIndex].width.value)).append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Height              = ";
-            line.append(tgui::to_string(textBoxes[objectIndex].height.value)).append("\n");
+            line = TAB TAB "Size                = ";
+            line.append("(").append(tgui::to_string(textBoxes[objectIndex].width.value)).append(",");
+            line.append(tgui::to_string(textBoxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ScrollbarPathname   = \"";

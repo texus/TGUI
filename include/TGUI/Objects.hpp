@@ -445,7 +445,7 @@ namespace tgui
         ///
         /// \param leftBorder    Size of the left border
         /// \param topBorder     Size of the top border
-        /// \param rigthBorder   Size of the right border
+        /// \param rightBorder   Size of the right border
         /// \param bottomBorder  Size of the bottom border
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

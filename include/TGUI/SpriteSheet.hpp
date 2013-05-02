@@ -142,8 +142,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Choose which cell should be displayed.
         ///
-        /// \param rows     The row in which the visible cell is located
-        /// \param columns  The column in which the visible cell is located
+        /// \param row     The row in which the visible cell is located
+        /// \param column  The column in which the visible cell is located
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setVisibleCell(unsigned int row, unsigned int column);

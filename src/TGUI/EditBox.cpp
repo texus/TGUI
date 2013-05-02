@@ -51,7 +51,8 @@ namespace tgui
     m_MaxChars              (0),
     m_SplitImage            (false),
     m_TextCropPosition      (0),
-    m_PossibleDoubleClick   (false)
+    m_PossibleDoubleClick   (false),
+    m_NumbersOnly           (false)
     {
         m_Callback.objectType = Type_EditBox;
         m_AnimatedObject = true;
@@ -85,7 +86,8 @@ namespace tgui
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
     m_TextFull              (copy.m_TextFull),
-    m_PossibleDoubleClick   (copy.m_PossibleDoubleClick)
+    m_PossibleDoubleClick   (copy.m_PossibleDoubleClick),
+    m_NumbersOnly           (copy.m_NumbersOnly)
     {
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
@@ -155,6 +157,7 @@ namespace tgui
             std::swap(m_TextureFocused_M,       temp.m_TextureFocused_M);
             std::swap(m_TextureFocused_R,       temp.m_TextureFocused_R);
             std::swap(m_PossibleDoubleClick,    temp.m_PossibleDoubleClick);
+            std::swap(m_NumbersOnly,            temp.m_NumbersOnly);
         }
 
         return *this;
@@ -828,6 +831,11 @@ namespace tgui
         return m_SelectionPointWidth;
     }
 
+    void EditBox::setNumbersOnly(bool numbersOnly)
+    {
+        m_NumbersOnly = numbersOnly;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::leftMousePressed(float x, float y)
@@ -1230,6 +1238,13 @@ namespace tgui
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
             return;
+
+        // If only numbers are supported then make sure the input is valid
+        if (m_NumbersOnly)
+        {
+            if ((key < '1') || (key > '9'))
+                return;
+        }
 
         // If there are selected characters then delete them first
         if (m_SelChars > 0)

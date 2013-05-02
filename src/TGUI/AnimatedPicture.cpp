@@ -104,7 +104,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDurarion)
+    unsigned int AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
         // Check if the filename is empty
         if (filename.empty() == true)
@@ -128,7 +128,7 @@ namespace tgui
             m_Textures.push_back(tempTexture);
 
             // Store the frame duration
-            m_FrameDuration.push_back(frameDurarion);
+            m_FrameDuration.push_back(frameDuration);
 
             // Return true to indicate that nothing went wrong
             return m_Loaded = true;
