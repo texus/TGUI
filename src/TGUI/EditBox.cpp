@@ -1226,7 +1226,7 @@ namespace tgui
         // If only numbers are supported then make sure the input is valid
         if (m_NumbersOnly)
         {
-            if ((key < '1') || (key > '9'))
+            if ((key < '0') || (key > '9'))
                 return;
         }
 
