@@ -91,13 +91,10 @@ namespace tgui
         /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
         ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
         ///
-        /// \return
-        ///        - 0 when the filename is empty
-        ///        - 0 when the image couldn't be loaded (probalby not found)
-        ///        - The frame number on success (the first frame has number 1)
+        /// \return True when the frame was loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int addFrame(const std::string& filename, sf::Time frameDuration = sf::Time());
+        virtual bool addFrame(const std::string& filename, sf::Time frameDuration = sf::Time());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,42 +160,30 @@ namespace tgui
         ///
         /// \param frame  The frame that should be displayed
         ///
-        /// When there are less frames than \a frame, the last frame will be displayed.
-        /// Both 0 and 1 will set the first frame.
+        /// The number is the index of the frame, so the first frame is number 0.
+        ///
+        /// \return True when the frame was selected.
+        ///         False when the index was too high.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setFrame(unsigned int frame);
+        virtual bool setFrame(unsigned int frame);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the current displayed frame.
         ///
         /// \return Number of the frame that is currently displayed.
-        ///         This function will return 0 when no frames have been loaded.
+        ///
+        /// The number is the index of the frame, so the first frame is number 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getCurrentFrame() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the amount of time that the frame will be displayed on the screen.
-        ///
-        /// \param frame  The frame that is going to have the given duration.
-        ///               Both 0 and 1 will affect the first frame.
-        ///               When \a frame is bigger than the amount of frames then the last frame will be changed.
-        ///
-        /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
-        ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setFrameDuration(unsigned int frame, sf::Time frameDuration = sf::Time());
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the duration of the currently displayed frame.
         ///
         /// \return Duration of the frame that is currently displayed.
-        ///         This function will return 0 when no frames have been loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Time getCurrentFrameDuration() const;
@@ -218,13 +203,15 @@ namespace tgui
         ///
         /// \param frame  The number of the frame to remove
         ///
-        /// Both 0 and 1 will remove the first frame.
-        /// When \a frame is bigger than the amount of frames then the last frame will be removed.
+        /// The number is the index of the frame, so the first frame is number 0.
+        ///
+        /// \return True when the frame was removed.
+        ///         False if the index was too high.
         ///
         /// \see removeAllFrames
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void removeFrame(unsigned int frame);
+        virtual bool removeFrame(unsigned int frame);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

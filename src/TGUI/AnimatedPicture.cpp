@@ -104,7 +104,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
+    bool AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
         // Check if the filename is empty
         if (filename.empty() == true)
@@ -118,7 +118,7 @@ namespace tgui
             // If this is the first frame then set it as the current displayed frame
             if (m_Textures.empty())
             {
-                m_CurrentFrame = 1;
+                m_CurrentFrame = 0;
 
                 // Remember the size of this image
                 m_Size = Vector2f(tempTexture.getSize());
@@ -187,37 +187,31 @@ namespace tgui
     void AnimatedPicture::stop()
     {
         m_Playing = false;
-
-        if (m_Textures.size())
-            m_CurrentFrame = 1;
-        else
-            m_CurrentFrame = 0;
+        m_CurrentFrame = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setFrame(unsigned int frame)
+    bool AnimatedPicture::setFrame(unsigned int frame)
     {
+        // Check if there are no frames
+        if (m_Textures.empty() == true)
+        {
+            m_CurrentFrame = 0;
+            return false;
+        }
+
         // Make sure the number isn't too high
-        if (frame > m_Textures.size())
+        if (frame >= m_Textures.size())
         {
             // Display the last frame
-            m_CurrentFrame = m_Textures.size();
+            m_CurrentFrame = m_Textures.size()-1;
+            return false;
         }
-        else // The frame number isn't too high
-        {
-            // Check if there are no frames
-            if (m_Textures.empty() == true)
-                m_CurrentFrame = 0;
-            else
-            {
-                // Select the requested frame
-                if (frame == 0)
-                    m_CurrentFrame = 1;
-                else
-                    m_CurrentFrame = frame;
-            }
-        }
+
+        // The frame number isn't too high
+        m_CurrentFrame = frame;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,36 +223,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setFrameDuration(unsigned int frame, sf::Time frameDuration)
-    {
-        // Only continue when there are frames
-        if (m_Textures.empty())
-            return;
-
-        // Make sure the number isn't too high
-        if (frame > m_Textures.size())
-        {
-            // Change the duration of the last frame
-            m_FrameDuration[m_Textures.size()-1] = frameDuration;
-        }
-        else // The frame number isn't too high
-        {
-            // Change the duration of the requested frame
-            if (frame == 0)
-                m_FrameDuration[0] = frameDuration;
-            else
-                m_FrameDuration[frame-1] = frameDuration;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::Time AnimatedPicture::getCurrentFrameDuration() const
     {
-        if (m_CurrentFrame > 0)
-            return m_FrameDuration[m_CurrentFrame-1];
+        if (!m_FrameDuration.empty())
+            return m_FrameDuration[m_CurrentFrame];
         else
+        {
+            TGUI_OUTPUT("TGUI warning: Can't get duration of current frame: no frames available.");
             return sf::Time();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,54 +243,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::removeFrame(unsigned int frame)
+    bool AnimatedPicture::removeFrame(unsigned int frame)
     {
-        // If there are no frames then there isn't much to do
-        if (m_Textures.empty())
-            return;
+        // Make sure the number isn't too high
+        if (frame >= m_Textures.size())
+            return false;
 
-        // When there is only one frame then keep things simple
+        // Check if you are removing the last frame
         if (m_Textures.size() == 1)
         {
-            removeAllFrames();
-            return;
+            TGUI_TextureManager.removeTexture(m_Textures[0]);
+            m_Textures.erase(m_Textures.begin());
+            m_FrameDuration.erase(m_FrameDuration.begin());
+
+            m_CurrentFrame = 0;
+            m_Loaded = false;
+            return true;
         }
 
-        // Make sure the number isn't too high
-        if (frame > m_Textures.size())
-        {
-            // Remove the last frame
-            m_Textures.pop_back();
-            m_FrameDuration.pop_back();
+        // Remove the requested frame
+        TGUI_TextureManager.removeTexture(m_Textures[frame]);
+        m_Textures.erase(m_Textures.begin() + frame);
+        m_FrameDuration.erase(m_FrameDuration.begin() + frame);
 
-            // You can't display a frame that was removed
-            if (m_CurrentFrame == m_Textures.size())
-                --m_CurrentFrame;
-        }
-        else // The frame number isn't too high
-        {
-            // Check if you tried to remove the first frame (in a wrong way)
-            if (frame == 0)
-            {
-                // Remove the first frame
-                m_Textures.erase(m_Textures.begin(), m_Textures.begin()+1);
-                m_FrameDuration.erase(m_FrameDuration.begin(), m_FrameDuration.begin()+1);
+        // If the displayed frame was behind the deleted one, then it should be shifted
+        if (m_CurrentFrame >= frame)
+            --m_CurrentFrame;
 
-                // Unless the removed frame was displayed, the displayed frame is now on another position in the vectors
-                if (m_CurrentFrame > 1)
-                    --m_CurrentFrame;
-            }
-            else
-            {
-                // Remove the requested frame
-                m_Textures.erase(m_Textures.begin()+frame, m_Textures.begin()+frame+1);
-                m_FrameDuration.erase(m_FrameDuration.begin()+frame, m_FrameDuration.begin()+frame+1);
-
-                // If the displayed frame was behind the deleted one, then it should be shifted
-                if (m_CurrentFrame > frame)
-                    --m_CurrentFrame;
-            }
-        }
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +288,7 @@ namespace tgui
         // Reset the animation
         m_CurrentFrame = 0;
         m_Playing = false;
+        m_Loaded = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,22 +314,22 @@ namespace tgui
             return;
 
         // Check if the next frame should be displayed
-        while (m_AnimationTimeElapsed > m_FrameDuration[m_CurrentFrame-1])
+        while (m_AnimationTimeElapsed > m_FrameDuration[m_CurrentFrame])
         {
             // Make sure the frame duration isn't 0
-            if (m_FrameDuration[m_CurrentFrame-1].asMicroseconds() > 0)
+            if (m_FrameDuration[m_CurrentFrame].asMicroseconds() > 0)
             {
                 // Decrease the elapsed time
-                m_AnimationTimeElapsed -= m_FrameDuration[m_CurrentFrame-1];
+                m_AnimationTimeElapsed -= m_FrameDuration[m_CurrentFrame];
 
                 // Make the next frame visible
-                if (m_CurrentFrame < m_Textures.size())
+                if (m_CurrentFrame + 1 < m_Textures.size())
                     ++m_CurrentFrame;
                 else
                 {
                     // If looping is enabled then stat over
                     if (m_Looping == true)
-                        m_CurrentFrame = 1;
+                        m_CurrentFrame = 0;
                     else
                     {
                         // Looping is disabled so stop the animation
@@ -401,8 +355,7 @@ namespace tgui
 
     void AnimatedPicture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't continue when there are no frames
-        if (m_CurrentFrame == 0)
+        if (!m_Loaded)
             return;
 
         // Apply the transformation
@@ -412,7 +365,7 @@ namespace tgui
         states.transform.scale(m_Size.x / m_Textures[0].getSize().x, m_Size.y / m_Textures[0].getSize().y);
 
         // Draw the frame
-        target.draw(m_Textures[m_CurrentFrame-1], states);
+        target.draw(m_Textures[m_CurrentFrame], states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
