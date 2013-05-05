@@ -49,7 +49,8 @@ namespace tgui
         m_DraggableObject = true;
 
         m_Panel = new Panel();
-        m_Panel->load(360, 200, sf::Color::White);
+        m_Panel->setSize(360, 200);
+        m_Panel->setBackgroundColor(sf::Color::White);
 
         // Load the chat box with default values
         m_Loaded = true;
@@ -117,7 +118,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::load(float width, float height, unsigned int textSize, const std::string& scrollbarConfigFileFilename)
+    bool ChatBox::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -129,41 +130,81 @@ namespace tgui
             m_Scroll = NULL;
         }
 
-        // There is a minimum width
-        if (width < (50 + m_LeftBorder + m_RightBorder))
-            width = 50 + m_LeftBorder + m_RightBorder;
-
-        // There is a minimum text size
-        if (textSize < 8)
-            textSize = 8;
-
-        // Store the values
-        m_Panel->setSize(width, height);
-
-        // Set the text size
-        setTextSize(textSize);
-
-        // If there is a scrollbar then load it
-        if (scrollbarConfigFileFilename.empty() == false)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            // load the scrollbar and check if it failed
-            m_Scroll = new Scrollbar();
-            if (m_Scroll->load(scrollbarConfigFileFilename) == false)
-            {
-                // The scrollbar couldn't be loaded so it must be deleted
-                delete m_Scroll;
-                m_Scroll = NULL;
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
 
-                return false;
-            }
-            else // The scrollbar was loaded successfully
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("ChatBox", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "backgroundcolor")
             {
-                // Initialize the scrollbar
-                m_Scroll->setVerticalScroll(true);
-                m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
-                m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
-                m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getObjects().size() * m_TextSize * 1.4f));
+                setBackgroundColor(configFile.readColor(value));
             }
+            else if (property == "bordercolor")
+            {
+                setBorderColor(configFile.readColor(value));
+            }
+            else if (property == "borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+            }
+            else if (property == "scrollbar")
+            {
+                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + configFileFilename + ".");
+                    return false;
+                }
+
+                // load the scrollbar and check if it failed
+                m_Scroll = new Scrollbar();
+                if (m_Scroll->load(configFileFolder + value.substr(1, value.length()-2)) == false)
+                {
+                    // The scrollbar couldn't be loaded so it must be deleted
+                    delete m_Scroll;
+                    m_Scroll = NULL;
+
+                    return false;
+                }
+                else // The scrollbar was loaded successfully
+                {
+                    // Initialize the scrollbar
+                    m_Scroll->setVerticalScroll(true);
+                    m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
+                    m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
+                    m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getObjects().size() * m_TextSize * 1.4f));
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChatBox in " + configFileFilename + ".");
         }
 
         return m_Loaded = true;

@@ -102,11 +102,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///!!!  TODO: Adjust description
-        virtual bool load(const std::string& comboBoxConfigFileFilename,
-                          float width,
-                          float height,
-                          unsigned int nrOfItemsInListToDisplay = 10,
-                          const std::string& scrollbarConfigFileFilename = "");
+        virtual bool load(const std::string& comboBoxConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +132,8 @@ namespace tgui
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
         ///
+        /// When set to zero then all items are shown (then there will never be a scrollbar).
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setItemsToDisplay(unsigned int nrOfItemsInListToDisplay);
 
@@ -147,6 +145,8 @@ namespace tgui
         ///
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
+        ///
+        /// When set to zero then all items are shown (then there will never be a scrollbar).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual unsigned int getItemsToDisplay() const;

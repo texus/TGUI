@@ -181,7 +181,7 @@ namespace tgui
                 }
             }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section Checkbox in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Checkbox in " + configFileFilename + ".");
         }
 
         // Make sure the required texture was loaded

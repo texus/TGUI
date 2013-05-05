@@ -244,7 +244,7 @@ namespace tgui
             {
                 m_SelectionPointWidth = static_cast<unsigned int>(abs(atoi(value.c_str())));
             }
-            else if (property.compare("borders") == 0)
+            else if (property == "borders")
             {
                 Vector4u borders;
                 if (extractVector4u(value, borders))

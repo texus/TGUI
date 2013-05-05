@@ -52,10 +52,43 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::load(float width, float height, const sf::Color& bkgColor)
+    bool Label::load(const std::string& configFileFilename)
     {
-        setSize(width, height);
-        m_BackgroundColor = bkgColor;
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
+
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("Label", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
+
+        // Close the config file
+        configFile.close();
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "textcolor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Label in " + configFileFilename + ".");
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

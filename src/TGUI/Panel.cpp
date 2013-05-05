@@ -91,18 +91,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::load(float width, float height, const sf::Color& bkgColor)
-    {
-        // Set the background color of the panel
-        m_BackgroundColor = bkgColor;
-
-        // Set the size of the panel
-        m_Size.x = width;
-        m_Size.y = height;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Panel::setSize(float width, float height)
     {
         // A negative size is not allowed for this object

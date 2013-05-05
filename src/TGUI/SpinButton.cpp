@@ -191,7 +191,7 @@ namespace tgui
                 }
             }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section SpinButton in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section SpinButton in " + configFileFilename + ".");
         }
 
         // Make sure the required textures were loaded

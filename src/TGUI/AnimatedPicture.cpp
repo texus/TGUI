@@ -134,9 +134,7 @@ namespace tgui
             return m_Loaded = true;
         }
         else // The texture was not loaded
-        {
             return m_Loaded = false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

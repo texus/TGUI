@@ -29,6 +29,8 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
+///!!!  TODO: Use images instead of a simple color
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -36,7 +38,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBar::MenuBar() :
-    m_VisibleMenu     (-1),
+    m_VisibleMenu        (-1),
     m_TextFont           (NULL),
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
@@ -57,22 +59,66 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::load(float height)
+    bool MenuBar::load(const std::string& configFileFilename)
     {
-///!!!  TODO: Use images instead of a simple color
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
+        }
 
-        m_Size.y = height;
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("MenuBar", properties, values))
+        {
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
+        }
 
-        setTextSize(static_cast<unsigned int>(height * 0.85f));
+        // Close the config file
+        configFile.close();
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "backgroundcolor")
+            {
+                setBackgroundColor(extractColor(value));
+            }
+            else if (property == "textcolor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "selectedbackgroundcolor")
+            {
+                setSelectedBackgroundColor(extractColor(value));
+            }
+            else if (property == "selectedtextcolor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "distancetoside")
+            {
+                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+            }
+            else
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MenuBar in " + configFileFilename + ".");
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setSize(float width, float height)
+    void MenuBar::setHeight(float height)
     {
-        m_Size.x = width;
         m_Size.y = height;
-
         setTextSize(static_cast<unsigned int>(height * 0.85f));
     }
 
@@ -543,7 +589,8 @@ namespace tgui
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
-        setSize(m_Parent->getDisplaySize().x, 20);
+        m_Size.x = m_Parent->getDisplaySize().x;
+        m_Size.y = 20;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

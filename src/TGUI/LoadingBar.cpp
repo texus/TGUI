@@ -230,7 +230,7 @@ namespace tgui
                 }
             }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section LoadingBar in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + configFileFilename + ".");
         }
 
         // Check if the image is split

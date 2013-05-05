@@ -33,8 +33,7 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
-///!!! TODO: Make ComboBox load from config file.
-///!!!       Size and text size can be set later.
+///!!! TODO: Make sure combo box can work with m_NrOfItemsToDisplay set to 0 (which is now the default).
 ///!!! TODO: Instead of ignoring the up arrow, use it instead of just flipping the down arrow.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ namespace tgui
     ComboBox::ComboBox() :
     m_ShowList          (false),
     m_MouseOnListBox    (false),
-    m_NrOfItemsToDisplay(1)
+    m_NrOfItemsToDisplay(0)
     {
         m_Callback.objectType = Type_ComboBox;
         m_DraggableObject = true;
@@ -122,7 +121,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string& configFileFilename, float width, float height, unsigned int nrOfItemsInList, const std::string& scrollbarConfigFileFilename)
+    bool ComboBox::load(const std::string& configFileFilename)
     {
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -165,12 +164,12 @@ namespace tgui
             std::string property = properties[i];
             std::string value = values[i];
 
-///!!!  TODO: Add SeparateHoverImage option
-            /*if (property == "separatehoverimage")
+            if (property == "separatehoverimage")
             {
-                m_SeparateHoverImage = configFile.readBool(value, false);
+///!!!  TODO: Add SeparateHoverImage option
+//                m_SeparateHoverImage = configFile.readBool(value, false);
             }
-            else */if (property == "backgroundcolor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(configFile.readColor(value));
             }
@@ -189,6 +188,12 @@ namespace tgui
             else if (property == "bordercolor")
             {
                 setBorderColor(configFile.readColor(value));
+            }
+            else if (property == "borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
             }
             else if (property == "arrowupnormalimage")
             {
@@ -222,8 +227,19 @@ namespace tgui
                     return false;
                 }
             }
+            else if (property == "scrollbar")
+            {
+                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ComboBox in " + configFileFilename + ".");
+                    return false;
+                }
+
+                if (!m_ListBox->setScrollbar(configFileFolder + value.substr(1, value.length()-2)))
+                    return false;
+            }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section ComboBox in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ComboBox in " + configFileFilename + ".");
         }
 
         // Make sure the required textures were loaded
@@ -242,24 +258,7 @@ namespace tgui
         // Remove all items (in case this is the second time that the load function was called)
         m_ListBox->removeAllItems();
 
-        // At least one item must be shown
-        if (nrOfItemsInList < 1)
-            nrOfItemsInList = 1;
-
-        // Check if a scrollbar should be loaded
-        if (scrollbarConfigFileFilename.empty() == false)
-        {
-            // Try to load the scrollbar
-            if (!m_ListBox->setScrollbar(scrollbarConfigFileFilename))
-                return false;
-        }
-
-        // Make the changes
-        m_Loaded = true;
-        m_NrOfItemsToDisplay = nrOfItemsInList;
-        setSize(width, height);
-
-        return true;
+        return m_Loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +280,10 @@ namespace tgui
             m_ListBox->setItemHeight(10);
 
         // Set the size of the list box
-        m_ListBox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) - m_TopBorder);
+        if (m_NrOfItemsToDisplay > 0)
+            m_ListBox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) - m_TopBorder);
+        else
+            m_ListBox->setSize(width, height * m_ListBox->getItems().size() - m_TopBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,7 +443,7 @@ namespace tgui
             return false;
 
         // Make room to add another item, until there are enough items
-        if (m_NrOfItemsToDisplay > m_ListBox->getItems().size())
+        if ((m_NrOfItemsToDisplay == 0) || (m_NrOfItemsToDisplay > m_ListBox->getItems().size()))
             m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * getScale().y * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
 
         // Add the item
@@ -695,10 +697,13 @@ namespace tgui
                 if (m_ListBox->m_Scroll != NULL)
                 {
                     // If the selected item is not visible then change the value of the scrollbar
-                    if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) > m_NrOfItemsToDisplay)
-                        m_ListBox->m_Scroll->setValue((static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()) - m_NrOfItemsToDisplay + 1) * m_ListBox->getItemHeight());
-                    else
-                        m_ListBox->m_Scroll->setValue(0);
+                    if (m_NrOfItemsToDisplay > 0)
+                    {
+                        if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) > m_NrOfItemsToDisplay)
+                            m_ListBox->m_Scroll->setValue((static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()) - m_NrOfItemsToDisplay + 1) * m_ListBox->getItemHeight());
+                        else
+                            m_ListBox->m_Scroll->setValue(0);
+                    }
                 }
             }
 

@@ -140,21 +140,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::load(const std::string& configFileFilename, float width, float height, const sf::Color& bkgColor)
+    bool ChildWindow::load(const std::string& configFileFilename)
     {
 ///!!!  TODO: Add SplitImage to title bar
-///!!!  TODO: Remove all unneeded parameters.
-///!!!        Size can be set with setSize later and the background color could be loaded from the file or also set later.
+///!!!  TODO: Integrate CloseButton into ChildWindow section
 
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
 
-        // Set the background color of the child window
-        m_BackgroundColor = bkgColor;
-
-        // Set the size of the child window
-        m_Size.x = width;
-        m_Size.y = height;
+        // Remove the textures when they were loaded before
+        if (m_TextureTitleBar_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
+        if (m_TextureTitleBar_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
+        if (m_TextureTitleBar_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
+        if (m_CloseButton->m_TextureNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureNormal_M);
+        if (m_CloseButton->m_TextureHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureHover_M);
+        if (m_CloseButton->m_TextureDown_M.data != NULL)   TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureDown_M);
 
         // Open the config file
         ConfigFile configFile;
@@ -182,17 +182,19 @@ namespace tgui
         if (slashPos != std::string::npos)
             configFileFolder = configFileFilename.substr(0, slashPos+1);
 
-        bool closeButtonLoaded = false;
-
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
         {
             std::string property = properties[i];
             std::string value = values[i];
 
-            if (property == "textcolor")
+            if (property == "backgroundcolor")
             {
-                m_TitleText.setColor(configFile.readColor(value));
+                setBackgroundColor(configFile.readColor(value));
+            }
+            else if (property == "titlecolor")
+            {
+                setTitleColor(configFile.readColor(value));
             }
             else if (property == "bordercolor")
             {
@@ -206,21 +208,33 @@ namespace tgui
                     return false;
                 }
             }
-            else if (property == "closebutton")
+            else if (property == "closebuttonseparatehoverimage")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
+                m_CloseButton->m_SeparateHoverImage = configFile.readBool(value, false);
+            }
+            else if (property == "closebuttonnormalimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureNormal_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButton in section ChildWindow in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonNormalImage in section Button in " + configFileFilename + ".");
                     return false;
                 }
-
-                if (!m_CloseButton->load(configFileFolder + value.substr(1, value.length()-2)))
+            }
+            else if (property == "closebuttonhoverimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureHover_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to load the close button of the child window.");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonHoverImage in section Button in " + configFileFilename + ".");
                     return false;
                 }
-
-                closeButtonLoaded = true;
+            }
+            else if (property == "closebuttondownimage")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureDown_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonDownImage in section Button in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else if (property == "borders")
             {
@@ -232,13 +246,33 @@ namespace tgui
             {
                 setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
+            else if (property == "transparency")
+            {
+                setTransparency(static_cast<unsigned char>(atoi(value.c_str())));
+            }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
         }
 
-        if (!closeButtonLoaded)
+        // Initialize the close button if it was loaded
+        if (m_CloseButton->m_TextureNormal_M.data != NULL)
         {
-            TGUI_OUTPUT("TGUI error: Missing a CloseButton property in section ChildWindow in " + configFileFilename + ".");
+            // Check if optional textures were loaded
+            if (m_CloseButton->m_TextureHover_M.data != NULL)
+            {
+                m_CloseButton->m_ObjectPhase |= ObjectPhase_Hover;
+            }
+            if (m_CloseButton->m_TextureDown_M.data != NULL)
+            {
+                m_CloseButton->m_ObjectPhase |= ObjectPhase_MouseDown;
+            }
+
+            m_CloseButton->m_Size = Vector2f(m_CloseButton->m_TextureNormal_M.getSize());
+            m_CloseButton->m_Loaded = true;
+        }
+        else // Close button wan't loaded
+        {
+            TGUI_OUTPUT("TGUI error: Missing a CloseButtonNormalImage property in section ChildWindow in " + configFileFilename + ".");
             return false;
         }
 

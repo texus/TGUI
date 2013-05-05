@@ -98,10 +98,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///!!!  TODO: Change description
-        virtual bool load(unsigned int width,
-                          unsigned int height,
-                          const std::string& scrollbarConfigFileFilename = "",
-                          unsigned int itemHeight = 0);
+        virtual bool load(const std::string& configFileFilename);
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////

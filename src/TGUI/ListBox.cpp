@@ -31,9 +31,6 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
-///!!! TODO: Make ListBox load from config file.
-///!!!       Size and text size can be set later.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -132,7 +129,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::load(unsigned int width, unsigned int height, const std::string& scrollbarConfigFileFilename, unsigned int itemHeight)
+    bool ListBox::load(const std::string& configFileFilename)
     {
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
@@ -141,113 +138,96 @@ namespace tgui
             m_Scroll = NULL;
         }
 
-        // There is a minimum width
-        if (width < (50 + m_LeftBorder + m_RightBorder))
-            width = 50 + m_LeftBorder + m_RightBorder;
-
-        unsigned int textSize;
-
-        // Check if an item height was given
-        if (itemHeight > 0)
+        // Open the config file
+        ConfigFile configFile;
+        if (!configFile.open(configFileFilename))
         {
-            // There is a minimum item height
-            if (itemHeight < 10)
-            {
-                itemHeight = 10;
-                textSize = 8;
-            }
-            else // the item height is ok, now calculate the text size
-                textSize = static_cast<unsigned int>(itemHeight * 0.8f);
-
-            // There is also a minimum list box height
-            if (height < (itemHeight + m_TopBorder + m_BottomBorder))
-            {
-                height = itemHeight + m_TopBorder + m_BottomBorder;
-            }
-            else // The height isn't too low
-            {
-                // Calculate two perfect heights
-                unsigned int height1 = ((height - m_TopBorder - m_BottomBorder) / itemHeight) * itemHeight;
-                unsigned int height2 = (((height - m_TopBorder - m_BottomBorder) / itemHeight) + 1) * itemHeight;
-
-                // Calculate the difference with the original one
-                unsigned int difference1, difference2;
-
-                if ((height - m_TopBorder - m_BottomBorder) > height1)
-                    difference1 = (height - m_TopBorder - m_BottomBorder) - height1;
-                else
-                    difference1 = height1 - (height - m_TopBorder - m_BottomBorder);
-
-                if ((height - m_TopBorder - m_BottomBorder) > height2)
-                    difference2 = (height - m_TopBorder - m_BottomBorder) - height2;
-                else
-                    difference2 = height2 - (height - m_TopBorder - m_BottomBorder);
-
-                // Find out which one is closest to the original height and adjust the height
-                if (difference1 < difference2)
-                    height = height1 + m_TopBorder + m_BottomBorder;
-                else
-                    height = height2 + m_TopBorder + m_BottomBorder;
-            }
-        }
-        else // no item height was given
-        {
-            // There is a minimum list box height
-            if (height < (100 + m_TopBorder + m_BottomBorder))
-            {
-                // Calculate the height
-                height = 100 + m_TopBorder + m_BottomBorder;
-
-                // Calculate the item height and text size
-                itemHeight = height / 10;
-                textSize = static_cast<unsigned int>(itemHeight * 0.8f);
-
-                // Calculate the adjusted height
-                height = m_ItemHeight * 10;
-            }
-            else // the height is ok
-            {
-                // Calculate the item height and text size
-                itemHeight = height / 10;
-                textSize = static_cast<unsigned int>(itemHeight * 0.8f);
-
-                // Calculate the adjusted height
-                height = m_ItemHeight * 10;
-            }
+            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            return false;
         }
 
-        // Store the values
-        m_Size.x = width;
-        m_Size.y = height;
-        m_TextSize = textSize;
-        m_ItemHeight = itemHeight;
-
-        // If there is a scrollbar then load it
-        if (scrollbarConfigFileFilename.empty() == false)
+        // Read the properties and their values (as strings)
+        std::vector<std::string> properties;
+        std::vector<std::string> values;
+        if (!configFile.read("ListBox", properties, values))
         {
-            // load the scrollbar and check if it failed
-            m_Scroll = new Scrollbar();
-            if(m_Scroll->load(scrollbarConfigFileFilename) == false)
-            {
-                // The scrollbar couldn't be loaded so it must be deleted
-                delete m_Scroll;
-                m_Scroll = NULL;
-
-                return false;
-            }
-            else // The scrollbar was loaded successfully
-            {
-                // Initialize the scrollbar
-                m_Scroll->setVerticalScroll(true);
-                m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
-                m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-                m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
-
-                return true;
-            }
+            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            return false;
         }
-        else
-            return true;
+
+        // Close the config file
+        configFile.close();
+
+        // Find the folder that contains the config file
+        std::string configFileFolder = "";
+        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            configFileFolder = configFileFilename.substr(0, slashPos+1);
+
+        // Handle the read properties
+        for (unsigned int i = 0; i < properties.size(); ++i)
+        {
+            std::string property = properties[i];
+            std::string value = values[i];
+
+            if (property == "backgroundcolor")
+            {
+                setBackgroundColor(extractColor(value));
+            }
+            else if (property == "textcolor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "selectedbackgroundcolor")
+            {
+                setSelectedBackgroundColor(extractColor(value));
+            }
+            else if (property == "selectedtextcolor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "bordercolor")
+            {
+                setBorderColor(extractColor(value));
+            }
+            else if (property == "borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+            }
+            else if (property == "scrollbar")
+            {
+                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + configFileFilename + ".");
+                    return false;
+                }
+
+                // load the scrollbar and check if it failed
+                m_Scroll = new Scrollbar();
+                if (m_Scroll->load(configFileFolder + value.substr(1, value.length()-2)) == false)
+                {
+                    // The scrollbar couldn't be loaded so it must be deleted
+                    delete m_Scroll;
+                    m_Scroll = NULL;
+
+                    return false;
+                }
+                else // The scrollbar was loaded successfully
+                {
+                    // Initialize the scrollbar
+                    m_Scroll->setVerticalScroll(true);
+                    m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
+                    m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+                    m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
+                }
+            }
+            else
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ListBox in " + configFileFilename + ".");
+        }
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

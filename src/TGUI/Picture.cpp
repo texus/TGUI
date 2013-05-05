@@ -33,8 +33,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture() :
-    m_LoadedFilename("")
+    Picture::Picture()
     {
         m_Callback.objectType = Type_Picture;
     }
@@ -42,8 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
-    ClickableObject (copy),
-    m_LoadedFilename(copy.m_LoadedFilename)
+    ClickableObject (copy)
     {
         // Copy the texture
         TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture);
@@ -69,7 +67,6 @@ namespace tgui
             this->ClickableObject::operator=(right);
 
             std::swap(m_Texture,        temp.m_Texture);
-            std::swap(m_LoadedFilename, temp.m_LoadedFilename);
         }
 
         return *this;
@@ -95,9 +92,6 @@ namespace tgui
         if (filename.empty())
             return false;
 
-        // Store the filename
-        m_LoadedFilename = filename;
-
         // If we have already loaded a texture then first delete it
         if (m_Texture.data != NULL)
             TGUI_TextureManager.removeTexture(m_Texture);
@@ -117,16 +111,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Picture::getLoadedFilename() const
-    {
-        return m_LoadedFilename;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Picture::setSmooth(bool smooth)
     {
-        m_Texture->setSmooth(smooth);
+        if (m_Loaded)
+            m_Texture.data->texture.setSmooth(smooth);
+        else
+            TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.")
     }
 
 
@@ -134,7 +124,13 @@ namespace tgui
 
     bool Picture::isSmooth() const
     {
-        return m_Texture->isSmooth();
+        if (m_Loaded)
+            return m_Texture.data->texture.isSmooth();
+        else
+        {
+            TGUI_OUTPUT("TGUI warning: Picture::isSmooth called while Picture wasn't loaded yet.");
+            return false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

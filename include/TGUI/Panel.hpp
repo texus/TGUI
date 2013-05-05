@@ -82,17 +82,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the panel.
-        ///
-        /// \param width                   Sets the width of the panel.
-        /// \param height                  Sets the height of the panel.
-        /// \param backgroundColor         Sets the background color of the panel (fully transparent by default).
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void load(float width, float height, const sf::Color& backgroundColor = sf::Color::Transparent);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the panel.
         ///
         /// \param width   Sets the new width of the panel

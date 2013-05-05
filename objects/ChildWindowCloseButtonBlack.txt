@@ -1,6 +1,0 @@
-Button:
-    NormalImage  = "Black.png" (300, 0, 15, 15)
-    HoverImage   = "Black.png" (315, 0, 15, 15)
-    DownImage    = "Black.png" (330, 0, 15, 15)
-    
-    SeparateHoverImage = true
