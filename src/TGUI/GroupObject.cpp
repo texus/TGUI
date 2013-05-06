@@ -126,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool GroupObject::focusNextObject()
+    bool GroupObject::focusNextObjectInGroup()
     {
         return m_EventManager.focusNextObject();
     }

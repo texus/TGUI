@@ -17,11 +17,10 @@ set(TGUI_SRC
     TextBox.cpp
     SpriteSheet.cpp
     AnimatedPicture.cpp
-    AnimatedButton.cpp
     SpinButton.cpp
     Slider2d.cpp
     Tab.cpp
-    InfoFileParser.cpp
+    ConfigFile.cpp
     EventManager.cpp
     TextureManager.cpp
     Group.cpp

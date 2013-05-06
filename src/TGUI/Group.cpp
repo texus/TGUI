@@ -398,10 +398,14 @@ namespace tgui
 
     bool Group::loadObjectsFromFile(const std::string& filename)
     {
+///!!!  TODO:
 ///!!!  Make some adjustments in the loading process.
 ///!!!  This is the only function where goto is still used, the goto statements should be removed.
 ///!!!  All objects must be capable of loading themselves out of a string.
 ///!!!  Perhaps it would be better to switch to xml parsing.
+
+        TGUI_OUTPUT("TGUI error: loadObjectsFromFile is disabled in this experimental version.");
+        return false;
 /*
         // I wrote these defines to avoid having the same code over and over again
         #define CHECK_SHARED_PROPERTIES(name) \
@@ -2199,8 +2203,8 @@ namespace tgui
       LoadingFailed:
 
         m_File.close();
-*/
         return false;
+*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -340,7 +340,7 @@ namespace tgui
             if (m_Objects[m_FocusedObject-1]->m_GroupObject)
             {
                 // Focus the next object in group
-                if (static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->focusNextObject())
+                if (static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->focusNextObjectInGroup())
                     return;
             }
         }
