@@ -81,27 +81,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the combo box.
+        /// \brief Loads the object.
         ///
-        /// \param comboBoxPathname         The path to the folder that contains the arrow image(s).
-        ///                                 The folder must also contain an info.txt file, which will give more information about the combo box.
-        /// \param width                    The width of the combo box (borders included).
-        /// \param height                   The height of the combo box (borders included).
-        /// \param nrOfItemsInListToDisplay The amount of items that are displayed when you click on the arrow.
-        ///                                 If there is no scrollbar then this will also be the maximum amount of items that the
-        ///                                 combo box can contain.
-        /// \param scrollbarPathname        The ScrollbarPathname is the pathname needed to load the scrollbar.
-        ///                                 If not provided then there will be no possibility to scroll, thus no items will
-        ///                                 be added when the combo box is full.
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
-        ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
+        /// \param configFileFilename  Filename of the config file.
+        ///
+        /// The config file must contain a ComboBox section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& comboBoxConfigFileFilename);
 
 
@@ -454,14 +440,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar that is displayed next to the list.
         ///
-        /// \param scrollbarPathname  The pathname needed to load the scrollbar
+        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
         /// \return
         ///        - true when the scrollbar was successfully loaded
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setScrollbar(const std::string& scrollbarPathname);
+        bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -516,7 +503,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -535,6 +522,8 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
+
+        bool m_SeparateHoverImage;
 
         // This boolean becomes true when you clicked on the combo box, when the list should be shown
         bool m_ShowList;

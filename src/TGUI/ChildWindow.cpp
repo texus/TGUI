@@ -32,6 +32,8 @@
 
 #include <SFML/OpenGL.hpp>
 
+/// \todo Add SplitImage to title bar
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -142,9 +144,6 @@ namespace tgui
 
     bool ChildWindow::load(const std::string& configFileFilename)
     {
-///!!!  TODO: Add SplitImage to title bar
-///!!!  TODO: Integrate CloseButton into ChildWindow section
-
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
 

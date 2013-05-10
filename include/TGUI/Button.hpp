@@ -81,19 +81,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the button images and optionally a matching text color.
+        /// \brief Loads the object.
         ///
-        /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the button.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a Button section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 
@@ -200,7 +194,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the button on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

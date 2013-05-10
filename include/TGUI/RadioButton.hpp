@@ -73,7 +73,14 @@ namespace tgui
         virtual RadioButton* clone();
 
 
-///!!!  TODO: Write description
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Loads the object.
+        ///
+        /// \param configFileFilename  Filename of the config file.
+        ///
+        /// The config file must contain a RadioButton section with the needed information.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(const std::string& configFileFilename);
 
 

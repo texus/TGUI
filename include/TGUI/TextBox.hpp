@@ -26,6 +26,7 @@
 #ifndef TGUI_TEXT_BOX_HPP
 #define TGUI_TEXT_BOX_HPP
 
+/// \todo  Rename Selection point position to caret position
 /// \todo  Double clicking should only select one word in TextBox. To select the whole text, you should click 3 times.
 /// \todo  Add a horizontal scrollbar in Textbox.
 ///
@@ -90,21 +91,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the text box.
+        /// \brief Loads the object.
         ///
-        /// The text box may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \param width              The width of the text box (borders included).
-        /// \param height             The height of the text box (borders included).
-        /// \param textSize           The size of the text.
-        /// \param scrollbarPathname  The pathname needed to load the vertical scrollbar.
-        ///                           If not provided then there will be no possibility to scroll, thus no text can be added when the textbox is full.
-        /// \return
-        ///        - true on success
-        ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
+        /// The config file must contain a TextBox section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 
@@ -374,14 +367,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar of the text box.
         ///
-        /// \param scrollbarPathname  The pathname needed to load the scrollbar
+        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
         /// \return
         ///        - true when the scrollbar was successfully loaded
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
@@ -478,7 +471,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -520,7 +513,6 @@ namespace tgui
         unsigned int m_SelStart;
         unsigned int m_SelEnd;
 
-///!!!  Selection point position -> caret position
         // Information about the selection pointer
         sf::Vector2u m_SelectionPointPosition;
         bool m_SelectionPointVisible;

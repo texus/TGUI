@@ -27,8 +27,7 @@
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 
-///!!!  TODO: Instead of ignoring the down arrow, use it instead of just flipping the up arrow.
-///!!!  TODO: Arrow images should be allowed to point left and right. This will mess up most calculations.
+/// \todo Arrow images should be allowed to point left and right. This will mess up most calculations.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -426,10 +425,10 @@ namespace tgui
                     scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
                 // Check if the arrows are drawn at full size
-                if (m_Size.y > 2 * m_TextureArrowUpNormal.getSize().y * scalingX)
+                if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
                 {
                     // Calculate the track and thumb height
-                    float realTrackHeight = m_Size.y - (2 * m_TextureArrowUpNormal.getSize().y * scalingX);
+                    float realTrackHeight = m_Size.y - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX);
                     thumbHeight = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
 
                     // Calculate the top position of the thumb
@@ -450,10 +449,10 @@ namespace tgui
                     scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
                 // Check if the arrows are drawn at full size
-                if (m_Size.x > 2 * m_TextureArrowUpNormal.getSize().y * scalingY)
+                if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
                 {
                     // Calculate the track and thumb height
-                    float realTrackWidth = m_Size.x - (2 * m_TextureArrowUpNormal.getSize().y * scalingY);
+                    float realTrackWidth = m_Size.x - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY);
                     thumbWidth = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
 
                     // Calculate the left position of the thumb
@@ -511,7 +510,7 @@ namespace tgui
                 scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
             // Check if the arrows are drawn at full size
-            if (m_Size.y * curScale.y > 2 * m_TextureArrowUpNormal.getSize().y * scalingX)
+            if (m_Size.y * curScale.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
             {
                 // Check if you clicked on one of the arrows
                 if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
@@ -533,7 +532,7 @@ namespace tgui
                 scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
             // Check if the arrows are drawn at full size
-            if (m_Size.x * curScale.x > 2 * m_TextureArrowUpNormal.getSize().y * scalingY)
+            if (m_Size.x * curScale.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
             {
                 // Check if you clicked on one of the arrows
                 if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
@@ -576,7 +575,7 @@ namespace tgui
                         scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
                     // Check if the arrows are drawn at full size
-                    if (m_Size.y * curScale.y > 2 * m_TextureArrowUpNormal.getSize().y * scalingX)
+                    if (m_Size.y * curScale.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
                     {
                         // Check if you clicked on the top arrow
                         if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
@@ -616,7 +615,7 @@ namespace tgui
                         scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
                     // Check if the arrows are drawn at full size
-                    if (m_Size.x * curScale.x > 2 * m_TextureArrowUpNormal.getSize().y * scalingY)
+                    if (m_Size.x * curScale.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
                     {
                         // Check if you clicked on the left arrow
                         if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
@@ -870,12 +869,21 @@ namespace tgui
             states.transform.rotate(-90, m_TextureTrackNormal_M.getSize().x * 0.5f, m_TextureTrackNormal_M.getSize().x * 0.5f);
         }
 
-        // Draw the normal track image
-        target.draw(m_TextureTrackNormal_M, states);
+        // Draw the track image
+        if (m_SeparateHoverImage)
+        {
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureTrackHover_M, states);
+            else
+                target.draw(m_TextureTrackNormal_M, states);
+        }
+        else // The hover image should be drawn on top of the normal image
+        {
+            target.draw(m_TextureTrackNormal_M, states);
 
-        // When the mouse is on top of the scrollbar then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_TextureTrackHover_M, states);
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureTrackHover_M, states);
+        }
 
         // Reset the transformation (in case there was any rotation)
         states.transform = oldTransform;
@@ -884,20 +892,29 @@ namespace tgui
         if (m_VerticalScroll)
         {
             // Check if the arrows can be drawn at full size
-            if (m_Size.y > 2 * m_TextureArrowUpNormal.getSize().y * scaling.x)
+            if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scaling.x)
             {
                 // Scale the arrow
                 states.transform.scale(scaling.x, scaling.x);
 
-                // Draw the first normal arrow
-                target.draw(m_TextureArrowUpNormal, states);
+                // Draw the first arrow
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                    else
+                        target.draw(m_TextureArrowUpNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureArrowUpNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                }
 
                 // Calculate the real track height (height without the arrows)
-                float realTrackHeight = m_Size.y - (2 * m_TextureArrowUpNormal.getSize().y * scaling.x);
+                float realTrackHeight = m_Size.y - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scaling.x);
 
                 // Calculate the scaling factor
                 float scaleY;
@@ -919,55 +936,82 @@ namespace tgui
                     states.transform.scale(scaleY, 1);
                 }
 
-                // Draw the normal thumb image
-                target.draw(m_TextureThumbNormal, states);
+                // Draw the thumb image
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureThumbHover, states);
+                    else
+                        target.draw(m_TextureThumbNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureThumbNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureThumbHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureThumbHover, states);
+                }
 
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(0, m_Size.y);
+                states.transform.translate(0, m_Size.y - (m_TextureArrowDownNormal.getSize().y * scaling.x));
 
                 // Set the scale of the arrow
-                states.transform.scale(scaling.x, -scaling.x);
+                states.transform.scale(scaling.x, scaling.x);
             }
             else // The arrows can't be drawn at full size
             {
                 // Scale the arrow
                 states.transform.scale(scaling.x, (m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y);
 
-                // Draw the first normal arrow
-                target.draw(m_TextureArrowUpNormal, states);
+                // Draw the first arrow
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                    else
+                        target.draw(m_TextureArrowUpNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureArrowUpNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                }
 
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(0, m_Size.y);
+                states.transform.translate(0, m_Size.y - (m_TextureArrowDownNormal.getSize().y * scaling.x));
 
                 // Set the scale of the arrow
-                states.transform.scale(scaling.x, -(m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y);
+                states.transform.scale(scaling.x, (m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y);
             }
 
             // Draw the second arrow
-            target.draw(m_TextureArrowUpNormal, states);
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureArrowUpHover, states);
+                else
+                    target.draw(m_TextureArrowDownNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowDownNormal, states);
 
-            // When the mouse is on top of the scrollbar then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureArrowUpHover, states);
+            }
         }
         else // The scrollbar lies horizontal
         {
             // Check if the arrows can be drawn at full size
-            if (m_Size.x > 2 * m_TextureArrowUpNormal.getSize().y * scaling.y)
+            if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scaling.y)
             {
                 // Scale the arrow
                 states.transform.scale(scaling.y, scaling.y);
@@ -975,15 +1019,24 @@ namespace tgui
                 // Rotate the arrow
                 states.transform.rotate(-90, m_TextureArrowUpNormal.getSize().x * 0.5f, m_TextureArrowUpNormal.getSize().x * 0.5f);
 
-                // Draw the first normal arrow
-                target.draw(m_TextureArrowUpNormal, states);
+                // Draw the first arrow
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                    else
+                        target.draw(m_TextureArrowUpNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureArrowUpNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                }
 
                 // Calculate the real track width (width without the arrows)
-                float realTrackWidth = m_Size.x - (2 * m_TextureArrowUpNormal.getSize().y * scaling.y);
+                float realTrackWidth = m_Size.x - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scaling.y);
 
                 // Calculate the scaling factor
                 float scaleX;
@@ -1005,21 +1058,30 @@ namespace tgui
                     states.transform.scale(scaleX, 1);
                 }
 
-                // Draw the normal thumb image
-                target.draw(m_TextureThumbNormal, states);
+                // Draw the thumb image
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureThumbHover, states);
+                    else
+                        target.draw(m_TextureThumbNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureThumbNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureThumbHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureThumbHover, states);
+                }
 
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(m_Size.x, 0);
+                states.transform.translate(m_Size.x - (m_TextureArrowDownNormal.getSize().y * scaling.y), 0);
 
                 // Set the scale of the arrow
-                states.transform.scale(-scaling.y, scaling.y);
+                states.transform.scale(scaling.y, scaling.y);
             }
             else // The arrows can't be drawn at full size
             {
@@ -1029,32 +1091,50 @@ namespace tgui
                 // Rotate the arrow
                 states.transform.rotate(-90, m_TextureArrowUpNormal.getSize().x * 0.5f, m_TextureArrowUpNormal.getSize().x * 0.5f);
 
-                // Draw the first normal arrow
-                target.draw(m_TextureArrowUpNormal, states);
+                // Draw the first arrow
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                    else
+                        target.draw(m_TextureArrowUpNormal, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureArrowUpNormal, states);
 
-                // When the mouse is on top of the scrollbar then draw the hover image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureArrowUpHover, states);
+                }
 
                 // Reset the transformation
                 states.transform = oldTransform;
 
                 // Change the position of the second arrow
-                states.transform.translate(m_Size.x, 0);
+                states.transform.translate(m_Size.x - (m_TextureArrowDownNormal.getSize().y * scaling.y), 0);
 
                 // Set the scale of the arrow
-                states.transform.scale(-(m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y, scaling.y);
+                states.transform.scale((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y, scaling.y);
             }
 
             // Rotate the arrow
             states.transform.rotate(-90, m_TextureArrowUpNormal.getSize().x * 0.5f, m_TextureArrowUpNormal.getSize().x * 0.5f);
 
             // Draw the second arrow
-            target.draw(m_TextureArrowUpNormal, states);
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureArrowUpHover, states);
+                else
+                    target.draw(m_TextureArrowDownNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowDownNormal, states);
 
-            // When the mouse is on top of the scrollbar then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureArrowUpHover, states);
+            }
         }
     }
 

@@ -96,24 +96,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the child window.
+        /// \brief Loads the object.
         ///
-        /// \param width            Sets the width of the child window.
-        /// \param height           Sets the height of the child window.
-        /// \param backgroundColor  Sets the background color of the child window.
-        /// \param pathname         The path to the folder that contains the images for the titlebar and an optional background image.
-        ///                         The folder must also contain an info.txt file, which will give more information about the child window.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// The width and height are the size of the child window, without the title bar nor the borders.
-        ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname was empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a ChildWindow section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 

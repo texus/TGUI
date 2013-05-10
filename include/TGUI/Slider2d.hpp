@@ -81,21 +81,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the slider images.
+        /// \brief Loads the object.
         ///
-        /// The \a verticalScroll member might be changed in this function. If you want to change it then do it afterwards.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the slider.
-        ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a Slider2d section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 
@@ -267,6 +259,8 @@ namespace tgui
         Texture m_TextureThumbHover;
         Texture m_TextureTrackNormal;
         Texture m_TextureTrackHover;
+
+        bool m_SeparateHoverImage;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

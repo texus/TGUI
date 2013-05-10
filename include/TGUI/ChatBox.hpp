@@ -82,21 +82,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the chat box.
+        /// \brief Loads the object.
         ///
-        /// The chat box may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \param width              The width of the chat box (borders included).
-        /// \param height             The height of the chat box (borders included).
-        /// \param textSize           The size of the text.
-        /// \param scrollbarPathname  The pathname needed to load the vertical scrollbar.
-        ///                           If not provided then there will be no possibility to scroll, thus no text can be added when the box is full.
-        /// \return
-        ///        - true on success
-        ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
+        /// The config file must contain a ChatBox section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 
@@ -223,14 +215,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar of the chat box.
         ///
-        /// \param scrollbarPathname  The pathname needed to load the scrollbar
+        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
         /// \return
         ///        - true when the scrollbar was successfully loaded
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
@@ -278,7 +270,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

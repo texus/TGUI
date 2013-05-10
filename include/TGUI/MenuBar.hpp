@@ -53,22 +53,25 @@ namespace tgui
         virtual MenuBar* clone();
 
 
-///!!!  TODO: Write description
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Loads the object.
+        ///
+        /// \param configFileFilename  Filename of the config file.
+        ///
+        /// The config file must contain a MenuBar section with the needed information.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool load(const std::string& configFileFilename);
 
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the MenuBar object.
+        /// \brief Changes the height of the menu bar.
         ///
         /// \param height  The height of the menu bar.
         ///
-        /// No width is needed because it defaults to the size of the parent object.
-        /// If you need to change it then do so with the setSize function.
-        ///
-        /// Unlike most other objects, calling this function is not mandatory.
-        /// If not called then the height will be 20.
+        /// By default the height will be 20.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Change description (this was previously the load function).
         void setHeight(float height);
 
 

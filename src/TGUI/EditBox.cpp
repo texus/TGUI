@@ -52,7 +52,8 @@ namespace tgui
     m_SplitImage            (false),
     m_TextCropPosition      (0),
     m_PossibleDoubleClick   (false),
-    m_NumbersOnly           (false)
+    m_NumbersOnly           (false),
+    m_SeparateHoverImage    (false)
     {
         m_Callback.objectType = Type_EditBox;
         m_AnimatedObject = true;
@@ -87,7 +88,8 @@ namespace tgui
     m_TextAfterSelection    (copy.m_TextAfterSelection),
     m_TextFull              (copy.m_TextFull),
     m_PossibleDoubleClick   (copy.m_PossibleDoubleClick),
-    m_NumbersOnly           (copy.m_NumbersOnly)
+    m_NumbersOnly           (copy.m_NumbersOnly),
+    m_SeparateHoverImage    (copy.m_SeparateHoverImage)
     {
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
@@ -158,6 +160,7 @@ namespace tgui
             std::swap(m_TextureFocused_R,       temp.m_TextureFocused_R);
             std::swap(m_PossibleDoubleClick,    temp.m_PossibleDoubleClick);
             std::swap(m_NumbersOnly,            temp.m_NumbersOnly);
+            std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
         }
 
         return *this;
@@ -222,7 +225,11 @@ namespace tgui
             std::string property = properties[i];
             std::string value = values[i];
 
-            if (property == "textcolor")
+            if (property == "separatehoverimage")
+            {
+                m_SeparateHoverImage = configFile.readBool(value, false);
+            }
+            else if (property == "textcolor")
             {
                 sf::Color color = extractColor(value);
                 m_TextBeforeSelection.setColor(color);
@@ -1555,16 +1562,26 @@ namespace tgui
 
             // Draw the left image
             {
-                // Draw the normal image
-                target.draw(m_TextureNormal_L, states);
+                // Draw the normal and hover images
+                if (m_SeparateHoverImage)
+                {
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureHover_L, states);
+                    else
+                        target.draw(m_TextureNormal_L, states);
+                }
+                else // The hover image should be drawn on top of the normal image
+                {
+                    target.draw(m_TextureNormal_L, states);
+
+                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        target.draw(m_TextureHover_L, states);
+                }
+
 
                 // When the edit box is focused then draw an extra image
                 if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                     target.draw(m_TextureFocused_L, states);
-
-                // When the mouse is on top of the edit box then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureHover_L, states);
             }
 
             // Check if the middle image may be drawn
@@ -1581,16 +1598,25 @@ namespace tgui
 
                 // Draw the middle image
                 {
-                    // Draw the normal image
-                    target.draw(m_TextureNormal_M, states);
+                    // Draw the normal and hover images
+                    if (m_SeparateHoverImage)
+                    {
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_M, states);
+                        else
+                            target.draw(m_TextureNormal_M, states);
+                    }
+                    else // The hover image should be drawn on top of the normal image
+                    {
+                        target.draw(m_TextureNormal_M, states);
+
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_M, states);
+                    }
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_TextureFocused_M, states);
-
-                    // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_M, states);
                 }
 
                 // Put the right image on the correct position
@@ -1601,16 +1627,25 @@ namespace tgui
 
                 // Draw the right image
                 {
-                    // Draw the normal image
-                    target.draw(m_TextureNormal_R, states);
+                    // Draw the normal and hover images
+                    if (m_SeparateHoverImage)
+                    {
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_R, states);
+                        else
+                            target.draw(m_TextureNormal_R, states);
+                    }
+                    else // The hover image should be drawn on top of the normal image
+                    {
+                        target.draw(m_TextureNormal_R, states);
+
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_R, states);
+                    }
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_TextureFocused_R, states);
-
-                    // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_R, states);
                 }
             }
             else // The edit box isn't width enough, we will draw it at minimum size
@@ -1620,16 +1655,25 @@ namespace tgui
 
                 // Draw the right image
                 {
-                    // Draw the normal image
-                    target.draw(m_TextureNormal_R, states);
+                    // Draw the normal and hover images
+                    if (m_SeparateHoverImage)
+                    {
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_R, states);
+                        else
+                            target.draw(m_TextureNormal_R, states);
+                    }
+                    else // The hover image should be drawn on top of the normal image
+                    {
+                        target.draw(m_TextureNormal_R, states);
+
+                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                            target.draw(m_TextureHover_R, states);
+                    }
 
                     // When the edit box is focused then draw an extra image
                     if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                         target.draw(m_TextureFocused_R, states);
-
-                    // When the mouse is on top of the edit box then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_R, states);
                 }
             }
         }
@@ -1638,16 +1682,25 @@ namespace tgui
             // Set the scaling
             states.transform.scale(scaling);
 
-            // Draw the edit box
-            target.draw(m_TextureNormal_M, states);
+            // Draw the normal and hover images
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureHover_M, states);
+                else
+                    target.draw(m_TextureNormal_M, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureNormal_M, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureHover_M, states);
+            }
 
             // When the edit box is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                 target.draw(m_TextureFocused_M, states);
-
-            // When the mouse is on top of the edit boc then draw an extra image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                target.draw(m_TextureHover_M, states);
         }
 
         // Reset the transformation to draw the text

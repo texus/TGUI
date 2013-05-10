@@ -33,9 +33,6 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
-///!!! TODO: Make sure combo box can work with m_NrOfItemsToDisplay set to 0 (which is now the default).
-///!!! TODO: Instead of ignoring the up arrow, use it instead of just flipping the down arrow.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -43,6 +40,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox() :
+    m_SeparateHoverImage(false),
     m_ShowList          (false),
     m_MouseOnListBox    (false),
     m_NrOfItemsToDisplay(0)
@@ -61,6 +59,7 @@ namespace tgui
     ComboBox::ComboBox(const ComboBox& copy) :
     Object              (copy),
     ObjectBorders       (copy),
+    m_SeparateHoverImage(copy.m_SeparateHoverImage),
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListBox    (copy.m_MouseOnListBox),
     m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay)
@@ -99,6 +98,7 @@ namespace tgui
             // Delete the old list box
             delete m_ListBox;
 
+            std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
             std::swap(m_ShowList,               temp.m_ShowList);
             std::swap(m_MouseOnListBox,         temp.m_MouseOnListBox);
             std::swap(m_NrOfItemsToDisplay,     temp.m_NrOfItemsToDisplay);
@@ -166,8 +166,7 @@ namespace tgui
 
             if (property == "separatehoverimage")
             {
-///!!!  TODO: Add SeparateHoverImage option
-//                m_SeparateHoverImage = configFile.readBool(value, false);
+                m_SeparateHoverImage = configFile.readBool(value, false);
             }
             else if (property == "backgroundcolor")
             {
@@ -529,9 +528,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setScrollbar(const std::string& scrollbarPathname)
+    bool ComboBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        return m_ListBox->setScrollbar(scrollbarPathname);
+        return m_ListBox->setScrollbar(scrollbarConfigFileFilename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -917,30 +916,51 @@ namespace tgui
         // Set the arrow like it should (down when list box is invisible, up when it is visible)
         if (m_ShowList)
         {
-            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y;
-            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * scaleFactor), (m_TextureArrowDownNormal.getSize().y * scaleFactor) + m_TopBorder);
-            states.transform.scale(scaleFactor, -scaleFactor);
+            float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowUpNormal.getSize().y;
+            states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowUpNormal.getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
+            states.transform.scale(scaleFactor, scaleFactor);
+
+            // Draw the arrow
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                    target.draw(m_TextureArrowUpHover, states);
+                else
+                    target.draw(m_TextureArrowUpNormal, states);
+            }
+            else // There is no separate hover image
+            {
+                target.draw(m_TextureArrowUpNormal, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                    target.draw(m_TextureArrowUpHover, states);
+            }
+
+            // Set the list box to the correct position and draw it
+            states.transform = oldTransform.translate(0, static_cast<float>(m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
+            target.draw(*m_ListBox, states);
         }
         else
         {
             float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y;
             states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
             states.transform.scale(scaleFactor, scaleFactor);
-        }
 
-        // Draw the arrow
-        target.draw(m_TextureArrowDownNormal, states);
+            // Draw the arrow
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                    target.draw(m_TextureArrowDownHover, states);
+                else
+                    target.draw(m_TextureArrowDownNormal, states);
+            }
+            else // There is no separate hover image
+            {
+                target.draw(m_TextureArrowDownNormal, states);
 
-        // If the mouse is on top of the combo box then draw another arrow image (if allowed)
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
-            target.draw(m_TextureArrowDownHover, states);
-
-        // If the list box should be visible then draw it
-        if (m_ShowList)
-        {
-            // Set the list box to the correct position and draw it
-            states.transform = oldTransform.translate(0, static_cast<float>(m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
-            target.draw(*m_ListBox, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                    target.draw(m_TextureArrowDownHover, states);
+            }
         }
     }
 

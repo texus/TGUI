@@ -85,19 +85,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the Tab object.
+        /// \brief Loads the object.
         ///
-        /// \param pathname  The path to the folder that contains the images for the tabs.
-        ///                  The folder must also contain an info.txt file, which will give more information about the tab.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname was empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a Tab section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 

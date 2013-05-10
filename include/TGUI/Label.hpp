@@ -54,19 +54,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the label.
+        /// \brief Loads the object.
         ///
-        /// This function has the same effect as calling setSize and setBackgroundColor.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \param width     Maximum width of the label
-        /// \param height    Maximum height of the label
-        /// \param bkgColor  Background color of the label
-        ///
-        /// \see setSize
-        /// \see setBackgroundColor
+        /// The config file must contain a Label section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Change description.
         bool load(const std::string& configFileFilename);
 
 
@@ -103,7 +97,7 @@ namespace tgui
         /// \return Text that is currently used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getText() const;
+        const sf::String& getText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +212,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the Draw function from your sf::RenderTarget.
+        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
         // This function will be called and it will draw the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

@@ -27,8 +27,7 @@
 #include <TGUI/ClickableObject.hpp>
 #include <TGUI/SpinButton.hpp>
 
-///!!!  TODO: Instead of ignoring the down arrow, use it instead of just flipping the up arrow.
-///!!!  TODO: Allow images next to each other (e.g. plus and minus icon).
+/// \todo Allow images next to each other (e.g. plus and minus icon).
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -430,37 +429,58 @@ namespace tgui
         // Check if the image is drawn in the same direction than it was loaded
         if (m_VerticalScroll)
         {
-            states.transform.scale(m_Size.x / m_TextureArrowUpNormal.getSize().x, m_Size.y / (m_TextureArrowUpNormal.getSize().y * 2.f));
+            states.transform.scale(m_Size.x / m_TextureArrowUpNormal.getSize().x, m_Size.y / (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y));
 
-            // Draw the normal image
-            target.draw(m_TextureArrowUpNormal, states);
-
-            // When the mouse is on top of the upper arrow then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            // Draw the first arrow
+            if (m_SeparateHoverImage)
             {
-                if (m_MouseHoverOnTopArrow)
-                    target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowUpHover, states);
+                }
+                else
+                    target.draw(m_TextureArrowUpNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowUpNormal, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowUpHover, states);
+                }
             }
 
             // Set the second arrow on the correct position
-            states.transform.translate(0, 2.f * m_TextureArrowUpNormal.getSize().y);
+            states.transform.translate(0, static_cast<float>(m_TextureArrowUpNormal.getSize().y));
 
-            // Flip the image
-            states.transform.scale(1, -1);
-
-            // Draw the normal image
-            target.draw(m_TextureArrowUpNormal, states);
-
-            // When the mouse is on top of the bottom arow then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            // Draw the second arrow
+            if (m_SeparateHoverImage)
             {
-                if (m_MouseHoverOnTopArrow == false)
-                    target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowDownHover, states);
+                }
+                else
+                    target.draw(m_TextureArrowDownNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowDownNormal, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (!m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowDownHover, states);
+                }
             }
         }
         else // The image is not drawn in the same direction than the loaded image
         {
-            states.transform.scale(m_Size.x / (m_TextureArrowUpNormal.getSize().y * 2.f), m_Size.y / m_TextureArrowUpNormal.getSize().x);
+            states.transform.scale(m_Size.x / (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y), m_Size.y / m_TextureArrowUpNormal.getSize().x);
 
             // Rotate the arrow
             states.transform.rotate(-90, static_cast<float>(m_TextureArrowUpNormal.getSize().x), static_cast<float>(m_TextureArrowUpNormal.getSize().y));
@@ -468,30 +488,51 @@ namespace tgui
             // Set the left arrow on the correct position
             states.transform.translate(static_cast<float>(m_TextureArrowUpNormal.getSize().y), 0);
 
-            // Draw the normal image
-            target.draw(m_TextureArrowUpNormal, states);
-
-            // When the mouse is on top of the left arrow then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            // Draw the first arrow
+            if (m_SeparateHoverImage)
             {
-                if (m_MouseHoverOnTopArrow == false)
-                    target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowUpHover, states);
+                }
+                else
+                    target.draw(m_TextureArrowUpNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowUpNormal, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (!m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowUpHover, states);
+                }
             }
 
             // Set the right arrow on the correct position
-            states.transform.translate(0, 2.f * m_TextureArrowUpNormal.getSize().y);
+            states.transform.translate(0, m_TextureArrowUpNormal.getSize().y);
 
-            // Flip the image
-            states.transform.scale(1, -1);
-
-            // Draw the normal image
-            target.draw(m_TextureArrowUpNormal, states);
-
-            // When the mouse is on top of the right arow then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            // Draw the second arrow
+            if (m_SeparateHoverImage)
             {
-                if (m_MouseHoverOnTopArrow)
-                    target.draw(m_TextureArrowUpHover, states);
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowDownHover, states);
+                }
+                else
+                    target.draw(m_TextureArrowDownNormal, states);
+            }
+            else // The hover image should be drawn on top of the normal image
+            {
+                target.draw(m_TextureArrowDownNormal, states);
+
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    if (m_MouseHoverOnTopArrow)
+                        target.draw(m_TextureArrowDownHover, states);
+                }
             }
         }
     }

@@ -53,9 +53,9 @@
 #include <TGUI/GroupObject.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
+#include <TGUI/MessageBox.hpp>
 #include <TGUI/Grid.hpp>
 #include <TGUI/Window.hpp>
-#include <TGUI/Form.hpp>
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

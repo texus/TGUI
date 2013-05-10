@@ -210,10 +210,10 @@ namespace tgui
         m_VisibleCell.y = row;
 
         // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.data->texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.data->texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.data->texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.data->texture.getSize().y / m_Rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ namespace tgui
             return;
 
         states.transform *= getTransform();
-        states.transform.scale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
+        states.transform.scale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
         target.draw(m_Texture, states);
     }
 

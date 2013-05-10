@@ -27,8 +27,6 @@
 
 /// \todo  Double clicking should only select one word in EditBox. To select the whole text, you should click 3 times.
 
-///!!! TODO  add seperateHoverImage option
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -104,19 +102,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the edit box images and optionally a matching text color.
+        /// \brief Loads the object.
         ///
-        /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the edit box.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a EditBox section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool load(const std::string& configFileFilename);
 
 
@@ -530,6 +522,7 @@ namespace tgui
         bool m_PossibleDoubleClick;
 
         bool m_NumbersOnly;
+        bool m_SeparateHoverImage;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

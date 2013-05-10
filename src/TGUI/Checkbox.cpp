@@ -106,7 +106,7 @@ namespace tgui
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-         // If the checkbox was loaded before then remove the old textures
+        // If the checkbox was loaded before then remove the old textures
         if (m_TextureUnchecked.data != NULL) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
         if (m_TextureChecked.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureChecked);
         if (m_TextureHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover);

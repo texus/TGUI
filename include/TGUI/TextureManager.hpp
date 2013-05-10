@@ -73,26 +73,41 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///!!! TODO: Write description
+        /// \brief Loads a texture.
+        ///
+        /// \param filename  Filename of the image to load.
+        /// \param texture   The texture object to store the loaded image.
+        /// \param rect      Load only part of the image. Don't pass this parameter if you want to load the full image.
+        ///
+        /// The second time you call this function with the same filename, the previously loaded image will be reused.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getTexture(const std::string& filename, Texture& texture, const sf::IntRect& rect = sf::IntRect(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///!!! TODO: Write description
+        /// \brief Share the image with another texture.
+        ///
+        /// \param textureToCopy  The original texture.
+        /// \param newTexture     The texture that will get the same image as the texture that is being c
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool copyTexture(const Texture& textureToCopy, Texture& newTexture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///!!! TODO: Write description
+        /// \brief Removes the texture.
+        ///
+        /// \param textureToRemove  The texture that should be removed.
+        ///
+        /// When no other texture is using the same image then the image will be removed from memory.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeTexture(Texture& textureToRemove);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
-
 
         std::list<TextureData> m_Data;
     };

@@ -95,7 +95,7 @@ namespace tgui
 
     void GroupObject::update()
     {
-        m_EventManager.updateTime( m_AnimationTimeElapsed );
+        m_EventManager.updateTime(m_AnimationTimeElapsed);
         m_AnimationTimeElapsed = sf::Time();
     }
 

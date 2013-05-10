@@ -81,23 +81,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Creates the list box.
+        /// \brief Loads the object.
         ///
-        /// The list box may resize a little bit. It might be a little bit bigger or smaller than the size passed to this function.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \param width              The width of the list box (borders included).
-        /// \param height             The height of the list box (borders included).
-        /// \param scrollbarPathname  The pathname needed to load the scrollbar.
-        ///                           If not provided then there will be no possibility to scroll, thus no items will be added when the list box is full.
-        /// \param itemHeight         The height of a single item in the list box. The text size will be based on this, but will be a little smaller.
-        ///                           If ItemHeight is 0 then it will become a tenth of the height of the list box.
-        ///
-        /// \return
-        ///        - true on success
-        ///        - false when scrollbar couldn't be loaded (only if \a scrollbarPathname isn't empty)
+        /// The config file must contain a ListBox section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Change description
         bool load(const std::string& configFileFilename);
 
 
@@ -411,14 +401,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar of the list box.
         ///
-        /// \param scrollbarPathname  The pathname needed to load the scrollbar
+        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
         /// \return
         ///        - true when the scrollbar was successfully loaded
         ///        - false when the loading of the scrollbar failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Adjust description
         bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 

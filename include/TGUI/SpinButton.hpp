@@ -81,19 +81,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the spin button images.
+        /// \brief Loads the object.
         ///
-        /// \param pathname  The path to the folder that contains the images.
-        ///                  The folder must also contain an info.txt file, which will give more information about the spin button.
+        /// \param configFileFilename  Filename of the config file.
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the pathname is empty
-        ///        - false when the info.txt file was not found
-        ///        - false when the images couldn't be loaded
+        /// The config file must contain a SpinButton section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///!!!  TODO: Change description
         bool load(const std::string& configFileFilename);
 
 

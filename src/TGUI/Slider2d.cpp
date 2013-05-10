@@ -40,7 +40,8 @@ namespace tgui
     m_Maximum            (1, 1),
     m_Value              (0, 0),
     m_ReturnThumbToCenter(false),
-    m_FixedThumbSize     (true)
+    m_FixedThumbSize     (true),
+    m_SeparateHoverImage (false)
     {
         m_Callback.objectType = Type_Slider2d;
         m_DraggableObject = true;
@@ -54,7 +55,8 @@ namespace tgui
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
     m_ReturnThumbToCenter(copy.m_ReturnThumbToCenter),
-    m_FixedThumbSize     (copy.m_FixedThumbSize)
+    m_FixedThumbSize     (copy.m_FixedThumbSize),
+    m_SeparateHoverImage (copy.m_SeparateHoverImage)
     {
         TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal, m_TextureTrackNormal);
         TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover, m_TextureTrackHover);
@@ -92,6 +94,7 @@ namespace tgui
             std::swap(m_TextureTrackHover,   temp.m_TextureTrackHover);
             std::swap(m_TextureThumbNormal,  temp.m_TextureThumbNormal);
             std::swap(m_TextureThumbHover,   temp.m_TextureThumbHover);
+            std::swap(m_SeparateHoverImage,  temp.m_SeparateHoverImage);
         }
 
         return *this;
@@ -149,9 +152,11 @@ namespace tgui
             std::string property = properties[i];
             std::string value = values[i];
 
-///!!! TODO  Add SeperateHoverImage option
-
-            if (property == "tracknormalimage")
+            if (property == "separatehoverimage")
+            {
+                m_SeparateHoverImage = configFile.readBool(value, false);
+            }
+            else if (property == "tracknormalimage")
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureTrackNormal))
                 {
@@ -456,12 +461,21 @@ namespace tgui
         // Set the scale of the slider
         states.transform.scale(scaling);
 
-        // Draw the normal track image
-        target.draw(m_TextureTrackNormal, states);
+        // Draw the track image
+        if (m_SeparateHoverImage)
+        {
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureTrackHover, states);
+            else
+                target.draw(m_TextureTrackNormal, states);
+        }
+        else // The hover image should be drawn on top of the normal image
+        {
+            target.draw(m_TextureTrackNormal, states);
 
-        // When the mouse is on top of the slider then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_TextureTrackHover, states);
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureTrackHover, states);
+        }
 
         // Undo the scale
         states.transform.scale(1.f / scaling.x, 1.f / scaling.y);
@@ -500,12 +514,21 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        // Draw the normal thumb image
-        target.draw(m_TextureThumbNormal, states);
+        // Draw the thumb image
+        if (m_SeparateHoverImage)
+        {
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureThumbHover, states);
+            else
+                target.draw(m_TextureThumbNormal, states);
+        }
+        else // The hover image should be drawn on top of the normal image
+        {
+            target.draw(m_TextureThumbNormal, states);
 
-        // When the mouse is on top of the slider then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-            target.draw(m_TextureThumbHover, states);
+            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                target.draw(m_TextureThumbHover, states);
+        }
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

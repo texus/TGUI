@@ -102,7 +102,8 @@ namespace tgui
         Type_ChatBox,
         Type_Panel,
         Type_ChildWindow,
-        Type_Grid
+        Type_Grid,
+        Type_MessageBox
     };
 }
 
