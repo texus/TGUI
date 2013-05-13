@@ -43,7 +43,6 @@
 #include <TGUI/TextBox.hpp>
 #include <TGUI/SpriteSheet.hpp>
 #include <TGUI/AnimatedPicture.hpp>
-#include <TGUI/AnimatedButton.hpp>
 #include <TGUI/SpinButton.hpp>
 #include <TGUI/Slider2d.hpp>
 #include <TGUI/Tab.hpp>
@@ -55,7 +54,7 @@
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/MessageBox.hpp>
 #include <TGUI/Grid.hpp>
-#include <TGUI/Window.hpp>
+#include <TGUI/Gui.hpp>
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

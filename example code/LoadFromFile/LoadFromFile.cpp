@@ -5,13 +5,14 @@
 
 int main()
 {
-    tgui::Window window(sf::VideoMode(800, 600), "TGUI demo");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI demo");
+    tgui::Gui gui(window);
 
-    if (window.setGlobalFont("../../Fonts/DejaVuSans.ttf") == false)
+    if (gui.setGlobalFont("../../Fonts/DejaVuSans.ttf") == false)
        return 1;
 
     // Load all the objects from a file
-    window.loadObjectsFromFile("form.txt");
+    gui.loadObjectsFromFile("form.txt");
 
     while (window.isOpen())
     {
@@ -21,11 +22,11 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            window.handleEvent(event);
+            gui.handleEvent(event);
         }
 
         window.clear();
-        window.drawGUI();
+        gui.draw();
         window.display();
 
         sf::sleep(sf::milliseconds(1));
