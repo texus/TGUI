@@ -36,7 +36,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define OBJECT_STYLE "Black"
+#define DEFAULT_THEME_FILE "images/objects/Black.conf"
 
 #define VERSION "v0.2.2"
 
@@ -109,9 +109,13 @@ struct Builder
     void saveForm();
 
     // The three windows
-    tgui::Window mainWindow;
-    tgui::Window objectsWindow;
-    tgui::Window propertyWindow;
+    sf::RenderWindow mainRenderWindow;
+    sf::RenderWindow objectsRenderWindow;
+    sf::RenderWindow propertyRenderWindow;
+
+    tgui::Gui mainWindow;
+    tgui::Gui objectsWindow;
+    tgui::Gui propertyWindow;
 
     // A list of all the objects on the form
     std::vector<PropertiesWindow>      windows;

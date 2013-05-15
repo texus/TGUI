@@ -28,38 +28,38 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define addProperty_String(property) \
-void Property##property::addProperty(tgui::Window& window, unsigned int propertyNumber) \
+void Property##property::addProperty(tgui::Gui& gui, unsigned int propertyNumber) \
 { \
-    tgui::Label::Ptr label(window, "label_"#property); \
+    tgui::Label::Ptr label(gui, "label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
     label->setPosition(10, 14 + (40.f * propertyNumber)); \
     label->setTextSize(26); \
  \
-    tgui::EditBox::Ptr editBox(window, "text_"#property); \
-    editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
+    tgui::EditBox::Ptr editBox(gui, "text_"#property); \
+    editBox->load(DEFAULT_THEME_FILE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
-    editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
+    editBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
+    editBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32); \
     editBox->setText(value); \
     editBox->setCallbackId(propertyNumber + 1); \
     editBox->bindCallback(tgui::EditBox::TextChanged); \
 }
 
 #define addProperty_Value(property) \
-void Property##property::addProperty(tgui::Window& window, unsigned int propertyNumber) \
+void Property##property::addProperty(tgui::Gui& gui, unsigned int propertyNumber) \
 { \
-    tgui::Label::Ptr label(window, "label_"#property); \
+    tgui::Label::Ptr label(gui, "label_"#property); \
     label->setText(description); \
     label->setTextColor(sf::Color::Black); \
     label->setPosition(10, 14 + (40.f * propertyNumber)); \
     label->setTextSize(26); \
  \
-    tgui::EditBox::Ptr editBox(window, "text_"#property); \
-    editBox->load("images/objects/EditBox/" OBJECT_STYLE); \
+    tgui::EditBox::Ptr editBox(gui, "text_"#property); \
+    editBox->load(DEFAULT_THEME_FILE); \
     editBox->setBorders(6, 4, 6, 4); \
-    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
-    editBox->setSize(window.getSize().x / 2.0f - 10, 32); \
+    editBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
+    editBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32); \
     editBox->setText(tgui::to_string(value)); \
     editBox->setCallbackId(propertyNumber + 1); \
     editBox->bindCallback(tgui::EditBox::TextChanged); \
@@ -96,13 +96,13 @@ addProperty_String(Filename)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PropertyPathname::PropertyPathname()
+PropertyConfigFile::PropertyConfigFile()
 {
-    description = "Pathname";
+    description = "ConfigFile";
     value = "";
 }
 
-addProperty_String(Pathname)
+addProperty_String(ConfigFile)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -172,20 +172,21 @@ PropertyAutoSize::PropertyAutoSize()
     value = 0;
 }
 
-void PropertyAutoSize::addProperty(tgui::Window& window, unsigned int propertyNumber)
+void PropertyAutoSize::addProperty(tgui::Gui& gui, unsigned int propertyNumber)
 {
     // Create the label
-    tgui::Label::Ptr label(window, "label_AutoSize");
+    tgui::Label::Ptr label(gui, "label_AutoSize");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
     label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
-    tgui::ComboBox::Ptr comboBox(window, "combo_AutoSize");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.f - 10, 40);
-    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
-    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
+    tgui::ComboBox::Ptr comboBox(gui, "combo_AutoSize");
+    comboBox->load(DEFAULT_THEME_FILE);
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.f - 10, 40);
+    comboBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber));
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32);
     comboBox->setCallbackId(propertyNumber + 1);
     comboBox->bindCallback(tgui::ComboBox::ItemSelected);
 
@@ -289,20 +290,21 @@ PropertyChecked::PropertyChecked()
     value = 0;
 }
 
-void PropertyChecked::addProperty(tgui::Window& window, unsigned int propertyNumber)
+void PropertyChecked::addProperty(tgui::Gui& gui, unsigned int propertyNumber)
 {
     // Create the label
-    tgui::Label::Ptr label(window, "label_Checked");
+    tgui::Label::Ptr label(gui, "label_Checked");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
     label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
-    tgui::ComboBox::Ptr comboBox(window, "combo_Checked");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.f - 10, 40);
-    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
-    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
+    tgui::ComboBox::Ptr comboBox(gui, "combo_Checked");
+    comboBox->load(DEFAULT_THEME_FILE);
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.f - 10, 40);
+    comboBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber));
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32);
     comboBox->setCallbackId(propertyNumber + 1);
     comboBox->bindCallback(tgui::ComboBox::ItemSelected);
 
@@ -326,19 +328,19 @@ PropertyPasswordChar::PropertyPasswordChar()
     value = 0;
 }
 
-void PropertyPasswordChar::addProperty(tgui::Window& window, unsigned int propertyNumber)
+void PropertyPasswordChar::addProperty(tgui::Gui& gui, unsigned int propertyNumber)
 {
-    tgui::Label::Ptr label(window, "label_PasswordChar");
+    tgui::Label::Ptr label(gui, "label_PasswordChar");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
     label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
-    tgui::EditBox::Ptr editBox(window, "text_PasswordChar");
-    editBox->load("images/objects/EditBox/" OBJECT_STYLE);
+    tgui::EditBox::Ptr editBox(gui, "text_PasswordChar");
+    editBox->load(DEFAULT_THEME_FILE);
     editBox->setBorders(6, 4, 6, 4);
-    editBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
-    editBox->setSize(window.getSize().x / 2.0f - 10, 32);
+    editBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber));
+    editBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32);
     editBox->setMaximumCharacters(1);
     editBox->setCallbackId(propertyNumber + 1);
     editBox->bindCallback(tgui::EditBox::TextChanged);
@@ -388,16 +390,6 @@ PropertySelectionPointWidth::PropertySelectionPointWidth()
 }
 
 addProperty_Value(SelectionPointWidth)
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-PropertyScrollbarPathname::PropertyScrollbarPathname()
-{
-    description = "Scrollbar pathname";
-    value = "items/objects/Scrollbar/" OBJECT_STYLE;
-}
-
-addProperty_String(ScrollbarPathname)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -527,20 +519,21 @@ PropertyVerticalScroll::PropertyVerticalScroll()
     value = false;
 }
 
-void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int propertyNumber)
+void PropertyVerticalScroll::addProperty(tgui::Gui& gui, unsigned int propertyNumber)
 {
     // Create the label
-    tgui::Label::Ptr label(window, "label_VerticalScroll");
+    tgui::Label::Ptr label(gui, "label_VerticalScroll");
     label->setText(description);
     label->setTextColor(sf::Color::Black);
     label->setPosition(10, 14 + (40.f * propertyNumber));
     label->setTextSize(26);
 
     // Create the combo box
-    tgui::ComboBox::Ptr comboBox(window, "combo_VerticalScroll");
-    comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, window.getSize().x / 2.0f - 10, 40);
-    comboBox->setPosition(window.getSize().x / 2.f, 10 + (40.f * propertyNumber));
-    comboBox->setSize(window.getSize().x / 2.0f - 10, 32);
+    tgui::ComboBox::Ptr comboBox(gui, "combo_VerticalScroll");
+    comboBox->load(DEFAULT_THEME_FILE);
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 40);
+    comboBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber));
+    comboBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32);
     comboBox->setCallbackId(propertyNumber + 1);
     comboBox->bindCallback(tgui::ComboBox::ItemSelected);
 
@@ -553,7 +546,7 @@ void PropertyVerticalScroll::addProperty(tgui::Window& window, unsigned int prop
     // Change the contents of the combo box
     comboBox->addItem("false");
     comboBox->addItem("true");
-    comboBox->setSelectedItem(value + 1);
+    comboBox->setSelectedItem(value);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -568,15 +561,15 @@ PropertiesWindow::PropertiesWindow()
     builder = NULL;
 }
 
-void PropertiesWindow::addProperties(tgui::Window& window)
+void PropertiesWindow::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Window_Name);
-    width.addProperty(window, Property_Window_Width);
-    height.addProperty(window, Property_Window_Height);
-    globalFont.addProperty(window, Property_Window_GlobalFont);
+    name.addProperty(gui, Property_Window_Name);
+    width.addProperty(gui, Property_Window_Width);
+    height.addProperty(gui, Property_Window_Height);
+    globalFont.addProperty(gui, Property_Window_GlobalFont);
 }
 
-void PropertiesWindow::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesWindow::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Window_Name)
@@ -594,7 +587,7 @@ void PropertiesWindow::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             windowWidth = 32;
 
         // Set the window size
-        formWindow.setSize(sf::Vector2u(windowWidth, formWindow.getSize().y));
+        formWindow.getWindow()->setSize(sf::Vector2u(windowWidth, formWindow.getWindow()->getSize().y));
     }
     else if (propertyNumber == Property_Window_Height)
     {
@@ -607,7 +600,7 @@ void PropertiesWindow::updateProperty(tgui::Window& formWindow, tgui::Window& pr
             windowHeight = 32;
 
         // Set the window size
-        formWindow.setSize(sf::Vector2u(formWindow.getSize().x, windowHeight));
+        formWindow.getWindow()->setSize(sf::Vector2u(formWindow.getWindow()->getSize().x, windowHeight));
     }
     else if (propertyNumber == Property_Window_GlobalFont)
     {
@@ -650,18 +643,18 @@ PropertiesPicture::PropertiesPicture()
     loadedDefaultPicture = true;
 }
 
-void PropertiesPicture::addProperties(tgui::Window& window)
+void PropertiesPicture::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Picture_Name);
-    filename.addProperty(window, Property_Picture_Filename);
-    left.addProperty(window, Property_Picture_Left);
-    top.addProperty(window, Property_Picture_Top);
-    width.addProperty(window, Property_Picture_Width);
-    height.addProperty(window, Property_Picture_Height);
-    callbackID.addProperty(window, Property_Picture_CallbackID);
+    name.addProperty(gui, Property_Picture_Name);
+    filename.addProperty(gui, Property_Picture_Filename);
+    left.addProperty(gui, Property_Picture_Left);
+    top.addProperty(gui, Property_Picture_Top);
+    width.addProperty(gui, Property_Picture_Width);
+    height.addProperty(gui, Property_Picture_Height);
+    callbackID.addProperty(gui, Property_Picture_CallbackID);
 }
 
-void PropertiesPicture::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Picture_Name)
@@ -758,7 +751,7 @@ PropertiesButton::PropertiesButton()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Button/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 256;
@@ -772,41 +765,41 @@ PropertiesButton::PropertiesButton()
     loadedDefaultButton = true;
 }
 
-void PropertiesButton::addProperties(tgui::Window& window)
+void PropertiesButton::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Button_Name);
-    pathname.addProperty(window, Property_Button_Pathname);
-    left.addProperty(window, Property_Button_Left);
-    top.addProperty(window, Property_Button_Top);
-    width.addProperty(window, Property_Button_Width);
-    height.addProperty(window, Property_Button_Height);
-    text.addProperty(window, Property_Button_Text);
-    textSize.addProperty(window, Property_Button_TextSize);
-    textColor.addProperty(window, Property_Button_TextColor);
-    textFont.addProperty(window, Property_Button_TextFont);
-    callbackID.addProperty(window, Property_Button_CallbackID);
+    name.addProperty(gui, Property_Button_Name);
+    configFile.addProperty(gui, Property_Button_ConfigFile);
+    left.addProperty(gui, Property_Button_Left);
+    top.addProperty(gui, Property_Button_Top);
+    width.addProperty(gui, Property_Button_Width);
+    height.addProperty(gui, Property_Button_Height);
+    text.addProperty(gui, Property_Button_Text);
+    textSize.addProperty(gui, Property_Button_TextSize);
+    textColor.addProperty(gui, Property_Button_TextColor);
+    textFont.addProperty(gui, Property_Button_TextFont);
+    callbackID.addProperty(gui, Property_Button_CallbackID);
 }
 
-void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Button_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_Button_Pathname)
+    else if (propertyNumber == Property_Button_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default button is no longer used
             loadedDefaultButton = false;
 
             // Load the new button
             tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
-            button->load(pathname.value);
+            button->load(configFile.value);
 
             // Reset the scaling
             button->setScale(1, 1);
@@ -829,7 +822,7 @@ void PropertiesButton::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
                 // Load the default button
                 tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
-                button->load("images/objects/Button/" OBJECT_STYLE);
+                button->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 button->setSize(width.value, height.value);
@@ -957,7 +950,7 @@ PropertiesCheckbox::PropertiesCheckbox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Checkbox/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 32;
@@ -972,43 +965,43 @@ PropertiesCheckbox::PropertiesCheckbox()
     loadedDefaultCheckbox = true;
 }
 
-void PropertiesCheckbox::addProperties(tgui::Window& window)
+void PropertiesCheckbox::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Checkbox_Name);
-    pathname.addProperty(window, Property_Checkbox_Pathname);
-    left.addProperty(window, Property_Checkbox_Left);
-    top.addProperty(window, Property_Checkbox_Top);
-    width.addProperty(window, Property_Checkbox_Width);
-    height.addProperty(window, Property_Checkbox_Height);
-    text.addProperty(window, Property_Checkbox_Text);
-    textSize.addProperty(window, Property_Checkbox_TextSize);
-    textColor.addProperty(window, Property_Checkbox_TextColor);
-    textFont.addProperty(window, Property_Checkbox_TextFont);
-    callbackID.addProperty(window, Property_Checkbox_CallbackID);
+    name.addProperty(gui, Property_Checkbox_Name);
+    configFile.addProperty(gui, Property_Checkbox_ConfigFile);
+    left.addProperty(gui, Property_Checkbox_Left);
+    top.addProperty(gui, Property_Checkbox_Top);
+    width.addProperty(gui, Property_Checkbox_Width);
+    height.addProperty(gui, Property_Checkbox_Height);
+    text.addProperty(gui, Property_Checkbox_Text);
+    textSize.addProperty(gui, Property_Checkbox_TextSize);
+    textColor.addProperty(gui, Property_Checkbox_TextColor);
+    textFont.addProperty(gui, Property_Checkbox_TextFont);
+    callbackID.addProperty(gui, Property_Checkbox_CallbackID);
 
-    checked.addProperty(window, Property_Checkbox_Checked);
+    checked.addProperty(gui, Property_Checkbox_Checked);
 }
 
-void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Checkbox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_Checkbox_Pathname)
+    else if (propertyNumber == Property_Checkbox_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default checkbox is no longer used
             loadedDefaultCheckbox = false;
 
             // Load the new checkbox
             tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
-            checkbox->load(pathname.value);
+            checkbox->load(configFile.value);
 
             // Reset the scaling
             checkbox->setScale(1, 1);
@@ -1032,7 +1025,7 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
                 // Load the default checkbox
                 tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
-                checkbox->load("images/objects/Checkbox/" OBJECT_STYLE);
+                checkbox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 checkbox->setSize(width.value, height.value);
@@ -1169,30 +1162,30 @@ void PropertiesCheckbox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
 PropertiesRadioButton::PropertiesRadioButton()
 {
-    pathname.value = "images/objects/RadioButton/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     builder = NULL;
 }
 
-void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Checkbox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_Checkbox_Pathname)
+    else if (propertyNumber == Property_Checkbox_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default radio button is no longer used
             loadedDefaultCheckbox = false;
 
             // Load the new radio button
             tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
-            radioButton->load(pathname.value);
+            radioButton->load(configFile.value);
 
             // Reset the scaling
             radioButton->setScale(1, 1);
@@ -1215,7 +1208,7 @@ void PropertiesRadioButton::updateProperty(tgui::Window& formWindow, tgui::Windo
 
                 // Load the default radio button
                 tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
-                radioButton->load("images/objects/RadioButton/" OBJECT_STYLE);
+                radioButton->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 radioButton->setSize(width.value, height.value);
@@ -1371,24 +1364,24 @@ PropertiesLabel::PropertiesLabel()
     callbackID.value = 0;
 }
 
-void PropertiesLabel::addProperties(tgui::Window& window)
+void PropertiesLabel::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Label_Name);
-    left.addProperty(window, Property_Label_Left);
-    top.addProperty(window, Property_Label_Top);
-    width.addProperty(window, Property_Label_Width);
-    height.addProperty(window, Property_Label_Height);
-    text.addProperty(window, Property_Label_Text);
-    textSize.addProperty(window, Property_Label_TextSize);
-    textColor.addProperty(window, Property_Label_TextColor);
-    textFont.addProperty(window, Property_Label_TextFont);
-    backgroundColor.addProperty(window, Property_Label_BackgroundColor);
-    callbackID.addProperty(window, Property_Label_CallbackID);
+    name.addProperty(gui, Property_Label_Name);
+    left.addProperty(gui, Property_Label_Left);
+    top.addProperty(gui, Property_Label_Top);
+    width.addProperty(gui, Property_Label_Width);
+    height.addProperty(gui, Property_Label_Height);
+    text.addProperty(gui, Property_Label_Text);
+    textSize.addProperty(gui, Property_Label_TextSize);
+    textColor.addProperty(gui, Property_Label_TextColor);
+    textFont.addProperty(gui, Property_Label_TextFont);
+    backgroundColor.addProperty(gui, Property_Label_BackgroundColor);
+    callbackID.addProperty(gui, Property_Label_CallbackID);
 
-    autoSize.addProperty(window, Property_Label_AutoSize);
+    autoSize.addProperty(gui, Property_Label_AutoSize);
 }
 
-void PropertiesLabel::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Label_Name)
@@ -1603,7 +1596,7 @@ PropertiesEditBox::PropertiesEditBox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/EditBox/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 120;
@@ -1624,48 +1617,48 @@ PropertiesEditBox::PropertiesEditBox()
     loadedDefaultEditBox = true;
 }
 
-void PropertiesEditBox::addProperties(tgui::Window& window)
+void PropertiesEditBox::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_EditBox_Name);
-    pathname.addProperty(window, Property_EditBox_Pathname);
-    left.addProperty(window, Property_EditBox_Left);
-    top.addProperty(window, Property_EditBox_Top);
-    width.addProperty(window, Property_EditBox_Width);
-    height.addProperty(window, Property_EditBox_Height);
-    text.addProperty(window, Property_EditBox_Text);
-    textSize.addProperty(window, Property_EditBox_TextSize);
-    textFont.addProperty(window, Property_EditBox_TextFont);
-    passwordChar.addProperty(window, Property_EditBox_PasswordChar);
-    maximumCharacters.addProperty(window, Property_EditBox_MaximumCharacters);
-    borders.addProperty(window, Property_EditBox_Borders);
-    textColor.addProperty(window, Property_EditBox_TextColor);
-    selectedTextColor.addProperty(window, Property_EditBox_SelectedTextColor);
-    selectedTextBackgroundColor.addProperty(window, Property_EditBox_SelectedTextBackgroundColor);
-    selectionPointColor.addProperty(window, Property_EditBox_SelectionPointColor);
-    selectionPointWidth.addProperty(window, Property_EditBox_SelectionPointWidth);
-    callbackID.addProperty(window, Property_EditBox_CallbackID);
+    name.addProperty(gui, Property_EditBox_Name);
+    configFile.addProperty(gui, Property_EditBox_ConfigFile);
+    left.addProperty(gui, Property_EditBox_Left);
+    top.addProperty(gui, Property_EditBox_Top);
+    width.addProperty(gui, Property_EditBox_Width);
+    height.addProperty(gui, Property_EditBox_Height);
+    text.addProperty(gui, Property_EditBox_Text);
+    textSize.addProperty(gui, Property_EditBox_TextSize);
+    textFont.addProperty(gui, Property_EditBox_TextFont);
+    passwordChar.addProperty(gui, Property_EditBox_PasswordChar);
+    maximumCharacters.addProperty(gui, Property_EditBox_MaximumCharacters);
+    borders.addProperty(gui, Property_EditBox_Borders);
+    textColor.addProperty(gui, Property_EditBox_TextColor);
+    selectedTextColor.addProperty(gui, Property_EditBox_SelectedTextColor);
+    selectedTextBackgroundColor.addProperty(gui, Property_EditBox_SelectedTextBackgroundColor);
+    selectionPointColor.addProperty(gui, Property_EditBox_SelectionPointColor);
+    selectionPointWidth.addProperty(gui, Property_EditBox_SelectionPointWidth);
+    callbackID.addProperty(gui, Property_EditBox_CallbackID);
 }
 
-void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_EditBox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_EditBox_Pathname)
+    else if (propertyNumber == Property_EditBox_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default edit box is no longer used
             loadedDefaultEditBox = false;
 
             // Load the new edit box
             tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
-            editBox->load(pathname.value);
+            editBox->load(configFile.value);
 
             // Reset the size
             editBox->setSize(static_cast<float>(editBox->getSize().x), static_cast<float>(editBox->getSize().y));
@@ -1688,7 +1681,7 @@ void PropertiesEditBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
                 // Load the default edit box
                 tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
-                editBox->load("images/objects/EditBox/" OBJECT_STYLE);
+                editBox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the size
                 editBox->setSize(width.value, height.value);
@@ -1967,7 +1960,6 @@ PropertiesListBox::PropertiesListBox()
     top.value = 0;
     width.value = 200;
     height.value = 240;
-    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     itemHeight.value = 25;
     maximumItems.value = 0;
     borders.value = "2, 2, 2, 2";
@@ -1984,34 +1976,45 @@ PropertiesListBox::PropertiesListBox()
     loadedDefaultScrollbar = true;
 }
 
-void PropertiesListBox::addProperties(tgui::Window& window)
+void PropertiesListBox::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_ListBox_Name);
-    left.addProperty(window, Property_ListBox_Left);
-    top.addProperty(window, Property_ListBox_Top);
-    width.addProperty(window, Property_ListBox_Width);
-    height.addProperty(window, Property_ListBox_Height);
-    scrollbarPathname.addProperty(window, Property_ListBox_ScrollbarPathname);
-    itemHeight.addProperty(window, Property_ListBox_ItemHeight);
-    maximumItems.addProperty(window, Property_ListBox_MaximumItems);
-    borders.addProperty(window, Property_ListBox_Borders);
-    backgroundColor.addProperty(window, Property_ListBox_BackgroundColor);
-    textColor.addProperty(window, Property_ListBox_TextColor);
-    selectedBackgroundColor.addProperty(window, Property_ListBox_SelectedBackgroundColor);
-    selectedTextColor.addProperty(window, Property_ListBox_SelectedTextColor);
-    borderColor.addProperty(window, Property_ListBox_BorderColor);
-    items.addProperty(window, Property_ListBox_Items);
-    selectedItem.addProperty(window, Property_ListBox_SelectedItem);
-    textFont.addProperty(window, Property_ListBox_TextFont);
-    callbackID.addProperty(window, Property_ListBox_CallbackID);
+    name.addProperty(gui, Property_ListBox_Name);
+    configFile.addProperty(gui, Property_ListBox_ConfigFile);
+    left.addProperty(gui, Property_ListBox_Left);
+    top.addProperty(gui, Property_ListBox_Top);
+    width.addProperty(gui, Property_ListBox_Width);
+    height.addProperty(gui, Property_ListBox_Height);
+    itemHeight.addProperty(gui, Property_ListBox_ItemHeight);
+    maximumItems.addProperty(gui, Property_ListBox_MaximumItems);
+    borders.addProperty(gui, Property_ListBox_Borders);
+    backgroundColor.addProperty(gui, Property_ListBox_BackgroundColor);
+    textColor.addProperty(gui, Property_ListBox_TextColor);
+    selectedBackgroundColor.addProperty(gui, Property_ListBox_SelectedBackgroundColor);
+    selectedTextColor.addProperty(gui, Property_ListBox_SelectedTextColor);
+    borderColor.addProperty(gui, Property_ListBox_BorderColor);
+    items.addProperty(gui, Property_ListBox_Items);
+    selectedItem.addProperty(gui, Property_ListBox_SelectedItem);
+    textFont.addProperty(gui, Property_ListBox_TextFont);
+    callbackID.addProperty(gui, Property_ListBox_CallbackID);
 }
 
-void PropertiesListBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_ListBox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
+    }
+    else if (propertyNumber == Property_ComboBox_ConfigFile)
+    {
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
+
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
+        {
+            tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+            listBox->load(configFile.value);
+        }
     }
     else if (propertyNumber == Property_ListBox_Left)
     {
@@ -2044,32 +2047,6 @@ void PropertiesListBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
         // Change the size of the list box
         static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
-    }
-    else if (propertyNumber == Property_ListBox_ScrollbarPathname)
-    {
-        scrollbarPathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ScrollbarPathname"))->getText();
-
-        // Check if the info file exists
-        if (checkIfFileExists((scrollbarPathname.value + "/info.txt").c_str()))
-        {
-            // The default scrollbar is no longer used
-            loadedDefaultScrollbar = false;
-
-            // Load the new scrollbar
-            static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar(scrollbarPathname.value);
-        }
-        else // The file didn't exist
-        {
-            // When the default scrollbar is not loaded already then load it now
-            if (loadedDefaultScrollbar == false)
-            {
-                // The default scrollbar is loaded again
-                loadedDefaultScrollbar = true;
-
-                // Load the default scrollbar
-                static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
-            }
-        }
     }
     else if (propertyNumber == Property_ListBox_ItemHeight)
     {
@@ -2441,12 +2418,11 @@ PropertiesComboBox::PropertiesComboBox()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/ComboBox/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 240;
     height.value = 36;
-    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     borders.value = "2, 2, 2, 2";
     backgroundColor.value = "50, 50, 50";
     textColor.value = "200, 200, 200";
@@ -2462,48 +2438,47 @@ PropertiesComboBox::PropertiesComboBox()
     loadedDefaultScrollbar = true;
 }
 
-void PropertiesComboBox::addProperties(tgui::Window& window)
+void PropertiesComboBox::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_ComboBox_Name);
-    pathname.addProperty(window, Property_ComboBox_Pathname);
-    left.addProperty(window, Property_ComboBox_Left);
-    top.addProperty(window, Property_ComboBox_Top);
-    width.addProperty(window, Property_ComboBox_Width);
-    height.addProperty(window, Property_ComboBox_Height);
-    scrollbarPathname.addProperty(window, Property_ComboBox_ScrollbarPathname);
-    borders.addProperty(window, Property_ComboBox_Borders);
-    backgroundColor.addProperty(window, Property_ComboBox_BackgroundColor);
-    textColor.addProperty(window, Property_ComboBox_TextColor);
-    selectedBackgroundColor.addProperty(window, Property_ComboBox_SelectedBackgroundColor);
-    selectedTextColor.addProperty(window, Property_ComboBox_SelectedTextColor);
-    borderColor.addProperty(window, Property_ComboBox_BorderColor);
-    items.addProperty(window, Property_ComboBox_Items);
-    selectedItem.addProperty(window, Property_ComboBox_SelectedItem);
-    itemsToDisplay.addProperty(window, Property_ComboBox_ItemsToDisplay);
-    textFont.addProperty(window, Property_ComboBox_TextFont);
-    callbackID.addProperty(window, Property_ComboBox_CallbackID);
+    name.addProperty(gui, Property_ComboBox_Name);
+    configFile.addProperty(gui, Property_ComboBox_ConfigFile);
+    left.addProperty(gui, Property_ComboBox_Left);
+    top.addProperty(gui, Property_ComboBox_Top);
+    width.addProperty(gui, Property_ComboBox_Width);
+    height.addProperty(gui, Property_ComboBox_Height);
+    borders.addProperty(gui, Property_ComboBox_Borders);
+    backgroundColor.addProperty(gui, Property_ComboBox_BackgroundColor);
+    textColor.addProperty(gui, Property_ComboBox_TextColor);
+    selectedBackgroundColor.addProperty(gui, Property_ComboBox_SelectedBackgroundColor);
+    selectedTextColor.addProperty(gui, Property_ComboBox_SelectedTextColor);
+    borderColor.addProperty(gui, Property_ComboBox_BorderColor);
+    items.addProperty(gui, Property_ComboBox_Items);
+    selectedItem.addProperty(gui, Property_ComboBox_SelectedItem);
+    itemsToDisplay.addProperty(gui, Property_ComboBox_ItemsToDisplay);
+    textFont.addProperty(gui, Property_ComboBox_TextFont);
+    callbackID.addProperty(gui, Property_ComboBox_CallbackID);
 }
 
-void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_ComboBox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_ComboBox_Pathname)
+    else if (propertyNumber == Property_ComboBox_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default combo box is no longer used
             loadedDefaultComboBox = false;
 
             // Load the new combo box
             tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
-            comboBox->load(pathname.value, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
+            comboBox->load(configFile.value);
 
             // Change the height property
             height.value = static_cast<float>(comboBox->getSize().y);
@@ -2521,7 +2496,7 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
                 // Load the default combo box
                 tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
-                comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, static_cast<float>(comboBox->getSize().x), static_cast<float>(comboBox->getSize().y));
+                comboBox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 comboBox->setSize(width.value, height.value);
@@ -2559,32 +2534,6 @@ void PropertiesComboBox::updateProperty(tgui::Window& formWindow, tgui::Window& 
 
         // Change the size of the combo box
         static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
-    }
-    else if (propertyNumber == Property_ComboBox_ScrollbarPathname)
-    {
-        scrollbarPathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ScrollbarPathname"))->getText();
-
-        // Check if the info file exists
-        if (checkIfFileExists((scrollbarPathname.value + "/info.txt").c_str()))
-        {
-            // The default scrollbar is no longer used
-            loadedDefaultScrollbar = false;
-
-            // Load the new scrollbar
-            static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar(scrollbarPathname.value);
-        }
-        else // The file didn't exist
-        {
-            // When the default scrollbar is not loaded already then load it now
-            if (loadedDefaultScrollbar == false)
-            {
-                // The default scrollbar is loaded again
-                loadedDefaultScrollbar = true;
-
-                // Load the default scrollbar
-                static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
-            }
-        }
     }
     else if (propertyNumber == Property_ComboBox_Borders)
     {
@@ -2873,7 +2822,7 @@ PropertiesSlider::PropertiesSlider()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Slider/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 256;
@@ -2887,42 +2836,42 @@ PropertiesSlider::PropertiesSlider()
     loadedDefaultSlider = true;
 }
 
-void PropertiesSlider::addProperties(tgui::Window& window)
+void PropertiesSlider::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Slider_Name);
-    pathname.addProperty(window, Property_Slider_Pathname);
-    left.addProperty(window, Property_Slider_Left);
-    top.addProperty(window, Property_Slider_Top);
-    width.addProperty(window, Property_Slider_Width);
-    height.addProperty(window, Property_Slider_Height);
-    value.addProperty(window, Property_Slider_Value);
-    minimum.addProperty(window, Property_Slider_Minimum);
-    maximum.addProperty(window, Property_Slider_Maximum);
-    callbackID.addProperty(window, Property_Slider_CallbackID);
+    name.addProperty(gui, Property_Slider_Name);
+    configFile.addProperty(gui, Property_Slider_ConfigFile);
+    left.addProperty(gui, Property_Slider_Left);
+    top.addProperty(gui, Property_Slider_Top);
+    width.addProperty(gui, Property_Slider_Width);
+    height.addProperty(gui, Property_Slider_Height);
+    value.addProperty(gui, Property_Slider_Value);
+    minimum.addProperty(gui, Property_Slider_Minimum);
+    maximum.addProperty(gui, Property_Slider_Maximum);
+    callbackID.addProperty(gui, Property_Slider_CallbackID);
 
-    verticalScroll.addProperty(window, Property_Slider_VerticalScroll);
+    verticalScroll.addProperty(gui, Property_Slider_VerticalScroll);
 }
 
-void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Slider_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_Slider_Pathname)
+    else if (propertyNumber == Property_Slider_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default slider is no longer used
             loadedDefaultSlider = false;
 
             // Load the new slider
             tgui::Slider::Ptr slider = formWindow.get(tgui::to_string(id));
-            slider->load(pathname.value);
+            slider->load(configFile.value);
 
             // Reset the size
             slider->setSize(static_cast<float>(slider->getSize().x), static_cast<float>(slider->getSize().y));
@@ -2945,7 +2894,7 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
                 // Load the default slider
                 tgui::Slider::Ptr slider = formWindow.get(tgui::to_string(id));
-                slider->load("images/objects/Slider/" OBJECT_STYLE);
+                slider->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 slider->setSize(width.value, height.value);
@@ -3027,6 +2976,10 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
         // Change the minimum value of the slider
         static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(minimum.value);
+
+        // Reset the value
+        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
     }
     else if (propertyNumber == Property_Slider_Maximum)
     {
@@ -3035,6 +2988,10 @@ void PropertiesSlider::updateProperty(tgui::Window& formWindow, tgui::Window& pr
 
         // Change the maximum value of the slider
         static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+
+        // Reset the value
+        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
     }
     else if (propertyNumber == Property_Slider_CallbackID)
     {
@@ -3052,7 +3009,7 @@ PropertiesScrollbar::PropertiesScrollbar()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 20;
@@ -3066,42 +3023,42 @@ PropertiesScrollbar::PropertiesScrollbar()
     loadedDefaultScrollbar = true;
 }
 
-void PropertiesScrollbar::addProperties(tgui::Window& window)
+void PropertiesScrollbar::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_Scrollbar_Name);
-    pathname.addProperty(window, Property_Scrollbar_Pathname);
-    left.addProperty(window, Property_Scrollbar_Left);
-    top.addProperty(window, Property_Scrollbar_Top);
-    width.addProperty(window, Property_Scrollbar_Width);
-    height.addProperty(window, Property_Scrollbar_Height);
-    value.addProperty(window, Property_Scrollbar_Value);
-    lowValue.addProperty(window, Property_Scrollbar_LowValue);
-    maximum.addProperty(window, Property_Scrollbar_Maximum);
-    callbackID.addProperty(window, Property_Scrollbar_CallbackID);
+    name.addProperty(gui, Property_Scrollbar_Name);
+    configFile.addProperty(gui, Property_Scrollbar_ConfigFile);
+    left.addProperty(gui, Property_Scrollbar_Left);
+    top.addProperty(gui, Property_Scrollbar_Top);
+    width.addProperty(gui, Property_Scrollbar_Width);
+    height.addProperty(gui, Property_Scrollbar_Height);
+    value.addProperty(gui, Property_Scrollbar_Value);
+    lowValue.addProperty(gui, Property_Scrollbar_LowValue);
+    maximum.addProperty(gui, Property_Scrollbar_Maximum);
+    callbackID.addProperty(gui, Property_Scrollbar_CallbackID);
 
-    verticalScroll.addProperty(window, Property_Scrollbar_VerticalScroll);
+    verticalScroll.addProperty(gui, Property_Scrollbar_VerticalScroll);
 }
 
-void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_Scrollbar_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_Scrollbar_Pathname)
+    else if (propertyNumber == Property_Scrollbar_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default scrollbar is no longer used
             loadedDefaultScrollbar = false;
 
             // Load the new scrollbar
             tgui::Scrollbar::Ptr scrollbar = formWindow.get(tgui::to_string(id));
-            scrollbar->load(pathname.value);
+            scrollbar->load(configFile.value);
 
             // Reset the size
             scrollbar->setSize(static_cast<float>(scrollbar->getSize().x), static_cast<float>(scrollbar->getSize().y));
@@ -3124,7 +3081,7 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
                 // Load the default scrollbar
                 tgui::Scrollbar::Ptr scrollbar = formWindow.get(tgui::to_string(id));
-                scrollbar->load("images/objects/Slider/" OBJECT_STYLE);
+                scrollbar->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 scrollbar->setSize(width.value, height.value);
@@ -3225,6 +3182,10 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
         // Change the low value of the scrollbar
         static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setLowValue(lowValue.value);
+
+        // Reset the value
+        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
     }
     else if (propertyNumber == Property_Scrollbar_Maximum)
     {
@@ -3233,6 +3194,10 @@ void PropertiesScrollbar::updateProperty(tgui::Window& formWindow, tgui::Window&
 
         // Change the maximum value of the scrollbar
         static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+
+        // Reset the value
+        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
     }
     else if (propertyNumber == Property_Scrollbar_CallbackID)
     {
@@ -3250,10 +3215,10 @@ PropertiesLoadingBar::PropertiesLoadingBar()
 {
     id = 0;
     name.value = "";
-    pathname.value = "images/objects/LoadingBar/" OBJECT_STYLE;
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
-    width.value = 200;
+    width.value = 400;
     height.value = 40;
     value.value = 0;
     minimum.value = 0;
@@ -3263,40 +3228,40 @@ PropertiesLoadingBar::PropertiesLoadingBar()
     loadedDefaultLoadingBar = true;
 }
 
-void PropertiesLoadingBar::addProperties(tgui::Window& window)
+void PropertiesLoadingBar::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_LoadingBar_Name);
-    pathname.addProperty(window, Property_LoadingBar_Pathname);
-    left.addProperty(window, Property_LoadingBar_Left);
-    top.addProperty(window, Property_LoadingBar_Top);
-    width.addProperty(window, Property_LoadingBar_Width);
-    height.addProperty(window, Property_LoadingBar_Height);
-    value.addProperty(window, Property_LoadingBar_Value);
-    minimum.addProperty(window, Property_LoadingBar_Minimum);
-    maximum.addProperty(window, Property_LoadingBar_Maximum);
-    callbackID.addProperty(window, Property_LoadingBar_CallbackID);
+    name.addProperty(gui, Property_LoadingBar_Name);
+    configFile.addProperty(gui, Property_LoadingBar_ConfigFile);
+    left.addProperty(gui, Property_LoadingBar_Left);
+    top.addProperty(gui, Property_LoadingBar_Top);
+    width.addProperty(gui, Property_LoadingBar_Width);
+    height.addProperty(gui, Property_LoadingBar_Height);
+    value.addProperty(gui, Property_LoadingBar_Value);
+    minimum.addProperty(gui, Property_LoadingBar_Minimum);
+    maximum.addProperty(gui, Property_LoadingBar_Maximum);
+    callbackID.addProperty(gui, Property_LoadingBar_CallbackID);
 }
 
-void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_LoadingBar_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
     }
-    else if (propertyNumber == Property_LoadingBar_Pathname)
+    else if (propertyNumber == Property_LoadingBar_ConfigFile)
     {
-        pathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Pathname"))->getText();
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
 
-        // Check if the info file exists
-        if (checkIfFileExists((pathname.value + "/info.txt").c_str()))
+        // Check if the config file exists
+        if (checkIfFileExists(configFile.value.c_str()))
         {
             // The default loading bar is no longer used
             loadedDefaultLoadingBar = false;
 
             // Load the new loading bar
             tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
-            loadingBar->load(pathname.value);
+            loadingBar->load(configFile.value);
 
             // Reset the scaling
             loadingBar->setScale(1, 1);
@@ -3319,7 +3284,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
 
                 // Load the default loading bar
                 tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
-                loadingBar->load("images/objects/Slider/" OBJECT_STYLE);
+                loadingBar->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
                 loadingBar->setSize(width.value, height.value);
@@ -3373,6 +3338,14 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
 
         // Change the minimum value of the loading bar
         static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(minimum.value);
+
+        // Reset the maximum
+        int max = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Maximum"))->getText().toAnsiString().c_str());
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(max);
+
+        // Reset the value
+        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
     }
     else if (propertyNumber == Property_LoadingBar_Maximum)
     {
@@ -3381,6 +3354,14 @@ void PropertiesLoadingBar::updateProperty(tgui::Window& formWindow, tgui::Window
 
         // Change the maximum value of the loading bar
         static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+
+        // Reset the minimum
+        int min = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Minimum"))->getText().toAnsiString().c_str());
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(min);
+
+        // Reset the value
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_LoadingBar_CallbackID)
     {
@@ -3398,11 +3379,11 @@ PropertiesTextBox::PropertiesTextBox()
 {
     id = 0;
     name.value = "";
+    configFile.value = DEFAULT_THEME_FILE;
     left.value = 0;
     top.value = 0;
     width.value = 320;
     height.value = 172;
-    scrollbarPathname.value = "images/objects/Scrollbar/" OBJECT_STYLE;
     text.value = "";
     textSize.value = 24;
     textFont.value = "Global";
@@ -3420,35 +3401,46 @@ PropertiesTextBox::PropertiesTextBox()
     loadedDefaultScrollbar = true;
 }
 
-void PropertiesTextBox::addProperties(tgui::Window& window)
+void PropertiesTextBox::addProperties(tgui::Gui& gui)
 {
-    name.addProperty(window, Property_TextBox_Name);
-    left.addProperty(window, Property_TextBox_Left);
-    top.addProperty(window, Property_TextBox_Top);
-    width.addProperty(window, Property_TextBox_Width);
-    height.addProperty(window, Property_TextBox_Height);
-    scrollbarPathname.addProperty(window, Property_TextBox_ScrollbarPathname);
-    text.addProperty(window, Property_TextBox_Text);
-    textSize.addProperty(window, Property_TextBox_TextSize);
-    textFont.addProperty(window, Property_TextBox_TextFont);
-    maximumCharacters.addProperty(window, Property_TextBox_MaximumCharacters);
-    borders.addProperty(window, Property_TextBox_Borders);
-    backgroundColor.addProperty(window, Property_TextBox_BackgroundColor);
-    textColor.addProperty(window, Property_TextBox_TextColor);
-    selectedTextColor.addProperty(window, Property_TextBox_SelectedTextColor);
-    selectedTextBackgroundColor.addProperty(window, Property_TextBox_SelectedTextBackgroundColor);
-    borderColor.addProperty(window, Property_TextBox_BorderColor);
-    selectionPointColor.addProperty(window, Property_TextBox_SelectionPointColor);
-    selectionPointWidth.addProperty(window, Property_TextBox_SelectionPointWidth);
-    callbackID.addProperty(window, Property_TextBox_CallbackID);
+    name.addProperty(gui, Property_TextBox_Name);
+    configFile.addProperty(gui, Property_TextBox_ConfigFile);
+    left.addProperty(gui, Property_TextBox_Left);
+    top.addProperty(gui, Property_TextBox_Top);
+    width.addProperty(gui, Property_TextBox_Width);
+    height.addProperty(gui, Property_TextBox_Height);
+    text.addProperty(gui, Property_TextBox_Text);
+    textSize.addProperty(gui, Property_TextBox_TextSize);
+    textFont.addProperty(gui, Property_TextBox_TextFont);
+    maximumCharacters.addProperty(gui, Property_TextBox_MaximumCharacters);
+    borders.addProperty(gui, Property_TextBox_Borders);
+    backgroundColor.addProperty(gui, Property_TextBox_BackgroundColor);
+    textColor.addProperty(gui, Property_TextBox_TextColor);
+    selectedTextColor.addProperty(gui, Property_TextBox_SelectedTextColor);
+    selectedTextBackgroundColor.addProperty(gui, Property_TextBox_SelectedTextBackgroundColor);
+    borderColor.addProperty(gui, Property_TextBox_BorderColor);
+    selectionPointColor.addProperty(gui, Property_TextBox_SelectionPointColor);
+    selectionPointWidth.addProperty(gui, Property_TextBox_SelectionPointWidth);
+    callbackID.addProperty(gui, Property_TextBox_CallbackID);
 }
 
-void PropertiesTextBox::updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber)
+void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
 {
     // Check what the property is
     if (propertyNumber == Property_TextBox_Name)
     {
         name.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Name"))->getText();
+    }
+    else if (propertyNumber == Property_ComboBox_ConfigFile)
+    {
+        configFile.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ConfigFile"))->getText();
+
+        // Check if the config file exists
+        if (checkIfFileExists((configFile.value).c_str()))
+        {
+            tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+            textBox->load(configFile.value);
+        }
     }
     else if (propertyNumber == Property_TextBox_Left)
     {
@@ -3481,32 +3473,6 @@ void PropertiesTextBox::updateProperty(tgui::Window& formWindow, tgui::Window& p
 
         // Change the height of the text box
         static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
-    }
-    else if (propertyNumber == Property_TextBox_ScrollbarPathname)
-    {
-        scrollbarPathname.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ScrollbarPathname"))->getText();
-
-        // Check if the info file exists
-        if (checkIfFileExists((scrollbarPathname.value + "/info.txt").c_str()))
-        {
-            // The default scrollbar is no longer used
-            loadedDefaultScrollbar = false;
-
-            // Load the new scrollbar
-            static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar(scrollbarPathname.value);
-        }
-        else // The file didn't exist
-        {
-            // When the default scrollbar is not loaded already then load it now
-            if (loadedDefaultScrollbar == false)
-            {
-                // The default scrollbar is loaded again
-                loadedDefaultScrollbar = true;
-
-                // Load the default scrollbar
-                static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setScrollbar("images/objects/Scrollbar/" OBJECT_STYLE);
-            }
-        }
     }
     else if (propertyNumber == Property_TextBox_Text)
     {

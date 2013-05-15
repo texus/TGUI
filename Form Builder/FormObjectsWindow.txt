@@ -91,7 +91,7 @@ Window: "PropertyWindow"
 
     Button: "Load"
     {
-        Pathname   = "images/objects/Button/Black"
+        ConfigFile = "images/objects/Black.conf"
         Position   = (4, 332)
         Size       = (104, 30)
         Text       = "Load"
@@ -100,7 +100,7 @@ Window: "PropertyWindow"
 
     Button: "Save"
     {
-        Pathname   = "images/objects/Button/Black"
+        ConfigFile = "images/objects/Black.conf"
         Position   = (4, 366)
         Size       = (104, 30)
         Text       = "Save"

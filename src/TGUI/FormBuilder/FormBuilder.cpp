@@ -28,13 +28,16 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Builder::Builder() :
-mainWindow    (sf::VideoMode(1024, 768), "TGUI Form Builder " VERSION),
-objectsWindow (sf::VideoMode(112, 400), "", sf::Style::Titlebar),
-propertyWindow(sf::VideoMode(300, 500), "", sf::Style::Titlebar | sf::Style::Resize),
-currentID     (0),
-draggingObject(false),
-draggingSquare(0),
-dragPos       (0, 0)
+mainRenderWindow    (sf::VideoMode(1024, 768), "TGUI Form Builder " VERSION),
+objectsRenderWindow (sf::VideoMode(112, 400), "", sf::Style::Titlebar),
+propertyRenderWindow(sf::VideoMode(300, 500), "", sf::Style::Titlebar | sf::Style::Resize),
+mainWindow          (mainRenderWindow),
+objectsWindow       (objectsRenderWindow),
+propertyWindow      (propertyRenderWindow),
+currentID           (0),
+draggingObject      (false),
+draggingSquare      (0),
+dragPos             (0, 0)
 {
 }
 
@@ -72,7 +75,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         picture->setSize(static_cast<float>(windows.back().width.value), static_cast<float>(windows.back().height.value));
 
         // Create the scale squares pictures
-        tgui::Button::Ptr(mainWindow, "Square_TopLeft")->load("images/Square");
+        tgui::Button::Ptr(mainWindow, "Square_TopLeft")->load("images/Square/Square.conf");
         mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_Top");
         mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_TopRight");
         mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_Right");
@@ -106,7 +109,8 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a button to the form
         tgui::Button::Ptr button(mainWindow, tgui::to_string(currentID));
-        button->load(buttons.back().pathname.value);
+        button->load(buttons.back().configFile.value);
+        button->setSize(256, 64);
 
         // Store the aspect ratio
         aspectRatios.push_back(button->getScaledSize().y / button->getScaledSize().x);
@@ -121,7 +125,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a checkbox to the form
         tgui::Checkbox::Ptr checkbox(mainWindow, tgui::to_string(currentID));
-        checkbox->load(checkboxes.back().pathname.value);
+        checkbox->load(checkboxes.back().configFile.value);
 
         // Store the aspect ratio
         aspectRatios.push_back(checkbox->getScaledSize().y / checkbox->getScaledSize().x);
@@ -137,7 +141,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a radio button to the form
         tgui::RadioButton::Ptr radioButton(mainWindow, tgui::to_string(currentID));
-        radioButton->load(radioButtons.back().pathname.value);
+        radioButton->load(radioButtons.back().configFile.value);
 
         // Store the aspect ratio
         aspectRatios.push_back(radioButton->getScaledSize().y / radioButton->getScaledSize().x);
@@ -167,7 +171,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add an edit box to the form
         tgui::EditBox::Ptr editBox(mainWindow, tgui::to_string(currentID));
-        editBox->load(editBoxes.back().pathname.value);
+        editBox->load(editBoxes.back().configFile.value);
         editBox->setBorders(2, 2, 2, 2);
         editBox->setSelectionPointColor(sf::Color(110, 110, 255));
         editBox->changeColors(sf::Color(200, 200, 200),
@@ -187,7 +191,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add an list box to the form
         tgui::ListBox::Ptr listBox(mainWindow, tgui::to_string(currentID));
-        listBox->load(200, 240, "images/objects/Scrollbar/" OBJECT_STYLE, 30);
+        listBox->load(DEFAULT_THEME_FILE);
+        listBox->setSize(200, 240);
+        listBox->setItemHeight(30);
         listBox->setBorders(2, 2, 2, 2);
         listBox->changeColors(sf::Color( 50,  50,  50),
                               sf::Color(200, 200, 200),
@@ -208,7 +214,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add an combo box to the form
         tgui::ComboBox::Ptr comboBox(mainWindow, tgui::to_string(currentID));
-        comboBox->load("images/objects/ComboBox/" OBJECT_STYLE, 240, 36, 10, "images/objects/Scrollbar/" OBJECT_STYLE);
+        comboBox->load(DEFAULT_THEME_FILE);
+        comboBox->setSize(240, 36);
+        comboBox->setMaximumItems(10);
         comboBox->setBorders(2, 2, 2, 2);
         comboBox->changeColors(sf::Color( 50,  50,  50),
                                sf::Color(200, 200, 200),
@@ -229,7 +237,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a slider to the form
         tgui::Slider::Ptr slider(mainWindow, tgui::to_string(currentID));
-        slider->load(sliders.back().pathname.value);
+        slider->load(sliders.back().configFile.value);
         slider->setVerticalScroll(false);
 
         // Store the aspect ratio
@@ -245,7 +253,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a scrollbar to the form
         tgui::Scrollbar::Ptr scrollbar(mainWindow, tgui::to_string(currentID));
-        scrollbar->load(scrollbars.back().pathname.value);
+        scrollbar->load(scrollbars.back().configFile.value);
         scrollbar->setMaximum(5);
         scrollbar->setLowValue(4);
         scrollbar->setAutoHide(false);
@@ -263,7 +271,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a loading bar to the form
         tgui::LoadingBar::Ptr loadingBar(mainWindow, tgui::to_string(currentID));
-        loadingBar->load(loadingBars.back().pathname.value);
+        loadingBar->load(loadingBars.back().configFile.value);
         loadingBar->setValue(0);
 
         // Store the aspect ratio
@@ -279,7 +287,9 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
 
         // Add a text box to the form
         tgui::TextBox::Ptr textBox(mainWindow, tgui::to_string(currentID));
-        textBox->load(320, 172, 24, textBoxes.back().scrollbarPathname.value);
+        textBox->load(textBoxes.back().configFile.value);
+        textBox->setSize(320, 172);
+        textBox->setTextSize(24);
         textBox->setBorders(2, 2, 2, 2);
         textBox->setSelectionPointColor(sf::Color(110, 110, 255));
         textBox->changeColors(sf::Color( 50,  50,  50),
@@ -337,9 +347,9 @@ void Builder::changeVisibleProperties()
 
     // Create the delete button
     tgui::Button::Ptr button(propertyWindow);
-    button->load("images/objects/Button/" OBJECT_STYLE);
+    button->load(DEFAULT_THEME_FILE);
     button->setText("Delete object");
-    button->setSize(static_cast<float>(propertyWindow.getSize().x - 8), 40);
+    button->setSize(propertyRenderWindow.getSize().x - 8.0, 40.0);
     button->setCallbackId(50);
     button->bindCallback(tgui::Button::LeftMouseClicked);
 
@@ -410,7 +420,7 @@ void Builder::resizePropertyWindow()
     {
         if (windows[i].id == currentID)
         {
-            propertyWindow.setSize(sf::Vector2u(propertyWindow.getSize().x, 10 + (40 * (Property_Window_GlobalFont + 1))));
+            propertyRenderWindow.setSize(sf::Vector2u(propertyRenderWindow.getSize().x, 10 + (40 * (Property_Window_GlobalFont + 1))));
             return;
         }
     }
@@ -419,7 +429,7 @@ void Builder::resizePropertyWindow()
     {
         if (radioButtons[i].id == currentID)
         {
-            propertyWindow.setSize(sf::Vector2u(propertyWindow.getSize().x, 60 + (40 * (Property_Checkbox_CallbackID + 1))));
+            propertyRenderWindow.setSize(sf::Vector2u(propertyRenderWindow.getSize().x, 60 + (40 * (Property_Checkbox_CallbackID + 1))));
             return;
         }
     }
@@ -429,7 +439,7 @@ void Builder::resizePropertyWindow()
     { \
         if (objects[i].id == currentID) \
         { \
-            propertyWindow.setSize(sf::Vector2u(propertyWindow.getSize().x, 60 + (40 * (Property_##Object##_CallbackID + 1)))); \
+            propertyRenderWindow.setSize(sf::Vector2u(propertyRenderWindow.getSize().x, 60 + (40 * (Property_##Object##_CallbackID + 1)))); \
             return; \
         } \
     }
@@ -582,8 +592,8 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
     // Check if the left mouse was pressed
     if (event.mouseButton.button == sf::Mouse::Left)
     {
-        float mouseX = event.mouseButton.x / (mainWindow.getSize().x / mainWindow.getView().getSize().x);
-        float mouseY = event.mouseButton.y / (mainWindow.getSize().y / mainWindow.getView().getSize().y);
+        float mouseX = event.mouseButton.x / (mainRenderWindow.getSize().x / mainRenderWindow.getView().getSize().x);
+        float mouseY = event.mouseButton.y / (mainRenderWindow.getSize().y / mainRenderWindow.getView().getSize().y);
 
         unsigned int highestID = 0;
         unsigned int objectID = 1;
@@ -632,8 +642,8 @@ unsigned int Builder::getClickedObjectID(sf::Event& event)
 
 unsigned int Builder::getScaleSquareObjectID(float x, float y)
 {
-    float mouseX = x / (mainWindow.getSize().x / mainWindow.getView().getSize().x);
-    float mouseY = y / (mainWindow.getSize().y / mainWindow.getView().getSize().y);
+    float mouseX = x / (mainRenderWindow.getSize().x / mainRenderWindow.getView().getSize().x);
+    float mouseY = y / (mainRenderWindow.getSize().y / mainRenderWindow.getView().getSize().y);
 
     unsigned int highestID = 0;
     unsigned int objectID = 0;
@@ -889,7 +899,7 @@ bool Builder::loadForm()
     picture->setSize(static_cast<float>(windows.back().width.value), static_cast<float>(windows.back().height.value));
 
     // Recreate the scale squares pictures
-    tgui::Button::Ptr(mainWindow, "Square_TopLeft")->load("images/Square");
+    tgui::Button::Ptr(mainWindow, "Square_TopLeft")->load("images/Square/Square.conf");
     mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_Top");
     mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_TopRight");
     mainWindow.copy(mainWindow.get("Square_TopLeft"), "Square_Right");
@@ -916,7 +926,7 @@ bool Builder::loadForm()
     currentID = 1;
 
     // Create a temporary window
-    tgui::Window tempWindow;
+    tgui::Gui tempWindow;
     tempWindow.setGlobalFont(mainWindow.getGlobalFont());
 
     // Load all the objects in the temporary window
@@ -993,7 +1003,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                buttons.back().pathname.value = object->getLoadedPathname();
+                buttons.back().configFile.value = object->getLoadedConfigFile();
                 buttons.back().left.value = object->getPosition().x;
                 buttons.back().top.value = object->getPosition().y;
                 buttons.back().width.value = object->getScaledSize().x;
@@ -1006,7 +1016,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::Button::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1022,7 +1032,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                checkboxes.back().pathname.value = object->getLoadedPathname();
+                checkboxes.back().configFile.value = object->getLoadedConfigFile();
                 checkboxes.back().left.value = object->getPosition().x;
                 checkboxes.back().top.value = object->getPosition().y;
                 checkboxes.back().width.value = object->getScaledSize().x;
@@ -1036,7 +1046,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::Checkbox::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1057,7 +1067,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                radioButtons.back().pathname.value = object->getLoadedPathname();
+                radioButtons.back().configFile.value = object->getLoadedConfigFile();
                 radioButtons.back().left.value = object->getPosition().x;
                 radioButtons.back().top.value = object->getPosition().y;
                 radioButtons.back().width.value = object->getScaledSize().x;
@@ -1071,7 +1081,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::RadioButton::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1092,7 +1102,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                editBoxes.back().pathname.value = object->getLoadedPathname();
+                editBoxes.back().configFile.value = object->getLoadedConfigFile();
                 editBoxes.back().left.value = object->getPosition().x;
                 editBoxes.back().top.value = object->getPosition().y;
                 editBoxes.back().width.value = object->getScaledSize().x;
@@ -1112,7 +1122,7 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::EditBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1133,7 +1143,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                sliders.back().pathname.value = object->getLoadedPathname();
+                sliders.back().configFile.value = object->getLoadedConfigFile();
                 sliders.back().left.value = object->getPosition().x;
                 sliders.back().top.value = object->getPosition().y;
                 sliders.back().width.value = object->getScaledSize().x;
@@ -1146,13 +1156,14 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::Slider::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+
                 realObject->setVerticalScroll(object->getVerticalScroll());
-                realObject->setValue(object->getValue());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setMinimum(object->getMinimum());
                 realObject->setMaximum(object->getMaximum());
+                realObject->setValue(object->getValue());
                 realObject->setCallbackId(object->getCallbackId());
             }
             else if (objects[i]->getObjectType() == tgui::Type_Scrollbar)
@@ -1162,7 +1173,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                scrollbars.back().pathname.value = object->getLoadedPathname();
+                scrollbars.back().configFile.value = object->getLoadedConfigFile();
                 scrollbars.back().left.value = object->getPosition().x;
                 scrollbars.back().top.value = object->getPosition().y;
                 scrollbars.back().width.value = object->getScaledSize().x;
@@ -1175,13 +1186,13 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::Scrollbar::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setVerticalScroll(object->getVerticalScroll());
-                realObject->setValue(object->getValue());
                 realObject->setLowValue(object->getLowValue());
                 realObject->setMaximum(object->getMaximum());
+                realObject->setValue(object->getValue());
                 realObject->setCallbackId(object->getCallbackId());
             }
             else if (objects[i]->getObjectType() == tgui::Type_ListBox)
@@ -1194,11 +1205,11 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
+                listBoxes.back().configFile.value = object->getLoadedConfigFile();
                 listBoxes.back().left.value = object->getPosition().x;
                 listBoxes.back().top.value = object->getPosition().y;
                 listBoxes.back().width.value = object->getScaledSize().x;
                 listBoxes.back().height.value = object->getScaledSize().y;
-                listBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
                 listBoxes.back().itemHeight.value = object->getItemHeight();
                 listBoxes.back().maximumItems.value = object->getMaximumItems();
                 listBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
@@ -1223,7 +1234,9 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::ListBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getLoadedScrollbarPathname(), object->getItemHeight());
+                realObject->load(object->getLoadedConfigFile());
+                realObject->setSize(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y));
+                realObject->setItemHeight(object->getItemHeight());
                 realObject->setPosition(object->getPosition());
                 realObject->setMaximumItems(object->getMaximumItems());
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
@@ -1243,12 +1256,11 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                comboBoxes.back().pathname.value = object->getLoadedPathname();
+                comboBoxes.back().configFile.value = object->getLoadedConfigFile();
                 comboBoxes.back().left.value = object->getPosition().x;
                 comboBoxes.back().top.value = object->getPosition().y;
                 comboBoxes.back().width.value = object->getScaledSize().x;
                 comboBoxes.back().height.value = object->getScaledSize().y;
-                comboBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
                 comboBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
                 comboBoxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
                 comboBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
@@ -1266,13 +1278,15 @@ bool Builder::loadForm()
 
                     // Add the other items
                     for (unsigned int j=1; j<items.size(); ++j)
-                        listBoxes.back().items.value += "," + items[j];
+                        comboBoxes.back().items.value += "," + items[j];
                 }
                 comboBoxes.back().selectedItem.value = object->getSelectedItemIndex();
 
                 // Draw the object in the correct way
                 tgui::ComboBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname(), object->getScaledSize().x, object->getScaledSize().y, object->getItemsToDisplay() , object->getLoadedScrollbarPathname());
+                realObject->load(object->getLoadedConfigFile());
+                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setItemsToDisplay(object->getItemsToDisplay());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
@@ -1289,7 +1303,7 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
-                loadingBars.back().pathname.value = object->getLoadedPathname();
+                loadingBars.back().configFile.value = object->getLoadedConfigFile();
                 loadingBars.back().left.value = object->getPosition().x;
                 loadingBars.back().top.value = object->getPosition().y;
                 loadingBars.back().width.value = object->getScaledSize().x;
@@ -1301,12 +1315,12 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::LoadingBar::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(object->getLoadedPathname());
+                realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
-                realObject->setValue(object->getValue());
                 realObject->setMinimum(object->getMinimum());
                 realObject->setMaximum(object->getMaximum());
+                realObject->setValue(object->getValue());
                 realObject->setCallbackId(object->getCallbackId());
             }
             else if (objects[i]->getObjectType() == tgui::Type_TextBox)
@@ -1316,11 +1330,11 @@ bool Builder::loadForm()
 
                 // Create and fill the properties of the object
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
+                textBoxes.back().configFile.value = object->getLoadedConfigFile();
                 textBoxes.back().left.value = object->getPosition().x;
                 textBoxes.back().top.value = object->getPosition().y;
                 textBoxes.back().width.value = object->getScaledSize().x;
                 textBoxes.back().height.value = object->getScaledSize().y;
-                textBoxes.back().scrollbarPathname.value = object->getLoadedScrollbarPathname();
                 textBoxes.back().text.value = object->getText();
                 textBoxes.back().textSize.value = object->getTextSize();
                 textBoxes.back().textFont.value = "Global";
@@ -1337,7 +1351,9 @@ bool Builder::loadForm()
 
                 // Draw the object in the correct way
                 tgui::TextBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
-                realObject->load(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y), object->getTextSize(), object->getLoadedScrollbarPathname());
+                realObject->load(object->getLoadedConfigFile());
+                realObject->setSize(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y));
+                realObject->setTextSize(object->getTextSize());
                 realObject->setPosition(object->getPosition());
                 realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
                 realObject->setText(object->getText());
@@ -1477,8 +1493,8 @@ void Builder::saveForm()
             line.append(buttons[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname   = \"";
-            line.append(buttons[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile = \"";
+            line.append(buttons[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
@@ -1517,8 +1533,8 @@ void Builder::saveForm()
             line.append(checkboxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname   = \"";
-            line.append(checkboxes[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile = \"";
+            line.append(checkboxes[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
@@ -1561,8 +1577,8 @@ void Builder::saveForm()
             line.append(radioButtons[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname   = \"";
-            line.append(radioButtons[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile = \"";
+            line.append(radioButtons[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
@@ -1650,8 +1666,8 @@ void Builder::saveForm()
             line.append(editBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname            = \"";
-            line.append(editBoxes[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile          = \"";
+            line.append(editBoxes[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position            = ";
@@ -1726,6 +1742,10 @@ void Builder::saveForm()
             line.append(listBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
+            line = TAB TAB "ConfigFile              = \"";
+            line.append(listBoxes[objectIndex].configFile.value).append("\"\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
             line = TAB TAB "Position                = ";
             line.append("(").append(tgui::to_string(listBoxes[objectIndex].left.value)).append(",");
             line.append(tgui::to_string(listBoxes[objectIndex].top.value)).append(")").append("\n");
@@ -1734,10 +1754,6 @@ void Builder::saveForm()
             line = TAB TAB "Size                    = ";
             line.append("(").append(tgui::to_string(listBoxes[objectIndex].width.value)).append(",");
             line.append(tgui::to_string(listBoxes[objectIndex].height.value)).append(")").append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "ScrollbarPathname       = \"";
-            line.append(listBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ItemHeight              = ";
@@ -1833,8 +1849,8 @@ void Builder::saveForm()
             line.append(comboBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname                = \"";
-            line.append(comboBoxes[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile              = \"";
+            line.append(comboBoxes[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position                = ";
@@ -1845,10 +1861,6 @@ void Builder::saveForm()
             line = TAB TAB "Size                    = ";
             line.append("(").append(tgui::to_string(comboBoxes[objectIndex].width.value)).append(",");
             line.append(tgui::to_string(comboBoxes[objectIndex].height.value)).append(")").append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "ScrollbarPathname       = \"";
-            line.append(comboBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders                 = ";
@@ -1940,8 +1952,8 @@ void Builder::saveForm()
             line.append(sliders[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname       = \"";
-            line.append(sliders[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile     = \"";
+            line.append(sliders[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "VerticalScroll = ";
@@ -1983,8 +1995,8 @@ void Builder::saveForm()
             line.append(scrollbars[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname       = \"";
-            line.append(scrollbars[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile     = \"";
+            line.append(scrollbars[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "VerticalScroll = ";
@@ -2026,8 +2038,8 @@ void Builder::saveForm()
             line.append(loadingBars[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "Pathname   = \"";
-            line.append(loadingBars[objectIndex].pathname.value).append("\"\n");
+            line = TAB TAB "ConfigFile = \"";
+            line.append(loadingBars[objectIndex].configFile.value).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
@@ -2065,6 +2077,10 @@ void Builder::saveForm()
             line.append(textBoxes[objectIndex].name.value).append("\"\n" TAB "{\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
+            line = TAB TAB "ConfigFile          = \"";
+            line.append(textBoxes[objectIndex].configFile.value).append("\"\n");
+            fwrite(line.c_str(), 1, line.size(), pFile);
+
             line = TAB TAB "Position            = ";
             line.append("(").append(tgui::to_string(textBoxes[objectIndex].left.value)).append(",");
             line.append(tgui::to_string(textBoxes[objectIndex].top.value)).append(")").append("\n");
@@ -2075,12 +2091,20 @@ void Builder::saveForm()
             line.append(tgui::to_string(textBoxes[objectIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
-            line = TAB TAB "ScrollbarPathname   = \"";
-            line.append(textBoxes[objectIndex].scrollbarPathname.value).append("\"\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
+            // Replace the newlines, tabs and quotes
+            std::string text = textBoxes[objectIndex].text.value;
+            std::string::size_type pos = 0;
+            while ((pos = text.find("\n", pos)) != std::string::npos)
+                text.replace(pos, 1, "\\n");
+            pos = 0;
+            while ((pos = text.find("\t", pos)) != std::string::npos)
+                text.replace(pos, 1, "\\t");
+            pos = 0;
+            while ((pos = text.find("\"", pos)) != std::string::npos)
+                text.replace(pos, 1, "\\\"");
 
             line = TAB TAB "Text                = \"";
-            line.append(textBoxes[objectIndex].text.value).append("\"\n");
+            line.append(text).append("\"\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize            = ";

@@ -71,19 +71,19 @@ int main()
     app.newObject(tgui::Type_Unknown);
 
     // Quit when the window is closed
-    while (app.mainWindow.isOpen())
+    while (app.mainRenderWindow.isOpen())
     {
         sf::Event event;
 
         // Check the events of the main window
-        while (app.mainWindow.pollEvent(event))
+        while (app.mainRenderWindow.pollEvent(event))
         {
             // Check if the window has to be closed
             if (event.type == sf::Event::Closed)
             {
-                app.objectsWindow.close();
-                app.propertyWindow.close();
-                app.mainWindow.close();
+                app.objectsRenderWindow.close();
+                app.propertyRenderWindow.close();
+                app.mainRenderWindow.close();
             }
 
             // Check if the window was resized
@@ -93,7 +93,7 @@ int main()
                 if ((event.size.width == (TGUI_MAXIMUM(app.windows[0].width.value, 32))) && (event.size.height == (TGUI_MAXIMUM(app.windows[0].height.value, 32))))
                 {
                     // Set the viewport to the new size
-                    app.mainWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
+                    app.mainRenderWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                     // Change the size of the transparent image
                     static_cast<tgui::Picture::Ptr>(app.mainWindow.get("1"))->setSize(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
@@ -102,7 +102,7 @@ int main()
                     app.mainWindow.handleEvent(event);
                 }
                 else // You tried to scale the window
-                    app.mainWindow.setSize(sf::Vector2u(TGUI_MAXIMUM(app.windows[0].width.value, 32), TGUI_MAXIMUM(app.windows[0].height.value, 32)));
+                    app.mainRenderWindow.setSize(sf::Vector2u(TGUI_MAXIMUM(app.windows[0].width.value, 32), TGUI_MAXIMUM(app.windows[0].height.value, 32)));
             }
             else
             {
@@ -456,14 +456,14 @@ int main()
         }
 
         // Check the events of the objects window
-        while (app.objectsWindow.pollEvent(event))
+        while (app.objectsRenderWindow.pollEvent(event))
         {
             // Pass the event to tgui
             app.objectsWindow.handleEvent(event);
         }
 
         // Check the events of the property window
-        while (app.propertyWindow.pollEvent(event))
+        while (app.propertyRenderWindow.pollEvent(event))
         {
             // Check if the window was resized
             if (event.type == sf::Event::Resized)
@@ -475,11 +475,11 @@ int main()
                     // Make sure that the size isn't too small and adjust the view
                     if (event.size.width < 200)
                     {
-                        app.propertyWindow.setSize(sf::Vector2u(200, event.size.height));
-                        app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, 200, static_cast<float>(event.size.height))));
+                        app.propertyRenderWindow.setSize(sf::Vector2u(200, event.size.height));
+                        app.propertyRenderWindow.setView(sf::View(sf::FloatRect(0, 0, 200, static_cast<float>(event.size.height))));
                     }
                     else
-                        app.propertyWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
+                        app.propertyRenderWindow.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
 
                     // Update the properties
                     app.changeVisibleProperties();
@@ -520,17 +520,17 @@ int main()
             }
         }
 
-        app.mainWindow.clear(sf::Color(230, 230, 230));
-        app.mainWindow.drawGUI();
-        app.mainWindow.display();
+        app.mainRenderWindow.clear(sf::Color(230, 230, 230));
+        app.mainWindow.draw();
+        app.mainRenderWindow.display();
 
-        app.objectsWindow.clear(sf::Color(230, 230, 230));
-        app.objectsWindow.drawGUI();
-        app.objectsWindow.display();
+        app.objectsRenderWindow.clear(sf::Color(230, 230, 230));
+        app.objectsWindow.draw();
+        app.objectsRenderWindow.display();
 
-        app.propertyWindow.clear(sf::Color(230, 230, 230));
-        app.propertyWindow.drawGUI();
-        app.propertyWindow.display();
+        app.propertyRenderWindow.clear(sf::Color(230, 230, 230));
+        app.propertyWindow.draw();
+        app.propertyRenderWindow.display();
 
         // Sleep for a moment
         sf::sleep(sf::milliseconds(10));

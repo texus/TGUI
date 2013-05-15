@@ -41,7 +41,7 @@ enum Properties
     Property_Picture_CallbackID,
 
     Property_Button_Name = 0,
-    Property_Button_Pathname,
+    Property_Button_ConfigFile,
     Property_Button_Left,
     Property_Button_Top,
     Property_Button_Width,
@@ -53,7 +53,7 @@ enum Properties
     Property_Button_CallbackID,
 
     Property_Checkbox_Name = 0,
-    Property_Checkbox_Pathname,
+    Property_Checkbox_ConfigFile,
     Property_Checkbox_Left,
     Property_Checkbox_Top,
     Property_Checkbox_Width,
@@ -79,7 +79,7 @@ enum Properties
     Property_Label_CallbackID,
 
     Property_EditBox_Name = 0,
-    Property_EditBox_Pathname,
+    Property_EditBox_ConfigFile,
     Property_EditBox_Left,
     Property_EditBox_Top,
     Property_EditBox_Width,
@@ -98,11 +98,11 @@ enum Properties
     Property_EditBox_CallbackID,
 
     Property_ListBox_Name = 0,
+    Property_ListBox_ConfigFile,
     Property_ListBox_Left,
     Property_ListBox_Top,
     Property_ListBox_Width,
     Property_ListBox_Height,
-    Property_ListBox_ScrollbarPathname,
     Property_ListBox_ItemHeight,
     Property_ListBox_MaximumItems,
     Property_ListBox_Borders,
@@ -117,12 +117,11 @@ enum Properties
     Property_ListBox_CallbackID,
 
     Property_ComboBox_Name = 0,
-    Property_ComboBox_Pathname,
+    Property_ComboBox_ConfigFile,
     Property_ComboBox_Left,
     Property_ComboBox_Top,
     Property_ComboBox_Width,
     Property_ComboBox_Height,
-    Property_ComboBox_ScrollbarPathname,
     Property_ComboBox_Borders,
     Property_ComboBox_BackgroundColor,
     Property_ComboBox_TextColor,
@@ -136,7 +135,7 @@ enum Properties
     Property_ComboBox_CallbackID,
 
     Property_Slider_Name = 0,
-    Property_Slider_Pathname,
+    Property_Slider_ConfigFile,
     Property_Slider_Left,
     Property_Slider_Top,
     Property_Slider_Width,
@@ -148,7 +147,7 @@ enum Properties
     Property_Slider_CallbackID,
 
     Property_Scrollbar_Name = 0,
-    Property_Scrollbar_Pathname,
+    Property_Scrollbar_ConfigFile,
     Property_Scrollbar_Left,
     Property_Scrollbar_Top,
     Property_Scrollbar_Width,
@@ -160,7 +159,7 @@ enum Properties
     Property_Scrollbar_CallbackID,
 
     Property_LoadingBar_Name = 0,
-    Property_LoadingBar_Pathname,
+    Property_LoadingBar_ConfigFile,
     Property_LoadingBar_Left,
     Property_LoadingBar_Top,
     Property_LoadingBar_Width,
@@ -171,11 +170,11 @@ enum Properties
     Property_LoadingBar_CallbackID,
 
     Property_TextBox_Name = 0,
+    Property_TextBox_ConfigFile,
     Property_TextBox_Left,
     Property_TextBox_Top,
     Property_TextBox_Width,
     Property_TextBox_Height,
-    Property_TextBox_ScrollbarPathname,
     Property_TextBox_Text,
     Property_TextBox_TextSize,
     Property_TextBox_TextFont,
@@ -203,7 +202,7 @@ enum Property_Type
 
 struct Property
 {
-    virtual void addProperty(tgui::Window& window, unsigned int propertyNumber) = 0;
+    virtual void addProperty(tgui::Gui& gui, unsigned int propertyNumber) = 0;
 
     std::string   description;
     unsigned int  type;
@@ -251,7 +250,7 @@ struct PropertyValueFloat : public Property
 struct PropertyName : public PropertyValueString
 {
     PropertyName();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,15 +258,15 @@ struct PropertyName : public PropertyValueString
 struct PropertyFilename : public PropertyValueString
 {
     PropertyFilename();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct PropertyPathname : public PropertyValueString
+struct PropertyConfigFile : public PropertyValueString
 {
-    PropertyPathname();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    PropertyConfigFile();
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +274,7 @@ struct PropertyPathname : public PropertyValueString
 struct PropertyLeft : public PropertyValueFloat
 {
     PropertyLeft();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +282,7 @@ struct PropertyLeft : public PropertyValueFloat
 struct PropertyTop : public PropertyValueFloat
 {
     PropertyTop();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,7 +290,7 @@ struct PropertyTop : public PropertyValueFloat
 struct PropertyWindowWidth : public PropertyValueUnsignedInt
 {
     PropertyWindowWidth();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +298,7 @@ struct PropertyWindowWidth : public PropertyValueUnsignedInt
 struct PropertyWindowHeight : public PropertyValueUnsignedInt
 {
     PropertyWindowHeight();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +306,7 @@ struct PropertyWindowHeight : public PropertyValueUnsignedInt
 struct PropertyWidth : public PropertyValueFloat
 {
     PropertyWidth();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +314,7 @@ struct PropertyWidth : public PropertyValueFloat
 struct PropertyHeight : public PropertyValueFloat
 {
     PropertyHeight();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,7 +322,7 @@ struct PropertyHeight : public PropertyValueFloat
 struct PropertyAutoSize : public PropertyValueBool
 {
     PropertyAutoSize();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,7 +330,7 @@ struct PropertyAutoSize : public PropertyValueBool
 struct PropertyText : public PropertyValueString
 {
     PropertyText();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,7 +338,7 @@ struct PropertyText : public PropertyValueString
 struct PropertyTextSize : public PropertyValueUnsignedInt
 {
     PropertyTextSize();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,7 +346,7 @@ struct PropertyTextSize : public PropertyValueUnsignedInt
 struct PropertyTextColor : public PropertyValueString
 {
     PropertyTextColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,7 +354,7 @@ struct PropertyTextColor : public PropertyValueString
 struct PropertySelectedTextColor : public PropertyValueString
 {
     PropertySelectedTextColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,7 +362,7 @@ struct PropertySelectedTextColor : public PropertyValueString
 struct PropertySelectedTextBackgroundColor : public PropertyValueString
 {
     PropertySelectedTextBackgroundColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +370,7 @@ struct PropertySelectedTextBackgroundColor : public PropertyValueString
 struct PropertyTextFont : public PropertyValueString
 {
     PropertyTextFont();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +378,7 @@ struct PropertyTextFont : public PropertyValueString
 struct PropertyGlobalFont : public PropertyValueString
 {
     PropertyGlobalFont();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,7 +386,7 @@ struct PropertyGlobalFont : public PropertyValueString
 struct PropertyChecked : public PropertyValueBool
 {
     PropertyChecked();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,7 +394,7 @@ struct PropertyChecked : public PropertyValueBool
 struct PropertyPasswordChar : public PropertyValueChar
 {
     PropertyPasswordChar();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -403,7 +402,7 @@ struct PropertyPasswordChar : public PropertyValueChar
 struct PropertyMaximumCharacters : public PropertyValueUnsignedInt
 {
     PropertyMaximumCharacters();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,7 +410,7 @@ struct PropertyMaximumCharacters : public PropertyValueUnsignedInt
 struct PropertyBorders : public PropertyValueString
 {
     PropertyBorders();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,7 +418,7 @@ struct PropertyBorders : public PropertyValueString
 struct PropertySelectionPointColor : public PropertyValueString
 {
     PropertySelectionPointColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,15 +426,7 @@ struct PropertySelectionPointColor : public PropertyValueString
 struct PropertySelectionPointWidth : public PropertyValueUnsignedInt
 {
     PropertySelectionPointWidth();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-struct PropertyScrollbarPathname : public PropertyValueString
-{
-    PropertyScrollbarPathname();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +434,7 @@ struct PropertyScrollbarPathname : public PropertyValueString
 struct PropertyItemHeight : public PropertyValueUnsignedInt
 {
     PropertyItemHeight();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,7 +442,7 @@ struct PropertyItemHeight : public PropertyValueUnsignedInt
 struct PropertyMaximumItems : public PropertyValueUnsignedInt
 {
     PropertyMaximumItems();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,7 +450,7 @@ struct PropertyMaximumItems : public PropertyValueUnsignedInt
 struct PropertyBackgroundColor : public PropertyValueString
 {
     PropertyBackgroundColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,7 +458,7 @@ struct PropertyBackgroundColor : public PropertyValueString
 struct PropertySelectedBackgroundColor : public PropertyValueString
 {
     PropertySelectedBackgroundColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,7 +466,7 @@ struct PropertySelectedBackgroundColor : public PropertyValueString
 struct PropertyItems : public PropertyValueString
 {
     PropertyItems();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,7 +474,7 @@ struct PropertyItems : public PropertyValueString
 struct PropertySelectedItem : public PropertyValueInt
 {
     PropertySelectedItem();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -491,7 +482,7 @@ struct PropertySelectedItem : public PropertyValueInt
 struct PropertyItemsToDisplay : public PropertyValueUnsignedInt
 {
     PropertyItemsToDisplay();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,7 +490,7 @@ struct PropertyItemsToDisplay : public PropertyValueUnsignedInt
 struct PropertyBorderColor : public PropertyValueString
 {
     PropertyBorderColor();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,7 +498,7 @@ struct PropertyBorderColor : public PropertyValueString
 struct PropertyValue : public PropertyValueUnsignedInt
 {
     PropertyValue();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,7 +506,7 @@ struct PropertyValue : public PropertyValueUnsignedInt
 struct PropertyLowValue : public PropertyValueUnsignedInt
 {
     PropertyLowValue();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,7 +514,7 @@ struct PropertyLowValue : public PropertyValueUnsignedInt
 struct PropertyMinimum : public PropertyValueUnsignedInt
 {
     PropertyMinimum();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,7 +522,7 @@ struct PropertyMinimum : public PropertyValueUnsignedInt
 struct PropertyMaximum : public PropertyValueUnsignedInt
 {
     PropertyMaximum();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -539,7 +530,7 @@ struct PropertyMaximum : public PropertyValueUnsignedInt
 struct PropertyVerticalScroll : public PropertyValueBool
 {
     PropertyVerticalScroll();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,7 +538,7 @@ struct PropertyVerticalScroll : public PropertyValueBool
 struct PropertyCallbackID : public PropertyValueUnsignedInt
 {
     PropertyCallbackID();
-    void addProperty(tgui::Window& window, unsigned int propertyNumber);
+    void addProperty(tgui::Gui& gui, unsigned int propertyNumber);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,8 +546,8 @@ struct PropertyCallbackID : public PropertyValueUnsignedInt
 struct PropertiesWindow
 {
     PropertiesWindow();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int         id;
     PropertyName         name;
@@ -572,8 +563,8 @@ struct PropertiesWindow
 struct PropertiesPicture
 {
     PropertiesPicture();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int      id;
     PropertyName      name;
@@ -593,12 +584,12 @@ struct PropertiesPicture
 struct PropertiesButton
 {
     PropertiesButton();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int       id;
     PropertyName       name;
-    PropertyPathname   pathname;
+    PropertyConfigFile configFile;
     PropertyLeft       left;
     PropertyTop        top;
     PropertyWidth      width;
@@ -618,12 +609,12 @@ struct PropertiesButton
 struct PropertiesCheckbox
 {
     PropertiesCheckbox();
-    void addProperties(tgui::Window& window);
-    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    virtual void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int       id;
     PropertyName       name;
-    PropertyPathname   pathname;
+    PropertyConfigFile configFile;
     PropertyLeft       left;
     PropertyTop        top;
     PropertyWidth      width;
@@ -644,7 +635,7 @@ struct PropertiesCheckbox
 struct PropertiesRadioButton : PropertiesCheckbox
 {
     PropertiesRadioButton();
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     Builder* builder;
 };
@@ -654,8 +645,8 @@ struct PropertiesRadioButton : PropertiesCheckbox
 struct PropertiesLabel
 {
     PropertiesLabel();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int            id;
     PropertyName            name;
@@ -678,12 +669,12 @@ struct PropertiesLabel
 struct PropertiesEditBox
 {
     PropertiesEditBox();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int                id;
     PropertyName                name;
-    PropertyPathname            pathname;
+    PropertyConfigFile          configFile;
     PropertyLeft                left;
     PropertyTop                 top;
     PropertyWidth               width;
@@ -710,16 +701,16 @@ struct PropertiesEditBox
 struct PropertiesListBox
 {
     PropertiesListBox();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int              id;
     PropertyName              name;
+    PropertyConfigFile        configFile;
     PropertyLeft              left;
     PropertyTop               top;
     PropertyWidth             width;
     PropertyHeight            height;
-    PropertyScrollbarPathname scrollbarPathname;
     PropertyItemHeight        itemHeight;
     PropertyMaximumItems      maximumItems;
     PropertyBorders           borders;
@@ -742,17 +733,16 @@ struct PropertiesListBox
 struct PropertiesComboBox
 {
     PropertiesComboBox();
-    void addProperties(tgui::Window& window);
-    void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int               id;
     PropertyName               name;
-    PropertyPathname           pathname;
+    PropertyConfigFile         configFile;
     PropertyLeft               left;
     PropertyTop                top;
     PropertyWidth              width;
     PropertyHeight             height;
-    PropertyScrollbarPathname  scrollbarPathname;
     PropertyBorders            borders;
     PropertyBackgroundColor    backgroundColor;
     PropertyTextColor          textColor;
@@ -775,12 +765,12 @@ struct PropertiesComboBox
 struct PropertiesSlider
 {
     PropertiesSlider();
-    void addProperties(tgui::Window& window);
-    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    virtual void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int           id;
     PropertyName           name;
-    PropertyPathname       pathname;
+    PropertyConfigFile     configFile;
     PropertyLeft           left;
     PropertyTop            top;
     PropertyWidth          width;
@@ -800,12 +790,12 @@ struct PropertiesSlider
 struct PropertiesScrollbar
 {
     PropertiesScrollbar();
-    void addProperties(tgui::Window& window);
-    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    virtual void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int           id;
     PropertyName           name;
-    PropertyPathname       pathname;
+    PropertyConfigFile     configFile;
     PropertyLeft           left;
     PropertyTop            top;
     PropertyWidth          width;
@@ -825,12 +815,12 @@ struct PropertiesScrollbar
 struct PropertiesLoadingBar
 {
     PropertiesLoadingBar();
-    void addProperties(tgui::Window& window);
-    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    virtual void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int           id;
     PropertyName           name;
-    PropertyPathname       pathname;
+    PropertyConfigFile     configFile;
     PropertyLeft           left;
     PropertyTop            top;
     PropertyWidth          width;
@@ -849,16 +839,16 @@ struct PropertiesLoadingBar
 struct PropertiesTextBox
 {
     PropertiesTextBox();
-    void addProperties(tgui::Window& window);
-    virtual void updateProperty(tgui::Window& formWindow, tgui::Window& propertyWindow, unsigned int propertyNumber);
+    void addProperties(tgui::Gui& gui);
+    virtual void updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber);
 
     unsigned int                id;
     PropertyName                name;
+    PropertyConfigFile          configFile;
     PropertyLeft                left;
     PropertyTop                 top;
     PropertyWidth               width;
     PropertyHeight              height;
-    PropertyScrollbarPathname   scrollbarPathname;
     PropertyText                text;
     PropertyTextSize            textSize;
     PropertyTextFont            textFont;

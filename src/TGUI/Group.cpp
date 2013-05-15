@@ -1223,7 +1223,18 @@ namespace tgui
                         ListBox::Ptr listBox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 11).compare("itemheight=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 11);
+
+                            // The filename must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the list box
+                            listBox->load(line);
+                        }
+                        else if (line.substr(0, 11).compare("itemheight=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 11);
@@ -1439,7 +1450,18 @@ namespace tgui
                         TextBox::Ptr textBox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
+                        {
+                            // Remove the first part of the line
+                            line.erase(0, 11);
+
+                            // The filename must start and end with quotes
+                            CHECK_FOR_QUOTES
+
+                            // Load the text box
+                            textBox->load(line);
+                        }
+                        else if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 20);
