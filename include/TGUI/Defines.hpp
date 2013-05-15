@@ -94,7 +94,6 @@ namespace tgui
         Type_TextBox,
         Type_SpriteSheet,
         Type_AnimatedPicture,
-        Type_AnimatedButton,
         Type_SpinButton,
         Type_Slider2d,
         Type_Tab,

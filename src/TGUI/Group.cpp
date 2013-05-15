@@ -398,24 +398,19 @@ namespace tgui
 
     bool Group::loadObjectsFromFile(const std::string& filename)
     {
-///!!!  TODO:
-///!!!  Make some adjustments in the loading process.
-///!!!  This is the only function where goto is still used, the goto statements should be removed.
-///!!!  All objects must be capable of loading themselves out of a string.
-///!!!  Perhaps it would be better to switch to xml parsing.
+/// \todo This function should be rewritten.
+/// \todo All objects should be capable of loading themselves out of a string.
+/// \todo Perhaps it would be better to switch to xml parsing.
 
-        TGUI_OUTPUT("TGUI error: loadObjectsFromFile is disabled in this experimental version.");
-        return false;
-/*
         // I wrote these defines to avoid having the same code over and over again
         #define CHECK_SHARED_PROPERTIES(name) \
             if (line.substr(0, 5).compare("size=") == 0) \
             { \
                 Vector2f size; \
-                if (extractVector2f(line.erase(0, 5), size) == false) \
-                    goto LoadingFailed; \
-              \
-                name->setSize(size.x, size.y); \
+                if (extractVector2f(line.erase(0, 5), size)) \
+                    name->setSize(size.x, size.y); \
+                else \
+                    failed = true; \
             } \
             else if (line.substr(0, 6).compare("scale=") == 0) \
             { \
@@ -424,7 +419,7 @@ namespace tgui
                 if (extractVector2f(line, objScale)) \
                     name->setScale(objScale); \
                 else \
-                    goto LoadingFailed; \
+                    failed = true; \
             } \
             else if (line.substr(0, 9).compare("position=") == 0) \
             { \
@@ -433,7 +428,7 @@ namespace tgui
                 if (extractVector2f(line, position)) \
                     name->setPosition(position); \
                 else \
-                    goto LoadingFailed; \
+                    failed = true; \
             } \
             else if (line.substr(0, 11).compare("callbackid=") == 0) \
             { \
@@ -442,8 +437,11 @@ namespace tgui
             }
 
         #define CHECK_FOR_QUOTES \
-            if (line.empty() == true) \
-                goto LoadingFailed; \
+            if (line.empty()) \
+            { \
+                failed = true; \
+                break; \
+            } \
              \
             if ((line[0] == '"') && (line[line.length()-1] == '"')) \
             { \
@@ -451,7 +449,10 @@ namespace tgui
                 line.erase(line.length()-1, 1); \
             } \
             else \
-                goto LoadingFailed;
+            { \
+                failed = true; \
+                break; \
+            } \
 
         #define CHECK_BOOL(boolean) \
             if (line.compare("true") == 0) \
@@ -491,21 +492,23 @@ namespace tgui
                     break; \
                 } \
                 else \
-                    goto LoadingFailed; \
+                { \
+                    failed = true; \
+                    break; \
+                } \
             } \
             else \
             { \
                 if (line.compare("}") == 0) \
                 { \
                     objectID = parentID.top(); \
-                    parentID.pop(); \
-                    parentPtr.pop(); \
                     progress.pop(); \
                     break; \
                 } \
             }
 
         // During the process some variables are needed to store what exactly was going on.
+        bool failed = false;
         std::stack<Group*> parentPtr;
         std::stack<unsigned int> parentID;
         std::stack<unsigned int> progress;
@@ -527,7 +530,7 @@ namespace tgui
             return false;
 
         // Stop reading when we reach the end of the file
-        while (!m_File.eof())
+        while (!m_File.eof() && !failed)
         {
             // Get the next line
             std::string line;
@@ -553,9 +556,6 @@ namespace tgui
 
                             // The multiline comment has been processed
                             multilineComment = false;
-
-                            // Continue like normal
-                            goto multilineCommentProcessed;
                         }
                         else // There is no end of the comment in this line
                             line = "";
@@ -566,10 +566,9 @@ namespace tgui
                 else // There is no end of the comment in this line
                     line = "";
             }
-            else // There is no multiline comment
-            {
-              multilineCommentProcessed:
 
+            if (!line.empty())
+            {
                 // Search for a quote
                 std::string::size_type quotePos1 = line.find('"');
 
@@ -602,10 +601,10 @@ namespace tgui
                                 multilineComment = true;
                             }
                             else // There is a slash in the middle of nowhere. It shouldn't be there.
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else // There is a slash on the end of the line. It shouldn't be there.
-                            goto LoadingFailed;
+                            failed = true;
                     }
 
                     // Convert the whole line to lowercase
@@ -645,119 +644,130 @@ namespace tgui
 
                             // From now on, everything is comment
                             multilineComment = true;
+
+                            // Search for the quote again, because the position might have changed
+                            quotePos1 = line.find('"');
+
+                            // The quote might have been behind the comment
+                            if (quotePos1 != std::string::npos)
+                            {
+                                // Convert the part before the quote to lowercase
+                                for (unsigned int i = 0; i < quotePos1; i++)
+                                {
+                                    if ((line[i] > 64) && (line[i] < 91))
+                                        line[i] += 32;
+                                }
+
+                                // Search for a second quote
+                                std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
+
+                                // There must always be a second quote
+                                if (quotePos2 != std::string::npos)
+                                {
+                                    // Remove all spaces and tabs after the quote
+                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
+                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
+                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
+
+                                    // Search for comments
+                                    commentPos = line.find('/', quotePos2 + 1);
+
+                                    // Check if a slash was found
+                                    if (commentPos != std::string::npos)
+                                    {
+                                        // Make sure the slash is not the last character on the line
+                                        if (line.length() > commentPos + 1)
+                                        {
+                                            // Erase the comment (if there is one)
+                                            if (line[commentPos+1] == '/')
+                                                line.erase(commentPos);
+                                            else if (line[commentPos+1] == '*')
+                                            {
+                                                // Remove the rest of the line
+                                                line.erase(commentPos);
+
+                                                // From now on, everything is comment
+                                                multilineComment = true;
+                                            }
+                                            else // There is a slash in the middle of nowhere. It shouldn't be there.
+                                                failed = true;
+                                        }
+                                        else // There is a slash on the end of the line. It shouldn't be there.
+                                            failed = true;
+                                    }
+
+                                    if (failed)
+                                        break;
+
+                                    // Search for the quote again, because the position might have changed
+                                    quotePos2 = line.find('"', quotePos1 + 1);
+
+                                    // Search for backslashes between the quotes
+                                    std::string::size_type backslashPos = line.find('\\', quotePos1);
+
+                                    // Check if a backlash was found before the second quote
+                                    while (backslashPos < quotePos2)
+                                    {
+                                        // Check for special characters
+                                        if (line[backslashPos + 1] == 'n')
+                                        {
+                                            line[backslashPos] = '\n';
+                                            line.erase(backslashPos + 1, 1);
+                                            --quotePos2;
+                                        }
+                                        else if (line[backslashPos + 1] == 't')
+                                        {
+                                            line[backslashPos] = '\t';
+                                            line.erase(backslashPos + 1, 1);
+                                            --quotePos2;
+                                        }
+                                        else if (line[backslashPos + 1] == '\\')
+                                        {
+                                            line.erase(backslashPos + 1, 1);
+                                            --quotePos2;
+                                        }
+                                        else if (line[backslashPos + 1] == '"')
+                                        {
+                                            line[backslashPos] = '"';
+                                            line.erase(backslashPos + 1, 1);
+
+                                            // Find the next quote
+                                            quotePos2 = line.find('"', backslashPos + 1);
+
+                                            if (quotePos2 == std::string::npos)
+                                            {
+                                                failed = true;
+                                                break;
+                                            }
+                                        }
+
+                                        // Find the next backslash
+                                        backslashPos = line.find('\\', backslashPos + 1);
+                                    }
+
+                                    // There may never be more than two quotes
+                                    if (line.find('"', quotePos2 + 1) != std::string::npos)
+                                        failed = true;
+
+                                    // Convert the part behind the quote to lowercase
+                                    for (std::string::size_type i = quotePos2; i < line.length(); i++)
+                                    {
+                                        if ((line[i] > 64) && (line[i] < 91))
+                                            line[i] += 32;
+                                    }
+                                }
+                                else // The second quote is missing
+                                    failed = true;
+                            }
                         }
                         else // There is a slash in the middle of nowhere. It shouldn't be there.
-                            goto LoadingFailed;
-                    }
-
-                    // Search for the quote again, because the position might have changed
-                    quotePos1 = line.find('"');
-
-                    // The quote might have been behind the comment
-                    if (quotePos1 != std::string::npos)
-                    {
-                        // Convert the part before the quote to lowercase
-                        for (unsigned int i = 0; i < quotePos1; i++)
-                        {
-                            if ((line[i] > 64) && (line[i] < 91))
-                                line[i] += 32;
-                        }
-
-                        // Search for a second quote
-                        std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
-
-                        // There must always be a second quote
-                        if (quotePos2 == std::string::npos)
-                            goto LoadingFailed;
-
-                        // Remove all spaces and tabs after the quote
-                        line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
-                        line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
-                        line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
-
-                        // Search for comments
-                        commentPos = line.find('/', quotePos2 + 1);
-
-                        // Check if a slash was found
-                        if (commentPos != std::string::npos)
-                        {
-                            // Make sure the slash is not the last character on the line
-                            if (line.length() > commentPos + 1)
-                            {
-                                // Erase the comment (if there is one)
-                                if (line[commentPos+1] == '/')
-                                    line.erase(commentPos);
-                                else if (line[commentPos+1] == '*')
-                                {
-                                    // Remove the rest of the line
-                                    line.erase(commentPos);
-
-                                    // From now on, everything is comment
-                                    multilineComment = true;
-                                }
-                                else // There is a slash in the middle of nowhere. It shouldn't be there.
-                                    goto LoadingFailed;
-                            }
-                            else // There is a slash on the end of the line. It shouldn't be there.
-                                goto LoadingFailed;
-                        }
-
-                        // Search for the quote again, because the position might have changed
-                        quotePos2 = line.find('"', quotePos1 + 1);
-
-                        // Search for backslashes between the quotes
-                        std::string::size_type backslashPos = line.find('\\', quotePos1);
-
-                        // Check if a backlash was found before the second quote
-                        while (backslashPos < quotePos2)
-                        {
-                            // Check for special characters
-                            if (line[backslashPos + 1] == 'n')
-                            {
-                                line[backslashPos] = '\n';
-                                line.erase(backslashPos + 1, 1);
-                                --quotePos2;
-                            }
-                            else if (line[backslashPos + 1] == 't')
-                            {
-                                line[backslashPos] = '\t';
-                                line.erase(backslashPos + 1, 1);
-                                --quotePos2;
-                            }
-                            else if (line[backslashPos + 1] == '\\')
-                            {
-                                line.erase(backslashPos + 1, 1);
-                                --quotePos2;
-                            }
-                            else if (line[backslashPos + 1] == '"')
-                            {
-                                line[backslashPos] = '"';
-                                line.erase(backslashPos + 1, 1);
-
-                                // Find the next quote
-                                quotePos2 = line.find('"', backslashPos + 1);
-
-                                if (quotePos2 == std::string::npos)
-                                    goto LoadingFailed;
-                            }
-
-                            // Find the next backslash
-                            backslashPos = line.find('\\', backslashPos + 1);
-                        }
-
-                        // There may never be more than two quotes
-                        if (line.find('"', quotePos2 + 1) != std::string::npos)
-                            goto LoadingFailed;
-
-                        // Convert the part behind the quote to lowercase
-                        for (unsigned int i = quotePos2; i < line.length(); i++)
-                        {
-                            if ((line[i] > 64) && (line[i] < 91))
-                                line[i] += 32;
-                        }
+                            failed = true;
                     }
                 }
             }
+
+            if (failed)
+                break;
 
             // Only continue when the line is not empty
             if (!line.empty())
@@ -811,10 +821,10 @@ namespace tgui
                                     defineValues.push_back(line.erase(0, equalsSignPos + 1));
                                 }
                                 else // The equals sign is missing
-                                    goto LoadingFailed;
+                                    failed = true;
                             }
                             else // The second line is wrong
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else // This is the second line
                         {
@@ -825,7 +835,7 @@ namespace tgui
                                 progress.pop();
                             }
                             else // The second line is wrong
-                                goto LoadingFailed;
+                                failed = true;
                         }
 
                         break;
@@ -834,7 +844,7 @@ namespace tgui
                     {
                         // Find out if the loading is done
                         if (line.compare("}") == 0)
-                            goto LoadingSucceeded;
+                            break;
 
                         // The next object will have the window as its parent
                         parentID.push(Type_Unknown + 1);
@@ -860,10 +870,9 @@ namespace tgui
                         else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
                         else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
                         else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                        else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
                         else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -875,12 +884,12 @@ namespace tgui
                         Tab::Ptr tab = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the tab
@@ -910,7 +919,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 4);
 
-                            // The pathname must start and end with quotes
+                            // The name must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Add the item to the list box
@@ -922,22 +931,22 @@ namespace tgui
                             line.erase(0, 12);
 
                             // The line must contain something
-                            if (line.empty() == true)
-                                goto LoadingFailed;
-
-                            // Check if there are quotes
-                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            if (!line.empty())
                             {
-                                line.erase(0, 1);
-                                line.erase(line.length()-1, 1);
+                                // Check if there are quotes
+                                if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                                {
+                                    line.erase(0, 1);
+                                    line.erase(line.length()-1, 1);
 
-                                // Select the item
-                                tab->select(line);
-                            }
-                            else // There were no quotes
-                            {
-                                // Select the item
-                                tab->select(atoi(line.c_str()));
+                                    // Select the item
+                                    tab->select(line);
+                                }
+                                else // There were no quotes
+                                {
+                                    // Select the item
+                                    tab->select(atoi(line.c_str()));
+                                }
                             }
                         }
                         else if (line.substr(0, 6).compare("scale=") == 0)
@@ -947,7 +956,7 @@ namespace tgui
                             if (extractVector2f(line, objScale))
                                 tab->setScale(objScale);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 9).compare("position=") == 0)
                         {
@@ -956,7 +965,7 @@ namespace tgui
                             if (extractVector2f(line, position))
                                 tab->setPosition(position);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 11).compare("callbackid=") == 0)
                         {
@@ -964,7 +973,7 @@ namespace tgui
                             tab->setCallbackId(readInt(line.c_str()));
                         }
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -976,10 +985,36 @@ namespace tgui
                     }
                     case Type_Panel + 1:
                     {
-                        START_LOADING_OBJECT
-
                         // Get the pointer to the panel back
                         Panel::Ptr panelPtr = extraPtr;
+
+                        if (progress.top() == 0)
+                        {
+                            if (line.compare("{") == 0)
+                            {
+                                progress.pop();
+                                progress.push(1);
+
+                                // All newly created objects must be part of the panel
+                                parentID.push(Type_Panel + 1);
+                                parentPtr.push(panelPtr.get());
+                                break;
+                            }
+                            else
+                                failed = true;
+                        }
+                        else
+                        {
+                            if (line.compare("}") == 0)
+                            {
+                                objectID = parentID.top();
+                                progress.pop();
+
+                                parentID.pop();
+                                parentPtr.pop();
+                                break;
+                            }
+                        }
 
                         CHECK_SHARED_PROPERTIES(panelPtr)
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
@@ -989,10 +1024,6 @@ namespace tgui
                         }
                         else
                         {
-                            // All newly created objects must be part of the panel
-                            parentID.push(Type_Panel + 1);
-                            parentPtr.push(panelPtr.get());
-
                             COMPARE_OBJECT(4, "tab:", Tab)
                             else COMPARE_OBJECT(5, "grid:", Grid)
                             else COMPARE_OBJECT(6, "panel:", Panel)
@@ -1012,10 +1043,9 @@ namespace tgui
                             else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
                             else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
                             else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
                             else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
-                                goto LoadingFailed;
+                                failed = true;
                         }
 
                         break;
@@ -1059,7 +1089,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(label)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1071,12 +1101,12 @@ namespace tgui
                         Button::Ptr button = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the button
@@ -1105,7 +1135,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(button)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1117,12 +1147,12 @@ namespace tgui
                         Slider::Ptr slider = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the slider
@@ -1153,7 +1183,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1170,7 +1200,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 9);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the picture
@@ -1178,7 +1208,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(picture)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1198,12 +1228,12 @@ namespace tgui
                             // Set the item height
                             listBox->setItemHeight(atoi(line.c_str()));
                         }
-                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        else if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 18);
+                            line.erase(0, 20);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the scrollbar
@@ -1219,7 +1249,7 @@ namespace tgui
                             if (extractVector4u(line, borders))
                                 listBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
@@ -1254,7 +1284,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 5);
 
-                            // The pathname must start and end with quotes
+                            // The name must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Add the item to the list box
@@ -1266,27 +1296,29 @@ namespace tgui
                             line.erase(0, 13);
 
                             // The line must contain something
-                            if (line.empty() == true)
-                                goto LoadingFailed;
-
-                            // Check if there are quotes
-                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            if (!line.empty())
                             {
-                                line.erase(0, 1);
-                                line.erase(line.length()-1, 1);
+                                // Check if there are quotes
+                                if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                                {
+                                    line.erase(0, 1);
+                                    line.erase(line.length()-1, 1);
 
-                                // Select the item
-                                listBox->setSelectedItem(line);
+                                    // Select the item
+                                    listBox->setSelectedItem(line);
+                                }
+                                else // There were no quotes
+                                {
+                                    // Select the item
+                                    listBox->setSelectedItem(atoi(line.c_str()));
+                                }
                             }
-                            else // There were no quotes
-                            {
-                                // Select the item
-                                listBox->setSelectedItem(atoi(line.c_str()));
-                            }
+                            else
+                                failed = true;
                         }
                         else CHECK_SHARED_PROPERTIES(listBox)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1298,12 +1330,12 @@ namespace tgui
                         EditBox::Ptr editBox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the edit box
@@ -1319,7 +1351,7 @@ namespace tgui
                             if (extractVector4u(line, borders))
                                 editBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 5).compare("text=") == 0)
                         {
@@ -1392,7 +1424,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(editBox)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1404,12 +1436,12 @@ namespace tgui
                         TextBox::Ptr textBox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 18);
+                            line.erase(0, 20);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the scrollbar
@@ -1425,7 +1457,7 @@ namespace tgui
                             if (extractVector4u(line, borders))
                                 textBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 5).compare("text=") == 0)
                         {
@@ -1491,7 +1523,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(textBox)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1503,12 +1535,12 @@ namespace tgui
                         Checkbox::Ptr checkbox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the checkbox
@@ -1552,7 +1584,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(checkbox)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1564,23 +1596,23 @@ namespace tgui
                         ComboBox::Ptr comboBox = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the combo box
-                            comboBox->load(line, comboBox->getSize().x, comboBox->getSize().y);
+                            comboBox->load(line);
                         }
-                        else if (line.substr(0, 18).compare("scrollbarpathname=") == 0)
+                        else if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 18);
+                            line.erase(0, 20);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the scrollbar
@@ -1596,7 +1628,7 @@ namespace tgui
                             if (extractVector4u(line, borders))
                                 comboBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
@@ -1631,7 +1663,7 @@ namespace tgui
                             // Remove the first part of the line
                             line.erase(0, 5);
 
-                            // The pathname must start and end with quotes
+                            // The name must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Add the item to the combo box
@@ -1643,27 +1675,29 @@ namespace tgui
                             line.erase(0, 13);
 
                             // The line must contain something
-                            if (line.empty() == true)
-                                goto LoadingFailed;
-
-                            // Check if there are quotes
-                            if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                            if (!line.empty())
                             {
-                                line.erase(0, 1);
-                                line.erase(line.length()-1, 1);
+                                // Check if there are quotes
+                                if ((line[0] == '"') && (line[line.length()-1] == '"'))
+                                {
+                                    line.erase(0, 1);
+                                    line.erase(line.length()-1, 1);
 
-                                // Select the item
-                                comboBox->setSelectedItem(line);
+                                    // Select the item
+                                    comboBox->setSelectedItem(line);
+                                }
+                                else // There were no quotes
+                                {
+                                    // Select the item
+                                    comboBox->setSelectedItem(atoi(line.c_str()));
+                                }
                             }
-                            else // There were no quotes
-                            {
-                                // Select the item
-                                comboBox->setSelectedItem(atoi(line.c_str()));
-                            }
+                            else
+                                failed = true;
                         }
                         else CHECK_SHARED_PROPERTIES(comboBox)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1675,12 +1709,12 @@ namespace tgui
                         Slider2d::Ptr slider = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the slider
@@ -1689,26 +1723,26 @@ namespace tgui
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
                             Vector2f value;
-                            if (extractVector2f(line.erase(0, 6), value) == false)
-                                goto LoadingFailed;
-
-                            slider->setValue(value);
+                            if (extractVector2f(line.erase(0, 6), value))
+                                slider->setValue(value);
+                            else
+                                failed = true;
                         }
                         else if (line.substr(0, 8).compare("minimum=") == 0)
                         {
                             Vector2f minimum;
-                            if (extractVector2f(line.erase(0, 8), minimum) == false)
-                                goto LoadingFailed;
-
-                            slider->setMinimum(minimum);
+                            if (extractVector2f(line.erase(0, 8), minimum))
+                                slider->setMinimum(minimum);
+                            else
+                                failed = true;
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
                             Vector2f maximum;
-                            if (extractVector2f(line.erase(0, 8), maximum) == false)
-                                goto LoadingFailed;
-
-                            slider->setMaximum(maximum);
+                            if (extractVector2f(line.erase(0, 8), maximum))
+                                slider->setMaximum(maximum);
+                            else
+                                failed = true;
                         }
                         else if (line.substr(0, 15).compare("returntocenter=") == 0)
                         {
@@ -1734,7 +1768,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(slider)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1746,12 +1780,12 @@ namespace tgui
                         Scrollbar::Ptr scrollbar = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the scrollbar
@@ -1782,7 +1816,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(scrollbar)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1794,12 +1828,12 @@ namespace tgui
                         LoadingBar::Ptr loadingBar = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the loading bar
@@ -1819,7 +1853,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(loadingBar)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1831,12 +1865,12 @@ namespace tgui
                         SpinButton::Ptr spinButton = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the spin button
@@ -1867,7 +1901,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(spinButton)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -1879,12 +1913,12 @@ namespace tgui
                         RadioButton::Ptr radioButton = extraPtr;
 
                         // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
+                        if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the radio button
@@ -1928,29 +1962,55 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(radioButton)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
                     case Type_ChildWindow + 1:
                     {
-                        START_LOADING_OBJECT
-
                         // Get the pointer to the child window back
                         ChildWindow::Ptr child = extraPtr;
 
+                        if (progress.top() == 0)
+                        {
+                            if (line.compare("{") == 0)
+                            {
+                                progress.pop();
+                                progress.push(1);
+
+                                // All newly created objects must be part of the panel
+                                parentID.push(Type_ChildWindow + 1);
+                                parentPtr.push(child.get());
+                                break;
+                            }
+                            else
+                                failed = true;
+                        }
+                        else
+                        {
+                            if (line.compare("}") == 0)
+                            {
+                                objectID = parentID.top();
+                                progress.pop();
+
+                                parentID.pop();
+                                parentPtr.pop();
+                                break;
+                            }
+                        }
+
                         CHECK_SHARED_PROPERTIES(child)
-                        else if (line.substr(0, 9).compare("pathname=") == 0)
+                        else if (line.substr(0, 11).compare("configfile=") == 0)
                         {
                             // Remove the first part of the line
-                            line.erase(0, 9);
+                            line.erase(0, 11);
 
-                            // The pathname must start and end with quotes
+                            // The filename must start and end with quotes
                             CHECK_FOR_QUOTES
 
                             // Load the child window
-                            if (child->load(line, child->getSize().x, child->getSize().y, child->getBackgroundColor()) == false)
-                                goto LoadingFailed;
+                            if (child->load(line) == false)
+                                failed = true;
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
@@ -1967,7 +2027,7 @@ namespace tgui
                             if (extractVector4u(line, borders))
                                 child->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 13).compare("transparency=") == 0)
                         {
@@ -1979,10 +2039,6 @@ namespace tgui
                         }
                         else
                         {
-                            // All newly created objects must be part of the panel
-                            parentID.push(Type_ChildWindow + 1);
-                            parentPtr.push(child.get());
-
                             COMPARE_OBJECT(4, "tab:", Tab)
                             else COMPARE_OBJECT(5, "grid:", Grid)
                             else COMPARE_OBJECT(6, "panel:", Panel)
@@ -2002,10 +2058,9 @@ namespace tgui
                             else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
                             else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
                             else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                            else COMPARE_OBJECT(15, "animatedbutton:", AnimatedButton)
                             else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
-                                goto LoadingFailed;
+                                failed = true;
                         }
 
                         break;
@@ -2040,74 +2095,22 @@ namespace tgui
                         else if (line.substr(0, 6).compare("cells=") == 0)
                         {
                             Vector2u cells;
-                            if (extractVector2u(line.erase(0, 6), cells) == false)
-                                goto LoadingFailed;
-
-                            // Set the cells
-                            spriteSheet->setCells(cells.x, cells.y);
+                            if (extractVector2u(line.erase(0, 6), cells))
+                                spriteSheet->setCells(cells.x, cells.y);
+                            else
+                                failed = true;
                         }
                         else if (line.substr(0, 12).compare("visiblecell=") == 0)
                         {
                             Vector2u cell;
-                            if (extractVector2u(line.erase(0, 12), cell) == false)
-                                goto LoadingFailed;
-
-                            spriteSheet->setVisibleCell(cell.x, cell.y);
+                            if (extractVector2u(line.erase(0, 12), cell))
+                                spriteSheet->setVisibleCell(cell.x, cell.y);
+                            else
+                                failed = true;
                         }
                         else CHECK_SHARED_PROPERTIES(spriteSheet)
                         else // The line was wrong
-                            goto LoadingFailed;
-
-                        break;
-                    }
-                    case Type_AnimatedButton + 1:
-                    {
-                        START_LOADING_OBJECT
-
-                        // Get the pointer to the animated button back
-                        AnimatedButton::Ptr button = extraPtr;
-
-                        // Find out what the next property is
-                        if (line.substr(0, 9).compare("pathname=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 9);
-
-                            // The pathname must start and end with quotes
-                            CHECK_FOR_QUOTES
-
-                            // Load the animated button
-                            if (button->load(line) == false)
-                                goto LoadingFailed;
-                        }
-                        else if (line.substr(0, 5).compare("text=") == 0)
-                        {
-                            // Remove the first part of the line
-                            line.erase(0, 5);
-
-                            // The text must start and end with quotes
-                            CHECK_FOR_QUOTES
-
-                            // Change the caption
-                            button->setText(line);
-                        }
-                        else if (line.substr(0, 9).compare("textsize=") == 0)
-                        {
-                            // Change the text size
-                            button->setTextSize(atoi(line.erase(0, 9).c_str()));
-                        }
-                        else if (line.substr(0, 10).compare("textcolor=") == 0)
-                        {
-                            // Change the text color (black on error)
-                            button->setTextColor(extractColor(line.erase(0, 10)));
-                        }
-                        else if (line.substr(0, 13).compare("currentframe=") == 0)
-                        {
-                            button->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
-                        }
-                        else CHECK_SHARED_PROPERTIES(button)
-                        else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -2146,16 +2149,16 @@ namespace tgui
 
                                         // Add the frame to the animated picture
                                         if (animatedPicture->addFrame(line, sf::milliseconds(duration)) == false)
-                                            goto LoadingFailed;
+                                            failed = true;
                                     }
                                     else
-                                        goto LoadingFailed;
+                                        failed = true;
                                 }
                                 else
-                                    goto LoadingFailed;
+                                    failed = true;
                             }
                             else
-                                goto LoadingFailed;
+                                failed = true;
                         }
                         else if (line.substr(0, 5).compare("loop=") == 0)
                         {
@@ -2186,7 +2189,7 @@ namespace tgui
                         }
                         else CHECK_SHARED_PROPERTIES(animatedPicture)
                         else // The line was wrong
-                            goto LoadingFailed;
+                            failed = true;
 
                         break;
                     }
@@ -2194,17 +2197,12 @@ namespace tgui
             }
         }
 
-
-      LoadingSucceeded:
-
         m_File.close();
+
+        if (failed)
+            return false;
+
         return true;
-
-      LoadingFailed:
-
-        m_File.close();
-        return false;
-*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
