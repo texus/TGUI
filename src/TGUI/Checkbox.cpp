@@ -36,9 +36,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox() :
-    m_Checked          (false),
-    m_AllowTextClick   (true),
-    m_TextSize         (0)
+    m_Checked       (false),
+    m_AllowTextClick(true),
+    m_TextSize      (0)
     {
         m_Callback.objectType = Type_Checkbox;
         m_Text.setColor(sf::Color::Black);
@@ -47,11 +47,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox(const Checkbox& copy) :
-    ClickableObject (copy),
-    m_Checked       (copy.m_Checked),
-    m_AllowTextClick(copy.m_AllowTextClick),
-    m_Text          (copy.m_Text),
-    m_TextSize      (copy.m_TextSize)
+    ClickableObject   (copy),
+    m_LoadedConfigFile(copy.m_LoadedConfigFile),
+    m_Checked         (copy.m_Checked),
+    m_AllowTextClick  (copy.m_AllowTextClick),
+    m_Text            (copy.m_Text),
+    m_TextSize        (copy.m_TextSize)
     {
         // Copy the textures
         TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked);
@@ -79,6 +80,7 @@ namespace tgui
             Checkbox temp(right);
             this->ClickableObject::operator=(right);
 
+            std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
             std::swap(m_Checked,          temp.m_Checked);
             std::swap(m_AllowTextClick,   temp.m_AllowTextClick);
             std::swap(m_Text,             temp.m_Text);
@@ -103,6 +105,8 @@ namespace tgui
 
     bool Checkbox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -208,6 +212,13 @@ namespace tgui
 
         // When there is no error we will return true
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Checkbox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

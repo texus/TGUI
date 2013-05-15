@@ -51,6 +51,7 @@ namespace tgui
 
     SpinButton::SpinButton(const SpinButton& copy) :
     ClickableObject       (copy),
+    m_LoadedConfigFile    (copy.m_LoadedConfigFile),
     m_VerticalScroll      (copy.m_VerticalScroll),
     m_Minimum             (copy.m_Minimum),
     m_Maximum             (copy.m_Maximum),
@@ -85,6 +86,7 @@ namespace tgui
             SpinButton temp(right);
             this->ClickableObject::operator=(right);
 
+            std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_VerticalScroll,         temp.m_VerticalScroll);
             std::swap(m_Minimum,                temp.m_Minimum);
             std::swap(m_Maximum,                temp.m_Maximum);
@@ -112,6 +114,8 @@ namespace tgui
 
     bool SpinButton::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -212,6 +216,13 @@ namespace tgui
         }
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& SpinButton::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

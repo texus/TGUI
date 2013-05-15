@@ -67,6 +67,7 @@ namespace tgui
     EditBox::EditBox(const EditBox& copy) :
     ClickableObject         (copy),
     ObjectBorders           (copy),
+    m_LoadedConfigFile      (copy.m_LoadedConfigFile),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
     m_SelectionPointColor   (copy.m_SelectionPointColor),
     m_SelectionPointWidth   (copy.m_SelectionPointWidth),
@@ -129,6 +130,7 @@ namespace tgui
             this->ClickableObject::operator=(right);
             this->ObjectBorders::operator=(right);
 
+            std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
             std::swap(m_SelectionPointColor,    temp.m_SelectionPointColor);
             std::swap(m_SelectionPointWidth,    temp.m_SelectionPointWidth);
@@ -177,6 +179,8 @@ namespace tgui
 
     bool EditBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
         m_Size.x = 0;
@@ -418,6 +422,13 @@ namespace tgui
 
         // When there is no error we will return true
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& EditBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

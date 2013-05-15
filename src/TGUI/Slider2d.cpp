@@ -51,6 +51,7 @@ namespace tgui
 
     Slider2d::Slider2d(const Slider2d& copy) :
     ClickableObject      (copy),
+    m_LoadedConfigFile   (copy.m_LoadedConfigFile),
     m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
@@ -85,6 +86,7 @@ namespace tgui
             Slider2d temp(right);
             this->ClickableObject::operator=(right);
 
+            std::swap(m_LoadedConfigFile,    temp.m_LoadedConfigFile);
             std::swap(m_Minimum,             temp.m_Minimum);
             std::swap(m_Maximum,             temp.m_Maximum);
             std::swap(m_Value,               temp.m_Value);
@@ -111,6 +113,8 @@ namespace tgui
 
     bool Slider2d::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -209,6 +213,13 @@ namespace tgui
         }
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Slider2d::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

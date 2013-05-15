@@ -54,6 +54,8 @@ namespace tgui
 
     bool Label::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // Open the config file
         ConfigFile configFile;
         if (!configFile.open(configFileFilename))

@@ -52,6 +52,7 @@ namespace tgui
 
     Tab::Tab(const Tab& copy) :
     Object                 (copy),
+    m_LoadedConfigFile     (copy.m_LoadedConfigFile),
     m_SplitImage           (copy.m_SplitImage),
     m_SeparateSelectedImage(copy.m_SeparateSelectedImage),
     m_TabHeight            (copy.m_TabHeight),
@@ -95,6 +96,7 @@ namespace tgui
             Tab temp(right);
             this->Object::operator=(right);
 
+            std::swap(m_LoadedConfigFile,      temp.m_LoadedConfigFile);
             std::swap(m_SplitImage,            temp.m_SplitImage);
             std::swap(m_SeparateSelectedImage, temp.m_SeparateSelectedImage);
             std::swap(m_TabHeight,             temp.m_TabHeight);
@@ -127,6 +129,8 @@ namespace tgui
 
     bool Tab::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -303,6 +307,13 @@ namespace tgui
             setTextSize(0);
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Tab::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

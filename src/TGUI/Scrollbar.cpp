@@ -103,6 +103,8 @@ namespace tgui
 
     bool Scrollbar::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 

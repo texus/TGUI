@@ -41,9 +41,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox() :
-    m_TextSize               (15),
-    m_BorderColor            (sf::Color::Black),
-    m_Scroll                 (NULL)
+    m_TextSize   (15),
+    m_BorderColor(sf::Color::Black),
+    m_Scroll     (NULL)
     {
         m_Callback.objectType = Type_Unknown;
         m_DraggableObject = true;
@@ -59,10 +59,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& copy) :
-    Object                   (copy),
-    ObjectBorders            (copy),
-    m_TextSize               (copy.m_TextSize),
-    m_BorderColor            (copy.m_BorderColor)
+    Object            (copy),
+    ObjectBorders     (copy),
+    m_LoadedConfigFile(copy.m_LoadedConfigFile),
+    m_TextSize        (copy.m_TextSize),
+    m_BorderColor     (copy.m_BorderColor)
     {
         m_Panel = new Panel(*copy.m_Panel);
 
@@ -100,10 +101,11 @@ namespace tgui
             this->Object::operator=(right);
             this->ObjectBorders::operator=(right);
 
-            std::swap(m_TextSize,    temp.m_TextSize);
-            std::swap(m_BorderColor, temp.m_BorderColor);
-            std::swap(m_Panel,       temp.m_Panel);
-            std::swap(m_Scroll,      temp.m_Scroll);
+            std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
+            std::swap(m_TextSize,         temp.m_TextSize);
+            std::swap(m_BorderColor,      temp.m_BorderColor);
+            std::swap(m_Panel,            temp.m_Panel);
+            std::swap(m_Scroll,           temp.m_Scroll);
         }
 
         return *this;
@@ -120,6 +122,8 @@ namespace tgui
 
     bool ChatBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -208,6 +212,13 @@ namespace tgui
         }
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& ChatBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

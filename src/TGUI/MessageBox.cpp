@@ -47,6 +47,7 @@ namespace tgui
 
     MessageBox::MessageBox(const MessageBox& copy) :
     ChildWindow               (copy),
+    m_LoadedConfigFile        (copy.m_LoadedConfigFile),
     m_ButtonConfigFileFilename(copy.m_ButtonConfigFileFilename),
     m_Buttons                 (copy.m_Buttons),
     m_TextSize                (copy.m_TextSize)
@@ -68,6 +69,7 @@ namespace tgui
             MessageBox temp(right);
             this->ChildWindow::operator=(right);
 
+            std::swap(m_LoadedConfigFile,         temp.m_LoadedConfigFile);
             std::swap(m_ButtonConfigFileFilename, temp.m_ButtonConfigFileFilename);
             std::swap(m_Buttons,                  temp.m_Buttons);
             std::swap(m_TextSize,                 temp.m_TextSize);
@@ -87,6 +89,8 @@ namespace tgui
 
     bool MessageBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -180,6 +184,13 @@ namespace tgui
         }
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& MessageBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

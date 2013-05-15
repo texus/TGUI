@@ -60,6 +60,7 @@ namespace tgui
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
     GroupObject        (childWindowToCopy),
     ObjectBorders      (childWindowToCopy),
+    m_LoadedConfigFile (childWindowToCopy.m_LoadedConfigFile),
     m_Size             (childWindowToCopy.m_Size),
     m_BackgroundColor  (childWindowToCopy.m_BackgroundColor),
     m_BackgroundTexture(childWindowToCopy.m_BackgroundTexture),
@@ -111,6 +112,7 @@ namespace tgui
             // Delete the old close button
             delete m_CloseButton;
 
+            std::swap(m_LoadedConfigFile,  temp.m_LoadedConfigFile);
             std::swap(m_Size,              temp.m_Size);
             std::swap(m_BackgroundColor,   temp.m_BackgroundColor);
             std::swap(m_BackgroundTexture, temp.m_BackgroundTexture);
@@ -144,6 +146,8 @@ namespace tgui
 
     bool ChildWindow::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
 
@@ -291,6 +295,13 @@ namespace tgui
 
         // When there is no error we will return true
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& ChildWindow::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

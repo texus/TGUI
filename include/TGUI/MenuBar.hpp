@@ -65,6 +65,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the filename of the config file that was used to load the object.
+        ///
+        /// \return Filename of loaded config file.
+        ///         Empty string when no config file was loaded yet.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::string& getLoadedConfigFile();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the height of the menu bar.
         ///
         /// \param height  The height of the menu bar.
@@ -352,6 +362,8 @@ namespace tgui
             std::vector<sf::Text> menuItems;
             int selectedMenuItem;
         };
+
+        std::string m_LoadedConfigFile;
 
         std::vector<Menu> m_Menus;
 

@@ -41,7 +41,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
-    ClickableObject (copy)
+    ClickableObject (copy),
+    m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
         TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture);
@@ -66,6 +67,7 @@ namespace tgui
             Picture temp(right);
             this->ClickableObject::operator=(right);
 
+            std::swap(m_LoadedFilename, temp.m_LoadedFilename);
             std::swap(m_Texture,        temp.m_Texture);
         }
 
@@ -83,6 +85,8 @@ namespace tgui
 
     bool Picture::load(const std::string& filename)
     {
+        m_LoadedFilename = filename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
         m_Size.x = 0;
@@ -107,6 +111,13 @@ namespace tgui
         }
         else // The texture was not loaded
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Picture::getLoadedFilename()
+    {
+        return m_LoadedFilename;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -50,6 +50,7 @@ namespace tgui
 
     Slider::Slider(const Slider& copy) :
     Object               (copy),
+    m_LoadedConfigFile   (copy.m_LoadedConfigFile),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
     m_Minimum            (copy.m_Minimum),
@@ -99,6 +100,7 @@ namespace tgui
             Slider temp(right);
             this->Object::operator=(right);
 
+            std::swap(m_LoadedConfigFile,     temp.m_LoadedConfigFile);
             std::swap(m_MouseDownOnThumb,     temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos,  temp.m_MouseDownOnThumbPos);
             std::swap(m_Minimum,              temp.m_Minimum);
@@ -134,6 +136,8 @@ namespace tgui
 
     bool Slider::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -330,6 +334,13 @@ namespace tgui
         }
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Slider::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

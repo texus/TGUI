@@ -38,12 +38,12 @@ namespace tgui
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox() :
-    m_SelectedItem           (0),
-    m_Size                   (50, 100),
-    m_ItemHeight             (24),
-    m_TextSize               (20),
-    m_MaxItems               (0),
-    m_Scroll                 (NULL)
+    m_SelectedItem(0),
+    m_Size        (50, 100),
+    m_ItemHeight  (24),
+    m_TextSize    (20),
+    m_MaxItems    (0),
+    m_Scroll      (NULL)
     {
         m_Callback.objectType = Type_ListBox;
         m_DraggableObject = true;
@@ -57,6 +57,7 @@ namespace tgui
     ListBox::ListBox(const ListBox& copy) :
     Object                   (copy),
     ObjectBorders            (copy),
+    m_LoadedConfigFile       (copy.m_LoadedConfigFile),
     m_Items                  (copy.m_Items),
     m_SelectedItem           (copy.m_SelectedItem),
     m_Size                   (copy.m_Size),
@@ -102,6 +103,7 @@ namespace tgui
                 m_Scroll = NULL;
             }
 
+            std::swap(m_LoadedConfigFile,        temp.m_LoadedConfigFile);
             std::swap(m_Items,                   temp.m_Items);
             std::swap(m_SelectedItem,            temp.m_SelectedItem);
             std::swap(m_Size,                    temp.m_Size);
@@ -131,6 +133,8 @@ namespace tgui
 
     bool ListBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
         {
@@ -228,6 +232,13 @@ namespace tgui
         }
 
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& ListBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

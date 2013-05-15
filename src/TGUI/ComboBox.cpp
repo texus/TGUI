@@ -59,6 +59,7 @@ namespace tgui
     ComboBox::ComboBox(const ComboBox& copy) :
     Object              (copy),
     ObjectBorders       (copy),
+    m_LoadedConfigFile  (copy.m_LoadedConfigFile),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
     m_ShowList          (copy.m_ShowList),
     m_MouseOnListBox    (copy.m_MouseOnListBox),
@@ -98,6 +99,7 @@ namespace tgui
             // Delete the old list box
             delete m_ListBox;
 
+            std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
             std::swap(m_ShowList,               temp.m_ShowList);
             std::swap(m_MouseOnListBox,         temp.m_MouseOnListBox);
@@ -123,6 +125,8 @@ namespace tgui
 
     bool ComboBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -258,6 +262,13 @@ namespace tgui
         m_ListBox->removeAllItems();
 
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& ComboBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

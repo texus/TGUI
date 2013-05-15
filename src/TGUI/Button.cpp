@@ -36,9 +36,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button() :
-    m_SplitImage         (false),
-    m_SeparateHoverImage (false),
-    m_TextSize           (0)
+    m_SplitImage        (false),
+    m_SeparateHoverImage(false),
+    m_TextSize          (0)
     {
         m_Callback.objectType = Type_Button;
         m_Text.setColor(sf::Color::Black);
@@ -48,6 +48,7 @@ namespace tgui
 
     Button::Button(const Button& copy) :
     ClickableObject     (copy),
+    m_LoadedConfigFile  (copy.m_LoadedConfigFile),
     m_SplitImage        (copy.m_SplitImage),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
     m_Text              (copy.m_Text),
@@ -101,6 +102,7 @@ namespace tgui
             Button temp(right);
             this->ClickableObject::operator=(right);
 
+            std::swap(m_LoadedConfigFile,   temp.m_LoadedConfigFile);
             std::swap(m_TextureNormal_L,    temp.m_TextureNormal_L);
             std::swap(m_TextureNormal_M,    temp.m_TextureNormal_M);
             std::swap(m_TextureNormal_R,    temp.m_TextureNormal_R);
@@ -133,6 +135,8 @@ namespace tgui
 
     bool Button::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -387,6 +391,13 @@ namespace tgui
 
         // When there is no error we will return true
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& Button::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

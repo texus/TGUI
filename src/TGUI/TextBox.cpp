@@ -72,6 +72,7 @@ namespace tgui
     TextBox::TextBox(const TextBox& copy) :
     Object                       (copy),
     ObjectBorders                (copy),
+    m_LoadedConfigFile           (copy.m_LoadedConfigFile),
     m_Size                       (copy.m_Size),
     m_Text                       (copy.m_Text),
     m_DisplayedText              (copy.m_DisplayedText),
@@ -132,6 +133,7 @@ namespace tgui
             this->Object::operator=(right);
             this->ObjectBorders::operator=(right);
 
+            std::swap(m_LoadedConfigFile,            temp.m_LoadedConfigFile);
             std::swap(m_Size,                        temp.m_Size);
             std::swap(m_Text,                        temp.m_Text);
             std::swap(m_DisplayedText,               temp.m_DisplayedText);
@@ -176,6 +178,8 @@ namespace tgui
 
     bool TextBox::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // If there already was a scrollbar then delete it now
         if (m_Scroll != NULL)
         {
@@ -276,6 +280,13 @@ namespace tgui
         }
 
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& TextBox::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

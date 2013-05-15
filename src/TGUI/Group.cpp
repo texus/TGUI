@@ -614,7 +614,7 @@ namespace tgui
                             line[i] += 32;
                     }
                 }
-                else
+                else // A quote was found
                 {
                     // Only remove spaces until the quote
                     line.erase(std::remove(line.begin(), line.begin() + quotePos1, ' '), line.begin() + quotePos1);
@@ -644,123 +644,126 @@ namespace tgui
 
                             // From now on, everything is comment
                             multilineComment = true;
+                        }
+                        else // There was a slash in the middle of nowhere
+                        {
+                            failed = true;
+                            break;
+                        }
+                    }
 
-                            // Search for the quote again, because the position might have changed
-                            quotePos1 = line.find('"');
+                    // Search for the quote again, because the position might have changed
+                    quotePos1 = line.find('"');
 
-                            // The quote might have been behind the comment
-                            if (quotePos1 != std::string::npos)
+                    // The quote might have been behind the comment
+                    if (quotePos1 != std::string::npos)
+                    {
+                        // Convert the part before the quote to lowercase
+                        for (unsigned int i = 0; i < quotePos1; i++)
+                        {
+                            if ((line[i] > 64) && (line[i] < 91))
+                                line[i] += 32;
+                        }
+
+                        // Search for a second quote
+                        std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
+
+                        // There must always be a second quote
+                        if (quotePos2 != std::string::npos)
+                        {
+                            // Remove all spaces and tabs after the quote
+                            line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
+                            line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
+                            line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
+
+                            // Search for comments
+                            commentPos = line.find('/', quotePos2 + 1);
+
+                            // Check if a slash was found
+                            if (commentPos != std::string::npos)
                             {
-                                // Convert the part before the quote to lowercase
-                                for (unsigned int i = 0; i < quotePos1; i++)
+                                // Make sure the slash is not the last character on the line
+                                if (line.length() > commentPos + 1)
                                 {
-                                    if ((line[i] > 64) && (line[i] < 91))
-                                        line[i] += 32;
-                                }
-
-                                // Search for a second quote
-                                std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
-
-                                // There must always be a second quote
-                                if (quotePos2 != std::string::npos)
-                                {
-                                    // Remove all spaces and tabs after the quote
-                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), ' '), line.end());
-                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\t'), line.end());
-                                    line.erase(std::remove(line.begin() + quotePos2, line.end(), '\r'), line.end());
-
-                                    // Search for comments
-                                    commentPos = line.find('/', quotePos2 + 1);
-
-                                    // Check if a slash was found
-                                    if (commentPos != std::string::npos)
+                                    // Erase the comment (if there is one)
+                                    if (line[commentPos+1] == '/')
+                                        line.erase(commentPos);
+                                    else if (line[commentPos+1] == '*')
                                     {
-                                        // Make sure the slash is not the last character on the line
-                                        if (line.length() > commentPos + 1)
-                                        {
-                                            // Erase the comment (if there is one)
-                                            if (line[commentPos+1] == '/')
-                                                line.erase(commentPos);
-                                            else if (line[commentPos+1] == '*')
-                                            {
-                                                // Remove the rest of the line
-                                                line.erase(commentPos);
+                                        // Remove the rest of the line
+                                        line.erase(commentPos);
 
-                                                // From now on, everything is comment
-                                                multilineComment = true;
-                                            }
-                                            else // There is a slash in the middle of nowhere. It shouldn't be there.
-                                                failed = true;
-                                        }
-                                        else // There is a slash on the end of the line. It shouldn't be there.
-                                            failed = true;
+                                        // From now on, everything is comment
+                                        multilineComment = true;
                                     }
-
-                                    if (failed)
-                                        break;
-
-                                    // Search for the quote again, because the position might have changed
-                                    quotePos2 = line.find('"', quotePos1 + 1);
-
-                                    // Search for backslashes between the quotes
-                                    std::string::size_type backslashPos = line.find('\\', quotePos1);
-
-                                    // Check if a backlash was found before the second quote
-                                    while (backslashPos < quotePos2)
-                                    {
-                                        // Check for special characters
-                                        if (line[backslashPos + 1] == 'n')
-                                        {
-                                            line[backslashPos] = '\n';
-                                            line.erase(backslashPos + 1, 1);
-                                            --quotePos2;
-                                        }
-                                        else if (line[backslashPos + 1] == 't')
-                                        {
-                                            line[backslashPos] = '\t';
-                                            line.erase(backslashPos + 1, 1);
-                                            --quotePos2;
-                                        }
-                                        else if (line[backslashPos + 1] == '\\')
-                                        {
-                                            line.erase(backslashPos + 1, 1);
-                                            --quotePos2;
-                                        }
-                                        else if (line[backslashPos + 1] == '"')
-                                        {
-                                            line[backslashPos] = '"';
-                                            line.erase(backslashPos + 1, 1);
-
-                                            // Find the next quote
-                                            quotePos2 = line.find('"', backslashPos + 1);
-
-                                            if (quotePos2 == std::string::npos)
-                                            {
-                                                failed = true;
-                                                break;
-                                            }
-                                        }
-
-                                        // Find the next backslash
-                                        backslashPos = line.find('\\', backslashPos + 1);
-                                    }
-
-                                    // There may never be more than two quotes
-                                    if (line.find('"', quotePos2 + 1) != std::string::npos)
+                                    else // There is a slash in the middle of nowhere. It shouldn't be there.
                                         failed = true;
-
-                                    // Convert the part behind the quote to lowercase
-                                    for (std::string::size_type i = quotePos2; i < line.length(); i++)
-                                    {
-                                        if ((line[i] > 64) && (line[i] < 91))
-                                            line[i] += 32;
-                                    }
                                 }
-                                else // The second quote is missing
+                                else // There is a slash on the end of the line. It shouldn't be there.
                                     failed = true;
                             }
+
+                            if (failed)
+                                break;
+
+                            // Search for the quote again, because the position might have changed
+                            quotePos2 = line.find('"', quotePos1 + 1);
+
+                            // Search for backslashes between the quotes
+                            std::string::size_type backslashPos = line.find('\\', quotePos1);
+
+                            // Check if a backlash was found before the second quote
+                            while (backslashPos < quotePos2)
+                            {
+                                // Check for special characters
+                                if (line[backslashPos + 1] == 'n')
+                                {
+                                    line[backslashPos] = '\n';
+                                    line.erase(backslashPos + 1, 1);
+                                    --quotePos2;
+                                }
+                                else if (line[backslashPos + 1] == 't')
+                                {
+                                    line[backslashPos] = '\t';
+                                    line.erase(backslashPos + 1, 1);
+                                    --quotePos2;
+                                }
+                                else if (line[backslashPos + 1] == '\\')
+                                {
+                                    line.erase(backslashPos + 1, 1);
+                                    --quotePos2;
+                                }
+                                else if (line[backslashPos + 1] == '"')
+                                {
+                                    line[backslashPos] = '"';
+                                    line.erase(backslashPos + 1, 1);
+
+                                    // Find the next quote
+                                    quotePos2 = line.find('"', backslashPos + 1);
+
+                                    if (quotePos2 == std::string::npos)
+                                    {
+                                        failed = true;
+                                        break;
+                                    }
+                                }
+
+                                // Find the next backslash
+                                backslashPos = line.find('\\', backslashPos + 1);
+                            }
+
+                            // There may never be more than two quotes
+                            if (line.find('"', quotePos2 + 1) != std::string::npos)
+                                failed = true;
+
+                            // Convert the part behind the quote to lowercase
+                            for (std::string::size_type i = quotePos2; i < line.length(); i++)
+                            {
+                                if ((line[i] > 64) && (line[i] < 91))
+                                    line[i] += 32;
+                            }
                         }
-                        else // There is a slash in the middle of nowhere. It shouldn't be there.
+                        else // The second quote is missing
                             failed = true;
                     }
                 }

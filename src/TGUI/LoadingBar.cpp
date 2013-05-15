@@ -48,13 +48,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LoadingBar::LoadingBar(const LoadingBar& copy) :
-    ClickableObject (copy),
-    m_Minimum       (copy.m_Minimum),
-    m_Maximum       (copy.m_Maximum),
-    m_Value         (copy.m_Value),
-    m_SplitImage    (copy.m_SplitImage),
-    m_Text          (copy.m_Text),
-    m_TextSize      (copy.m_TextSize)
+    ClickableObject   (copy),
+    m_LoadedConfigFile(copy.m_LoadedConfigFile),
+    m_Minimum         (copy.m_Minimum),
+    m_Maximum         (copy.m_Maximum),
+    m_Value           (copy.m_Value),
+    m_SplitImage      (copy.m_SplitImage),
+    m_Text            (copy.m_Text),
+    m_TextSize        (copy.m_TextSize)
     {
         // Copy the textures
         TGUI_TextureManager.copyTexture(copy.m_TextureBack_L, m_TextureBack_L);
@@ -90,18 +91,19 @@ namespace tgui
             LoadingBar temp(right);
             this->ClickableObject::operator=(right);
 
-            std::swap(m_Minimum,        temp.m_Minimum);
-            std::swap(m_Maximum,        temp.m_Maximum);
-            std::swap(m_Value,          temp.m_Value);
-            std::swap(m_SplitImage,     temp.m_SplitImage);
-            std::swap(m_TextureBack_L,  temp.m_TextureBack_L);
-            std::swap(m_TextureBack_M,  temp.m_TextureBack_M);
-            std::swap(m_TextureBack_R,  temp.m_TextureBack_R);
-            std::swap(m_TextureFront_L, temp.m_TextureFront_L);
-            std::swap(m_TextureFront_M, temp.m_TextureFront_M);
-            std::swap(m_TextureFront_R, temp.m_TextureFront_R);
-            std::swap(m_Text,           temp.m_Text);
-            std::swap(m_TextSize,       temp.m_TextSize);
+            std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
+            std::swap(m_Minimum,          temp.m_Minimum);
+            std::swap(m_Maximum,          temp.m_Maximum);
+            std::swap(m_Value,            temp.m_Value);
+            std::swap(m_SplitImage,       temp.m_SplitImage);
+            std::swap(m_TextureBack_L,    temp.m_TextureBack_L);
+            std::swap(m_TextureBack_M,    temp.m_TextureBack_M);
+            std::swap(m_TextureBack_R,    temp.m_TextureBack_R);
+            std::swap(m_TextureFront_L,   temp.m_TextureFront_L);
+            std::swap(m_TextureFront_M,   temp.m_TextureFront_M);
+            std::swap(m_TextureFront_R,   temp.m_TextureFront_R);
+            std::swap(m_Text,             temp.m_Text);
+            std::swap(m_TextSize,         temp.m_TextSize);
         }
 
         return *this;
@@ -118,6 +120,8 @@ namespace tgui
 
     bool LoadingBar::load(const std::string& configFileFilename)
     {
+        m_LoadedConfigFile = configFileFilename;
+
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
@@ -268,6 +272,13 @@ namespace tgui
 
         // Loading has succeeded
         return m_Loaded = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::string& LoadingBar::getLoadedConfigFile()
+    {
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
