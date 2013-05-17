@@ -446,17 +446,39 @@ namespace tgui
             if (m_VerticalScroll)
             {
                 if (m_Size.x > m_Size.y)
-                {
                     m_Size = Vector2f(m_Size.y, m_Size.x);
-                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
-                }
             }
             else // The slider lies horizontal
             {
                 if (m_Size.y > m_Size.x)
-                {
                     m_Size = Vector2f(m_Size.y, m_Size.x);
-                    m_ThumbSize = Vector2f(m_ThumbSize.y, m_ThumbSize.x);
+            }
+
+            // Set the thumb size
+            if (m_VerticalImage == m_VerticalScroll)
+            {
+                if (m_VerticalScroll)
+                {
+                    m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
+                    m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
+                }
+                else
+                {
+                    m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
+                    m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
+                }
+            }
+            else
+            {
+                if (m_VerticalScroll)
+                {
+                    m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().y;
+                    m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M->getSize().y) * m_TextureThumbNormal->getSize().x;
+                }
+                else
+                {
+                    m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().y;
+                    m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M->getSize().x) * m_TextureThumbNormal->getSize().x;
                 }
             }
         }
