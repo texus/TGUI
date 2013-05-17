@@ -508,7 +508,7 @@ namespace tgui
 
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                frontSize = totalWidth * (m_Value / static_cast<float>(m_Maximum - m_Minimum));
+                frontSize = totalWidth * ((m_Value - m_Minimum) / static_cast<float>(m_Maximum - m_Minimum));
             else
                 frontSize = totalWidth;
 
@@ -556,7 +556,7 @@ namespace tgui
 
             // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
-                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x * (m_Value / static_cast<float>(m_Maximum - m_Minimum)));
+                frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x * ((m_Value - m_Minimum) / static_cast<float>(m_Maximum - m_Minimum)));
             else
                 frontBounds.width = static_cast<int>(m_TextureBack_M->getSize().x);
 
