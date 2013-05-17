@@ -125,6 +125,7 @@ namespace tgui
         spinButton,
         slider2D,
         tab,
+        chatBox,
 
         panel,
         childWindow,
@@ -170,6 +171,7 @@ namespace tgui
 #include <TGUI/SpinButton.hpp>
 #include <TGUI/Slider2D.hpp>
 #include <TGUI/Tab.hpp>
+#include <TGUI/ChatBox.hpp>
 
 #include <TGUI/InfoFileParser.hpp>
 #include <TGUI/EventManager.hpp>

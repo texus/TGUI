@@ -20,6 +20,7 @@ set(TGUI_SRC
     SpinButton.cpp
     Slider2D.cpp
     Tab.cpp
+    ChatBox.cpp
     InfoFileParser.cpp
     EventManager.cpp
     TextureManager.cpp
