@@ -52,12 +52,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr()
+        SharedObjectPtr() :
+        m_ObjectPtr(NULL)
         {
             m_RefCount = new ReferenceCount;
             m_RefCount->count = 1;
-
-            m_ObjectPtr = NULL;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +110,17 @@ namespace tgui
         {
             if (this != &copy)
             {
+                if (m_ObjectPtr != NULL)
+                {
+                    if (m_RefCount->count == 1)
+                    {
+                        delete m_ObjectPtr;
+                        delete m_RefCount;
+                    }
+                    else
+                        m_RefCount->count -= 1;
+                }
+
                 m_ObjectPtr = copy.get();
 
                 m_RefCount = copy.getRefCount();
@@ -125,6 +135,17 @@ namespace tgui
         template <class U>
         SharedObjectPtr<T>& operator=(const SharedObjectPtr<U>& copy)
         {
+            if (m_ObjectPtr != NULL)
+            {
+                if (m_RefCount->count == 1)
+                {
+                    delete m_ObjectPtr;
+                    delete m_RefCount;
+                }
+                else
+                    m_RefCount->count -= 1;
+            }
+
             m_ObjectPtr = static_cast<T*>(copy.get());
 
             m_RefCount = copy.getRefCount();
