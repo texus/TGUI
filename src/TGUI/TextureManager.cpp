@@ -171,13 +171,14 @@ namespace tgui
                 {
                     // Remove the texture from the list
                     m_Data.erase(it);
-
-                    // The pointer is now useless
-                    textureToRemove.data = NULL;
-                    return;
+                    break;
                 }
             }
         }
+
+        // The pointer is now useless
+        textureToRemove.data = NULL;
+        return;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
