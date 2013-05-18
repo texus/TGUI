@@ -94,6 +94,9 @@ namespace tgui
         if (m_TextureTitleBar_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
         if (m_TextureTitleBar_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
         if (m_TextureTitleBar_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
+        
+        if (m_IconTexture.data != NULL)
+            TGUI_TextureManager.removeTexture(m_IconTexture);
 
         delete m_CloseButton;
     }
