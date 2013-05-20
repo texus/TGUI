@@ -64,9 +64,9 @@
  * These pages contain the description of all usable functions and members in TGUI v0.6.\n
  * The few functions that you should not use are hidden.
  *
- * Tutorials can be found on the tutorial section of my page (http://tgui.weebly.com/tutorials.html).
+ * Tutorials can be found on the tutorial section of my page (http://tgui.eu/tutorials/).
  *
- * More information can be found on the TGUI home page (http://tgui.weebly.com).
+ * More information about this project can be found on the TGUI home page (http://tgui.eu).
  */
 
 #endif // TGUI_TGUI_HPP

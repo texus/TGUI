@@ -98,6 +98,9 @@ namespace tgui
         if (m_IconTexture.data != NULL)
             TGUI_TextureManager.removeTexture(m_IconTexture);
 
+        if (m_IconTexture != NULL)
+            TGUI_TextureManager.removeTexture(m_IconTexture);
+
         delete m_CloseButton;
     }
 
