@@ -460,10 +460,10 @@ namespace tgui
 
         enum EditBoxCallbacks
         {
-            TextChanged = ObjectCallbacksCount * 1,
-            ReturnKeyPressed = ObjectCallbacksCount * 2,
-            AllEditBoxCallbacks = ObjectCallbacksCount * 4 - 1,
-            EditBoxCallbacksCount = ObjectCallbacksCount * 4
+            TextChanged = ClickableObjectCallbacksCount * 1,
+            ReturnKeyPressed = ClickableObjectCallbacksCount * 2,
+            AllEditBoxCallbacks = ClickableObjectCallbacksCount * 4 - 1,
+            EditBoxCallbacksCount = ClickableObjectCallbacksCount * 4
         };
 
 
