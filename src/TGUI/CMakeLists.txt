@@ -28,7 +28,7 @@ set(TGUI_SRC
     Panel.cpp
     ChildWindow.cpp
     Grid.cpp
-    Window.cpp
+    Gui.cpp
     ClickableObject.cpp
     MenuBar.cpp
     ChatBox.cpp

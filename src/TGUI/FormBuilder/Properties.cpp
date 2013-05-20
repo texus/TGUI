@@ -2978,8 +2978,8 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(minimum.value);
 
         // Reset the value
-        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Slider_Maximum)
     {
@@ -2990,8 +2990,8 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
 
         // Reset the value
-        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Slider_CallbackID)
     {
@@ -3184,8 +3184,8 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setLowValue(lowValue.value);
 
         // Reset the value
-        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Scrollbar_Maximum)
     {
@@ -3196,8 +3196,8 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
 
         // Reset the value
-        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Scrollbar_CallbackID)
     {
@@ -3344,8 +3344,8 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(max);
 
         // Reset the value
-        int value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value);
+        int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_LoadingBar_Maximum)
     {
