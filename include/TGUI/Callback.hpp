@@ -57,38 +57,19 @@ namespace tgui
         // The type of the object
         ObjectTypes objectType;
 
-        // This text is only used by some objects, but it is not allowed to be in the union
+        // When the mouse has something to do with the callback then this data will be filled
+        Vector2i mouse;
+
+        // This text is only used by some objects, but it can be set together with some other member
         sf::String text;
 
-        // When the mouse has something to do with the callback then this data will be filled
-        struct Value2i
-        {
-            int x;
-            int y;
-
-            Value2i& operator=(Vector2i vector) { x = vector.x; y = vector.y; return *this; }
-            operator Vector2i() const { return Vector2i(x, y); }
-        } mouse;
-
-        struct Value2d
-        {
-            float x;
-            float y;
-
-            Value2d& operator=(Vector2f vector) { x = vector.x; y = vector.y; return *this; }
-            operator Vector2f() const { return Vector2f(x, y); }
-        };
-
         // Only one of these things can be filled at a given time
-        union
-        {
-            bool    checked;
-            int     value;
-            Value2d value2d;
-            Value2d position;
-            Value2d size;
-            unsigned int index;
-        };
+        bool         checked;
+        int          value;
+        Vector2f     value2d;
+        Vector2f     position;
+        Vector2f     size;
+        unsigned int index;
     };
 
 
