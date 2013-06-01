@@ -27,11 +27,10 @@
 #define TGUI_OBJECTS_HPP
 
 #include <TGUI/Callback.hpp>
+#include <TGUI/Transformable.hpp>
 #include <TGUI/Group.hpp>
 #include <TGUI/SharedObjectPtr.hpp>
 #include <TGUI/ConfigFile.hpp>
-
-/// \todo Remove inheritance from sf::Transformable
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief The parent class for every object.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Object : public sf::Drawable, public sf::Transformable, public CallbackManager
+    class TGUI_API Object : public sf::Drawable, public Transformable, public CallbackManager
     {
       public:
 

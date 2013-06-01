@@ -675,9 +675,6 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             tgui::Picture::Ptr picture = formWindow.get(tgui::to_string(id));
             picture->load(filename.value);
 
-            // Reset the scaling
-            picture->setScale(1, 1);
-
             // Change the width and height properties
             width.value = static_cast<float>(picture->getSize().x);
             height.value = static_cast<float>(picture->getSize().y);
@@ -800,9 +797,6 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             // Load the new button
             tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
             button->load(configFile.value);
-
-            // Reset the scaling
-            button->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(button->getSize().x);
@@ -1003,13 +997,9 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
             checkbox->load(configFile.value);
 
-            // Reset the scaling
-            checkbox->setScale(1, 1);
-
             // Change the width and height properties
             width.value = static_cast<float>(checkbox->getSize().x);
             height.value = static_cast<float>(checkbox->getSize().y);
-
 
             // Update the values
             static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
@@ -1186,9 +1176,6 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
             // Load the new radio button
             tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
             radioButton->load(configFile.value);
-
-            // Reset the scaling
-            radioButton->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(radioButton->getSize().x);
@@ -3262,9 +3249,6 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
             // Load the new loading bar
             tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
             loadingBar->load(configFile.value);
-
-            // Reset the scaling
-            loadingBar->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(loadingBar->getSize().x);

@@ -2,6 +2,7 @@
 set(TGUI_SRC
     TGUI.cpp
     Callback.cpp
+    Transformable.cpp
     Objects.cpp
     Label.cpp
     Picture.cpp

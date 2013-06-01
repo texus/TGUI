@@ -412,15 +412,6 @@ namespace tgui
                 else \
                     failed = true; \
             } \
-            else if (line.substr(0, 6).compare("scale=") == 0) \
-            { \
-                line.erase(0, 6); \
-                Vector2f objScale; \
-                if (extractVector2f(line, objScale)) \
-                    name->setScale(objScale); \
-                else \
-                    failed = true; \
-            } \
             else if (line.substr(0, 9).compare("position=") == 0) \
             { \
                 line.erase(0, 9); \
@@ -951,15 +942,6 @@ namespace tgui
                                     tab->select(atoi(line.c_str()));
                                 }
                             }
-                        }
-                        else if (line.substr(0, 6).compare("scale=") == 0)
-                        {
-                            line.erase(0, 6);
-                            Vector2f objScale;
-                            if (extractVector2f(line, objScale))
-                                tab->setScale(objScale);
-                            else
-                                failed = true;
                         }
                         else if (line.substr(0, 9).compare("position=") == 0)
                         {

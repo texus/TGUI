@@ -55,7 +55,8 @@ namespace tgui
 
     Object::Object(const Object& copy) :
     sf::Drawable     (copy),
-    sf::Transformable(copy),
+    Transformable    (copy),
+    CallbackManager  (copy),
     m_Enabled        (copy.m_Enabled),
     m_Visible        (copy.m_Visible),
     m_Loaded         (copy.m_Loaded),
@@ -89,7 +90,8 @@ namespace tgui
         if (this != &right)
         {
             this->sf::Drawable::operator=(right);
-            this->sf::Transformable::operator=(right);
+            this->Transformable::operator=(right);
+            this->CallbackManager::operator=(right);
 
             m_Enabled             = right.m_Enabled;
             m_Visible             = right.m_Visible;
