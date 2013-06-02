@@ -1,4 +1,4 @@
-// TGUI Object File v0.2
+// TGUI Object File
 // You can put spaces, tabs and comments wherever you want.
 // For boolean values, you can use false, true, 0 or 1.
 
@@ -6,46 +6,46 @@ Window:
 {
     Picture: "myPicture"  // This extra object name is optional and is only needed to access the object inside the program
     {
-        Filename = "Linux.jpg"
+        Filename = "../Linux.jpg"
     }
     
     Button:
     {
-        Pathname  = "../../objects/Button/Black"
-        TextColor = (200, 200, 200)
-        Text      = "Button"
-        Size      = (160, 40)
-        Position  = (20, 4)
+        ConfigFile = "../../objects/Black.conf"
+        TextColor  = (200, 200, 200)
+        Text       = "Button"
+        Size       = (160, 40)
+        Position   = (20, 4)
     }
 
     Checkbox:
     {
-        Pathname  = "../../objects/Checkbox/Black"
-        TextColor = (200, 200, 200)
-        Text      = "Checkbox"
-        Checked   = true
-        Position  = (20, 50)
+        ConfigFile = "../../objects/Black.conf"
+        TextColor  = (200, 200, 200)
+        Text       = "Checkbox"
+        Checked    = true
+        Position   = (20, 50)
     }
 
     RadioButton:
     {
-        Pathname  = "../../objects/RadioButton/Black"
-        TextColor = (200, 200, 200)
-        Text      = "Radio button 1"
-        Position  = (20, 100)
+        ConfigFile = "../../objects/Black.conf"
+        TextColor  = (200, 200, 200)
+        Text       = "Radio button 1"
+        Position   = (20, 100)
     }
 
     RadioButton:
     {
-        Pathname  = "../../objects/RadioButton/Black"
-        TextColor = (200, 200, 200)
-        Text      = "Radio button 2"
-        Position  = (20, 150)
+        ConfigFile = "../../objects/Black.conf"
+        TextColor  = (200, 200, 200)
+        Text       = "Radio button 2"
+        Position   = (20, 150)
     }
 
     EditBox:
     {
-        Pathname                    = "../../objects/EditBox/Black"
+        ConfigFile                  = "../../objects/Black.conf"
         Text                        = "This text is too long to fit inside the EditBox."
 //        PasswordChar                = "*"
 //        MaximumCharacters           = 4
@@ -61,7 +61,7 @@ Window:
 
     Slider:
     {
-        Pathname       = "../../objects/Slider/Black"
+        ConfigFile     = "../../objects/Black.conf"
         Minimum        = 0
         Maximum        = 100
         Value          = 30
@@ -71,7 +71,7 @@ Window:
 
     LoadingBar:
     {
-        Pathname   = "../../objects/LoadingBar/Black"
+        ConfigFile = "../../objects/Black.conf"
         Position   = (20, 400)
         Maximum    = 500
         CallbackId = 1
@@ -79,19 +79,20 @@ Window:
 
     Scrollbar:
     {
-        Pathname   = "../../objects/Scrollbar/Black"
-        Position  = (20, 480)
-        LowValue  = 4
-        Maximum   = 5
+        ConfigFile     = "../../objects/Black.conf"
+        Position       = (20, 480)
+        LowValue       = 4
+        Maximum        = 5
         VerticalScroll = false
     }
 
     Listbox:
     {
+        ConfigFile              = "../../objects/Black.conf"
         Position                = (300, 20)
         Size                    = (260, 200)
         ItemHeight              = 40
-        ScrollbarPathname       = "../../objects/Scrollbar/Black"
+        ScrollbarConfigFile     = "../../objects/Black.conf"
         Borders                 = (2, 2, 2, 2)
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
@@ -110,10 +111,10 @@ Window:
 
     ComboBox:
     {
-        Pathname                = "../../objects/ComboBox/Black"
+        ConfigFile              = "../../objects/Black.conf"
         Size                    = (260, 40)
         ItemsToDisplay          = 3
-        ScrollbarPathname       = "../../objects/Scrollbar/Black"
+        ScrollbarConfigFile     = "../../objects/Black.conf"
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
         SelectedBackgroundColor = ( 10, 110, 255)
