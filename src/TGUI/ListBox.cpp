@@ -803,8 +803,6 @@ namespace tgui
 
     bool ListBox::mouseOnObject(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Get the current position and scale
         Vector2f position = getPosition();
         Vector2f curScale = getScale();
@@ -814,14 +812,14 @@ namespace tgui
         {
             // Temporarily set the position and scale of the scroll
             m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
+            m_Scroll->setScale(1, 1);
         }
 
         // Check if the mouse is on top of the list box
@@ -841,8 +839,6 @@ namespace tgui
 
     void ListBox::leftMousePressed(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Set the mouse down flag to true
         m_MouseDown = true;
 
@@ -857,7 +853,7 @@ namespace tgui
 
             // Temporarily set the position and scale of the scroll
             m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -868,7 +864,7 @@ namespace tgui
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
+            m_Scroll->setScale(1, 1);
         }
 
         // If the click occured on the list box
@@ -925,8 +921,6 @@ namespace tgui
 
     void ListBox::leftMouseReleased(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // If there is a scrollbar then pass it the event
         if (m_Scroll != NULL)
         {
@@ -938,14 +932,14 @@ namespace tgui
 
             // Temporarily set the position and scale of the scroll
             m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            m_Scroll->setScale(curScale);
 
             // Pass the event
             m_Scroll->leftMouseReleased(x, y);
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
+            m_Scroll->setScale(1, 1);
 
             // Check if the scrollbar value was incremented (you have pressed on the down arrow)
             if (m_Scroll->getValue() == oldValue + 1)
@@ -976,8 +970,6 @@ namespace tgui
 
     void ListBox::mouseMoved(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         if (m_MouseHover == false)
             mouseEnteredObject();
 
@@ -991,7 +983,7 @@ namespace tgui
         {
             // Temporarily set the position and scale of the scroll
             m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            m_Scroll->setScale(curScale);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -1008,7 +1000,7 @@ namespace tgui
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
+            m_Scroll->setScale(1, 1);
         }
     }
 

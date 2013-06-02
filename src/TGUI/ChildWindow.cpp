@@ -94,7 +94,7 @@ namespace tgui
         if (m_TextureTitleBar_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
         if (m_TextureTitleBar_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
         if (m_TextureTitleBar_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
-
+        
         if (m_IconTexture.data != NULL)
             TGUI_TextureManager.removeTexture(m_IconTexture);
 
@@ -593,8 +593,6 @@ namespace tgui
 
     void ChildWindow::handleEvent(sf::Event& event, float mouseX, float mouseY)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)
             return;
@@ -636,7 +634,7 @@ namespace tgui
                 m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x) * curScale.x), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)) * curScale.y);
 
                 // Set the scale of the close button
-//                m_CloseButton->setScale(curScale);
+                m_CloseButton->setScale(curScale);
 
                 // Call the correct function of the button
                 if (event.type == sf::Event::MouseMoved)
@@ -689,7 +687,7 @@ namespace tgui
 
                 // Reset the position and scale of the button
                 m_CloseButton->setPosition(0, 0);
-//                m_CloseButton->setScale(1, 1);
+                m_CloseButton->setScale(1, 1);
 
                 // Tell the objects that the mouse is no longer down
                 m_EventManager.mouseNoLongerDown();
