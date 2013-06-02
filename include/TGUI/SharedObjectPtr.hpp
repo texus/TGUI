@@ -110,16 +110,13 @@ namespace tgui
         {
             if (this != &copy)
             {
-                if (m_ObjectPtr != NULL)
+                if (m_RefCount->count == 1)
                 {
-                    if (m_RefCount->count == 1)
-                    {
-                        delete m_ObjectPtr;
-                        delete m_RefCount;
-                    }
-                    else
-                        m_RefCount->count -= 1;
+                    delete m_ObjectPtr;
+                    delete m_RefCount;
                 }
+                else
+                    m_RefCount->count -= 1;
 
                 m_ObjectPtr = copy.get();
 
@@ -135,16 +132,13 @@ namespace tgui
         template <class U>
         SharedObjectPtr<T>& operator=(const SharedObjectPtr<U>& copy)
         {
-            if (m_ObjectPtr != NULL)
+            if (m_RefCount->count == 1)
             {
-                if (m_RefCount->count == 1)
-                {
-                    delete m_ObjectPtr;
-                    delete m_RefCount;
-                }
-                else
-                    m_RefCount->count -= 1;
+                delete m_ObjectPtr;
+                delete m_RefCount;
             }
+            else
+                m_RefCount->count -= 1;
 
             m_ObjectPtr = static_cast<T*>(copy.get());
 
