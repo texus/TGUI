@@ -239,9 +239,6 @@ namespace tgui
         else
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
-        // Get a valid height
-        height = calculateValidHeight(height);
-
         // Remember the old height
         float oldHeight = m_Panel->getSize().y;
 
@@ -370,7 +367,7 @@ namespace tgui
         updateDisplayedText();
 
         // The height might need to be changed
-        m_Panel->setSize(m_Panel->getSize().x, calculateValidHeight(m_Panel->getSize().y));
+        m_Panel->setSize(m_Panel->getSize().x, m_Panel->getSize().y);
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
@@ -403,7 +400,7 @@ namespace tgui
             width = 50.f + m_LeftBorder + m_RightBorder;
 
         // Make sure that the panel has a valid size
-        m_Panel->setSize(width, calculateValidHeight(m_Panel->getSize().y));
+        m_Panel->setSize(width, m_Panel->getSize().y);
 
         // Reposition the labels
         std::vector<Object::Ptr>& labels = m_Panel->getObjects();
@@ -731,44 +728,6 @@ namespace tgui
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float ChatBox::calculateValidHeight(float height)
-    {
-        // There is also a minimum height. At least one label should fit inside the chat box
-        if (height < ((m_TextSize * 1.4f) + m_TopBorder + m_BottomBorder))
-        {
-            height = (m_TextSize * 1.4f) + m_TopBorder + m_BottomBorder;
-        }
-        else // The height isn't too low
-        {
-            // Calculate two perfect heights
-            float height1 = static_cast<unsigned int>((height - m_TopBorder - m_BottomBorder) / ((m_TextSize * 1.4f))) * (m_TextSize * 1.4f);
-            float height2 = static_cast<unsigned int>((height - m_TopBorder - m_BottomBorder) / ((m_TextSize * 1.4f)) + 1) * (m_TextSize * 1.4f);
-
-            // Calculate the difference with the original one
-            float difference1, difference2;
-
-            if ((height - m_TopBorder - m_BottomBorder) > height1)
-                difference1 = (height - m_TopBorder - m_BottomBorder) - height1;
-            else
-                difference1 = height1 - (height - m_TopBorder - m_BottomBorder);
-
-            if ((height - m_TopBorder - m_BottomBorder) > height2)
-                difference2 = (height - m_TopBorder - m_BottomBorder) - height2;
-            else
-                difference2 = height2 - (height - m_TopBorder - m_BottomBorder);
-
-            // Find out which one is closest to the original height and adjust the height
-            if (difference1 < difference2)
-                height = height1 + m_TopBorder + m_BottomBorder;
-            else
-                height = height2 + m_TopBorder + m_BottomBorder;
-        }
-
-        return height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -249,9 +249,6 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // The calculations require an unsigned integer
-        unsigned int uiHeight = static_cast<unsigned int>(height);
-
         // There is a minimum width
         if (m_Scroll == NULL)
             width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder, width);
@@ -259,39 +256,12 @@ namespace tgui
             width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
         // There is also a minimum list box height
-        if (uiHeight < (m_ItemHeight + m_TopBorder + m_BottomBorder))
-        {
-            uiHeight = m_ItemHeight + m_TopBorder + m_BottomBorder;
-        }
-        else // The height isn't too low
-        {
-            // Calculate two perfect heights
-            unsigned int height1 = ((uiHeight - m_TopBorder - m_BottomBorder) / m_ItemHeight) * m_ItemHeight;
-            unsigned int height2 = (((uiHeight - m_TopBorder - m_BottomBorder) / m_ItemHeight) + 1) * m_ItemHeight;
-
-            // Calculate the difference with the original one
-            unsigned int difference1, difference2;
-
-            if ((uiHeight - m_TopBorder - m_BottomBorder) > height1)
-                difference1 = (uiHeight - m_TopBorder - m_BottomBorder) - height1;
-            else
-                difference1 = height1 - (uiHeight - m_TopBorder - m_BottomBorder);
-
-            if ((uiHeight - m_TopBorder - m_BottomBorder) > height2)
-                difference2 = (uiHeight - m_TopBorder - m_BottomBorder) - height2;
-            else
-                difference2 = height2 - (uiHeight - m_TopBorder - m_BottomBorder);
-
-            // Find out which one is closest to the original height and adjust the height
-            if (difference1 < difference2)
-                uiHeight = height1 + m_TopBorder + m_BottomBorder;
-            else
-                uiHeight = height2 + m_TopBorder + m_BottomBorder;
-        }
+        if (height < (m_ItemHeight + m_TopBorder + m_BottomBorder))
+            height = m_ItemHeight + m_TopBorder + m_BottomBorder;
 
         // Store the values
         m_Size.x = static_cast<unsigned int>(width);
-        m_Size.y = uiHeight;
+        m_Size.y = static_cast<unsigned int>(height);
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
@@ -417,7 +387,7 @@ namespace tgui
             if (m_Scroll == NULL)
             {
                 // Calculate the amount of items that fit in the list box
-                unsigned int maximumItems = m_Size.y / m_ItemHeight;
+                unsigned int maximumItems = (m_Size.y - m_TopBorder - m_BottomBorder) / m_ItemHeight;
 
                 // Check if the item still fits in the list box
                 if (m_Items.size() == maximumItems)
@@ -767,32 +737,7 @@ namespace tgui
                     m_Size.y = m_ItemHeight - m_TopBorder - m_BottomBorder;
             }
         }
-
-        // Calculate two perfect heights
-        unsigned int height1 = ((m_Size.y - m_TopBorder - m_BottomBorder) / m_ItemHeight) * m_ItemHeight;
-        unsigned int height2 = (((m_Size.y - m_TopBorder - m_BottomBorder) / m_ItemHeight) + 1) * m_ItemHeight;
-
-        // Calculate the difference with the original one
-        unsigned int difference1, difference2;
-
-        if ((m_Size.y - m_TopBorder - m_BottomBorder) > height1)
-            difference1 = (m_Size.y - m_TopBorder - m_BottomBorder) - height1;
-        else
-            difference1 = height1 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-        if ((m_Size.y - m_TopBorder - m_BottomBorder) > height2)
-            difference2 = (m_Size.y - m_TopBorder - m_BottomBorder) - height2;
-        else
-            difference2 = height2 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-        // Find out which one is closest to the original height and adjust the height
-        if (difference1 < difference2)
-            m_Size.y = height1 + m_TopBorder + m_BottomBorder;
-        else
-            m_Size.y = height2 + m_TopBorder + m_BottomBorder;
-
-        // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        else // There is a scrollbar, so reinitialize it
         {
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);

@@ -305,9 +305,6 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // The calculations require an unsigned integer
-        unsigned int uiHeight = static_cast<unsigned int>(height);
-
         // There is a minimum width
         if (m_Scroll == NULL)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
@@ -338,39 +335,14 @@ namespace tgui
         }
 
         // There is also a minimum height
-        if (uiHeight < (m_LineHeight + m_TopBorder + m_BottomBorder))
+        if (height < (m_LineHeight + m_TopBorder + m_BottomBorder))
         {
-            uiHeight = m_LineHeight + m_TopBorder + m_BottomBorder;
-        }
-        else // The height isn't too low
-        {
-            // Calculate two perfect heights
-            unsigned int height1 = ((uiHeight - m_TopBorder - m_BottomBorder) / m_LineHeight) * m_LineHeight;
-            unsigned int height2 = (((uiHeight - m_TopBorder - m_BottomBorder) / m_LineHeight) + 1) * m_LineHeight;
-
-            // Calculate the difference with the original one
-            unsigned int difference1, difference2;
-
-            if ((uiHeight - m_TopBorder - m_BottomBorder) > height1)
-                difference1 = (uiHeight - m_TopBorder - m_BottomBorder) - height1;
-            else
-                difference1 = height1 - (uiHeight - m_TopBorder - m_BottomBorder);
-
-            if ((uiHeight - m_TopBorder - m_BottomBorder) > height2)
-                difference2 = (uiHeight - m_TopBorder - m_BottomBorder) - height2;
-            else
-                difference2 = height2 - (uiHeight - m_TopBorder - m_BottomBorder);
-
-            // Find out which one is closest to the original height and adjust the height
-            if (difference1 < difference2)
-                uiHeight = height1 + m_TopBorder + m_BottomBorder;
-            else
-                uiHeight = height2 + m_TopBorder + m_BottomBorder;
+            height = m_LineHeight + m_TopBorder + m_BottomBorder;
         }
 
         // Store the values
         m_Size.x = static_cast<unsigned int>(width);
-        m_Size.y = uiHeight;
+        m_Size.y = static_cast<unsigned int>(height);
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
@@ -476,31 +448,6 @@ namespace tgui
         {
             m_Size.y = m_LineHeight + m_TopBorder + m_BottomBorder;
         }
-        else // The height is ok
-        {
-            // Calculate two perfect heights
-            unsigned int height1 = ((m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight) * m_LineHeight;
-            unsigned int height2 = (((m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight) + 1) * m_LineHeight;
-
-            // Calculate the difference with the original one
-            unsigned int difference1, difference2;
-
-            if ((m_Size.y - m_TopBorder - m_BottomBorder) > height1)
-                difference1 = (m_Size.y - m_TopBorder - m_BottomBorder) - height1;
-            else
-                difference1 = height1 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-            if ((m_Size.y - m_TopBorder - m_BottomBorder) > height2)
-                difference2 = (m_Size.y - m_TopBorder - m_BottomBorder) - height2;
-            else
-                difference2 = height2 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-            // Find out which one is closest to the original height and adjust the height
-            if (difference1 < difference2)
-                m_Size.y = height1 + m_TopBorder + m_BottomBorder;
-            else
-                m_Size.y = height2 + m_TopBorder + m_BottomBorder;
-        }
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
@@ -584,29 +531,6 @@ namespace tgui
                     m_Size.y = m_LineHeight - m_TopBorder - m_BottomBorder;
             }
         }
-
-        // Calculate two perfect heights
-        unsigned int height1 = ((m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight) * m_LineHeight;
-        unsigned int height2 = (((m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight) + 1) * m_LineHeight;
-
-        // Calculate the difference with the original one
-        unsigned int difference1, difference2;
-
-        if ((m_Size.y - m_TopBorder - m_BottomBorder) > height1)
-            difference1 = (m_Size.y - m_TopBorder - m_BottomBorder) - height1;
-        else
-            difference1 = height1 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-        if ((m_Size.y - m_TopBorder - m_BottomBorder) > height2)
-            difference2 = (m_Size.y - m_TopBorder - m_BottomBorder) - height2;
-        else
-            difference2 = height2 - (m_Size.y - m_TopBorder - m_BottomBorder);
-
-        // Find out which one is closest to the original height and adjust the height
-        if (difference1 < difference2)
-            m_Size.y = height1 + m_TopBorder + m_BottomBorder;
-        else
-            m_Size.y = height2 + m_TopBorder + m_BottomBorder;
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
