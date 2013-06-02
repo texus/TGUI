@@ -1261,7 +1261,10 @@ namespace tgui
         if (m_NumbersOnly)
         {
             if ((key < '0') || (key > '9'))
-                return;
+            {
+                if (((key != '-') && (key != '+')) || ((m_SelStart != 0) && (m_SelEnd != 0)))
+                    return;
+            }
         }
 
         // If there are selected characters then delete them first
