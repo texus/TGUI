@@ -427,6 +427,7 @@ namespace tgui
 
         // Set the new text
         m_Text.setString(text);
+        m_Callback.text = text;
 
         // Check if the text is auto sized
         if (m_TextSize == 0)
