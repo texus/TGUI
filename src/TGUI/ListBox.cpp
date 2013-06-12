@@ -749,25 +749,20 @@ namespace tgui
 
     bool ListBox::mouseOnObject(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // Pass the event to the scrollbar (if there is one)
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
 
         // Check if the mouse is on top of the list box
@@ -787,8 +782,6 @@ namespace tgui
 
     void ListBox::leftMousePressed(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Set the mouse down flag to true
         m_MouseDown = true;
 
@@ -798,12 +791,8 @@ namespace tgui
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
         {
-            // Get the current scale
-            Vector2f curScale = getScale();
-
-            // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -812,9 +801,8 @@ namespace tgui
                 clickedOnListBox = false;
             }
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
 
         // If the click occured on the list box
@@ -827,7 +815,7 @@ namespace tgui
             if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
-                if ((y - getPosition().y - m_TopBorder) / getScale().y <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
+                if (y - getPosition().y - m_TopBorder <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
                 {
                     // We clicked on the first visible item
                     m_SelectedItem = static_cast<int>(m_Scroll->getValue() / m_ItemHeight);
@@ -836,15 +824,15 @@ namespace tgui
                 {
                     // Calculate on what item we clicked
                     if ((m_Scroll->getValue() % m_ItemHeight) == 0)
-                        m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight)) + (m_Scroll->getValue() / m_ItemHeight);
+                        m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / m_ItemHeight + (m_Scroll->getValue() / m_ItemHeight));
                     else
-                        m_SelectedItem = static_cast<int>(((((y - getPosition().y - m_TopBorder) / getScale().y) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 1);
+                        m_SelectedItem = static_cast<int>((((y - getPosition().y - m_TopBorder) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 1);
                 }
             }
             else // There is no scrollbar or it is not displayed
             {
                 // Calculate on which item we clicked
-                m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / (getScale().y * m_ItemHeight));
+                m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / m_ItemHeight);
 
                 // When you clicked behind the last item then unselect the selected item
                 if (m_SelectedItem > static_cast<int>(m_Items.size())-1)
@@ -871,27 +859,20 @@ namespace tgui
 
     void ListBox::leftMouseReleased(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // If there is a scrollbar then pass it the event
         if (m_Scroll != NULL)
         {
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
 
-            // Get the current scale
-            Vector2f curScale = getScale();
-
-            // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_RightBorder - m_Scroll->getSize().x), getPosition().y + m_TopBorder);
 
             // Pass the event
             m_Scroll->leftMouseReleased(x, y);
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
 
             // Check if the scrollbar value was incremented (you have pressed on the down arrow)
             if (m_Scroll->getValue() == oldValue + 1)
@@ -922,22 +903,16 @@ namespace tgui
 
     void ListBox::mouseMoved(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         if (m_MouseHover == false)
             mouseEnteredObject();
 
         m_MouseHover = true;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
-
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
-//            m_Scroll->setScale(curScale);
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_RightBorder - m_Scroll->getSize().x), getPosition().y + m_TopBorder);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -952,9 +927,8 @@ namespace tgui
                     m_Scroll->mouseMoved(x, y);
             }
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
     }
 
@@ -1022,9 +996,6 @@ namespace tgui
 
     void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Get the current scale
-        Vector2f curScale = getScale();
-
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
@@ -1037,13 +1008,13 @@ namespace tgui
 
         if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x) + viewPosition.x, getPosition().y + ((m_Size.y - m_BottomBorder) * curScale.y) + viewPosition.y);
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x + viewPosition.x, getPosition().y + m_Size.y - m_BottomBorder + viewPosition.y);
         }
         else
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) + viewPosition);
+            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) + viewPosition);
         }
 
         // Adjust the transformation
@@ -1123,7 +1094,7 @@ namespace tgui
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue())).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue()));
 
                         // Create and draw the background
                         sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
@@ -1169,7 +1140,7 @@ namespace tgui
                     // Draw a background for the selected item
                     {
                         // Set a new transformation
-                        states.transform.translate(0, static_cast<float>(i * m_ItemHeight)).scale(curScale.x / curScale.y, 1);
+                        states.transform.translate(0, static_cast<float>(i * m_ItemHeight));
 
                         // Create and draw the background
                         sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));

@@ -106,18 +106,18 @@ namespace tgui
         // Adjust the mouse position of the event when the event is about the mouse
         if (event.type == sf::Event::MouseMoved)
         {
-            event.mouseMove.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
-            event.mouseMove.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+            event.mouseMove.x = static_cast<int>(mouseX - getPosition().x);
+            event.mouseMove.y = static_cast<int>(mouseY - getPosition().y);
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            event.mouseButton.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
-            event.mouseButton.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+            event.mouseButton.x = static_cast<int>(mouseX - getPosition().x);
+            event.mouseButton.y = static_cast<int>(mouseY - getPosition().y);
         }
         else if (event.type == sf::Event::MouseWheelMoved)
         {
-            event.mouseWheel.x = static_cast<int>((mouseX - getPosition().x) / getScale().x);
-            event.mouseWheel.y = static_cast<int>((mouseY - getPosition().y) / getScale().y);
+            event.mouseWheel.x = static_cast<int>(mouseX - getPosition().x);
+            event.mouseWheel.y = static_cast<int>(mouseY - getPosition().y);
         }
 
         // Let the event manager handle the event

@@ -191,6 +191,7 @@ namespace tgui
         // Make sure the required texture was loaded
         if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
         {
+            m_Loaded = true;
             setSize(m_TextureUnchecked.getSize().x, m_TextureUnchecked.getSize().y);
         }
         else
@@ -211,7 +212,7 @@ namespace tgui
         }
 
         // When there is no error we will return true
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,7 +414,7 @@ namespace tgui
             if (m_AllowTextClick)
             {
                 sf::FloatRect bounds = m_Text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width * getScale().x, bounds.height * getScale().y).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f) * getScale().x)), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f))), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }

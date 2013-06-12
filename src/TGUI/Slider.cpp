@@ -539,32 +539,31 @@ namespace tgui
         float thumbWidth, thumbHeight;
         float thumbLeft,  thumbTop;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // The size is different when the image is rotated
         if (m_VerticalImage == m_VerticalScroll)
         {
-            thumbWidth = m_ThumbSize.x * curScale.x;
-            thumbHeight = m_ThumbSize.y * curScale.y;
+            thumbWidth = m_ThumbSize.x;
+            thumbHeight = m_ThumbSize.y;
         }
         else
         {
-            thumbWidth = m_ThumbSize.y * curScale.x;
-            thumbHeight = m_ThumbSize.x * curScale.y;
+            thumbWidth = m_ThumbSize.y;
+            thumbHeight = m_ThumbSize.x;
         }
 
         // Calculate the thumb position
         if (m_VerticalScroll)
         {
-            thumbLeft = ((m_Size.x * curScale.x) - thumbWidth) * 0.5f;
-            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * (m_Size.y * curScale.y)) - (thumbHeight * 0.5f);
+            thumbLeft = (m_Size.x - thumbWidth) / 2.0f;
+            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (thumbHeight / 2.0f);
         }
         else // The slider lies horizontal
         {
-            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * (m_Size.x * curScale.x)) - (thumbWidth * 0.5f);
-            thumbTop = ((m_Size.y * curScale.y) - thumbHeight) * 0.5f;
+            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (thumbWidth / 2.0f);
+            thumbTop = (m_Size.y - thumbHeight) / 2.0f;
         }
 
         // Check if the mouse is on top of the thumb
@@ -620,9 +619,8 @@ namespace tgui
 
         m_MouseHover = true;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // Remember the old value
         unsigned int oldValue = m_Value;
@@ -636,12 +634,9 @@ namespace tgui
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
                 {
-                    // Calculate the thumb height
-                    float thumbHeight = m_ThumbSize.y * curScale.y;
-
                     // Set the new value
-                    if ((y - m_MouseDownOnThumbPos.y + (thumbHeight / 2.0f) - position.y) > 0)
-                        setValue(static_cast <unsigned int> ((((y - m_MouseDownOnThumbPos.y + (thumbHeight / 2.0f) - position.y) / (m_Size.y * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                    if ((y - m_MouseDownOnThumbPos.y + (m_ThumbSize.y / 2.0f) - position.y) > 0)
+                        setValue(static_cast <unsigned int> ((((y - m_MouseDownOnThumbPos.y + (m_ThumbSize.y / 2.0f) - position.y) / m_Size.y) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else
                         setValue(m_Minimum);
                 }
@@ -649,7 +644,7 @@ namespace tgui
                 {
                     // If the position is positive then calculate the correct value
                     if ((y - position.y) > 0)
-                        setValue(static_cast <unsigned int> ((((y - position.y) / (m_Size.y * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                        setValue(static_cast <unsigned int> ((((y - position.y) / m_Size.y) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
                         m_Value = m_Minimum;
                 }
@@ -659,12 +654,9 @@ namespace tgui
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
                 {
-                    // Calculate the thumb width
-                    float thumbWidth = m_ThumbSize.x * curScale.x;
-
                     // Set the new value
-                    if ((x - m_MouseDownOnThumbPos.x + (thumbWidth / 2.0f) - position.x) > 0)
-                        setValue(static_cast <unsigned int> ((((x - m_MouseDownOnThumbPos.x + (thumbWidth / 2.0f) - position.x) / (m_Size.x * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                    if ((x - m_MouseDownOnThumbPos.x + (m_ThumbSize.x / 2.0f) - position.x) > 0)
+                        setValue(static_cast <unsigned int> ((((x - m_MouseDownOnThumbPos.x + (m_ThumbSize.x / 2.0f) - position.x) / m_Size.x) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else
                         setValue(m_Minimum);
                 }
@@ -672,7 +664,7 @@ namespace tgui
                 {
                     // If the position is positive then calculate the correct value
                     if (x - position.x > 0)
-                        setValue(static_cast<unsigned int>((((x - position.x) / (m_Size.x * curScale.x)) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
+                        setValue(static_cast<unsigned int>((((x - position.x) / m_Size.x) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
                         m_Value = m_Minimum;
                 }

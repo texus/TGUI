@@ -593,8 +593,6 @@ namespace tgui
 
     void ChildWindow::handleEvent(sf::Event& event, float mouseX, float mouseY)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)
             return;
@@ -628,15 +626,11 @@ namespace tgui
             // Check if the mouse is on top of the title bar
             if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))
             {
-                // Get the current position and scale
+                // Get the current position
                 Vector2f position = getPosition();
-                Vector2f curScale = getScale();
 
                 // Temporary set the close button to the correct position
-                m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x) * curScale.x), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)) * curScale.y);
-
-                // Set the scale of the close button
-//                m_CloseButton->setScale(curScale);
+                m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
 
                 // Call the correct function of the button
                 if (event.type == sf::Event::MouseMoved)
@@ -687,9 +681,8 @@ namespace tgui
                     }
                 }
 
-                // Reset the position and scale of the button
+                // Reset the position of the button
                 m_CloseButton->setPosition(0, 0);
-//                m_CloseButton->setScale(1, 1);
 
                 // Tell the objects that the mouse is no longer down
                 m_EventManager.mouseNoLongerDown();
@@ -719,7 +712,7 @@ namespace tgui
         }
 
         // Let the child window handle the rest
-        GroupObject::handleEvent(event, mouseX - (m_LeftBorder * getScale().x), mouseY - ((m_TitleBarHeight + m_TopBorder) * getScale().y));
+        GroupObject::handleEvent(event, mouseX - m_LeftBorder, mouseY - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -730,9 +723,8 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
@@ -741,10 +733,10 @@ namespace tgui
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + (m_LeftBorder * curScale.x) + viewPosition.x,
-                                                                        position.y + ((m_TitleBarHeight + m_TopBorder) * curScale.y) + viewPosition.y);
-        Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + ((m_Size.x + m_LeftBorder) * curScale.x) + viewPosition.x,
-                                                                            position.y + ((m_TitleBarHeight + m_Size.y + m_TopBorder) * curScale.y) + viewPosition.y);
+        Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_LeftBorder + viewPosition.x,
+                                                                        position.y + m_TitleBarHeight + m_TopBorder + viewPosition.y);
+        Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + viewPosition.x,
+                                                                            position.y + m_TitleBarHeight + m_Size.y + m_TopBorder + viewPosition.y);
         Vector2f topLeftTitleBarPosition;
         Vector2f bottomRightTitleBarPosition;
 
@@ -754,8 +746,8 @@ namespace tgui
         else
             topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_DistanceToSide + viewPosition.x, position.y + viewPosition.y);
 
-        bottomRightTitleBarPosition = states.transform.transformPoint(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - (2*m_DistanceToSide) - m_CloseButton->getScaledSize().x) * curScale.x) + viewPosition.x,
-                                                                      position.y + (m_TitleBarHeight * curScale.y) + viewPosition.y);
+        bottomRightTitleBarPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + m_RightBorder - (2*m_DistanceToSide) - m_CloseButton->getSize().x + viewPosition.x,
+                                                                      position.y + m_TitleBarHeight + viewPosition.y);
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -819,18 +811,18 @@ namespace tgui
             else if (m_TitleAlignment == TitleAlignmentCentered)
             {
                 if (m_IconTexture.data)
-                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
                 else
-                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
 
                 target.draw(m_TitleText, states);
             }
             else // if (m_TitleAlignment == TitleAlignmentRight)
             {
                 if (m_IconTexture.data)
-                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width, 0);
                 else
-                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getScaledSize().x - m_TitleText.getGlobalBounds().width, 0);
+                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width, 0);
 
                 target.draw(m_TitleText, states);
             }

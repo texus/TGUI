@@ -97,7 +97,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         picture->load(pictures.back().filename.value);
 
         // Store the aspect ratio
-        aspectRatios.push_back(picture->getScaledSize().y / picture->getScaledSize().x);
+        aspectRatios.push_back(picture->getSize().y / picture->getSize().x);
     }
     else if (objectID == tgui::Type_Button)
     {
@@ -113,7 +113,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         button->setSize(256, 64);
 
         // Store the aspect ratio
-        aspectRatios.push_back(button->getScaledSize().y / button->getScaledSize().x);
+        aspectRatios.push_back(button->getSize().y / button->getSize().x);
     }
     else if (objectID == tgui::Type_Checkbox)
     {
@@ -128,7 +128,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         checkbox->load(checkboxes.back().configFile.value);
 
         // Store the aspect ratio
-        aspectRatios.push_back(checkbox->getScaledSize().y / checkbox->getScaledSize().x);
+        aspectRatios.push_back(checkbox->getSize().y / checkbox->getSize().x);
     }
     else if (objectID == tgui::Type_RadioButton)
     {
@@ -144,7 +144,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         radioButton->load(radioButtons.back().configFile.value);
 
         // Store the aspect ratio
-        aspectRatios.push_back(radioButton->getScaledSize().y / radioButton->getScaledSize().x);
+        aspectRatios.push_back(radioButton->getSize().y / radioButton->getSize().x);
     }
     else if (objectID == tgui::Type_Label)
     {
@@ -159,7 +159,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         label->setText("Label");
 
         // Store the aspect ratio
-        aspectRatios.push_back(label->getScaledSize().y / label->getScaledSize().x);
+        aspectRatios.push_back(label->getSize().y / label->getSize().x);
     }
     else if (objectID == tgui::Type_EditBox)
     {
@@ -179,7 +179,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                               sf::Color( 10, 110, 255));
 
         // Store the aspect ratio
-        aspectRatios.push_back(editBox->getScaledSize().y / editBox->getScaledSize().x);
+        aspectRatios.push_back(editBox->getSize().y / editBox->getSize().x);
     }
     else if (objectID == tgui::Type_ListBox)
     {
@@ -202,7 +202,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                               sf::Color::Black);
 
         // Store the aspect ratio
-        aspectRatios.push_back(listBox->getScaledSize().y / listBox->getScaledSize().x);
+        aspectRatios.push_back(listBox->getSize().y / listBox->getSize().x);
     }
     else if (objectID == tgui::Type_ComboBox)
     {
@@ -225,7 +225,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                                sf::Color::Black);
 
         // Store the aspect ratio
-        aspectRatios.push_back(comboBox->getScaledSize().y / comboBox->getScaledSize().x);
+        aspectRatios.push_back(comboBox->getSize().y / comboBox->getSize().x);
     }
     else if (objectID == tgui::Type_Slider)
     {
@@ -241,7 +241,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         slider->setVerticalScroll(false);
 
         // Store the aspect ratio
-        aspectRatios.push_back(slider->getScaledSize().y / slider->getScaledSize().x);
+        aspectRatios.push_back(slider->getSize().y / slider->getSize().x);
     }
     else if (objectID == tgui::Type_Scrollbar)
     {
@@ -259,7 +259,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         scrollbar->setAutoHide(false);
 
         // Store the aspect ratio
-        aspectRatios.push_back(scrollbar->getScaledSize().y / scrollbar->getScaledSize().x);
+        aspectRatios.push_back(scrollbar->getSize().y / scrollbar->getSize().x);
     }
     else if (objectID == tgui::Type_LoadingBar)
     {
@@ -275,7 +275,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
         loadingBar->setValue(0);
 
         // Store the aspect ratio
-        aspectRatios.push_back(loadingBar->getScaledSize().y / loadingBar->getScaledSize().x);
+        aspectRatios.push_back(loadingBar->getSize().y / loadingBar->getSize().x);
     }
     else if (objectID == tgui::Type_TextBox)
     {
@@ -299,7 +299,7 @@ unsigned int Builder::newObject(unsigned int objectID, const std::string objectN
                               sf::Color::Black);
 
         // Store the aspect ratio
-        aspectRatios.push_back(textBox->getScaledSize().y / textBox->getScaledSize().x);
+        aspectRatios.push_back(textBox->getSize().y / textBox->getSize().x);
     }
 
     // Bring the scale squares to front
@@ -986,15 +986,15 @@ bool Builder::loadForm()
                 pictures.back().filename.value = object->getLoadedFilename();
                 pictures.back().left.value = object->getPosition().x;
                 pictures.back().top.value = object->getPosition().y;
-                pictures.back().width.value = object->getScaledSize().x;
-                pictures.back().height.value = object->getScaledSize().y;
+                pictures.back().width.value = object->getSize().x;
+                pictures.back().height.value = object->getSize().y;
                 pictures.back().callbackID.value = object->getCallbackId();
 
                 // Draw the object in the correct way
                 tgui::Picture::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedFilename());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setCallbackId(object->getCallbackId());
             }
             else if (objects[i]->getObjectType() == tgui::Type_Button)
@@ -1007,8 +1007,8 @@ bool Builder::loadForm()
                 buttons.back().configFile.value = object->getLoadedConfigFile();
                 buttons.back().left.value = object->getPosition().x;
                 buttons.back().top.value = object->getPosition().y;
-                buttons.back().width.value = object->getScaledSize().x;
-                buttons.back().height.value = object->getScaledSize().y;
+                buttons.back().width.value = object->getSize().x;
+                buttons.back().height.value = object->getSize().y;
                 buttons.back().text.value = object->getText();
                 buttons.back().textSize.value = object->getTextSize();
                 buttons.back().textColor.value = tgui::convertColorToString(object->getTextColor());
@@ -1019,7 +1019,7 @@ bool Builder::loadForm()
                 tgui::Button::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextColor(object->getTextColor());
@@ -1036,8 +1036,8 @@ bool Builder::loadForm()
                 checkboxes.back().configFile.value = object->getLoadedConfigFile();
                 checkboxes.back().left.value = object->getPosition().x;
                 checkboxes.back().top.value = object->getPosition().y;
-                checkboxes.back().width.value = object->getScaledSize().x;
-                checkboxes.back().height.value = object->getScaledSize().y;
+                checkboxes.back().width.value = object->getSize().x;
+                checkboxes.back().height.value = object->getSize().y;
                 checkboxes.back().checked.value = object->isChecked();
                 checkboxes.back().text.value = object->getText();
                 checkboxes.back().textSize.value = object->getTextSize();
@@ -1049,7 +1049,7 @@ bool Builder::loadForm()
                 tgui::Checkbox::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextColor(object->getTextColor());
@@ -1071,8 +1071,8 @@ bool Builder::loadForm()
                 radioButtons.back().configFile.value = object->getLoadedConfigFile();
                 radioButtons.back().left.value = object->getPosition().x;
                 radioButtons.back().top.value = object->getPosition().y;
-                radioButtons.back().width.value = object->getScaledSize().x;
-                radioButtons.back().height.value = object->getScaledSize().y;
+                radioButtons.back().width.value = object->getSize().x;
+                radioButtons.back().height.value = object->getSize().y;
                 radioButtons.back().checked.value = object->isChecked();
                 radioButtons.back().text.value = object->getText();
                 radioButtons.back().textSize.value = object->getTextSize();
@@ -1084,7 +1084,7 @@ bool Builder::loadForm()
                 tgui::RadioButton::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextColor(object->getTextColor());
@@ -1106,8 +1106,8 @@ bool Builder::loadForm()
                 editBoxes.back().configFile.value = object->getLoadedConfigFile();
                 editBoxes.back().left.value = object->getPosition().x;
                 editBoxes.back().top.value = object->getPosition().y;
-                editBoxes.back().width.value = object->getScaledSize().x;
-                editBoxes.back().height.value = object->getScaledSize().y;
+                editBoxes.back().width.value = object->getSize().x;
+                editBoxes.back().height.value = object->getSize().y;
                 editBoxes.back().text.value = object->getText();
                 editBoxes.back().textSize.value = object->getTextSize();
                 editBoxes.back().textFont.value = "Global";
@@ -1125,7 +1125,7 @@ bool Builder::loadForm()
                 tgui::EditBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextFont(mainWindow.getGlobalFont());
@@ -1147,8 +1147,8 @@ bool Builder::loadForm()
                 sliders.back().configFile.value = object->getLoadedConfigFile();
                 sliders.back().left.value = object->getPosition().x;
                 sliders.back().top.value = object->getPosition().y;
-                sliders.back().width.value = object->getScaledSize().x;
-                sliders.back().height.value = object->getScaledSize().y;
+                sliders.back().width.value = object->getSize().x;
+                sliders.back().height.value = object->getSize().y;
                 sliders.back().verticalScroll.value = object->getVerticalScroll();
                 sliders.back().value.value = object->getValue();
                 sliders.back().minimum.value = object->getMinimum();
@@ -1161,7 +1161,7 @@ bool Builder::loadForm()
                 realObject->setPosition(object->getPosition());
 
                 realObject->setVerticalScroll(object->getVerticalScroll());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setMinimum(object->getMinimum());
                 realObject->setMaximum(object->getMaximum());
                 realObject->setValue(object->getValue());
@@ -1177,8 +1177,8 @@ bool Builder::loadForm()
                 scrollbars.back().configFile.value = object->getLoadedConfigFile();
                 scrollbars.back().left.value = object->getPosition().x;
                 scrollbars.back().top.value = object->getPosition().y;
-                scrollbars.back().width.value = object->getScaledSize().x;
-                scrollbars.back().height.value = object->getScaledSize().y;
+                scrollbars.back().width.value = object->getSize().x;
+                scrollbars.back().height.value = object->getSize().y;
                 scrollbars.back().verticalScroll.value = object->getVerticalScroll();
                 scrollbars.back().value.value = object->getValue();
                 scrollbars.back().lowValue.value = object->getLowValue();
@@ -1189,7 +1189,7 @@ bool Builder::loadForm()
                 tgui::Scrollbar::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setVerticalScroll(object->getVerticalScroll());
                 realObject->setLowValue(object->getLowValue());
                 realObject->setMaximum(object->getMaximum());
@@ -1209,8 +1209,8 @@ bool Builder::loadForm()
                 listBoxes.back().configFile.value = object->getLoadedConfigFile();
                 listBoxes.back().left.value = object->getPosition().x;
                 listBoxes.back().top.value = object->getPosition().y;
-                listBoxes.back().width.value = object->getScaledSize().x;
-                listBoxes.back().height.value = object->getScaledSize().y;
+                listBoxes.back().width.value = object->getSize().x;
+                listBoxes.back().height.value = object->getSize().y;
                 listBoxes.back().itemHeight.value = object->getItemHeight();
                 listBoxes.back().maximumItems.value = object->getMaximumItems();
                 listBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
@@ -1236,7 +1236,7 @@ bool Builder::loadForm()
                 // Draw the object in the correct way
                 tgui::ListBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
-                realObject->setSize(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y));
+                realObject->setSize(static_cast<unsigned int>(object->getSize().x), static_cast<unsigned int>(object->getSize().y));
                 realObject->setItemHeight(object->getItemHeight());
                 realObject->setPosition(object->getPosition());
                 realObject->setMaximumItems(object->getMaximumItems());
@@ -1260,8 +1260,8 @@ bool Builder::loadForm()
                 comboBoxes.back().configFile.value = object->getLoadedConfigFile();
                 comboBoxes.back().left.value = object->getPosition().x;
                 comboBoxes.back().top.value = object->getPosition().y;
-                comboBoxes.back().width.value = object->getScaledSize().x;
-                comboBoxes.back().height.value = object->getScaledSize().y;
+                comboBoxes.back().width.value = object->getSize().x;
+                comboBoxes.back().height.value = object->getSize().y;
                 comboBoxes.back().borders.value = "(" + tgui::to_string(object->getBorders().x1) + "," + tgui::to_string(object->getBorders().x2) + "," + tgui::to_string(object->getBorders().x3) + "," + tgui::to_string(object->getBorders().x4) + ")";
                 comboBoxes.back().backgroundColor.value = tgui::convertColorToString(object->getBackgroundColor());
                 comboBoxes.back().textColor.value = tgui::convertColorToString(object->getTextColor());
@@ -1286,10 +1286,10 @@ bool Builder::loadForm()
                 // Draw the object in the correct way
                 tgui::ComboBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setItemsToDisplay(object->getItemsToDisplay());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setBorders(object->getBorders().x1, object->getBorders().x2, object->getBorders().x3, object->getBorders().x4);
                 realObject->changeColors(object->getBackgroundColor(), object->getTextColor(), object->getSelectedBackgroundColor(), object->getSelectedTextColor(), object->getBorderColor());
                 for (unsigned int j=0; j<items.size(); ++j) realObject->addItem(items[j]);
@@ -1307,8 +1307,8 @@ bool Builder::loadForm()
                 loadingBars.back().configFile.value = object->getLoadedConfigFile();
                 loadingBars.back().left.value = object->getPosition().x;
                 loadingBars.back().top.value = object->getPosition().y;
-                loadingBars.back().width.value = object->getScaledSize().x;
-                loadingBars.back().height.value = object->getScaledSize().y;
+                loadingBars.back().width.value = object->getSize().x;
+                loadingBars.back().height.value = object->getSize().y;
                 loadingBars.back().value.value = object->getValue();
                 loadingBars.back().minimum.value = object->getMinimum();
                 loadingBars.back().maximum.value = object->getMaximum();
@@ -1318,7 +1318,7 @@ bool Builder::loadForm()
                 tgui::LoadingBar::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setMinimum(object->getMinimum());
                 realObject->setMaximum(object->getMaximum());
                 realObject->setValue(object->getValue());
@@ -1334,8 +1334,8 @@ bool Builder::loadForm()
                 textBoxes.back().configFile.value = object->getLoadedConfigFile();
                 textBoxes.back().left.value = object->getPosition().x;
                 textBoxes.back().top.value = object->getPosition().y;
-                textBoxes.back().width.value = object->getScaledSize().x;
-                textBoxes.back().height.value = object->getScaledSize().y;
+                textBoxes.back().width.value = object->getSize().x;
+                textBoxes.back().height.value = object->getSize().y;
                 textBoxes.back().text.value = object->getText();
                 textBoxes.back().textSize.value = object->getTextSize();
                 textBoxes.back().textFont.value = "Global";
@@ -1353,10 +1353,10 @@ bool Builder::loadForm()
                 // Draw the object in the correct way
                 tgui::TextBox::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->load(object->getLoadedConfigFile());
-                realObject->setSize(static_cast<unsigned int>(object->getScaledSize().x), static_cast<unsigned int>(object->getScaledSize().y));
+                realObject->setSize(static_cast<unsigned int>(object->getSize().x), static_cast<unsigned int>(object->getSize().y));
                 realObject->setTextSize(object->getTextSize());
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
+                realObject->setSize(object->getSize().x, object->getSize().y);
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextFont(mainWindow.getGlobalFont());

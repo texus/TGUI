@@ -371,6 +371,7 @@ namespace tgui
             // Make sure the required textures were loaded
             if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
+                m_Loaded = true;
                 setSize(static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x),
                         static_cast<float>(m_TextureNormal_M.getSize().y));
             }
@@ -396,6 +397,7 @@ namespace tgui
             // Make sure the required texture was loaded
             if (m_TextureNormal_M.data != NULL)
             {
+                m_Loaded = true;
                 setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
             }
             else
@@ -420,7 +422,7 @@ namespace tgui
         setTextSize(0);
 
         // When there is no error we will return true
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1074,7 +1076,7 @@ namespace tgui
                     width = 0;
 
                 // Check if the mouse is on the left of the text
-                if (x - getPosition().x < m_LeftBorder * scalingX * getScale().x)
+                if (x - getPosition().x < m_LeftBorder * scalingX)
                 {
                     // Move the text by a few pixels
                     if (m_TextFull.getCharacterSize() > 10)
@@ -1091,7 +1093,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((x - getPosition().x > ((m_LeftBorder * scalingX) + width) * getScale().x) && (m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x > width))
+                else if ((x - getPosition().x > (m_LeftBorder * scalingX) + width) && (m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x > width))
                 {
                     // Move the text by a few pixels
                     if (m_TextFull.getCharacterSize() > 10)
@@ -1441,9 +1443,6 @@ namespace tgui
 
     unsigned int EditBox::findSelectionPointPosition(float posX)
     {
-        // Take the scaling into account
-        posX /= getScale().x;
-
         // This code will crash when the editbox is empty. We need to avoid this.
         if (m_DisplayedText.isEmpty())
             return 0;
@@ -1784,10 +1783,10 @@ namespace tgui
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale * getScale().x) + viewPosition.x,
-                                                                   getPosition().y + (m_TopBorder * scaling.y * getScale().y) + viewPosition.y);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_Size.x - (m_RightBorder * borderScale)) * getScale().x) + viewPosition.x,
-                                                                       getPosition().y + ((m_Size.y - (m_BottomBorder * scaling.y)) * getScale().y) + viewPosition.y);
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale) + viewPosition.x,
+                                                                   getPosition().y + (m_TopBorder * scaling.y) + viewPosition.y);
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + (m_Size.x - (m_RightBorder * borderScale)) + viewPosition.x,
+                                                                       getPosition().y + (m_Size.y - (m_BottomBorder * scaling.y)) + viewPosition.y);
 
         // Get the old clipping area
         GLint scissor[4];

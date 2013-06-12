@@ -125,14 +125,10 @@ namespace tgui
         void move(const Vector2f& offset);
 
 
-        // This function is temporarily kept for compability reasons.
-        // It will be removed when the function is no longer needed by tgui objects.
-        // This function will always return (1, 1).
-        Vector2f getScale() const;
-
-
-        // This function is temporarily kept for compability reasons.
-        // It will be removed when the function is no longer needed by tgui objects.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the transform.
+        // This currently only contains the translation.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Transform& getTransform() const;
 
 

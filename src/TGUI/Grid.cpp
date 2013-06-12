@@ -235,12 +235,12 @@ namespace tgui
             for (unsigned int col=0; col < m_GridObjects[row].size(); ++col)
             {
                 // Remember the biggest column width
-                if (m_ColumnWidth[col] < m_GridObjects[row][col]->getScaledSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3)
-                    m_ColumnWidth[col] = static_cast<unsigned int>(m_GridObjects[row][col]->getScaledSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3);
+                if (m_ColumnWidth[col] < m_GridObjects[row][col]->getSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3)
+                    m_ColumnWidth[col] = static_cast<unsigned int>(m_GridObjects[row][col]->getSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3);
 
                 // Remember the biggest row height
-                if (m_RowHeight[row] < m_GridObjects[row][col]->getScaledSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4)
-                    m_RowHeight[row] = static_cast<unsigned int>(m_GridObjects[row][col]->getScaledSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4);
+                if (m_RowHeight[row] < m_GridObjects[row][col]->getSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4)
+                    m_RowHeight[row] = static_cast<unsigned int>(m_GridObjects[row][col]->getSize().y + m_ObjBorders[row][col].x2 + m_ObjBorders[row][col].x4);
             }
         }
 
@@ -281,43 +281,43 @@ namespace tgui
                             break;
 
                         case Layout::Up:
-                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
+                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
                             top += static_cast<float>(m_ObjBorders[row][col].x2);
                             break;
 
                         case Layout::UpperRight:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
                             top += static_cast<float>(m_ObjBorders[row][col].x2);
                             break;
 
                         case Layout::Right:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
-                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
+                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                             break;
 
                         case Layout::BottomRight:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                             break;
 
                         case Layout::Bottom:
-                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                             break;
 
                         case Layout::BottomLeft:
                             left += static_cast<float>(m_ObjBorders[row][col].x1);
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                             break;
 
                         case Layout::Left:
                             left += static_cast<float>(m_ObjBorders[row][col].x1);
-                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                             break;
 
                         case Layout::Center:
-                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
-                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                            left += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
+                            top += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                             break;
                         }
 
@@ -362,83 +362,83 @@ namespace tgui
                     break;
 
                 case Layout::Up:
-                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
+                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
                     position.y += static_cast<float>(m_ObjBorders[row][col].x2);
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f) - m_ColumnWidth[col];
+                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f) - m_ColumnWidth[col];
                     position.y -= static_cast<float>(m_ObjBorders[row][col].x2);
                     break;
 
                 case Layout::UpperRight:
-                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
+                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
                     position.y += static_cast<float>(m_ObjBorders[row][col].x2);
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x - m_ColumnWidth[col];
+                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x - m_ColumnWidth[col];
                     position.y -= static_cast<float>(m_ObjBorders[row][col].x2);
                     break;
 
                 case Layout::Right:
-                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
-                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
+                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x - m_ColumnWidth[col];
-                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x - m_ColumnWidth[col];
+                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                     break;
 
                 case Layout::BottomRight:
-                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x;
-                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.x += m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x;
+                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getScaledSize().x - m_ColumnWidth[col];
-                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.x -= m_ColumnWidth[col] - m_ObjBorders[row][col].x3 - m_GridObjects[row][col]->getSize().x - m_ColumnWidth[col];
+                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                     break;
 
                 case Layout::Bottom:
-                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
-                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
+                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f) - m_ColumnWidth[col];
-                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f) - m_ColumnWidth[col];
+                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                     break;
 
                 case Layout::BottomLeft:
                     position.x += static_cast<float>(m_ObjBorders[row][col].x1);
-                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.y += m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
 
                     m_GridObjects[row][col]->setPosition(position);
 
                     position.x -= static_cast<float>(m_ObjBorders[row][col].x1) - m_ColumnWidth[col];
-                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getScaledSize().y;
+                    position.y -= m_RowHeight[row] - m_ObjBorders[row][col].x4 - m_GridObjects[row][col]->getSize().y;
                     break;
 
                 case Layout::Left:
                     position.x += static_cast<float>(m_ObjBorders[row][col].x1);
-                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
 
                     m_GridObjects[row][col]->setPosition(position);
 
                     position.x -= static_cast<float>(m_ObjBorders[row][col].x1) - m_ColumnWidth[col];
-                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                     break;
 
                 case Layout::Center:
-                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f);
-                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.x += m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f);
+                    position.y += m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
 
                     m_GridObjects[row][col]->setPosition(position);
 
-                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getScaledSize().x) / 2.f) - m_ColumnWidth[col];
-                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getScaledSize().y) / 2.f);
+                    position.x -= m_ObjBorders[row][col].x1 + (((m_ColumnWidth[col] - m_ObjBorders[row][col].x1 - m_ObjBorders[row][col].x3) - m_GridObjects[row][col]->getSize().x) / 2.f) - m_ColumnWidth[col];
+                    position.y -= m_ObjBorders[row][col].x2 + (((m_RowHeight[row] - m_ObjBorders[row][col].x2 - m_ObjBorders[row][col].x4) - m_GridObjects[row][col]->getSize().y) / 2.f);
                     break;
                 }
             }

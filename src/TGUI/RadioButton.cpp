@@ -155,6 +155,7 @@ namespace tgui
         // Make sure the required texture was loaded
         if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
         {
+            m_Loaded = true;
             m_Size = Vector2f(m_TextureChecked.getSize());
         }
         else
@@ -174,7 +175,7 @@ namespace tgui
             m_ObjectPhase |= ObjectPhase_Hover;
         }
 
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

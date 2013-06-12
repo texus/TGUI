@@ -594,10 +594,7 @@ namespace tgui
         // Check if the mouse is on top of the tab
         if (m_Loaded)
         {
-            sf::Vector2f size = getSize();
-            size.x /= getScale().x;
-            size.y /= getScale().y;
-            if (getTransform().transformRect(sf::FloatRect(0, 0, size.x, size.y)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
                 return true;
         }
 
@@ -619,10 +616,10 @@ namespace tgui
         {
             // Append the width of the tab
             if (m_SplitImage)
-                width += (TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
-                                       (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y)))) * getScale().x;
+                width += TGUI_MAXIMUM(m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide),
+                                      (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y)));
             else
-                width += (m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide)) * getScale().x;
+                width += m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide);
 
             // Check if the mouse went down on the tab
             if (x < width)
@@ -858,12 +855,9 @@ namespace tgui
                 // Check if clipping is required for this text
                 if (clippingRequired)
                 {
-                    // Undo the current scaling
-                    states.transform.scale(1.f / getScale().x, 1.f / getScale().y);
-
                     // Get the global position
                     Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    Vector2f bottomRightPosition = states.transform.transformPoint(Vector2f((tabWidth - (2 * m_DistanceToSide)) * getScale().x, ((m_TabHeight + defaultRect.height) / 2.f) * getScale().y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    Vector2f bottomRightPosition = states.transform.transformPoint(Vector2f(tabWidth - (2 * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
@@ -879,9 +873,6 @@ namespace tgui
 
                     // Set the clipping area
                     glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-                    // Redo the scaling
-                    states.transform.scale(getScale());
                 }
 
                 // Draw the text

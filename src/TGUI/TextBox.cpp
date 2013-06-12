@@ -796,29 +796,24 @@ namespace tgui
 
     bool TextBox::mouseOnObject(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return false;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // Pass the event to the scrollbar (if there is one)
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
 
         // Check if the mouse is on top of the list box
@@ -838,8 +833,6 @@ namespace tgui
 
     void TextBox::leftMousePressed(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -856,12 +849,8 @@ namespace tgui
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
 
-            // Get the current scale
-            Vector2f curScale = getScale();
-
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
@@ -870,9 +859,8 @@ namespace tgui
                 clickedOnTextBox = false;
             }
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_Scroll->getValue())
@@ -886,7 +874,7 @@ namespace tgui
             if (m_LineHeight == 0)
                 return;
 
-            unsigned int selectionPointPosition = findSelectionPointPosition(((x - getPosition().x) / getScale().x) - m_LeftBorder - 4, ((y - getPosition().y) / getScale().y) - m_TopBorder);
+            unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - m_LeftBorder - 4, y - getPosition().y - m_TopBorder);
 
             // Check if this is a double click
             if ((m_PossibleDoubleClick) && (m_SelChars == 0) && (selectionPointPosition == m_SelEnd))
@@ -978,8 +966,6 @@ namespace tgui
 
     void TextBox::leftMouseReleased(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -997,19 +983,14 @@ namespace tgui
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_Scroll->getValue();
 
-                // Get the current scale
-                Vector2f curScale = getScale();
-
-                // Temporarily set the position and scale of the scroll
-//                m_Scroll->setScale(curScale);
-                m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+                // Temporarily set the position of the scroll
+                m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
                 // Pass the event
                 m_Scroll->leftMouseReleased(x, y);
 
-                // Reset the position and scale
+                // Reset the position
                 m_Scroll->setPosition(0, 0);
-//                m_Scroll->setScale(1, 1);
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_Scroll->getValue())
@@ -1047,8 +1028,6 @@ namespace tgui
 
     void TextBox::mouseMoved(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -1062,15 +1041,11 @@ namespace tgui
         // The mouse has moved so a double click is no longer possible
         m_PossibleDoubleClick = false;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
-
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -1096,9 +1071,8 @@ namespace tgui
                     selectText(x, y);
             }
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
         else // There is no scrollbar
         {
@@ -1800,7 +1774,7 @@ namespace tgui
             return;
 
         // Find out where the selection point should be
-        m_SelEnd = findSelectionPointPosition(((posX - getPosition().x) / getScale().x) - m_LeftBorder - 4, ((posY - getPosition().y) / getScale().y) - m_TopBorder);
+        m_SelEnd = findSelectionPointPosition(posX - getPosition().x - m_LeftBorder - 4, posY - getPosition().y - m_TopBorder);
 
         // Calculate how many character are being selected
         if (m_SelEnd < m_SelStart)
@@ -2212,16 +2186,13 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
-
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - Vector2f(m_RightBorder * curScale.x, m_BottomBorder * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();

@@ -407,9 +407,8 @@ namespace tgui
         // Check if the mouse is on top of the scrollbar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
-            // Get the current position and scale
+            // Get the current position
             Vector2f position = getPosition();
-            Vector2f curScale = getScale();
 
             float thumbLeft = 0;
             float thumbTop = 0;
@@ -435,12 +434,12 @@ namespace tgui
                     thumbHeight = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
 
                     // Calculate the top position of the thumb
-                    thumbTop = ((m_TextureArrowUpNormal.getSize().y * scalingX) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackHeight - thumbHeight))) * curScale.y;
+                    thumbTop = (m_TextureArrowUpNormal.getSize().y * scalingX) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackHeight - thumbHeight));
                 }
                 else // The arrows are not drawn at full size
                 {
                     thumbHeight = 0;
-                    thumbTop = m_TextureArrowUpNormal.getSize().y * curScale.y;
+                    thumbTop = m_TextureArrowUpNormal.getSize().y;
                 }
             }
             else // The scrollbar lies horizontal
@@ -459,17 +458,17 @@ namespace tgui
                     thumbWidth = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
 
                     // Calculate the left position of the thumb
-                    thumbLeft = ((m_TextureArrowUpNormal.getSize().y * scalingY) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackWidth - thumbWidth))) * curScale.x;
+                    thumbLeft = (m_TextureArrowUpNormal.getSize().y * scalingY) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackWidth - thumbWidth));
                 }
                 else // The arrows are not drawn at full size
                 {
                     thumbWidth = 0;
-                    thumbLeft = m_TextureArrowUpNormal.getSize().y * curScale.x;
+                    thumbLeft = m_TextureArrowUpNormal.getSize().y;
                 }
             }
 
             // Check if the mouse is on top of the thumb
-            if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth * curScale.x, thumbHeight * curScale.y).contains(x, y))
+            if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth, thumbHeight).contains(x, y))
             {
                 if (m_MouseDown == false)
                 {
@@ -504,8 +503,6 @@ namespace tgui
         // Make sure you didn't click on one of the arrows
         if (m_VerticalScroll)
         {
-            Vector2f curScale = getScale();
-
             float scalingX;
             if (m_VerticalImage == m_VerticalScroll)
                 scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().x;
@@ -513,12 +510,12 @@ namespace tgui
                 scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
             // Check if the arrows are drawn at full size
-            if (m_Size.y * curScale.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
+            if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
             {
                 // Check if you clicked on one of the arrows
-                if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
+                if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX))
                     m_MouseDownOnArrow = true;
-                else if (y > getPosition().y + (m_Size.y * curScale.y) - (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
+                else if (y > getPosition().y + m_Size.y - (m_TextureArrowUpNormal.getSize().y * scalingX))
                     m_MouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -526,8 +523,6 @@ namespace tgui
         }
         else // The scrollbar lies horizontal
         {
-            Vector2f curScale = getScale();
-
             float scalingY;
             if (m_VerticalImage == m_VerticalScroll)
                 scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().y;
@@ -535,12 +530,12 @@ namespace tgui
                 scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
             // Check if the arrows are drawn at full size
-            if (m_Size.x * curScale.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
+            if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
             {
                 // Check if you clicked on one of the arrows
-                if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
+                if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY))
                     m_MouseDownOnArrow = true;
-                else if (x > getPosition().x + (m_Size.x * curScale.x) - (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
+                else if (x > getPosition().x + m_Size.x - (m_TextureArrowUpNormal.getSize().y * scalingY))
                     m_MouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -565,9 +560,6 @@ namespace tgui
                 // Remember the current value
                 unsigned int oldValue = m_Value;
 
-                // Get the current scaling
-                Vector2f curScale = getScale();
-
                 // Check in which direction the scrollbar lies
                 if (m_VerticalScroll)
                 {
@@ -578,17 +570,17 @@ namespace tgui
                         scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
                     // Check if the arrows are drawn at full size
-                    if (m_Size.y * curScale.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
+                    if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
                     {
                         // Check if you clicked on the top arrow
-                        if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
+                        if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX))
                         {
                             if (m_Value > 0)
                                 --m_Value;
                         }
 
                         // Check if you clicked the down arrow
-                        else if (y > getPosition().y + (m_Size.y * curScale.y) - (m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y))
+                        else if (y > getPosition().y + m_Size.y - (m_TextureArrowUpNormal.getSize().y * scalingX))
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
                                 ++m_Value;
@@ -597,7 +589,7 @@ namespace tgui
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
-                        if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * curScale.y * ((m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
+                        if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * ((m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
                         {
                             if (m_Value > 0)
                                 --m_Value;
@@ -618,17 +610,17 @@ namespace tgui
                         scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
                     // Check if the arrows are drawn at full size
-                    if (m_Size.x * curScale.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
+                    if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
                     {
                         // Check if you clicked on the left arrow
-                        if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
+                        if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY))
                         {
                             if (m_Value > 0)
                                 --m_Value;
                         }
 
                         // Check if you clicked the right arrow
-                        else if (x > getPosition().x + (m_Size.x * curScale.x) - (m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x))
+                        else if (x > getPosition().x + m_Size.x - (m_TextureArrowUpNormal.getSize().y * scalingY))
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
                                 ++m_Value;
@@ -637,7 +629,7 @@ namespace tgui
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
-                        if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * curScale.x * ((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
+                        if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * ((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
                         {
                             if (m_Value > 0)
                                 --m_Value;
@@ -684,9 +676,8 @@ namespace tgui
             if ((m_Maximum <= m_LowValue) && (m_AutoHide == false))
                 return;
 
-            // Get the current position and scale
+            // Get the current position
             Vector2f position = getPosition();
-            Vector2f curScale = getScale();
 
             // Remember the current value
             unsigned int oldValue = m_Value;
@@ -701,7 +692,7 @@ namespace tgui
                     scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
 
                 // Calculate the arrow height
-                float arrowHeight = m_TextureArrowUpNormal.getSize().y * scalingX * curScale.y;
+                float arrowHeight = m_TextureArrowUpNormal.getSize().y * scalingX;
 
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
@@ -710,7 +701,7 @@ namespace tgui
                     if ((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / ((m_Size.y * curScale.y) - (2 * arrowHeight))) * m_Maximum) + 0.5f);
+                        unsigned value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / (m_Size.y - (2 * arrowHeight))) * m_Maximum) + 0.5f);
 
                         // If the value isn't too high then change it
                         if (value <= (m_Maximum - m_LowValue))
@@ -727,10 +718,10 @@ namespace tgui
                     if (y > position.y + arrowHeight)
                     {
                         // Make sure that you didn't click on the down arrow
-                        if (y <= position.y + (m_Size.y * curScale.y) - arrowHeight)
+                        if (y <= position.y + m_Size.y - arrowHeight)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((y - position.y - arrowHeight) / ((m_Size.y * curScale.y) - (2 * arrowHeight))) * m_Maximum);
+                            float value = (((y - position.y - arrowHeight) / (m_Size.y - (2 * arrowHeight))) * m_Maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_Value)
@@ -766,7 +757,7 @@ namespace tgui
                     scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
 
                 // Calculate the arrow width
-                float arrowWidth = m_TextureArrowUpNormal.getSize().y * scalingY * curScale.x;
+                float arrowWidth = m_TextureArrowUpNormal.getSize().y * scalingY;
 
                 // Check if the thumb is being dragged
                 if (m_MouseDownOnThumb)
@@ -775,7 +766,7 @@ namespace tgui
                     if ((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / ((m_Size.x * curScale.x) - (2 * arrowWidth))) * m_Maximum) + 0.5f);
+                        unsigned value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / (m_Size.x - (2 * arrowWidth))) * m_Maximum) + 0.5f);
 
                         // Set the new value
                         if (value <= (m_Maximum - m_LowValue))
@@ -792,10 +783,10 @@ namespace tgui
                     if (x > position.x + arrowWidth)
                     {
                         // Make sure that you didn't click on the left arrow
-                        if (x <= position.x + (m_Size.x * curScale.x) - arrowWidth)
+                        if (x <= position.x + m_Size.x - arrowWidth)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((x - position.x - arrowWidth) / ((m_Size.x * curScale.x) - (2 * arrowWidth))) * m_Maximum);
+                            float value = (((x - position.x - arrowWidth) / (m_Size.x - (2 * arrowWidth))) * m_Maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_Value)

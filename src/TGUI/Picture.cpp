@@ -179,8 +179,8 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
             Vector2f scaling;
-            scaling.x = m_Size.x / m_Texture.getSize().x * getScale().x;
-            scaling.y = m_Size.y / m_Texture.getSize().y * getScale().y;
+            scaling.x = m_Size.x / m_Texture.getSize().x;
+            scaling.y = m_Size.y / m_Texture.getSize().y;
 
             // Only return true when the pixel under the mouse isn't transparent
             if (!m_Texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))

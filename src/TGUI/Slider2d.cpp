@@ -399,9 +399,8 @@ namespace tgui
 
         m_MouseHover = true;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
         // Remember the old value
         Vector2f oldValue = m_Value;
@@ -411,13 +410,13 @@ namespace tgui
         {
             // If the position is positive then calculate the correct value
             if ((y - position.y) > 0)
-                m_Value.y = ((y - position.y) / (m_Size.y * curScale.y)) * (m_Maximum.y - m_Minimum.y) + m_Minimum.y;
+                m_Value.y = ((y - position.y) / m_Size.y) * (m_Maximum.y - m_Minimum.y) + m_Minimum.y;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_Value.y = m_Minimum.y;
 
             // If the position is positive then calculate the correct value
             if ((x - position.x) > 0)
-                m_Value.x = ((x - position.x) / (m_Size.x * curScale.x)) * (m_Maximum.x - m_Minimum.x) + m_Minimum.x;
+                m_Value.x = ((x - position.x) / m_Size.x) * (m_Maximum.x - m_Minimum.x) + m_Minimum.x;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_Value.x = m_Minimum.x;
 
@@ -454,12 +453,9 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Get the current position and scale
-        Vector2f curScale = getScale();
-
         // Get the global position
         Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size.x * curScale.x, m_Size.y * curScale.y) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();

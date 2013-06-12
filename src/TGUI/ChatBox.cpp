@@ -490,25 +490,20 @@ namespace tgui
 
     bool ChatBox::mouseOnObject(float x, float y)
     {
-/// \todo Simplify function (remove scale)
-
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = Vector2f(1, 1);
 
         // Pass the event to the scrollbar (if there is one)
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(position.x + ((m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(position.x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
 
             // Pass the event
             m_Scroll->mouseOnObject(x, y);
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
         }
 
         // Check if the mouse is on top of the list box
@@ -531,8 +526,6 @@ namespace tgui
 
     void ChatBox::leftMousePressed(float x, float y)
     {
-/// \todo Simplify function (remove scale)
-
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -546,20 +539,15 @@ namespace tgui
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
 
-            // Get the current scale
-            Vector2f curScale = Vector2f(1, 1);
-
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Pass the event
             if (m_Scroll->mouseOnObject(x, y))
                 m_Scroll->leftMousePressed(x, y);
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
-//            m_Scroll->setScale(1, 1);
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_Scroll->getValue())
@@ -571,8 +559,6 @@ namespace tgui
 
     void ChatBox::leftMouseReleased(float x, float y)
     {
-/// \todo Simplify function (remove scale)
-
         // If there is a scrollbar then pass it the event
         if (m_Scroll != NULL)
         {
@@ -582,19 +568,14 @@ namespace tgui
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_Scroll->getValue();
 
-                // Get the current scale
-                Vector2f curScale = Vector2f(1, 1);
-
-                // Temporarily set the position and scale of the scroll
-//                m_Scroll->setScale(curScale);
-                m_Scroll->setPosition(getPosition().x + ((m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+                // Temporarily set the position of the scroll
+                m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
                 // Pass the event
                 m_Scroll->leftMouseReleased(x, y);
 
-                // Reset the position and scale
+                // Reset the position
                 m_Scroll->setPosition(0, 0);
-//                m_Scroll->setScale(1, 1);
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_Scroll->getValue())
@@ -632,23 +613,17 @@ namespace tgui
 
     void ChatBox::mouseMoved(float x, float y)
     {
-/// \todo Simplify function (remove scale)
-
         if (m_MouseHover == false)
             mouseEnteredObject();
 
         // Set the mouse move flag
         m_MouseHover = true;
 
-        // Get the current scale
-        Vector2f curScale = Vector2f(1, 1);
-
         // If there is a scrollbar then pass the event
         if (m_Scroll != NULL)
         {
-            // Temporarily set the position and scale of the scroll
-//            m_Scroll->setScale(curScale);
-            m_Scroll->setPosition(getPosition().x + ((m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
+            // Temporarily set the position of the scroll
+            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -670,9 +645,8 @@ namespace tgui
                     m_Scroll->mouseMoved(x, y);
             }
 
-            // Reset the position and scale
+            // Reset the position
             m_Scroll->setPosition(0, 0);
- //           m_Scroll->setScale(1, 1);
         }
     }
 

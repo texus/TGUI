@@ -437,8 +437,8 @@ namespace tgui
             return;
 
         // There is a minimum width
-        if (m_ListBox->getSize().x < (50 + (m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x) * getScale().x))
-            m_ListBox->setSize(50 + (m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x) * getScale().x, m_ListBox->getSize().y);
+        if (m_ListBox->getSize().x < 50 + m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x)
+            m_ListBox->setSize(50 + m_LeftBorder + m_RightBorder + m_TextureArrowDownNormal.getSize().x, m_ListBox->getSize().y);
 
         // The item height needs to change
         m_ListBox->setItemHeight(itemHeight);
@@ -454,7 +454,7 @@ namespace tgui
 
         // Make room to add another item, until there are enough items
         if ((m_NrOfItemsToDisplay == 0) || (m_NrOfItemsToDisplay > m_ListBox->getItems().size()))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * getScale().y * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
 
         // Add the item
         return m_ListBox->addItem(item);
@@ -569,20 +569,17 @@ namespace tgui
 
     bool ComboBox::mouseOnObject(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the combo box wasn't loaded correctly
         if (m_Loaded == false)
             return false;
 
-        // Get the current position and scale
+        // Get the current position
         Vector2f position = getPosition();
-        Vector2f curScale = getScale();
 
-        if ((x > position.x) && (x < position.x + (m_ListBox->getSize().x * curScale.x)) && (y > position.y))
+        if ((x > position.x) && (x < position.x + m_ListBox->getSize().x) && (y > position.y))
         {
             // Check if the mouse is on top of the combo box
-            if (y < position.y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * curScale.y))
+            if (y < position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder)
             {
                 m_MouseOnListBox = false;
                 m_ListBox->mouseNotOnObject();
@@ -592,24 +589,21 @@ namespace tgui
             // Check if the list box is visible
             if (m_ShowList)
             {
-                // Temporarily set the position and scale for the list box
-//                m_ListBox->setScale(curScale);
-                m_ListBox->setPosition(position.x, position.y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * curScale.y));
+                // Temporarily set the position for the list box
+                m_ListBox->setPosition(position.x, position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
 
                 // Pass the event to the list box
                 if (m_ListBox->mouseOnObject(x, y))
                 {
-                    // Reset the position and scale of the list box
+                    // Reset the position of the list box
                     m_ListBox->setPosition(0, 0);
-//                    m_ListBox->setScale(1, 1);
 
                     m_MouseOnListBox = true;
                     return true;
                 }
 
-                // Reset the position and scale of the list box
+                // Reset the position of the list box
                 m_ListBox->setPosition(0, 0);
-//                m_ListBox->setScale(1, 1);
             }
         }
 
@@ -626,8 +620,6 @@ namespace tgui
 
     void ComboBox::leftMousePressed(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         if (m_Loaded == false)
             return;
 
@@ -639,16 +631,14 @@ namespace tgui
             // Store the current selected item
             int oldItem = m_ListBox->getSelectedItemIndex();
 
-            // Temporarily set the position and scale for the list box
-//            m_ListBox->setScale(getScale());
-            m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
+            // Temporarily set the position for the list box
+            m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
 
             // Pass the event to the list box
             m_ListBox->leftMousePressed(x, y);
 
-            // Reset the position and scale of the list box
+            // Reset the position of the list box
             m_ListBox->setPosition(0, 0);
-//            m_ListBox->setScale(1, 1);
 
             // Add the callback (if the user requested it)
             if ((oldItem != m_ListBox->getSelectedItemIndex()) && (m_CallbackFunctions[ItemSelected].empty() == false))
@@ -665,8 +655,6 @@ namespace tgui
 
     void ComboBox::leftMouseReleased(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         if (m_Loaded == false)
             return;
 
@@ -689,16 +677,14 @@ namespace tgui
                             m_ShowList = false;
                         }
 
-                        // Temporarily set the position and scale for the list box
-//                        m_ListBox->setScale(getScale());
-                        m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
+                        // Temporarily set the position for the list box
+                        m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
 
                         // Pass the event to the list box
                         m_ListBox->leftMouseReleased(x, y);
 
-                        // Reset the position and scale of the list box
+                        // Reset the position of the list box
                         m_ListBox->setPosition(0, 0);
-//                        m_ListBox->setScale(1, 1);
                     }
                 }
                 else // The mouse is not on top of the list box
@@ -732,8 +718,6 @@ namespace tgui
 
     void ComboBox::mouseMoved(float x, float y)
     {
-/// \todo  Simplify function (remove scale)
-
         // Don't do anything when the combo box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -746,16 +730,14 @@ namespace tgui
         // Check if the list is visible and the mouse is on top of the list box
         if ((m_ShowList == true) && (m_MouseOnListBox == true))
         {
-            // Temporarily set the position and scale for the list box
-//            m_ListBox->setScale(getScale());
-            m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
+            // Temporarily set the position for the list box
+            m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
 
             // Pass the event to the list box
             m_ListBox->mouseMoved(x, y);
 
-            // Reset the position and scale of the list box
+            // Reset the position of the list box
             m_ListBox->setPosition(0, 0);
-//            m_ListBox->setScale(1, 1);
         }
     }
 
@@ -866,15 +848,12 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        // Get the current scale
-        Vector2f curScale = getScale();
-
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder * curScale.x, m_TopBorder * curScale.y) + viewPosition);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + ((m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y))) * curScale.x) + viewPosition.x,
-                                                                       getPosition().y + ((m_ListBox->getSize().y - m_BottomBorder) * curScale.y) + viewPosition.y);
+        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y)) + viewPosition.x,
+                                                                       getPosition().y + m_ListBox->getSize().y - m_BottomBorder + viewPosition.y);
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -892,7 +871,7 @@ namespace tgui
 
         // Draw the combo box
         sf::RectangleShape Front(Vector2f(static_cast<float>(m_ListBox->getSize().x - m_LeftBorder - m_RightBorder),
-                                          static_cast<float>(m_ListBox->getItemHeight() - ((m_TopBorder - m_BottomBorder) / curScale.y))));
+                                          static_cast<float>(m_ListBox->getItemHeight())));
         Front.setFillColor(m_ListBox->getBackgroundColor());
         target.draw(Front, states);
 
