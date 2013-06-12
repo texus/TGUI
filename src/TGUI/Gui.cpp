@@ -116,17 +116,11 @@ namespace tgui
         // Draw the window with all objects inside it
         drawObjectGroup(m_Window, sf::RenderStates::Default);
 
-        // Check if clipping was previously enabled
+        // Reset clipping to its original state
         if (clippingEnabled)
-        {
-            // Reset the old clipping
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-        }
-        else // Clipping was previously disabled
-        {
-            // Disable the clipping again
+        else
             glDisable(GL_SCISSOR_TEST);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

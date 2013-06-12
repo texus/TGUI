@@ -357,7 +357,7 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will call the draw function from all the objects in the correct order.
+        // This function will call the draw function from all the objects.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states = sf::RenderStates::Default) const;
 

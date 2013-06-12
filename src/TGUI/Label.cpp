@@ -35,12 +35,18 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Label() :
-    m_BackgroundColor(sf::Color::Transparent),
-    m_AutoSize       (true)
+    Label::Label()
     {
         m_Callback.objectType = Type_Label;
         m_Loaded = true;
+
+        m_Background.setFillColor(sf::Color::Transparent);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Label::~Label()
+    {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,18 +101,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setSize(float width, float height)
+    const std::string& Label::getLoadedConfigFile()
     {
-        // Change the size of the label
-        m_Size.x = width;
-        m_Size.y = height;
+        return m_LoadedConfigFile;
+    }
 
-        // A negative size is not allowed for this object
-        if (m_Size.x < 0) m_Size.x = -m_Size.x;
-        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // You are no longer auto-sizing
-        m_AutoSize = false;
+    void Label::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        m_Text.setPosition(x, y);
+        m_Background.setPosition(x + m_Text.getLocalBounds().left, y + m_Text.getLocalBounds().top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,12 +122,11 @@ namespace tgui
     {
         m_Text.setString(string);
 
-        // Change the size of the label if necessary
-        if (m_AutoSize)
-        {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
-        }
+        m_Size = sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width,
+                              m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+
+        m_Background.setSize(m_Size);
+        m_Background.setPosition(getPosition().x + m_Text.getLocalBounds().left, getPosition().y + m_Text.getLocalBounds().top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,12 +170,11 @@ namespace tgui
     {
         m_Text.setCharacterSize(size);
 
-        // Change the size of the label if necessary
-        if (m_AutoSize)
-        {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
-        }
+        m_Size = sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width,
+                              m_Text.getLocalBounds().top + m_Text.getLocalBounds().height);
+
+        m_Background.setSize(sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height));
+        m_Background.setPosition(getPosition().x + m_Text.getLocalBounds().left, getPosition().y + m_Text.getLocalBounds().top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,37 +186,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setAutoSize(bool autoSize)
-    {
-        m_AutoSize = autoSize;
-
-        // Change the size of the label if necessary
-        if (m_AutoSize)
-        {
-            m_Size.x = m_Text.getLocalBounds().left + m_Text.getLocalBounds().width;
-            m_Size.y = m_Text.getLocalBounds().top + m_Text.getLocalBounds().height;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Label::getAutoSize() const
-    {
-        return m_AutoSize;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Label::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        m_BackgroundColor = backgroundColor;
+        m_Background.setFillColor(backgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Label::getBackgroundColor() const
     {
-        return m_BackgroundColor;
+        return m_Background.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,54 +211,10 @@ namespace tgui
 
     void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // When there is no text then there is nothing to draw
-        if (m_Text.getString().isEmpty())
-            return;
+        if (m_Background.getFillColor() != sf::Color::Transparent)
+            target.draw(m_Background, states);
 
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
-        // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        // If the object outside the window then don't draw anything
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-        // Apply the transformation
-        states.transform *= getTransform();
-
-        // If there is a background color then draw the background
-        if (m_BackgroundColor != sf::Color::Transparent)
-        {
-            sf::RectangleShape back(sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height));
-            back.setPosition(m_Text.getLocalBounds().left, m_Text.getLocalBounds().top);
-            back.setFillColor(m_BackgroundColor);
-            target.draw(back, states);
-        }
-
-        // Draw the text
         target.draw(m_Text, states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

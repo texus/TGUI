@@ -69,7 +69,6 @@ namespace tgui
     ObjectBorders           (copy),
     m_LoadedConfigFile      (copy.m_LoadedConfigFile),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
-    m_SelectionPointColor   (copy.m_SelectionPointColor),
     m_SelectionPointWidth   (copy.m_SelectionPointWidth),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
@@ -83,7 +82,8 @@ namespace tgui
     m_MaxChars              (copy.m_MaxChars),
     m_SplitImage            (copy.m_SplitImage),
     m_TextCropPosition      (copy.m_TextCropPosition),
-    m_SelectedTextBgrColor  (copy.m_SelectedTextBgrColor),
+    m_SelectedTextBackground(copy.m_SelectedTextBackground),
+    m_SelectionPoint        (copy.m_SelectionPoint),
     m_TextBeforeSelection   (copy.m_TextBeforeSelection),
     m_TextSelection         (copy.m_TextSelection),
     m_TextAfterSelection    (copy.m_TextAfterSelection),
@@ -132,7 +132,6 @@ namespace tgui
 
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
-            std::swap(m_SelectionPointColor,    temp.m_SelectionPointColor);
             std::swap(m_SelectionPointWidth,    temp.m_SelectionPointWidth);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
@@ -146,7 +145,8 @@ namespace tgui
             std::swap(m_MaxChars,               temp.m_MaxChars);
             std::swap(m_SplitImage,             temp.m_SplitImage);
             std::swap(m_TextCropPosition,       temp.m_TextCropPosition);
-            std::swap(m_SelectedTextBgrColor,   temp.m_SelectedTextBgrColor);
+            std::swap(m_SelectedTextBackground, temp.m_SelectedTextBackground);
+            std::swap(m_SelectionPoint,         temp.m_SelectionPoint);
             std::swap(m_TextBeforeSelection,    temp.m_TextBeforeSelection);
             std::swap(m_TextSelection,          temp.m_TextSelection);
             std::swap(m_TextAfterSelection,     temp.m_TextAfterSelection);
@@ -245,11 +245,11 @@ namespace tgui
             }
             else if (property == "selectedtextbackgroundcolor")
             {
-                m_SelectedTextBgrColor = extractColor(value);
+                m_SelectedTextBackground.setFillColor(extractColor(value));
             }
             else if (property == "selectionpointcolor")
             {
-                m_SelectionPointColor = extractColor(value);
+                m_SelectionPoint.setFillColor(extractColor(value));
             }
             else if (property == "selectionpointwidth")
             {
@@ -371,9 +371,8 @@ namespace tgui
             // Make sure the required textures were loaded
             if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                // Set the size of the edit box
-                m_Size.x = static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x);
-                m_Size.y = static_cast<float>(m_TextureNormal_M.getSize().y);
+                setSize(static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x),
+                        static_cast<float>(m_TextureNormal_M.getSize().y));
             }
             else
             {
@@ -397,7 +396,7 @@ namespace tgui
             // Make sure the required texture was loaded
             if (m_TextureNormal_M.data != NULL)
             {
-                m_Size = Vector2f(m_TextureNormal_M.getSize());
+                setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
             }
             else
             {
@@ -433,6 +432,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        if (m_SplitImage)
+        {
+            m_TextureHover_L.sprite.setPosition(x, y);
+            m_TextureNormal_L.sprite.setPosition(x, y);
+            m_TextureFocused_L.sprite.setPosition(x, y);
+
+            // Check if the middle image may be drawn
+            if ((m_TextureNormal_M.sprite.getScale().y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
+            {
+                m_TextureHover_M.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_M.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_M.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+
+                m_TextureHover_R.sprite.setPosition(m_TextureHover_M.sprite.getPosition().x + (m_TextureHover_M.getWidth() * m_TextureHover_M.sprite.getScale().x), y);
+                m_TextureNormal_R.sprite.setPosition(m_TextureNormal_M.sprite.getPosition().x + (m_TextureNormal_M.getWidth() * m_TextureNormal_M.sprite.getScale().x), y);
+                m_TextureFocused_R.sprite.setPosition(m_TextureFocused_M.sprite.getPosition().x + (m_TextureFocused_M.getWidth() * m_TextureFocused_M.sprite.getScale().x), y);
+            }
+            else // The middle image isn't drawn
+            {
+                m_TextureHover_R.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_R.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_R.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+            }
+        }
+        else // The images aren't split
+        {
+            m_TextureHover_M.sprite.setPosition(x, y);
+            m_TextureNormal_M.sprite.setPosition(x, y);
+            m_TextureFocused_M.sprite.setPosition(x, y);
+        }
+
+        recalculateTextPositions();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setSize(float width, float height)
     {
         // Don't do anything when the edit box wasn't loaded correctly
@@ -457,6 +496,50 @@ namespace tgui
         // Recalculate the text size when auto scaling
         if (m_TextSize == 0)
             setText(m_Text);
+
+        // Drawing the edit box image will be different when the image is split
+        if (m_SplitImage)
+        {
+            m_TextureHover_L.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureNormal_L.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureFocused_L.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+
+            // Check if the middle image may be drawn
+            if (((m_Size.y / m_TextureNormal_M.getSize().y) * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
+            {
+                // Calculate the scale for our middle image
+                float scaleX = (m_Size.x / m_TextureNormal_M.getSize().x) -
+                               (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (m_Size.y / m_TextureNormal_M.getSize().y))
+                                / m_TextureNormal_M.getSize().x);
+
+                m_TextureHover_M.sprite.setScale(scaleX, m_Size.y / m_TextureNormal_M.getSize().y);
+                m_TextureNormal_M.sprite.setScale(scaleX, m_Size.y / m_TextureNormal_M.getSize().y);
+                m_TextureFocused_M.sprite.setScale(scaleX, m_Size.y / m_TextureNormal_M.getSize().y);
+            }
+            else // The middle image is not drawn
+            {
+                m_TextureHover_M.sprite.setScale(0, 0);
+                m_TextureNormal_M.sprite.setScale(0, 0);
+                m_TextureFocused_M.sprite.setScale(0, 0);
+            }
+
+            m_TextureHover_R.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureNormal_R.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureFocused_R.sprite.setScale(m_Size.y / m_TextureNormal_M.getSize().y, m_Size.y / m_TextureNormal_M.getSize().y);
+        }
+        else // The image is not split
+        {
+            m_TextureHover_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureNormal_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureFocused_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+        }
+
+        // Set the size of the selection point
+        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPointWidth),
+                                          m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
+
+        // Recalculate the position of the images and texts
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -596,6 +679,8 @@ namespace tgui
         m_TextSelection.setFont(font);
         m_TextAfterSelection.setFont(font);
         m_TextFull.setFont(font);
+
+        recalculateTextPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,6 +756,10 @@ namespace tgui
 
         // Recalculate the text size
         setText(m_Text);
+
+        // Set the size of the selection point
+        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPointWidth),
+                                          m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -684,8 +773,8 @@ namespace tgui
         m_TextSelection.setColor(selectedColor);
         m_TextAfterSelection.setColor(color);
 
-        m_SelectionPointColor = newSelectionPointColor;
-        m_SelectedTextBgrColor = selectedBgrColor;
+        m_SelectionPoint.setFillColor(newSelectionPointColor);
+        m_SelectedTextBackground.setFillColor(selectedBgrColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -707,14 +796,14 @@ namespace tgui
 
     void EditBox::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
     {
-        m_SelectedTextBgrColor = selectedTextBackgroundColor;
+        m_SelectedTextBackground.setFillColor(selectedTextBackgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::setSelectionPointColor(const sf::Color& selectionPointColor)
     {
-        m_SelectionPointColor = selectionPointColor;
+        m_SelectionPoint.setFillColor(selectionPointColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -735,14 +824,14 @@ namespace tgui
 
     const sf::Color& EditBox::getSelectedTextBackgroundColor() const
     {
-        return m_SelectedTextBgrColor;
+        return m_SelectedTextBackground.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& EditBox::getSelectionPointColor() const
     {
-        return m_SelectionPointColor;
+        return m_SelectionPoint.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -833,12 +922,18 @@ namespace tgui
             if (m_TextCropPosition > selectionPointPosition)
                 m_TextCropPosition = static_cast<unsigned int>(selectionPointPosition);
         }
+
+        recalculateTextPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::setSelectionPointWidth(unsigned int width)
     {
+        m_SelectionPoint.setPosition(m_SelectionPoint.getPosition().x + ((m_SelectionPointWidth - width) / 2.0f), m_SelectionPoint.getPosition().y);
+        m_SelectionPoint.setSize(Vector2f(static_cast<float>(width),
+                                          m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
+
         m_SelectionPointWidth = width;
     }
 
@@ -925,6 +1020,8 @@ namespace tgui
             m_Callback.mouse.y = y - getPosition().y;
             addCallback();
         }
+
+        recalculateTextPositions();
 
         // The selection point should be visible
         m_SelectionPointVisible = true;
@@ -1028,6 +1125,8 @@ namespace tgui
                     m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelStart));
                     m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart, m_SelChars));
                     m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd));
+
+                    recalculateTextPositions();
                 }
             }
             else if (m_SelEnd < m_SelStart)
@@ -1042,9 +1141,11 @@ namespace tgui
                     m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelEnd));
                     m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd, m_SelChars));
                     m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart));
+
+                    recalculateTextPositions();
                 }
             }
-            else
+            else if (m_SelChars > 0)
             {
                 // Adjust the number of characters that are selected
                 m_SelChars = 0;
@@ -1053,6 +1154,8 @@ namespace tgui
                 m_TextBeforeSelection.setString(m_DisplayedText);
                 m_TextSelection.setString("");
                 m_TextAfterSelection.setString("");
+
+                recalculateTextPositions();
             }
         }
     }
@@ -1488,6 +1591,87 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::recalculateTextPositions()
+    {
+        float textX = getPosition().x;
+        float textY = getPosition().y;
+
+        // Calculate the scaling
+        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+
+        // Calculate the scale of the left and right border
+        float borderScale;
+        if (m_SplitImage)
+            borderScale = scaling.y;
+        else
+            borderScale = scaling.x;
+
+        textX += m_LeftBorder * borderScale - m_TextCropPosition;
+        textY += m_TopBorder * scaling.y;
+
+        // Check if the layout wasn't left
+        if (m_TextAlignment != Alignment::Left)
+        {
+            // Calculate the space inside the edit box
+            float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
+
+            // Calculate the text width
+            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
+
+            // Check if a layout would make sense
+            if (textWidth < width)
+            {
+                // Put the text on the correct position
+                if (m_TextAlignment == Alignment::Center)
+                    textX += (width - textWidth) / 2.f;
+                else // if (textAlignment == Alignment::Right)
+                    textX += width - textWidth;
+            }
+        }
+
+        float selectionPointLeft = textX;
+
+        // Set the position of the text
+        sf::Text tempText(m_TextFull);
+        tempText.setString("kg");
+        textY += (((m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
+
+        // Set the text before the selection on the correct position
+        m_TextBeforeSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+
+        // Check if there is a selection
+        if (m_SelChars != 0)
+        {
+            // Watch out for the kerning
+            if (m_TextBeforeSelection.getString().getSize() > 0)
+                textX += m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize());
+
+            textX += m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x - m_TextBeforeSelection.getPosition().x;
+
+            // Set the position and size of the rectangle that gets drawn behind the selected text
+            m_SelectedTextBackground.setSize(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x - m_TextSelection.getPosition().x,
+                                                      (m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y))));
+            m_SelectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+
+            // Set the text selected text on the correct position
+            m_TextSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+
+            // Watch out for kerning
+            if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
+                textX += m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize());
+
+            // Set the text selected text on the correct position
+            textX += m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x  - m_TextSelection.getPosition().x;
+            m_TextAfterSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+        }
+
+        // Set the position of the selection point
+        selectionPointLeft += m_TextFull.findCharacterPos(m_SelEnd).x - (m_SelectionPointWidth * 0.5f);
+        m_SelectionPoint.setPosition(std::floor(selectionPointLeft + 0.5f), std::floor((m_TopBorder * scaling.y) + getPosition().y + 0.5f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::initialize(tgui::Group *const parent)
     {
         m_Parent = parent;
@@ -1520,9 +1704,68 @@ namespace tgui
 
     void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw anything when the edit box wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
+        if (m_SplitImage)
+        {
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    target.draw(m_TextureHover_L, states);
+                    target.draw(m_TextureHover_M, states);
+                    target.draw(m_TextureHover_R, states);
+                }
+                else
+                {
+                    target.draw(m_TextureNormal_L, states);
+                    target.draw(m_TextureNormal_M, states);
+                    target.draw(m_TextureNormal_R, states);
+                }
+            }
+            else // The hover image is drawn on top of the normal one
+            {
+                target.draw(m_TextureNormal_L, states);
+                target.draw(m_TextureNormal_M, states);
+                target.draw(m_TextureNormal_R, states);
+
+                // When the mouse is on top of the button then draw an extra image
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    target.draw(m_TextureHover_L, states);
+                    target.draw(m_TextureHover_M, states);
+                    target.draw(m_TextureHover_R, states);
+                }
+            }
+
+            // When the button is focused then draw an extra image
+            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            {
+                target.draw(m_TextureFocused_L, states);
+                target.draw(m_TextureFocused_M, states);
+                target.draw(m_TextureFocused_R, states);
+            }
+        }
+        else // The images aren't split
+        {
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureHover_M, states);
+                else
+                    target.draw(m_TextureNormal_M, states);
+            }
+            else // The hover image is drawn on top of the normal one
+            {
+                target.draw(m_TextureNormal_M, states);
+
+                // When the mouse is on top of the button then draw an extra image
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    target.draw(m_TextureHover_M, states);
+            }
+
+            // When the button is focused then draw an extra image
+            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+                target.draw(m_TextureFocused_M, states);
+        }
 
         // Calculate the scaling
         Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
@@ -1562,269 +1805,25 @@ namespace tgui
         else if (scissorBottom < scissorTop)
             scissorTop = scissorBottom;
 
-        // Apply the transformation
-        states.transform *= getTransform();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
-
-        // Drawing the edit box will be different when the image is split
-        if (m_SplitImage)
-        {
-            // Set the scaling for the left image
-            states.transform.scale(scaling.y, scaling.y);
-
-            // Draw the left image
-            {
-                // Draw the normal and hover images
-                if (m_SeparateHoverImage)
-                {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_L, states);
-                    else
-                        target.draw(m_TextureNormal_L, states);
-                }
-                else // The hover image should be drawn on top of the normal image
-                {
-                    target.draw(m_TextureNormal_L, states);
-
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_L, states);
-                }
-
-
-                // When the edit box is focused then draw an extra image
-                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_TextureFocused_L, states);
-            }
-
-            // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
-            {
-                // Calculate the scale for our middle image
-                float scaleX = scaling.x - (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scaling.y) / m_TextureNormal_M.getSize().x);
-
-                // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
-
-                // Set the scale for the middle image
-                states.transform.scale(scaleX / scaling.y, 1);
-
-                // Draw the middle image
-                {
-                    // Draw the normal and hover images
-                    if (m_SeparateHoverImage)
-                    {
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_M, states);
-                        else
-                            target.draw(m_TextureNormal_M, states);
-                    }
-                    else // The hover image should be drawn on top of the normal image
-                    {
-                        target.draw(m_TextureNormal_M, states);
-
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_M, states);
-                    }
-
-                    // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_TextureFocused_M, states);
-                }
-
-                // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_M.getSize().x), 0);
-
-                // Set the scale for the right image
-                states.transform.scale(scaling.y / scaleX, 1);
-
-                // Draw the right image
-                {
-                    // Draw the normal and hover images
-                    if (m_SeparateHoverImage)
-                    {
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_R, states);
-                        else
-                            target.draw(m_TextureNormal_R, states);
-                    }
-                    else // The hover image should be drawn on top of the normal image
-                    {
-                        target.draw(m_TextureNormal_R, states);
-
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_R, states);
-                    }
-
-                    // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_TextureFocused_R, states);
-                }
-            }
-            else // The edit box isn't width enough, we will draw it at minimum size
-            {
-                // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
-
-                // Draw the right image
-                {
-                    // Draw the normal and hover images
-                    if (m_SeparateHoverImage)
-                    {
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_R, states);
-                        else
-                            target.draw(m_TextureNormal_R, states);
-                    }
-                    else // The hover image should be drawn on top of the normal image
-                    {
-                        target.draw(m_TextureNormal_R, states);
-
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_R, states);
-                    }
-
-                    // When the edit box is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_TextureFocused_R, states);
-                }
-            }
-        }
-        else // The image is not split
-        {
-            // Set the scaling
-            states.transform.scale(scaling);
-
-            // Draw the normal and hover images
-            if (m_SeparateHoverImage)
-            {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureHover_M, states);
-                else
-                    target.draw(m_TextureNormal_M, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
-                target.draw(m_TextureNormal_M, states);
-
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    target.draw(m_TextureHover_M, states);
-            }
-
-            // When the edit box is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                target.draw(m_TextureFocused_M, states);
-        }
-
-        // Reset the transformation to draw the text
-        states.transform = oldTransform;
-        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition, m_TopBorder * scaling.y);
-
-        // Check if the layout wasn't left
-        if (m_TextAlignment != Alignment::Left)
-        {
-            // Calculate the space inside the edit box
-            float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
-
-            // Calculate the text width
-            float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
-
-            // Check if a layout would make sense
-            if (textWidth < width)
-            {
-                // Put the text on the correct position
-                if (m_TextAlignment == Alignment::Center)
-                    states.transform.translate((width - textWidth) / 2.f, 0);
-                else // if (textAlignment == Alignment::Right)
-                    states.transform.translate(width - textWidth, 0);
-            }
-        }
-
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        // Draw the background when a text is selected
-        if (m_TextSelection.getString().getSize() > 0)
-        {
-            // Watch out for the kerning
-            if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-
-            // Create and draw the rectangle
-            sf::RectangleShape TextBgr(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, (m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y))));
-            TextBgr.setFillColor(m_SelectedTextBgrColor);
-            TextBgr.setPosition(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
-            target.draw(TextBgr, states);
-
-            // Undo the translation that was done to fix the kerning
-            if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(-static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-        }
-
-        // Set the position of the text
-        sf::Text tempText(m_TextFull);
-        tempText.setString("kg");
-        states.transform.translate(0, std::floor((((m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top + 0.5f));
-
-        // Draw the text before the selection
         target.draw(m_TextBeforeSelection, states);
 
-        // Check if there is a selection
-        if (m_SelChars != 0)
+        if (m_TextSelection.getString().isEmpty() == false)
         {
-            // Watch out for the kerning
-            if (m_TextBeforeSelection.getString().getSize() > 0)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
+            target.draw(m_SelectedTextBackground, states);
 
-            // Draw the selected text
-            states.transform.translate(m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x, 0);
             target.draw(m_TextSelection, states);
-
-            // Watch out for kerning
-            if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
-                states.transform.translate(static_cast<float>(m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize())), 0);
-
-            // Draw the text behind the selected text
-            states.transform.translate(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x, 0);
             target.draw(m_TextAfterSelection, states);
         }
 
+        // Draw the selection point
+        if ((m_Focused) && (m_SelectionPointVisible))
+            target.draw(m_SelectionPoint, states);
+
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-
-        // Reset the transformation to draw the selection point
-        states.transform = oldTransform;
-        states.transform.translate(m_LeftBorder * borderScale - m_TextCropPosition + m_TextFull.findCharacterPos(m_SelEnd).x - (m_SelectionPointWidth*0.5f), m_TopBorder * scaling.y);
-
-        // Also draw the selection point (if needed)
-        if ((m_Focused) && (m_SelectionPointVisible))
-        {
-            // Check if the layout wasn't left
-            if (m_TextAlignment != Alignment::Left)
-            {
-                // Calculate the space inside the edit box
-                float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * borderScale);
-
-                // Calculate the text width
-                float textWidth = m_TextFull.findCharacterPos(m_DisplayedText.getSize()).x;
-
-                // Check if a layout would make sense
-                if (textWidth < width)
-                {
-                    // Put the selection point on the correct position
-                    if (m_TextAlignment == Alignment::Center)
-                        states.transform.translate((width - textWidth) / 2.f, 0);
-                    else // if (textAlignment == Alignment::Right)
-                        states.transform.translate(width - textWidth, 0);
-                }
-            }
-
-            // Draw the selection point
-            sf::RectangleShape SelectionPoint(Vector2f(static_cast<float>(m_SelectionPointWidth), m_Size.y - ((m_BottomBorder + m_TopBorder) * scaling.y)));
-            SelectionPoint.setFillColor(m_SelectionPointColor);
-            target.draw(SelectionPoint, states);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

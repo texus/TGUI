@@ -511,8 +511,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the list box on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -558,7 +557,7 @@ namespace tgui
         sf::Color m_BorderColor;
 
         // The font used to draw the text
-        sf::Font m_TextFont;
+        const sf::Font* m_TextFont;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend class ComboBox;

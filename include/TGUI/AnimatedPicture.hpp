@@ -84,9 +84,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Load another image/frame from a file.
         ///
-        /// All frames should have the same size.
-        /// The size of the first frame is always used in the calculations.
-        ///
         /// \param filename       The filename of the image that you want to use as next frame.
         /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
         ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
@@ -102,11 +99,6 @@ namespace tgui
         ///
         /// \param width   The new width of the picture
         /// \param height  The new height of the picture
-        ///
-        /// All frames should have the same size.
-        /// The scaling factors used to get the first frame to the correct size, will also be used for the other frames.
-        ///
-        /// This function can only be called after the first frame is loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(float width, float height);
@@ -255,8 +247,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the picture on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

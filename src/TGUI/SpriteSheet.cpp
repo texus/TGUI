@@ -88,6 +88,9 @@ namespace tgui
         // Store the new size
         m_Size.x = m_Columns * width;
         m_Size.y = m_Rows * height;
+
+        // Make sure the sprite has the correct size
+        m_Texture.sprite.setScale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,32 +124,20 @@ namespace tgui
         m_Columns = columns;
 
         // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
+        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.data->texture.getSize().x / m_Columns,
+                                                    (m_VisibleCell.y-1) * m_Texture.data->texture.getSize().y / m_Rows,
+                                                    static_cast<int>(m_Texture.data->texture.getSize().x / m_Columns),
+                                                    static_cast<int>(m_Texture.data->texture.getSize().y / m_Rows)));
+
+        // Make sure the sprite has the correct size
+        m_Texture.sprite.setScale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpriteSheet::setRows(unsigned int rows)
     {
-        // Make sure that the picture was already loaded
-        if (m_Loaded == false)
-            return;
-
-        // You can't have 0 rows
-        if (rows == 0)
-            rows = 1;
-
-        // Store the number of rows
-        m_Rows = rows;
-
-        // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
+        setCells(rows, m_Columns);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,22 +151,7 @@ namespace tgui
 
     void SpriteSheet::setColumns(unsigned int columns)
     {
-        // Make sure that the picture was already loaded
-        if (m_Loaded == false)
-            return;
-
-        // You can't have 0 columns
-        if (columns == 0)
-            columns = 1;
-
-        // Store the number of columns
-        m_Columns = columns;
-
-        // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.getSize().y / m_Rows)));
+        setCells(m_Rows, columns);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,12 +203,6 @@ namespace tgui
 
     void SpriteSheet::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't continue when the sprite sheet wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        states.transform *= getTransform();
-        states.transform.scale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
         target.draw(m_Texture, states);
     }
 

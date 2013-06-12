@@ -286,15 +286,19 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
+            TGUI_OUTPUT("TGUI error: SplitImage is not supported in Scrollbar.");
+
             // Make sure the required textures were loaded
             if ((m_TextureTrackNormal_L.data != NULL) && (m_TextureTrackNormal_M.data != NULL) && (m_TextureTrackNormal_R.data != NULL)
              && (m_TextureThumbNormal.data != NULL) && (m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
             {
+                m_Loaded = true;
+
                 // Set the size of the scrollbar
                 if (m_VerticalImage)
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y));
+                    setSize(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y));
                 else
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
+                    setSize(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
 
                 // Set the thumb size
                 m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
@@ -319,10 +323,8 @@ namespace tgui
              && (m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
             {
                 // Set the size of the scrollbar
-                m_Size = Vector2f(m_TextureTrackNormal_M.getSize());
-
-                // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
+                m_Loaded = true;
+                setSize(m_TextureTrackNormal_M.getSize().x, m_TextureTrackNormal_M.getSize().y);
             }
             else
             {
@@ -339,7 +341,6 @@ namespace tgui
         }
 
         // When there is no error we will return true
-        m_Loaded = true;
         return true;
     }
 

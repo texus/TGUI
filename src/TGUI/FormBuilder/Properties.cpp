@@ -675,9 +675,6 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             tgui::Picture::Ptr picture = formWindow.get(tgui::to_string(id));
             picture->load(filename.value);
 
-            // Reset the scaling
-            picture->setScale(1, 1);
-
             // Change the width and height properties
             width.value = static_cast<float>(picture->getSize().x);
             height.value = static_cast<float>(picture->getSize().y);
@@ -800,9 +797,6 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             // Load the new button
             tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
             button->load(configFile.value);
-
-            // Reset the scaling
-            button->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(button->getSize().x);
@@ -1003,13 +997,9 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
             checkbox->load(configFile.value);
 
-            // Reset the scaling
-            checkbox->setScale(1, 1);
-
             // Change the width and height properties
             width.value = static_cast<float>(checkbox->getSize().x);
             height.value = static_cast<float>(checkbox->getSize().y);
-
 
             // Update the values
             static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
@@ -1186,9 +1176,6 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
             // Load the new radio button
             tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
             radioButton->load(configFile.value);
-
-            // Reset the scaling
-            radioButton->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(radioButton->getSize().x);
@@ -1369,16 +1356,12 @@ void PropertiesLabel::addProperties(tgui::Gui& gui)
     name.addProperty(gui, Property_Label_Name);
     left.addProperty(gui, Property_Label_Left);
     top.addProperty(gui, Property_Label_Top);
-    width.addProperty(gui, Property_Label_Width);
-    height.addProperty(gui, Property_Label_Height);
     text.addProperty(gui, Property_Label_Text);
     textSize.addProperty(gui, Property_Label_TextSize);
     textColor.addProperty(gui, Property_Label_TextColor);
     textFont.addProperty(gui, Property_Label_TextFont);
     backgroundColor.addProperty(gui, Property_Label_BackgroundColor);
     callbackID.addProperty(gui, Property_Label_CallbackID);
-
-    autoSize.addProperty(gui, Property_Label_AutoSize);
 }
 
 void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyWindow, unsigned int propertyNumber)
@@ -1403,57 +1386,6 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
 
         // Change the position of the label
         formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
-    }
-    else if (propertyNumber == Property_Label_Width)
-    {
-        // Store the new size
-        width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
-
-        // Change the size of the label
-        static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
-
-        // You are no longer auto sizing
-        if (!!autoSize.value == true)
-        {
-            autoSize.value = false;
-            static_cast<tgui::ComboBox::Ptr>(propertyWindow.get("combo_AutoSize"))->setSelectedItem("false");
-        }
-    }
-    else if (propertyNumber == Property_Label_Height)
-    {
-        // Store the new size
-        height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
-
-        // Change the size of the label
-        static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
-
-        // You are no longer auto sizing
-        if (!!autoSize.value == true)
-        {
-            autoSize.value = false;
-            static_cast<tgui::ComboBox::Ptr>(propertyWindow.get("combo_AutoSize"))->setSelectedItem("false");
-        }
-    }
-    else if (propertyNumber == Property_Label_AutoSize)
-    {
-        // Store the auto-size boolean
-        autoSize.value = !!(static_cast<tgui::ComboBox::Ptr>(propertyWindow.get("combo_AutoSize"))->getSelectedItemIndex());
-
-        // Get the pointer to the label
-        tgui::Label::Ptr label = formWindow.get(tgui::to_string(id));
-
-        // Tell the label to auto-size or not
-        label->setAutoSize(!!autoSize.value);
-
-        // Check if auto-size is enabled
-        if (autoSize.value)
-        {
-            // Change the width and height
-            width.value = static_cast<float>(label->getSize().x);
-            height.value = static_cast<float>(label->getSize().y);
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
-        }
     }
     else if (propertyNumber == Property_Label_Text)
     {
@@ -3262,9 +3194,6 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
             // Load the new loading bar
             tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
             loadingBar->load(configFile.value);
-
-            // Reset the scaling
-            loadingBar->setScale(1, 1);
 
             // Change the width and height properties
             width.value = static_cast<float>(loadingBar->getSize().x);

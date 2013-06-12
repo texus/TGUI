@@ -191,7 +191,7 @@ namespace tgui
         // Make sure the required texture was loaded
         if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
         {
-            m_Size = Vector2f(m_TextureChecked.getSize());
+            setSize(m_TextureUnchecked.getSize().x, m_TextureUnchecked.getSize().y);
         }
         else
         {
@@ -223,6 +223,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Checkbox::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        m_TextureUnchecked.sprite.setPosition(x, y);
+        m_TextureChecked.sprite.setPosition(x, y + m_TextureUnchecked.getHeight() - m_TextureChecked.getHeight());
+        m_TextureFocused.sprite.setPosition(x, y);
+        m_TextureHover.sprite.setPosition(x, y);
+
+        sf::FloatRect textBounds = m_Text.getLocalBounds();
+        m_Text.setPosition(x + std::floor(m_Size.x * 11.0f / 10.0f - textBounds.left),
+                           y + std::floor(((m_Size.y - textBounds.height) / 2.0f) - textBounds.top));
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Checkbox::setSize(float width, float height)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
@@ -240,6 +257,15 @@ namespace tgui
         // If the text is auto sized then recalculate the size
         if (m_TextSize == 0)
             setText(m_Text.getString());
+
+        Vector2f scaling(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
+        m_TextureChecked.sprite.setScale(scaling);
+        m_TextureUnchecked.sprite.setScale(scaling);
+        m_TextureFocused.sprite.setScale(scaling);
+        m_TextureHover.sprite.setScale(scaling);
+
+        // Reposition the text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,32 +525,9 @@ namespace tgui
 
     void Checkbox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't do draw when the checkbox wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        // Adjust the transformation
-        states.transform *= getTransform();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
-
-        // Give the checkbox the correct size
-        states.transform.scale(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
-
-        // Check if the checkbox was checked
         if (m_Checked)
-        {
-            // The checked image may be a little bigger than the unchecked one, so put it on the right position
-            states.transform.translate(0, static_cast<float>(m_TextureUnchecked.getHeight()) - m_TextureChecked.getHeight());
-
-            // Draw the image of the checked checkbox
             target.draw(m_TextureChecked, states);
-
-            // Undo the translation
-            states.transform.translate(0, static_cast<float>(m_TextureChecked.getHeight()) - m_TextureUnchecked.getHeight());
-        }
-        else // The checkbox was unchecked, just draw it
+        else
             target.draw(m_TextureUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
@@ -534,16 +537,6 @@ namespace tgui
         // When the mouse is on top of the checkbox then draw an extra image
         if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
             target.draw(m_TextureHover, states);
-
-
-        // Restore the old transformation
-        states.transform = oldTransform;
-
-        // Get the bounds of the text
-        sf::FloatRect textBounds = m_Text.getGlobalBounds();
-
-        // Set the position of the text
-        states.transform.translate(std::floor(m_Size.x * 11.0f / 10.0f - textBounds.left), std::floor(((m_Size.y - textBounds.height) / 2.0f) - textBounds.top));
 
         // Draw the text
         target.draw(m_Text, states);

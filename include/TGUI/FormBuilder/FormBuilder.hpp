@@ -38,7 +38,7 @@
 
 #define DEFAULT_THEME_FILE "images/objects/Black.conf"
 
-#define VERSION "v0.2.2"
+#define VERSION "v0.2.x - 2013.06.12"
 
 
 struct Builder;

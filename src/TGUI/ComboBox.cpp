@@ -569,6 +569,8 @@ namespace tgui
 
     bool ComboBox::mouseOnObject(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the combo box wasn't loaded correctly
         if (m_Loaded == false)
             return false;
@@ -591,7 +593,7 @@ namespace tgui
             if (m_ShowList)
             {
                 // Temporarily set the position and scale for the list box
-                m_ListBox->setScale(curScale);
+//                m_ListBox->setScale(curScale);
                 m_ListBox->setPosition(position.x, position.y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * curScale.y));
 
                 // Pass the event to the list box
@@ -599,7 +601,7 @@ namespace tgui
                 {
                     // Reset the position and scale of the list box
                     m_ListBox->setPosition(0, 0);
-                    m_ListBox->setScale(1, 1);
+//                    m_ListBox->setScale(1, 1);
 
                     m_MouseOnListBox = true;
                     return true;
@@ -607,7 +609,7 @@ namespace tgui
 
                 // Reset the position and scale of the list box
                 m_ListBox->setPosition(0, 0);
-                m_ListBox->setScale(1, 1);
+//                m_ListBox->setScale(1, 1);
             }
         }
 
@@ -624,6 +626,8 @@ namespace tgui
 
     void ComboBox::leftMousePressed(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         if (m_Loaded == false)
             return;
 
@@ -636,7 +640,7 @@ namespace tgui
             int oldItem = m_ListBox->getSelectedItemIndex();
 
             // Temporarily set the position and scale for the list box
-            m_ListBox->setScale(getScale());
+//            m_ListBox->setScale(getScale());
             m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the list box
@@ -644,7 +648,7 @@ namespace tgui
 
             // Reset the position and scale of the list box
             m_ListBox->setPosition(0, 0);
-            m_ListBox->setScale(1, 1);
+//            m_ListBox->setScale(1, 1);
 
             // Add the callback (if the user requested it)
             if ((oldItem != m_ListBox->getSelectedItemIndex()) && (m_CallbackFunctions[ItemSelected].empty() == false))
@@ -661,6 +665,8 @@ namespace tgui
 
     void ComboBox::leftMouseReleased(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         if (m_Loaded == false)
             return;
 
@@ -684,7 +690,7 @@ namespace tgui
                         }
 
                         // Temporarily set the position and scale for the list box
-                        m_ListBox->setScale(getScale());
+//                        m_ListBox->setScale(getScale());
                         m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
 
                         // Pass the event to the list box
@@ -692,7 +698,7 @@ namespace tgui
 
                         // Reset the position and scale of the list box
                         m_ListBox->setPosition(0, 0);
-                        m_ListBox->setScale(1, 1);
+//                        m_ListBox->setScale(1, 1);
                     }
                 }
                 else // The mouse is not on top of the list box
@@ -726,6 +732,8 @@ namespace tgui
 
     void ComboBox::mouseMoved(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the combo box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -739,7 +747,7 @@ namespace tgui
         if ((m_ShowList == true) && (m_MouseOnListBox == true))
         {
             // Temporarily set the position and scale for the list box
-            m_ListBox->setScale(getScale());
+//            m_ListBox->setScale(getScale());
             m_ListBox->setPosition(getPosition().x, getPosition().y + ((m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder) * getScale().y));
 
             // Pass the event to the list box
@@ -747,7 +755,7 @@ namespace tgui
 
             // Reset the position and scale of the list box
             m_ListBox->setPosition(0, 0);
-            m_ListBox->setScale(1, 1);
+//            m_ListBox->setScale(1, 1);
         }
     }
 

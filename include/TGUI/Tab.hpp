@@ -354,8 +354,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the tab object on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

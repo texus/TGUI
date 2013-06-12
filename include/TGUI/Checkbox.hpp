@@ -102,6 +102,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the object
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable object is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the checkbox.
         ///
         /// \param width   The new width of the checkbox
@@ -238,8 +255,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the checkbox on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

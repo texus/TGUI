@@ -47,6 +47,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ~Label();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the object by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,18 +82,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the visible part of the text
+        /// \brief Set the position of the object
         ///
-        /// \param width   The width of the part that should be visible
-        /// \param height  The height of the part that should be visible
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable object is (0, 0).
         ///
-        /// Only the part of the text that lies within the size will be drawn.
-        /// When this function is called, the label will no longer be auto-sizing.
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
         ///
-        /// \see setAutoSize
+        /// \see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(float width, float height);
+        virtual void setPosition(float x, float y);
+        using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,29 +177,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes whether the label is auto-sized or not.
-        ///
-        /// \param autoSize  Should the label be auto-sizing?
-        ///
-        /// When the label is in auto-size mode, the width and height of the label will be changed to fit the text.
-        /// Otherwise, only the part defined by the size will be visible.
-        ///
-        /// The label is auto-sized by default.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setAutoSize(bool autoSize);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the label is auto-sized or not.
-        ///
-        /// \see setAutoSize
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getAutoSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the background color of the label.
         ///
         /// \param backgroundColor  New background color
@@ -222,8 +208,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the object on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -243,11 +228,9 @@ namespace tgui
 
         std::string m_LoadedConfigFile;
 
-        sf::Color m_BackgroundColor;
+        sf::RectangleShape m_Background;
 
         sf::Text m_Text;
-
-        bool m_AutoSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -103,11 +103,12 @@ namespace tgui
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(filename, m_Texture))
         {
-            // Remember the size of the texture
-            m_Size = Vector2f(m_Texture.getSize());
+            m_Loaded = true;
 
-            // Return true to indicate that nothing went wrong
-            return m_Loaded = true;
+            // Remember the size of the texture
+            setSize(m_Texture.getSize().x, m_Texture.getSize().y);
+
+            return true;
         }
         else // The texture was not loaded
             return false;
@@ -122,12 +123,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Picture::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        m_Texture.sprite.setPosition(x, y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::setSize(float width, float height)
+    {
+        m_Size.x = width;
+        m_Size.y = height;
+
+        if (m_Loaded)
+            m_Texture.sprite.setScale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
+        else
+            TGUI_OUTPUT("TGUI warning: Picture::setSize called while Picture wasn't loaded yet.");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Picture::setSmooth(bool smooth)
     {
         if (m_Loaded)
             m_Texture.data->texture.setSmooth(smooth);
         else
-            TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.")
+            TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.");
     }
 
 
@@ -175,12 +198,6 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't continue when the picture wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        states.transform *= getTransform();
-        states.transform.scale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
         target.draw(m_Texture, states);
     }
 

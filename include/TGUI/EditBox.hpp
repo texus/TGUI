@@ -123,6 +123,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the object
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable object is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the edit box.
         ///
         /// \param width   The new width of the edit box
@@ -432,6 +449,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Recalculates the position of the texts.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void recalculateTextPositions();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the object is added to a group.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(tgui::Group *const group);
@@ -444,8 +467,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Because this class is derived from sf::Drawable, you can just call the draw function from your sf::RenderTarget.
-        // This function will be called and it will draw the edit box on the render target.
+        // Draws the object on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -469,9 +491,6 @@ namespace tgui
 
         // Is the selection point visible or not?
         bool          m_SelectionPointVisible;
-
-        // The color of the flickering selection point
-        sf::Color     m_SelectionPointColor;
 
         // The width in pixels of the flickering selection point
         unsigned int  m_SelectionPointWidth;
@@ -509,8 +528,11 @@ namespace tgui
         // When the text width is not limited, you can scroll the edit box and only a part will be visible.
         unsigned int  m_TextCropPosition;
 
-        // The rectangle behind the selected text will have this color
-        sf::Color     m_SelectedTextBgrColor;
+        // The rectangle behind the selected text
+        sf::RectangleShape  m_SelectedTextBackground;
+
+        // The flickering selection point
+        sf::RectangleShape  m_SelectionPoint;
 
         // We need three SFML texts to draw our text, and one more for calculations.
         sf::Text m_TextBeforeSelection;

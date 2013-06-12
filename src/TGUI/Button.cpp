@@ -54,7 +54,6 @@ namespace tgui
     m_Text              (copy.m_Text),
     m_TextSize          (copy.m_TextSize)
     {
-        // Copy the textures
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_L, m_TextureNormal_L);
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_M, m_TextureNormal_M);
         TGUI_TextureManager.copyTexture(copy.m_TextureNormal_R, m_TextureNormal_R);
@@ -73,8 +72,6 @@ namespace tgui
 
     Button::~Button()
     {
-        // Remove all the textures from memory (if we are the only one who use the textures)
-
         if (m_TextureNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
         if (m_TextureNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
         if (m_TextureNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
@@ -336,8 +333,9 @@ namespace tgui
             // Make sure the required textures were loaded
             if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                m_Size.x = static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x);
-                m_Size.y = static_cast<float>(m_TextureNormal_M.getSize().y);
+                m_Loaded = true;
+                setSize(static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x),
+                        static_cast<float>(m_TextureNormal_M.getSize().y));
             }
             else
             {
@@ -365,7 +363,8 @@ namespace tgui
             // Make sure the required texture was loaded
             if (m_TextureNormal_M.data != NULL)
             {
-                m_Size = Vector2f(m_TextureNormal_M.getSize());
+                m_Loaded = true;
+                setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
             }
             else
             {
@@ -389,8 +388,7 @@ namespace tgui
             }
         }
 
-        // When there is no error we will return true
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -398,6 +396,53 @@ namespace tgui
     const std::string& Button::getLoadedConfigFile()
     {
         return m_LoadedConfigFile;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        if (m_SplitImage)
+        {
+            m_TextureDown_L.sprite.setPosition(x, y);
+            m_TextureHover_L.sprite.setPosition(x, y);
+            m_TextureNormal_L.sprite.setPosition(x, y);
+            m_TextureFocused_L.sprite.setPosition(x, y);
+
+            // Check if the middle image may be drawn
+            if ((m_TextureNormal_M.sprite.getScale().y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
+            {
+                m_TextureDown_M.sprite.setPosition(x + (m_TextureDown_L.getWidth() * m_TextureDown_L.sprite.getScale().x), y);
+                m_TextureHover_M.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_M.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_M.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+
+                m_TextureDown_R.sprite.setPosition(m_TextureDown_M.sprite.getPosition().x + (m_TextureDown_M.getWidth() * m_TextureDown_M.sprite.getScale().x), y);
+                m_TextureHover_R.sprite.setPosition(m_TextureHover_M.sprite.getPosition().x + (m_TextureHover_M.getWidth() * m_TextureHover_M.sprite.getScale().x), y);
+                m_TextureNormal_R.sprite.setPosition(m_TextureNormal_M.sprite.getPosition().x + (m_TextureNormal_M.getWidth() * m_TextureNormal_M.sprite.getScale().x), y);
+                m_TextureFocused_R.sprite.setPosition(m_TextureFocused_M.sprite.getPosition().x + (m_TextureFocused_M.getWidth() * m_TextureFocused_M.sprite.getScale().x), y);
+            }
+            else // The middle image isn't drawn
+            {
+                m_TextureDown_R.sprite.setPosition(x + (m_TextureDown_L.getWidth() * m_TextureDown_L.sprite.getScale().x), y);
+                m_TextureHover_R.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_R.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_R.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+            }
+        }
+        else // The images aren't split
+        {
+            m_TextureDown_M.sprite.setPosition(x, y);
+            m_TextureHover_M.sprite.setPosition(x, y);
+            m_TextureNormal_M.sprite.setPosition(x, y);
+            m_TextureFocused_M.sprite.setPosition(x, y);
+        }
+
+        // Set the position of the text
+        m_Text.setPosition(std::floor(x + (m_Size.x - m_Text.getLocalBounds().width) * 0.5f -  m_Text.getLocalBounds().left),
+                           std::floor(y + (m_Size.y - m_Text.getLocalBounds().height) * 0.5f -  m_Text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,6 +460,53 @@ namespace tgui
         // Recalculate the text size when auto sizing
         if (m_TextSize == 0)
             setText(m_Text.getString());
+
+        // Drawing the button image will be different when the image is split
+        if (m_SplitImage)
+        {
+            float scalingY = m_Size.y / m_TextureNormal_M.getSize().y;
+
+            m_TextureDown_L.sprite.setScale(scalingY, scalingY);
+            m_TextureHover_L.sprite.setScale(scalingY, scalingY);
+            m_TextureNormal_L.sprite.setScale(scalingY, scalingY);
+            m_TextureFocused_L.sprite.setScale(scalingY, scalingY);
+
+            // Check if the middle image may be drawn
+            if (((scalingY) * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
+            {
+                // Calculate the scale for our middle image
+                float scaleX = (m_Size.x / m_TextureNormal_M.getSize().x) -
+                               (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (scalingY))
+                                / m_TextureNormal_M.getSize().x);
+
+                m_TextureDown_M.sprite.setScale(scaleX, scalingY);
+                m_TextureHover_M.sprite.setScale(scaleX, scalingY);
+                m_TextureNormal_M.sprite.setScale(scaleX, scalingY);
+                m_TextureFocused_M.sprite.setScale(scaleX, scalingY);
+            }
+            else // The middle image is not drawn
+            {
+                m_TextureDown_M.sprite.setScale(0, 0);
+                m_TextureHover_M.sprite.setScale(0, 0);
+                m_TextureNormal_M.sprite.setScale(0, 0);
+                m_TextureFocused_M.sprite.setScale(0, 0);
+            }
+
+            m_TextureDown_R.sprite.setScale(scalingY, scalingY);
+            m_TextureHover_R.sprite.setScale(scalingY, scalingY);
+            m_TextureNormal_R.sprite.setScale(scalingY, scalingY);
+            m_TextureFocused_R.sprite.setScale(scalingY, scalingY);
+        }
+        else // The image is not split
+        {
+            m_TextureDown_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureHover_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureNormal_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureFocused_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+        }
+
+        // Recalculate the position of the images
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +542,10 @@ namespace tgui
             // Set the text size
             m_Text.setCharacterSize(m_TextSize);
         }
+
+        // Set the position of the text
+        m_Text.setPosition(std::floor(getPosition().x + (m_Size.x - m_Text.getLocalBounds().width) * 0.5f -  m_Text.getLocalBounds().left),
+                           std::floor(getPosition().y + (m_Size.y - m_Text.getLocalBounds().height) * 0.5f -  m_Text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,160 +649,65 @@ namespace tgui
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the button wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        // Calculate the scaling
-        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
-
-        // Apply the transformations
-        states.transform *= getTransform();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
-
-        // Drawing the button image will be different when the image is split
         if (m_SplitImage)
         {
-            // Set the scaling
-            states.transform.scale(scaling.y, scaling.y);
-
-            // Draw the left image
-            {
-                // Check if there is a separate hover image
-                if (m_SeparateHoverImage)
-                {
-                    // Draw the correct image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                    {
-                        target.draw(m_TextureDown_L, states);
-                    }
-                    else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    {
-                        target.draw(m_TextureHover_L, states);
-                    }
-                    else
-                        target.draw(m_TextureNormal_L, states);
-                }
-                else
-                {
-                    // When the button is down then draw another image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                        target.draw(m_TextureDown_L, states);
-                    else
-                        target.draw(m_TextureNormal_L, states);
-
-                    // When the mouse is on top of the button then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_L, states);
-                }
-
-                // When the button is focused then draw an extra image
-                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_TextureFocused_L, states);
-            }
-
-            // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
-            {
-                // Calculate the scale for our middle image
-                float scaleX = scaling.x - (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scaling.y) / m_TextureNormal_M.getSize().x);
-
-                // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
-
-                // Set the scale for the middle image
-                states.transform.scale(scaleX / scaling.y, 1);
-
-                // Draw the middle image
-                {
-                    // Check if there is a separate hover image
-                    if (m_SeparateHoverImage)
-                    {
-                        // Draw the correct image
-                        if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                        {
-                            target.draw(m_TextureDown_M, states);
-                        }
-                        else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        {
-                            target.draw(m_TextureHover_M, states);
-                        }
-                        else
-                            target.draw(m_TextureNormal_M, states);
-                    }
-                    else
-                    {
-                        // When the button is down then draw another image
-                        if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                            target.draw(m_TextureDown_M, states);
-                        else
-                            target.draw(m_TextureNormal_M, states);
-
-                        // When the mouse is on top of the button then draw an extra image
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                            target.draw(m_TextureHover_M, states);
-                    }
-
-                    // When the button is focused then draw an extra image
-                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                        target.draw(m_TextureFocused_M, states);
-                }
-
-                // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureNormal_M.getSize().x), 0);
-
-                // Set the scale for the right image
-                states.transform.scale(scaling.y / scaleX, 1);
-            }
-            else // The middle image is not drawn
-                states.transform.translate(static_cast<float>(m_TextureNormal_L.getSize().x), 0);
-
-            // Draw the right image
-            {
-                // Check if there is a separate hover image
-                if (m_SeparateHoverImage)
-                {
-                    // Draw the correct image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                    {
-                        target.draw(m_TextureDown_R, states);
-                    }
-                    else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                    {
-                        target.draw(m_TextureHover_R, states);
-                    }
-                    else
-                        target.draw(m_TextureNormal_R, states);
-                }
-                else
-                {
-                    // When the button is down then draw another image
-                    if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
-                        target.draw(m_TextureDown_R, states);
-                    else
-                        target.draw(m_TextureNormal_R, states);
-
-                    // When the mouse is on top of the button then draw an extra image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
-                        target.draw(m_TextureHover_R, states);
-                }
-
-                // When the button is focused then draw an extra image
-                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
-                    target.draw(m_TextureFocused_R, states);
-            }
-        }
-        else // The image is not split
-        {
-            // Draw the button at the correct size
-            states.transform.scale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
-
-            // Check if there is a separate hover image
             if (m_SeparateHoverImage)
             {
-                // Draw the correct image
+                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                {
+                    target.draw(m_TextureDown_L, states);
+                    target.draw(m_TextureDown_M, states);
+                    target.draw(m_TextureDown_R, states);
+                }
+                else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    target.draw(m_TextureHover_L, states);
+                    target.draw(m_TextureHover_M, states);
+                    target.draw(m_TextureHover_R, states);
+                }
+                else
+                {
+                    target.draw(m_TextureNormal_L, states);
+                    target.draw(m_TextureNormal_M, states);
+                    target.draw(m_TextureNormal_R, states);
+                }
+            }
+            else // The hover image is drawn on top of the normal one
+            {
+                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                {
+                    target.draw(m_TextureDown_L, states);
+                    target.draw(m_TextureDown_M, states);
+                    target.draw(m_TextureDown_R, states);
+                }
+                else
+                {
+                    target.draw(m_TextureNormal_L, states);
+                    target.draw(m_TextureNormal_M, states);
+                    target.draw(m_TextureNormal_R, states);
+                }
+
+                // When the mouse is on top of the button then draw an extra image
+                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
+                    target.draw(m_TextureHover_L, states);
+                    target.draw(m_TextureHover_M, states);
+                    target.draw(m_TextureHover_R, states);
+                }
+            }
+
+            // When the button is focused then draw an extra image
+            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            {
+                target.draw(m_TextureFocused_L, states);
+                target.draw(m_TextureFocused_M, states);
+                target.draw(m_TextureFocused_R, states);
+            }
+        }
+        else // The images aren't split
+        {
+            if (m_SeparateHoverImage)
+            {
                 if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
                 {
                     target.draw(m_TextureDown_M, states);
@@ -716,45 +717,37 @@ namespace tgui
                     target.draw(m_TextureHover_M, states);
                 }
                 else
+                {
                     target.draw(m_TextureNormal_M, states);
+                }
             }
-            else
+            else // The hover image is drawn on top of the normal one
             {
-                // Draw the button
                 if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                {
                     target.draw(m_TextureDown_M, states);
+                }
                 else
+                {
                     target.draw(m_TextureNormal_M, states);
+                }
 
                 // When the mouse is on top of the button then draw an extra image
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                {
                     target.draw(m_TextureHover_M, states);
+                }
             }
 
             // When the button is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            {
                 target.draw(m_TextureFocused_M, states);
+            }
         }
 
         // If the button has a text then also draw the text
-        if (m_Text.getString().getSize() > 0)
-        {
-            // Reset the transformations
-            states.transform = oldTransform;
-
-            // Get the current size of the text, so that we can recalculate the position
-            sf::FloatRect rect = m_Text.getGlobalBounds();
-
-            // Calculate the new position for the text
-            rect.left = (m_Size.x - rect.width) * 0.5f - rect.left;
-            rect.top = (m_Size.y - rect.height) * 0.5f - rect.top;
-
-            // Set the new position
-            states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));
-
-            // Draw the text
-            target.draw(m_Text, states);
-        }
+        target.draw(m_Text, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

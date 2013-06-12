@@ -796,6 +796,8 @@ namespace tgui
 
     bool TextBox::mouseOnObject(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return false;
@@ -808,7 +810,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setScale(curScale);
+//            m_Scroll->setScale(curScale);
             m_Scroll->setPosition(position.x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), position.y + (m_TopBorder * curScale.y));
 
             // Pass the event
@@ -816,7 +818,7 @@ namespace tgui
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-            m_Scroll->setScale(1, 1);
+//            m_Scroll->setScale(1, 1);
         }
 
         // Check if the mouse is on top of the list box
@@ -836,6 +838,8 @@ namespace tgui
 
     void TextBox::leftMousePressed(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -856,7 +860,7 @@ namespace tgui
             Vector2f curScale = getScale();
 
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setScale(curScale);
+//            m_Scroll->setScale(curScale);
             m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
             // Pass the event
@@ -868,7 +872,7 @@ namespace tgui
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-            m_Scroll->setScale(1, 1);
+//            m_Scroll->setScale(1, 1);
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_Scroll->getValue())
@@ -974,6 +978,8 @@ namespace tgui
 
     void TextBox::leftMouseReleased(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -995,7 +1001,7 @@ namespace tgui
                 Vector2f curScale = getScale();
 
                 // Temporarily set the position and scale of the scroll
-                m_Scroll->setScale(curScale);
+//                m_Scroll->setScale(curScale);
                 m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
                 // Pass the event
@@ -1003,7 +1009,7 @@ namespace tgui
 
                 // Reset the position and scale
                 m_Scroll->setPosition(0, 0);
-                m_Scroll->setScale(1, 1);
+//                m_Scroll->setScale(1, 1);
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_Scroll->getValue())
@@ -1041,6 +1047,8 @@ namespace tgui
 
     void TextBox::mouseMoved(float x, float y)
     {
+/// \todo  Simplify function (remove scale)
+
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
             return;
@@ -1061,7 +1069,7 @@ namespace tgui
         if (m_Scroll != NULL)
         {
             // Temporarily set the position and scale of the scroll
-            m_Scroll->setScale(curScale);
+//            m_Scroll->setScale(curScale);
             m_Scroll->setPosition(getPosition().x + ((m_Size.x - m_RightBorder - m_Scroll->getSize().x) * curScale.x), getPosition().y + (m_TopBorder * curScale.y));
 
             // Check if you are dragging the thumb of the scrollbar
@@ -1090,7 +1098,7 @@ namespace tgui
 
             // Reset the position and scale
             m_Scroll->setPosition(0, 0);
-            m_Scroll->setScale(1, 1);
+//            m_Scroll->setScale(1, 1);
         }
         else // There is no scrollbar
         {

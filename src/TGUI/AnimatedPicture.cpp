@@ -141,11 +141,6 @@ namespace tgui
 
     void AnimatedPicture::setSize(float width, float height)
     {
-        // Make sure that at least one frame was already loaded
-        if (m_Textures.empty())
-            return;
-
-        // Store the new size
         m_Size.x = width;
         m_Size.y = height;
     }
@@ -355,17 +350,12 @@ namespace tgui
 
     void AnimatedPicture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (!m_Loaded)
-            return;
-
-        // Apply the transformation
-        states.transform *= getTransform();
-
-        // Set the scaling
-        states.transform.scale(m_Size.x / m_Textures[0].getSize().x, m_Size.y / m_Textures[0].getSize().y);
-
-        // Draw the frame
-        target.draw(m_Textures[m_CurrentFrame], states);
+        if (m_Loaded)
+        {
+            states.transform *= getTransform();
+            states.transform.scale(m_Size.x / m_Textures[m_CurrentFrame].getSize().x, m_Size.y / m_Textures[m_CurrentFrame].getSize().y);
+            target.draw(m_Textures[m_CurrentFrame], states);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

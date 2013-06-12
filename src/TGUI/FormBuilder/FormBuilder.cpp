@@ -813,6 +813,13 @@ void Builder::resizeObject(float addToWidth, float addToHeight)
 {
     unsigned int i;
 
+    // Ignore labels
+    for (i = 0; i < labels.size(); ++i)
+    {
+        if (labels[i].id == currentID)
+            return;
+    }
+
     // Get the pointer to the properties
     tgui::EditBox::Ptr editboxWidth = propertyWindow.get("text_Width");
     tgui::EditBox::Ptr editboxHeight = propertyWindow.get("text_Height");
@@ -842,7 +849,6 @@ void Builder::resizeObject(float addToWidth, float addToHeight)
     FindObjectWithID(Button, buttons)
     FindObjectWithID(Checkbox, checkboxes)
     FindObjectWithID(Checkbox, radioButtons)
-    FindObjectWithID(Label, labels)
     FindObjectWithID(EditBox, editBoxes)
     FindObjectWithID(ListBox, listBoxes)
     FindObjectWithID(ComboBox, comboBoxes)
@@ -953,9 +959,6 @@ bool Builder::loadForm()
                 unsigned int id = newObject(objects[i]->getObjectType(), objectNames[i]);
                 labels.back().left.value = object->getPosition().x;
                 labels.back().top.value = object->getPosition().y;
-                labels.back().width.value = object->getScaledSize().x;
-                labels.back().height.value = object->getScaledSize().y;
-                labels.back().autoSize.value = object->getAutoSize();
                 labels.back().text.value = object->getText();
                 labels.back().textSize.value = object->getTextSize();
                 labels.back().textColor.value = tgui::convertColorToString(object->getTextColor());
@@ -966,8 +969,6 @@ bool Builder::loadForm()
                 // Draw the object in the correct way
                 tgui::Label::Ptr realObject = mainWindow.get(tgui::to_string(id));
                 realObject->setPosition(object->getPosition());
-                realObject->setSize(object->getScaledSize().x, object->getScaledSize().y);
-                realObject->setAutoSize(object->getAutoSize());
                 realObject->setText(object->getText());
                 realObject->setTextSize(object->getTextSize());
                 realObject->setTextColor(object->getTextColor());
@@ -1624,15 +1625,6 @@ void Builder::saveForm()
             line = TAB TAB "Position         = ";
             line.append("(").append(tgui::to_string(labels[objectIndex].left.value)).append(",");
             line.append(tgui::to_string(labels[objectIndex].top.value)).append(")").append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "Size             = ";
-            line.append("(").append(tgui::to_string(labels[objectIndex].width.value)).append(",");
-            line.append(tgui::to_string(labels[objectIndex].height.value)).append(")").append("\n");
-            fwrite(line.c_str(), 1, line.size(), pFile);
-
-            line = TAB TAB "AutoSize         = ";
-            line.append(tgui::to_string(labels[objectIndex].autoSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text             = \"";

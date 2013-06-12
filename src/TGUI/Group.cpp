@@ -412,15 +412,6 @@ namespace tgui
                 else \
                     failed = true; \
             } \
-            else if (line.substr(0, 6).compare("scale=") == 0) \
-            { \
-                line.erase(0, 6); \
-                Vector2f objScale; \
-                if (extractVector2f(line, objScale)) \
-                    name->setScale(objScale); \
-                else \
-                    failed = true; \
-            } \
             else if (line.substr(0, 9).compare("position=") == 0) \
             { \
                 line.erase(0, 9); \
@@ -952,15 +943,6 @@ namespace tgui
                                 }
                             }
                         }
-                        else if (line.substr(0, 6).compare("scale=") == 0)
-                        {
-                            line.erase(0, 6);
-                            Vector2f objScale;
-                            if (extractVector2f(line, objScale))
-                                tab->setScale(objScale);
-                            else
-                                failed = true;
-                        }
                         else if (line.substr(0, 9).compare("position=") == 0)
                         {
                             line.erase(0, 9);
@@ -1060,11 +1042,7 @@ namespace tgui
                         // Get the pointer to the label back
                         Label::Ptr label = extraPtr;
 
-                        if (line.substr(0, 9).compare("autosize=") == 0)
-                        {
-                            label->setAutoSize(!!atoi(line.erase(0, 9).c_str()));
-                        }
-                        else if (line.substr(0, 5).compare("text=") == 0)
+                        if (line.substr(0, 5).compare("text=") == 0)
                         {
                             // Remove the first part of the line
                             line.erase(0, 5);
@@ -2442,7 +2420,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
         {
             if (m_EventManager.m_Objects[i]->m_Visible)
-                target->draw(*m_EventManager.m_Objects[i], states);
+                m_EventManager.m_Objects[i]->draw(*target, states);
         }
     }
 
