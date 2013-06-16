@@ -407,17 +407,9 @@ namespace tgui
         m_TextureTitleBar_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureTitleBar_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
-        m_CloseButton->m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_CloseButton->m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_TextureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-
-        m_CloseButton->m_TextureHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_CloseButton->m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_TextureHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-
-        m_CloseButton->m_TextureDown_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_CloseButton->m_TextureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_TextureDown_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -711,7 +703,6 @@ namespace tgui
             }
         }
 
-        // Let the child window handle the rest
         GroupObject::handleEvent(event, mouseX - m_LeftBorder, mouseY - (m_TitleBarHeight + m_TopBorder));
     }
 

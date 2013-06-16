@@ -126,9 +126,6 @@ namespace tgui
         // The id of the focused object
         unsigned int m_FocusedObject;
 
-        // A pointer to the class that owns the event manager (NULL when it is the window)
-        Object* m_Parent;
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // The event handler can only be used by group objects and by the window
