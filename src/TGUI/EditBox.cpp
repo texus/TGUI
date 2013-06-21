@@ -38,7 +38,6 @@ namespace tgui
 
     EditBox::EditBox() :
     m_SelectionPointVisible (true),
-    m_SelectionPointWidth   (1),
     m_LimitTextWidth        (false),
     m_DisplayedText         (""),
     m_Text                  (""),
@@ -59,6 +58,8 @@ namespace tgui
         m_AnimatedObject = true;
         m_DraggableObject = true;
 
+        m_SelectionPoint.setSize(sf::Vector2f(1, 0));
+
         changeColors();
     }
 
@@ -69,7 +70,6 @@ namespace tgui
     ObjectBorders           (copy),
     m_LoadedConfigFile      (copy.m_LoadedConfigFile),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
-    m_SelectionPointWidth   (copy.m_SelectionPointWidth),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
     m_DisplayedText         (copy.m_DisplayedText),
     m_Text                  (copy.m_Text),
@@ -132,7 +132,6 @@ namespace tgui
 
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
-            std::swap(m_SelectionPointWidth,    temp.m_SelectionPointWidth);
             std::swap(m_LimitTextWidth,         temp.m_LimitTextWidth);
             std::swap(m_DisplayedText,          temp.m_DisplayedText);
             std::swap(m_Text,                   temp.m_Text);
@@ -253,7 +252,7 @@ namespace tgui
             }
             else if (property == "selectionpointwidth")
             {
-                m_SelectionPointWidth = static_cast<unsigned int>(abs(atoi(value.c_str())));
+                m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(atof(value.c_str())), m_SelectionPoint.getSize().y));
             }
             else if (property == "borders")
             {
@@ -537,7 +536,7 @@ namespace tgui
         }
 
         // Set the size of the selection point
-        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPointWidth),
+        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
 
         // Recalculate the position of the images and texts
@@ -578,6 +577,10 @@ namespace tgui
         // Change the text
         m_Text = text;
         m_DisplayedText = text;
+
+        // If the edit box only accepts numbers then remove all other characters
+        if (m_NumbersOnly)
+            setNumbersOnly(true);
 
         // If there is a character limit then check if it is exeeded
         if ((m_MaxChars > 0) && (m_DisplayedText.getSize() > m_MaxChars))
@@ -760,7 +763,7 @@ namespace tgui
         setText(m_Text);
 
         // Set the size of the selection point
-        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPointWidth),
+        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
     }
 
@@ -769,13 +772,13 @@ namespace tgui
     void EditBox::changeColors(const sf::Color& color,
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
-                               const sf::Color& newSelectionPointColor)
+                               const sf::Color& selectionPointColor)
     {
         m_TextBeforeSelection.setColor(color);
         m_TextSelection.setColor(selectedColor);
         m_TextAfterSelection.setColor(color);
 
-        m_SelectionPoint.setFillColor(newSelectionPointColor);
+        m_SelectionPoint.setFillColor(selectionPointColor);
         m_SelectedTextBackground.setFillColor(selectedBgrColor);
     }
 
@@ -932,23 +935,47 @@ namespace tgui
 
     void EditBox::setSelectionPointWidth(unsigned int width)
     {
-        m_SelectionPoint.setPosition(m_SelectionPoint.getPosition().x + ((m_SelectionPointWidth - width) / 2.0f), m_SelectionPoint.getPosition().y);
+        m_SelectionPoint.setPosition(m_SelectionPoint.getPosition().x + ((m_SelectionPoint.getSize().x - width) / 2.0f), m_SelectionPoint.getPosition().y);
         m_SelectionPoint.setSize(Vector2f(static_cast<float>(width),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
 
-        m_SelectionPointWidth = width;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int EditBox::getSelectionPointWidth() const
     {
-        return m_SelectionPointWidth;
+        return static_cast<unsigned int>(m_SelectionPoint.getSize().x);
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::setNumbersOnly(bool numbersOnly)
     {
         m_NumbersOnly = numbersOnly;
+
+        // Remove all letters from the edit box if needed
+        if (numbersOnly && !m_Text.isEmpty())
+        {
+            sf::String newText;
+            for (unsigned int i = 0; i < m_Text.getSize(); ++i)
+            {
+                if (newText.isEmpty())
+                {
+                    if ((m_Text[i] == '-') || (m_Text[i] == '+') || ((m_Text[i] >= '0') && (m_Text[i] <= '9')))
+                        newText += m_Text[i];
+                }
+                else
+                {
+                    if ((m_Text[i] >= '0') && (m_Text[i] <= '9'))
+                        newText += m_Text[i];
+                }
+            }
+
+            // When the text changed then reposition the text
+            if (newText != m_Text)
+                setText(newText);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,19 +1084,13 @@ namespace tgui
             }
             else // Scrolling is enabled
             {
-                float width;
                 float scalingX;
-
                 if (m_SplitImage)
-                {
                     scalingX = m_Size.y / m_TextureNormal_M.getSize().y;
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
-                }
                 else
-                {
                     scalingX = m_Size.x / m_TextureNormal_M.getSize().x;
-                    width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
-                }
+
+                float width = m_Size.x - ((m_LeftBorder + m_RightBorder) * scalingX);
 
                 // If the width is negative then the edit box is too small to be displayed
                 if (width < 0)
@@ -1665,7 +1686,7 @@ namespace tgui
         }
 
         // Set the position of the selection point
-        selectionPointLeft += m_TextFull.findCharacterPos(m_SelEnd).x - (m_SelectionPointWidth * 0.5f);
+        selectionPointLeft += m_TextFull.findCharacterPos(m_SelEnd).x - (m_SelectionPoint.getSize().x * 0.5f);
         m_SelectionPoint.setPosition(std::floor(selectionPointLeft + 0.5f), std::floor((m_TopBorder * scaling.y) + getPosition().y + 0.5f));
     }
 
@@ -1726,7 +1747,7 @@ namespace tgui
                 target.draw(m_TextureNormal_M, states);
                 target.draw(m_TextureNormal_R, states);
 
-                // When the mouse is on top of the button then draw an extra image
+                // When the mouse is on top of the edit box then draw an extra image
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                 {
                     target.draw(m_TextureHover_L, states);
@@ -1735,7 +1756,7 @@ namespace tgui
                 }
             }
 
-            // When the button is focused then draw an extra image
+            // When the edit box is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
             {
                 target.draw(m_TextureFocused_L, states);
@@ -1756,12 +1777,12 @@ namespace tgui
             {
                 target.draw(m_TextureNormal_M, states);
 
-                // When the mouse is on top of the button then draw an extra image
+                // When the mouse is on top of the edit box then draw an extra image
                 if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
                     target.draw(m_TextureHover_M, states);
             }
 
-            // When the button is focused then draw an extra image
+            // When the edit box is focused then draw an extra image
             if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
                 target.draw(m_TextureFocused_M, states);
         }

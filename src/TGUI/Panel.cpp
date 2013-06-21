@@ -47,11 +47,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel(const Panel& panelToCopy) :
-    GroupObject                    (panelToCopy),
-    m_Size                         (panelToCopy.m_Size),
-    m_BackgroundColor              (panelToCopy.m_BackgroundColor),
-    m_Texture                      (panelToCopy.m_Texture)
+    Panel::Panel(const Panel& copy) :
+    GroupObject      (copy),
+    m_Size           (copy.m_Size),
+    m_BackgroundColor(copy.m_BackgroundColor),
+    m_Texture        (copy.m_Texture)
     {
         if (m_Texture)
             m_Sprite.setTexture(*m_Texture);

@@ -200,18 +200,7 @@ namespace tgui
 
     void RadioButton::forceUncheck()
     {
-        if (m_Checked)
-        {
-            // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[Unchecked].empty() == false)
-            {
-                m_Callback.trigger = Unchecked;
-                m_Callback.checked = false;
-                addCallback();
-            }
-        }
-
-        m_Checked = false;
+        Checkbox::uncheck();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

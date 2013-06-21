@@ -41,15 +41,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group(const Group& groupToCopy) :
-    m_GlobalFont             (groupToCopy.m_GlobalFont),
-    m_GlobalCallbackFunctions(groupToCopy.m_GlobalCallbackFunctions)
+    Group::Group(const Group& copy) :
+    m_GlobalFont             (copy.m_GlobalFont),
+    m_GlobalCallbackFunctions(copy.m_GlobalCallbackFunctions)
     {
         // Copy all the objects
-        for (unsigned int i = 0; i < groupToCopy.m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < copy.m_EventManager.m_Objects.size(); ++i)
         {
-            m_EventManager.m_Objects.push_back(groupToCopy.m_EventManager.m_Objects[i].clone());
-            m_ObjName.push_back(groupToCopy.m_ObjName[i]);
+            m_EventManager.m_Objects.push_back(copy.m_EventManager.m_Objects[i].clone());
+            m_ObjName.push_back(copy.m_ObjName[i]);
 
             m_EventManager.m_Objects.back()->m_Parent = this;
         }

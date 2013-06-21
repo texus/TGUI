@@ -492,9 +492,6 @@ namespace tgui
         // Is the selection point visible or not?
         bool          m_SelectionPointVisible;
 
-        // The width in pixels of the flickering selection point
-        unsigned int  m_SelectionPointWidth;
-
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the limitTextWidth(bool) function.

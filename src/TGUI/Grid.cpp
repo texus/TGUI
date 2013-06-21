@@ -43,24 +43,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid::Grid(const Grid& gridToCopy) :
-    GroupObject(gridToCopy),
-    m_Size     (gridToCopy.m_Size)
+    Grid::Grid(const Grid& copy) :
+    GroupObject(copy),
+    m_Size     (copy.m_Size)
     {
-        const std::vector<Object::Ptr>& objects = gridToCopy.m_EventManager.m_Objects;
+        const std::vector<Object::Ptr>& objects = copy.m_EventManager.m_Objects;
 
-        for (unsigned int row = 0; row < gridToCopy.m_GridObjects.size(); ++row)
+        for (unsigned int row = 0; row < copy.m_GridObjects.size(); ++row)
         {
             // Create a new row
             addRow();
 
-            for (unsigned int col = 0; col < gridToCopy.m_GridObjects[row].size(); ++col)
+            for (unsigned int col = 0; col < copy.m_GridObjects[row].size(); ++col)
             {
                 // Find the object that belongs in this square
                 for (unsigned int i = 0; i < objects.size(); ++i)
                 {
                     // If an object matches then add it to the grid
-                    if (objects[i] == gridToCopy.m_GridObjects[row][col])
+                    if (objects[i] == copy.m_GridObjects[row][col])
                         addToRow(objects[i]);
                 }
             }

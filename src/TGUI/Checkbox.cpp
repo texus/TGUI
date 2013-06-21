@@ -335,6 +335,9 @@ namespace tgui
             // Set the text size
             m_Text.setCharacterSize(m_TextSize);
         }
+
+        // Reposition the text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
