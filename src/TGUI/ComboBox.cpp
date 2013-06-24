@@ -310,12 +310,10 @@ namespace tgui
 
     void ComboBox::setItemsToDisplay(unsigned int nrOfItemsInList)
     {
-        // At least one item must be shown
-        if (nrOfItemsInList < 1)
-            nrOfItemsInList = 1;
-
-        // Make the change
         m_NrOfItemsToDisplay = nrOfItemsInList;
+
+        if (m_NrOfItemsToDisplay < m_ListBox->m_Items.size())
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_NrOfItemsToDisplay * m_ListBox->getItemHeight()) + m_BottomBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,6 +561,20 @@ namespace tgui
     unsigned int ComboBox::getMaximumItems() const
     {
         return m_ListBox->getMaximumItems();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_ListBox->setTransparency(m_Opacity);
+
+        m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -861,10 +873,24 @@ namespace tgui
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Draw the borders
-        sf::RectangleShape Back(Vector2f(static_cast<float>(m_ListBox->getSize().x), static_cast<float>(m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder)));
-        Back.setFillColor(m_ListBox->getBorderColor());
-        target.draw(Back, states);
+        // Draw left border
+        sf::RectangleShape border(Vector2f(m_LeftBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
+        border.setFillColor(m_ListBox->m_BorderColor);
+        target.draw(border, states);
+
+        // Draw top border
+        border.setSize(Vector2f(m_ListBox->getSize().x, m_TopBorder));
+        target.draw(border, states);
+
+        // Draw right border
+        border.setPosition(m_ListBox->getSize().x - m_RightBorder, 0);
+        border.setSize(Vector2f(m_RightBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
+        target.draw(border, states);
+
+        // Draw bottom border
+        border.setPosition(0, m_ListBox->getItemHeight() + m_TopBorder);
+        border.setSize(Vector2f(m_ListBox->getSize().x, m_BottomBorder));
+        target.draw(border, states);
 
         // Move the front rect a little bit
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));

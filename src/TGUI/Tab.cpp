@@ -30,6 +30,8 @@
 #include <SFML/OpenGL.hpp>
 #include <cmath>
 
+/// \todo  Cache size to speedup getSize function.
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -268,7 +270,7 @@ namespace tgui
             // Make sure the required textures were loaded
             if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
             {
-                m_TabHeight = static_cast<float>(m_TextureNormal_M.getSize().y);
+                m_TabHeight = m_TextureNormal_M.getSize().y;
             }
             else
             {
@@ -585,6 +587,22 @@ namespace tgui
     unsigned int Tab::getDistanceToSide() const
     {
         return m_DistanceToSide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureSelected_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureSelected_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureSelected_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

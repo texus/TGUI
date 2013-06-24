@@ -506,6 +506,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void LoadingBar::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureBack_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureBack_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureBack_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFront_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFront_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFront_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void LoadingBar::recalculateSize()
     {
         // Don't calculate anything when the loading bar wasn't loaded correctly

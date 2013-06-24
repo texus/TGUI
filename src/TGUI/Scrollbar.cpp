@@ -27,6 +27,7 @@
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 
+/// \todo Support SplitImage.
 /// \todo Arrow images should be allowed to point left and right. This will mess up most calculations.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +42,6 @@ namespace tgui
     m_MouseDownOnArrow  (false)
     {
         m_Callback.objectType = Type_Scrollbar;
-        m_DraggableObject = true;
 
         m_Maximum = 0;
     }
@@ -287,7 +287,7 @@ namespace tgui
         if (m_SplitImage)
         {
             TGUI_OUTPUT("TGUI error: SplitImage is not supported in Scrollbar.");
-
+/*
             // Make sure the required textures were loaded
             if ((m_TextureTrackNormal_L.data != NULL) && (m_TextureTrackNormal_M.data != NULL) && (m_TextureTrackNormal_R.data != NULL)
              && (m_TextureThumbNormal.data != NULL) && (m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
@@ -315,6 +315,7 @@ namespace tgui
             {
                 m_ObjectPhase |= ObjectPhase_Hover;
             }
+*/
         }
         else // The image isn't split
         {
@@ -390,6 +391,18 @@ namespace tgui
     bool Scrollbar::getAutoHide() const
     {
         return m_AutoHide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::setTransparency(unsigned char transparency)
+    {
+        Slider::setTransparency(transparency);
+
+        m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,7 +714,7 @@ namespace tgui
                     if ((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / (m_Size.y - (2 * arrowHeight))) * m_Maximum) + 0.5f);
+                        unsigned int value = static_cast<unsigned int>((((y - m_MouseDownOnThumbPos.y - position.y - arrowHeight) / (m_Size.y - (2 * arrowHeight))) * m_Maximum) + 0.5f);
 
                         // If the value isn't too high then change it
                         if (value <= (m_Maximum - m_LowValue))
@@ -766,7 +779,7 @@ namespace tgui
                     if ((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) > 0)
                     {
                         // Calculate the new value
-                        unsigned value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / (m_Size.x - (2 * arrowWidth))) * m_Maximum) + 0.5f);
+                        unsigned int value = static_cast<unsigned int>((((x - m_MouseDownOnThumbPos.x - position.x - arrowWidth) / (m_Size.x - (2 * arrowWidth))) * m_Maximum) + 0.5f);
 
                         // Set the new value
                         if (value <= (m_Maximum - m_LowValue))

@@ -978,6 +978,37 @@ namespace tgui
         }
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        if (m_SplitImage)
+        {
+            m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureFocused_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+            m_TextureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureFocused_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        }
+
+        m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFocused_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_SelectedTextBackground.setFillColor(sf::Color(m_SelectedTextBackground.getFillColor().r, m_SelectedTextBackground.getFillColor().g, m_SelectedTextBackground.getFillColor().b, m_Opacity));
+        m_SelectionPoint.setFillColor(sf::Color(m_SelectionPoint.getFillColor().r, m_SelectionPoint.getFillColor().g, m_SelectionPoint.getFillColor().b, m_Opacity));
+
+        m_TextBeforeSelection.setColor(sf::Color(m_TextBeforeSelection.getColor().r, m_TextBeforeSelection.getColor().g, m_TextBeforeSelection.getColor().b, m_Opacity));
+        m_TextSelection.setColor(sf::Color(m_TextSelection.getColor().r, m_TextSelection.getColor().g, m_TextSelection.getColor().b, m_Opacity));
+        m_TextAfterSelection.setColor(sf::Color(m_TextAfterSelection.getColor().r, m_TextAfterSelection.getColor().g, m_TextAfterSelection.getColor().b, m_Opacity));
+        m_TextFull.setColor(sf::Color(m_TextFull.getColor().r, m_TextFull.getColor().g, m_TextFull.getColor().b, m_Opacity));
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::leftMousePressed(float x, float y)

@@ -402,6 +402,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Checkbox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureChecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFocused.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Checkbox::mouseOnObject(float x, float y)
     {
         // Don't do anything when the checkbox wasn't loaded correctly

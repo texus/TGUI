@@ -74,6 +74,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the transparency of the object.
+        ///
+        /// \param transparency  The transparency of the object.
+        ///                      0 is completely transparent, while 255 (default) means fully opaque.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setTransparency(unsigned char transparency);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // TGUI uses this function internally to handle object callbacks.
         // When you tell an object to send its callbacks to its parent then this function is called.
         //

@@ -46,7 +46,6 @@ namespace tgui
     m_TitleBarHeight   (0),
     m_SplitImage       (false),
     m_DraggingPosition (0, 0),
-    m_Opacity          (255),
     m_DistanceToSide   (5),
     m_TitleAlignment   (TitleAlignmentCentered),
     m_BorderColor      (0, 0, 0)
@@ -68,7 +67,6 @@ namespace tgui
     m_TitleBarHeight   (copy.m_TitleBarHeight),
     m_SplitImage       (copy.m_SplitImage),
     m_DraggingPosition (copy.m_DraggingPosition),
-    m_Opacity          (copy.m_Opacity),
     m_DistanceToSide   (copy.m_DistanceToSide),
     m_TitleAlignment   (copy.m_TitleAlignment),
     m_BorderColor      (copy.m_BorderColor)
@@ -128,7 +126,6 @@ namespace tgui
             std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
             std::swap(m_SplitImage,        temp.m_SplitImage);
             std::swap(m_DraggingPosition,  temp.m_DraggingPosition);
-            std::swap(m_Opacity,           temp.m_Opacity);
             std::swap(m_DistanceToSide,    temp.m_DistanceToSide);
             std::swap(m_TitleAlignment,    temp.m_TitleAlignment);
             std::swap(m_BorderColor,       temp.m_BorderColor);
@@ -400,23 +397,22 @@ namespace tgui
 
     void ChildWindow::setTransparency(unsigned char transparency)
     {
-        // Store the new transparency
-        m_Opacity = transparency;
+        GroupObject::setTransparency(transparency);
+
+        m_BackgroundSprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_IconTexture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
         m_TextureTitleBar_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureTitleBar_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureTitleBar_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
-        m_CloseButton->m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_CloseButton->m_TextureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-    }
+        m_CloseButton->setTransparency(m_Opacity);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_TitleText.setColor(sf::Color(m_TitleText.getColor().r, m_TitleText.getColor().g, m_TitleText.getColor().b, m_Opacity));
 
-    unsigned char ChildWindow::getTransparency() const
-    {
-        return m_Opacity;
+        m_BackgroundColor.a = m_Opacity;
+        m_BorderColor.a = m_Opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -832,10 +828,24 @@ namespace tgui
         // Set the correct transformation
         states.transform = oldTransform.translate(0, static_cast<float>(m_TitleBarHeight));
 
-        // Draw the borders
-		sf::RectangleShape borders(Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder));
-        borders.setFillColor(m_BorderColor);
-        target.draw(borders, states);
+        // Draw left border
+        sf::RectangleShape border(Vector2f(m_LeftBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        border.setFillColor(m_BorderColor);
+        target.draw(border, states);
+
+        // Draw top border
+        border.setSize(Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_TopBorder));
+        target.draw(border, states);
+
+        // Draw right border
+        border.setPosition(m_Size.x + m_LeftBorder, 0);
+        border.setSize(Vector2f(m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        target.draw(border, states);
+
+        // Draw bottom border
+        border.setPosition(0, m_Size.y + m_TopBorder);
+        border.setSize(Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_BottomBorder));
+        target.draw(border, states);
 
         // Make room for the borders
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));

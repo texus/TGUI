@@ -337,6 +337,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider2d::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Slider2d::leftMousePressed(float x, float y)
     {
         ClickableObject::leftMousePressed(x, y);

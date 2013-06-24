@@ -488,6 +488,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_BorderColor.a = m_Opacity;
+        m_Panel->setTransparency(transparency);
+
+        if (m_Scroll != NULL)
+            m_Scroll->setTransparency(transparency);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ChatBox::mouseOnObject(float x, float y)
     {
         // Get the current position

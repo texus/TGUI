@@ -601,6 +601,34 @@ namespace tgui
         return m_Text.getCharacterSize();
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        if (m_SplitImage)
+        {
+            m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureDown_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureFocused_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+            m_TextureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureDown_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_TextureFocused_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        }
+
+        m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureFocused_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Button::keyPressed(sf::Keyboard::Key key)

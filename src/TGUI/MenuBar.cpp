@@ -401,6 +401,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_BackgroundColor.a = m_Opacity;
+        m_TextColor.a = m_Opacity;
+        m_SelectedBackgroundColor.a = m_Opacity;
+        m_SelectedTextColor.a = m_Opacity;
+
+        for (unsigned int i = 0; i < m_Menus.size(); ++i)
+        {
+            m_Menus[i].text.setColor(sf::Color(m_Menus[i].text.getColor().r, m_Menus[i].text.getColor().g, m_Menus[i].text.getColor().b, m_Opacity));
+
+            for (unsigned int j = 0; j < m_Menus[i].menuItems.size(); ++j)
+            {
+                m_Menus[i].menuItems[j].setColor(sf::Color(m_Menus[i].menuItems[j].getColor().r, m_Menus[i].menuItems[j].getColor().g, m_Menus[i].menuItems[j].getColor().b, m_Opacity));
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool MenuBar::mouseOnObject(float x, float y)
     {
         if (m_Loaded)

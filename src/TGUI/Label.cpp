@@ -200,6 +200,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        if (m_Background.getFillColor().a != 0)
+            m_Background.setFillColor(sf::Color(m_Background.getFillColor().r, m_Background.getFillColor().g, m_Background.getFillColor().b, m_Opacity));
+
+        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::initialize(tgui::Group *const parent)
     {
 

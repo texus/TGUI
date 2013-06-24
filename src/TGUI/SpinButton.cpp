@@ -320,6 +320,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinButton::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::leftMousePressed(float x, float y)
     {
         m_MouseDown = true;

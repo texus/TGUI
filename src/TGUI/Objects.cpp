@@ -37,6 +37,7 @@ namespace tgui
     m_Loaded         (false),
     m_ObjectPhase    (0),
     m_Parent         (NULL),
+    m_Opacity        (255),
     m_MouseHover     (false),
     m_MouseDown      (false),
     m_Focused        (false),
@@ -62,6 +63,7 @@ namespace tgui
     m_Loaded         (copy.m_Loaded),
     m_ObjectPhase    (copy.m_ObjectPhase),
     m_Parent         (copy.m_Parent),
+    m_Opacity        (copy.m_Opacity),
     m_MouseHover     (false),
     m_MouseDown      (false),
     m_Focused        (false),
@@ -98,6 +100,7 @@ namespace tgui
             m_Loaded              = right.m_Loaded;
             m_ObjectPhase         = right.m_ObjectPhase;
             m_Parent              = right.m_Parent;
+            m_Opacity             = right.m_Opacity;
             m_MouseHover          = false;
             m_MouseDown           = false;
             m_Focused             = false;
@@ -269,6 +272,20 @@ namespace tgui
     Group* Object::getParent() const
     {
         return m_Parent;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Object::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned char Object::getTransparency() const
+    {
+        return m_Opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

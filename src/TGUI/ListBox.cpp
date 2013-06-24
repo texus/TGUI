@@ -38,7 +38,7 @@ namespace tgui
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox() :
-    m_SelectedItem(0),
+    m_SelectedItem(-1),
     m_Size        (50, 100),
     m_ItemHeight  (24),
     m_TextSize    (19),
@@ -652,9 +652,6 @@ namespace tgui
         m_ItemHeight = itemHeight;
         m_TextSize   = static_cast<unsigned int>(itemHeight * 0.8f);
 
-        // Adjust the height a little bit
-        setSize(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y));
-
         // Some items might be removed when there is no scrollbar
         if (m_Scroll == NULL)
         {
@@ -743,6 +740,22 @@ namespace tgui
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        if (m_Scroll != NULL)
+            m_Scroll->setTransparency(m_Opacity);
+
+        m_BackgroundColor.a = m_Opacity;
+        m_TextColor.a = m_Opacity;
+        m_SelectedBackgroundColor.a = m_Opacity;
+        m_SelectedTextColor.a = m_Opacity;
+        m_BorderColor.a = m_Opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,9 +1038,24 @@ namespace tgui
 
         // Draw the borders
         {
-            sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
-            back.setFillColor(m_BorderColor);
-            target.draw(back, states);
+            // Draw left border
+            sf::RectangleShape border(Vector2f(m_LeftBorder, m_Size.y));
+            border.setFillColor(m_BorderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize(Vector2f(m_Size.x, m_TopBorder));
+            target.draw(border, states);
+
+            // Draw right border
+            border.setPosition(m_Size.x - m_RightBorder, 0);
+            border.setSize(Vector2f(m_RightBorder, m_Size.y));
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setPosition(0, m_Size.y - m_BottomBorder);
+            border.setSize(Vector2f(m_Size.x, m_BottomBorder));
+            target.draw(border, states);
         }
 
         // Move the front rect a little bit

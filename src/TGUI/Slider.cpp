@@ -529,6 +529,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_TextureTrackNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Slider::mouseOnObject(float x, float y)
     {
         // Don't do anything when the slider wasn't loaded correctly

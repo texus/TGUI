@@ -212,17 +212,7 @@ namespace tgui
         ///                      0 is completely transparent, while 255 means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTransparency(unsigned char transparency);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the transparency of the window.
-        ///
-        /// \return The transparency of the window.
-        ///         0 is completely transparent, while 255 means fully opaque.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned char getTransparency() const;
+        virtual void setTransparency(unsigned char transparency);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -423,7 +413,6 @@ namespace tgui
         unsigned int   m_TitleBarHeight;
         bool           m_SplitImage;
         Vector2f       m_DraggingPosition;
-        unsigned char  m_Opacity;
         unsigned int   m_DistanceToSide;
         TitleAlignment m_TitleAlignment;
         sf::Color      m_BorderColor;

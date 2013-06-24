@@ -794,6 +794,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setTransparency(unsigned char transparency)
+    {
+        m_Opacity = transparency;
+
+        m_SelectionPointColor.a = m_Opacity;
+        m_BackgroundColor.a = m_Opacity;
+        m_SelectedTextBgrColor.a = m_Opacity;
+        m_BorderColor.a = m_Opacity;
+
+        m_TextBeforeSelection.setColor(sf::Color(m_TextBeforeSelection.getColor().r, m_TextBeforeSelection.getColor().g, m_TextBeforeSelection.getColor().b, m_Opacity));
+        m_TextSelection1.setColor(sf::Color(m_TextSelection1.getColor().r, m_TextSelection1.getColor().g, m_TextSelection1.getColor().b, m_Opacity));
+        m_TextSelection2.setColor(sf::Color(m_TextSelection2.getColor().r, m_TextSelection2.getColor().g, m_TextSelection2.getColor().b, m_Opacity));
+        m_TextAfterSelection1.setColor(sf::Color(m_TextAfterSelection1.getColor().r, m_TextAfterSelection1.getColor().g, m_TextAfterSelection1.getColor().b, m_Opacity));
+        m_TextAfterSelection2.setColor(sf::Color(m_TextAfterSelection2.getColor().r, m_TextAfterSelection2.getColor().g, m_TextAfterSelection2.getColor().b, m_Opacity));
+
+        if (m_Scroll != NULL)
+            m_Scroll->setTransparency(m_Opacity);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool TextBox::mouseOnObject(float x, float y)
     {
         // Don't do anything when the text box wasn't loaded correctly
@@ -2201,9 +2222,26 @@ namespace tgui
         sf::Transform origTransform = states.transform;
 
         // Draw the borders
-        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
-        back.setFillColor(m_BorderColor);
-        target.draw(back, states);
+        {
+            // Draw left border
+            sf::RectangleShape border(Vector2f(m_LeftBorder, m_Size.y));
+            border.setFillColor(m_BorderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize(Vector2f(m_Size.x, m_TopBorder));
+            target.draw(border, states);
+
+            // Draw right border
+            border.setPosition(m_Size.x - m_RightBorder, 0);
+            border.setSize(Vector2f(m_RightBorder, m_Size.y));
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setPosition(0, m_Size.y - m_BottomBorder);
+            border.setSize(Vector2f(m_Size.x, m_BottomBorder));
+            target.draw(border, states);
+        }
 
         // Don't draw on top of the borders
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
