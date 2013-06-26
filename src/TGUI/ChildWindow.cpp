@@ -82,7 +82,11 @@ namespace tgui
 
         // Set the bakground sprite, if there is a background texture
         if (copy.m_BackgroundTexture)
+        {
             m_BackgroundSprite.setTexture(*m_BackgroundTexture, true);
+            m_BackgroundSprite.setScale(m_Size.x / m_BackgroundTexture->getSize().x, m_Size.y / m_BackgroundTexture->getSize().y);
+            m_BackgroundSprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

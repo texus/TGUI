@@ -54,7 +54,11 @@ namespace tgui
     m_Texture        (copy.m_Texture)
     {
         if (m_Texture)
+        {
             m_Sprite.setTexture(*m_Texture);
+            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+            m_Sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
