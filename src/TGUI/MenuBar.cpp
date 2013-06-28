@@ -185,6 +185,11 @@ namespace tgui
             if (m_Menus[i].text.getString() == menu)
             {
                 m_Menus.erase(m_Menus.begin() + i);
+
+                // The menu was removed, so it can't remain open
+                if (m_VisibleMenu == static_cast<int>(i))
+                    m_VisibleMenu = -1;
+
                 return true;
             }
         }
@@ -209,6 +214,11 @@ namespace tgui
                     if (m_Menus[i].menuItems[j].getString() == menuItem)
                     {
                         m_Menus[i].menuItems.erase(m_Menus[i].menuItems.begin() + j);
+
+                        // The item can't still be selected
+                        if (m_Menus[i].selectedMenuItem == static_cast<int>(j))
+                            m_Menus[i].selectedMenuItem = -1;
+
                         return true;
                     }
                 }
@@ -281,13 +291,10 @@ namespace tgui
     {
         m_SelectedTextColor = selectedTextColor;
 
-        for (unsigned int i = 0; i < m_Menus.size(); ++i)
+        if (m_VisibleMenu != -1)
         {
-            for (unsigned int j = 0; j < m_Menus[i].menuItems.size(); ++j)
-            {
-                if (m_Menus[i].selectedMenuItem == static_cast<int>(j))
-                    m_Menus[i].menuItems[j].setColor(selectedTextColor);
-            }
+            if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(selectedTextColor);
         }
     }
 
@@ -403,7 +410,7 @@ namespace tgui
 
     void MenuBar::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_BackgroundColor.a = m_Opacity;
         m_TextColor.a = m_Opacity;
