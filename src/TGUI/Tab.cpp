@@ -593,7 +593,7 @@ namespace tgui
 
     void Tab::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

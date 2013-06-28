@@ -796,7 +796,7 @@ namespace tgui
 
     void TextBox::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_SelectionPointColor.a = m_Opacity;
         m_BackgroundColor.a = m_Opacity;

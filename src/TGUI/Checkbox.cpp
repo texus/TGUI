@@ -404,7 +404,7 @@ namespace tgui
 
     void Checkbox::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         m_TextureChecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

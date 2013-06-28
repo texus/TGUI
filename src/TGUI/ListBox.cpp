@@ -746,7 +746,7 @@ namespace tgui
 
     void ListBox::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         if (m_Scroll != NULL)
             m_Scroll->setTransparency(m_Opacity);

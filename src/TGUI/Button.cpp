@@ -606,7 +606,7 @@ namespace tgui
 
     void Button::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         if (m_SplitImage)
         {

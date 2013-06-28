@@ -567,7 +567,7 @@ namespace tgui
 
     void ComboBox::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_ListBox->setTransparency(m_Opacity);
 

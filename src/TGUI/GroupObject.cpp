@@ -69,7 +69,7 @@ namespace tgui
 
     void GroupObject::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
             m_EventManager.m_Objects[i]->setTransparency(transparency);

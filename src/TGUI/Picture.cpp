@@ -171,7 +171,7 @@ namespace tgui
 
     void Picture::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         m_Texture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }

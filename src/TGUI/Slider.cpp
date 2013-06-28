@@ -531,7 +531,7 @@ namespace tgui
 
     void Slider::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_TextureTrackNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureTrackHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

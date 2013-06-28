@@ -202,7 +202,7 @@ namespace tgui
 
     void Label::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         if (m_Background.getFillColor().a != 0)
             m_Background.setFillColor(sf::Color(m_Background.getFillColor().r, m_Background.getFillColor().g, m_Background.getFillColor().b, m_Opacity));

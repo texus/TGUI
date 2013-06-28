@@ -322,7 +322,7 @@ namespace tgui
 
     void SpinButton::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

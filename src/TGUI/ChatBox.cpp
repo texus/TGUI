@@ -366,9 +366,6 @@ namespace tgui
         // Update the position of the labels
         updateDisplayedText();
 
-        // The height might need to be changed
-        m_Panel->setSize(m_Panel->getSize().x, m_Panel->getSize().y);
-
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != NULL)
         {
@@ -490,7 +487,7 @@ namespace tgui
 
     void ChatBox::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        Object::setTransparency(transparency);
 
         m_BorderColor.a = m_Opacity;
         m_Panel->setTransparency(transparency);

@@ -305,7 +305,7 @@ namespace tgui
 
     void AnimatedPicture::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         for (unsigned int i = 0; i < m_Textures.size(); ++i)
             m_Textures[i].sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

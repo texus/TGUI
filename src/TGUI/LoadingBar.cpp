@@ -508,7 +508,7 @@ namespace tgui
 
     void LoadingBar::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         m_TextureBack_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureBack_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

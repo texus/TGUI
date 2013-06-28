@@ -339,7 +339,7 @@ namespace tgui
 
     void Slider2d::setTransparency(unsigned char transparency)
     {
-        m_Opacity = transparency;
+        ClickableObject::setTransparency(transparency);
 
         m_TextureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
