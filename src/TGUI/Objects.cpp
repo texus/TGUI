@@ -71,11 +71,9 @@ namespace tgui
     m_AnimatedObject (copy.m_AnimatedObject),
     m_DraggableObject(copy.m_DraggableObject),
     m_GroupObject    (copy.m_GroupObject),
-    m_Callback       ()
+    m_Callback       (copy.m_Callback)
     {
         m_Callback.object = this;
-        m_Callback.objectType = copy.m_Callback.objectType;
-        m_Callback.id = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
