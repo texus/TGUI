@@ -246,6 +246,12 @@ namespace tgui
         // Set the new minimum
         m_Minimum = minimum;
 
+        // The minimum can never be greater than the maximum
+        if (m_Minimum.x > m_Maximum.x)
+            m_Maximum.x = m_Minimum.x;
+        if (m_Minimum.y > m_Maximum.y)
+            m_Maximum.y = m_Minimum.y;
+
         // When the value is below the minimum then adjust it
         if (m_Value.x < m_Minimum.x)
             m_Value.x = m_Minimum.x;
@@ -259,6 +265,12 @@ namespace tgui
     {
         // Set the new maximum
         m_Maximum = maximum;
+
+        // The maximum can never be below the minimum
+        if (m_Maximum.x < m_Minimum.x)
+            m_Minimum.x = m_Maximum.x;
+        if (m_Maximum.y < m_Minimum.y)
+            m_Minimum.y = m_Maximum.y;
 
         // When the value is above the maximum then adjust it
         if (m_Value.x > m_Maximum.x)
@@ -367,36 +379,15 @@ namespace tgui
         {
             setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
 
-            if (m_CallbackFunctions[ThumbReturnToCenter].empty() == false)
+            if (m_CallbackFunctions[ThumbReturnedToCenter].empty() == false)
             {
-                m_Callback.trigger = ThumbReturnToCenter;
+                m_Callback.trigger = ThumbReturnedToCenter;
                 m_Callback.value2d = m_Value;
                 addCallback();
             }
 		}
     }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	void Slider2d::mouseNoLongerDown()
-	{
-		m_MouseDown = false;
-
-		if (m_ReturnThumbToCenter)
-		{
-		    if (m_Value != Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
-		    {
-		        setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
-
-                if (m_CallbackFunctions[ThumbReturnToCenter].empty() == false)
-                {
-                    m_Callback.trigger = ThumbReturnToCenter;
-                    m_Callback.value2d = m_Value;
-                    addCallback();
-                }
-		    }
-		}
-	}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -452,6 +443,28 @@ namespace tgui
         // A slider can't be focused (yet)
         m_Parent->unfocusObject(this);
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void Slider2d::mouseNoLongerDown()
+	{
+		m_MouseDown = false;
+
+		if (m_ReturnThumbToCenter)
+		{
+		    if (m_Value != Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
+		    {
+		        setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
+
+                if (m_CallbackFunctions[ThumbReturnedToCenter].empty() == false)
+                {
+                    m_Callback.trigger = ThumbReturnedToCenter;
+                    m_Callback.value2d = m_Value;
+                    addCallback();
+                }
+		    }
+		}
+	}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

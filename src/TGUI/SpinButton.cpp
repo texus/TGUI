@@ -249,6 +249,10 @@ namespace tgui
         // Set the new minimum
         m_Minimum = minimum;
 
+        // The minimum can never be greater than the maximum
+        if (m_Minimum > m_Maximum)
+            m_Maximum = m_Minimum;
+
         // When the value is below the minimum then adjust it
         if (m_Value < m_Minimum)
             m_Value = m_Minimum;
@@ -258,11 +262,11 @@ namespace tgui
 
     void SpinButton::setMaximum(unsigned int maximum)
     {
-        // Set the new maximum
-        if (maximum > 0)
-            m_Maximum = maximum;
-        else
-            m_Maximum = 1;
+        m_Maximum = maximum;
+
+        // The maximum can never be below the minimum
+        if (m_Maximum < m_Minimum)
+            m_Minimum = m_Maximum;
 
         // When the value is above the maximum then adjust it
         if (m_Value > m_Maximum)

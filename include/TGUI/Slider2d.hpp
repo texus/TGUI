@@ -258,7 +258,7 @@ namespace tgui
         enum Slider2dCallbacks
         {
             ValueChanged = ClickableObjectCallbacksCount * 1,
-            ThumbReturnToCenter = ClickableObjectCallbacksCount * 2,
+            ThumbReturnedToCenter = ClickableObjectCallbacksCount * 2,
             AllSlider2dCallbacks = ClickableObjectCallbacksCount * 4 - 1,
             Slider2dCallbacksCount = ClickableObjectCallbacksCount * 4
         };
