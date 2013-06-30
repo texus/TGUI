@@ -124,7 +124,7 @@ int main()
     scrollbar->setLowValue(3);
 
     tgui::Slider2d::Ptr slider2d(gui);
-    slider2d->load(THEME_CONFIG_FILE);
+    slider2d->load("../../objects/Slider2d/Black.conf");
     slider2d->setPosition(400, 300);
     slider2d->setSize(200, 150);
 
