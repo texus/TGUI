@@ -192,6 +192,8 @@ namespace tgui
                     return false;
                 }
             }
+            else
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Slider2d in " + configFileFilename + ".");
         }
 
         // Make sure the required textures were loaded
