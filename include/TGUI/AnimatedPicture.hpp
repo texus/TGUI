@@ -167,9 +167,10 @@ namespace tgui
         /// \return Number of the frame that is currently displayed.
         ///
         /// The number is the index of the frame, so the first frame is number 0.
+        /// If no frames were loaded then this function will return -1.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getCurrentFrame() const;
+        int getCurrentFrame() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,7 +279,7 @@ namespace tgui
         std::vector<Texture>  m_Textures;
         std::vector<sf::Time> m_FrameDuration;
 
-        unsigned int m_CurrentFrame;
+        int m_CurrentFrame;
 
         bool m_Playing;
         bool m_Looping;

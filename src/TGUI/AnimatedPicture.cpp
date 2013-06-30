@@ -36,7 +36,7 @@ namespace tgui
     AnimatedPicture::AnimatedPicture() :
     m_Textures       (),
     m_FrameDuration  (),
-    m_CurrentFrame   (0),
+    m_CurrentFrame   (-1),
     m_Playing        (false),
     m_Looping        (false)
     {
@@ -47,15 +47,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
-    ClickableObject  (copy),
-    m_FrameDuration  (copy.m_FrameDuration),
-    m_CurrentFrame   (copy.m_CurrentFrame),
-    m_Playing        (copy.m_Playing),
-    m_Looping        (copy.m_Looping)
+    ClickableObject(copy),
+    m_FrameDuration(copy.m_FrameDuration),
+    m_CurrentFrame (copy.m_CurrentFrame),
+    m_Playing      (copy.m_Playing),
+    m_Looping      (copy.m_Looping)
     {
-        // Copy the textures
-        for (unsigned int i=0; i< copy.m_Textures.size(); ++i)
-            TGUI_TextureManager.copyTexture(copy.m_Textures[i], m_Textures[i]);
+        for (unsigned int i = 0; i < copy.m_Textures.size(); ++i)
+        {
+            m_Textures.push_back(Texture());
+            TGUI_TextureManager.copyTexture(copy.m_Textures[i], m_Textures.back());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +185,11 @@ namespace tgui
     void AnimatedPicture::stop()
     {
         m_Playing = false;
-        m_CurrentFrame = 0;
+
+        if (m_Textures.empty())
+            m_CurrentFrame = -1;
+        else
+            m_CurrentFrame = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,7 +199,7 @@ namespace tgui
         // Check if there are no frames
         if (m_Textures.empty() == true)
         {
-            m_CurrentFrame = 0;
+            m_CurrentFrame = -1;
             return false;
         }
 
@@ -212,7 +218,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int AnimatedPicture::getCurrentFrame() const
+    int AnimatedPicture::getCurrentFrame() const
     {
         return m_CurrentFrame;
     }
@@ -245,26 +251,18 @@ namespace tgui
         if (frame >= m_Textures.size())
             return false;
 
-        // Check if you are removing the last frame
-        if (m_Textures.size() == 1)
-        {
-            TGUI_TextureManager.removeTexture(m_Textures[0]);
-            m_Textures.erase(m_Textures.begin());
-            m_FrameDuration.erase(m_FrameDuration.begin());
-
-            m_CurrentFrame = 0;
-            m_Loaded = false;
-            return true;
-        }
-
         // Remove the requested frame
         TGUI_TextureManager.removeTexture(m_Textures[frame]);
         m_Textures.erase(m_Textures.begin() + frame);
         m_FrameDuration.erase(m_FrameDuration.begin() + frame);
 
         // If the displayed frame was behind the deleted one, then it should be shifted
-        if (m_CurrentFrame >= frame)
+        if (m_CurrentFrame >= static_cast<int>(frame))
             --m_CurrentFrame;
+
+        // Check if you are removing the last frame
+        if (m_Textures.size() == 1)
+            m_Loaded = false;
 
         return true;
     }
@@ -282,8 +280,7 @@ namespace tgui
         m_FrameDuration.clear();
 
         // Reset the animation
-        m_CurrentFrame = 0;
-        m_Playing = false;
+        stop();
         m_Loaded = false;
     }
 
@@ -329,7 +326,7 @@ namespace tgui
                 m_AnimationTimeElapsed -= m_FrameDuration[m_CurrentFrame];
 
                 // Make the next frame visible
-                if (m_CurrentFrame + 1 < m_Textures.size())
+                if (static_cast<unsigned int>(m_CurrentFrame + 1) < m_Textures.size())
                     ++m_CurrentFrame;
                 else
                 {
