@@ -256,10 +256,6 @@ namespace tgui
             {
                 setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
-            else if (property == "transparency")
-            {
-                setTransparency(static_cast<unsigned char>(atoi(value.c_str())));
-            }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
         }
