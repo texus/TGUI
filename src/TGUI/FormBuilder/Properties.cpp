@@ -1403,11 +1403,9 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
 
         // Adjust the width of the label
         width.value = static_cast<float>(label->getSize().x);
-        static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
 
         // Adjust the height of the label
         height.value = static_cast<float>(label->getSize().y);
-        static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
     }
     else if (propertyNumber == Property_Label_TextSize)
     {
@@ -1422,11 +1420,9 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
 
         // Adjust the width of the label
         width.value = static_cast<float>(label->getSize().x);
-        static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
 
         // Adjust the height of the label
         height.value = static_cast<float>(label->getSize().y);
-        static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
     }
     else if (propertyNumber == Property_Label_TextColor)
     {
