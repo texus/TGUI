@@ -8,11 +8,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI demo");
     tgui::Gui gui(window);
 
-    if (gui.setGlobalFont("../../Fonts/DejaVuSans.ttf") == false)
+    if (gui.setGlobalFont("../../fonts/DejaVuSans.ttf") == false)
        return 1;
 
-    // Load all the objects from a file
-    gui.loadObjectsFromFile("form.txt");
+    // Load all the widgets from a file
+    gui.loadWidgetsFromFile("form.txt");
 
     while (window.isOpen())
     {

@@ -11,7 +11,7 @@ Window:
     
     Button:
     {
-        ConfigFile = "../../objects/Black.conf"
+        ConfigFile = "../../widgets/Black.conf"
         TextColor  = (200, 200, 200)
         Text       = "Button"
         Size       = (160, 40)
@@ -20,7 +20,7 @@ Window:
 
     Checkbox:
     {
-        ConfigFile = "../../objects/Black.conf"
+        ConfigFile = "../../widgets/Black.conf"
         TextColor  = (200, 200, 200)
         Text       = "Checkbox"
         Checked    = true
@@ -29,7 +29,7 @@ Window:
 
     RadioButton:
     {
-        ConfigFile = "../../objects/Black.conf"
+        ConfigFile = "../../widgets/Black.conf"
         TextColor  = (200, 200, 200)
         Text       = "Radio button 1"
         Position   = (20, 100)
@@ -37,7 +37,7 @@ Window:
 
     RadioButton:
     {
-        ConfigFile = "../../objects/Black.conf"
+        ConfigFile = "../../widgets/Black.conf"
         TextColor  = (200, 200, 200)
         Text       = "Radio button 2"
         Position   = (20, 150)
@@ -45,7 +45,7 @@ Window:
 
     EditBox:
     {
-        ConfigFile                  = "../../objects/Black.conf"
+        ConfigFile                  = "../../widgets/Black.conf"
         Text                        = "This text is too long to fit inside the EditBox."
 //        PasswordChar                = "*"
 //        MaximumCharacters           = 4
@@ -61,7 +61,7 @@ Window:
 
     Slider:
     {
-        ConfigFile     = "../../objects/Black.conf"
+        ConfigFile     = "../../widgets/Black.conf"
         Minimum        = 0
         Maximum        = 100
         Value          = 30
@@ -71,7 +71,7 @@ Window:
 
     LoadingBar:
     {
-        ConfigFile = "../../objects/Black.conf"
+        ConfigFile = "../../widgets/Black.conf"
         Position   = (20, 400)
         Maximum    = 500
         CallbackId = 1
@@ -79,7 +79,7 @@ Window:
 
     Scrollbar:
     {
-        ConfigFile     = "../../objects/Black.conf"
+        ConfigFile     = "../../widgets/Black.conf"
         Position       = (20, 480)
         LowValue       = 4
         Maximum        = 5
@@ -88,11 +88,11 @@ Window:
 
     Listbox:
     {
-        ConfigFile              = "../../objects/Black.conf"
+        ConfigFile              = "../../widgets/Black.conf"
         Position                = (300, 20)
         Size                    = (260, 200)
         ItemHeight              = 40
-        ScrollbarConfigFile     = "../../objects/Black.conf"
+        ScrollbarConfigFile     = "../../widgets/Black.conf"
         Borders                 = (2, 2, 2, 2)
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
@@ -111,10 +111,10 @@ Window:
 
     ComboBox:
     {
-        ConfigFile              = "../../objects/Black.conf"
+        ConfigFile              = "../../widgets/Black.conf"
         Size                    = (260, 40)
         ItemsToDisplay          = 3
-        ScrollbarConfigFile     = "../../objects/Black.conf"
+        ScrollbarConfigFile     = "../../widgets/Black.conf"
         BackgroundColor         = ( 50,  50,  50)
         TextColor               = (200, 200, 200)
         SelectedBackgroundColor = ( 10, 110, 255)

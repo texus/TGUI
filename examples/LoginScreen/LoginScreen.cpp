@@ -1,6 +1,6 @@
 #include <TGUI/TGUI.hpp>
 
-void loadObjects( tgui::Gui& gui )
+void loadWidgets( tgui::Gui& gui )
 {
     // Create the background image
     tgui::Picture::Ptr picture(gui);
@@ -19,7 +19,7 @@ void loadObjects( tgui::Gui& gui )
 
     // Create the username edit box
     tgui::EditBox::Ptr editBoxUsername(gui, "Username");
-    editBoxUsername->load("../../objects/Black.conf");
+    editBoxUsername->load("../../widgets/Black.conf");
     editBoxUsername->setSize(400, 40);
     editBoxUsername->setPosition(200, 140);
 
@@ -30,7 +30,7 @@ void loadObjects( tgui::Gui& gui )
 
     // Create the login button
     tgui::Button::Ptr button(gui);
-    button->load("../../objects/Black.conf");
+    button->load("../../widgets/Black.conf");
     button->setSize(260, 60);
     button->setPosition(270, 440);
     button->setText("Login");
@@ -45,10 +45,10 @@ int main()
     tgui::Gui gui(window);
 
     // Load the font (you should check the return value to make sure that it is loaded)
-    gui.setGlobalFont("../../Fonts/DejaVuSans.ttf");
+    gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
 
-    // Load the objects
-    loadObjects(gui);
+    // Load the widgets
+    loadWidgets(gui);
 
     // Main loop
     while (window.isOpen())
@@ -59,7 +59,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // Pass the event to all the object
+            // Pass the event to all the widgets
             gui.handleEvent(event);
         }
 
@@ -83,7 +83,7 @@ int main()
 
         window.clear();
 
-        // Draw all created objects
+        // Draw all created widgets
         gui.draw();
 
         window.display();

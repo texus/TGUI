@@ -1,14 +1,14 @@
 
 #include <TGUI/TGUI.hpp>
 
-#define THEME_CONFIG_FILE "../../objects/Black.conf"
+#define THEME_CONFIG_FILE "../../widgets/Black.conf"
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
     tgui::Gui gui(window);
 
-    if (gui.setGlobalFont("../../Fonts/DejaVuSans.ttf") == false)
+    if (gui.setGlobalFont("../../fonts/DejaVuSans.ttf") == false)
         return 1;
 
     tgui::Picture::Ptr picture(gui);
@@ -124,7 +124,7 @@ int main()
     scrollbar->setLowValue(3);
 
     tgui::Slider2d::Ptr slider2d(gui);
-    slider2d->load("../../objects/Slider2d/Black.conf");
+    slider2d->load("../../widgets/Slider2d/Black.conf");
     slider2d->setPosition(400, 300);
     slider2d->setSize(200, 150);
 
