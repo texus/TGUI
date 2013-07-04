@@ -561,6 +561,7 @@ namespace tgui
                     mouseLeftWidget();
 
                 // Tell the widgets inside the child window that the mouse is no longer on top of them
+                m_CloseButton->mouseNotOnWidget();
                 m_EventManager.mouseNotOnWidget();
                 m_MouseHover = false;
                 return false;
@@ -678,6 +679,10 @@ namespace tgui
             }
             else // The mouse is not on top of the titlebar
             {
+                // When the mouse is not on the titlebar, the mouse can't be on the close button
+                if (m_CloseButton->m_MouseHover)
+                    m_CloseButton->mouseNotOnWidget();
+
                 // When the mouse went up then change the mouse down flag
                 if (event.type == sf::Event::MouseButtonReleased)
                 {
