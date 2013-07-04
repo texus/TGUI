@@ -28,21 +28,21 @@ endif()
 
 # Install the Form Builder
 install( TARGETS FormBuilder
-         DESTINATION "${CMAKE_SOURCE_DIR}/Form Builder"
+         DESTINATION "${CMAKE_SOURCE_DIR}/form-builder"
          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
 
 # Check if you were linking dynamically to TGUI on window
 if (WINDOWS AND TGUI_SHARED_LIBS)
 
     # Put the tgui.dll file in the Form Builder folder
-    install( FILES "${PROJECT_BINARY_DIR}/lib/tgui.dll" DESTINATION "${CMAKE_SOURCE_DIR}/Form Builder" )
+    install( FILES "${PROJECT_BINARY_DIR}/lib/tgui.dll" DESTINATION "${CMAKE_SOURCE_DIR}/form-builder" )
 
 endif()
 
 # Copy the resource files to the bundle on mac
 if (MACOSX)
-    install( DIRECTORY "${PROJECT_SOURCE_DIR}/Form Builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
-    install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
-    install( FILES "${PROJECT_SOURCE_DIR}/Form Builder/FormObjectsWindow.txt" DESTINATION "${PROJECT_SOURCE_DIR}/Form Builder/FormBuilder.app/Contents/Resources" )
+    install( DIRECTORY "${PROJECT_SOURCE_DIR}/form-builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${PROJECT_SOURCE_DIR}/form-builder/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${PROJECT_SOURCE_DIR}/form-builder/FormObjectsWindow.txt" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
 endif()
 

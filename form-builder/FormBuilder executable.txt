@@ -9,3 +9,4 @@ If you were linking dynamically (TGUI_SHARED_LIBS checked in CMake) then you mus
 
 
 The tutorials on how to compile TGUI can be found on http://tgui.weebly.com/tutorials.html
+
