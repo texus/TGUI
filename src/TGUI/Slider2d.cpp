@@ -176,7 +176,7 @@ namespace tgui
                     return false;
                 }
             }
-            if (property == "thumbnormalimage")
+            else if (property == "thumbnormalimage")
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureThumbNormal))
                 {
