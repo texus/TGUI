@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/LoadingBar.hpp>
 
 #include <cmath>
@@ -42,13 +42,13 @@ namespace tgui
     m_SplitImage    (false),
     m_TextSize      (0)
     {
-        m_Callback.objectType = Type_LoadingBar;
+        m_Callback.widgetType = Type_LoadingBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LoadingBar::LoadingBar(const LoadingBar& copy) :
-    ClickableObject   (copy),
+    ClickableWidget   (copy),
     m_LoadedConfigFile(copy.m_LoadedConfigFile),
     m_Minimum         (copy.m_Minimum),
     m_Maximum         (copy.m_Maximum),
@@ -85,11 +85,11 @@ namespace tgui
 
     LoadingBar& LoadingBar::operator= (const LoadingBar& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             LoadingBar temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
             std::swap(m_Minimum,          temp.m_Minimum);
@@ -289,7 +289,7 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -508,7 +508,7 @@ namespace tgui
 
     void LoadingBar::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         m_TextureBack_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureBack_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -618,7 +618,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::initialize(tgui::Group *const parent)
+    void LoadingBar::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());

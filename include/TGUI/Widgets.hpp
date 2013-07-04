@@ -23,36 +23,36 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_OBJECTS_HPP
-#define TGUI_OBJECTS_HPP
+#ifndef TGUI_WIDGETS_HPP
+#define TGUI_WIDGETS_HPP
 
 #include <TGUI/Callback.hpp>
 #include <TGUI/Transformable.hpp>
-#include <TGUI/Group.hpp>
-#include <TGUI/SharedObjectPtr.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/SharedWidgetPtr.hpp>
 #include <TGUI/ConfigFile.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    class Group;
+    class Container;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief The parent class for every object.
+    /// \brief The parent class for every widget.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Object : public sf::Drawable, public Transformable, public CallbackManager
+    class TGUI_API Widget : public sf::Drawable, public Transformable, public CallbackManager
     {
       public:
 
-        typedef SharedObjectPtr<Object> Ptr;
+        typedef SharedWidgetPtr<Widget> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Object();
+        Widget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,14 +61,14 @@ namespace tgui
         /// \param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Object(const Object& copy);
+        Widget(const Widget& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Object();
+        virtual ~Widget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,174 +79,174 @@ namespace tgui
         /// \return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Object& operator= (const Object& right);
+        Widget& operator= (const Widget& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by just calling the copy constructor.
+        // Makes a copy of the widget by just calling the copy constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Object* clone() = 0;
+        virtual Widget* clone() = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the object.
+        /// \brief Returns the size of the widget.
         ///
-        /// \return Size of the object
+        /// \return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getSize() const = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Shows the object.
+        /// \brief Shows the widget.
         ///
-        /// The object won't receive events nor will it be drawn when hidden. The object is visible by default.
+        /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void show();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Hides the object.
+        /// \brief Hides the widget.
         ///
-        /// The object won't receive events nor will it be drawn when hidden. The object is visible by default.
+        /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hide();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the object is visible.
+        /// \brief Returns true when the widget is visible.
         ///
-        /// \return Is the object visible?
+        /// \return Is the widget visible?
         ///
-        /// If this function returns false then the object is hidden, which means that it won't receive events and it won't be drawn.
-        /// All objects are visible by default.
+        /// If this function returns false then the widget is hidden, which means that it won't receive events and it won't be drawn.
+        /// All widgets are visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isVisible() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Enables the object.
+        /// \brief Enables the widget.
         ///
-        /// The object will receive events and send callbacks again.
-        /// All objects are enabled by default.
+        /// The widget will receive events and send callbacks again.
+        /// All widgets are enabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void enable();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Disables the object.
+        /// \brief Disables the widget.
         ///
-        /// The object will no longer receive events and it will thus no longer send callbacks.
-        /// All objects are enabled by default.
+        /// The widget will no longer receive events and it will thus no longer send callbacks.
+        /// All widgets are enabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void disable();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the object is enabled.
+        /// \brief Returns true when the widget is enabled.
         ///
-        /// \return Is the object enabled?
+        /// \return Is the widget enabled?
         ///
-        /// If this function returns false then the object is disabled and will longer receive events and it will thus no longer send callbacks.
-        /// All objects are enabled by default.
+        /// If this function returns false then the widget is disabled and will longer receive events and it will thus no longer send callbacks.
+        /// All widgets are enabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isEnabled() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the object is disabled.
+        /// \brief Returns true when the widget is disabled.
         ///
-        /// \return Is the object disabled?
+        /// \return Is the widget disabled?
         ///
-        /// This means that the object will longer receive events and it will thus no longer send callbacks.
-        /// All objects are enabled by default.
+        /// This means that the widget will longer receive events and it will thus no longer send callbacks.
+        /// All widgets are enabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isDisabled() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the object is loaded successfully.
+        /// \brief Returns true when the widget is loaded successfully.
         ///
-        /// \return Is the object loaded?
+        /// \return Is the widget loaded?
         ///
-        /// When an object is not loaded correctly then it will not be drawn.
+        /// When an widget is not loaded correctly then it will not be drawn.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isLoaded() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focus the object.
+        /// \brief Focus the widget.
         ///
-        /// The previously focused object will be unfocused.
+        /// The previously focused widget will be unfocused.
         ///
         /// \see unfocus
-        /// \see focusNextObject
+        /// \see focusNextWidget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void focus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocus the object.
+        /// \brief Unfocus the widget.
         ///
         /// \see focus
-        /// \see focusNextObject
+        /// \see focusNextWidget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void unfocus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focus the next object.
+        /// \brief Focus the next widget.
         ///
-        /// Similar to unfocus, but another object will gain the focus.
+        /// Similar to unfocus, but another widget will gain the focus.
         ///
         /// \see focus
         /// \see unfocus
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void focusNextObject();
+        virtual void focusNextWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the object is focused and false otherwise.
+        /// \brief Returns true when the widget is focused and false otherwise.
         ///
-        /// \return Is the object focused?
+        /// \return Is the widget focused?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isFocused() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the type of the object.
+        /// \brief Returns the type of the widget.
         ///
-        /// \return Type of the object
+        /// \return Type of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectTypes getObjectType() const;
+        WidgetTypes getWidgetType() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a pointer to the parent object.
+        /// \brief Returns a pointer to the parent widget.
         ///
         /// \return Pointer to the parent.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Group* getParent() const;
+        Container* getParent() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,9 +254,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the transparency of the object.
+        /// \brief Returns the transparency of the widget.
         ///
-        /// \return The transparency of the object.
+        /// \return The transparency of the widget.
         ///         0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,27 +264,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places the object before all other objects.
+        /// \brief Places the widget before all other widgets.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void moveToFront();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places the object behind all other objects.
+        /// \brief Places the widget behind all other widgets.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void moveToBack();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the callback id of the object.
+        /// \brief Changes the callback id of the widget.
         ///
         /// \param callbackId  The new callback id
         ///
         /// When receiving callback in a function which takes a Callback as parameter (or when polling the callbacks),
-        /// you can find a callbackId in this Callback struct which can identify the object.
-        /// This function changes the id that this object sends on a callback.
+        /// you can find a callbackId in this Callback struct which can identify the widget.
+        /// This function changes the id that this widget sends on a callback.
         ///
         /// By default, the callback id will be 0.
         ///
@@ -293,7 +293,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the callback id of the object.
+        /// \brief Returns the callback id of the widget.
         ///
         /// \return Callback id
         ///
@@ -305,31 +305,31 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called right after the elapsed time is changed.
-        // The elapsed time is only changed when the object has set m_AnimatedObject to true.
+        // The elapsed time is only changed when the widget has set m_AnimatedWidget to true.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void update();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The objects use this function to send their callbacks to their parent and/or to a callback function.
+        // The widgets use this function to send their callbacks to their parent and/or to a callback function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addCallback();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the mouse enters the object. If requested, a callback will be send.
+        // This function is called when the mouse enters the widget. If requested, a callback will be send.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mouseEnteredObject();
+        virtual void mouseEnteredWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the mouse leaves the object. If requested, a callback will be send.
+        // This function is called when the mouse leaves the widget. If requested, a callback will be send.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mouseLeftObject();
+        virtual void mouseLeftWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Get the ObjectPhases from the string read from the info file.
+        // Get the WidgetPhases from the string read from the info file.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void extractPhases(std::string phases);
 
@@ -337,16 +337,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y) = 0;
+        virtual bool mouseOnWidget(float x, float y) = 0;
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
         virtual void keyPressed(sf::Keyboard::Key key);
         virtual void textEntered(sf::Uint32 key);
         virtual void mouseWheelMoved(int delta);
-        virtual void objectFocused();
-        virtual void objectUnfocused();
-        virtual void mouseNotOnObject();
+        virtual void widgetFocused();
+        virtual void widgetUnfocused();
+        virtual void mouseNotOnWidget();
         virtual void mouseNoLongerDown();
 
 
@@ -354,82 +354,82 @@ namespace tgui
       private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
-        enum ObjectCallbacks
+        enum WidgetCallbacks
         {
             None = 0,
             Focused = 1,
             Unfocused = 2,
             MouseEntered = 4,
             MouseLeft = 8,
-            ObjectCallbacksCount = 16
+            WidgetCallbacksCount = 16
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        // When an object is disabled, it will no longer receive events
+        // When an widget is disabled, it will no longer receive events
         bool m_Enabled;
 
-        // Is the object visible? When it is invisible it will not receive events and it won't be drawn.
+        // Is the widget visible? When it is invisible it will not receive events and it won't be drawn.
         bool m_Visible;
 
         // This bool will be true from the moment that the load function is completed successfully.
         bool m_Loaded;
 
-        // This will store the different phases that the object can have
+        // This will store the different phases that the widget can have
         // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down
-        unsigned char m_ObjectPhase;
+        unsigned char m_WidgetPhase;
 
-        // This will point to our parent object. If there is no parent then this will be NULL.
-        Group* m_Parent;
+        // This will point to our parent widget. If there is no parent then this will be NULL.
+        Container* m_Parent;
 
-        // How transparent is the object
+        // How transparent is the widget
         unsigned char m_Opacity;
 
-        // Is the mouse on top of the object? Did the mouse go down on the object?
+        // Is the mouse on top of the widget? Did the mouse go down on the widget?
         bool m_MouseHover;
         bool m_MouseDown;
 
-        // Are you focused on the object?
+        // Are you focused on the widget?
         bool m_Focused;
 
-        // Can the object be focused?
+        // Can the widget be focused?
         bool m_AllowFocus;
 
         // Keep track of the elapsed time.
-        bool m_AnimatedObject;
+        bool m_AnimatedWidget;
         sf::Time m_AnimationTimeElapsed;
 
-        // This is set to true for objects that have something to be dragged around (e.g. sliders and scrollbars)
-        bool m_DraggableObject;
+        // This is set to true for widgets that have something to be dragged around (e.g. sliders and scrollbars)
+        bool m_DraggableWidget;
 
-        // This is set to true for objects that store other objects inside them
-        bool m_GroupObject;
+        // This is set to true for widgets that store other widgets inside them
+        bool m_ContainerWidget;
 
-        // Instead of creating a new object every time, one callback object is always reused
+        // Instead of creating a new widget every time, one callback widget is always reused
         Callback m_Callback;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         friend class EventManager;
-        friend class Group;
+        friend class Container;
     };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Parent class for every object that has borders.
+    /// \brief Parent class for every widget that has borders.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ObjectBorders
+    class TGUI_API WidgetBorders
     {
       public:
 
@@ -437,7 +437,7 @@ namespace tgui
         /// \brief Default constructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectBorders();
+        WidgetBorders();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,4 +481,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_OBJECTS_HPP
+#endif // TGUI_WIDGETS_HPP

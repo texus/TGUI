@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Tab.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -47,13 +47,13 @@ namespace tgui
     m_DistanceToSide       (5),
     m_SelectedTab          (0)
     {
-        m_Callback.objectType = Type_Tab;
+        m_Callback.widgetType = Type_Tab;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::Tab(const Tab& copy) :
-    Object                 (copy),
+    Widget                 (copy),
     m_LoadedConfigFile     (copy.m_LoadedConfigFile),
     m_SplitImage           (copy.m_SplitImage),
     m_SeparateSelectedImage(copy.m_SeparateSelectedImage),
@@ -92,11 +92,11 @@ namespace tgui
 
     Tab& Tab::operator= (const Tab& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Tab temp(right);
-            this->Object::operator=(right);
+            this->Widget::operator=(right);
 
             std::swap(m_LoadedConfigFile,      temp.m_LoadedConfigFile);
             std::swap(m_SplitImage,            temp.m_SplitImage);
@@ -281,7 +281,7 @@ namespace tgui
             // Check if optional textures were loaded
             if ((m_TextureSelected_L.data != NULL) && (m_TextureSelected_M.data != NULL) && (m_TextureSelected_R.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Selected;
+                m_WidgetPhase |= WidgetPhase_Selected;
             }
         }
         else // The image isn't split
@@ -300,7 +300,7 @@ namespace tgui
             // Check if optional textures were loaded
             if (m_TextureSelected_M.data != NULL)
             {
-                m_ObjectPhase |= ObjectPhase_Selected;
+                m_WidgetPhase |= WidgetPhase_Selected;
             }
         }
 
@@ -593,7 +593,7 @@ namespace tgui
 
     void Tab::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         m_TextureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -607,7 +607,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::mouseOnObject(float x, float y)
+    bool Tab::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the tab
         if (m_Loaded)
@@ -617,7 +617,7 @@ namespace tgui
         }
 
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         m_MouseHover = false;
         return false;
@@ -664,7 +664,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::initialize(tgui::Group *const parent)
+    void Tab::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());
@@ -735,7 +735,7 @@ namespace tgui
                 // Draw the left tab image
                 if (m_SeparateSelectedImage)
                 {
-                    if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                    if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                         target.draw(m_TextureSelected_L, states);
                     else
                         target.draw(m_TextureNormal_L, states);
@@ -744,7 +744,7 @@ namespace tgui
                 {
                     target.draw(m_TextureNormal_L, states);
 
-                    if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                    if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                         target.draw(m_TextureSelected_L, states);
                 }
 
@@ -763,7 +763,7 @@ namespace tgui
                     // Draw the middle tab image
                     if (m_SeparateSelectedImage)
                     {
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_M, states);
                         else
                             target.draw(m_TextureNormal_M, states);
@@ -772,7 +772,7 @@ namespace tgui
                     {
                         target.draw(m_TextureNormal_M, states);
 
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_M, states);
                     }
 
@@ -785,7 +785,7 @@ namespace tgui
                     // Draw the right tab image
                     if (m_SeparateSelectedImage)
                     {
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_R, states);
                         else
                             target.draw(m_TextureNormal_R, states);
@@ -794,7 +794,7 @@ namespace tgui
                     {
                         target.draw(m_TextureNormal_R, states);
 
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_R, states);
                     }
 
@@ -809,7 +809,7 @@ namespace tgui
                     // Draw the right tab image
                     if (m_SeparateSelectedImage)
                     {
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_R, states);
                         else
                             target.draw(m_TextureNormal_R, states);
@@ -818,7 +818,7 @@ namespace tgui
                     {
                         target.draw(m_TextureNormal_R, states);
 
-                        if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                        if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                             target.draw(m_TextureSelected_R, states);
                     }
 
@@ -837,7 +837,7 @@ namespace tgui
                 // Draw the tab image
                 if (m_SeparateSelectedImage)
                 {
-                    if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                    if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                         target.draw(m_TextureSelected_M, states);
                     else
                         target.draw(m_TextureNormal_M, states);
@@ -846,7 +846,7 @@ namespace tgui
                 {
                     target.draw(m_TextureNormal_M, states);
 
-                    if ((m_SelectedTab == static_cast<int>(i)) && (m_ObjectPhase & ObjectPhase_Selected))
+                    if ((m_SelectedTab == static_cast<int>(i)) && (m_WidgetPhase & WidgetPhase_Selected))
                         target.draw(m_TextureSelected_M, states);
                 }
 
@@ -883,7 +883,7 @@ namespace tgui
                     GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
                     GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-                    // If the object outside the window then don't draw anything
+                    // If the widget outside the window then don't draw anything
                     if (scissorRight < scissorLeft)
                         scissorRight = scissorLeft;
                     else if (scissorBottom < scissorTop)

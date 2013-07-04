@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 
@@ -41,7 +41,7 @@ namespace tgui
     m_AutoHide          (true),
     m_MouseDownOnArrow  (false)
     {
-        m_Callback.objectType = Type_Scrollbar;
+        m_Callback.widgetType = Type_Scrollbar;
 
         m_Maximum = 0;
     }
@@ -74,7 +74,7 @@ namespace tgui
 
     Scrollbar& Scrollbar::operator= (const Scrollbar& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Scrollbar temp(right);
@@ -313,7 +313,7 @@ namespace tgui
             if ((m_TextureTrackHover_L.data != NULL) && (m_TextureTrackHover_M.data != NULL) && (m_TextureTrackHover_R.data != NULL)
              && (m_TextureThumbHover.data != NULL) && (m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
 */
         }
@@ -337,7 +337,7 @@ namespace tgui
             if ((m_TextureTrackHover_M.data != NULL) && (m_TextureThumbHover.data != NULL)
              && (m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
         }
 
@@ -407,7 +407,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseOnObject(float x, float y)
+    bool Scrollbar::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the scrollbar wasn't loaded correctly
         if (m_Loaded == false)
@@ -499,7 +499,7 @@ namespace tgui
         }
 
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         // The mouse is not on top of the scrollbar
         m_MouseHover = false;
@@ -678,7 +678,7 @@ namespace tgui
             return;
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -879,7 +879,7 @@ namespace tgui
         // Draw the track image
         if (m_SeparateHoverImage)
         {
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureTrackHover_M, states);
             else
                 target.draw(m_TextureTrackNormal_M, states);
@@ -888,7 +888,7 @@ namespace tgui
         {
             target.draw(m_TextureTrackNormal_M, states);
 
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureTrackHover_M, states);
         }
 
@@ -907,7 +907,7 @@ namespace tgui
                 // Draw the first arrow
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                     else
                         target.draw(m_TextureArrowUpNormal, states);
@@ -916,7 +916,7 @@ namespace tgui
                 {
                     target.draw(m_TextureArrowUpNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
@@ -946,7 +946,7 @@ namespace tgui
                 // Draw the thumb image
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureThumbHover, states);
                     else
                         target.draw(m_TextureThumbNormal, states);
@@ -955,7 +955,7 @@ namespace tgui
                 {
                     target.draw(m_TextureThumbNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureThumbHover, states);
                 }
 
@@ -976,7 +976,7 @@ namespace tgui
                 // Draw the first arrow
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                     else
                         target.draw(m_TextureArrowUpNormal, states);
@@ -985,7 +985,7 @@ namespace tgui
                 {
                     target.draw(m_TextureArrowUpNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
@@ -1002,7 +1002,7 @@ namespace tgui
             // Draw the second arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
                 else
                     target.draw(m_TextureArrowDownNormal, states);
@@ -1011,7 +1011,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
             }
         }
@@ -1029,7 +1029,7 @@ namespace tgui
                 // Draw the first arrow
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                     else
                         target.draw(m_TextureArrowUpNormal, states);
@@ -1038,7 +1038,7 @@ namespace tgui
                 {
                     target.draw(m_TextureArrowUpNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
@@ -1068,7 +1068,7 @@ namespace tgui
                 // Draw the thumb image
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureThumbHover, states);
                     else
                         target.draw(m_TextureThumbNormal, states);
@@ -1077,7 +1077,7 @@ namespace tgui
                 {
                     target.draw(m_TextureThumbNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureThumbHover, states);
                 }
 
@@ -1101,7 +1101,7 @@ namespace tgui
                 // Draw the first arrow
                 if (m_SeparateHoverImage)
                 {
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                     else
                         target.draw(m_TextureArrowUpNormal, states);
@@ -1110,7 +1110,7 @@ namespace tgui
                 {
                     target.draw(m_TextureArrowUpNormal, states);
 
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
@@ -1130,7 +1130,7 @@ namespace tgui
             // Draw the second arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
                 else
                     target.draw(m_TextureArrowDownNormal, states);
@@ -1139,7 +1139,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
             }
         }

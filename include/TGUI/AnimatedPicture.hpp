@@ -33,11 +33,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief Load multiple images and add then behind each other to create a simple animation or even a movie.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API AnimatedPicture : public ClickableObject
+    class TGUI_API AnimatedPicture : public ClickableWidget
     {
       public:
 
-        typedef SharedObjectPtr<AnimatedPicture> Ptr;
+        typedef SharedWidgetPtr<AnimatedPicture> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual AnimatedPicture* clone();
@@ -248,9 +248,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,7 +267,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -277,9 +277,9 @@ namespace tgui
 
         enum AnimatedPictureCallbacks
         {
-            AnimationFinished = ClickableObjectCallbacksCount * 1,
-            AllAnimatedPictureCallbacks = ClickableObjectCallbacksCount * 2 - 1,
-            AnimatedPictureCallbacksCount = ClickableObjectCallbacksCount * 2
+            AnimationFinished = ClickableWidgetCallbacksCount * 1,
+            AllAnimatedPictureCallbacks = ClickableWidgetCallbacksCount * 2 - 1,
+            AnimatedPictureCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/EditBox.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -54,9 +54,9 @@ namespace tgui
     m_NumbersOnly           (false),
     m_SeparateHoverImage    (false)
     {
-        m_Callback.objectType = Type_EditBox;
-        m_AnimatedObject = true;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_EditBox;
+        m_AnimatedWidget = true;
+        m_DraggableWidget = true;
 
         m_SelectionPoint.setSize(sf::Vector2f(1, 0));
 
@@ -66,8 +66,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox(const EditBox& copy) :
-    ClickableObject         (copy),
-    ObjectBorders           (copy),
+    ClickableWidget         (copy),
+    WidgetBorders           (copy),
     m_LoadedConfigFile      (copy.m_LoadedConfigFile),
     m_SelectionPointVisible (copy.m_SelectionPointVisible),
     m_LimitTextWidth        (copy.m_LimitTextWidth),
@@ -127,8 +127,8 @@ namespace tgui
         if (this != &right)
         {
             EditBox temp(right);
-            this->ClickableObject::operator=(right);
-            this->ObjectBorders::operator=(right);
+            this->ClickableWidget::operator=(right);
+            this->WidgetBorders::operator=(right);
 
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SelectionPointVisible,  temp.m_SelectionPointVisible);
@@ -384,11 +384,11 @@ namespace tgui
             if ((m_TextureFocused_L.data != NULL) && (m_TextureFocused_M.data != NULL) && (m_TextureFocused_R.data != NULL))
             {
                 m_AllowFocus = true;
-                m_ObjectPhase |= ObjectPhase_Focused;
+                m_WidgetPhase |= WidgetPhase_Focused;
             }
             if ((m_TextureHover_L.data != NULL) && (m_TextureHover_M.data != NULL) && (m_TextureHover_R.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
         }
         else // The image isn't split
@@ -409,11 +409,11 @@ namespace tgui
             if (m_TextureFocused_M.data != NULL)
             {
                 m_AllowFocus = true;
-                m_ObjectPhase |= ObjectPhase_Focused;
+                m_WidgetPhase |= WidgetPhase_Focused;
             }
             if (m_TextureHover_M.data != NULL)
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
         }
 
@@ -483,7 +483,7 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (m_Size.x  < 0) m_Size.x  = -m_Size.x;
         if (m_Size.y < 0) m_Size.y = -m_Size.y;
 
@@ -983,7 +983,7 @@ namespace tgui
 
     void EditBox::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         if (m_SplitImage)
         {
@@ -1093,7 +1093,7 @@ namespace tgui
     void EditBox::mouseMoved(float x, float)
     {
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         // Set the mouse hover flag
         m_MouseHover = true;
@@ -1482,13 +1482,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::objectUnfocused()
+    void EditBox::widgetUnfocused()
     {
         // If there is a selection then undo it now
         if (m_SelChars)
             setSelectionPointPosition(m_SelEnd);
 
-        Object::objectUnfocused();
+        Widget::widgetUnfocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1723,7 +1723,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::initialize(tgui::Group *const parent)
+    void EditBox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
@@ -1759,7 +1759,7 @@ namespace tgui
         {
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_L, states);
                     target.draw(m_TextureHover_M, states);
@@ -1779,7 +1779,7 @@ namespace tgui
                 target.draw(m_TextureNormal_R, states);
 
                 // When the mouse is on top of the edit box then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_L, states);
                     target.draw(m_TextureHover_M, states);
@@ -1788,7 +1788,7 @@ namespace tgui
             }
 
             // When the edit box is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
             {
                 target.draw(m_TextureFocused_L, states);
                 target.draw(m_TextureFocused_M, states);
@@ -1799,7 +1799,7 @@ namespace tgui
         {
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureHover_M, states);
                 else
                     target.draw(m_TextureNormal_M, states);
@@ -1809,12 +1809,12 @@ namespace tgui
                 target.draw(m_TextureNormal_M, states);
 
                 // When the mouse is on top of the edit box then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureHover_M, states);
             }
 
             // When the edit box is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
                 target.draw(m_TextureFocused_M, states);
         }
 
@@ -1850,7 +1850,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)

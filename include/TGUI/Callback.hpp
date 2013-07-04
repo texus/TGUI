@@ -38,29 +38,29 @@
 
 namespace tgui
 {
-    class Object;
+    class Widget;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Struct that tells more about the callback that happened.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API Callback
     {
-        // The callback id that was passed to the object. It is used to identify from what object the callback came from.
+        // The callback id that was passed to the widget. It is used to identify from what widget the callback came from.
         unsigned int id;
 
         // How did the callbak occur?
         unsigned int trigger;
 
-        // Pointer to the object
-        Object* object;
+        // Pointer to the widget
+        Widget* widget;
 
-        // The type of the object
-        ObjectTypes objectType;
+        // The type of the widget
+        WidgetTypes widgetType;
 
         // When the mouse has something to do with the callback then this data will be filled
         Vector2i mouse;
 
-        // This text is only used by some objects, but it can be set together with some other member
+        // This text is only used by some widgets, but it can be set together with some other member
         sf::String text;
 
         // Only one of these things can be filled at a given time
@@ -106,7 +106,7 @@ namespace tgui
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Used internally by all objects to handle callbacks.
+    // Used internally by all widgets to handle callbacks.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API CallbackManager
     {
@@ -122,7 +122,7 @@ namespace tgui
         /// Usage example:
         /// \code
         /// void function() {}
-        /// object->bindCallback(function, tgui::Object::Focus);
+        /// widget->bindCallback(function, tgui::Widget::Focus);
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ namespace tgui
         /// \brief Bind a function to one or more specific callback trigger(s).
         ///
         /// \param func      Member function without parameters.
-        /// \param classPtr  Pointer to the object of the class.
+        /// \param classPtr  Pointer to the widget of the class.
         /// \param trigger   In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
@@ -141,7 +141,7 @@ namespace tgui
         /// class myClass {
         ///     void function() {};
         /// } myObj;
-        /// object->bindCallback(&myClass::function, &myObj, tgui::Object::Focus);
+        /// widget->bindCallback(&myClass::function, &myObj, tgui::Widget::Focus);
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,13 +155,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func     Free function with a constant reference to a Callback object as parameter.
+        /// \param func     Free function with a constant reference to a Callback widget as parameter.
         /// \param trigger  In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
         /// \code
         /// void function(const Callback& callback) {}
-        /// object->bindCallbackEx(function, tgui::Object::Focus);
+        /// widget->bindCallbackEx(function, tgui::Widget::Focus);
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,8 +171,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func      Member function with a constant reference to a Callback object as parameter.
-        /// \param classPtr  Pointer to the object of the class.
+        /// \param func      Member function with a constant reference to a Callback widget as parameter.
+        /// \param classPtr  Pointer to the widget of the class.
         /// \param trigger   In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
@@ -180,7 +180,7 @@ namespace tgui
         /// class myClass {
         ///     void function(const Callback& callback) {};
         /// } myObj;
-        /// object->bindCallbackEx(&myClass::function, &myObj, tgui::Object::Focus);
+        /// widget->bindCallbackEx(&myClass::function, &myObj, tgui::Widget::Focus);
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,16 +192,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind one or more specific callback trigger(s) to the parent object.
+        /// \brief Bind one or more specific callback trigger(s) to the parent widget.
         ///
-        /// \param trigger  In which situation(s) do you want the object to alert its parent about a callback?
+        /// \param trigger  In which situation(s) do you want the widget to alert its parent about a callback?
         ///
-        /// The object will tell its parent about the callback and you will receive the callback through the parent object.
+        /// The widget will tell its parent about the callback and you will receive the callback through the parent widget.
         /// If the callback reaches the window, then you will later have to poll the callbacks from this window.
         ///
         /// Usage example:
         /// \code
-        /// object->bindCallback(tgui::Object::Focus);
+        /// widget->bindCallback(tgui::Widget::Focus);
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Unbind all callback functions bound to any callback.
         ///
-        /// After calling this function, the object will no longer send any callback.
+        /// After calling this function, the widget will no longer send any callback.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unbindAllCallback();

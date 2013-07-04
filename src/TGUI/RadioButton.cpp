@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Checkbox.hpp>
 #include <TGUI/RadioButton.hpp>
 
@@ -36,7 +36,7 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_Callback.objectType = Type_RadioButton;
+        m_Callback.widgetType = Type_RadioButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,11 +168,11 @@ namespace tgui
         if (m_TextureFocused.data != NULL)
         {
             m_AllowFocus = true;
-            m_ObjectPhase |= ObjectPhase_Focused;
+            m_WidgetPhase |= WidgetPhase_Focused;
         }
         if (m_TextureHover.data != NULL)
         {
-            m_ObjectPhase |= ObjectPhase_Hover;
+            m_WidgetPhase |= WidgetPhase_Hover;
         }
 
         return true;

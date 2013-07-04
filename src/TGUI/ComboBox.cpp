@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ListBox.hpp>
@@ -45,8 +45,8 @@ namespace tgui
     m_MouseOnListBox    (false),
     m_NrOfItemsToDisplay(0)
     {
-        m_Callback.objectType = Type_ComboBox;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_ComboBox;
+        m_DraggableWidget = true;
 
         m_ListBox = new ListBox();
         m_ListBox->setSize(50, 24);
@@ -57,8 +57,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& copy) :
-    Object              (copy),
-    ObjectBorders       (copy),
+    Widget              (copy),
+    WidgetBorders       (copy),
     m_LoadedConfigFile  (copy.m_LoadedConfigFile),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
     m_ShowList          (copy.m_ShowList),
@@ -93,8 +93,8 @@ namespace tgui
         if (this != &right)
         {
             ComboBox temp(right);
-            this->Object::operator=(right);
-            this->ObjectBorders::operator=(right);
+            this->Widget::operator=(right);
+            this->WidgetBorders::operator=(right);
 
             // Delete the old list box
             delete m_ListBox;
@@ -255,7 +255,7 @@ namespace tgui
         // Check if optional textures were loaded
         if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
         {
-            m_ObjectPhase |= ObjectPhase_Hover;
+            m_WidgetPhase |= WidgetPhase_Hover;
         }
 
         // Remove all items (in case this is the second time that the load function was called)
@@ -279,7 +279,7 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -567,7 +567,7 @@ namespace tgui
 
     void ComboBox::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         m_ListBox->setTransparency(m_Opacity);
 
@@ -579,7 +579,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseOnObject(float x, float y)
+    bool ComboBox::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the combo box wasn't loaded correctly
         if (m_Loaded == false)
@@ -594,7 +594,7 @@ namespace tgui
             if (y < position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder)
             {
                 m_MouseOnListBox = false;
-                m_ListBox->mouseNotOnObject();
+                m_ListBox->mouseNotOnWidget();
                 return true;
             }
 
@@ -605,7 +605,7 @@ namespace tgui
                 m_ListBox->setPosition(position.x, position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
 
                 // Pass the event to the list box
-                if (m_ListBox->mouseOnObject(x, y))
+                if (m_ListBox->mouseOnWidget(x, y))
                 {
                     // Reset the position of the list box
                     m_ListBox->setPosition(0, 0);
@@ -620,11 +620,11 @@ namespace tgui
         }
 
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         // The mouse is not on top of the combo box
         m_MouseHover = false;
-        m_ListBox->mouseNotOnObject();
+        m_ListBox->mouseNotOnWidget();
         return false;
     }
 
@@ -735,7 +735,7 @@ namespace tgui
             return;
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -822,7 +822,7 @@ namespace tgui
                         if ((m_ListBox->m_Scroll != NULL) && (m_ListBox->m_Scroll->m_MouseDown == true))
                         {
                             m_MouseDown = false;
-                            m_ListBox->mouseNotOnObject();
+                            m_ListBox->mouseNotOnWidget();
                             m_ListBox->mouseNoLongerDown();
 
                             // Don't hide the list
@@ -834,7 +834,7 @@ namespace tgui
         }
 
         m_MouseDown = false;
-        m_ListBox->mouseNotOnObject();
+        m_ListBox->mouseNotOnWidget();
         m_ListBox->mouseNoLongerDown();
 
         m_ShowList = false;
@@ -842,7 +842,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::initialize(tgui::Group *const parent)
+    void ComboBox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         m_ListBox->setTextFont(m_Parent->getGlobalFont());
@@ -901,7 +901,7 @@ namespace tgui
         Front.setFillColor(m_ListBox->getBackgroundColor());
         target.draw(Front, states);
 
-        // Create a text object to draw it
+        // Create a text widget to draw it
         sf::Text tempText("kg", *m_ListBox->getTextFont());
         tempText.setCharacterSize(m_ListBox->getItemHeight());
         tempText.setCharacterSize(static_cast<unsigned int>(tempText.getCharacterSize() - tempText.getLocalBounds().top));
@@ -917,7 +917,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x  * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
@@ -947,7 +947,7 @@ namespace tgui
             // Draw the arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
                     target.draw(m_TextureArrowUpHover, states);
                 else
                     target.draw(m_TextureArrowUpNormal, states);
@@ -956,7 +956,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
                     target.draw(m_TextureArrowUpHover, states);
             }
 
@@ -973,7 +973,7 @@ namespace tgui
             // Draw the arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
                     target.draw(m_TextureArrowDownHover, states);
                 else
                     target.draw(m_TextureArrowDownNormal, states);
@@ -982,7 +982,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
                     target.draw(m_TextureArrowDownHover, states);
             }
         }

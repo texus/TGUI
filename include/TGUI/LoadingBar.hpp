@@ -32,11 +32,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API LoadingBar : public ClickableObject
+    class TGUI_API LoadingBar : public ClickableWidget
     {
       public:
 
-        typedef SharedObjectPtr<LoadingBar> Ptr;
+        typedef SharedWidgetPtr<LoadingBar> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +74,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual LoadingBar* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -92,7 +92,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -261,9 +261,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,9 +274,9 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,7 +287,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -297,10 +297,10 @@ namespace tgui
 
         enum LoadingBarCallbacks
         {
-            ValueChanged = ClickableObjectCallbacksCount * 1,
-            LoadingBarFull = ClickableObjectCallbacksCount * 2,
-            AllLoadingBarCallbacks = ClickableObjectCallbacksCount * 4 - 1,
-            LoadingBarCallbacksCount = ClickableObjectCallbacksCount * 4
+            ValueChanged = ClickableWidgetCallbacksCount * 1,
+            LoadingBarFull = ClickableWidgetCallbacksCount * 2,
+            AllLoadingBarCallbacks = ClickableWidgetCallbacksCount * 4 - 1,
+            LoadingBarCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
 

@@ -64,22 +64,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    enum ObjectPhase
+    enum WidgetPhase
     {
-        ObjectPhase_Hover     = 1,
-        ObjectPhase_MouseDown = 2,
-        ObjectPhase_Focused   = 4,
-        ObjectPhase_Selected  = 8
+        WidgetPhase_Hover     = 1,
+        WidgetPhase_MouseDown = 2,
+        WidgetPhase_Focused   = 4,
+        WidgetPhase_Selected  = 8
     };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief A list of all object types.
+    /// \brief A list of all widget types.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    enum ObjectTypes
+    enum WidgetTypes
     {
         Type_Unknown,
-        Type_ClickableObject,
+        Type_ClickableWidget,
         Type_Picture,
         Type_Button,
         Type_Checkbox,
@@ -113,7 +113,7 @@ namespace tgui
     /// The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.
     extern TGUI_API TextureManager TGUI_TextureManager;
 
-    /// When disabling the tab key usage, pressing tab will no longer focus another object, but in the future this will allow to use tabs in TextBox.
+    /// When disabling the tab key usage, pressing tab will no longer focus another widget, but in the future this will allow to use tabs in TextBox.
     extern TGUI_API bool tabKeyUsageEnabled;
 
 

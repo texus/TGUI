@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/MenuBar.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -43,7 +43,7 @@ namespace tgui
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
     {
-        m_Callback.objectType = Type_MenuBar;
+        m_Callback.widgetType = Type_MenuBar;
 
         changeColors();
 
@@ -410,7 +410,7 @@ namespace tgui
 
     void MenuBar::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         m_BackgroundColor.a = m_Opacity;
         m_TextColor.a = m_Opacity;
@@ -430,7 +430,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::mouseOnObject(float x, float y)
+    bool MenuBar::mouseOnWidget(float x, float y)
     {
         if (m_Loaded)
         {
@@ -480,7 +480,7 @@ namespace tgui
         }
 
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         m_MouseHover = false;
         return false;
@@ -548,7 +548,7 @@ namespace tgui
     void MenuBar::mouseMoved(float x, float y)
     {
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -616,7 +616,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::initialize(tgui::Group *const parent)
+    void MenuBar::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());

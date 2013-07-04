@@ -31,13 +31,13 @@
 namespace tgui
 {
     template <class T>
-    class SharedObjectPtr;
+    class SharedWidgetPtr;
 
-    class Object;
+    class Widget;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Keeps track of all objects and passes the events to them.
+    //  Keeps track of all widgets and passes the events to them.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API EventManager : public sf::NonCopyable
     {
@@ -50,88 +50,88 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // When this function is called then all the objects receive the event (if there are objects).
+        // When this function is called then all the widgets receive the event (if there are widgets).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void handleEvent(sf::Event& event);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // You can use this function to change the focus to another object.
-        // You cannot manually call this function. You should call the focus function from the object's parent instead.
+        // You can use this function to change the focus to another widget.
+        // You cannot manually call this function. You should call the focus function from the widget's parent instead.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void focusObject(Object *const object);
+        void focusWidget(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Unfocus the given object.
+        // Unfocus the given widget.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unfocusObject(Object *const object);
+        void unfocusWidget(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Unfocus all the objects.
+        // Unfocus all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unfocusAllObjects();
+        void unfocusAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Places an object before all other objects.
+        // Places an widget before all other widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateTime(const sf::Time& elapsedTime);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // When the tab key is pressed then this function is called. The focus will move to the next object (if there is one).
+        // When the tab key is pressed then this function is called. The focus will move to the next widget (if there is one).
         // This function will only work when tabKeyUsageEnabled is true.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void tabKeyPressed();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Checks above which object the mouse is standing.
-        // The object can be signaled through Objects[ObjectNr] on condition that this function returned true.
+        // Checks above which widget the mouse is standing.
+        // The widget can be signaled through Widgets[WidgetNr] on condition that this function returned true.
         //
-        // return:  true when the mouse is standing on an object
-        //          false if the mouse isn't on any object
+        // return:  true when the mouse is standing on an widget
+        //          false if the mouse isn't on any widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool mouseOnObject(unsigned int& objectNr, float x, float y);
+        bool mouseOnWidget(unsigned int& widgetNr, float x, float y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Tells all the objects that the mouse is not on top of them.
+        // Tells all the widgets that the mouse is not on top of them.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void mouseNotOnObject();
+        void mouseNotOnWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Tells all the objects that the mouse is no longer down.
+        // Tells all the widgets that the mouse is no longer down.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void mouseNoLongerDown();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is similar to the tabKeyPressed function.
-        // The difference is that this function will return false and unfocus all objects when the last object was focused.
-        // The tabKeyPressed function on the other hand would just focus the first object.
+        // The difference is that this function will return false and unfocus all widgets when the last widget was focused.
+        // The tabKeyPressed function on the other hand would just focus the first widget.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool focusNextObject();
+        bool focusNextWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        // This vector will hold all objects
-        std::vector< SharedObjectPtr<Object> > m_Objects;
+        // This vector will hold all widgets
+        std::vector< SharedWidgetPtr<Widget> > m_Widgets;
 
-        // The id of the focused object
-        unsigned int m_FocusedObject;
+        // The id of the focused widget
+        unsigned int m_FocusedWidget;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // The event handler can only be used by group objects and by the window
+        // The event handler can only be used by container widgets and by the window
         friend class Grid;
-        friend class Group;
-        friend class GroupObject;
+        friend class Container;
+        friend class ContainerWidget;
         friend class Panel;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

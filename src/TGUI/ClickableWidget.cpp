@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,35 +32,35 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableObject::ClickableObject() :
+    ClickableWidget::ClickableWidget() :
     m_Size(0, 0)
     {
-        m_Callback.objectType = Type_ClickableObject;
+        m_Callback.widgetType = Type_ClickableWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableObject::ClickableObject(const ClickableObject& copy) :
-    Object(copy),
+    ClickableWidget::ClickableWidget(const ClickableWidget& copy) :
+    Widget(copy),
     m_Size(copy.m_Size)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableObject::~ClickableObject()
+    ClickableWidget::~ClickableWidget()
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableObject& ClickableObject::operator= (const ClickableObject& right)
+    ClickableWidget& ClickableWidget::operator= (const ClickableWidget& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
-            ClickableObject temp(right);
-            this->Object::operator=(right);
+            ClickableWidget temp(right);
+            this->Widget::operator=(right);
 
             std::swap(m_Size, temp.m_Size);
         }
@@ -70,14 +70,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableObject* ClickableObject::clone()
+    ClickableWidget* ClickableWidget::clone()
     {
-        return new ClickableObject(*this);
+        return new ClickableWidget(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableObject::setSize(float width, float height)
+    void ClickableWidget::setSize(float width, float height)
     {
         m_Size.x = width;
         m_Size.y = height;
@@ -85,22 +85,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f ClickableObject::getSize() const
+    Vector2f ClickableWidget::getSize() const
     {
         return m_Size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableObject::mouseOnObject(float x, float y)
+    bool ClickableWidget::mouseOnWidget(float x, float y)
     {
-        // Check if the mouse is on top of the object
+        // Check if the mouse is on top of the widget
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
         else
         {
             if (m_MouseHover)
-                mouseLeftObject();
+                mouseLeftWidget();
 
             m_MouseHover = false;
             return false;
@@ -109,7 +109,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableObject::leftMousePressed(float x, float y)
+    void ClickableWidget::leftMousePressed(float x, float y)
     {
         // Set the mouse down flag
         m_MouseDown = true;
@@ -126,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableObject::leftMouseReleased(float x, float y)
+    void ClickableWidget::leftMouseReleased(float x, float y)
     {
         // Add the callback (if the user requested it)
         if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
@@ -155,7 +155,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableObject::draw(sf::RenderTarget&, sf::RenderStates) const
+    void ClickableWidget::draw(sf::RenderTarget&, sf::RenderStates) const
     {
     }
 

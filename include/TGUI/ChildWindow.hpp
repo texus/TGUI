@@ -33,11 +33,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief Movable Panel with title bar.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ChildWindow : public GroupObject, public ObjectBorders
+    class TGUI_API ChildWindow : public ContainerWidget, public WidgetBorders
     {
       public:
 
-        typedef SharedObjectPtr<ChildWindow> Ptr;
+        typedef SharedWidgetPtr<ChildWindow> Ptr;
 
 
         /// Title alignments, possible options for the setTitleAlignment function
@@ -89,14 +89,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ChildWindow* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -107,7 +107,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -359,26 +359,26 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
+        virtual bool mouseOnWidget(float x, float y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Send the event to all underlying objects.
+        // Send the event to all underlying widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void handleEvent(sf::Event& event, float mouseX = 0, float mouseY = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -388,11 +388,11 @@ namespace tgui
 
         enum ChildWindowCallbacks
         {
-            Closed = ObjectCallbacksCount * 1,
-            Moved = ObjectCallbacksCount * 2,
-//            Resized = ObjectCallbacksCount * 4,
-            AllChildWindowCallbacks = ObjectCallbacksCount * 8 - 1,
-            ChildWindowCallbacksCount = ObjectCallbacksCount * 8
+            Closed = WidgetCallbacksCount * 1,
+            Moved = WidgetCallbacksCount * 2,
+//            Resized = WidgetCallbacksCount * 4,
+            AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1,
+            ChildWindowCallbacksCount = WidgetCallbacksCount * 8
         };
 
 

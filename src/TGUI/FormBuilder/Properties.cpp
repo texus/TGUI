@@ -615,11 +615,11 @@ void PropertiesWindow::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         else
             fontName = globalFont.value;
 
-        // Change the global font for all new objects
+        // Change the global font for all new widgets
         if (fontName.compare("Default"))
             formWindow.globalFont = sf::Font::getDefaultFont();
 
-        // Change the global font for the existing objects
+        // Change the global font for the existing widgets
         builder->setGlobalFont(formWindow.globalFont);
 */
         // You are not allowed the change the font yet
@@ -633,7 +633,7 @@ PropertiesPicture::PropertiesPicture()
 {
     id = 0;
     name.value = "";
-    filename.value = "images/objects/Picture.png";
+    filename.value = "images/widgets/Picture.png";
     left.value = 0;
     top.value = 0;
     width.value = 200;
@@ -693,7 +693,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
 
                 // Load the default picture
                 tgui::Picture::Ptr picture = formWindow.get(tgui::to_string(id));
-                picture->load("images/objects/Picture.png");
+                picture->load("images/widgets/Picture.png");
 
                 // Adjust the scaling
                 picture->setSize(width.value, height.value);
@@ -2218,7 +2218,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         // Store the new items
         items.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Items"))->getText();
 
-        // Remove all objects from the list box
+        // Remove all widgets from the list box
         tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
         listBox->removeAllItems();
 
@@ -2640,7 +2640,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         // Store the new items
         items.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Items"))->getText();
 
-        // Remove all objects from the combo box
+        // Remove all widgets from the combo box
         tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
         comboBox->removeAllItems();
 

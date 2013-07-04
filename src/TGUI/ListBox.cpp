@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ListBox.hpp>
@@ -46,8 +46,8 @@ namespace tgui
     m_Scroll      (NULL),
     m_TextFont    (NULL)
     {
-        m_Callback.objectType = Type_ListBox;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_ListBox;
+        m_DraggableWidget = true;
         m_Loaded = true;
 
         changeColors();
@@ -56,8 +56,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox(const ListBox& copy) :
-    Object                   (copy),
-    ObjectBorders            (copy),
+    Widget                   (copy),
+    WidgetBorders            (copy),
     m_LoadedConfigFile       (copy.m_LoadedConfigFile),
     m_Items                  (copy.m_Items),
     m_SelectedItem           (copy.m_SelectedItem),
@@ -94,8 +94,8 @@ namespace tgui
         if (this != &right)
         {
             ListBox temp(right);
-            this->Object::operator=(right);
-            this->ObjectBorders::operator=(right);
+            this->Widget::operator=(right);
+            this->WidgetBorders::operator=(right);
 
             // If there already was a scrollbar then delete it now
             if (m_Scroll != NULL)
@@ -246,7 +246,7 @@ namespace tgui
 
     void ListBox::setSize(float width, float height)
     {
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -746,7 +746,7 @@ namespace tgui
 
     void ListBox::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         if (m_Scroll != NULL)
             m_Scroll->setTransparency(m_Opacity);
@@ -760,7 +760,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseOnObject(float x, float y)
+    bool ListBox::mouseOnWidget(float x, float y)
     {
         // Get the current position
         Vector2f position = getPosition();
@@ -772,7 +772,7 @@ namespace tgui
             m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
 
             // Pass the event
-            m_Scroll->mouseOnObject(x, y);
+            m_Scroll->mouseOnWidget(x, y);
 
             // Reset the position
             m_Scroll->setPosition(0, 0);
@@ -784,7 +784,7 @@ namespace tgui
         else // The mouse is not on top of the list box
         {
             if (m_MouseHover)
-                mouseLeftObject();
+                mouseLeftWidget();
 
             m_MouseHover = false;
             return false;
@@ -808,7 +808,7 @@ namespace tgui
             m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Pass the event
-            if (m_Scroll->mouseOnObject(x, y))
+            if (m_Scroll->mouseOnWidget(x, y))
             {
                 m_Scroll->leftMousePressed(x, y);
                 clickedOnListBox = false;
@@ -917,7 +917,7 @@ namespace tgui
     void ListBox::mouseMoved(float x, float y)
     {
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -936,7 +936,7 @@ namespace tgui
             else // You are just moving the mouse
             {
                 // When the mouse is on top of the scrollbar then pass the mouse move event
-                if (m_Scroll->mouseOnObject(x, y))
+                if (m_Scroll->mouseOnWidget(x, y))
                     m_Scroll->mouseMoved(x, y);
             }
 
@@ -976,10 +976,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseNotOnObject()
+    void ListBox::mouseNotOnWidget()
     {
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         m_MouseHover = false;
 
@@ -999,7 +999,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::initialize(tgui::Group *const parent)
+    void ListBox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
@@ -1079,13 +1079,13 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
             scissorTop = scissorBottom;
 
-        // Create a text object to draw the items
+        // Create a text widget to draw the items
         sf::Text text("", *m_TextFont, m_TextSize);
 
         // Check if there is a scrollbar and whether it isn't hidden

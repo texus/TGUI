@@ -34,7 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Gui : public Group
+    class TGUI_API Gui : public Container
     {
       public:
 
@@ -77,7 +77,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Passes the event to the objects.
+        /// \brief Passes the event to the widgets.
         ///
         /// \param event  The event that was polled from the gui
         ///
@@ -88,7 +88,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Draws all the objects that were added to the gui.
+        /// \brief Draws all the widgets that were added to the gui.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw();
@@ -99,13 +99,13 @@ namespace tgui
         ///
         /// This function works just like the pollEvent function from sfml.
         ///
-        /// The gui stores the callback of all the objects.
+        /// The gui stores the callback of all the widgets.
         /// This function will return the next callback and then remove it from the queue.
         ///
         /// Note that more than one callbacks may be present in the queue, thus you should always call this
         /// function in a loop to make sure that you process every callback.
         ///
-        /// \param callback  An empty tgui::Callback object that will be (partly) filled when there is a callback.
+        /// \param callback  An empty tgui::Callback widget that will be (partly) filled when there is a callback.
         ///
         /// \return
         ///        - true when there is another callback. The \a callback parameter will be filled with information.
@@ -123,13 +123,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // TGUI uses this function internally to handle object callbacks.
-        // When you tell an object to send its callbacks to its parent then this function is called.
+        // TGUI uses this function internally to handle widget callbacks.
+        // When you tell an widget to send its callbacks to its parent then this function is called.
         //
         // When one or more global callback functions were set then these functions will be called.
         // Otherwise, the callback will be added to the callback queue and you will be able to poll it later with pollCallback.
         //
-        // You can use this function to fake an object callback.
+        // You can use this function to fake an widget callback.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addChildCallback(Callback& callback);
 
@@ -143,10 +143,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        // This will store all object callbacks until you pop them with getCallback
+        // This will store all widget callbacks until you pop them with getCallback
         std::queue<Callback> m_Callback;
 
-        // The internal clock which is used for animation of objects
+        // The internal clock which is used for animation of widgets
         sf::Clock m_Clock;
 
         // The sfml window

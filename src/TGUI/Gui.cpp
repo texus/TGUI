@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -38,7 +38,7 @@ namespace tgui
     m_Window(NULL)
     {
         // The main window is always focused
-        m_GroupFocused = true;
+        m_ContainerFocused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ namespace tgui
     m_Window(&window)
     {
         // The main window is always focused
-        m_GroupFocused = true;
+        m_ContainerFocused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,8 +121,8 @@ namespace tgui
             glScissor(0, 0, m_Window->getSize().x, m_Window->getSize().y);
         }
 
-        // Draw the window with all objects inside it
-        drawObjectGroup(m_Window, sf::RenderStates::Default);
+        // Draw the window with all widgets inside it
+        drawWidgetContainer(m_Window, sf::RenderStates::Default);
 
         // Reset clipping to its original state
         if (clippingEnabled)

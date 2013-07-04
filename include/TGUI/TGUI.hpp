@@ -27,8 +27,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/Button.hpp>
@@ -49,7 +49,7 @@
 #include <TGUI/MenuBar.hpp>
 #include <TGUI/ChatBox.hpp>
 
-#include <TGUI/GroupObject.hpp>
+#include <TGUI/ContainerWidget.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/MessageBox.hpp>

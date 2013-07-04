@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/SpriteSheet.hpp>
 
@@ -39,7 +39,7 @@ namespace tgui
     m_Columns    (1),
     m_VisibleCell(1, 1)
     {
-        m_Callback.objectType = Type_SpriteSheet;
+        m_Callback.widgetType = Type_SpriteSheet;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ namespace tgui
 
     SpriteSheet& SpriteSheet::operator= (const SpriteSheet& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             SpriteSheet temp(right);

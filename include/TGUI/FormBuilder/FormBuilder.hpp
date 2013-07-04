@@ -36,9 +36,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_THEME_FILE "images/objects/Black.conf"
+#define DEFAULT_THEME_FILE "images/widgets/Black.conf"
 
-#define VERSION "v0.2.x - 2013.06.12"
+#define VERSION "v0.2.x - 2013.07.04"
 
 
 struct Builder;
@@ -65,42 +65,42 @@ struct Builder
     // Constructor
     Builder();
 
-    // Every object needs a uinque id. This function gives them one.
+    // Every widget needs a uinque id. This function gives them one.
     unsigned int getUniqueID();
 
-    // Adds a new object to the form
-    unsigned int newObject(unsigned int objectID, const std::string objectName = "");
+    // Adds a new widget to the form
+    unsigned int newWidget(unsigned int widgetID, const std::string widgetName = "");
 
-    // Change the properties that are displayed, e.g. when selecting another object.
+    // Change the properties that are displayed, e.g. when selecting another widget.
     void changeVisibleProperties();
 
-    // When another object is selected, the property window has to be resized
+    // When another widget is selected, the property window has to be resized
     void resizePropertyWindow();
 
     // The contents of an edit box has changed, change the property.
     void updateProperty(unsigned int propertyNumber);
 
-    // Changes the global font, which can be used by all objects
+    // Changes the global font, which can be used by all widgets
     void setGlobalFont(const sf::Font& font);
 
-    // Get the id of the clicked object when you clicked on the window
-    unsigned int getClickedObjectID(sf::Event& event);
+    // Get the id of the clicked widget when you clicked on the window
+    unsigned int getClickedWidgetID(sf::Event& event);
 
     // Get the id of the scale square below the mouse
-    unsigned int getScaleSquareObjectID(float mouseX, float mouseY);
+    unsigned int getScaleSquareWidgetID(float mouseX, float mouseY);
 
-    // Delete the currently selected object
-    void deleteObject();
+    // Delete the currently selected widget
+    void deleteWidget();
 
-    // Move the currently selected object
-    void moveObjectX(float pixels);
-    void moveObjectY(float pixels);
+    // Move the currently selected widget
+    void moveWidgetX(float pixels);
+    void moveWidgetY(float pixels);
 
-    // This function is called to resize an object.
-    void resizeObject(float addToWidth, float addToHeight);
+    // This function is called to resize an widget.
+    void resizeWidget(float addToWidth, float addToHeight);
 
-    // Calculates and stores the new aspect ratio of the object
-    void storeObjectsNewAspectRatio();
+    // Calculates and stores the new aspect ratio of the widget
+    void storeWidgetsNewAspectRatio();
 
     // Load the form
     bool loadForm();
@@ -110,14 +110,14 @@ struct Builder
 
     // The three windows
     sf::RenderWindow mainRenderWindow;
-    sf::RenderWindow objectsRenderWindow;
+    sf::RenderWindow widgetsRenderWindow;
     sf::RenderWindow propertyRenderWindow;
 
     tgui::Gui mainWindow;
-    tgui::Gui objectsWindow;
+    tgui::Gui widgetsWindow;
     tgui::Gui propertyWindow;
 
-    // A list of all the objects on the form
+    // A list of all the widgets on the form
     std::vector<PropertiesWindow>      windows;
     std::vector<PropertiesPicture>     pictures;
     std::vector<PropertiesButton>      buttons;
@@ -132,11 +132,11 @@ struct Builder
     std::vector<PropertiesLoadingBar>  loadingBars;
     std::vector<PropertiesTextBox>     textBoxes;
 
-    // The id of the object that is currently selected.
+    // The id of the widget that is currently selected.
     unsigned int currentID;
 
-    // True when an object is being dragged
-    bool draggingObject;
+    // True when an widget is being dragged
+    bool draggingWidget;
 
     // Greater than 0 when dragging one of the scale squares
     unsigned int draggingSquare;
@@ -144,7 +144,7 @@ struct Builder
     // Where was the mouse when dragging?
     sf::Vector2f dragPos;
 
-    // Hold the aspect ratios of the objects
+    // Hold the aspect ratios of the widgets
     std::vector<float> aspectRatios;
 };
 

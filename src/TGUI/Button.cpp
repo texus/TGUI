@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Button.hpp>
 
 #include <cmath>
@@ -40,14 +40,14 @@ namespace tgui
     m_SeparateHoverImage(false),
     m_TextSize          (0)
     {
-        m_Callback.objectType = Type_Button;
+        m_Callback.widgetType = Type_Button;
         m_Text.setColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button(const Button& copy) :
-    ClickableObject     (copy),
+    ClickableWidget     (copy),
     m_LoadedConfigFile  (copy.m_LoadedConfigFile),
     m_SplitImage        (copy.m_SplitImage),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
@@ -93,11 +93,11 @@ namespace tgui
 
     Button& Button::operator= (const Button& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Button temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedConfigFile,   temp.m_LoadedConfigFile);
             std::swap(m_TextureNormal_L,    temp.m_TextureNormal_L);
@@ -347,15 +347,15 @@ namespace tgui
             if ((m_TextureFocused_L.data != NULL) && (m_TextureFocused_M.data != NULL) && (m_TextureFocused_R.data != NULL))
             {
                 m_AllowFocus = true;
-                m_ObjectPhase |= ObjectPhase_Focused;
+                m_WidgetPhase |= WidgetPhase_Focused;
             }
             if ((m_TextureHover_L.data != NULL) && (m_TextureHover_M.data != NULL) && (m_TextureHover_R.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
             if ((m_TextureDown_L.data != NULL) && (m_TextureDown_M.data != NULL) && (m_TextureDown_R.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_MouseDown;
+                m_WidgetPhase |= WidgetPhase_MouseDown;
             }
         }
         else // The image isn't split
@@ -376,15 +376,15 @@ namespace tgui
             if (m_TextureFocused_M.data != NULL)
             {
                 m_AllowFocus = true;
-                m_ObjectPhase |= ObjectPhase_Focused;
+                m_WidgetPhase |= WidgetPhase_Focused;
             }
             if (m_TextureHover_M.data != NULL)
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
             if (m_TextureDown_M.data != NULL)
             {
-                m_ObjectPhase |= ObjectPhase_MouseDown;
+                m_WidgetPhase |= WidgetPhase_MouseDown;
             }
         }
 
@@ -606,7 +606,7 @@ namespace tgui
 
     void Button::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         if (m_SplitImage)
         {
@@ -656,18 +656,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::objectFocused()
+    void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
-            m_Parent->unfocusObject(this);
+        if ((m_WidgetPhase & WidgetPhase_Focused) == 0)
+            m_Parent->unfocusWidget(this);
         else
-            Object::objectFocused();
+            Widget::widgetFocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::initialize(tgui::Group *const parent)
+    void Button::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());
@@ -681,13 +681,13 @@ namespace tgui
         {
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                if ((m_MouseDown) && (m_MouseHover) && (m_WidgetPhase & WidgetPhase_MouseDown))
                 {
                     target.draw(m_TextureDown_L, states);
                     target.draw(m_TextureDown_M, states);
                     target.draw(m_TextureDown_R, states);
                 }
-                else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                else if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_L, states);
                     target.draw(m_TextureHover_M, states);
@@ -702,7 +702,7 @@ namespace tgui
             }
             else // The hover image is drawn on top of the normal one
             {
-                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                if ((m_MouseDown) && (m_MouseHover) && (m_WidgetPhase & WidgetPhase_MouseDown))
                 {
                     target.draw(m_TextureDown_L, states);
                     target.draw(m_TextureDown_M, states);
@@ -716,7 +716,7 @@ namespace tgui
                 }
 
                 // When the mouse is on top of the button then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_L, states);
                     target.draw(m_TextureHover_M, states);
@@ -725,7 +725,7 @@ namespace tgui
             }
 
             // When the button is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
             {
                 target.draw(m_TextureFocused_L, states);
                 target.draw(m_TextureFocused_M, states);
@@ -736,11 +736,11 @@ namespace tgui
         {
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                if ((m_MouseDown) && (m_MouseHover) && (m_WidgetPhase & WidgetPhase_MouseDown))
                 {
                     target.draw(m_TextureDown_M, states);
                 }
-                else if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                else if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_M, states);
                 }
@@ -751,7 +751,7 @@ namespace tgui
             }
             else // The hover image is drawn on top of the normal one
             {
-                if ((m_MouseDown) && (m_MouseHover) && (m_ObjectPhase & ObjectPhase_MouseDown))
+                if ((m_MouseDown) && (m_MouseHover) && (m_WidgetPhase & WidgetPhase_MouseDown))
                 {
                     target.draw(m_TextureDown_M, states);
                 }
@@ -761,14 +761,14 @@ namespace tgui
                 }
 
                 // When the mouse is on top of the button then draw an extra image
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     target.draw(m_TextureHover_M, states);
                 }
             }
 
             // When the button is focused then draw an extra image
-            if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+            if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
             {
                 target.draw(m_TextureFocused_M, states);
             }

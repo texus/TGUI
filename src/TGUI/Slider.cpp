@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/Slider.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,14 +42,14 @@ namespace tgui
     m_SplitImage          (false),
     m_SeparateHoverImage  (false)
     {
-        m_Callback.objectType = Type_Slider;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_Slider;
+        m_DraggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider(const Slider& copy) :
-    Object               (copy),
+    Widget               (copy),
     m_LoadedConfigFile   (copy.m_LoadedConfigFile),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
@@ -94,11 +94,11 @@ namespace tgui
 
     Slider& Slider::operator= (const Slider& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Slider temp(right);
-            this->Object::operator=(right);
+            this->Widget::operator=(right);
 
             std::swap(m_LoadedConfigFile,     temp.m_LoadedConfigFile);
             std::swap(m_MouseDownOnThumb,     temp.m_MouseDownOnThumb);
@@ -306,7 +306,7 @@ namespace tgui
             if ((m_TextureTrackHover_L.data != NULL) && (m_TextureTrackHover_M.data != NULL)
              && (m_TextureTrackHover_R.data != NULL) && (m_TextureThumbHover.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
         }
         else // The image isn't split
@@ -329,7 +329,7 @@ namespace tgui
             // Check if optional textures were loaded
             if ((m_TextureTrackHover_M.data != NULL) && (m_TextureThumbHover.data != NULL))
             {
-                m_ObjectPhase |= ObjectPhase_Hover;
+                m_WidgetPhase |= WidgetPhase_Hover;
             }
         }
 
@@ -355,7 +355,7 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (m_Size.x < 0) m_Size.x = -m_Size.x;
         if (m_Size.y < 0) m_Size.y = -m_Size.y;
 
@@ -531,7 +531,7 @@ namespace tgui
 
     void Slider::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         m_TextureTrackNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureTrackHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -545,7 +545,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseOnObject(float x, float y)
+    bool Slider::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the slider wasn't loaded correctly
         if (m_Loaded == false)
@@ -598,7 +598,7 @@ namespace tgui
             return true;
 
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         // The mouse is not on top of the slider
         m_MouseHover = false;
@@ -631,7 +631,7 @@ namespace tgui
             return;
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -715,10 +715,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::objectFocused()
+    void Slider::widgetFocused()
     {
         // A slider can't be focused (yet)
-        m_Parent->unfocusObject(this);
+        m_Parent->unfocusWidget(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,7 +777,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureTrackHover_L, states);
                     else
                         target.draw(m_TextureTrackNormal_L, states);
@@ -788,12 +788,12 @@ namespace tgui
                     target.draw(m_TextureTrackNormal_L, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureTrackHover_L, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+//                if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
 //                    target.draw(m_SpriteFocused_L, states);
             }
 
@@ -818,7 +818,7 @@ namespace tgui
                     if (m_SeparateHoverImage)
                     {
                         // Draw the correct image
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                             target.draw(m_TextureTrackHover_M, states);
                         else
                             target.draw(m_TextureTrackNormal_M, states);
@@ -829,12 +829,12 @@ namespace tgui
                         target.draw(m_TextureTrackNormal_M, states);
 
                         // When the mouse is on top of the slider then draw the hover image
-                        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                             target.draw(m_TextureTrackHover_M, states);
                     }
 
                     // When the slider is focused then draw an extra image
-//                    if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+//                    if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
 //                        target.draw(m_SpriteFocused_M, states);
                 }
 
@@ -853,7 +853,7 @@ namespace tgui
                 if (m_SeparateHoverImage)
                 {
                     // Draw the correct image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureTrackHover_R, states);
                     else
                         target.draw(m_TextureTrackNormal_R, states);
@@ -864,12 +864,12 @@ namespace tgui
                     target.draw(m_TextureTrackNormal_R, states);
 
                     // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                         target.draw(m_TextureTrackHover_R, states);
                 }
 
                 // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+//                if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
 //                    target.draw(m_SpriteFocused_R, states);
             }
         }
@@ -900,7 +900,7 @@ namespace tgui
             target.draw(m_TextureTrackNormal_M, states);
 
             // When the mouse is on top of the slider then draw the hover image
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureTrackHover_M, states);
         }
 
@@ -943,7 +943,7 @@ namespace tgui
         target.draw(m_TextureThumbNormal, states);
 
         // When the mouse is on top of the slider then draw the hover image
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
             target.draw(m_TextureThumbHover, states);
     }
 

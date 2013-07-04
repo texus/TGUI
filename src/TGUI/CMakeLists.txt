@@ -3,7 +3,7 @@ set(TGUI_SRC
     TGUI.cpp
     Callback.cpp
     Transformable.cpp
-    Objects.cpp
+    Widgets.cpp
     Label.cpp
     Picture.cpp
     Button.cpp
@@ -24,13 +24,13 @@ set(TGUI_SRC
     ConfigFile.cpp
     EventManager.cpp
     TextureManager.cpp
-    Group.cpp
-    GroupObject.cpp
+    Container.cpp
+    ContainerWidget.cpp
     Panel.cpp
     ChildWindow.cpp
     Grid.cpp
     Gui.cpp
-    ClickableObject.cpp
+    ClickableWidget.cpp
     MenuBar.cpp
     ChatBox.cpp
 )

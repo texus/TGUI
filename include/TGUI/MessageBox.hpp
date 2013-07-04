@@ -36,7 +36,7 @@ namespace tgui
     {
       public:
 
-        typedef SharedObjectPtr<MessageBox> Ptr;
+        typedef SharedWidgetPtr<MessageBox> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +74,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual MessageBox* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -92,7 +92,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -158,7 +158,7 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes sure all objects lie within the window and places them on the correct position.
+        // Makes sure all widgets lie within the window and places them on the correct position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rearrange();
 

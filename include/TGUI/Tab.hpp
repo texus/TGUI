@@ -36,11 +36,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Tab : public Object
+    class TGUI_API Tab : public Widget
     {
       public:
 
-        typedef SharedObjectPtr<Tab> Ptr;
+        typedef SharedWidgetPtr<Tab> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,14 +78,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Tab* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -96,7 +96,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -338,9 +338,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,7 +350,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
+        virtual bool mouseOnWidget(float x, float y);
         virtual void leftMousePressed(float x, float y);
 
 
@@ -358,13 +358,13 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -374,9 +374,9 @@ namespace tgui
 
         enum TabCallbacks
         {
-            TabChanged = ObjectCallbacksCount * 1,
-            AllTabCallbacks = ObjectCallbacksCount * 2 - 1,
-            TabCallbacksCount = ObjectCallbacksCount * 2
+            TabChanged = WidgetCallbacksCount * 1,
+            AllTabCallbacks = WidgetCallbacksCount * 2 - 1,
+            TabCallbacksCount = WidgetCallbacksCount * 2
         };
 
 

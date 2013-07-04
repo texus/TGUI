@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/GroupObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ContainerWidget.hpp>
 #include <TGUI/Panel.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -40,7 +40,7 @@ namespace tgui
     m_BackgroundColor              (sf::Color::Transparent),
     m_Texture                      (NULL)
     {
-        m_Callback.objectType = Type_Panel;
+        m_Callback.widgetType = Type_Panel;
         m_AllowFocus = true;
         m_Loaded = true;
     }
@@ -48,7 +48,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& copy) :
-    GroupObject      (copy),
+    ContainerWidget  (copy),
     m_Size           (copy.m_Size),
     m_BackgroundColor(copy.m_BackgroundColor),
     m_Texture        (copy.m_Texture)
@@ -71,11 +71,11 @@ namespace tgui
 
     Panel& Panel::operator= (const Panel& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Panel temp(right);
-            this->GroupObject::operator=(right);
+            this->ContainerWidget::operator=(right);
 
             std::swap(m_Size,                          temp.m_Size);
             std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
@@ -97,7 +97,7 @@ namespace tgui
 
     void Panel::setSize(float width, float height)
     {
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -157,7 +157,7 @@ namespace tgui
 
     void Panel::setTransparency(unsigned char transparency)
     {
-        GroupObject::setTransparency(transparency);
+        ContainerWidget::setTransparency(transparency);
 
         m_BackgroundColor.a = m_Opacity;
 
@@ -173,7 +173,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::mouseOnObject(float x, float y)
+    bool Panel::mouseOnWidget(float x, float y)
     {
         // Don't continue when the panel has not been loaded yet
         if (m_Loaded == false)
@@ -185,10 +185,10 @@ namespace tgui
         else
         {
             if (m_MouseHover)
-                mouseLeftObject();
+                mouseLeftWidget();
 
-            // Tell the objects inside the panel that the mouse is no longer on top of them
-            m_EventManager.mouseNotOnObject();
+            // Tell the widgets inside the panel that the mouse is no longer on top of them
+            m_EventManager.mouseNotOnWidget();
             m_MouseHover = false;
             return false;
         }
@@ -196,16 +196,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::objectFocused()
+    void Panel::widgetFocused()
     {
         m_EventManager.tabKeyPressed();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::objectUnfocused()
+    void Panel::widgetUnfocused()
     {
-        m_EventManager.unfocusAllObjects();
+        m_EventManager.unfocusAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ namespace tgui
         }
         else if (event.type == sf::Event::MouseButtonPressed)
         {
-            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
+            if (mouseOnWidget(event.mouseButton.x, event.mouseButton.y))
             {
                 m_MouseDown = true;
 
@@ -238,7 +238,7 @@ namespace tgui
         }
         else if (event.type == sf::Event::MouseButtonReleased)
         {
-            if (mouseOnObject(event.mouseButton.x, event.mouseButton.y))
+            if (mouseOnWidget(event.mouseButton.x, event.mouseButton.y))
             {
                 if (!m_CallbackFunctions[LeftMouseReleased].empty())
                 {
@@ -301,7 +301,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
@@ -325,8 +325,8 @@ namespace tgui
         if (m_Texture)
             target.draw(m_Sprite, states);
 
-        // Draw the objects
-        drawObjectGroup(&target, states);
+        // Draw the widgets
+        drawWidgetContainer(&target, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

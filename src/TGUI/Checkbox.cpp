@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Checkbox.hpp>
 
 #include <cmath>
@@ -40,14 +40,14 @@ namespace tgui
     m_AllowTextClick(true),
     m_TextSize      (0)
     {
-        m_Callback.objectType = Type_Checkbox;
+        m_Callback.widgetType = Type_Checkbox;
         m_Text.setColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Checkbox::Checkbox(const Checkbox& copy) :
-    ClickableObject   (copy),
+    ClickableWidget   (copy),
     m_LoadedConfigFile(copy.m_LoadedConfigFile),
     m_Checked         (copy.m_Checked),
     m_AllowTextClick  (copy.m_AllowTextClick),
@@ -78,7 +78,7 @@ namespace tgui
         if (this != &right)
         {
             Checkbox temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
             std::swap(m_Checked,          temp.m_Checked);
@@ -204,11 +204,11 @@ namespace tgui
         if (m_TextureFocused.data != NULL)
         {
             m_AllowFocus = true;
-            m_ObjectPhase |= ObjectPhase_Focused;
+            m_WidgetPhase |= WidgetPhase_Focused;
         }
         if (m_TextureHover.data != NULL)
         {
-            m_ObjectPhase |= ObjectPhase_Hover;
+            m_WidgetPhase |= WidgetPhase_Hover;
         }
 
         // When there is no error we will return true
@@ -247,7 +247,7 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -404,7 +404,7 @@ namespace tgui
 
     void Checkbox::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         m_TextureChecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -416,7 +416,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::mouseOnObject(float x, float y)
+    bool Checkbox::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the checkbox wasn't loaded correctly
         if (m_Loaded == false)
@@ -437,7 +437,7 @@ namespace tgui
         }
 
         if (m_MouseHover == true)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         // The mouse is not on top of the checkbox
         m_MouseHover = false;
@@ -522,18 +522,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::objectFocused()
+    void Checkbox::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_ObjectPhase & ObjectPhase_Focused) == 0)
-            m_Parent->unfocusObject(this);
+        if ((m_WidgetPhase & WidgetPhase_Focused) == 0)
+            m_Parent->unfocusWidget(this);
         else
-            Object::objectFocused();
+            Widget::widgetFocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::initialize(tgui::Group *const parent)
+    void Checkbox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());
@@ -549,11 +549,11 @@ namespace tgui
             target.draw(m_TextureUnchecked, states);
 
         // When the checkbox is focused then draw an extra image
-        if ((m_Focused) && (m_ObjectPhase & ObjectPhase_Focused))
+        if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
             target.draw(m_TextureFocused, states);
 
         // When the mouse is on top of the checkbox then draw an extra image
-        if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
             target.draw(m_TextureHover, states);
 
         // Draw the text

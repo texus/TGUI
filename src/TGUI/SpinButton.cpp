@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/SpinButton.hpp>
 
 /// \todo Allow images next to each other (e.g. plus and minus icon).
@@ -44,13 +44,13 @@ namespace tgui
     m_MouseHoverOnTopArrow(false),
     m_MouseDownOnTopArrow (false)
     {
-        m_Callback.objectType = Type_SpinButton;
+        m_Callback.widgetType = Type_SpinButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton(const SpinButton& copy) :
-    ClickableObject       (copy),
+    ClickableWidget       (copy),
     m_LoadedConfigFile    (copy.m_LoadedConfigFile),
     m_VerticalScroll      (copy.m_VerticalScroll),
     m_Minimum             (copy.m_Minimum),
@@ -80,11 +80,11 @@ namespace tgui
 
     SpinButton& SpinButton::operator= (const SpinButton& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             SpinButton temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_VerticalScroll,         temp.m_VerticalScroll);
@@ -212,7 +212,7 @@ namespace tgui
         // Check if optional textures were loaded
         if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
         {
-            m_ObjectPhase |= ObjectPhase_Hover;
+            m_WidgetPhase |= WidgetPhase_Hover;
         }
 
         return m_Loaded = true;
@@ -237,7 +237,7 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (m_Size.x < 0) m_Size.x = -m_Size.x;
         if (m_Size.y < 0) m_Size.y = -m_Size.y;
     }
@@ -326,7 +326,7 @@ namespace tgui
 
     void SpinButton::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -429,17 +429,17 @@ namespace tgui
         }
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::objectFocused()
+    void SpinButton::widgetFocused()
     {
         // A spin button can't be focused
-        m_Parent->unfocusObject(this);
+        m_Parent->unfocusWidget(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,7 +461,7 @@ namespace tgui
             // Draw the first arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowUpHover, states);
@@ -473,7 +473,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowUpHover, states);
@@ -486,7 +486,7 @@ namespace tgui
             // Draw the second arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowDownHover, states);
@@ -498,7 +498,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (!m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowDownHover, states);
@@ -518,7 +518,7 @@ namespace tgui
             // Draw the first arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowUpHover, states);
@@ -530,7 +530,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (!m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowUpHover, states);
@@ -543,7 +543,7 @@ namespace tgui
             // Draw the second arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowDownHover, states);
@@ -555,7 +555,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
                     if (m_MouseHoverOnTopArrow)
                         target.draw(m_TextureArrowDownHover, states);

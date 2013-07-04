@@ -32,11 +32,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Picture : public ClickableObject
+    class TGUI_API Picture : public ClickableWidget
     {
       public:
 
-        typedef SharedObjectPtr<Picture> Ptr;
+        typedef SharedWidgetPtr<Picture> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Picture* clone();
@@ -95,7 +95,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -105,11 +105,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the object
+        /// \brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable object is (0, 0).
+        /// The default position of a transformable widget is (0, 0).
         ///
         /// \param x X coordinate of the new position
         /// \param y Y coordinate of the new position
@@ -122,10 +122,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the object.
+        /// \brief Changes the size of the widget.
         ///
-        /// \param width   The new width of the object
-        /// \param height  The new height of the object
+        /// \param width   The new width of the widget
+        /// \param height  The new height of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
@@ -158,9 +158,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,14 +170,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
+        virtual bool mouseOnWidget(float x, float y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -187,8 +187,8 @@ namespace tgui
 
         enum PictureCallbacks
         {
-            AllPictureCallbacks   = ClickableObjectCallbacksCount - 1,
-            PictureCallbacksCount = ClickableObjectCallbacksCount
+            AllPictureCallbacks   = ClickableWidgetCallbacksCount - 1,
+            PictureCallbacksCount = ClickableWidgetCallbacksCount
         };
 
 

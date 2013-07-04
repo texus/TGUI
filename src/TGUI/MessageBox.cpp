@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Button.hpp>
-#include <TGUI/GroupObject.hpp>
+#include <TGUI/ContainerWidget.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/MessageBox.hpp>
 
@@ -40,7 +40,7 @@ namespace tgui
     MessageBox::MessageBox() :
     m_TextSize(16)
     {
-        m_Callback.objectType = Type_MessageBox;
+        m_Callback.widgetType = Type_MessageBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +328,7 @@ namespace tgui
         if (m_CallbackFunctions[ButtonClicked].empty() == false)
         {
             m_Callback.trigger = ButtonClicked;
-            m_Callback.text    = static_cast<Button*>(callback.object)->getText();
+            m_Callback.text    = static_cast<Button*>(callback.widget)->getText();
             addCallback();
         }
     }

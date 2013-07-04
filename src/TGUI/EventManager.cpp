@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/GroupObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ContainerWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +33,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EventManager::EventManager() :
-    m_FocusedObject(0)
+    m_FocusedWidget(0)
     {
     }
 
@@ -44,41 +44,41 @@ namespace tgui
         // Check if a mouse button has moved
         if (event.type == sf::Event::MouseMoved)
         {
-            // Loop through all objects
-            for (unsigned int i=0; i<m_Objects.size(); ++i)
+            // Loop through all widgets
+            for (unsigned int i=0; i<m_Widgets.size(); ++i)
             {
-                // Check if the mouse went down on the object
-                if (m_Objects[i]->m_MouseDown)
+                // Check if the mouse went down on the widget
+                if (m_Widgets[i]->m_MouseDown)
                 {
-                    // Some objects should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                    if (m_Objects[i]->m_DraggableObject)
+                    // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
+                    if (m_Widgets[i]->m_DraggableWidget)
                     {
-                        m_Objects[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                        m_Widgets[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
 
-                    // Groups also need a different treatment
-                    else if (m_Objects[i]->m_GroupObject)
+                    // Containers also need a different treatment
+                    else if (m_Widgets[i]->m_ContainerWidget)
                     {
-                        // Make the event handler of the group do the rest
-                        static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                        // Make the event handler of the container do the rest
+                        static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
                 }
             }
 
-            // Check if the mouse is on top of an object
-            unsigned int objectNr;
-            if (mouseOnObject(objectNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
+            // Check if the mouse is on top of an widget
+            unsigned int widgetNr;
+            if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
             {
-                // Check if the object is a group
-                if (m_Objects[objectNr]->m_GroupObject)
+                // Check if the widget is a container
+                if (m_Widgets[widgetNr]->m_ContainerWidget)
                 {
-                    // Make the event handler of the group do the rest
-                    static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                    // Make the event handler of the container do the rest
+                    static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 }
-                else // Send the event to the object
-                    m_Objects[objectNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                else // Send the event to the widget
+                    m_Widgets[widgetNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             }
         }
 
@@ -88,32 +88,32 @@ namespace tgui
             // Check if the left mouse was pressed
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                // Check if the mouse is on top of an object
-                unsigned int objectNr;
-                if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
+                // Check if the mouse is on top of an widget
+                unsigned int widgetNr;
+                if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
-                    // Focus the object
-                    focusObject(m_Objects[objectNr].get());
+                    // Focus the widget
+                    focusWidget(m_Widgets[widgetNr].get());
 
-                    // Check if the object is a group
-                    if (m_Objects[objectNr]->m_GroupObject)
+                    // Check if the widget is a container
+                    if (m_Widgets[widgetNr]->m_ContainerWidget)
                     {
-                        // If another object was focused then unfocus it now
-                        if ((m_FocusedObject) && (m_FocusedObject != objectNr+1))
+                        // If another widget was focused then unfocus it now
+                        if ((m_FocusedWidget) && (m_FocusedWidget != widgetNr+1))
                         {
-                            m_Objects[m_FocusedObject-1]->m_Focused = false;
-                            m_Objects[m_FocusedObject-1]->objectUnfocused();
-                            m_FocusedObject = 0;
+                            m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                            m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+                            m_FocusedWidget = 0;
                         }
 
-                        // Make the event handler of the group do the rest
-                        static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        // Make the event handler of the container do the rest
+                        static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
-                    else // The event has to be sent to an object
-                        m_Objects[objectNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                    else // The event has to be sent to an widget
+                        m_Widgets[widgetNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 }
-                else // The mouse didn't went down on an object, so unfocus the focused object
-                    unfocusAllObjects();
+                else // The mouse didn't went down on an widget, so unfocus the focused widget
+                    unfocusAllWidgets();
             }
         }
 
@@ -123,40 +123,40 @@ namespace tgui
             // Check if the left mouse was released
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                // Check if the mouse is on top of an object
-                unsigned int objectNr;
-                if (mouseOnObject(objectNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
+                // Check if the mouse is on top of an widget
+                unsigned int widgetNr;
+                if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
                 {
-                    // Check if the object is a group
-                    if (m_Objects[objectNr]->m_GroupObject)
+                    // Check if the widget is a container
+                    if (m_Widgets[widgetNr]->m_ContainerWidget)
                     {
-                        // Make the event handler of the group do the rest
-                        static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        // Make the event handler of the container do the rest
+                        static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
-                    else // Send the event to the object
-                        m_Objects[objectNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                    else // Send the event to the widget
+                        m_Widgets[widgetNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
 
-                    // Tell all the other objects that the mouse has gone up
-                    for (unsigned int i=0; i<m_Objects.size(); ++i)
+                    // Tell all the other widgets that the mouse has gone up
+                    for (unsigned int i=0; i<m_Widgets.size(); ++i)
                     {
-                        if (i != objectNr)
+                        if (i != widgetNr)
                         {
-                            if (m_Objects[i]->m_GroupObject)
-                                static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                            if (m_Widgets[i]->m_ContainerWidget)
+                                static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                             else
-                                m_Objects[i]->mouseNoLongerDown();
+                                m_Widgets[i]->mouseNoLongerDown();
                         }
                     }
                 }
                 else
                 {
-                    // Tell all the objects that the mouse has gone up
-                    for (unsigned int i=0; i<m_Objects.size(); ++i)
+                    // Tell all the widgets that the mouse has gone up
+                    for (unsigned int i=0; i<m_Widgets.size(); ++i)
                     {
-                        if (m_Objects[i]->m_GroupObject)
-                            static_cast<GroupObject::Ptr>(m_Objects[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        if (m_Widgets[i]->m_ContainerWidget)
+                            static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                         else
-                            m_Objects[i]->mouseNoLongerDown();
+                            m_Widgets[i]->mouseNoLongerDown();
                     }
                 }
             }
@@ -168,16 +168,16 @@ namespace tgui
             // Only continue when the character was recognised
             if (event.key.code != sf::Keyboard::Unknown)
             {
-                // Check if there is a focused object
-                if (m_FocusedObject)
+                // Check if there is a focused widget
+                if (m_FocusedWidget)
                 {
-                    // Check if the object is a group
-                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
+                    // Check if the widget is a container
+                    if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
                     {
-                        // Make the event handler of the group do the rest
-                        static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->handleEvent(event);
+                        // Make the event handler of the container do the rest
+                        static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->handleEvent(event);
                     }
-                    else // The event has to be send to a normal object
+                    else // The event has to be send to a normal widget
                     {
                         // Check the pressed key
                         if ((event.key.code == sf::Keyboard::Left)
@@ -189,8 +189,8 @@ namespace tgui
                          || (event.key.code == sf::Keyboard::Space)
                          || (event.key.code == sf::Keyboard::Return))
                         {
-                            // Tell the object that the key was pressed
-                            m_Objects[m_FocusedObject-1]->keyPressed(event.key.code);
+                            // Tell the widget that the key was pressed
+                            m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ namespace tgui
         // Check if a key was released
         else if (event.type == sf::Event::KeyReleased)
         {
-            // Change the focus to another object when the tab key was pressed
+            // Change the focus to another widget when the tab key was pressed
             if (event.key.code == sf::Keyboard::Tab)
                 tabKeyPressed();
         }
@@ -211,17 +211,17 @@ namespace tgui
             // Check if the character that we pressed is allowed
             if ((event.text.unicode >= 30) && (event.text.unicode != 127))
             {
-                // Check if there is a focused object
-                if (m_FocusedObject)
+                // Check if there is a focused widget
+                if (m_FocusedWidget)
                 {
-                    // Check if the object is a group
-                    if (m_Objects[m_FocusedObject-1]->m_GroupObject)
+                    // Check if the widget is a container
+                    if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
                     {
-                        // Make the event handler of the group do the rest
-                        static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->handleEvent(event);
+                        // Make the event handler of the container do the rest
+                        static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->handleEvent(event);
                     }
-                    else // Tell the object that the key was pressed
-                        m_Objects[m_FocusedObject-1]->textEntered(event.text.unicode);
+                    else // Tell the widget that the key was pressed
+                        m_Widgets[m_FocusedWidget-1]->textEntered(event.text.unicode);
                 }
             }
         }
@@ -229,46 +229,46 @@ namespace tgui
         // Check for mouse wheel scrolling
         else if (event.type == sf::Event::MouseWheelMoved)
         {
-            // Find the object under the mouse
-            unsigned int objectNr;
-            if (mouseOnObject(objectNr, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)))
+            // Find the widget under the mouse
+            unsigned int widgetNr;
+            if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)))
             {
-                // Check if the object is a group
-                if (m_Objects[objectNr]->m_GroupObject)
+                // Check if the widget is a container
+                if (m_Widgets[widgetNr]->m_ContainerWidget)
                 {
-                    // Make the event handler of the group do the rest
-                    static_cast<GroupObject::Ptr>(m_Objects[objectNr])->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+                    // Make the event handler of the container do the rest
+                    static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
                 }
-                else // Send the event to the object
-                    m_Objects[objectNr]->mouseWheelMoved(event.mouseWheel.delta);
+                else // Send the event to the widget
+                    m_Widgets[widgetNr]->mouseWheelMoved(event.mouseWheel.delta);
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::focusObject(Object *const object)
+    void EventManager::focusWidget(Widget *const widget)
     {
-        // Loop all the objects
-        for (unsigned int i = 0; i < m_Objects.size(); ++i)
+        // Loop all the widgets
+        for (unsigned int i = 0; i < m_Widgets.size(); ++i)
         {
-            // Search for the object that has to be focused
-            if (m_Objects[i].get() == object)
+            // Search for the widget that has to be focused
+            if (m_Widgets[i].get() == widget)
             {
-                // Only continue when the object wasn't already focused
-                if (m_FocusedObject != i+1)
+                // Only continue when the widget wasn't already focused
+                if (m_FocusedWidget != i+1)
                 {
-                    // Unfocus the currently focused object
-                    if (m_FocusedObject)
+                    // Unfocus the currently focused widget
+                    if (m_FocusedWidget)
                     {
-                        m_Objects[m_FocusedObject-1]->m_Focused = false;
-                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
                     }
 
-                    // Focus the new object
-                    m_FocusedObject = i+1;
-                    object->m_Focused = true;
-                    object->objectFocused();
+                    // Focus the new widget
+                    m_FocusedWidget = i+1;
+                    widget->m_Focused = true;
+                    widget->widgetFocused();
                 }
 
                 break;
@@ -278,33 +278,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::unfocusObject(Object *const object)
+    void EventManager::unfocusWidget(Widget *const widget)
     {
-        // Check if the object is focused
-        if (object->m_Focused)
+        // Check if the widget is focused
+        if (widget->m_Focused)
         {
-            // Focus the next object
+            // Focus the next widget
             tabKeyPressed();
 
-            // Make sure that the object gets unfocused
-            if (object->m_Focused)
+            // Make sure that the widget gets unfocused
+            if (widget->m_Focused)
             {
-                object->m_Focused = false;
-                object->objectUnfocused();
-                m_FocusedObject = 0;
+                widget->m_Focused = false;
+                widget->widgetUnfocused();
+                m_FocusedWidget = 0;
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::unfocusAllObjects()
+    void EventManager::unfocusAllWidgets()
     {
-        if (m_FocusedObject)
+        if (m_FocusedWidget)
         {
-            m_Objects[m_FocusedObject-1]->m_Focused = false;
-            m_Objects[m_FocusedObject-1]->objectUnfocused();
-            m_FocusedObject = 0;
+            m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+            m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+            m_FocusedWidget = 0;
         }
     }
 
@@ -312,15 +312,15 @@ namespace tgui
 
     void EventManager::updateTime(const sf::Time& elapsedTime)
     {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i=0; i<m_Widgets.size(); ++i)
         {
-            // Check if the object is a group or an object that uses the time
-            if (m_Objects[i]->m_AnimatedObject)
+            // Check if the widget is a container or an widget that uses the time
+            if (m_Widgets[i]->m_AnimatedWidget)
             {
                 // Update the elapsed time
-                m_Objects[i]->m_AnimationTimeElapsed += elapsedTime;
-                m_Objects[i]->update();
+                m_Widgets[i]->m_AnimationTimeElapsed += elapsedTime;
+                m_Widgets[i]->update();
             }
         }
     }
@@ -333,61 +333,61 @@ namespace tgui
         if (tabKeyUsageEnabled == false)
             return;
 
-        // Check if a group is focused
-        if (m_FocusedObject)
+        // Check if a container is focused
+        if (m_FocusedWidget)
         {
-            if (m_Objects[m_FocusedObject-1]->m_GroupObject)
+            if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
             {
-                // Focus the next object in group
-                if (static_cast<GroupObject::Ptr>(m_Objects[m_FocusedObject-1])->focusNextObjectInGroup())
+                // Focus the next widget in container
+                if (static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
                     return;
             }
         }
 
-        // Loop all objects behind the focused one
-        for (unsigned int i=m_FocusedObject; i<m_Objects.size(); ++i)
+        // Loop all widgets behind the focused one
+        for (unsigned int i=m_FocusedWidget; i<m_Widgets.size(); ++i)
         {
-            // If you are not allowed to focus the object, then skip it
-            if (m_Objects[i]->m_AllowFocus == true)
+            // If you are not allowed to focus the widget, then skip it
+            if (m_Widgets[i]->m_AllowFocus == true)
             {
-                // Make sure that the object is visible and enabled
-                if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
+                // Make sure that the widget is visible and enabled
+                if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
                 {
-                    if (m_FocusedObject)
+                    if (m_FocusedWidget)
                     {
-                        // unfocus the current object
-                        m_Objects[m_FocusedObject-1]->m_Focused = false;
-                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
                     }
 
-                    // Focus on the new object
-                    m_FocusedObject = i+1;
-                    m_Objects[i]->m_Focused = true;
-                    m_Objects[i]->objectFocused();
+                    // Focus on the new widget
+                    m_FocusedWidget = i+1;
+                    m_Widgets[i]->m_Focused = true;
+                    m_Widgets[i]->widgetFocused();
                     return;
                 }
             }
         }
 
-        // None of the objects behind the focused one could be focused, so loop the ones before it
-        if (m_FocusedObject)
+        // None of the widgets behind the focused one could be focused, so loop the ones before it
+        if (m_FocusedWidget)
         {
-            for (unsigned int i=0; i<m_FocusedObject-1; ++i)
+            for (unsigned int i=0; i<m_FocusedWidget-1; ++i)
             {
-                // If you are not allowed to focus the object, then skip it
-                if (m_Objects[i]->m_AllowFocus == true)
+                // If you are not allowed to focus the widget, then skip it
+                if (m_Widgets[i]->m_AllowFocus == true)
                 {
-                    // Make sure that the object is visible and enabled
-                    if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
+                    // Make sure that the widget is visible and enabled
+                    if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
                     {
-                        // unfocus the current object
-                        m_Objects[m_FocusedObject-1]->m_Focused = false;
-                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
 
-                        // Focus on the new object
-                        m_FocusedObject = i+1;
-                        m_Objects[i]->m_Focused = true;
-                        m_Objects[i]->objectFocused();
+                        // Focus on the new widget
+                        m_FocusedWidget = i+1;
+                        m_Widgets[i]->m_Focused = true;
+                        m_Widgets[i]->widgetFocused();
                         return;
                     }
                 }
@@ -397,32 +397,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EventManager::focusNextObject()
+    bool EventManager::focusNextWidget()
     {
         // Don't do anything when the tab key usage is disabled
         if (tabKeyUsageEnabled == false)
             return false;
 
-        // Loop through all objects
-        for (unsigned int i=m_FocusedObject; i<m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i=m_FocusedWidget; i<m_Widgets.size(); ++i)
         {
-            // If you are not allowed to focus the object, then skip it
-            if (m_Objects[i]->m_AllowFocus == true)
+            // If you are not allowed to focus the widget, then skip it
+            if (m_Widgets[i]->m_AllowFocus == true)
             {
-                // Make sure that the object is visible and enabled
-                if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
+                // Make sure that the widget is visible and enabled
+                if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
                 {
-                    if (m_FocusedObject > 0)
+                    if (m_FocusedWidget > 0)
                     {
-                        // Unfocus the current object
-                        m_Objects[m_FocusedObject-1]->m_Focused = false;
-                        m_Objects[m_FocusedObject-1]->objectUnfocused();
+                        // Unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
                     }
 
-                    // Focus on the new object
-                    m_FocusedObject = i+1;
-                    m_Objects[i]->m_Focused = true;
-                    m_Objects[i]->objectFocused();
+                    // Focus on the new widget
+                    m_FocusedWidget = i+1;
+                    m_Widgets[i]->m_Focused = true;
+                    m_Widgets[i]->widgetFocused();
 
                     return true;
                 }
@@ -430,51 +430,51 @@ namespace tgui
         }
 
         // We have the highest id
-        unfocusAllObjects();
+        unfocusAllWidgets();
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EventManager::mouseOnObject(unsigned int& objectNr, float x, float y)
+    bool EventManager::mouseOnWidget(unsigned int& widgetNr, float x, float y)
     {
-        bool objectFound = false;
+        bool widgetFound = false;
 
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i=0; i<m_Widgets.size(); ++i)
         {
-            // Check if the object is visible and enabled
-            if ((m_Objects[i]->m_Visible) && (m_Objects[i]->m_Enabled))
+            // Check if the widget is visible and enabled
+            if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
             {
-                // Ask the object if the mouse is on top of them
-                if (m_Objects[i]->mouseOnObject(x, y))
+                // Ask the widget if the mouse is on top of them
+                if (m_Widgets[i]->mouseOnWidget(x, y))
                 {
-                    // If there already was an object then they overlap each other
-                    if (objectFound)
-                        m_Objects[objectNr]->mouseNotOnObject();
+                    // If there already was an widget then they overlap each other
+                    if (widgetFound)
+                        m_Widgets[widgetNr]->mouseNotOnWidget();
 
-                    // An object is found now
-                    objectFound = true;
+                    // An widget is found now
+                    widgetFound = true;
 
-                    // Also remember what object should receive the event
-                    objectNr = i;
+                    // Also remember what widget should receive the event
+                    widgetNr = i;
                 }
             }
         }
 
-        // If our mouse is on top of an object then return true
-        return objectFound;
+        // If our mouse is on top of an widget then return true
+        return widgetFound;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::mouseNotOnObject()
+    void EventManager::mouseNotOnWidget()
     {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i=0; i<m_Widgets.size(); ++i)
         {
-            // Tell the object that the mouse is no longer on top of it
-            m_Objects[i]->mouseNotOnObject();
+            // Tell the widget that the mouse is no longer on top of it
+            m_Widgets[i]->mouseNotOnWidget();
         }
     }
 
@@ -482,11 +482,11 @@ namespace tgui
 
     void EventManager::mouseNoLongerDown()
     {
-        // Loop through all objects
-        for (unsigned int i=0; i<m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i=0; i<m_Widgets.size(); ++i)
         {
-            // Tell the object that the mouse is no longer down
-            m_Objects[i]->mouseNoLongerDown();
+            // Tell the widget that the mouse is no longer down
+            m_Widgets[i]->mouseNoLongerDown();
         }
     }
 

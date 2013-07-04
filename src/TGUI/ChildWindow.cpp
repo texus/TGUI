@@ -23,9 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/GroupObject.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ContainerWidget.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Button.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
@@ -50,15 +50,15 @@ namespace tgui
     m_TitleAlignment   (TitleAlignmentCentered),
     m_BorderColor      (0, 0, 0)
     {
-        m_Callback.objectType = Type_ChildWindow;
+        m_Callback.widgetType = Type_ChildWindow;
         m_CloseButton = new tgui::Button();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& copy) :
-    GroupObject        (copy),
-    ObjectBorders      (copy),
+    ContainerWidget    (copy),
+    WidgetBorders      (copy),
     m_LoadedConfigFile (copy.m_LoadedConfigFile),
     m_Size             (copy.m_Size),
     m_BackgroundColor  (copy.m_BackgroundColor),
@@ -110,12 +110,12 @@ namespace tgui
 
     ChildWindow& ChildWindow::operator= (const ChildWindow& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             ChildWindow temp(right);
-            this->GroupObject::operator=(right);
-            this->ObjectBorders::operator=(right);
+            this->ContainerWidget::operator=(right);
+            this->WidgetBorders::operator=(right);
 
             // Delete the old close button
             delete m_CloseButton;
@@ -266,11 +266,11 @@ namespace tgui
             // Check if optional textures were loaded
             if (m_CloseButton->m_TextureHover_M.data != NULL)
             {
-                m_CloseButton->m_ObjectPhase |= ObjectPhase_Hover;
+                m_CloseButton->m_WidgetPhase |= WidgetPhase_Hover;
             }
             if (m_CloseButton->m_TextureDown_M.data != NULL)
             {
-                m_CloseButton->m_ObjectPhase |= ObjectPhase_MouseDown;
+                m_CloseButton->m_WidgetPhase |= WidgetPhase_MouseDown;
             }
 
             m_CloseButton->m_Size = Vector2f(m_CloseButton->m_TextureNormal_M.getSize());
@@ -311,7 +311,7 @@ namespace tgui
 
     void ChildWindow::setSize(float width, float height)
     {
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -397,7 +397,7 @@ namespace tgui
 
     void ChildWindow::setTransparency(unsigned char transparency)
     {
-        GroupObject::setTransparency(transparency);
+        ContainerWidget::setTransparency(transparency);
 
         m_BackgroundSprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
@@ -538,7 +538,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::mouseOnObject(float x, float y)
+    bool ChildWindow::mouseOnWidget(float x, float y)
     {
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)
@@ -547,7 +547,7 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
         {
-            m_EventManager.mouseNotOnObject();
+            m_EventManager.mouseNotOnWidget();
             return true;
         }
         else
@@ -558,10 +558,10 @@ namespace tgui
             else
             {
                 if (m_MouseHover)
-                    mouseLeftObject();
+                    mouseLeftWidget();
 
-                // Tell the objects inside the child window that the mouse is no longer on top of them
-                m_EventManager.mouseNotOnObject();
+                // Tell the widgets inside the child window that the mouse is no longer on top of them
+                m_EventManager.mouseNotOnWidget();
                 m_MouseHover = false;
                 return false;
             }
@@ -570,7 +570,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::initialize(tgui::Group *const parent)
+    void ChildWindow::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setGlobalFont(m_Parent->getGlobalFont());
@@ -607,8 +607,8 @@ namespace tgui
             // Move the childwindow to the front when clicking on it
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                m_Parent->focusObject(this);
-                m_Parent->moveObjectToFront(this);
+                m_Parent->focusWidget(this);
+                m_Parent->moveWidgetToFront(this);
             }
 
             // Check if the mouse is on top of the title bar
@@ -624,13 +624,13 @@ namespace tgui
                 if (event.type == sf::Event::MouseMoved)
                 {
                     // Send the hover event to the close button
-                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                    if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
                         m_CloseButton->mouseMoved(mouseX, mouseY);
                 }
                 else if (event.type == sf::Event::MouseButtonPressed)
                 {
                     // Send the mouse press event to the close button
-                    if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                    if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
                         m_CloseButton->leftMousePressed(mouseX, mouseY);
                     else
                     {
@@ -652,7 +652,7 @@ namespace tgui
                         m_CloseButton->m_MouseDown = false;
 
                         // Check if the mouse is still on the close button
-                        if (m_CloseButton->mouseOnObject(mouseX, mouseY))
+                        if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
                         {
                             // If a callback was requested then send it
                             if (m_CallbackFunctions[Closed].empty() == false)
@@ -668,7 +668,7 @@ namespace tgui
                         }
                     }
 
-                    // Tell the objects that the mouse is no longer down
+                    // Tell the widgets that the mouse is no longer down
                     m_EventManager.mouseNoLongerDown();
                 }
 
@@ -689,17 +689,17 @@ namespace tgui
                 if ((getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight)).contains(mouseX, mouseY))
                 &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(mouseX, mouseY) == false))
                 {
-                    // If the mouse was released then tell the objects about it
+                    // If the mouse was released then tell the widgets about it
                     if (event.type == sf::Event::MouseButtonReleased)
                         m_EventManager.mouseNoLongerDown();
 
-                    // Don't send the event to the objects
+                    // Don't send the event to the widgets
                     return;
                 }
             }
         }
 
-        GroupObject::handleEvent(event, mouseX - m_LeftBorder, mouseY - (m_TitleBarHeight + m_TopBorder));
+        ContainerWidget::handleEvent(event, mouseX - m_LeftBorder, mouseY - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -780,7 +780,7 @@ namespace tgui
             GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightTitleBarPosition.x * scaleViewX), scissor[0] + scissor[2]);
             GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightTitleBarPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-            // If the object outside the window then don't draw anything
+            // If the widget outside the window then don't draw anything
             if (scissorRight < scissorLeft)
                 scissorRight = scissorLeft;
             else if (scissorBottom < scissorTop)
@@ -868,7 +868,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPanelPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPanelPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
@@ -877,8 +877,8 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        // Draw the objects in the child window
-        drawObjectGroup(&target, states);
+        // Draw the widgets in the child window
+        drawWidgetContainer(&target, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

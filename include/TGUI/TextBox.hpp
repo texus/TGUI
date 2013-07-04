@@ -42,11 +42,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API TextBox : public Object, public ObjectBorders
+    class TGUI_API TextBox : public Widget, public WidgetBorders
     {
       public:
 
-        typedef SharedObjectPtr<TextBox> Ptr;
+        typedef SharedWidgetPtr<TextBox> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,14 +84,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual TextBox* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -102,7 +102,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -416,9 +416,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,25 +428,25 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
+        virtual bool mouseOnWidget(float x, float y);
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
         virtual void keyPressed(sf::Keyboard::Key Key);
         virtual void textEntered(sf::Uint32 Key);
         virtual void mouseWheelMoved(int delta);
-        virtual void mouseNotOnObject();
+        virtual void mouseNotOnWidget();
         virtual void mouseNoLongerDown();
-        virtual void objectUnfocused();
+        virtual void widgetUnfocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -491,7 +491,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -501,9 +501,9 @@ namespace tgui
 
         enum TextBoxCallbacks
         {
-            TextChanged = ObjectCallbacksCount * 1,
-            AllTextBoxCallbacks = ObjectCallbacksCount * 2 - 1,
-            TextBoxCallbacksCount = ObjectCallbacksCount * 2
+            TextChanged = WidgetCallbacksCount * 1,
+            AllTextBoxCallbacks = WidgetCallbacksCount * 2 - 1,
+            TextBoxCallbacksCount = WidgetCallbacksCount * 2
         };
 
 
@@ -552,7 +552,7 @@ namespace tgui
         sf::Color m_SelectedTextBgrColor;
         sf::Color m_BorderColor;
 
-        // The sfml Text objects
+        // The sfml Text widgets
         sf::Text m_TextBeforeSelection;
         sf::Text m_TextSelection1;
         sf::Text m_TextSelection2;

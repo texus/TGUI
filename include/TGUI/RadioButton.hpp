@@ -36,7 +36,7 @@ namespace tgui
     {
       public:
 
-        typedef SharedObjectPtr<RadioButton> Ptr;
+        typedef SharedWidgetPtr<RadioButton> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,14 +67,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual RadioButton* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -108,7 +108,7 @@ namespace tgui
         /// \brief Unchecks the radio button
         ///
         /// If you really want a radio button to be unchecked, you can use this function.
-        /// But you should rather call the uncheckRadioButtons function from the parent object.
+        /// But you should rather call the uncheckRadioButtons function from the parent widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void forceUncheck();

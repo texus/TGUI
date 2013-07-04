@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_GROUP_HPP
-#define TGUI_GROUP_HPP
+#ifndef TGUI_CONTAINER_HPP
+#define TGUI_CONTAINER_HPP
 
 #include <list>
 
@@ -35,9 +35,9 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Parent class for objects that store multiple objects.
+    /// \brief Parent class for widgets that store multiple widgets.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Group
+    class TGUI_API Container
     {
       public:
 
@@ -45,7 +45,7 @@ namespace tgui
         /// \brief Default constructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Group();
+        Container();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,14 +54,14 @@ namespace tgui
         /// \param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Group(const Group& copy);
+        Container(const Container& copy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Group();
+        virtual ~Container();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,13 +72,13 @@ namespace tgui
         /// \return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Group& operator= (const Group& right);
+        Container& operator= (const Container& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the global font.
         ///
-        /// This font will be used by all objects that are created after calling this function.
+        /// This font will be used by all widgets that are created after calling this function.
         ///
         /// \param filename  Path of the font file to load
         ///
@@ -91,7 +91,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the global font.
         ///
-        /// This font will be used by all objects that are created after calling this function.
+        /// This font will be used by all widgets that are created after calling this function.
         ///
         /// \param font  Font to copy
         ///
@@ -102,7 +102,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the global font.
         ///
-        /// This is the font that is used for newly created object by default.
+        /// This is the font that is used for newly created widget by default.
         ///
         /// \return global font
         ///
@@ -111,172 +111,172 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds an object to the group.
+        /// \brief Adds an widget to the container.
         ///
-        /// \param objectPtr   Pointer to the object you would like to add
-        /// \param objectName  If you want to access the object later then you must do this with this name
-        ///
-        /// Usage example:
-        /// \code
-        /// tgui::Picture::Ptr pic(group); // Create a picture and add it to the group
-        /// group.remove(pic);             // Remove the picture from the group
-        /// group.add(pic);                // Add the picture to the group again
-        /// \endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void add(const SharedObjectPtr<Object>& objectPtr, const sf::String& objectName = "");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a pointer to an earlier created object.
-        ///
-        /// \param objectName The name that was given to the object when it was added to the group.
-        ///
-        /// \return Pointer to the earlier created object
-        ///
-        /// \warning This function will return NULL when an unknown object name was passed.
+        /// \param widgetPtr   Pointer to the widget you would like to add
+        /// \param widgetName  If you want to access the widget later then you must do this with this name
         ///
         /// Usage example:
         /// \code
-        /// tgui::Picture::Ptr pic(group, "picName");
-        /// tgui::Picture::Ptr pic2 = group.get("picName");
+        /// tgui::Picture::Ptr pic(container); // Create a picture and add it to the container
+        /// container.remove(pic);             // Remove the picture from the container
+        /// container.add(pic);                // Add the picture to the container again
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SharedObjectPtr<Object> get(const sf::String& objectName) const;
+        virtual void add(const SharedWidgetPtr<Widget>& widgetPtr, const sf::String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Makes a copy of any existing object and returns the pointer to the new object.
+        /// \brief Returns a pointer to an earlier created widget.
         ///
-        /// \param oldObject     A pointer to the old object.
-        /// \param newObjectName If you want to access the object later then you must do this with this name
+        /// \param widgetName The name that was given to the widget when it was added to the container.
         ///
-        /// \return Pointer to the new object
+        /// \return Pointer to the earlier created widget
+        ///
+        /// \warning This function will return NULL when an unknown widget name was passed.
         ///
         /// Usage example:
         /// \code
-        /// tgui::Picture::Ptr pic(group, "picName");
-        /// tgui::Picture::Ptr pic2 = group.copy(pic, "picName_2");
-        /// tgui::Picture::Ptr pic3 = group.copy(group.get("picName"), "picName_3");
+        /// tgui::Picture::Ptr pic(container, "picName");
+        /// tgui::Picture::Ptr pic2 = container.get("picName");
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SharedObjectPtr<Object> copy(const SharedObjectPtr<Object>& oldObject, const sf::String& newObjectName = "");
+        SharedWidgetPtr<Widget> get(const sf::String& widgetName) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Makes a copy of any existing widget and returns the pointer to the new widget.
+        ///
+        /// \param oldWidget     A pointer to the old widget.
+        /// \param newWidgetName If you want to access the widget later then you must do this with this name
+        ///
+        /// \return Pointer to the new widget
+        ///
+        /// Usage example:
+        /// \code
+        /// tgui::Picture::Ptr pic(container, "picName");
+        /// tgui::Picture::Ptr pic2 = container.copy(pic, "picName_2");
+        /// tgui::Picture::Ptr pic3 = container.copy(container.get("picName"), "picName_3");
+        /// \endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SharedWidgetPtr<Widget> copy(const SharedWidgetPtr<Widget>& oldWidget, const sf::String& newWidgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Loads a form from a file.
         ///
-        /// The objects will be loaded and added to the group.
-        /// Note that even when this function fails, some objects might have been loaded already.
+        /// The widgets will be loaded and added to the container.
+        /// Note that even when this function fails, some widgets might have been loaded already.
         ///
-        /// \param filename  Filename of the object file that is to be loaded
+        /// \param filename  Filename of the widget file that is to be loaded
         ///
         /// \return
         ///        - true on success
         ///        - false when the file could not be opened
         ///        - false when the file contains a mistake
-        ///        - false when one of the objects couldn't be loaded
+        ///        - false when one of the widgets couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadObjectsFromFile(const std::string& filename);
+        bool loadWidgetsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a list of all the objects.
+        /// \brief Returns a list of all the widgets.
         ///
-        /// \return Vector of all object pointers
+        /// \return Vector of all widget pointers
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector< SharedObjectPtr<Object> >& getObjects();
+        std::vector< SharedWidgetPtr<Widget> >& getWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a list of the names of all the objects.
+        /// \brief Returns a list of the names of all the widgets.
         ///
-        /// \return Vector of all object names
+        /// \return Vector of all widget names
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<sf::String>& getObjectNames();
+        std::vector<sf::String>& getWidgetNames();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single object that was added to the group.
+        /// \brief Removes a single widget that was added to the container.
         ///
-        /// \param object  Pointer to the object to remove
+        /// \param widget  Pointer to the widget to remove
         ///
         /// \see remove(sf::String)
         ///
         /// Usage example:
         /// \code
-        /// tgui::Picture::Ptr pic(group, "picName");
-        /// tgui::Picture::Ptr pic2(group, "picName2");
-        /// group.remove(pic);
-        /// group.remove(group.get("picName2"));
+        /// tgui::Picture::Ptr pic(container, "picName");
+        /// tgui::Picture::Ptr pic2(container, "picName2");
+        /// container.remove(pic);
+        /// container.remove(container.get("picName2"));
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const SharedObjectPtr<Object>& object);
+        virtual void remove(const SharedWidgetPtr<Widget>& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single object that was added to the group.
+        /// \brief Removes a single widget that was added to the container.
         ///
-        /// \param object  Pointer to the object to remove
+        /// \param widget  Pointer to the widget to remove
         ///
         /// This function is provided for internal use.
         /// The other remove function will probably be easier to use, but in the end they do exactly the same.
         ///
-        /// \see remove(SharedObjectPtr<Object>)
+        /// \see remove(SharedWidgetPtr<Widget>)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(Object* object);
+        virtual void remove(Widget* widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all objects that were added to the group.
+        /// \brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void removeAllObjects();
+        virtual void removeAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses an object.
+        /// \brief Focuses an widget.
         ///
-        /// The previously focused object will be unfocused.
+        /// The previously focused widget will be unfocused.
         ///
-        /// \param object  The object that has to be focused.
+        /// \param widget  The widget that has to be focused.
         ///
-        /// \see unfocusObject
-        /// \see unfocusAllObjects
+        /// \see unfocusWidget
+        /// \see unfocusAllWidgets
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void focusObject(Object *const object);
+        void focusWidget(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocus an object.
+        /// \brief Unfocus an widget.
         ///
-        /// The next object will be focused.
+        /// The next widget will be focused.
         ///
-        /// \param object  The object that has to be unfocused.
+        /// \param widget  The widget that has to be unfocused.
         ///
-        /// \see focusObject
-        /// \see unfocusAllObjects
+        /// \see focusWidget
+        /// \see unfocusAllWidgets
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unfocusObject(Object *const object);
+        void unfocusWidget(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocus all the objects.
+        /// \brief Unfocus all the widgets.
         ///
-        /// \see focusObject
-        /// \see unfocusObject
+        /// \see focusWidget
+        /// \see unfocusWidget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unfocusAllObjects();
+        void unfocusAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,50 +287,50 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an object before all other objects.
+        /// \brief Places an widget before all other widgets.
         ///
-        /// \param object  The object that should be moved to the front
+        /// \param widget  The widget that should be moved to the front
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void moveObjectToFront(Object *const object);
+        void moveWidgetToFront(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an object behind all other objects.
+        /// \brief Places an widget behind all other widgets.
         ///
-        /// \param object  The object that should be moved to the back
+        /// \param widget  The widget that should be moved to the back
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void moveObjectToBack(Object *const object);
+        void moveWidgetToBack(Widget *const widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is used internally by child object to alert there parent about a callback.
+        // This function is used internally by child widget to alert there parent about a callback.
         // If it reaches the window, then the callback can be obtained by calling the getCallback function of the window.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void addChildCallback(Callback& callback) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to the callbacks of all child objects.
+        /// \brief Bind a function to the callbacks of all child widgets.
         ///
-        /// When a child object tells this object about the callback then the global callback function(s) will be called.
-        /// If no global callback function has been bound then the callback is passed to the parent of this object.
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
         ///
-        /// \param func  Pointer to a free function with a reference to a Callback object as parameter.
+        /// \param func  Pointer to a free function with a reference to a Callback widget as parameter.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void bindGlobalCallback(boost::function<void(const tgui::Callback&)> func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to the callbacks of all child objects.
+        /// \brief Bind a function to the callbacks of all child widgets.
         ///
-        /// When a child object tells this object about the callback then the global callback function(s) will be called.
-        /// If no global callback function has been bound then the callback is passed to the parent of this object.
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
         ///
-        /// \param func      Pointer to a member function with a reference to a Callback object as parameter.
-        /// \param classPtr  Pointer to the object of the class.
+        /// \param func      Pointer to a member function with a reference to a Callback widget as parameter.
+        /// \param classPtr  Pointer to the widget of the class.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
@@ -348,7 +348,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Used internally to get the size of a group object.
+        // Used internally to get the size of a container widget.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getDisplaySize();
 
@@ -357,9 +357,9 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will call the draw function from all the objects.
+        // This function will call the draw function from all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states = sf::RenderStates::Default) const;
+        virtual void drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states = sf::RenderStates::Default) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,10 +372,10 @@ namespace tgui
         // The internal event manager
         EventManager m_EventManager;
 
-        // Is the group focused? If so, then one of the objects inside the group may be focused
-        bool m_GroupFocused;
+        // Is the container focused? If so, then one of the widgets inside the container may be focused
+        bool m_ContainerFocused;
 
-        // A list that stores all functions that receive callbacks triggered by child objects
+        // A list that stores all functions that receive callbacks triggered by child widgets
         std::list< boost::function<void(const Callback&)> > m_GlobalCallbackFunctions;
 
 
@@ -387,4 +387,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_GROUP_HPP
+#endif // TGUI_CONTAINER_HPP

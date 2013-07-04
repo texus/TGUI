@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Slider2d.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -43,14 +43,14 @@ namespace tgui
     m_FixedThumbSize     (true),
     m_SeparateHoverImage (false)
     {
-        m_Callback.objectType = Type_Slider2d;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_Slider2d;
+        m_DraggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider2d::Slider2d(const Slider2d& copy) :
-    ClickableObject      (copy),
+    ClickableWidget      (copy),
     m_LoadedConfigFile   (copy.m_LoadedConfigFile),
     m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
@@ -80,11 +80,11 @@ namespace tgui
 
     Slider2d& Slider2d::operator= (const Slider2d& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Slider2d temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedConfigFile,    temp.m_LoadedConfigFile);
             std::swap(m_Minimum,             temp.m_Minimum);
@@ -211,7 +211,7 @@ namespace tgui
         // Check if optional textures were loaded
         if ((m_TextureTrackHover.data != NULL) && (m_TextureThumbHover.data != NULL))
         {
-            m_ObjectPhase |= ObjectPhase_Hover;
+            m_WidgetPhase |= WidgetPhase_Hover;
         }
 
         return m_Loaded = true;
@@ -232,7 +232,7 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -353,7 +353,7 @@ namespace tgui
 
     void Slider2d::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         m_TextureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
@@ -365,7 +365,7 @@ namespace tgui
 
     void Slider2d::leftMousePressed(float x, float y)
     {
-        ClickableObject::leftMousePressed(x, y);
+        ClickableWidget::leftMousePressed(x, y);
 
         // Refresh the value
         mouseMoved(x, y);
@@ -375,7 +375,7 @@ namespace tgui
 
     void Slider2d::leftMouseReleased(float x, float y)
     {
-        ClickableObject::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(x, y);
 
         if (m_ReturnThumbToCenter)
         {
@@ -400,7 +400,7 @@ namespace tgui
             return;
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         m_MouseHover = true;
 
@@ -440,10 +440,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::objectFocused()
+    void Slider2d::widgetFocused()
     {
         // A slider can't be focused (yet)
-        m_Parent->unfocusObject(this);
+        m_Parent->unfocusWidget(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,7 +498,7 @@ namespace tgui
         // Draw the track image
         if (m_SeparateHoverImage)
         {
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureTrackHover, states);
             else
                 target.draw(m_TextureTrackNormal, states);
@@ -507,7 +507,7 @@ namespace tgui
         {
             target.draw(m_TextureTrackNormal, states);
 
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureTrackHover, states);
         }
 
@@ -539,7 +539,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
@@ -551,7 +551,7 @@ namespace tgui
         // Draw the thumb image
         if (m_SeparateHoverImage)
         {
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureThumbHover, states);
             else
                 target.draw(m_TextureThumbNormal, states);
@@ -560,7 +560,7 @@ namespace tgui
         {
             target.draw(m_TextureThumbNormal, states);
 
-            if ((m_MouseHover) && (m_ObjectPhase & ObjectPhase_Hover))
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 target.draw(m_TextureThumbHover, states);
         }
 

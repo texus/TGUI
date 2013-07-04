@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Picture.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,13 +35,13 @@ namespace tgui
 
     Picture::Picture()
     {
-        m_Callback.objectType = Type_Picture;
+        m_Callback.widgetType = Type_Picture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
-    ClickableObject (copy),
+    ClickableWidget (copy),
     m_LoadedFilename(copy.m_LoadedFilename)
     {
         // Copy the texture
@@ -61,11 +61,11 @@ namespace tgui
 
     Picture& Picture::operator= (const Picture& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             Picture temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             std::swap(m_LoadedFilename, temp.m_LoadedFilename);
             std::swap(m_Texture,        temp.m_Texture);
@@ -171,14 +171,14 @@ namespace tgui
 
     void Picture::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         m_Texture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::mouseOnObject(float x, float y)
+    bool Picture::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the image wasn't loaded
         if (m_Loaded == false)
@@ -197,7 +197,7 @@ namespace tgui
         }
 
         if (m_MouseHover == true)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         m_MouseHover = false;
         return false;

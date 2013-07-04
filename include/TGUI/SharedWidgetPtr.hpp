@@ -23,18 +23,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_SHARED_OBJECTS_PTR_HPP
-#define TGUI_SHARED_OBJECTS_PTR_HPP
+#ifndef TGUI_SHARED_WIDGET_PTR_HPP
+#define TGUI_SHARED_WIDGET_PTR_HPP
 
 #include <cassert>
 
-#include <TGUI/Group.hpp>
+#include <TGUI/Container.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    class GroupObject;
+    class ContainerWidget;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,14 +46,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <class T>
-    class TGUI_API SharedObjectPtr
+    class TGUI_API SharedWidgetPtr
     {
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr() :
-        m_ObjectPtr(NULL)
+        SharedWidgetPtr() :
+        m_WidgetPtr(NULL)
         {
             m_RefCount = new ReferenceCount;
             m_RefCount->count = 1;
@@ -61,20 +61,20 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr(Group& group, const sf::String& objectName = "")
+        SharedWidgetPtr(Container& container, const sf::String& widgetName = "")
         {
             m_RefCount = new ReferenceCount;
             m_RefCount->count = 1;
 
-            m_ObjectPtr = new T();
-            group.add(*this, objectName);
+            m_WidgetPtr = new T();
+            container.add(*this, widgetName);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr(const SharedObjectPtr<T>& copy)
+        SharedWidgetPtr(const SharedWidgetPtr<T>& copy)
         {
-            m_ObjectPtr = copy.get();
+            m_WidgetPtr = copy.get();
 
             m_RefCount = copy.getRefCount();
             m_RefCount->count += 1;
@@ -83,9 +83,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <class U>
-        SharedObjectPtr(const SharedObjectPtr<U>& copy)
+        SharedWidgetPtr(const SharedWidgetPtr<U>& copy)
         {
-            m_ObjectPtr = static_cast<T*>(copy.get());
+            m_WidgetPtr = static_cast<T*>(copy.get());
 
             m_RefCount = copy.getRefCount();
             m_RefCount->count += 1;
@@ -93,11 +93,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ~SharedObjectPtr()
+        ~SharedWidgetPtr()
         {
             if (m_RefCount->count == 1)
             {
-                delete m_ObjectPtr;
+                delete m_WidgetPtr;
                 delete m_RefCount;
             }
             else
@@ -106,19 +106,19 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr<T>& operator=(const SharedObjectPtr<T>& copy)
+        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<T>& copy)
         {
             if (this != &copy)
             {
                 if (m_RefCount->count == 1)
                 {
-                    delete m_ObjectPtr;
+                    delete m_WidgetPtr;
                     delete m_RefCount;
                 }
                 else
                     m_RefCount->count -= 1;
 
-                m_ObjectPtr = copy.get();
+                m_WidgetPtr = copy.get();
 
                 m_RefCount = copy.getRefCount();
                 m_RefCount->count += 1;
@@ -130,17 +130,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <class U>
-        SharedObjectPtr<T>& operator=(const SharedObjectPtr<U>& copy)
+        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<U>& copy)
         {
             if (m_RefCount->count == 1)
             {
-                delete m_ObjectPtr;
+                delete m_WidgetPtr;
                 delete m_RefCount;
             }
             else
                 m_RefCount->count -= 1;
 
-            m_ObjectPtr = static_cast<T*>(copy.get());
+            m_WidgetPtr = static_cast<T*>(copy.get());
 
             m_RefCount = copy.getRefCount();
             m_RefCount->count += 1;
@@ -150,12 +150,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void init(Group& group, const sf::String& objectName = "")
+        void init(Container& container, const sf::String& widgetName = "")
         {
-            if (m_ObjectPtr == NULL)
+            if (m_WidgetPtr == NULL)
             {
-                m_ObjectPtr = new T();
-                group.add(*this, objectName);
+                m_WidgetPtr = new T();
+                container.add(*this, widgetName);
             }
         }
 
@@ -163,120 +163,120 @@ namespace tgui
 
         bool operator!() const
         {
-            return m_ObjectPtr == NULL;
+            return m_WidgetPtr == NULL;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool operator ==(const SharedObjectPtr<U>& right) const
+        bool operator ==(const SharedWidgetPtr<U>& right) const
         {
-            return m_ObjectPtr == right.m_ObjectPtr;
+            return m_WidgetPtr == right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool operator ==(const SharedObjectPtr<T>& right) const
+        bool operator ==(const SharedWidgetPtr<T>& right) const
         {
-            return m_ObjectPtr == right.m_ObjectPtr;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename U>
-        bool friend operator ==(const SharedObjectPtr<T>& left, const U* right)
-        {
-            return left.m_ObjectPtr == right;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        bool friend operator ==(const SharedObjectPtr<T>& left, const T* right)
-        {
-            return left.m_ObjectPtr == right;
+            return m_WidgetPtr == right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool friend operator ==(const U* left, const SharedObjectPtr<T>& right)
+        bool friend operator ==(const SharedWidgetPtr<T>& left, const U* right)
         {
-            return left == right.m_ObjectPtr;
+            return left.m_WidgetPtr == right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool friend operator ==(const T* left, const SharedObjectPtr<T>& right)
+        bool friend operator ==(const SharedWidgetPtr<T>& left, const T* right)
         {
-            return left == right.m_ObjectPtr;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename U>
-        bool operator !=(const SharedObjectPtr<U>& right) const
-        {
-            return m_ObjectPtr != right.m_ObjectPtr;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        bool operator !=(const SharedObjectPtr<T>& right) const
-        {
-            return m_ObjectPtr != right.m_ObjectPtr;
+            return left.m_WidgetPtr == right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool friend operator !=(const SharedObjectPtr<T>& left, const U* right)
+        bool friend operator ==(const U* left, const SharedWidgetPtr<T>& right)
         {
-            return left.m_ObjectPtr != right;
+            return left == right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool friend operator !=(const SharedObjectPtr<T>& left, const T* right)
+        bool friend operator ==(const T* left, const SharedWidgetPtr<T>& right)
         {
-            return left.m_ObjectPtr != right;
+            return left == right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool friend operator !=(const U* left, const SharedObjectPtr<T>& right)
+        bool operator !=(const SharedWidgetPtr<U>& right) const
         {
-            return left != right.m_ObjectPtr;
+            return m_WidgetPtr != right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool friend operator !=(const T* left, const SharedObjectPtr<T>& right)
+        bool operator !=(const SharedWidgetPtr<T>& right) const
         {
-            return left != right.m_ObjectPtr;
+            return m_WidgetPtr != right.m_WidgetPtr;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename U>
+        bool friend operator !=(const SharedWidgetPtr<T>& left, const U* right)
+        {
+            return left.m_WidgetPtr != right;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool friend operator !=(const SharedWidgetPtr<T>& left, const T* right)
+        {
+            return left.m_WidgetPtr != right;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename U>
+        bool friend operator !=(const U* left, const SharedWidgetPtr<T>& right)
+        {
+            return left != right.m_WidgetPtr;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool friend operator !=(const T* left, const SharedWidgetPtr<T>& right)
+        {
+            return left != right.m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         T& operator*() const
         {
-            assert(m_ObjectPtr != NULL);
-            return *m_ObjectPtr;
+            assert(m_WidgetPtr != NULL);
+            return *m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         T* operator->() const
         {
-            assert(m_ObjectPtr != NULL);
-            return m_ObjectPtr;
+            assert(m_WidgetPtr != NULL);
+            return m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         T* get() const
         {
-            return m_ObjectPtr;
+            return m_WidgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,17 +288,17 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedObjectPtr clone() const
+        SharedWidgetPtr clone() const
         {
-            SharedObjectPtr<T> pointer;
-            pointer.m_ObjectPtr = m_ObjectPtr->clone();
+            SharedWidgetPtr<T> pointer;
+            pointer.m_WidgetPtr = m_WidgetPtr->clone();
             return pointer;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       private:
 
-        T* m_ObjectPtr;
+        T* m_WidgetPtr;
         ReferenceCount* m_RefCount;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,4 +309,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_SHARED_OBJECTS_PTR_HPP
+#endif // TGUI_SHARED_WIDGET_PTR_HPP

@@ -35,54 +35,54 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group()
+    Container::Container()
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Group(const Group& copy) :
+    Container::Container(const Container& copy) :
     m_GlobalFont             (copy.m_GlobalFont),
     m_GlobalCallbackFunctions(copy.m_GlobalCallbackFunctions)
     {
-        // Copy all the objects
-        for (unsigned int i = 0; i < copy.m_EventManager.m_Objects.size(); ++i)
+        // Copy all the widgets
+        for (unsigned int i = 0; i < copy.m_EventManager.m_Widgets.size(); ++i)
         {
-            m_EventManager.m_Objects.push_back(copy.m_EventManager.m_Objects[i].clone());
+            m_EventManager.m_Widgets.push_back(copy.m_EventManager.m_Widgets[i].clone());
             m_ObjName.push_back(copy.m_ObjName[i]);
 
-            m_EventManager.m_Objects.back()->m_Parent = this;
+            m_EventManager.m_Widgets.back()->m_Parent = this;
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::~Group()
+    Container::~Container()
     {
-        removeAllObjects();
+        removeAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group& Group::operator= (const Group& right)
+    Container& Container::operator= (const Container& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             // Copy the font and the callback functions
             m_GlobalFont = right.m_GlobalFont;
             m_GlobalCallbackFunctions = right.m_GlobalCallbackFunctions;
 
-            // Remove all the old objects
-            removeAllObjects();
+            // Remove all the old widgets
+            removeAllWidgets();
 
-            // Copy all the objects
-            for (unsigned int i=0; i<right.m_EventManager.m_Objects.size(); ++i)
+            // Copy all the widgets
+            for (unsigned int i=0; i<right.m_EventManager.m_Widgets.size(); ++i)
             {
-                m_EventManager.m_Objects.push_back(right.m_EventManager.m_Objects[i].clone());
+                m_EventManager.m_Widgets.push_back(right.m_EventManager.m_Widgets[i].clone());
                 m_ObjName.push_back(right.m_ObjName[i]);
 
-                m_EventManager.m_Objects.back()->m_Parent = this;
+                m_EventManager.m_Widgets.back()->m_Parent = this;
             }
         }
 
@@ -91,21 +91,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::setGlobalFont(const std::string& filename)
+    bool Container::setGlobalFont(const std::string& filename)
     {
         return m_GlobalFont.loadFromFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::setGlobalFont(const sf::Font& font)
+    void Container::setGlobalFont(const sf::Font& font)
     {
         m_GlobalFont = font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& Group::getGlobalFont() const
+    const sf::Font& Container::getGlobalFont() const
     {
         return m_GlobalFont;
     }
@@ -396,10 +396,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::loadObjectsFromFile(const std::string& filename)
+    bool Container::loadWidgetsFromFile(const std::string& filename)
     {
 /// \todo This function should be rewritten.
-/// \todo All objects should be capable of loading themselves out of a string.
+/// \todo All widgets should be capable of loading themselves out of a string.
 /// \todo Perhaps it would be better to switch to xml parsing.
 
         // I wrote these defines to avoid having the same code over and over again
@@ -458,7 +458,7 @@ namespace tgui
                     boolean = false; \
             }
 
-         #define COMPARE_OBJECT(length, name, objectName) \
+         #define COMPARE_WIDGET(length, name, widgetName) \
             if (line.substr(0, length).compare(name) == 0) \
             { \
                 line.erase(0, length); \
@@ -468,12 +468,12 @@ namespace tgui
                     CHECK_FOR_QUOTES \
                 } \
               \
-                extraPtr = objectName::Ptr(*parentPtr.top(), line); \
-                objectID = Type_##objectName + 1; \
+                extraPtr = widgetName::Ptr(*parentPtr.top(), line); \
+                widgetID = Type_##widgetName + 1; \
                 progress.push(0); \
             }
 
-        #define START_LOADING_OBJECT \
+        #define START_LOADING_WIDGET \
             if (progress.top() == 0) \
             { \
                 if (line.compare("{") == 0) \
@@ -492,7 +492,7 @@ namespace tgui
             { \
                 if (line.compare("}") == 0) \
                 { \
-                    objectID = parentID.top(); \
+                    widgetID = parentID.top(); \
                     progress.pop(); \
                     break; \
                 } \
@@ -500,17 +500,17 @@ namespace tgui
 
         // During the process some variables are needed to store what exactly was going on.
         bool failed = false;
-        std::stack<Group*> parentPtr;
+        std::stack<Container*> parentPtr;
         std::stack<unsigned int> parentID;
         std::stack<unsigned int> progress;
-        unsigned int objectID = 0;
-        SharedObjectPtr<Object> extraPtr;
+        unsigned int widgetID = 0;
+        SharedWidgetPtr<Widget> extraPtr;
         bool multilineComment = false;
 
         std::vector<std::string> defineTokens;
         std::vector<std::string> defineValues;
 
-        // Create a file object
+        // Create a file widget
         std::ifstream m_File;
 
         // Open the file
@@ -789,7 +789,7 @@ namespace tgui
                 }
 
                 // What happens now depends on the process
-                switch (objectID)
+                switch (widgetID)
                 {
                     case 0: // Done nothing yet
                     {
@@ -799,7 +799,7 @@ namespace tgui
                             // The first line should contain 'window' or 'define'
                             if (line.substr(0, 7).compare("window:") == 0)
                             {
-                                objectID = 0;
+                                widgetID = 0;
                                 progress.push(1);
                             }
                             else if (line.substr(0, 7).compare("define:") == 0)
@@ -825,7 +825,7 @@ namespace tgui
                             // The second line should contain "{"
                             if (line.compare("{") == 0)
                             {
-                                objectID = Type_Unknown + 1;
+                                widgetID = Type_Unknown + 1;
                                 progress.pop();
                             }
                             else // The second line is wrong
@@ -840,31 +840,31 @@ namespace tgui
                         if (line.compare("}") == 0)
                             break;
 
-                        // The next object will have the window as its parent
+                        // The next widget will have the window as its parent
                         parentID.push(Type_Unknown + 1);
                         parentPtr.push(this);
 
-                        // The line doesn't contain a '}', so check what object it contains
-                        COMPARE_OBJECT(4, "tab:", Tab)
-                        else COMPARE_OBJECT(5, "grid:", Grid)
-                        else COMPARE_OBJECT(6, "panel:", Panel)
-                        else COMPARE_OBJECT(6, "label:", Label)
-                        else COMPARE_OBJECT(7, "button:", Button)
-                        else COMPARE_OBJECT(7, "slider:", Slider)
-                        else COMPARE_OBJECT(8, "picture:", Picture)
-                        else COMPARE_OBJECT(8, "listbox:", ListBox)
-                        else COMPARE_OBJECT(8, "editbox:", EditBox)
-                        else COMPARE_OBJECT(8, "textbox:", TextBox)
-                        else COMPARE_OBJECT(9, "checkbox:", Checkbox)
-                        else COMPARE_OBJECT(9, "combobox:", ComboBox)
-                        else COMPARE_OBJECT(9, "slider2d:", Slider2d)
-                        else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
-                        else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
-                        else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
-                        else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
-                        else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
-                        else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                        else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
+                        // The line doesn't contain a '}', so check what widget it contains
+                        COMPARE_WIDGET(4, "tab:", Tab)
+                        else COMPARE_WIDGET(5, "grid:", Grid)
+                        else COMPARE_WIDGET(6, "panel:", Panel)
+                        else COMPARE_WIDGET(6, "label:", Label)
+                        else COMPARE_WIDGET(7, "button:", Button)
+                        else COMPARE_WIDGET(7, "slider:", Slider)
+                        else COMPARE_WIDGET(8, "picture:", Picture)
+                        else COMPARE_WIDGET(8, "listbox:", ListBox)
+                        else COMPARE_WIDGET(8, "editbox:", EditBox)
+                        else COMPARE_WIDGET(8, "textbox:", TextBox)
+                        else COMPARE_WIDGET(9, "checkbox:", Checkbox)
+                        else COMPARE_WIDGET(9, "combobox:", ComboBox)
+                        else COMPARE_WIDGET(9, "slider2d:", Slider2d)
+                        else COMPARE_WIDGET(10, "scrollbar:", Scrollbar)
+                        else COMPARE_WIDGET(11, "loadingbar:", LoadingBar)
+                        else COMPARE_WIDGET(11, "spinbutton:", SpinButton)
+                        else COMPARE_WIDGET(12, "radiobutton:", RadioButton)
+                        else COMPARE_WIDGET(12, "childwindow:", ChildWindow)
+                        else COMPARE_WIDGET(12, "spritesheet:", SpriteSheet)
+                        else COMPARE_WIDGET(16, "animatedpicture:", AnimatedPicture)
                         else // The line was wrong
                             failed = true;
 
@@ -872,7 +872,7 @@ namespace tgui
                     }
                     case Type_Tab + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the tab back
                         Tab::Ptr tab = extraPtr;
@@ -964,9 +964,9 @@ namespace tgui
                     }
                     case Type_Grid + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
-                        TGUI_OUTPUT("TGUI warning: Grid cannot be loaded from an Object File yet.");
+                        TGUI_OUTPUT("TGUI warning: Grid cannot be loaded from an Widget File yet.");
                     }
                     case Type_Panel + 1:
                     {
@@ -980,7 +980,7 @@ namespace tgui
                                 progress.pop();
                                 progress.push(1);
 
-                                // All newly created objects must be part of the panel
+                                // All newly created widgets must be part of the panel
                                 parentID.push(Type_Panel + 1);
                                 parentPtr.push(panelPtr.get());
                                 break;
@@ -992,7 +992,7 @@ namespace tgui
                         {
                             if (line.compare("}") == 0)
                             {
-                                objectID = parentID.top();
+                                widgetID = parentID.top();
                                 progress.pop();
 
                                 parentID.pop();
@@ -1009,26 +1009,26 @@ namespace tgui
                         }
                         else
                         {
-                            COMPARE_OBJECT(4, "tab:", Tab)
-                            else COMPARE_OBJECT(5, "grid:", Grid)
-                            else COMPARE_OBJECT(6, "panel:", Panel)
-                            else COMPARE_OBJECT(6, "label:", Label)
-                            else COMPARE_OBJECT(7, "button:", Button)
-                            else COMPARE_OBJECT(7, "slider:", Slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2d)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
+                            COMPARE_WIDGET(4, "tab:", Tab)
+                            else COMPARE_WIDGET(5, "grid:", Grid)
+                            else COMPARE_WIDGET(6, "panel:", Panel)
+                            else COMPARE_WIDGET(6, "label:", Label)
+                            else COMPARE_WIDGET(7, "button:", Button)
+                            else COMPARE_WIDGET(7, "slider:", Slider)
+                            else COMPARE_WIDGET(8, "picture:", Picture)
+                            else COMPARE_WIDGET(8, "listbox:", ListBox)
+                            else COMPARE_WIDGET(8, "editbox:", EditBox)
+                            else COMPARE_WIDGET(8, "textbox:", TextBox)
+                            else COMPARE_WIDGET(9, "checkbox:", Checkbox)
+                            else COMPARE_WIDGET(9, "combobox:", ComboBox)
+                            else COMPARE_WIDGET(9, "slider2d:", Slider2d)
+                            else COMPARE_WIDGET(10, "scrollbar:", Scrollbar)
+                            else COMPARE_WIDGET(11, "loadingbar:", LoadingBar)
+                            else COMPARE_WIDGET(11, "spinbutton:", SpinButton)
+                            else COMPARE_WIDGET(12, "radiobutton:", RadioButton)
+                            else COMPARE_WIDGET(12, "childwindow:", ChildWindow)
+                            else COMPARE_WIDGET(12, "spritesheet:", SpriteSheet)
+                            else COMPARE_WIDGET(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
                                 failed = true;
                         }
@@ -1037,7 +1037,7 @@ namespace tgui
                     }
                     case Type_Label + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the label back
                         Label::Ptr label = extraPtr;
@@ -1076,7 +1076,7 @@ namespace tgui
                     }
                     case Type_Button + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the button back
                         Button::Ptr button = extraPtr;
@@ -1122,7 +1122,7 @@ namespace tgui
                     }
                     case Type_Slider + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the slider back
                         Slider::Ptr slider = extraPtr;
@@ -1170,7 +1170,7 @@ namespace tgui
                     }
                     case Type_Picture + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the picture back
                         Picture::Ptr picture = extraPtr;
@@ -1195,7 +1195,7 @@ namespace tgui
                     }
                     case Type_ListBox + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the list box back
                         ListBox::Ptr listBox = extraPtr;
@@ -1316,7 +1316,7 @@ namespace tgui
                     }
                     case Type_EditBox + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the edit box back
                         EditBox::Ptr editBox = extraPtr;
@@ -1422,7 +1422,7 @@ namespace tgui
                     }
                     case Type_TextBox + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the text box back
                         TextBox::Ptr textBox = extraPtr;
@@ -1532,7 +1532,7 @@ namespace tgui
                     }
                     case Type_Checkbox + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the checkbox back
                         Checkbox::Ptr checkbox = extraPtr;
@@ -1593,7 +1593,7 @@ namespace tgui
                     }
                     case Type_ComboBox + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the combo box back
                         ComboBox::Ptr comboBox = extraPtr;
@@ -1706,7 +1706,7 @@ namespace tgui
                     }
                     case Type_Slider2d + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the slider back
                         Slider2d::Ptr slider = extraPtr;
@@ -1777,7 +1777,7 @@ namespace tgui
                     }
                     case Type_Scrollbar + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the scrollbar back
                         Scrollbar::Ptr scrollbar = extraPtr;
@@ -1825,7 +1825,7 @@ namespace tgui
                     }
                     case Type_LoadingBar + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the loading bar back
                         LoadingBar::Ptr loadingBar = extraPtr;
@@ -1862,7 +1862,7 @@ namespace tgui
                     }
                     case Type_SpinButton + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the spin button back
                         SpinButton::Ptr spinButton = extraPtr;
@@ -1910,7 +1910,7 @@ namespace tgui
                     }
                     case Type_RadioButton + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the radio button back
                         RadioButton::Ptr radioButton = extraPtr;
@@ -1981,7 +1981,7 @@ namespace tgui
                                 progress.pop();
                                 progress.push(1);
 
-                                // All newly created objects must be part of the panel
+                                // All newly created widgets must be part of the panel
                                 parentID.push(Type_ChildWindow + 1);
                                 parentPtr.push(child.get());
                                 break;
@@ -1993,7 +1993,7 @@ namespace tgui
                         {
                             if (line.compare("}") == 0)
                             {
-                                objectID = parentID.top();
+                                widgetID = parentID.top();
                                 progress.pop();
 
                                 parentID.pop();
@@ -2042,26 +2042,26 @@ namespace tgui
                         }
                         else
                         {
-                            COMPARE_OBJECT(4, "tab:", Tab)
-                            else COMPARE_OBJECT(5, "grid:", Grid)
-                            else COMPARE_OBJECT(6, "panel:", Panel)
-                            else COMPARE_OBJECT(6, "label:", Label)
-                            else COMPARE_OBJECT(7, "button:", Button)
-                            else COMPARE_OBJECT(7, "slider:", Slider)
-                            else COMPARE_OBJECT(8, "picture:", Picture)
-                            else COMPARE_OBJECT(8, "listbox:", ListBox)
-                            else COMPARE_OBJECT(8, "editbox:", EditBox)
-                            else COMPARE_OBJECT(8, "textbox:", TextBox)
-                            else COMPARE_OBJECT(9, "checkbox:", Checkbox)
-                            else COMPARE_OBJECT(9, "combobox:", ComboBox)
-                            else COMPARE_OBJECT(9, "slider2d:", Slider2d)
-                            else COMPARE_OBJECT(10, "scrollbar:", Scrollbar)
-                            else COMPARE_OBJECT(11, "loadingbar:", LoadingBar)
-                            else COMPARE_OBJECT(11, "spinbutton:", SpinButton)
-                            else COMPARE_OBJECT(12, "radiobutton:", RadioButton)
-                            else COMPARE_OBJECT(12, "childwindow:", ChildWindow)
-                            else COMPARE_OBJECT(12, "spritesheet:", SpriteSheet)
-                            else COMPARE_OBJECT(16, "animatedpicture:", AnimatedPicture)
+                            COMPARE_WIDGET(4, "tab:", Tab)
+                            else COMPARE_WIDGET(5, "grid:", Grid)
+                            else COMPARE_WIDGET(6, "panel:", Panel)
+                            else COMPARE_WIDGET(6, "label:", Label)
+                            else COMPARE_WIDGET(7, "button:", Button)
+                            else COMPARE_WIDGET(7, "slider:", Slider)
+                            else COMPARE_WIDGET(8, "picture:", Picture)
+                            else COMPARE_WIDGET(8, "listbox:", ListBox)
+                            else COMPARE_WIDGET(8, "editbox:", EditBox)
+                            else COMPARE_WIDGET(8, "textbox:", TextBox)
+                            else COMPARE_WIDGET(9, "checkbox:", Checkbox)
+                            else COMPARE_WIDGET(9, "combobox:", ComboBox)
+                            else COMPARE_WIDGET(9, "slider2d:", Slider2d)
+                            else COMPARE_WIDGET(10, "scrollbar:", Scrollbar)
+                            else COMPARE_WIDGET(11, "loadingbar:", LoadingBar)
+                            else COMPARE_WIDGET(11, "spinbutton:", SpinButton)
+                            else COMPARE_WIDGET(12, "radiobutton:", RadioButton)
+                            else COMPARE_WIDGET(12, "childwindow:", ChildWindow)
+                            else COMPARE_WIDGET(12, "spritesheet:", SpriteSheet)
+                            else COMPARE_WIDGET(16, "animatedpicture:", AnimatedPicture)
                             else // The line was wrong
                                 failed = true;
                         }
@@ -2070,7 +2070,7 @@ namespace tgui
                     }
                     case Type_SpriteSheet + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the sprite sheet back
                         SpriteSheet::Ptr spriteSheet = extraPtr;
@@ -2119,7 +2119,7 @@ namespace tgui
                     }
                     case Type_AnimatedPicture + 1:
                     {
-                        START_LOADING_OBJECT
+                        START_LOADING_WIDGET
 
                         // Get the pointer to the sprite animated picture
                         AnimatedPicture::Ptr animatedPicture = extraPtr;
@@ -2210,73 +2210,73 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::add(const Object::Ptr& objectPtr, const sf::String& objectName)
+    void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
-        assert(objectPtr != NULL);
+        assert(widgetPtr != NULL);
 
-        objectPtr->initialize(this);
-        m_EventManager.m_Objects.push_back(objectPtr);
-        m_ObjName.push_back(objectName);
+        widgetPtr->initialize(this);
+        m_EventManager.m_Widgets.push_back(widgetPtr);
+        m_ObjName.push_back(widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Object::Ptr Group::get(const sf::String& objectName) const
+    Widget::Ptr Container::get(const sf::String& widgetName) const
     {
         for (unsigned int i = 0; i < m_ObjName.size(); ++i)
         {
-            if (m_ObjName[i] == objectName)
-                return m_EventManager.m_Objects[i];
+            if (m_ObjName[i] == widgetName)
+                return m_EventManager.m_Widgets[i];
         }
 
-        return Object::Ptr();
+        return Widget::Ptr();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Object::Ptr Group::copy(const Object::Ptr& oldObject, const sf::String& newObjectName)
+    Widget::Ptr Container::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
     {
-        Object::Ptr newObject = oldObject.clone();
-        add(newObject, newObjectName);
-        return newObject;
+        Widget::Ptr newWidget = oldWidget.clone();
+        add(newWidget, newWidgetName);
+        return newWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<Object::Ptr>& Group::getObjects()
+    std::vector<Widget::Ptr>& Container::getWidgets()
     {
-        return m_EventManager.m_Objects;
+        return m_EventManager.m_Widgets;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String>& Group::getObjectNames()
+    std::vector<sf::String>& Container::getWidgetNames()
     {
         return m_ObjName;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(const Object::Ptr& object)
+    void Container::remove(const Widget::Ptr& widget)
     {
-        remove(object.get());
+        remove(widget.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::remove(Object* object)
+    void Container::remove(Widget* widget)
     {
-        // Loop through every object
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
+        // Loop through every widget
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
             // Check if the pointer matches
-            if (m_EventManager.m_Objects[i] == object)
+            if (m_EventManager.m_Widgets[i] == widget)
             {
-                // Unfocus the object, just in case it was focused
-                m_EventManager.unfocusObject(object);
+                // Unfocus the widget, just in case it was focused
+                m_EventManager.unfocusWidget(widget);
 
-                // Remove the object
-                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+                // Remove the widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
 
                 // Also emove the name it from the list
                 m_ObjName.erase(m_ObjName.begin() + i);
@@ -2288,71 +2288,71 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::removeAllObjects()
+    void Container::removeAllWidgets()
     {
         // Clear the lists
-        m_EventManager.m_Objects.clear();
+        m_EventManager.m_Widgets.clear();
         m_ObjName.clear();
 
-        // There are no more objects, so none of the objects can be focused
-        m_EventManager.m_FocusedObject = 0;
+        // There are no more widgets, so none of the widgets can be focused
+        m_EventManager.m_FocusedWidget = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::uncheckRadioButtons()
+    void Container::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
-            if (m_EventManager.m_Objects[i]->m_Callback.objectType == Type_RadioButton)
-                static_cast<RadioButton::Ptr>(m_EventManager.m_Objects[i])->forceUncheck();
+            if (m_EventManager.m_Widgets[i]->m_Callback.widgetType == Type_RadioButton)
+                static_cast<RadioButton::Ptr>(m_EventManager.m_Widgets[i])->forceUncheck();
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::focusObject(Object *const object)
+    void Container::focusWidget(Widget *const widget)
     {
-        m_EventManager.focusObject(object);
+        m_EventManager.focusWidget(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::unfocusObject(Object *const object)
+    void Container::unfocusWidget(Widget *const widget)
     {
-        m_EventManager.unfocusObject(object);
+        m_EventManager.unfocusWidget(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::unfocusAllObjects()
+    void Container::unfocusAllWidgets()
     {
-        m_EventManager.unfocusAllObjects();
+        m_EventManager.unfocusAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::moveObjectToFront(Object *const object)
+    void Container::moveWidgetToFront(Widget *const widget)
     {
-        // Loop through all objects
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
-            // Check if the object is found
-            if (m_EventManager.m_Objects[i].get() == object)
+            // Check if the widget is found
+            if (m_EventManager.m_Widgets[i].get() == widget)
             {
-                // Copy the object
-                m_EventManager.m_Objects.push_back(m_EventManager.m_Objects[i]);
+                // Copy the widget
+                m_EventManager.m_Widgets.push_back(m_EventManager.m_Widgets[i]);
                 m_ObjName.push_back(m_ObjName[i]);
 
-                // Focus the correct object
-                if ((m_EventManager.m_FocusedObject == 0) || (m_EventManager.m_FocusedObject == i+1))
-                    m_EventManager.m_FocusedObject = m_EventManager.m_Objects.size()-1;
-                else if (m_EventManager.m_FocusedObject > i+1)
-                    --m_EventManager.m_FocusedObject;
+                // Focus the correct widget
+                if ((m_EventManager.m_FocusedWidget == 0) || (m_EventManager.m_FocusedWidget == i+1))
+                    m_EventManager.m_FocusedWidget = m_EventManager.m_Widgets.size()-1;
+                else if (m_EventManager.m_FocusedWidget > i+1)
+                    --m_EventManager.m_FocusedWidget;
 
-                // Remove the old object
-                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i);
+                // Remove the old widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
                 m_ObjName.erase(m_ObjName.begin() + i);
 
                 break;
@@ -2362,28 +2362,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::moveObjectToBack(Object *const object)
+    void Container::moveWidgetToBack(Widget *const widget)
     {
-        // Loop through all objects
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
+        // Loop through all widgets
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
-            // Check if the object is found
-            if (m_EventManager.m_Objects[i].get() == object)
+            // Check if the widget is found
+            if (m_EventManager.m_Widgets[i].get() == widget)
             {
-                // Copy the object
-                Object::Ptr obj = m_EventManager.m_Objects[i];
+                // Copy the widget
+                Widget::Ptr obj = m_EventManager.m_Widgets[i];
                 std::string name = m_ObjName[i];
-                m_EventManager.m_Objects.insert(m_EventManager.m_Objects.begin(), obj);
+                m_EventManager.m_Widgets.insert(m_EventManager.m_Widgets.begin(), obj);
                 m_ObjName.insert(m_ObjName.begin(), name);
 
-                // Focus the correct object
-                if (m_EventManager.m_FocusedObject == i + 1)
-                    m_EventManager.m_FocusedObject = 1;
-                else if (m_EventManager.m_FocusedObject)
-                    ++m_EventManager.m_FocusedObject;
+                // Focus the correct widget
+                if (m_EventManager.m_FocusedWidget == i + 1)
+                    m_EventManager.m_FocusedWidget = 1;
+                else if (m_EventManager.m_FocusedWidget)
+                    ++m_EventManager.m_FocusedWidget;
 
-                // Remove the old object
-                m_EventManager.m_Objects.erase(m_EventManager.m_Objects.begin() + i + 1);
+                // Remove the old widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i + 1);
                 m_ObjName.erase(m_ObjName.begin() + i + 1);
 
                 break;
@@ -2393,34 +2393,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::bindGlobalCallback(boost::function<void(const tgui::Callback&)> func)
+    void Container::bindGlobalCallback(boost::function<void(const tgui::Callback&)> func)
     {
         m_GlobalCallbackFunctions.push_back(func);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::unbindGlobalCallback()
+    void Container::unbindGlobalCallback()
     {
         m_GlobalCallbackFunctions.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Group::getDisplaySize()
+    Vector2f Container::getDisplaySize()
     {
         return Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::drawObjectGroup(sf::RenderTarget* target, const sf::RenderStates& states) const
+    void Container::drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states) const
     {
-        // Draw all objects when they are visible
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
+        // Draw all widgets when they are visible
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
-            if (m_EventManager.m_Objects[i]->m_Visible)
-                m_EventManager.m_Objects[i]->draw(*target, states);
+            if (m_EventManager.m_Widgets[i]->m_Visible)
+                m_EventManager.m_Widgets[i]->draw(*target, states);
         }
     }
 

@@ -32,50 +32,50 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Grid : public GroupObject
+    class TGUI_API Grid : public ContainerWidget
     {
       public:
 
-        typedef SharedObjectPtr<Grid> Ptr;
+        typedef SharedWidgetPtr<Grid> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief The layout of the object.
+        /// \brief The layout of the widget.
         ///
-        /// Where in the cell is the object located?
-        /// The object is centered by default.
+        /// Where in the cell is the widget located?
+        /// The widget is centered by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Layout
         {
-            /// \brief The layout of the object.
+            /// \brief The layout of the widget.
             enum Layouts
             {
-                /// Draw the object in the upper left corner of the cell
+                /// Draw the widget in the upper left corner of the cell
                 UpperLeft,
 
-                /// Draw the object at the upper side of the cell (horizontally centered)
+                /// Draw the widget at the upper side of the cell (horizontally centered)
                 Up,
 
-                /// Draw the object in the upper right corner of the cell
+                /// Draw the widget in the upper right corner of the cell
                 UpperRight,
 
-                /// Draw the object at the right side of the cell (vertically centered)
+                /// Draw the widget at the right side of the cell (vertically centered)
                 Right,
 
-                /// Draw the object in the bottom right corner of the cell
+                /// Draw the widget in the bottom right corner of the cell
                 BottomRight,
 
-                /// Draw the object at the bottom of the cell (horizontally centered)
+                /// Draw the widget at the bottom of the cell (horizontally centered)
                 Bottom,
 
-                /// Draw the object in the bottom left corner of the cell
+                /// Draw the widget in the bottom left corner of the cell
                 BottomLeft,
 
-                /// Draw the object at the left side of the cell (vertically centered)
+                /// Draw the widget at the left side of the cell (vertically centered)
                 Left,
 
-                /// Center the object in the cell
+                /// Center the widget in the cell
                 Center
             };
         };
@@ -116,7 +116,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Grid* clone();
@@ -132,9 +132,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single object that was added to the group.
+        /// \brief Removes a single widget that was added to the container.
         ///
-        /// \param object  Pointer to the object to remove
+        /// \param widget  Pointer to the widget to remove
         ///
         /// \see remove(sf::String)
         ///
@@ -147,72 +147,72 @@ namespace tgui
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const Object::Ptr& object);
+        virtual void remove(const Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single object that was added to the group.
+        /// \brief Removes a single widget that was added to the container.
         ///
-        /// \param object  Pointer to the object to remove
+        /// \param widget  Pointer to the widget to remove
         ///
         /// This function is provided for internal use.
         /// The other remove function will probably be easier to use, but in the end they do exactly the same.
         ///
-        /// \see remove(Object::Ptr)
+        /// \see remove(Widget::Ptr)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(Object* object);
+        virtual void remove(Widget* widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all objects that were added to the group.
+        /// \brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void removeAllObjects();
+        virtual void removeAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new object to the next column.
+        /// \brief Add a new widget to the next column.
         ///
-        /// \param object   Pointer to a fully created object that will be added to the grid.
-        /// \param borders  Distance from the grid square to the object (left, top, right, bottom).
-        /// \param layout   Where the object is located in the square.
+        /// \param widget   Pointer to a fully created widget that will be added to the grid.
+        /// \param borders  Distance from the grid square to the widget (left, top, right, bottom).
+        /// \param layout   Where the widget is located in the square.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addToRow(const Object::Ptr& object, const Vector4u& borders = Vector4u(0, 0, 0, 0), Layout::Layouts layout = Layout::Center);
+        void addToRow(const Widget::Ptr& widget, const Vector4u& borders = Vector4u(0, 0, 0, 0), Layout::Layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Adds a new row to the grid.
         ///
-        /// \param rowHeight  The height of the row when it stays empty, or the minimum height when objects are added to the row.
+        /// \param rowHeight  The height of the row when it stays empty, or the minimum height when widgets are added to the row.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addRow(unsigned int rowHeight = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Updates the position and size of the object.
+        /// \brief Updates the position and size of the widget.
         ///
-        /// After an object has been added to the grid, you will have to call this function when you change the size of the object.
+        /// After an widget has been added to the grid, you will have to call this function when you change the size of the widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateObjects();
+        void updateWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the layout of a given object.
+        /// \brief Changes the layout of a given widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeObjectLayout(const Object::Ptr& object, Layout::Layouts layout = Layout::Center);
+        void changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnObject(float x, float y);
-        virtual void objectFocused();
-        virtual void objectUnfocused();
+        virtual bool mouseOnWidget(float x, float y);
+        virtual void widgetFocused();
+        virtual void widgetUnfocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,13 +220,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Reposition all the objects.
+        // Reposition all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updatePositionsOfAllObjects();
+        void updatePositionsOfAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -236,15 +236,15 @@ namespace tgui
 
         enum GridCallbacks
         {
-            AllGridCallbacks = ObjectCallbacksCount - 1,
-            GridCallbacksCount = ObjectCallbacksCount
+            AllGridCallbacks = WidgetCallbacksCount - 1,
+            GridCallbacksCount = WidgetCallbacksCount
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::vector< std::vector<Object::Ptr> >     m_GridObjects;
+        std::vector< std::vector<Widget::Ptr> >     m_GridWidgets;
         std::vector< std::vector<Vector4u> >        m_ObjBorders;
         std::vector< std::vector<Layout::Layouts> > m_ObjLayout;
 

@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/ClickableObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/AnimatedPicture.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,14 +40,14 @@ namespace tgui
     m_Playing        (false),
     m_Looping        (false)
     {
-        m_Callback.objectType = Type_AnimatedPicture;
-        m_AnimatedObject = true;
+        m_Callback.widgetType = Type_AnimatedPicture;
+        m_AnimatedWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
-    ClickableObject(copy),
+    ClickableWidget(copy),
     m_FrameDuration(copy.m_FrameDuration),
     m_CurrentFrame (copy.m_CurrentFrame),
     m_Playing      (copy.m_Playing),
@@ -77,11 +77,11 @@ namespace tgui
 
     AnimatedPicture& AnimatedPicture::operator= (const AnimatedPicture& right)
     {
-        // Make sure it is not the same object
+        // Make sure it is not the same widget
         if (this != &right)
         {
             AnimatedPicture temp(right);
-            this->ClickableObject::operator=(right);
+            this->ClickableWidget::operator=(right);
 
             // If there already were frames then remove them now
             for (unsigned int i=0; i< m_Textures.size(); ++i)
@@ -309,7 +309,7 @@ namespace tgui
 
     void AnimatedPicture::setTransparency(unsigned char transparency)
     {
-        ClickableObject::setTransparency(transparency);
+        ClickableWidget::setTransparency(transparency);
 
         for (unsigned int i = 0; i < m_Textures.size(); ++i)
             m_Textures[i].sprite.setColor(sf::Color(255, 255, 255, m_Opacity));

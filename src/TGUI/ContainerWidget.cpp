@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
-#include <TGUI/GroupObject.hpp>
+#include <TGUI/Widgets.hpp>
+#include <TGUI/ContainerWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,34 +32,34 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GroupObject::GroupObject()
+    ContainerWidget::ContainerWidget()
     {
-        m_GroupObject = true;
-        m_AnimatedObject = true;
+        m_ContainerWidget = true;
+        m_AnimatedWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GroupObject::GroupObject(const GroupObject& copy) :
-    Object(copy),
-    Group (copy)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    GroupObject::~GroupObject()
+    ContainerWidget::ContainerWidget(const ContainerWidget& copy) :
+    Widget(copy),
+    Container (copy)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GroupObject& GroupObject::operator= (const GroupObject& right)
+    ContainerWidget::~ContainerWidget()
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ContainerWidget& ContainerWidget::operator= (const ContainerWidget& right)
     {
         if (this != &right)
         {
-            this->Object::operator=(right);
-            this->Group::operator=(right);
+            this->Widget::operator=(right);
+            this->Container::operator=(right);
         }
 
         return *this;
@@ -67,17 +67,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::setTransparency(unsigned char transparency)
+    void ContainerWidget::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
-        for (unsigned int i = 0; i < m_EventManager.m_Objects.size(); ++i)
-            m_EventManager.m_Objects[i]->setTransparency(transparency);
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+            m_EventManager.m_Widgets[i]->setTransparency(transparency);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::addChildCallback(Callback& callback)
+    void ContainerWidget::addChildCallback(Callback& callback)
     {
         // If there is no global callback function then send the callback to the parent
         if (m_GlobalCallbackFunctions.empty())
@@ -92,7 +92,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::initialize(tgui::Group *const parent)
+    void ContainerWidget::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setGlobalFont(m_Parent->getGlobalFont());
@@ -100,7 +100,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::update()
+    void ContainerWidget::update()
     {
         m_EventManager.updateTime(m_AnimationTimeElapsed);
         m_AnimationTimeElapsed = sf::Time();
@@ -108,7 +108,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GroupObject::handleEvent(sf::Event& event, float mouseX, float mouseY)
+    void ContainerWidget::handleEvent(sf::Event& event, float mouseX, float mouseY)
     {
         // Adjust the mouse position of the event when the event is about the mouse
         if (event.type == sf::Event::MouseMoved)
@@ -133,9 +133,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool GroupObject::focusNextObjectInGroup()
+    bool ContainerWidget::focusNextWidgetInContainer()
     {
-        return m_EventManager.focusNextObject();
+        return m_EventManager.focusNextWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Objects.hpp>
+#include <TGUI/Widgets.hpp>
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/TextBox.hpp>
@@ -57,9 +57,9 @@ namespace tgui
     m_Scroll                  (NULL),
     m_PossibleDoubleClick     (false)
     {
-        m_Callback.objectType = Type_TextBox;
-        m_AnimatedObject = true;
-        m_DraggableObject = true;
+        m_Callback.widgetType = Type_TextBox;
+        m_AnimatedWidget = true;
+        m_DraggableWidget = true;
 
         changeColors();
 
@@ -70,8 +70,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox(const TextBox& copy) :
-    Object                       (copy),
-    ObjectBorders                (copy),
+    Widget                       (copy),
+    WidgetBorders                (copy),
     m_LoadedConfigFile           (copy.m_LoadedConfigFile),
     m_Size                       (copy.m_Size),
     m_Text                       (copy.m_Text),
@@ -130,8 +130,8 @@ namespace tgui
             }
 
             TextBox temp(right);
-            this->Object::operator=(right);
-            this->ObjectBorders::operator=(right);
+            this->Widget::operator=(right);
+            this->WidgetBorders::operator=(right);
 
             std::swap(m_LoadedConfigFile,            temp.m_LoadedConfigFile);
             std::swap(m_Size,                        temp.m_Size);
@@ -301,7 +301,7 @@ namespace tgui
         if (m_LineHeight == 0)
             return;
 
-        // A negative size is not allowed for this object
+        // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
@@ -796,7 +796,7 @@ namespace tgui
 
     void TextBox::setTransparency(unsigned char transparency)
     {
-        Object::setTransparency(transparency);
+        Widget::setTransparency(transparency);
 
         m_SelectionPointColor.a = m_Opacity;
         m_BackgroundColor.a = m_Opacity;
@@ -815,7 +815,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::mouseOnObject(float x, float y)
+    bool TextBox::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
@@ -831,7 +831,7 @@ namespace tgui
             m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
 
             // Pass the event
-            m_Scroll->mouseOnObject(x, y);
+            m_Scroll->mouseOnWidget(x, y);
 
             // Reset the position
             m_Scroll->setPosition(0, 0);
@@ -843,7 +843,7 @@ namespace tgui
         else // The mouse is not on top of the list box
         {
             if (m_MouseHover)
-                mouseLeftObject();
+                mouseLeftWidget();
 
             m_MouseHover = false;
             return false;
@@ -874,7 +874,7 @@ namespace tgui
             m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Pass the event
-            if (m_Scroll->mouseOnObject(x, y))
+            if (m_Scroll->mouseOnWidget(x, y))
             {
                 m_Scroll->leftMousePressed(x, y);
                 clickedOnTextBox = false;
@@ -1054,7 +1054,7 @@ namespace tgui
             return;
 
         if (m_MouseHover == false)
-            mouseEnteredObject();
+            mouseEnteredWidget();
 
         // Set the mouse move flag
         m_MouseHover = true;
@@ -1084,7 +1084,7 @@ namespace tgui
             else // You are just moving the mouse
             {
                 // When the mouse is on top of the scrollbar then pass the mouse move event
-                if (m_Scroll->mouseOnObject(x, y))
+                if (m_Scroll->mouseOnWidget(x, y))
                     m_Scroll->mouseMoved(x, y);
 
                 // If the mouse is down then you are selecting text
@@ -1105,10 +1105,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseNotOnObject()
+    void TextBox::mouseNotOnWidget()
     {
         if (m_MouseHover)
-            mouseLeftObject();
+            mouseLeftWidget();
 
         m_MouseHover = false;
 
@@ -1535,7 +1535,7 @@ namespace tgui
                 // Make sure the character is not a newline
                 if (text[i-1] != '\n')
                 {
-                    // Add the next character to the text object
+                    // Add the next character to the text widget
                     tempText.setString(text.toWideString().substr(beginChar, i - beginChar));
 
                     // Check if the string still fits on the line
@@ -1646,7 +1646,7 @@ namespace tgui
                 line = static_cast<unsigned int>((posY + m_Scroll->getValue()) / m_LineHeight + 1);
         }
 
-        // Create a temporary text object that contains the full text
+        // Create a temporary text widget that contains the full text
         sf::Text fullText(m_TextBeforeSelection);
         fullText.setString(m_DisplayedText);
 
@@ -1684,7 +1684,7 @@ namespace tgui
             if (newlinePos2 != sf::String::InvalidPos)
                 tempString.erase(newlinePos2, sf::String::InvalidPos);
 
-            // Create a temporary text object
+            // Create a temporary text widget
             sf::Text tempText(m_TextBeforeSelection);
 
             // We are going to calculate the number of newlines we have added
@@ -1711,7 +1711,7 @@ namespace tgui
                 // Make sure the character is not a newline
                 if (m_Text[i-1] != '\n')
                 {
-                    // Add the next character to the text object
+                    // Add the next character to the text widget
                     tempText.setString(m_Text.toWideString().substr(beginChar, i - beginChar));
 
                     // Check if the string still fits on the line
@@ -1733,7 +1733,7 @@ namespace tgui
                 }
             }
 
-            // Store the single line that we found a while ago in the temporary text object
+            // Store the single line that we found a while ago in the temporary text widget
             tempText.setString(tempString);
 
             // If the line contains nothing but a newline character then put the selction point on that line
@@ -1911,7 +1911,7 @@ namespace tgui
             // Make sure the character is not a newline
             if (m_Text[i-1] != '\n')
             {
-                // Add the next character to the text object
+                // Add the next character to the text widget
                 tempText.setString(m_Text.toWideString().substr(beginChar, i - beginChar));
 
                 // Check if the string still fits on the line
@@ -1982,7 +1982,7 @@ namespace tgui
             m_VisibleLines = TGUI_MINIMUM((m_Size.y - m_LeftBorder - m_TopBorder) / m_LineHeight, m_Lines);
         }
 
-        // Fill the temporary text object with the whole text
+        // Fill the temporary text widget with the whole text
         tempText.setString(m_DisplayedText);
 
         // Set the position of the selection point
@@ -2040,7 +2040,7 @@ namespace tgui
                 // Make sure the character is not a newline
                 if (m_Text[i] != '\n')
                 {
-                    // Add the next character to the text object
+                    // Add the next character to the text widget
                     tempText.setString(m_Text.toWideString().substr(beginChar, i - beginChar + 1));
 
                     // Check if the string still fits on the line
@@ -2067,7 +2067,7 @@ namespace tgui
                 // Make sure the character is not a newline
                 if (m_Text[i] != '\n')
                 {
-                    // Add the next character to the text object
+                    // Add the next character to the text widget
                     tempText.setString(m_Text.toWideString().substr(beginChar, i - beginChar + 1));
 
                     // Check if the string still fits on the line
@@ -2093,7 +2093,7 @@ namespace tgui
                 selectionEnd = m_SelEnd + newlinesAddedBeforeSelection + newlinesAddedInsideSelection;
             }
 
-            // Create another temprary text object
+            // Create another temprary text widget
             sf::Text tempText2(m_TextBeforeSelection);
             tempText2.setString(m_DisplayedText);
 
@@ -2160,18 +2160,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::objectUnfocused()
+    void TextBox::widgetUnfocused()
     {
         // If there is a selection then undo it now
         if (m_SelChars)
             setSelectionPointPosition(m_SelEnd);
 
-        Object::objectUnfocused();
+        Widget::widgetUnfocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::initialize(tgui::Group *const parent)
+    void TextBox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
@@ -2270,7 +2270,7 @@ namespace tgui
         GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
         GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the object outside the window then don't draw anything
+        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)

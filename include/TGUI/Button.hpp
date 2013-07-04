@@ -32,11 +32,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Button : public ClickableObject
+    class TGUI_API Button : public ClickableWidget
     {
       public:
 
-        typedef SharedObjectPtr<Button> Ptr;
+        typedef SharedWidgetPtr<Button> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +74,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the object by calling the copy constructor.
+        // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Button* clone();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the object.
+        /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
@@ -92,7 +92,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the object.
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
         /// \return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
@@ -102,11 +102,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the object
+        /// \brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable object is (0, 0).
+        /// The default position of a transformable widget is (0, 0).
         ///
         /// \param x X coordinate of the new position
         /// \param y Y coordinate of the new position
@@ -205,9 +205,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the object.
+        /// \brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the object.
+        /// \param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,20 +218,20 @@ namespace tgui
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void keyPressed(sf::Keyboard::Key key);
-        virtual void objectFocused();
+        virtual void widgetFocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the object is added to a group.
+        // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(tgui::Group *const group);
+        virtual void initialize(tgui::Container *const container);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the object on the render target.
+        // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -241,10 +241,10 @@ namespace tgui
 
         enum ButtonCallbacks
         {
-            SpaceKeyPressed      = ClickableObjectCallbacksCount * 1,
-            ReturnKeyPressed     = ClickableObjectCallbacksCount * 2,
-            AllButtonCallbacks   = ClickableObjectCallbacksCount * 4 - 1,
-            ButtonCallbacksCount = ClickableObjectCallbacksCount * 4
+            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,
+            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,
+            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1,
+            ButtonCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
 
