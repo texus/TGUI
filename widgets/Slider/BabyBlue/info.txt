@@ -1,2 +1,0 @@
-VerticalScroll = false
-SplitImage = true

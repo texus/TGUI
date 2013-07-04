@@ -1,5 +1,0 @@
-BackgroundColor         = (210, 210, 210)
-TextColor               = (100, 100, 100)
-SelectedBackgroundColor = (190, 225, 235)
-SelectedTextColor       = (150, 150, 150)
-BorderColor             = (255, 255, 255)

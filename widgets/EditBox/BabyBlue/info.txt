@@ -1,6 +1,0 @@
-SplitImage = true
-TextColor  = (100, 100, 100)
-SelectedTextColor  = (150, 150, 150)
-SelectedTextBackgroundColor = (190, 225, 235)
-SelectionPointColor = (145, 180, 190)
-Borders = (6, 4, 6, 4)
