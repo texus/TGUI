@@ -1708,7 +1708,7 @@ namespace tgui
             m_TextSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
 
             // Watch out for kerning
-            if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1)
+            if (m_DisplayedText.getSize() > m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize())
                 textX += m_TextBeforeSelection.getFont()->getKerning(m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize() - 1], m_DisplayedText[m_TextBeforeSelection.getString().getSize() + m_TextSelection.getString().getSize()], m_TextBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
