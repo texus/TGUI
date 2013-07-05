@@ -29,6 +29,8 @@
 
 #include <SFML/OpenGL.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -112,7 +114,7 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_Text.setPosition(x, y);
+        m_Text.setPosition(std::floor(x + 0.5f), std::floor(y + 0.5f));
         m_Background.setPosition(x + m_Text.getLocalBounds().left, y + m_Text.getLocalBounds().top);
     }
 

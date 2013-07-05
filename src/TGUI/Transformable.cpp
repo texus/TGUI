@@ -25,6 +25,8 @@
 #include <TGUI/Defines.hpp>
 #include <TGUI/Transformable.hpp>
 
+#include <cmath>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -48,8 +50,8 @@ namespace tgui
 
     void Transformable::setPosition(float x, float y)
     {
-        m_Position.x = x;
-        m_Position.y = y;
+        m_Position.x = std::floor(x + 0.5f);
+        m_Position.y = std::floor(y + 0.5f);
 
         m_TransformNeedUpdate = true;
     }
