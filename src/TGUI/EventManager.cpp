@@ -68,17 +68,17 @@ namespace tgui
             }
 
             // Check if the mouse is on top of an widget
-            unsigned int widgetNr;
-            if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
+            Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+            if (widget != NULL)
             {
                 // Check if the widget is a container
-                if (m_Widgets[widgetNr]->m_ContainerWidget)
+                if (widget->m_ContainerWidget)
                 {
                     // Make the event handler of the container do the rest
-                    static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                    static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 }
                 else // Send the event to the widget
-                    m_Widgets[widgetNr]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                    widget->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             }
         }
 
@@ -89,17 +89,17 @@ namespace tgui
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 // Check if the mouse is on top of an widget
-                unsigned int widgetNr;
-                if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
+                Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                if (widget != NULL)
                 {
                     // Focus the widget
-                    focusWidget(m_Widgets[widgetNr].get());
+                    focusWidget(widget.get());
 
                     // Check if the widget is a container
-                    if (m_Widgets[widgetNr]->m_ContainerWidget)
+                    if (widget->m_ContainerWidget)
                     {
                         // If another widget was focused then unfocus it now
-                        if ((m_FocusedWidget) && (m_FocusedWidget != widgetNr+1))
+                        if ((m_FocusedWidget) && (m_Widgets[m_FocusedWidget-1] != widget))
                         {
                             m_Widgets[m_FocusedWidget-1]->m_Focused = false;
                             m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
@@ -107,10 +107,10 @@ namespace tgui
                         }
 
                         // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // The event has to be sent to an widget
-                        m_Widgets[widgetNr]->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 }
                 else // The mouse didn't went down on an widget, so unfocus the focused widget
                     unfocusAllWidgets();
@@ -124,27 +124,27 @@ namespace tgui
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 // Check if the mouse is on top of an widget
-                unsigned int widgetNr;
-                if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
+                Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                if (widget != NULL)
                 {
                     // Check if the widget is a container
-                    if (m_Widgets[widgetNr]->m_ContainerWidget)
+                    if (widget->m_ContainerWidget)
                     {
                         // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
                     else // Send the event to the widget
-                        m_Widgets[widgetNr]->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        widget->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
 
                     // Tell all the other widgets that the mouse has gone up
-                    for (unsigned int i=0; i<m_Widgets.size(); ++i)
+                    for (std::vector<Widget::Ptr>::iterator it = m_Widgets.begin(); it != m_Widgets.end(); ++it)
                     {
-                        if (i != widgetNr)
+                        if (*it != widget)
                         {
-                            if (m_Widgets[i]->m_ContainerWidget)
-                                static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                            if ((*it)->m_ContainerWidget)
+                                static_cast<ContainerWidget::Ptr>(*it)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                             else
-                                m_Widgets[i]->mouseNoLongerDown();
+                                (*it)->mouseNoLongerDown();
                         }
                     }
                 }
@@ -230,17 +230,17 @@ namespace tgui
         else if (event.type == sf::Event::MouseWheelMoved)
         {
             // Find the widget under the mouse
-            unsigned int widgetNr;
-            if (mouseOnWidget(widgetNr, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)))
+            Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+            if (widget != NULL)
             {
                 // Check if the widget is a container
-                if (m_Widgets[widgetNr]->m_ContainerWidget)
+                if (widget->m_ContainerWidget)
                 {
                     // Make the event handler of the container do the rest
-                    static_cast<ContainerWidget::Ptr>(m_Widgets[widgetNr])->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+                    static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
                 }
                 else // Send the event to the widget
-                    m_Widgets[widgetNr]->mouseWheelMoved(event.mouseWheel.delta);
+                    widget->mouseWheelMoved(event.mouseWheel.delta);
             }
         }
     }
@@ -436,34 +436,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EventManager::mouseOnWidget(unsigned int& widgetNr, float x, float y)
+    Widget::Ptr EventManager::mouseOnWidget(float x, float y)
     {
         bool widgetFound = false;
+        Widget::Ptr widget;
 
         // Loop through all widgets
-        for (unsigned int i=0; i<m_Widgets.size(); ++i)
+        for (std::vector<Widget::Ptr>::reverse_iterator it = m_Widgets.rbegin(); it != m_Widgets.rend(); ++it)
         {
             // Check if the widget is visible and enabled
-            if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
+            if (((*it)->m_Visible) && ((*it)->m_Enabled))
             {
-                // Ask the widget if the mouse is on top of them
-                if (m_Widgets[i]->mouseOnWidget(x, y))
+                if (widgetFound == false)
                 {
-                    // If there already was an widget then they overlap each other
-                    if (widgetFound)
-                        m_Widgets[widgetNr]->mouseNotOnWidget();
-
-                    // An widget is found now
-                    widgetFound = true;
-
-                    // Also remember what widget should receive the event
-                    widgetNr = i;
+                    // Return the widget if the mouse is on top of it
+                    if ((*it)->mouseOnWidget(x, y))
+                    {
+                        widget = *it;
+                        widgetFound = true;
+                    }
                 }
+                else // The widget was already found, so tell the other widgets that the mouse can't be on them
+                    (*it)->mouseNotOnWidget();
             }
         }
 
-        // If our mouse is on top of an widget then return true
-        return widgetFound;
+        // The mouse isn't on any widget
+        return widget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

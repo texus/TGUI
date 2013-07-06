@@ -89,12 +89,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Checks above which widget the mouse is standing.
-        // The widget can be signaled through Widgets[WidgetNr] on condition that this function returned true.
-        //
-        // return:  true when the mouse is standing on an widget
-        //          false if the mouse isn't on any widget
+        // If there is no widget below the mouse then this function will return a null pointer.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool mouseOnWidget(unsigned int& widgetNr, float x, float y);
+        SharedWidgetPtr<Widget> mouseOnWidget(float x, float y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

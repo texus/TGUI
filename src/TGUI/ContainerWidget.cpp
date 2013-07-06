@@ -133,6 +133,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ContainerWidget::mouseNotOnWidget()
+    {
+        if (m_MouseHover == true)
+        {
+            mouseLeftWidget();
+
+            m_EventManager.mouseNotOnWidget();
+
+            m_MouseHover = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ContainerWidget::focusNextWidgetInContainer()
     {
         return m_EventManager.focusNextWidget();
