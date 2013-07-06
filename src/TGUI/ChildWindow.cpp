@@ -387,6 +387,10 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // On mouse move, set the hover flag
+        if (event.type == sf::Event::MouseMoved)
+            m_MouseHover = true;
+
         // Check if something has to be done differently with the event
         if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
