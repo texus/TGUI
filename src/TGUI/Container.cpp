@@ -2270,7 +2270,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
             // Check if the pointer matches
-            if (m_EventManager.m_Widgets[i] == widget)
+            if (m_EventManager.m_Widgets[i].get() == widget)
             {
                 // Unfocus the widget, just in case it was focused
                 m_EventManager.unfocusWidget(widget);

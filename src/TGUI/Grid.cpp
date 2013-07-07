@@ -124,7 +124,7 @@ namespace tgui
         {
             for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
-                if (m_GridWidgets[row][col] == widget)
+                if (m_GridWidgets[row][col].get() == widget)
                 {
                     // Remove the widget from the grid
                     m_GridWidgets[row].erase(m_GridWidgets[row].begin() + col);
