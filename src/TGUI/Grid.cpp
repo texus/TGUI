@@ -43,24 +43,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid::Grid(const Grid& copy) :
-    ContainerWidget(copy),
-    m_Size         (copy.m_Size)
+    Grid::Grid(const Grid& gridToCopy) :
+    ContainerWidget(gridToCopy),
+    m_Size         (gridToCopy.m_Size)
     {
-        const std::vector<Widget::Ptr>& widgets = copy.m_EventManager.m_Widgets;
+        const std::vector<Widget::Ptr>& widgets = gridToCopy.m_EventManager.m_Widgets;
 
-        for (unsigned int row = 0; row < copy.m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < gridToCopy.m_GridWidgets.size(); ++row)
         {
             // Create a new row
             addRow();
 
-            for (unsigned int col = 0; col < copy.m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < gridToCopy.m_GridWidgets[row].size(); ++col)
             {
                 // Find the widget that belongs in this square
                 for (unsigned int i = 0; i < widgets.size(); ++i)
                 {
                     // If an widget matches then add it to the grid
-                    if (widgets[i] == copy.m_GridWidgets[row][col])
+                    if (widgets[i] == gridToCopy.m_GridWidgets[row][col])
                         addToRow(widgets[i]);
                 }
             }

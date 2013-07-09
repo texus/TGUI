@@ -56,32 +56,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow(const ChildWindow& copy) :
-    ContainerWidget    (copy),
-    WidgetBorders      (copy),
-    m_LoadedConfigFile (copy.m_LoadedConfigFile),
-    m_Size             (copy.m_Size),
-    m_BackgroundColor  (copy.m_BackgroundColor),
-    m_BackgroundTexture(copy.m_BackgroundTexture),
-    m_TitleText        (copy.m_TitleText),
-    m_TitleBarHeight   (copy.m_TitleBarHeight),
-    m_SplitImage       (copy.m_SplitImage),
-    m_DraggingPosition (copy.m_DraggingPosition),
-    m_DistanceToSide   (copy.m_DistanceToSide),
-    m_TitleAlignment   (copy.m_TitleAlignment),
-    m_BorderColor      (copy.m_BorderColor)
+    ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
+    ContainerWidget    (childWindowToCopy),
+    WidgetBorders      (childWindowToCopy),
+    m_LoadedConfigFile (childWindowToCopy.m_LoadedConfigFile),
+    m_Size             (childWindowToCopy.m_Size),
+    m_BackgroundColor  (childWindowToCopy.m_BackgroundColor),
+    m_BackgroundTexture(childWindowToCopy.m_BackgroundTexture),
+    m_TitleText        (childWindowToCopy.m_TitleText),
+    m_TitleBarHeight   (childWindowToCopy.m_TitleBarHeight),
+    m_SplitImage       (childWindowToCopy.m_SplitImage),
+    m_DraggingPosition (childWindowToCopy.m_DraggingPosition),
+    m_DistanceToSide   (childWindowToCopy.m_DistanceToSide),
+    m_TitleAlignment   (childWindowToCopy.m_TitleAlignment),
+    m_BorderColor      (childWindowToCopy.m_BorderColor)
     {
         // Copy the textures
-        TGUI_TextureManager.copyTexture(copy.m_IconTexture, m_IconTexture);
-        TGUI_TextureManager.copyTexture(copy.m_TextureTitleBar_L, m_TextureTitleBar_L);
-        TGUI_TextureManager.copyTexture(copy.m_TextureTitleBar_M, m_TextureTitleBar_M);
-        TGUI_TextureManager.copyTexture(copy.m_TextureTitleBar_R, m_TextureTitleBar_R);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_L, m_TextureTitleBar_L);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_M, m_TextureTitleBar_M);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R);
 
         // Copy the button
-        m_CloseButton = new tgui::Button(*copy.m_CloseButton);
+        m_CloseButton = new tgui::Button(*childWindowToCopy.m_CloseButton);
 
         // Set the bakground sprite, if there is a background texture
-        if (copy.m_BackgroundTexture)
+        if (childWindowToCopy.m_BackgroundTexture)
         {
             m_BackgroundSprite.setTexture(*m_BackgroundTexture, true);
             m_BackgroundSprite.setScale(m_Size.x / m_BackgroundTexture->getSize().x, m_Size.y / m_BackgroundTexture->getSize().y);

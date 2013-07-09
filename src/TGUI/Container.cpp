@@ -41,15 +41,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container::Container(const Container& copy) :
-    m_GlobalFont             (copy.m_GlobalFont),
-    m_GlobalCallbackFunctions(copy.m_GlobalCallbackFunctions)
+    Container::Container(const Container& containerToCopy) :
+    m_GlobalFont             (containerToCopy.m_GlobalFont),
+    m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the widgets
-        for (unsigned int i = 0; i < copy.m_EventManager.m_Widgets.size(); ++i)
+        for (unsigned int i = 0; i < containerToCopy.m_EventManager.m_Widgets.size(); ++i)
         {
-            m_EventManager.m_Widgets.push_back(copy.m_EventManager.m_Widgets[i].clone());
-            m_ObjName.push_back(copy.m_ObjName[i]);
+            m_EventManager.m_Widgets.push_back(containerToCopy.m_EventManager.m_Widgets[i].clone());
+            m_ObjName.push_back(containerToCopy.m_ObjName[i]);
 
             m_EventManager.m_Widgets.back()->m_Parent = this;
         }

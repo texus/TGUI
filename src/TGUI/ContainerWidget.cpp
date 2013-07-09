@@ -40,9 +40,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ContainerWidget::ContainerWidget(const ContainerWidget& copy) :
-    Widget(copy),
-    Container (copy)
+    ContainerWidget::ContainerWidget(const ContainerWidget& containerWidgetToCopy) :
+    Widget   (containerWidgetToCopy),
+    Container(containerWidgetToCopy)
     {
     }
 

@@ -45,12 +45,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::MessageBox(const MessageBox& copy) :
-    ChildWindow               (copy),
-    m_LoadedConfigFile        (copy.m_LoadedConfigFile),
-    m_ButtonConfigFileFilename(copy.m_ButtonConfigFileFilename),
-    m_Buttons                 (copy.m_Buttons),
-    m_TextSize                (copy.m_TextSize)
+    MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
+    ChildWindow               (messageBoxToCopy),
+    m_LoadedConfigFile        (messageBoxToCopy.m_LoadedConfigFile),
+    m_ButtonConfigFileFilename(messageBoxToCopy.m_ButtonConfigFileFilename),
+    m_Buttons                 (messageBoxToCopy.m_Buttons),
+    m_TextSize                (messageBoxToCopy.m_TextSize)
     {
     }
 
