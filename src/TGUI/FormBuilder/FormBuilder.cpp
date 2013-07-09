@@ -1111,7 +1111,7 @@ bool Builder::loadForm()
                 editBoxes.back().text.value = widget->getText();
                 editBoxes.back().textSize.value = widget->getTextSize();
                 editBoxes.back().textFont.value = "Global";
-                editBoxes.back().passwordChar.value = widget->getPasswordChar();
+                editBoxes.back().passwordChar.value = widget->getPasswordCharacter();
                 editBoxes.back().maximumCharacters.value = widget->getMaximumCharacters();
                 editBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
                 editBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
@@ -1129,7 +1129,7 @@ bool Builder::loadForm()
                 realWidget->setText(widget->getText());
                 realWidget->setTextSize(widget->getTextSize());
                 realWidget->setTextFont(mainWindow.getGlobalFont());
-                realWidget->setPasswordChar(widget->getPasswordChar());
+                realWidget->setPasswordCharacter(widget->getPasswordCharacter());
                 realWidget->setMaximumCharacters(widget->getMaximumCharacters());
                 realWidget->setBorders(widget->getBorders().x1, widget->getBorders().x2, widget->getBorders().x3, widget->getBorders().x4);
                 realWidget->changeColors(widget->getTextColor(), widget->getSelectedTextColor(), widget->getSelectedTextBackgroundColor());

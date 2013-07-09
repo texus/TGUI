@@ -697,7 +697,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPasswordChar(char passwordChar)
+    void EditBox::setPasswordCharacter(char passwordChar)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -712,7 +712,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char EditBox::getPasswordChar() const
+    char EditBox::getPasswordCharacter() const
     {
         return m_PasswordChar;
     }

@@ -1393,10 +1393,10 @@ namespace tgui
                             if (line.empty() == false)
                             {
                                 // Set the password character
-                                editBox->setPasswordChar(line[0]);
+                                editBox->setPasswordCharacter(line[0]);
                             }
                             else // The string is empty
-                                editBox->setPasswordChar('\0');
+                                editBox->setPasswordCharacter('\0');
                         }
                         else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
                         {
