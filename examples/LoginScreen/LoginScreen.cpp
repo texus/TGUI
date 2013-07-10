@@ -26,7 +26,7 @@ void loadWidgets( tgui::Gui& gui )
     // Create the password edit box (we will copy the previously created edit box)
     tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
     editBoxPassword->setPosition(200, 290);
-    editBoxPassword->setPasswordChar('*');
+    editBoxPassword->setPasswordCharacter('*');
 
     // Create the login button
     tgui::Button::Ptr button(gui);
