@@ -351,6 +351,47 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the child window to be kept inside its parent.
+        ///
+        /// \param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
+        ///                 It will be fully kept on left, right and top.
+        ///                 At the bottom of the parent only the titlebar will be kept inside.
+        ///                 It's set to false by default.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void keepInParent(bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Tells whether the child window is kept inside its parent.
+        ///
+        /// \return  When it's set to true, the child window will always be kept automatically inside its parent.
+        ///          It will be fully kept on left, right and top.
+        ///          At the bottom of the parent only the titlebar will be kept inside.
+        ///          It's set to false by default.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isKeptInParent();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used internally to get the size of the child window.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getDisplaySize();
@@ -422,6 +463,8 @@ namespace tgui
         Texture   m_TextureTitleBar_R;
 
         tgui::Button*  m_CloseButton;
+
+        bool m_KeepInParent;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

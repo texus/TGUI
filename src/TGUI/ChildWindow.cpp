@@ -48,7 +48,8 @@ namespace tgui
     m_DraggingPosition (0, 0),
     m_DistanceToSide   (5),
     m_TitleAlignment   (TitleAlignmentCentered),
-    m_BorderColor      (0, 0, 0)
+    m_BorderColor      (0, 0, 0),
+    m_KeepInParent     (false)
     {
         m_Callback.widgetType = Type_ChildWindow;
         m_CloseButton = new tgui::Button();
@@ -69,7 +70,8 @@ namespace tgui
     m_DraggingPosition (childWindowToCopy.m_DraggingPosition),
     m_DistanceToSide   (childWindowToCopy.m_DistanceToSide),
     m_TitleAlignment   (childWindowToCopy.m_TitleAlignment),
-    m_BorderColor      (childWindowToCopy.m_BorderColor)
+    m_BorderColor      (childWindowToCopy.m_BorderColor),
+    m_KeepInParent     (childWindowToCopy.m_KeepInParent)
     {
         // Copy the textures
         TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture);
@@ -137,6 +139,7 @@ namespace tgui
             std::swap(m_TextureTitleBar_M, temp.m_TextureTitleBar_M);
             std::swap(m_TextureTitleBar_R, temp.m_TextureTitleBar_R);
             std::swap(m_CloseButton,       temp.m_CloseButton);
+            std::swap(m_KeepInParent,      temp.m_KeepInParent);
         }
 
         return *this;
@@ -527,6 +530,44 @@ namespace tgui
     void ChildWindow::destroy()
     {
         m_Parent->remove(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::keepInParent(bool enabled)
+    {
+        m_KeepInParent = enabled;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::isKeptInParent()
+    {
+        return m_KeepInParent;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setPosition(float x, float y)
+    {
+        if (m_KeepInParent)
+        {
+            if (y < 0)
+                Transformable::setPosition(getPosition().x, 0);
+            else if (y > m_Parent->getDisplaySize().y - m_TitleBarHeight)
+                Transformable::setPosition(getPosition().x, m_Parent->getDisplaySize().y - m_TitleBarHeight);
+            else
+                Transformable::setPosition(getPosition().x, y);
+
+            if (x < 0)
+                Transformable::setPosition(0, getPosition().y);
+            else if (x > m_Parent->getDisplaySize().x - getSize().x)
+                Transformable::setPosition(m_Parent->getDisplaySize().x - getSize().x, getPosition().y);
+            else
+                Transformable::setPosition(x, getPosition().y);
+        }
+        else
+            Transformable::setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
