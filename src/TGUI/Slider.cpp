@@ -407,7 +407,7 @@ namespace tgui
 
         // When the value is below the minimum then adjust it
         if (m_Value < m_Minimum)
-            m_Value = m_Minimum;
+            setValue(m_Minimum);
 
         // The maximum can't be below the minimum
         if (m_Maximum < m_Minimum)
@@ -426,7 +426,7 @@ namespace tgui
 
         // When the value is above the maximum then adjust it
         if (m_Value > m_Maximum)
-            m_Value = m_Maximum;
+            setValue(m_Maximum);
 
         // The minimum can't be below the maximum
         if (m_Minimum > m_Maximum)
@@ -437,14 +437,25 @@ namespace tgui
 
     void Slider::setValue(unsigned int value)
     {
-        // Set the new value
-        m_Value = value;
+        if (m_Value != value)
+        {
+            // Set the new value
+            m_Value = value;
 
-        // When the value is below the minimum or above the maximum then adjust it
-        if (m_Value < m_Minimum)
-            m_Value = m_Minimum;
-        else if (m_Value > m_Maximum)
-            m_Value = m_Maximum;
+            // When the value is below the minimum or above the maximum then adjust it
+            if (m_Value < m_Minimum)
+                m_Value = m_Minimum;
+            else if (m_Value > m_Maximum)
+                m_Value = m_Maximum;
+
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[ValueChanged].empty() == false)
+            {
+                m_Callback.trigger = ValueChanged;
+                m_Callback.value   = static_cast<int>(m_Value);
+                addCallback();
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,9 +649,6 @@ namespace tgui
         // Get the current position
         Vector2f position = getPosition();
 
-        // Remember the old value
-        unsigned int oldValue = m_Value;
-
         // Check if the mouse button is down
         if (m_MouseDown)
         {
@@ -662,7 +670,7 @@ namespace tgui
                     if ((y - position.y) > 0)
                         setValue(static_cast <unsigned int> ((((y - position.y) / m_Size.y) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
-                        m_Value = m_Minimum;
+                        setValue(m_Minimum);
                 }
             }
             else // the slider lies horizontal
@@ -682,17 +690,9 @@ namespace tgui
                     if (x - position.x > 0)
                         setValue(static_cast<unsigned int>((((x - position.x) / m_Size.x) * (m_Maximum - m_Minimum)) + m_Minimum + 0.5f));
                     else // The position is negative, the calculation can't be done (but is not needed)
-                        m_Value = m_Minimum;
+                        setValue(m_Minimum);
                 }
             }
-        }
-
-        // Add the callback (if the user requested it)
-        if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
-        {
-            m_Callback.trigger = ValueChanged;
-            m_Callback.value   = static_cast<int>(m_Value);
-            addCallback();
         }
     }
 
@@ -708,7 +708,7 @@ namespace tgui
     void Slider::mouseWheelMoved(int delta)
     {
         if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
-            m_Value = m_Minimum;
+            setValue(m_Minimum);
         else
             setValue(static_cast<unsigned int>(m_Value - delta));
     }
