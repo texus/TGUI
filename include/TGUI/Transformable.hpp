@@ -48,11 +48,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the object
+        /// \brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable object is (0, 0).
+        /// The default position of a transformable widget is (0, 0).
         ///
         /// \param x X coordinate of the new position
         /// \param y Y coordinate of the new position
@@ -64,11 +64,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief set the position of the object
+        /// \brief set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable object is (0, 0).
+        /// The default position of a transformable widget is (0, 0).
         ///
         /// \param position New position
         ///
@@ -79,7 +79,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief get the position of the object
+        /// \brief get the position of the widget
         ///
         /// \return Current position
         ///
@@ -90,13 +90,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Move the object by a given offset
+        /// \brief Move the widget by a given offset
         ///
-        /// This function adds to the current position of the object, unlike setPosition which overwrites it.
+        /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
         /// Thus, it is equivalent to the following code:
         /// \code
-        /// sf::Vector2f pos = object.getPosition();
-        /// object.setPosition(pos.x + offsetX, pos.y + offsetY);
+        /// sf::Vector2f pos = widget.getPosition();
+        /// widget.setPosition(pos.x + offsetX, pos.y + offsetY);
         /// \endcode
         ///
         /// \param offsetX X offset
@@ -109,12 +109,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Move the object by a given offset
+        /// \brief Move the widget by a given offset
         ///
-        /// This function adds to the current position of the object, unlike setPosition which overwrites it.
+        /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
         /// Thus, it is equivalent to the following code:
         /// \code
-        /// object.setPosition(object.getPosition() + offset);
+        /// widget.setPosition(widget.getPosition() + offset);
         /// \endcode
         ///
         /// \param offset Offset
@@ -126,8 +126,58 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the size of the widget.
+        ///
+        /// \param width   Width of the widget
+        /// \param height  Height of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSize(float width, float height) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the size of the widget.
+        ///
+        /// \return Size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Vector2f getSize() const = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Scale the widget
+        ///
+        /// \param factorX  Horizontal scale factor
+        /// \param factorY  Vertical scale factor
+        ///
+        /// This function multiplies the current size of the widget with the given scale factors.
+        /// Thus, it is equivalent to the following code:
+        /// \code
+        /// widget.setSize(getSize().x * factorX, getSize().y * factorY);
+        /// \endcode
+        ///
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scale(float factorX, float factorY);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Scale the widget
+        ///
+        /// \param factor  Scale factors
+        ///
+        /// This function multiplies the current size of the widget with the given scale factors.
+        /// Thus, it is equivalent to the following code:
+        /// \code
+        /// widget.setSize(getSize().x * factors.x, getSize().y * factors.y);
+        /// \endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scale(const Vector2f& factors);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the transform.
-        // This currently only contains the translation.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Transform& getTransform() const;
 
