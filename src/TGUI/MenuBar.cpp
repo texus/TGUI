@@ -125,9 +125,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setHeight(float height)
+    void MenuBar::setSize(float width, float height)
     {
+        m_Size.x = width;
         m_Size.y = height;
+
         setTextSize(static_cast<unsigned int>(height * 0.85f));
     }
 
