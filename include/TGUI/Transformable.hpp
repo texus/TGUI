@@ -164,7 +164,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Scale the widget
         ///
-        /// \param factor  Scale factors
+        /// \param factors  Scale factors
         ///
         /// This function multiplies the current size of the widget with the given scale factors.
         /// Thus, it is equivalent to the following code:
