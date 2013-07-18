@@ -89,15 +89,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the widget.
-        ///
-        /// \return Size of the widget
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Shows the widget.
         ///
         /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
@@ -343,11 +334,20 @@ namespace tgui
         virtual void mouseMoved(float x, float y);
         virtual void keyPressed(sf::Keyboard::Key key);
         virtual void textEntered(sf::Uint32 key);
-        virtual void mouseWheelMoved(int delta);
+        virtual void mouseWheelMoved(int delta, int x, int y);
         virtual void widgetFocused();
         virtual void widgetUnfocused();
         virtual void mouseNotOnWidget();
         virtual void mouseNoLongerDown();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
+        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool getProperty(const std::string& property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

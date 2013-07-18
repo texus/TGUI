@@ -205,6 +205,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Picture::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "Filename")
+            {
+                load(value);
+            }
+            else if (property == "Smooth")
+            {
+                if ((value == "true") || (value == "True"))
+                    setSmooth(true);
+                else if ((value == "false") || (value == "False"))
+                    setSmooth(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Smooth' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Picture::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "Filename")
+                value = getLoadedFilename();
+            else if (property == "Smooth")
+                value = isSmooth() ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(m_Texture, states);

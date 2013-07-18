@@ -45,12 +45,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::MessageBox(const MessageBox& copy) :
-    ChildWindow               (copy),
-    m_LoadedConfigFile        (copy.m_LoadedConfigFile),
-    m_ButtonConfigFileFilename(copy.m_ButtonConfigFileFilename),
-    m_Buttons                 (copy.m_Buttons),
-    m_TextSize                (copy.m_TextSize)
+    MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
+    ChildWindow               (messageBoxToCopy),
+    m_LoadedConfigFile        (messageBoxToCopy.m_LoadedConfigFile),
+    m_ButtonConfigFileFilename(messageBoxToCopy.m_ButtonConfigFileFilename),
+    m_Buttons                 (messageBoxToCopy.m_Buttons),
+    m_Label                   (messageBoxToCopy.m_Label),
+    m_TextSize                (messageBoxToCopy.m_TextSize)
     {
     }
 
@@ -72,6 +73,7 @@ namespace tgui
             std::swap(m_LoadedConfigFile,         temp.m_LoadedConfigFile);
             std::swap(m_ButtonConfigFileFilename, temp.m_ButtonConfigFileFilename);
             std::swap(m_Buttons,                  temp.m_Buttons);
+            std::swap(m_Label,                    temp.m_Label);
             std::swap(m_TextSize,                 temp.m_TextSize);
         }
 
@@ -95,10 +97,10 @@ namespace tgui
         m_Loaded = false;
 
         // Create the text label if it doesn't exist yet
-        if (get("MessageBoxText") == NULL)
+        if (m_Label == NULL)
         {
-            Label::Ptr label(*this, "MessageBoxText");
-            label->setTextSize(m_TextSize);
+            m_Label.init(*this, "MessageBoxText");
+            m_Label->setTextSize(m_TextSize);
         }
 
         // Open the config file
@@ -138,7 +140,7 @@ namespace tgui
 
             if (property == "textcolor")
             {
-                Label::Ptr(get("MessageBoxText"))->setTextColor(configFile.readColor(value));
+                m_Label->setTextColor(configFile.readColor(value));
             }
             else if (property == "childwindow")
             {
@@ -199,7 +201,7 @@ namespace tgui
     {
         if (m_Loaded)
         {
-            Label::Ptr(get("MessageBoxText"))->setText(text);
+            m_Label->setText(text);
 
             rearrange();
         }
@@ -214,12 +216,40 @@ namespace tgui
     sf::String MessageBox::getText()
     {
         if (m_Loaded)
-            return Label::Ptr(get("MessageBoxText"))->getText();
+            return m_Label->getText();
         else
         {
             TGUI_OUTPUT("TGUI error: Failed to set the text. MessageBox was not loaded completely.");
             return "";
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::setTextFont(const sf::Font& font)
+    {
+        m_Label->setTextFont(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Font* MessageBox::getTextFont() const
+    {
+        return m_Label->getTextFont();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::setTextColor(const sf::Color& color)
+    {
+        m_Label->setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& MessageBox::getTextColor() const
+    {
+        return m_Label->getTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +260,7 @@ namespace tgui
 
         if (m_Loaded)
         {
-            Label::Ptr(get("MessageBoxText"))->setTextSize(size);
+            m_Label->setTextSize(size);
 
             for (unsigned int i = 0; i < m_Buttons.size(); ++i)
                 m_Buttons[i]->setTextSize(m_TextSize);
@@ -270,12 +300,56 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool MessageBox::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!ChildWindow::setProperty(property, value))
+        {
+            if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(atoi(value.c_str()));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MessageBox::getProperty(const std::string& property, std::string& value)
+    {
+        if (!ChildWindow::getProperty(property, value))
+        {
+            if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextColor")
+                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+            else if (property == "TextSize")
+                value = to_string(getTextSize());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MessageBox::rearrange()
     {
         if (!m_Loaded)
             return;
-
-        Label::Ptr label = get("MessageBoxText");
 
         // Calculate the button size
         float buttonWidth = 5 * m_TextSize;
@@ -297,8 +371,8 @@ namespace tgui
         }
 
         // Calculate the suggested size of the window
-        float width = 2*distance + label->getSize().x;
-        float height = 3*distance + label->getSize().y + buttonHeight;
+        float width = 2*distance + m_Label->getSize().x;
+        float height = 3*distance + m_Label->getSize().y + buttonHeight;
 
         // Make sure the buttons fit inside the message box
         if (buttonsAreaWidth > width)
@@ -308,11 +382,11 @@ namespace tgui
         setSize(width, height);
 
         // Set the text on the correct position
-        label->setPosition(distance, distance);
+        m_Label->setPosition(distance, distance);
 
         // Set the buttons on the correct position
         float leftPosition = 0;
-        float topPosition = 2*distance + label->getSize().y;
+        float topPosition = 2*distance + m_Label->getSize().y;
         for (unsigned int i = 0; i < m_Buttons.size(); ++i)
         {
             leftPosition += distance + ((width - buttonsAreaWidth) / (m_Buttons.size()+1));

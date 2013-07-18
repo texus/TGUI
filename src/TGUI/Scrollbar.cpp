@@ -356,12 +356,23 @@ namespace tgui
 
     void Scrollbar::setValue(unsigned int value)
     {
-        // Set the new value
-        m_Value = value;
+        if (m_Value != value)
+        {
+            // Set the new value
+            m_Value = value;
 
-        // When the value is above the maximum then adjust it
-        if (m_Value > m_Maximum - m_LowValue)
-            m_Value = m_Maximum - m_LowValue;
+            // When the value is above the maximum then adjust it
+            if (m_Value > m_Maximum - m_LowValue)
+                m_Value = m_Maximum - m_LowValue;
+
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[ValueChanged].empty() == false)
+            {
+                m_Callback.trigger = ValueChanged;
+                m_Callback.value   = static_cast<int>(m_Value);
+                addCallback();
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -570,9 +581,6 @@ namespace tgui
             // Only continue when the calculations can be made
             if (m_Maximum > m_LowValue)
             {
-                // Remember the current value
-                unsigned int oldValue = m_Value;
-
                 // Check in which direction the scrollbar lies
                 if (m_VerticalScroll)
                 {
@@ -589,14 +597,14 @@ namespace tgui
                         if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX))
                         {
                             if (m_Value > 0)
-                                --m_Value;
+                                setValue(m_Value - 1);
                         }
 
                         // Check if you clicked the down arrow
                         else if (y > getPosition().y + m_Size.y - (m_TextureArrowUpNormal.getSize().y * scalingX))
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
-                                ++m_Value;
+                                setValue(m_Value + 1);
                         }
                     }
                     else // The arrows are not drawn at full size
@@ -605,12 +613,12 @@ namespace tgui
                         if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * ((m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
                         {
                             if (m_Value > 0)
-                                --m_Value;
+                                setValue(m_Value - 1);
                         }
                         else // You clicked on the bottom arrow
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
-                                ++m_Value;
+                                setValue(m_Value + 1);
                         }
                     }
                 }
@@ -629,14 +637,14 @@ namespace tgui
                         if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY))
                         {
                             if (m_Value > 0)
-                                --m_Value;
+                                setValue(m_Value - 1);
                         }
 
                         // Check if you clicked the right arrow
                         else if (x > getPosition().x + m_Size.x - (m_TextureArrowUpNormal.getSize().y * scalingY))
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
-                                ++m_Value;
+                                setValue(m_Value + 1);
                         }
                     }
                     else // The arrows are not drawn at full size
@@ -645,22 +653,14 @@ namespace tgui
                         if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * ((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
                         {
                             if (m_Value > 0)
-                                --m_Value;
+                                setValue(m_Value - 1);
                         }
                         else // You clicked on the right arrow
                         {
                             if (m_Value < (m_Maximum - m_LowValue))
-                                ++m_Value;
+                                setValue(m_Value + 1);
                         }
                     }
-                }
-
-                // Add the callback (if the user requested it)
-                if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
-                {
-                    m_Callback.trigger = ValueChanged;
-                    m_Callback.value   = static_cast<int>(m_Value);
-                    addCallback();
                 }
             }
         }
@@ -691,9 +691,6 @@ namespace tgui
 
             // Get the current position
             Vector2f position = getPosition();
-
-            // Remember the current value
-            unsigned int oldValue = m_Value;
 
             // Check in which direction the scrollbar lies
             if (m_VerticalScroll)
@@ -826,15 +823,46 @@ namespace tgui
                     }
                 }
             }
-
-            // Add the callback (if the user requested it)
-            if ((oldValue != m_Value) && (m_CallbackFunctions[ValueChanged].empty() == false))
-            {
-                m_Callback.trigger = ValueChanged;
-                m_Callback.value   = static_cast<int>(m_Value);
-                addCallback();
-            }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Slider::setProperty(property, value))
+        {
+            if (property == "AutoHide")
+            {
+                if ((value == "true") || (value == "True"))
+                    setAutoHide(true);
+                else if ((value == "false") || (value == "False"))
+                    setAutoHide(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Slider::getProperty(property, value))
+        {
+            if (property == "AutoHide")
+                value = m_AutoHide ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

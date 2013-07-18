@@ -41,15 +41,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container::Container(const Container& copy) :
-    m_GlobalFont             (copy.m_GlobalFont),
-    m_GlobalCallbackFunctions(copy.m_GlobalCallbackFunctions)
+    Container::Container(const Container& containerToCopy) :
+    m_GlobalFont             (containerToCopy.m_GlobalFont),
+    m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the widgets
-        for (unsigned int i = 0; i < copy.m_EventManager.m_Widgets.size(); ++i)
+        for (unsigned int i = 0; i < containerToCopy.m_EventManager.m_Widgets.size(); ++i)
         {
-            m_EventManager.m_Widgets.push_back(copy.m_EventManager.m_Widgets[i].clone());
-            m_ObjName.push_back(copy.m_ObjName[i]);
+            m_EventManager.m_Widgets.push_back(containerToCopy.m_EventManager.m_Widgets[i].clone());
+            m_ObjName.push_back(containerToCopy.m_ObjName[i]);
 
             m_EventManager.m_Widgets.back()->m_Parent = this;
         }
@@ -1393,10 +1393,10 @@ namespace tgui
                             if (line.empty() == false)
                             {
                                 // Set the password character
-                                editBox->setPasswordChar(line[0]);
+                                editBox->setPasswordCharacter(line[0]);
                             }
                             else // The string is empty
-                                editBox->setPasswordChar('\0');
+                                editBox->setPasswordCharacter('\0');
                         }
                         else if (line.substr(0, 20).compare("selectionpointwidth=") == 0)
                         {
@@ -2270,7 +2270,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
         {
             // Check if the pointer matches
-            if (m_EventManager.m_Widgets[i] == widget)
+            if (m_EventManager.m_Widgets[i].get() == widget)
             {
                 // Unfocus the widget, just in case it was focused
                 m_EventManager.unfocusWidget(widget);

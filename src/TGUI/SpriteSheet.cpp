@@ -200,6 +200,46 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SpriteSheet::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Picture::setProperty(property, value))
+        {
+            if (property == "Rows")
+            {
+                setRows(atof(value.c_str()));
+            }
+            else if (property == "Columns")
+            {
+                setColumns(atof(value.c_str()));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SpriteSheet::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Picture::getProperty(property, value))
+        {
+            if (property == "Rows")
+                value = to_string(getRows());
+            else if (property == "Columns")
+                value = to_string(getColumns());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

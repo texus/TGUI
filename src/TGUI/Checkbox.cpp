@@ -533,6 +533,80 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Checkbox::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Checked")
+            {
+                if ((value == "true") || (value == "True"))
+                    check();
+                else if ((value == "false") || (value == "False"))
+                    uncheck();
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Checked' property.");
+            }
+            else if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(atoi(value.c_str()));
+            }
+            else if (property == "AllowTextClick")
+            {
+                if ((value == "true") || (value == "True"))
+                    allowTextClick(true);
+                else if ((value == "false") || (value == "False"))
+                    allowTextClick(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'AllowTextClick' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Checkbox::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Checked")
+                value = m_Checked ? "true" : "false";
+            else if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextColor")
+                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+            else if (property == "TextSize")
+                value = to_string(getTextSize());
+            else if (property == "AllowTextClick")
+                value = m_AllowTextClick ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Checkbox::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;

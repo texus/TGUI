@@ -75,14 +75,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the height of the menu bar.
+        /// \brief Changes the size of the menu bar.
         ///
+        /// \param width  The width of the menu bar.
         /// \param height  The height of the menu bar.
         ///
-        /// By default the height will be 20.
+        /// By default the height is 20 pixels.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHeight(float height);
+        virtual void setSize(float width, float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,6 +335,15 @@ namespace tgui
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
+        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool getProperty(const std::string& property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

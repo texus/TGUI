@@ -697,7 +697,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPasswordChar(char passwordChar)
+    void EditBox::setPasswordCharacter(char passwordChar)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_Loaded == false)
@@ -712,7 +712,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char EditBox::getPasswordChar() const
+    char EditBox::getPasswordCharacter() const
     {
         return m_PasswordChar;
     }
@@ -1489,6 +1489,132 @@ namespace tgui
             setSelectionPointPosition(m_SelEnd);
 
         Widget::widgetUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool EditBox::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(atoi(value.c_str()));
+            }
+            else if (property == "PasswordCharacter")
+            {
+                if (value.length() == 1)
+                    setPasswordCharacter(value[0]);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+            }
+            else if (property == "MaximumCharacters")
+            {
+                setMaximumCharacters(atoi(value.c_str()));
+            }
+            else if (property == "Borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextColor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextBackgroundColor")
+            {
+                setSelectedTextBackgroundColor(extractColor(value));
+            }
+            else if (property == "SelectionPointColor")
+            {
+                setSelectionPointColor(extractColor(value));
+            }
+            else if (property == "LimitTextWidth")
+            {
+                if ((value == "true") || (value == "True"))
+                    limitTextWidth(true);
+                else if ((value == "false") || (value == "False"))
+                    limitTextWidth(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
+            }
+            else if (property == "SelectionPointWidth")
+            {
+                setSelectionPointWidth(atoi(value.c_str()));
+            }
+            else if (property == "NumbersOnly")
+            {
+                if ((value == "true") || (value == "True"))
+                    setNumbersOnly(true);
+                else if ((value == "false") || (value == "False"))
+                    setNumbersOnly(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'NumbersOnly' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool EditBox::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextSize")
+                value = to_string(getTextSize());
+            else if (property == "PasswordCharacter")
+                value = getPasswordCharacter();
+            else if (property == "MaximumCharacters")
+                value = to_string(getMaximumCharacters());
+            else if (property == "Borders")
+                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
+            else if (property == "TextColor")
+                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+            else if (property == "SelectedTextColor")
+                value = "(" + to_string(getSelectedTextColor().r) + "," + to_string(getSelectedTextColor().g)
+                        + "," + to_string(getSelectedTextColor().b) + "," + to_string(getSelectedTextColor().a) + ")";
+            else if (property == "SelectedTextBackgroundColor")
+                value = "(" + to_string(getSelectedTextBackgroundColor().r) + "," + to_string(getSelectedTextBackgroundColor().g)
+                        + "," + to_string(getSelectedTextBackgroundColor().b) + "," + to_string(getSelectedTextBackgroundColor().a) + ")";
+            else if (property == "SelectionPointColor")
+                value = "(" + to_string(getSelectionPointColor().r) + "," + to_string(getSelectionPointColor().g)
+                        + "," + to_string(getSelectionPointColor().b) + "," + to_string(getSelectionPointColor().a) + ")";
+            else if (property == "LimitTextWidth")
+                value = m_LimitTextWidth ? "true" : "false";
+            else if (property == "SelectionPointWidth")
+                value = to_string(getSelectionPointWidth());
+            else if (property == "NumbersOnly")
+                value = m_NumbersOnly ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

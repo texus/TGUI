@@ -320,6 +320,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tab::setSize(float, float)
+    {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Vector2f Tab::getSize() const
     {
         // Make sure the tab has been loaded
@@ -660,6 +666,70 @@ namespace tgui
                 break;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Tab::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(atoi(value.c_str()));
+            }
+            else if (property == "TabHeight")
+            {
+                setTabHeight(atoi(value.c_str()));
+            }
+            else if (property == "MaximumTabWidth")
+            {
+                setMaximumTabWidth(atoi(value.c_str()));
+            }
+            else if (property == "DistanceToSide")
+            {
+                setDistanceToSide(atoi(value.c_str()));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Tab::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "TextColor")
+                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+            else if (property == "TextSize")
+                value = to_string(getTextSize());
+            else if (property == "TabHeight")
+                value = to_string(getTabHeight());
+            else if (property == "MaximumTabWidth")
+                value = to_string(getMaximumTabWidth());
+            else if (property == "DistanceToSide")
+                value = to_string(getDistanceToSide());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

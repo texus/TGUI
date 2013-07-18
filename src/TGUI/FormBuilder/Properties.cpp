@@ -1706,7 +1706,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             passwordChar.value = property[0];
 
         // Change the password char
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setPasswordChar(passwordChar.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setPasswordCharacter(passwordChar.value);
     }
     else if (propertyNumber == Property_EditBox_MaximumCharacters)
     {

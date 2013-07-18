@@ -40,9 +40,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ContainerWidget::ContainerWidget(const ContainerWidget& copy) :
-    Widget(copy),
-    Container (copy)
+    ContainerWidget::ContainerWidget(const ContainerWidget& containerWidgetToCopy) :
+    Widget   (containerWidgetToCopy),
+    Container(containerWidgetToCopy)
     {
     }
 
@@ -77,6 +77,103 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ContainerWidget::leftMousePressed(float x, float y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseButtonPressed;
+        event.mouseButton.x = static_cast<int>(x - getPosition().x);
+        event.mouseButton.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::leftMouseReleased(float x , float y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseButtonReleased;
+        event.mouseButton.x = static_cast<int>(x - getPosition().x);
+        event.mouseButton.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::mouseMoved(float x, float y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseMoved;
+        event.mouseMove.x = static_cast<int>(x - getPosition().x);
+        event.mouseMove.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::keyPressed(sf::Keyboard::Key key)
+    {
+        sf::Event event;
+        event.type = sf::Event::KeyPressed;
+        event.key.code = key;
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::textEntered(sf::Uint32 key)
+    {
+        sf::Event event;
+        event.type = sf::Event::KeyPressed;
+        event.text.unicode = key;
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::mouseWheelMoved(int delta, int x, int y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseWheelMoved;
+        event.mouseWheel.x = static_cast<int>(x - getPosition().x);
+        event.mouseWheel.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::mouseNotOnWidget()
+    {
+        if (m_MouseHover == true)
+        {
+            mouseLeftWidget();
+            m_EventManager.mouseNotOnWidget();
+
+            m_MouseHover = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ContainerWidget::mouseNoLongerDown()
+    {
+        Widget::mouseNoLongerDown();
+        m_EventManager.mouseNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ContainerWidget::addChildCallback(Callback& callback)
     {
         // If there is no global callback function then send the callback to the parent
@@ -104,45 +201,6 @@ namespace tgui
     {
         m_EventManager.updateTime(m_AnimationTimeElapsed);
         m_AnimationTimeElapsed = sf::Time();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ContainerWidget::handleEvent(sf::Event& event, float mouseX, float mouseY)
-    {
-        // Adjust the mouse position of the event when the event is about the mouse
-        if (event.type == sf::Event::MouseMoved)
-        {
-            event.mouseMove.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseMove.y = static_cast<int>(mouseY - getPosition().y);
-        }
-        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
-        {
-            event.mouseButton.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseButton.y = static_cast<int>(mouseY - getPosition().y);
-        }
-        else if (event.type == sf::Event::MouseWheelMoved)
-        {
-            event.mouseWheel.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseWheel.y = static_cast<int>(mouseY - getPosition().y);
-        }
-
-        // Let the event manager handle the event
-        m_EventManager.handleEvent(event);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ContainerWidget::mouseNotOnWidget()
-    {
-        if (m_MouseHover == true)
-        {
-            mouseLeftWidget();
-
-            m_EventManager.mouseNotOnWidget();
-
-            m_MouseHover = false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

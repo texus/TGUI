@@ -51,17 +51,9 @@ namespace tgui
                 if (m_Widgets[i]->m_MouseDown)
                 {
                     // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                    if (m_Widgets[i]->m_DraggableWidget)
+                    if ((m_Widgets[i]->m_DraggableWidget) || (m_Widgets[i]->m_ContainerWidget))
                     {
                         m_Widgets[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-                        return;
-                    }
-
-                    // Containers also need a different treatment
-                    else if (m_Widgets[i]->m_ContainerWidget)
-                    {
-                        // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                         return;
                     }
                 }
@@ -71,14 +63,8 @@ namespace tgui
             Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             if (widget != NULL)
             {
-                // Check if the widget is a container
-                if (widget->m_ContainerWidget)
-                {
-                    // Make the event handler of the container do the rest
-                    static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-                }
-                else // Send the event to the widget
-                    widget->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+                // Send the event to the widget
+                widget->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             }
         }
 
@@ -105,12 +91,9 @@ namespace tgui
                             m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
                             m_FocusedWidget = 0;
                         }
-
-                        // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     }
-                    else // The event has to be sent to an widget
-                        widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+
+                    widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 }
                 else // The mouse didn't went down on an widget, so unfocus the focused widget
                     unfocusAllWidgets();
@@ -126,38 +109,13 @@ namespace tgui
                 // Check if the mouse is on top of an widget
                 Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 if (widget != NULL)
-                {
-                    // Check if the widget is a container
-                    if (widget->m_ContainerWidget)
-                    {
-                        // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                    }
-                    else // Send the event to the widget
-                        widget->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                    widget->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
 
-                    // Tell all the other widgets that the mouse has gone up
-                    for (std::vector<Widget::Ptr>::iterator it = m_Widgets.begin(); it != m_Widgets.end(); ++it)
-                    {
-                        if (*it != widget)
-                        {
-                            if ((*it)->m_ContainerWidget)
-                                static_cast<ContainerWidget::Ptr>(*it)->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                            else
-                                (*it)->mouseNoLongerDown();
-                        }
-                    }
-                }
-                else
+                // Tell all the other widgets that the mouse has gone up
+                for (std::vector<Widget::Ptr>::iterator it = m_Widgets.begin(); it != m_Widgets.end(); ++it)
                 {
-                    // Tell all the widgets that the mouse has gone up
-                    for (unsigned int i=0; i<m_Widgets.size(); ++i)
-                    {
-                        if (m_Widgets[i]->m_ContainerWidget)
-                            static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                        else
-                            m_Widgets[i]->mouseNoLongerDown();
-                    }
+                    if (*it != widget)
+                        (*it)->mouseNoLongerDown();
                 }
             }
         }
@@ -171,27 +129,18 @@ namespace tgui
                 // Check if there is a focused widget
                 if (m_FocusedWidget)
                 {
-                    // Check if the widget is a container
-                    if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
+                    // Check the pressed key
+                    if ((event.key.code == sf::Keyboard::Left)
+                     || (event.key.code == sf::Keyboard::Right)
+                     || (event.key.code == sf::Keyboard::Up)
+                     || (event.key.code == sf::Keyboard::Down)
+                     || (event.key.code == sf::Keyboard::BackSpace)
+                     || (event.key.code == sf::Keyboard::Delete)
+                     || (event.key.code == sf::Keyboard::Space)
+                     || (event.key.code == sf::Keyboard::Return))
                     {
-                        // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->handleEvent(event);
-                    }
-                    else // The event has to be send to a normal widget
-                    {
-                        // Check the pressed key
-                        if ((event.key.code == sf::Keyboard::Left)
-                         || (event.key.code == sf::Keyboard::Right)
-                         || (event.key.code == sf::Keyboard::Up)
-                         || (event.key.code == sf::Keyboard::Down)
-                         || (event.key.code == sf::Keyboard::BackSpace)
-                         || (event.key.code == sf::Keyboard::Delete)
-                         || (event.key.code == sf::Keyboard::Space)
-                         || (event.key.code == sf::Keyboard::Return))
-                        {
-                            // Tell the widget that the key was pressed
-                            m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
-                        }
+                        // Tell the widget that the key was pressed
+                        m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
                     }
                 }
             }
@@ -211,18 +160,9 @@ namespace tgui
             // Check if the character that we pressed is allowed
             if ((event.text.unicode >= 30) && (event.text.unicode != 127))
             {
-                // Check if there is a focused widget
+                // Tell the widget that the key was pressed
                 if (m_FocusedWidget)
-                {
-                    // Check if the widget is a container
-                    if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
-                    {
-                        // Make the event handler of the container do the rest
-                        static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->handleEvent(event);
-                    }
-                    else // Tell the widget that the key was pressed
-                        m_Widgets[m_FocusedWidget-1]->textEntered(event.text.unicode);
-                }
+                    m_Widgets[m_FocusedWidget-1]->textEntered(event.text.unicode);
             }
         }
 
@@ -233,14 +173,8 @@ namespace tgui
             Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
             if (widget != NULL)
             {
-                // Check if the widget is a container
-                if (widget->m_ContainerWidget)
-                {
-                    // Make the event handler of the container do the rest
-                    static_cast<ContainerWidget::Ptr>(widget)->handleEvent(event, static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
-                }
-                else // Send the event to the widget
-                    widget->mouseWheelMoved(event.mouseWheel.delta);
+                // Send the event to the widget
+                widget->mouseWheelMoved(event.mouseWheel.delta, event.mouseWheel.x,  event.mouseWheel.y);
             }
         }
     }

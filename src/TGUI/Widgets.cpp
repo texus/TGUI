@@ -398,7 +398,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseWheelMoved(int)
+    void Widget::mouseWheelMoved(int, int, int)
     {
     }
 
@@ -439,6 +439,80 @@ namespace tgui
     void Widget::mouseNoLongerDown()
     {
         m_MouseDown = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::setProperty(const std::string& property, const std::string& value)
+    {
+        if (property == "Left")
+        {
+            setPosition(atof(value.c_str()), getPosition().y);
+        }
+        else if (property == "Top")
+        {
+            setPosition(getPosition().x, atof(value.c_str()));
+        }
+        else if (property == "Width")
+        {
+            setSize(atof(value.c_str()), getSize().y);
+        }
+        else if (property == "Height")
+        {
+            setSize(getSize().x, atof(value.c_str()));
+        }
+        else if (property == "Visible")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Visible = true;
+            else if ((value == "false") || (value == "False"))
+                m_Visible = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Visible' property.");
+        }
+        else if (property == "Enabled")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Enabled = true;
+            else if ((value == "false") || (value == "False"))
+                m_Enabled = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Enabled' property.");
+        }
+        else if (property == "Transparency")
+        {
+            setTransparency(static_cast<char>(atoi(value.c_str())));
+        }
+        else // The property didn't match
+            return false;
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::getProperty(const std::string& property, std::string& value)
+    {
+        if (property == "Left")
+            value = to_string(getPosition().x);
+        else if (property == "Top")
+            value = to_string(getPosition().y);
+        else if (property == "Width")
+            value = to_string(getSize().x);
+        else if (property == "Height")
+            value = to_string(getSize().y);
+        else if (property == "Visible")
+            value = m_Visible ? "true" : "false";
+        else if (property == "Enabled")
+            value = m_Enabled ? "true" : "false";
+        else if (property == "Transparency")
+            value = to_string(getTransparency());
+        else // The property didn't match
+            return false;
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

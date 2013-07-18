@@ -47,11 +47,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel(const Panel& copy) :
-    ContainerWidget  (copy),
-    m_Size           (copy.m_Size),
-    m_BackgroundColor(copy.m_BackgroundColor),
-    m_Texture        (copy.m_Texture)
+    Panel::Panel(const Panel& panelToCopy) :
+    ContainerWidget  (panelToCopy),
+    m_Size           (panelToCopy.m_Size),
+    m_BackgroundColor(panelToCopy.m_BackgroundColor),
+    m_Texture        (panelToCopy.m_Texture)
     {
         if (m_Texture)
         {
@@ -196,6 +196,57 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Panel::leftMousePressed(float x, float y)
+    {
+        if (mouseOnWidget(x, y))
+        {
+            m_MouseDown = true;
+
+            if (!m_CallbackFunctions[LeftMousePressed].empty())
+            {
+                m_Callback.trigger = LeftMousePressed;
+                m_Callback.mouse.x = x - getPosition().x;
+                m_Callback.mouse.y = y - getPosition().y;
+                addCallback();
+            }
+        }
+
+        ContainerWidget::leftMousePressed(x, y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Panel::leftMouseReleased(float x , float y)
+    {
+        if (mouseOnWidget(x, y))
+        {
+            if (!m_CallbackFunctions[LeftMouseReleased].empty())
+            {
+                m_Callback.trigger = LeftMouseReleased;
+                m_Callback.mouse.x = x - getPosition().x;
+                m_Callback.mouse.y = y - getPosition().y;
+                addCallback();
+            }
+
+            if (m_MouseDown)
+            {
+                if (!m_CallbackFunctions[LeftMouseClicked].empty())
+                {
+                    m_Callback.trigger = LeftMouseClicked;
+                    m_Callback.mouse.x = x - getPosition().x;
+                    m_Callback.mouse.y = y - getPosition().y;
+                    addCallback();
+                }
+            }
+        }
+
+        m_MouseDown = false;
+
+        ContainerWidget::leftMouseReleased(x, y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Panel::widgetFocused()
     {
         m_EventManager.tabKeyPressed();
@@ -210,69 +261,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::handleEvent(sf::Event& event, float mouseX, float mouseY)
+    bool Panel::setProperty(const std::string& property, const std::string& value)
     {
-        // Adjust the mouse position of the event when the event is about the mouse
-        if (event.type == sf::Event::MouseMoved)
+        if (!Widget::setProperty(property, value))
         {
-            event.mouseMove.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseMove.y = static_cast<int>(mouseY - getPosition().y);
-        }
-        else if (event.type == sf::Event::MouseButtonPressed)
-        {
-            if (mouseOnWidget(event.mouseButton.x, event.mouseButton.y))
+            if (property == "BackgroundColor")
             {
-                m_MouseDown = true;
-
-                if (!m_CallbackFunctions[LeftMousePressed].empty())
-                {
-                    m_Callback.trigger = LeftMousePressed;
-                    m_Callback.mouse.x = mouseX - getPosition().x;
-                    m_Callback.mouse.y = mouseY - getPosition().y;
-                    addCallback();
-                }
+                setBackgroundColor(extractColor(value));
             }
-
-            event.mouseButton.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseButton.y = static_cast<int>(mouseY - getPosition().y);
+            else // The property didn't match
+                return false;
         }
-        else if (event.type == sf::Event::MouseButtonReleased)
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Panel::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
         {
-            if (mouseOnWidget(event.mouseButton.x, event.mouseButton.y))
-            {
-                if (!m_CallbackFunctions[LeftMouseReleased].empty())
-                {
-                    m_Callback.trigger = LeftMouseReleased;
-                    m_Callback.mouse.x = mouseX - getPosition().x;
-                    m_Callback.mouse.y = mouseY - getPosition().y;
-                    addCallback();
-                }
-
-                if (m_MouseDown)
-                {
-                    if (!m_CallbackFunctions[LeftMouseClicked].empty())
-                    {
-                        m_Callback.trigger = LeftMouseClicked;
-                        m_Callback.mouse.x = mouseX - getPosition().x;
-                        m_Callback.mouse.y = mouseY - getPosition().y;
-                        addCallback();
-                    }
-                }
-            }
-
-            m_MouseDown = false;
-
-            event.mouseButton.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseButton.y = static_cast<int>(mouseY - getPosition().y);
-        }
-        else if (event.type == sf::Event::MouseWheelMoved)
-        {
-            event.mouseWheel.x = static_cast<int>(mouseX - getPosition().x);
-            event.mouseWheel.y = static_cast<int>(mouseY - getPosition().y);
+            if (property == "BackgroundColor")
+                value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
+            else // The property didn't match
+                return false;
         }
 
-        // Let the event manager handle the event
-        m_EventManager.handleEvent(event);
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

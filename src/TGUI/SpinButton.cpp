@@ -444,6 +444,69 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool SpinButton::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Minimum")
+            {
+                setMinimum(atoi(value.c_str()));
+            }
+            else if (property == "Maximum")
+            {
+                setMaximum(atoi(value.c_str()));
+            }
+            else if (property == "Value")
+            {
+                setValue(atoi(value.c_str()));
+            }
+            else if (property == "VerticalScroll")
+            {
+                if ((value == "true") || (value == "True"))
+                    setVerticalScroll(true);
+                else if ((value == "false") || (value == "False"))
+                    setVerticalScroll(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SpinButton::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Minimum")
+                value = to_string(getMinimum());
+            else if (property == "Maximum")
+                value = to_string(getMaximum());
+            else if (property == "Value")
+                value = to_string(getValue());
+            else if (property == "VerticalScroll")
+                value = m_VerticalScroll ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the spin button wasn't loaded correctly

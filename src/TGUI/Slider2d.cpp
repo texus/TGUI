@@ -468,6 +468,131 @@ namespace tgui
 		}
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider2d::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Minimum")
+            {
+                if (value.length() >= 5)
+                {
+                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    {
+                        std::string::size_type commaPos = value.find(',');
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        {
+                            setMinimum(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                    atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
+                        }
+                        else
+                            TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
+                    }
+                    else
+                        TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
+                }
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
+            }
+            else if (property == "Maximum")
+            {
+                if (value.length() >= 5)
+                {
+                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    {
+                        std::string::size_type commaPos = value.find(',');
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        {
+                            setMaximum(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                    atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
+                        }
+                        else
+                            TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
+                    }
+                    else
+                        TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
+                }
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
+            }
+            else if (property == "Value")
+            {
+                if (value.length() >= 5)
+                {
+                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    {
+                        std::string::size_type commaPos = value.find(',');
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        {
+                            setValue(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                  atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
+                        }
+                        else
+                            TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
+                    }
+                    else
+                        TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
+                }
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
+            }
+            else if (property == "FixedThumbSize")
+            {
+                if ((value == "true") || (value == "True"))
+                    setFixedThumbSize(true);
+                else if ((value == "false") || (value == "False"))
+                    setFixedThumbSize(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'FixedThumbSize' property.");
+            }
+            else if (property == "EnableThumbCenter")
+            {
+                if ((value == "true") || (value == "True"))
+                    enableThumbCenter(true);
+                else if ((value == "false") || (value == "False"))
+                    enableThumbCenter(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'EnableThumbCenter' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider2d::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Minimum")
+                value = "(" + to_string(getMinimum().x) + "," + to_string(getMinimum().y) + ")";
+            else if (property == "Maximum")
+                value = "(" + to_string(getMaximum().x) + "," + to_string(getMaximum().y) + ")";
+            else if (property == "Value")
+                value = "(" + to_string(getValue().x) + "," + to_string(getValue().y) + ")";
+            else if (property == "FixedThumbSize")
+                value = m_FixedThumbSize ? "true" : "false";
+            else if (property == "EnableThumbCenter")
+                value = m_ReturnThumbToCenter ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Slider2d::draw(sf::RenderTarget& target, sf::RenderStates states) const

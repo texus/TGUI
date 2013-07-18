@@ -82,6 +82,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the area of the text that will be drawn.
+        ///
+        /// \param width   Width of the part to draw
+        /// \param height  Height of the part to draw
+        ///
+        /// Only the part of the text that lies within the size will be drawn.
+        ///
+        /// When a background color is set, the drawn background will have this size.
+        /// So setting a size that is bigger than the text will result in a bigger area being filled.
+        ///
+        /// When this function is called, the label will no longer be auto-sizing.
+        ///
+        /// \see setAutoSize
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSize(float width, float height);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
@@ -183,6 +202,9 @@ namespace tgui
         ///
         /// The background color is transparent by default.
         ///
+        /// When auto-size is enabled (default), then the background is just as big as the text.
+        /// When a manual size is set, the background will fill this whole area.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor);
 
@@ -199,6 +221,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes whether the label is auto-sized or not.
+        ///
+        /// \param autoSize  Should the size of the label be changed when the text changes?
+        ///
+        /// When the label is in auto-size mode, the width and height of the label will be changed to fit the text.
+        /// Otherwise, only the part defined by the size will be visible.
+        ///
+        /// The label is auto-sized by default.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setAutoSize(bool autoSize);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns whether the label is auto-sized or not.
+        ///
+        /// \return Is the size of the label changed when the text changes?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool getAutoSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the transparency of the widget.
         ///
         /// \param transparency  The transparency of the widget.
@@ -206,6 +251,15 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setTransparency(unsigned char transparency);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
+        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool getProperty(const std::string& property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,6 +295,8 @@ namespace tgui
         sf::RectangleShape m_Background;
 
         sf::Text m_Text;
+
+        bool m_AutoSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
