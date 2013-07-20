@@ -38,13 +38,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct ReferenceCount
-    {
-        unsigned int count;
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     template <class T>
     class TGUI_API SharedWidgetPtr
     {
@@ -55,16 +48,16 @@ namespace tgui
         SharedWidgetPtr() :
         m_WidgetPtr(NULL)
         {
-            m_RefCount = new ReferenceCount;
-            m_RefCount->count = 1;
+            m_RefCount = new unsigned int;
+            *m_RefCount = 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         SharedWidgetPtr(Container& container, const sf::String& widgetName = "")
         {
-            m_RefCount = new ReferenceCount;
-            m_RefCount->count = 1;
+            m_RefCount = new unsigned int;
+            *m_RefCount = 1;
 
             m_WidgetPtr = new T();
             container.add(*this, widgetName);
@@ -77,7 +70,7 @@ namespace tgui
             m_WidgetPtr = copy.get();
 
             m_RefCount = copy.getRefCount();
-            m_RefCount->count += 1;
+            *m_RefCount += 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,20 +81,20 @@ namespace tgui
             m_WidgetPtr = static_cast<T*>(copy.get());
 
             m_RefCount = copy.getRefCount();
-            m_RefCount->count += 1;
+            *m_RefCount += 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ~SharedWidgetPtr()
         {
-            if (m_RefCount->count == 1)
+            if (*m_RefCount == 1)
             {
                 delete m_WidgetPtr;
                 delete m_RefCount;
             }
             else
-                m_RefCount->count -= 1;
+                *m_RefCount -= 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,18 +103,18 @@ namespace tgui
         {
             if (this != &copy)
             {
-                if (m_RefCount->count == 1)
+                if (*m_RefCount == 1)
                 {
                     delete m_WidgetPtr;
                     delete m_RefCount;
                 }
                 else
-                    m_RefCount->count -= 1;
+                    *m_RefCount -= 1;
 
                 m_WidgetPtr = copy.get();
 
                 m_RefCount = copy.getRefCount();
-                m_RefCount->count += 1;
+                *m_RefCount += 1;
             }
 
             return *this;
@@ -132,18 +125,18 @@ namespace tgui
         template <class U>
         SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<U>& copy)
         {
-            if (m_RefCount->count == 1)
+            if (*m_RefCount == 1)
             {
                 delete m_WidgetPtr;
                 delete m_RefCount;
             }
             else
-                m_RefCount->count -= 1;
+                *m_RefCount -= 1;
 
             m_WidgetPtr = static_cast<T*>(copy.get());
 
             m_RefCount = copy.getRefCount();
-            m_RefCount->count += 1;
+            *m_RefCount += 1;
 
             return *this;
         }
@@ -154,20 +147,20 @@ namespace tgui
         {
             if (m_WidgetPtr != NULL)
             {
-                if (m_RefCount->count == 1)
+                if (*m_RefCount == 1)
                 {
                     delete m_WidgetPtr;
                     delete m_RefCount;
                 }
                 else
-                    m_RefCount->count -= 1;
+                    *m_RefCount -= 1;
             }
 
             m_WidgetPtr = new T();
             container.add(*this, widgetName);
 
-            m_RefCount = new ReferenceCount;
-            m_RefCount->count = 1;
+            m_RefCount = new unsigned int;
+            *m_RefCount = 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,7 +285,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ReferenceCount* getRefCount() const
+        unsigned int* getRefCount() const
         {
             return m_RefCount;
         }
@@ -310,7 +303,7 @@ namespace tgui
       private:
 
         T* m_WidgetPtr;
-        ReferenceCount* m_RefCount;
+        unsigned int* m_RefCount;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
