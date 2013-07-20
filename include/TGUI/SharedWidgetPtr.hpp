@@ -152,11 +152,22 @@ namespace tgui
 
         void init(Container& container, const sf::String& widgetName = "")
         {
-            if (m_WidgetPtr == NULL)
+            if (m_WidgetPtr != NULL)
             {
-                m_WidgetPtr = new T();
-                container.add(*this, widgetName);
+                if (m_RefCount->count == 1)
+                {
+                    delete m_WidgetPtr;
+                    delete m_RefCount;
+                }
+                else
+                    m_RefCount->count -= 1;
             }
+
+            m_WidgetPtr = new T();
+            container.add(*this, widgetName);
+
+            m_RefCount = new ReferenceCount;
+            m_RefCount->count = 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
