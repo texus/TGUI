@@ -358,7 +358,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitlebarHeight(unsigned int height)
+    void ChildWindow::setTitleBarHeight(unsigned int height)
     {
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)
