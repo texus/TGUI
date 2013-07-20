@@ -171,7 +171,7 @@ namespace tgui
         /// The default height is the height of the title bar image that is loaded with the load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitlebarHeight(unsigned int height);
+        void setTitleBarHeight(unsigned int height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,7 +355,7 @@ namespace tgui
         ///
         /// \param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
         ///                 It will be fully kept on left, right and top.
-        ///                 At the bottom of the parent only the titlebar will be kept inside.
+        ///                 At the bottom of the parent only the title bar will be kept inside.
         ///                 It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +367,7 @@ namespace tgui
         ///
         /// \return  When it's set to true, the child window will always be kept automatically inside its parent.
         ///          It will be fully kept on left, right and top.
-        ///          At the bottom of the parent only the titlebar will be kept inside.
+        ///          At the bottom of the parent only the title bar will be kept inside.
         ///          It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

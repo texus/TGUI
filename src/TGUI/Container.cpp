@@ -2038,7 +2038,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 15).compare("titlebarheight=") == 0)
                         {
-                            child->setTitlebarHeight(atoi(line.erase(0, 15).c_str()));
+                            child->setTitleBarHeight(atoi(line.erase(0, 15).c_str()));
                         }
                         else
                         {

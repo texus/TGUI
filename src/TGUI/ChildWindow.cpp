@@ -358,7 +358,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitlebarHeight(unsigned int height)
+    void ChildWindow::setTitleBarHeight(unsigned int height)
     {
         // Don't continue when the child window has not been loaded yet
         if (m_Loaded == false)
@@ -644,9 +644,9 @@ namespace tgui
             m_CloseButton->setPosition(0, 0);
             return;
         }
-        else // The mouse is not on top of the titlebar
+        else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the titlebar, the mouse can't be on the close button
+            // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_CloseButton->m_MouseHover)
                 m_CloseButton->mouseNotOnWidget();
 
@@ -706,9 +706,9 @@ namespace tgui
             m_CloseButton->setPosition(0, 0);
             return;
         }
-        else // The mouse is not on top of the titlebar
+        else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the titlebar, the mouse can't be on the close button
+            // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_CloseButton->m_MouseHover)
                 m_CloseButton->mouseNotOnWidget();
 
@@ -770,9 +770,9 @@ namespace tgui
             m_CloseButton->setPosition(0, 0);
             return;
         }
-        else // The mouse is not on top of the titlebar
+        else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the titlebar, the mouse can't be on the close button
+            // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_CloseButton->m_MouseHover)
                 m_CloseButton->mouseNotOnWidget();
 
@@ -813,9 +813,9 @@ namespace tgui
             {
                 load(value);
             }
-            else if (property == "TitlebarHeight")
+            else if (property == "TitleBarHeight")
             {
-                setTitlebarHeight(atoi(value.c_str()));
+                setTitleBarHeight(atoi(value.c_str()));
             }
             else if (property == "BackgroundColor")
             {
@@ -872,7 +872,7 @@ namespace tgui
         {
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
-            else if (property == "TitlebarHeight")
+            else if (property == "TitleBarHeight")
                 value = to_string(getTitleBarHeight());
             else if (property == "BackgroundColor")
                 value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
