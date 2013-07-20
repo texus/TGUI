@@ -81,6 +81,7 @@ namespace tgui
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
+        event.mouseButton.button = sf::Mouse::Left;
         event.mouseButton.x = static_cast<int>(x - getPosition().x);
         event.mouseButton.y = static_cast<int>(y - getPosition().y);
 
@@ -94,6 +95,7 @@ namespace tgui
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
+        event.mouseButton.button = sf::Mouse::Left;
         event.mouseButton.x = static_cast<int>(x - getPosition().x);
         event.mouseButton.y = static_cast<int>(y - getPosition().y);
 
@@ -131,7 +133,7 @@ namespace tgui
     void ContainerWidget::textEntered(sf::Uint32 key)
     {
         sf::Event event;
-        event.type = sf::Event::KeyPressed;
+        event.type = sf::Event::TextEntered;
         event.text.unicode = key;
 
         // Let the event manager handle the event
@@ -144,6 +146,7 @@ namespace tgui
     {
         sf::Event event;
         event.type = sf::Event::MouseWheelMoved;
+        event.mouseWheel.delta = delta;
         event.mouseWheel.x = static_cast<int>(x - getPosition().x);
         event.mouseWheel.y = static_cast<int>(y - getPosition().y);
 
