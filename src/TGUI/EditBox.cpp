@@ -1419,7 +1419,31 @@ namespace tgui
         {
             if ((key < '0') || (key > '9'))
             {
-                if (((key != '-') && (key != '+')) || ((m_SelStart != 0) && (m_SelEnd != 0)))
+                bool characterAccepted = false;
+                if ((m_SelStart == 0) || (m_SelEnd == 0))
+                {
+                    if ((key == '-') || (key == '+'))
+                    {
+                        if (!m_Text.isEmpty())
+                        {
+                            if ((m_Text[0] != '-') && (m_Text[0] != '+'))
+                            {
+                                // You are allowed to add a + or - at the beginning of the string
+                                characterAccepted = true;
+                            }
+                            else // You can't have multiple + and - characters after each other
+                                return;
+                        }
+                        else // This is the first character, so just add the + or -
+                            characterAccepted = true;
+                    }
+                    else // Only + and - symbols are allowed
+                        return;
+                }
+                else // + and - symbols can only be placed at the beginning
+                    return;
+
+                if (!characterAccepted)
                     return;
             }
         }
