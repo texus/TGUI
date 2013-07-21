@@ -623,6 +623,28 @@ namespace tgui
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::mouseNotOnWidget()
+    {
+        // Check if there is still a menu open
+        if (m_VisibleMenu != -1)
+        {
+            // If an item in that menu was selected then unselect it first
+            if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+            {
+                m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
+                m_Menus[m_VisibleMenu].selectedMenuItem = -1;
+            }
+
+            m_VisibleMenu = -1;
+        }
+
+        if (m_MouseHover == true)
+            mouseLeftWidget();
+
+        m_MouseHover = false;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
