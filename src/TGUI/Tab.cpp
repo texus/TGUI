@@ -715,7 +715,7 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "TextColor")
-                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "TextSize")
                 value = to_string(getTextSize());
             else if (property == "TabHeight")

@@ -507,7 +507,7 @@ namespace tgui
         else if (property == "Enabled")
             value = m_Enabled ? "true" : "false";
         else if (property == "Transparency")
-            value = to_string(getTransparency());
+            value = to_string(int(getTransparency()));
         else // The property didn't match
             return false;
 

@@ -318,11 +318,11 @@ namespace tgui
             else if (property == "Text")
                 value = getText().toAnsiString();
             else if (property == "TextColor")
-                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "TextSize")
                 value = to_string(getTextSize());
             else if (property == "BackgroundColor")
-                value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "AutoSize")
                 value = m_AutoSize ? "true" : "false";
             else // The property didn't match

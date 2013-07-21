@@ -681,15 +681,15 @@ namespace tgui
             else if (property == "Height")
                 value = to_string(getSize().y);
             else if (property == "BackgroundColor")
-                value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "TextColor")
-                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "SelectedBackgroundColor")
-                value = "(" + to_string(getSelectedBackgroundColor().r) + "," + to_string(getSelectedBackgroundColor().g)
-                        + "," + to_string(getSelectedBackgroundColor().b) + "," + to_string(getSelectedBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getSelectedBackgroundColor().r)) + "," + to_string(int(getSelectedBackgroundColor().g))
+                        + "," + to_string(int(getSelectedBackgroundColor().b)) + "," + to_string(int(getSelectedBackgroundColor().a)) + ")";
             else if (property == "SelectedTextColor")
-                value = "(" + to_string(getSelectedTextColor().r) + "," + to_string(getSelectedTextColor().g)
-                        + "," + to_string(getSelectedTextColor().b) + "," + to_string(getSelectedTextColor().a) + ")";
+                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
+                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
             else if (property == "TextSize")
                 value = to_string(getTextSize());
             else if (property == "DistanceToSide")

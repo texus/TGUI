@@ -284,7 +284,7 @@ namespace tgui
         if (!Widget::getProperty(property, value))
         {
             if (property == "BackgroundColor")
-                value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else // The property didn't match
                 return false;
         }

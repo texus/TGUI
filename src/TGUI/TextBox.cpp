@@ -1707,19 +1707,19 @@ namespace tgui
             else if (property == "Borders")
                 value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
             else if (property == "BackgroundColor")
-                value = "(" + to_string(getBackgroundColor().r) + "," + to_string(getBackgroundColor().g) + "," + to_string(getBackgroundColor().b) + "," + to_string(getBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "TextColor")
-                value = "(" + to_string(getTextColor().r) + "," + to_string(getTextColor().g) + "," + to_string(getTextColor().b) + "," + to_string(getTextColor().a) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "SelectedTextColor")
-                value = "(" + to_string(getSelectedTextColor().r) + "," + to_string(getSelectedTextColor().g)
-                        + "," + to_string(getSelectedTextColor().b) + "," + to_string(getSelectedTextColor().a) + ")";
+                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
+                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
             else if (property == "SelectedTextBackgroundColor")
-                value = "(" + to_string(getSelectedTextBackgroundColor().r) + "," + to_string(getSelectedTextBackgroundColor().g)
-                        + "," + to_string(getSelectedTextBackgroundColor().b) + "," + to_string(getSelectedTextBackgroundColor().a) + ")";
+                value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
+                        + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
             else if (property == "BorderColor")
-                value = "(" + to_string(getBorderColor().r) + "," + to_string(getBorderColor().g) + "," + to_string(getBorderColor().b) + "," + to_string(getBorderColor().a) + ")";
+                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
             else if (property == "SelectionPointColor")
-                value = "(" + to_string(getSelectionPointColor().r) + "," + to_string(getSelectionPointColor().g) + "," + to_string(getSelectionPointColor().b) + "," + to_string(getBorderColor().a) + ")";
+                value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g)) + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
             else if (property == "SelectionPointWidth")
                 value = to_string(getSelectionPointWidth());
             else // The property didn't match
