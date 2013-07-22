@@ -615,8 +615,16 @@ namespace tgui
     void ChildWindow::leftMousePressed(float x, float y)
     {
         // Move the childwindow to the front
-        m_Parent->focusWidget(this);
         m_Parent->moveWidgetToFront(this);
+        
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMousePressed].empty() == false)
+        {
+            m_Callback.trigger = LeftMousePressed;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
 
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))

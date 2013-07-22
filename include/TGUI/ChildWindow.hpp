@@ -437,11 +437,12 @@ namespace tgui
 
         enum ChildWindowCallbacks
         {
-            Closed = WidgetCallbacksCount * 1,
-            Moved = WidgetCallbacksCount * 2,
-//            Resized = WidgetCallbacksCount * 4,
-            AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1,
-            ChildWindowCallbacksCount = WidgetCallbacksCount * 8
+            LeftMousePressed = WidgetCallbacksCount * 1,
+            Closed = WidgetCallbacksCount * 2,
+            Moved = WidgetCallbacksCount * 4,
+//            Resized = WidgetCallbacksCount * 8,
+            AllChildWindowCallbacks = WidgetCallbacksCount * 16 - 1,
+            ChildWindowCallbacksCount = WidgetCallbacksCount * 16
         };
 
 
