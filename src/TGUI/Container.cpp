@@ -2212,7 +2212,7 @@ namespace tgui
 
     void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
-        assert(widgetPtr != NULL);
+        assert(widgetPtr != nullptr);
 
         widgetPtr->initialize(this);
         m_EventManager.m_Widgets.push_back(widgetPtr);
@@ -2393,7 +2393,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::bindGlobalCallback(boost::function<void(const tgui::Callback&)> func)
+    void Container::bindGlobalCallback(std::function<void(const tgui::Callback&)> func)
     {
         m_GlobalCallbackFunctions.push_back(func);
     }

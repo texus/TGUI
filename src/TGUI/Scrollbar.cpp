@@ -64,10 +64,10 @@ namespace tgui
 
     Scrollbar::~Scrollbar()
     {
-        if (m_TextureArrowUpNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureArrowUpNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,18 +109,18 @@ namespace tgui
         m_Loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_TextureTrackNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
-        if (m_TextureTrackHover_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
-        if (m_TextureTrackNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
-        if (m_TextureTrackHover_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
-        if (m_TextureTrackNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
-        if (m_TextureTrackHover_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
-        if (m_TextureThumbNormal.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover.data != NULL)      TGUI_TextureManager.removeTexture(m_TextureThumbHover);
-        if (m_TextureArrowUpNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureTrackNormal_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != nullptr)      TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureArrowUpNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -289,8 +289,8 @@ namespace tgui
             TGUI_OUTPUT("TGUI error: SplitImage is not supported in Scrollbar.");
 /*
             // Make sure the required textures were loaded
-            if ((m_TextureTrackNormal_L.data != NULL) && (m_TextureTrackNormal_M.data != NULL) && (m_TextureTrackNormal_R.data != NULL)
-             && (m_TextureThumbNormal.data != NULL) && (m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
+            if ((m_TextureTrackNormal_L.data != nullptr) && (m_TextureTrackNormal_M.data != nullptr) && (m_TextureTrackNormal_R.data != nullptr)
+             && (m_TextureThumbNormal.data != nullptr) && (m_TextureArrowUpNormal.data != nullptr) && (m_TextureArrowDownNormal.data != nullptr))
             {
                 m_Loaded = true;
 
@@ -310,8 +310,8 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureTrackHover_L.data != NULL) && (m_TextureTrackHover_M.data != NULL) && (m_TextureTrackHover_R.data != NULL)
-             && (m_TextureThumbHover.data != NULL) && (m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+            if ((m_TextureTrackHover_L.data != nullptr) && (m_TextureTrackHover_M.data != nullptr) && (m_TextureTrackHover_R.data != nullptr)
+             && (m_TextureThumbHover.data != nullptr) && (m_TextureArrowUpHover.data != nullptr) && (m_TextureArrowDownHover.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }
@@ -320,8 +320,8 @@ namespace tgui
         else // The image isn't split
         {
             // Make sure the required textures were loaded
-            if ((m_TextureTrackNormal_M.data != NULL) && (m_TextureThumbNormal.data != NULL)
-             && (m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
+            if ((m_TextureTrackNormal_M.data != nullptr) && (m_TextureThumbNormal.data != nullptr)
+             && (m_TextureArrowUpNormal.data != nullptr) && (m_TextureArrowDownNormal.data != nullptr))
             {
                 // Set the size of the scrollbar
                 m_Loaded = true;
@@ -334,8 +334,8 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureTrackHover_M.data != NULL) && (m_TextureThumbHover.data != NULL)
-             && (m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+            if ((m_TextureTrackHover_M.data != nullptr) && (m_TextureThumbHover.data != nullptr)
+             && (m_TextureArrowUpHover.data != nullptr) && (m_TextureArrowDownHover.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }

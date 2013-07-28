@@ -43,7 +43,7 @@ namespace tgui
     ChatBox::ChatBox() :
     m_TextSize   (15),
     m_BorderColor(sf::Color::Black),
-    m_Scroll     (NULL)
+    m_Scroll     (nullptr)
     {
         m_Callback.widgetType = Type_Unknown;
         m_DraggableWidget = true;
@@ -68,10 +68,10 @@ namespace tgui
         m_Panel = new Panel(*copy.m_Panel);
 
         // If there is a scrollbar then copy it
-        if (copy.m_Scroll != NULL)
+        if (copy.m_Scroll != nullptr)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
         else
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace tgui
     {
         delete m_Panel;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
     }
 
@@ -91,10 +91,10 @@ namespace tgui
         if (this != &right)
         {
             // If there already was a scrollbar then delete it now
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
             {
                 delete m_Scroll;
-                m_Scroll = NULL;
+                m_Scroll = nullptr;
             }
 
             ChatBox temp(right);
@@ -128,10 +128,10 @@ namespace tgui
         m_Loaded = false;
 
         // If there already was a scrollbar then delete it now
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
         }
 
         // Open the config file
@@ -194,7 +194,7 @@ namespace tgui
                 {
                     // The scrollbar couldn't be loaded so it must be deleted
                     delete m_Scroll;
-                    m_Scroll = NULL;
+                    m_Scroll = nullptr;
 
                     return false;
                 }
@@ -234,7 +234,7 @@ namespace tgui
         if (height < 0) height = -height;
 
         // There is a minimum width
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
         else
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
@@ -246,7 +246,7 @@ namespace tgui
         m_Panel->setSize(width, height);
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
             m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
@@ -296,7 +296,7 @@ namespace tgui
         label->setPosition(m_LeftBorder + 2, m_Panel->getSize().y - (m_TextSize * 1.2f));
 
         float width;
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
             width = m_Panel->getSize().x - m_LeftBorder - m_RightBorder;
         else
             width = m_Panel->getSize().x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x;
@@ -322,7 +322,7 @@ namespace tgui
             label = newLabel;
         }
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
 
@@ -367,7 +367,7 @@ namespace tgui
         updateDisplayedText();
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
@@ -405,7 +405,7 @@ namespace tgui
             (*it)->setPosition(m_LeftBorder + 2, (*it)->getPosition().y);
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
@@ -449,7 +449,7 @@ namespace tgui
             return false;
 
         // If the scrollbar was already created then delete it first
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
 
         // load the scrollbar and check if it failed
@@ -458,7 +458,7 @@ namespace tgui
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
 
             return false;
         }
@@ -480,7 +480,7 @@ namespace tgui
     {
         // Delete the scrollbar
         delete m_Scroll;
-        m_Scroll = NULL;
+        m_Scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ namespace tgui
         m_BorderColor.a = m_Opacity;
         m_Panel->setTransparency(transparency);
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->setTransparency(transparency);
     }
 
@@ -504,7 +504,7 @@ namespace tgui
         Vector2f position = getPosition();
 
         // Pass the event to the scrollbar (if there is one)
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(position.x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
@@ -544,7 +544,7 @@ namespace tgui
         m_MouseDown = true;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
@@ -570,7 +570,7 @@ namespace tgui
     void ChatBox::leftMouseReleased(float x, float y)
     {
         // If there is a scrollbar then pass it the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_Scroll->m_MouseDown == true)
@@ -630,7 +630,7 @@ namespace tgui
         m_MouseHover = true;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
@@ -669,7 +669,7 @@ namespace tgui
 
         m_MouseHover = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseHover = false;
     }
 
@@ -679,7 +679,7 @@ namespace tgui
     {
         m_MouseDown = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseDown = false;
     }
 
@@ -688,7 +688,7 @@ namespace tgui
     void ChatBox::mouseWheelMoved(int delta)
     {
         // Only do something when there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
             {
@@ -734,7 +734,7 @@ namespace tgui
 
             static_cast<tgui::Label::Ptr>(labels[index])->setTextSize(m_TextSize);
 
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
                 labels[index]->setPosition(m_LeftBorder + 2, bottomPosition - (m_TextSize * 1.4f) + m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_Scroll->getValue());
             else
                 labels[index]->setPosition(m_LeftBorder + 2, bottomPosition - (m_TextSize * 1.4f));
@@ -773,7 +773,7 @@ namespace tgui
         target.draw(border, states);
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Reset the transformation
             states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, m_TopBorder);

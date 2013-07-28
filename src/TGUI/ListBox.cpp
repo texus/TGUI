@@ -43,8 +43,8 @@ namespace tgui
     m_ItemHeight  (24),
     m_TextSize    (19),
     m_MaxItems    (0),
-    m_Scroll      (NULL),
-    m_TextFont    (NULL)
+    m_Scroll      (nullptr),
+    m_TextFont    (nullptr)
     {
         m_Callback.widgetType = Type_ListBox;
         m_DraggableWidget = true;
@@ -73,17 +73,17 @@ namespace tgui
     m_TextFont               (copy.m_TextFont)
     {
         // If there is a scrollbar then copy it
-        if (copy.m_Scroll != NULL)
+        if (copy.m_Scroll != nullptr)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
         else
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::~ListBox()
     {
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
     }
 
@@ -98,10 +98,10 @@ namespace tgui
             this->WidgetBorders::operator=(right);
 
             // If there already was a scrollbar then delete it now
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
             {
                 delete m_Scroll;
-                m_Scroll = NULL;
+                m_Scroll = nullptr;
             }
 
             std::swap(m_LoadedConfigFile,        temp.m_LoadedConfigFile);
@@ -137,10 +137,10 @@ namespace tgui
         m_LoadedConfigFile = configFileFilename;
 
         // If there already was a scrollbar then delete it now
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
         }
 
         // Open the config file
@@ -215,7 +215,7 @@ namespace tgui
                 {
                     // The scrollbar couldn't be loaded so it must be deleted
                     delete m_Scroll;
-                    m_Scroll = NULL;
+                    m_Scroll = nullptr;
 
                     return false;
                 }
@@ -251,7 +251,7 @@ namespace tgui
         if (height < 0) height = -height;
 
         // There is a minimum width
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
             width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder, width);
         else
             width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
@@ -265,7 +265,7 @@ namespace tgui
         m_Size.y = static_cast<unsigned int>(height);
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
@@ -385,7 +385,7 @@ namespace tgui
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
         {
             // If there is no scrollbar then there is another limit
-            if (m_Scroll == NULL)
+            if (m_Scroll == nullptr)
             {
                 // Calculate the amount of items that fit in the list box
                 unsigned int maximumItems = (m_Size.y - m_TopBorder - m_BottomBorder) / m_ItemHeight;
@@ -399,7 +399,7 @@ namespace tgui
             m_Items.push_back(itemName);
 
             // If there is a scrollbar then tell it that another item was added
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
             // Return the item index
@@ -471,7 +471,7 @@ namespace tgui
         m_Items.erase(m_Items.begin() + index);
 
         // If there is a scrollbar then tell it that an item was removed
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
         // Check if the selected item should change
@@ -502,7 +502,7 @@ namespace tgui
                     --m_SelectedItem;
 
                 // If there is a scrollbar then tell it that an item was removed
-                if (m_Scroll != NULL)
+                if (m_Scroll != nullptr)
                     m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
                 return true;
@@ -524,7 +524,7 @@ namespace tgui
         m_SelectedItem = -1;
 
         // If there is a scrollbar then tell it that all item were removed
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->setMaximum(0);
     }
 
@@ -596,7 +596,7 @@ namespace tgui
         }
 
         // If the scrollbar was already created then delete it first
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
 
         // load the scrollbar and check if it failed
@@ -605,7 +605,7 @@ namespace tgui
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
 
             return false;
         }
@@ -627,7 +627,7 @@ namespace tgui
     {
         // Delete the scrollbar
         delete m_Scroll;
-        m_Scroll = NULL;
+        m_Scroll = nullptr;
 
         // When the items no longer fit inside the list box then we need to remove some
         if ((m_Items.size() * m_ItemHeight) > m_Size.y)
@@ -653,7 +653,7 @@ namespace tgui
         m_TextSize   = static_cast<unsigned int>(itemHeight * 0.8f);
 
         // Some items might be removed when there is no scrollbar
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // When the items no longer fit inside the list box then we need to remove some
             if ((m_Items.size() * m_ItemHeight) > m_Size.y)
@@ -693,7 +693,7 @@ namespace tgui
             m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
 
             // If there is a scrollbar then tell it that the number of items was changed
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
                 m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
         }
     }
@@ -720,7 +720,7 @@ namespace tgui
             m_Size.x = 50 + m_LeftBorder + m_RightBorder;
 
         // There is also a minimum height (when there is no scrollbar)
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // If there are items then they should still fit inside the list box
             if (m_Items.size() > 0)
@@ -748,7 +748,7 @@ namespace tgui
     {
         Widget::setTransparency(transparency);
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->setTransparency(m_Opacity);
 
         m_BackgroundColor.a = m_Opacity;
@@ -766,7 +766,7 @@ namespace tgui
         Vector2f position = getPosition();
 
         // Pass the event to the scrollbar (if there is one)
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
@@ -802,7 +802,7 @@ namespace tgui
         bool clickedOnListBox = true;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
@@ -825,7 +825,7 @@ namespace tgui
             int oldSelectedItem = m_SelectedItem;
 
             // Check if there is a scrollbar or whether it is hidden
-            if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
+            if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
                 if (y - getPosition().y - m_TopBorder <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
@@ -873,7 +873,7 @@ namespace tgui
     void ListBox::leftMouseReleased(float x, float y)
     {
         // If there is a scrollbar then pass it the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
@@ -922,7 +922,7 @@ namespace tgui
         m_MouseHover = true;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(getPosition().x + (m_Size.x - m_RightBorder - m_Scroll->getSize().x), getPosition().y + m_TopBorder);
@@ -950,7 +950,7 @@ namespace tgui
     void ListBox::mouseWheelMoved(int delta)
     {
         // Only do something when there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
             {
@@ -983,7 +983,7 @@ namespace tgui
 
         m_MouseHover = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseHover = false;
     }
 
@@ -993,7 +993,7 @@ namespace tgui
     {
         m_MouseDown = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseDown = false;
     }
 
@@ -1019,7 +1019,7 @@ namespace tgui
 
         Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
-        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
+        if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
             topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
             bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x + viewPosition.x, getPosition().y + m_Size.y - m_BottomBorder + viewPosition.y);
@@ -1089,7 +1089,7 @@ namespace tgui
         sf::Text text("", *m_TextFont, m_TextSize);
 
         // Check if there is a scrollbar and whether it isn't hidden
-        if ((m_Scroll != NULL) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
+        if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
             // Store the transformation
             sf::Transform storedTransform = states.transform;
@@ -1200,7 +1200,7 @@ namespace tgui
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Reset the transformation
             states.transform = oldTransform;

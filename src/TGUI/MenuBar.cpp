@@ -39,7 +39,7 @@ namespace tgui
 
     MenuBar::MenuBar() :
     m_VisibleMenu        (-1),
-    m_TextFont           (NULL),
+    m_TextFont           (nullptr),
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
     {

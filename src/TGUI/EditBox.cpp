@@ -107,17 +107,17 @@ namespace tgui
 
     EditBox::~EditBox()
     {
-        if (m_TextureNormal_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureNormal_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureNormal_R);
 
-        if (m_TextureHover_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_L);
-        if (m_TextureHover_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_M);
-        if (m_TextureHover_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureHover_R);
+        if (m_TextureHover_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureHover_R);
 
-        if (m_TextureFocused_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureFocused_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureFocused_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,15 +186,15 @@ namespace tgui
         m_Size.y = 0;
 
         // Remove the textures when they were loaded before
-        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
-        if (m_TextureHover_L.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
-        if (m_TextureHover_M.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
-        if (m_TextureHover_R.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
-        if (m_TextureFocused_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_L);
-        if (m_TextureFocused_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_M);
-        if (m_TextureFocused_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused_R);
+        if (m_TextureNormal_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureHover_L.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover_L);
+        if (m_TextureHover_M.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover_M);
+        if (m_TextureHover_R.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover_R);
+        if (m_TextureFocused_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused_L);
+        if (m_TextureFocused_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused_M);
+        if (m_TextureFocused_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused_R);
 
         // Open the config file
         ConfigFile configFile;
@@ -368,7 +368,7 @@ namespace tgui
         if (m_SplitImage)
         {
             // Make sure the required textures were loaded
-            if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
+            if ((m_TextureNormal_L.data != nullptr) && (m_TextureNormal_M.data != nullptr) && (m_TextureNormal_R.data != nullptr))
             {
                 m_Loaded = true;
                 setSize(static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x),
@@ -381,12 +381,12 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureFocused_L.data != NULL) && (m_TextureFocused_M.data != NULL) && (m_TextureFocused_R.data != NULL))
+            if ((m_TextureFocused_L.data != nullptr) && (m_TextureFocused_M.data != nullptr) && (m_TextureFocused_R.data != nullptr))
             {
                 m_AllowFocus = true;
                 m_WidgetPhase |= WidgetPhase_Focused;
             }
-            if ((m_TextureHover_L.data != NULL) && (m_TextureHover_M.data != NULL) && (m_TextureHover_R.data != NULL))
+            if ((m_TextureHover_L.data != nullptr) && (m_TextureHover_M.data != nullptr) && (m_TextureHover_R.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }
@@ -394,7 +394,7 @@ namespace tgui
         else // The image isn't split
         {
             // Make sure the required texture was loaded
-            if (m_TextureNormal_M.data != NULL)
+            if (m_TextureNormal_M.data != nullptr)
             {
                 m_Loaded = true;
                 setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
@@ -406,12 +406,12 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if (m_TextureFocused_M.data != NULL)
+            if (m_TextureFocused_M.data != nullptr)
             {
                 m_AllowFocus = true;
                 m_WidgetPhase |= WidgetPhase_Focused;
             }
-            if (m_TextureHover_M.data != NULL)
+            if (m_TextureHover_M.data != nullptr)
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }

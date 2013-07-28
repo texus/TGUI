@@ -53,7 +53,7 @@ namespace tgui
     Picture::~Picture()
     {
         // Remove the texture (if we are the only one using it)
-        if (m_Texture.data != NULL)
+        if (m_Texture.data != nullptr)
             TGUI_TextureManager.removeTexture(m_Texture);
     }
 
@@ -97,7 +97,7 @@ namespace tgui
             return false;
 
         // If we have already loaded a texture then first delete it
-        if (m_Texture.data != NULL)
+        if (m_Texture.data != nullptr)
             TGUI_TextureManager.removeTexture(m_Texture);
 
         // Try to load the texture from the file

@@ -80,14 +80,14 @@ namespace tgui
     Slider::~Slider()
     {
         // Remove all the textures
-        if (m_TextureTrackNormal_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
-        if (m_TextureTrackHover_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
-        if (m_TextureTrackNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
-        if (m_TextureTrackHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
-        if (m_TextureTrackNormal_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
-        if (m_TextureTrackHover_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
-        if (m_TextureThumbNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureTrackNormal_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,14 +142,14 @@ namespace tgui
         m_Loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_TextureTrackNormal_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
-        if (m_TextureTrackHover_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
-        if (m_TextureTrackNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
-        if (m_TextureTrackHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
-        if (m_TextureTrackNormal_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
-        if (m_TextureTrackHover_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
-        if (m_TextureThumbNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
-        if (m_TextureThumbHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
+        if (m_TextureTrackNormal_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureThumbHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -284,8 +284,8 @@ namespace tgui
         if (m_SplitImage)
         {
             // Make sure the required textures were loaded
-            if ((m_TextureTrackNormal_L.data != NULL) && (m_TextureTrackNormal_M.data != NULL)
-             && (m_TextureTrackNormal_R.data != NULL) && (m_TextureThumbNormal.data != NULL))
+            if ((m_TextureTrackNormal_L.data != nullptr) && (m_TextureTrackNormal_M.data != nullptr)
+             && (m_TextureTrackNormal_R.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
             {
                 // Set the size of the slider
                 if (m_VerticalImage)
@@ -303,8 +303,8 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureTrackHover_L.data != NULL) && (m_TextureTrackHover_M.data != NULL)
-             && (m_TextureTrackHover_R.data != NULL) && (m_TextureThumbHover.data != NULL))
+            if ((m_TextureTrackHover_L.data != nullptr) && (m_TextureTrackHover_M.data != nullptr)
+             && (m_TextureTrackHover_R.data != nullptr) && (m_TextureThumbHover.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }
@@ -312,7 +312,7 @@ namespace tgui
         else // The image isn't split
         {
             // Make sure the required textures were loaded
-            if ((m_TextureTrackNormal_M.data != NULL) && (m_TextureThumbNormal.data != NULL))
+            if ((m_TextureTrackNormal_M.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
             {
                 // Set the size of the slider
                 m_Size = Vector2f(m_TextureTrackNormal_M.getSize());
@@ -327,7 +327,7 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureTrackHover_M.data != NULL) && (m_TextureThumbHover.data != NULL))
+            if ((m_TextureTrackHover_M.data != nullptr) && (m_TextureThumbHover.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
             }

@@ -69,7 +69,7 @@ namespace tgui
 
             // Check if the mouse is on top of an widget
             Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-            if (widget != NULL)
+            if (widget != nullptr)
             {
                 // Check if the widget is a container
                 if (widget->m_ContainerWidget)
@@ -90,7 +90,7 @@ namespace tgui
             {
                 // Check if the mouse is on top of an widget
                 Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                if (widget != NULL)
+                if (widget != nullptr)
                 {
                     // Focus the widget
                     focusWidget(widget.get());
@@ -125,7 +125,7 @@ namespace tgui
             {
                 // Check if the mouse is on top of an widget
                 Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
-                if (widget != NULL)
+                if (widget != nullptr)
                 {
                     // Check if the widget is a container
                     if (widget->m_ContainerWidget)
@@ -231,7 +231,7 @@ namespace tgui
         {
             // Find the widget under the mouse
             Widget::Ptr widget = mouseOnWidget(static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
-            if (widget != NULL)
+            if (widget != nullptr)
             {
                 // Check if the widget is a container
                 if (widget->m_ContainerWidget)

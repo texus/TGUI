@@ -134,7 +134,7 @@ namespace tgui
         ///
         /// \return Pointer to the earlier created widget
         ///
-        /// \warning This function will return NULL when an unknown widget name was passed.
+        /// \warning This function will return nullptr when an unknown widget name was passed.
         ///
         /// Usage example:
         /// \code
@@ -320,7 +320,7 @@ namespace tgui
         /// \param func  Pointer to a free function with a reference to a Callback widget as parameter.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void bindGlobalCallback(boost::function<void(const tgui::Callback&)> func);
+        void bindGlobalCallback(std::function<void(const tgui::Callback&)> func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ namespace tgui
         template <typename T>
         void bindGlobalCallback(void (T::*func)(const tgui::Callback&), const T* const classPtr)
         {
-            m_GlobalCallbackFunctions.push_back(boost::bind(func, classPtr, _1));
+            m_GlobalCallbackFunctions.push_back(std::bind(func, classPtr, std::placeholders::_1));
         }
 
 
@@ -376,7 +376,7 @@ namespace tgui
         bool m_ContainerFocused;
 
         // A list that stores all functions that receive callbacks triggered by child widgets
-        std::list< boost::function<void(const Callback&)> > m_GlobalCallbackFunctions;
+        std::list< std::function<void(const Callback&)> > m_GlobalCallbackFunctions;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

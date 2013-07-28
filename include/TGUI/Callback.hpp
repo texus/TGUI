@@ -26,11 +26,9 @@
 #ifndef TGUI_CALLBACK_HPP
 #define TGUI_CALLBACK_HPP
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-
 #include <map>
 #include <list>
+#include <functional>
 
 #include <TGUI/Defines.hpp>
 
@@ -87,19 +85,19 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Contructor that initializes the simple function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CallbackFunction(boost::function<void()> function);
+        CallbackFunction(std::function<void()> function);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Contructor that initializes the extended function.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CallbackFunction(boost::function<void(const Callback&)> function);
+        CallbackFunction(std::function<void(const Callback&)> function);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        boost::function<void()> simpleFunction;
-        boost::function<void(const Callback&)> extendedFunction;
+        std::function<void()> simpleFunction;
+        std::function<void(const Callback&)> extendedFunction;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -126,7 +124,7 @@ namespace tgui
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void bindCallback(boost::function<void()> func, unsigned int trigger);
+        void bindCallback(std::function<void()> func, unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +146,7 @@ namespace tgui
         template <typename T>
         void bindCallback(void (T::*func)(), T* const classPtr, unsigned int trigger)
         {
-            mapCallback(CallbackFunction(boost::function<void()>(boost::bind(func, classPtr))), trigger);
+            mapCallback(CallbackFunction(std::function<void()>(std::bind(func, classPtr))), trigger);
         }
 
 
@@ -165,7 +163,7 @@ namespace tgui
         /// \endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void bindCallbackEx(boost::function<void(const Callback&)> func, unsigned int trigger);
+        void bindCallbackEx(std::function<void(const Callback&)> func, unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +185,7 @@ namespace tgui
         template <typename T>
         void bindCallbackEx(void (T::*func)(const tgui::Callback&), T* const classPtr, unsigned int trigger)
         {
-            mapCallback(CallbackFunction(boost::function<void(const Callback&)>(boost::bind(func, classPtr, _1))), trigger);
+            mapCallback(CallbackFunction(std::function<void(const Callback&)>(std::bind(func, classPtr, std::placeholders::_1))), trigger);
         }
 
 

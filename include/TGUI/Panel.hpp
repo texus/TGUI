@@ -108,17 +108,17 @@ namespace tgui
         /// \warning You should make sure that the texture stays alive.
         ///
         /// If the texture has a different size than the panel then it will be scaled to fill the whole panel.
-        /// Pass NULL to this function to remove the background texture.
+        /// Pass nullptr to this function to remove the background texture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundTexture(sf::Texture *const texture = NULL);
+        void setBackgroundTexture(sf::Texture *const texture = nullptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the background texture of the panel.
         ///
         /// \return Pointer to the texture that is being used as background of the panel.
-        ///         This pointer is NULL when no background texture was set.
+        ///         This pointer is nullptr when no background texture was set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Texture* getBackgroundTexture();

@@ -380,7 +380,7 @@ namespace tgui
         // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down
         unsigned char m_WidgetPhase;
 
-        // This will point to our parent widget. If there is no parent then this will be NULL.
+        // This will point to our parent widget. If there is no parent then this will be nullptr.
         Container* m_Parent;
 
         // How transparent is the widget

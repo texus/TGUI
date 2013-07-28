@@ -79,13 +79,13 @@ namespace tgui
 
     Tab::~Tab()
     {
-        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureNormal_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
 
-        if (m_TextureSelected_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
-        if (m_TextureSelected_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
-        if (m_TextureSelected_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
+        if (m_TextureSelected_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
+        if (m_TextureSelected_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
+        if (m_TextureSelected_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,12 +137,12 @@ namespace tgui
         m_Loaded = false;
 
         // If the button was loaded before then remove the old textures first
-        if (m_TextureNormal_L.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
-        if (m_TextureNormal_M.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
-        if (m_TextureNormal_R.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
-        if (m_TextureSelected_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
-        if (m_TextureSelected_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
-        if (m_TextureSelected_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
+        if (m_TextureNormal_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_L);
+        if (m_TextureNormal_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_M);
+        if (m_TextureNormal_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureNormal_R);
+        if (m_TextureSelected_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_L);
+        if (m_TextureSelected_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_M);
+        if (m_TextureSelected_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureSelected_R);
 
         // Open the config file
         ConfigFile configFile;
@@ -268,7 +268,7 @@ namespace tgui
         if (m_SplitImage)
         {
             // Make sure the required textures were loaded
-            if ((m_TextureNormal_L.data != NULL) && (m_TextureNormal_M.data != NULL) && (m_TextureNormal_R.data != NULL))
+            if ((m_TextureNormal_L.data != nullptr) && (m_TextureNormal_M.data != nullptr) && (m_TextureNormal_R.data != nullptr))
             {
                 m_TabHeight = m_TextureNormal_M.getSize().y;
             }
@@ -279,7 +279,7 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if ((m_TextureSelected_L.data != NULL) && (m_TextureSelected_M.data != NULL) && (m_TextureSelected_R.data != NULL))
+            if ((m_TextureSelected_L.data != nullptr) && (m_TextureSelected_M.data != nullptr) && (m_TextureSelected_R.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Selected;
             }
@@ -287,7 +287,7 @@ namespace tgui
         else // The image isn't split
         {
             // Make sure the required texture was loaded
-            if (m_TextureNormal_M.data != NULL)
+            if (m_TextureNormal_M.data != nullptr)
             {
                 m_TabHeight = m_TextureNormal_M.getSize().y;
             }
@@ -298,7 +298,7 @@ namespace tgui
             }
 
             // Check if optional textures were loaded
-            if (m_TextureSelected_M.data != NULL)
+            if (m_TextureSelected_M.data != nullptr)
             {
                 m_WidgetPhase |= WidgetPhase_Selected;
             }

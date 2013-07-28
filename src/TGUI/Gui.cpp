@@ -35,7 +35,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui() :
-    m_Window(NULL)
+    m_Window(nullptr)
     {
         // The main window is always focused
         m_ContainerFocused = true;
@@ -167,7 +167,7 @@ namespace tgui
         else
         {
             // Loop through all callback functions and call them
-            for (std::list< boost::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
+            for (std::list< std::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
                 (*it)(callback);
         }
     }

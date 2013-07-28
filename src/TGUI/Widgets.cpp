@@ -36,7 +36,7 @@ namespace tgui
     m_Visible        (true),
     m_Loaded         (false),
     m_WidgetPhase    (0),
-    m_Parent         (NULL),
+    m_Parent         (nullptr),
     m_Opacity        (255),
     m_MouseHover     (false),
     m_MouseDown      (false),
@@ -331,9 +331,9 @@ namespace tgui
         for (std::list<CallbackFunction>::const_iterator it = functions.begin(); it != functions.end(); ++it)
         {
             // Pass the callback to the correct place
-            if (it->simpleFunction != NULL)
+            if (it->simpleFunction != nullptr)
                 it->simpleFunction();
-            else if (it->extendedFunction != NULL)
+            else if (it->extendedFunction != nullptr)
                 it->extendedFunction(m_Callback);
             else
                 m_Parent->addChildCallback(m_Callback);

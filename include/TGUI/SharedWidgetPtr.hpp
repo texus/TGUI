@@ -53,7 +53,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         SharedWidgetPtr() :
-        m_WidgetPtr(NULL)
+        m_WidgetPtr(nullptr)
         {
             m_RefCount = new ReferenceCount;
             m_RefCount->count = 1;
@@ -152,7 +152,7 @@ namespace tgui
 
         void init(Container& container, const sf::String& widgetName = "")
         {
-            if (m_WidgetPtr == NULL)
+            if (m_WidgetPtr == nullptr)
             {
                 m_WidgetPtr = new T();
                 container.add(*this, widgetName);
@@ -163,7 +163,7 @@ namespace tgui
 
         bool operator!() const
         {
-            return m_WidgetPtr == NULL;
+            return m_WidgetPtr == nullptr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ namespace tgui
 
         T& operator*() const
         {
-            assert(m_WidgetPtr != NULL);
+            assert(m_WidgetPtr != nullptr);
             return *m_WidgetPtr;
         }
 
@@ -268,7 +268,7 @@ namespace tgui
 
         T* operator->() const
         {
-            assert(m_WidgetPtr != NULL);
+            assert(m_WidgetPtr != nullptr);
             return m_WidgetPtr;
         }
 
