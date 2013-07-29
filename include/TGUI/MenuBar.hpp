@@ -335,6 +335,7 @@ namespace tgui
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
+        virtual void mouseNoLongerDown();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
