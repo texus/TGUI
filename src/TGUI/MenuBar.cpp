@@ -522,7 +522,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseReleased(float x, float y)
+    void MenuBar::leftMouseReleased(float, float y)
     {
         if (m_MouseDown)
         {
