@@ -66,7 +66,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::handleEvent(sf::Event event)
+    bool Gui::handleEvent(sf::Event event)
     {
         // Check if the event has something to do with the mouse
         if (event.type == sf::Event::MouseMoved)
@@ -95,7 +95,7 @@ namespace tgui
         }
 
         // Let the event manager handle the event
-        m_EventManager.handleEvent(event);
+        return m_EventManager.handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -81,10 +81,13 @@ namespace tgui
         ///
         /// \param event  The event that was polled from the gui
         ///
+        /// \return Has the event been consumed or was it ignored?
+        ///         When this function returns true, then the event was ignored by all widgets.
+        ///
         /// You should call this function in your event loop.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void handleEvent(sf::Event event);
+        bool handleEvent(sf::Event event);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
