@@ -190,8 +190,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum PictureCallbacks
         {
-            /// Means all Callbacks defined in Picture and its parent Widgets
-            AllPictureCallbacks   = ClickableWidgetCallbacksCount - 1,
+            AllPictureCallbacks   = ClickableWidgetCallbacksCount - 1, ///< All triggers defined in Picture and its base classes
             PictureCallbacksCount = ClickableWidgetCallbacksCount
         };
 

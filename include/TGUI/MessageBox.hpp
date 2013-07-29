@@ -216,10 +216,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MessageBoxCallbacks
         {
-            /// Button clicked
-            ButtonClicked            = ChildWindowCallbacksCount * 1,
-            /// Means all Callbacks defined in MessageBox and its parent Widgets
-            AllMessageBoxCallbacks   = ChildWindowCallbacksCount * 2 - 1,
+            ButtonClicked            = ChildWindowCallbacksCount * 1,     ///< Button clicked
+            AllMessageBoxCallbacks   = ChildWindowCallbacksCount * 2 - 1, ///< All triggers defined in MessageBox and its base classes
             MessageBoxCallbacksCount = ChildWindowCallbacksCount * 2
         };
 

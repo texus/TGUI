@@ -358,11 +358,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum WidgetCallbacks
         {
-            None = 0, ///< No trigger
-            Focused = 1, ///< Widget gained focus.
-            Unfocused = 2, ///< Widget lost focus.
-            MouseEntered = 4, ///< Mouse cursor entered in the Widget area.
-            MouseLeft = 8, ///< Mouse cursor left the Widget area.
+            None = 0,                 ///< No trigger
+            Focused = 1,              ///< Widget gained focus.
+            Unfocused = 2,            ///< Widget lost focus.
+            MouseEntered = 4,         ///< Mouse cursor entered in the Widget area.
+            MouseLeft = 8,            ///< Mouse cursor left the Widget area.
             WidgetCallbacksCount = 16
         };
 

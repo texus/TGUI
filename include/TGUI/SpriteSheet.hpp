@@ -166,7 +166,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SpriteSheetCallbacks
         {
-            AllSpriteSheetCallbacks = PictureCallbacksCount - 1, ///< Means all Callbacks defined in SpriteSheet and its parent Widgets
+            AllSpriteSheetCallbacks = PictureCallbacksCount - 1, ///< All triggers defined in SpriteSheet and its base classes
             SpriteSheetCallbacksCount = PictureCallbacksCount
         };
 

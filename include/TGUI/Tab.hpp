@@ -393,8 +393,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TabCallbacks
         {
-            TabChanged = WidgetCallbacksCount * 1, ///< Current Tab changed
-            AllTabCallbacks = WidgetCallbacksCount * 2 - 1, ///< Means all Callbacks defined in Tab and its parent Widgets
+            TabChanged = WidgetCallbacksCount * 1,          ///< Current Tab changed
+            AllTabCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Tab and its base classes
             TabCallbacksCount = WidgetCallbacksCount * 2
         };
 

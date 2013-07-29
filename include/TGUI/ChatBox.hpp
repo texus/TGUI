@@ -296,8 +296,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChatBoxCallbacks
         {
-            /// Means all Callbacks defined in ChatBox and its parent Widgets
-            AllChatBoxCallbacks = WidgetCallbacksCount - 1,
+            AllChatBoxCallbacks = WidgetCallbacksCount - 1, ///< All triggers defined in ChatBox and its base classes
             ChatBoxCallbacksCount = WidgetCallbacksCount
         };
 

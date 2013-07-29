@@ -276,8 +276,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum LabelCallbacks
         {
-            /// Means all Callbacks defined in Label and its parent Widgets
-            AllLabelCallbacks   = ClickableWidgetCallbacksCount - 1,
+            AllLabelCallbacks   = ClickableWidgetCallbacksCount - 1, ///< All triggers defined in Label and its base classes
             LabelCallbacksCount = ClickableWidgetCallbacksCount
         };
 

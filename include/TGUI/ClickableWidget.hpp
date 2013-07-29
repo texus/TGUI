@@ -124,14 +124,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ClickableWidgetCallbacks
         {
-            /// The left mouse button was pressed
-            LeftMousePressed              = WidgetCallbacksCount * 1,
-            /// The left mouse button was released
-            LeftMouseReleased             = WidgetCallbacksCount * 2,
-            /// The left mouse button was clicked
-            LeftMouseClicked              = WidgetCallbacksCount * 4,
-            /// Means all Callbacks defined in ClickableWidget and its parent Widgets
-            AllClickableWidgetCallbacks   = WidgetCallbacksCount * 8 - 1,
+            LeftMousePressed              = WidgetCallbacksCount * 1,     ///< The left mouse button was pressed
+            LeftMouseReleased             = WidgetCallbacksCount * 2,     ///< The left mouse button was released
+            LeftMouseClicked              = WidgetCallbacksCount * 4,     ///< The left mouse button was clicked
+            AllClickableWidgetCallbacks   = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in ClickableWidget and its base classes
             ClickableWidgetCallbacksCount = WidgetCallbacksCount * 8
         };
 

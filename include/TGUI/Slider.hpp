@@ -248,8 +248,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SliderCallbacks
         {
-            ValueChanged = WidgetCallbacksCount * 1, ///< Value changed (Slider moved)
-            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, ///< Means all Callbacks defined in Slider and its parent Widgets
+            ValueChanged = WidgetCallbacksCount * 1,           ///< Value changed (Slider moved)
+            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Slider and its base classes
             SliderCallbacksCount = WidgetCallbacksCount * 2
         };
 

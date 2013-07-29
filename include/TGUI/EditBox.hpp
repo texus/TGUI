@@ -490,12 +490,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum EditBoxCallbacks
         {
-            /// Text changed
-            TextChanged = ClickableWidgetCallbacksCount * 1,
-            /// Return key was pressed
-            ReturnKeyPressed = ClickableWidgetCallbacksCount * 2,
-            /// Means all Callbacks defined in EditBox and its parent Widgets
-            AllEditBoxCallbacks = ClickableWidgetCallbacksCount * 4 - 1,
+            TextChanged = ClickableWidgetCallbacksCount * 1,             ///< Text changed
+            ReturnKeyPressed = ClickableWidgetCallbacksCount * 2,        ///< Return key was pressed
+            AllEditBoxCallbacks = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in EditBox and its base classes
             EditBoxCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 

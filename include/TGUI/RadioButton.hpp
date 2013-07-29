@@ -122,8 +122,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum RadioButtonCallbacks
         {
-            /// Means all Callbacks defined in RadioButton and its parent Widgets
-            AllRadioButtonCallbacks = CheckboxCallbacksCount - 1,
+            AllRadioButtonCallbacks = CheckboxCallbacksCount - 1, ///< All triggers defined in RadioButton and its base classes
             RadioButtonCallbacksCount = CheckboxCallbacksCount
         };
 

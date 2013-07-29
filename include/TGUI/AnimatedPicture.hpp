@@ -280,10 +280,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum AnimatedPictureCallbacks
         {
-            /// Animation ended
-            AnimationFinished = ClickableWidgetCallbacksCount * 1,
-            /// Means all Callbacks defined in AnimatedPicture and its parent Widgets
-            AllAnimatedPictureCallbacks = ClickableWidgetCallbacksCount * 2 - 1,
+            AnimationFinished = ClickableWidgetCallbacksCount * 1,               ///< Animation ended
+            AllAnimatedPictureCallbacks = ClickableWidgetCallbacksCount * 2 - 1, ///< All triggers defined in AnimatedPicture and its base classes
             AnimatedPictureCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 

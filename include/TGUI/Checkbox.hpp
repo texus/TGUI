@@ -278,16 +278,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum CheckboxCallbacks
         {
-            /// Checkbox was checked
-            Checked = ClickableWidgetCallbacksCount * 1,
-            /// Checkbox was unchecked
-            Unchecked = ClickableWidgetCallbacksCount * 2,
-            /// Space key was pressed
-            SpaceKeyPressed = ClickableWidgetCallbacksCount * 8,
-            /// Return key was pressed
-            ReturnKeyPressed = ClickableWidgetCallbacksCount * 16,
-            /// Means all Callbacks defined in Checkbox and its parent Widgets
-            AllCheckboxCallbacks = ClickableWidgetCallbacksCount * 32 - 1,
+            Checked = ClickableWidgetCallbacksCount * 1,                   ///< Checkbox was checked
+            Unchecked = ClickableWidgetCallbacksCount * 2,                 ///< Checkbox was unchecked
+            SpaceKeyPressed = ClickableWidgetCallbacksCount * 8,           ///< Space key was pressed
+            ReturnKeyPressed = ClickableWidgetCallbacksCount * 16,         ///< Return key was pressed
+            AllCheckboxCallbacks = ClickableWidgetCallbacksCount * 32 - 1, ///< All trigger defined in Checkbox and its base classes
             CheckboxCallbacksCount = ClickableWidgetCallbacksCount * 32
         };
 

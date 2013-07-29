@@ -193,7 +193,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ScrollbarCallbacks
         {
-            AllScrollbarCallbacks = SliderCallbacksCount - 1, ///< Means all Callbacks defined in Scrollbar and its parent Widgets
+            AllScrollbarCallbacks = SliderCallbacksCount - 1, ///< All triggers defined in Scrollbar and its base classes
             ScrollbarCallbacksCount = SliderCallbacksCount
         };
 

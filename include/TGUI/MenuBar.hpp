@@ -361,8 +361,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MenuBarCallbacks
         {
-            MenuItemClicked = WidgetCallbacksCount * 1, ///< A menu item was clicked
-            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1, ///< Means all Callbacks defined in MenuBar and its parent Widgets
+            MenuItemClicked = WidgetCallbacksCount * 1,         ///< A menu item was clicked
+            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in MenuBar and its base classes
             MenuBarCallbacksCount = WidgetCallbacksCount * 2
         };
 

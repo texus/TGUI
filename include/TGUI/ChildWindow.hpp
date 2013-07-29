@@ -432,13 +432,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChildWindowCallbacks
         {
-            /// Child window was closed
-            Closed = WidgetCallbacksCount * 1,
-            /// Child window was moved
-            Moved = WidgetCallbacksCount * 2,
+            Closed = WidgetCallbacksCount * 1,                      ///< Child window was closed
+            Moved = WidgetCallbacksCount * 2,                       ///< Child window was moved
 //            Resized = WidgetCallbacksCount * 4,
-            /// Means all Callbacks defined in ChildWindow and its parent Widgets
-            AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1,
+            AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in ChildWindow and its base classes
             ChildWindowCallbacksCount = WidgetCallbacksCount * 8
         };
 
