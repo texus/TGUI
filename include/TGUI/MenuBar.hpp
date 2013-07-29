@@ -356,10 +356,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to MenuBar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MenuBarCallbacks
         {
-            MenuItemClicked = WidgetCallbacksCount * 1,
-            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1,
+            MenuItemClicked = WidgetCallbacksCount * 1, ///< A menu item was clicked
+            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1, ///< Means all Callbacks defined in MenuBar and its parent Widgets
             MenuBarCallbacksCount = WidgetCallbacksCount * 2
         };
 

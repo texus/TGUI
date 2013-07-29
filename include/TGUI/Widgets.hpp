@@ -353,13 +353,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Widget.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum WidgetCallbacks
         {
-            None = 0,
-            Focused = 1,
-            Unfocused = 2,
-            MouseEntered = 4,
-            MouseLeft = 8,
+            None = 0, ///< No trigger
+            Focused = 1, ///< Widget gained focus.
+            Unfocused = 2, ///< Widget lost focus.
+            MouseEntered = 4, ///< Mouse cursor entered in the Widget area.
+            MouseLeft = 8, ///< Mouse cursor left the Widget area.
             WidgetCallbacksCount = 16
         };
 
