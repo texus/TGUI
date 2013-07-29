@@ -276,11 +276,13 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to AnimatedPicture.
+        /// Defines specific triggers to AnimatedPicture.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum AnimatedPictureCallbacks
         {
+            /// Animation ended
             AnimationFinished = ClickableWidgetCallbacksCount * 1,
+            /// Means all Callbacks defined in AnimatedPicture and its parent Widgets
             AllAnimatedPictureCallbacks = ClickableWidgetCallbacksCount * 2 - 1,
             AnimatedPictureCallbacksCount = ClickableWidgetCallbacksCount * 2
         };

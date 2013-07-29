@@ -212,11 +212,13 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to MessageBox.
+        /// Defines specific triggers to MessageBox.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MessageBoxCallbacks
         {
+            /// Button clicked
             ButtonClicked            = ChildWindowCallbacksCount * 1,
+            /// Means all Callbacks defined in MessageBox and its parent Widgets
             AllMessageBoxCallbacks   = ChildWindowCallbacksCount * 2 - 1,
             MessageBoxCallbacksCount = ChildWindowCallbacksCount * 2
         };

@@ -292,10 +292,11 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to ChatBox.
+        /// Defines specific triggers to ChatBox.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChatBoxCallbacks
         {
+            /// Means all Callbacks defined in ChatBox and its parent Widgets
             AllChatBoxCallbacks = WidgetCallbacksCount - 1,
             ChatBoxCallbacksCount = WidgetCallbacksCount
         };

@@ -272,10 +272,11 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to Label.
+        /// Defines specific triggers to Label.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum LabelCallbacks
         {
+            /// Means all Callbacks defined in Label and its parent Widgets
             AllLabelCallbacks   = ClickableWidgetCallbacksCount - 1,
             LabelCallbacksCount = ClickableWidgetCallbacksCount
         };

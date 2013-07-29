@@ -162,11 +162,11 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to SpriteSheet.
+        /// Defines specific triggers to SpriteSheet.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SpriteSheetCallbacks
         {
-            AllSpriteSheetCallbacks = PictureCallbacksCount - 1,
+            AllSpriteSheetCallbacks = PictureCallbacksCount - 1, ///< Means all Callbacks defined in SpriteSheet and its parent Widgets
             SpriteSheetCallbacksCount = PictureCallbacksCount
         };
 

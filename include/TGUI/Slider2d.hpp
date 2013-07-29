@@ -256,12 +256,15 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to Slider2d.
+        /// Defines specific triggers to Slider2d.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum Slider2dCallbacks
         {
+            /// Value changed (slider moved)
             ValueChanged = ClickableWidgetCallbacksCount * 1,
-            ThumbReturnedToCenter = ClickableWidgetCallbacksCount * 2,
+            /// Thumb returned to center
+            ThumbReturnedToCenter = ClickableWidgetCallbacksCount * 2, 
+            /// Means all Callbacks defined in Slider2d and its parent Widgets
             AllSlider2dCallbacks = ClickableWidgetCallbacksCount * 4 - 1,
             Slider2dCallbacksCount = ClickableWidgetCallbacksCount * 4
         };

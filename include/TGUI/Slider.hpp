@@ -244,12 +244,12 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to Slider.
+        /// Defines specific triggers to Slider.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SliderCallbacks
         {
-            ValueChanged = WidgetCallbacksCount * 1,
-            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1,
+            ValueChanged = WidgetCallbacksCount * 1, ///< Value changed (Slider moved)
+            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, ///< Means all Callbacks defined in Slider and its parent Widgets
             SliderCallbacksCount = WidgetCallbacksCount * 2
         };
 

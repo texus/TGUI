@@ -428,13 +428,16 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to ChildWindow.
+        /// Defines specific triggers to ChildWindow.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChildWindowCallbacks
         {
+            /// Child window was closed
             Closed = WidgetCallbacksCount * 1,
+            /// Child window was moved
             Moved = WidgetCallbacksCount * 2,
 //            Resized = WidgetCallbacksCount * 4,
+            /// Means all Callbacks defined in ChildWindow and its parent Widgets
             AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1,
             ChildWindowCallbacksCount = WidgetCallbacksCount * 8
         };

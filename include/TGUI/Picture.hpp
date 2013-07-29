@@ -186,10 +186,11 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to Picture.
+        /// Defines specific triggers to Picture.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum PictureCallbacks
         {
+            /// Means all Callbacks defined in Picture and its parent Widgets
             AllPictureCallbacks   = ClickableWidgetCallbacksCount - 1,
             PictureCallbacksCount = ClickableWidgetCallbacksCount
         };

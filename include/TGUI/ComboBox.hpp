@@ -532,11 +532,13 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Defines specific triggers to ComboBox.
+        /// Defines specific triggers to ComboBox.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ComboBoxCallbacks
         {
+            /// A new item was selected
             ItemSelected = WidgetCallbacksCount * 1,
+            /// Means all Callbacks defined in ComboBox and its parent Widgets
             AllComboBoxCallbacks = WidgetCallbacksCount * 2 - 1,
             ComboBoxCallbacksCount = WidgetCallbacksCount * 2
         };
