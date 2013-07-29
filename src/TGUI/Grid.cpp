@@ -51,9 +51,6 @@ namespace tgui
 
         for (unsigned int row = 0; row < gridToCopy.m_GridWidgets.size(); ++row)
         {
-            // Create a new row
-            addRow();
-
             for (unsigned int col = 0; col < gridToCopy.m_GridWidgets[row].size(); ++col)
             {
                 // Find the widget that belongs in this square
@@ -61,7 +58,7 @@ namespace tgui
                 {
                     // If an widget matches then add it to the grid
                     if (widgets[i] == gridToCopy.m_GridWidgets[row][col])
-                        addToRow(widgets[i]);
+                        addWidget(widgets[i], row, col, gridToCopy.m_ObjBorders[row][col], gridToCopy.m_ObjLayout[row][col]);
                 }
             }
         }
@@ -193,20 +190,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addToRow(const Widget::Ptr& widget, const Vector4u& borders, Layout::Layouts layout)
+    void Grid::addWidget(const Widget::Ptr& widget, unsigned int row, unsigned int col,
+                         const Vector4u& borders, Layout::Layouts layout)
     {
-        // If there is no row yet then create one
-        if (m_GridWidgets.empty())
-            addRow(0);
+        // Create the row if it didn't exist yet
+        if (m_GridWidgets.size() < row + 1)
+        {
+            m_GridWidgets.resize(row + 1);
+            m_ObjBorders.resize(row + 1);
+            m_ObjLayout.resize(row + 1);
+        }
 
-        // Add the widget to the grid
-        m_GridWidgets[m_GridWidgets.size()-1].push_back(widget);
-        m_ObjBorders[m_ObjBorders.size()-1].push_back(borders);
-        m_ObjLayout[m_ObjLayout.size()-1].push_back(layout);
+        // Create the column if it didn't exist yet
+        if (m_GridWidgets[row].size() < col + 1)
+        {
+            m_GridWidgets[row].resize(col + 1);
+            m_ObjBorders[row].resize(col + 1);
+            m_ObjLayout[row].resize(col + 1);
+        }
+
+        // If this is a new row then reserve some space for it
+        if (m_RowHeight.size() < row + 1)
+            m_RowHeight.resize(row + 1, 0);
 
         // If this is the first row to have so many columns then reserve some space for it
-        if (m_ColumnWidth.size() < m_GridWidgets[m_ObjLayout.size()-1].size())
-            m_ColumnWidth.push_back(0);
+        if (m_ColumnWidth.size() < col + 1)
+            m_ColumnWidth.resize(col + 1, 0);
+
+        // Add the widget to the grid
+        m_GridWidgets[row][col] = widget;
+        m_ObjBorders[row][col] = borders;
+        m_ObjLayout[row][col] = layout;
 
         // Update the widgets
         updateWidgets();
@@ -214,14 +228,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addRow(unsigned int rowHeight)
+    Widget::Ptr Grid::getWidget(unsigned int row, unsigned int col)
     {
-        m_GridWidgets.push_back( std::vector<Widget::Ptr>() );
-        m_ObjBorders.push_back( std::vector<Vector4u>() );
-        m_ObjLayout.push_back( std::vector<Layout::Layouts>() );
-        m_RowHeight.push_back(rowHeight);
-
-        m_Size.y += static_cast<float>(rowHeight);
+        if ((m_GridWidgets.size() > row) && (m_GridWidgets[row].size() > col))
+            return m_GridWidgets[row][col];
+        else
+            return Widget::Ptr();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +241,7 @@ namespace tgui
     void Grid::updateWidgets()
     {
         // Reset the column widths
-        for (std::vector<unsigned int>::iterator it=m_ColumnWidth.begin(); it!=m_ColumnWidth.end(); ++it)
+        for (std::vector<unsigned int>::iterator it = m_ColumnWidth.begin(); it != m_ColumnWidth.end(); ++it)
             *it = 0;
 
         // Loop through all widgets
@@ -240,6 +252,9 @@ namespace tgui
 
             for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
             {
+                if (m_GridWidgets[row][col].get() == nullptr)
+                    continue;
+
                 // Remember the biggest column width
                 if (m_ColumnWidth[col] < m_GridWidgets[row][col]->getSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3)
                     m_ColumnWidth[col] = static_cast<unsigned int>(m_GridWidgets[row][col]->getSize().x + m_ObjBorders[row][col].x1 + m_ObjBorders[row][col].x3);
@@ -354,6 +369,12 @@ namespace tgui
             // Loop through all widgets in the row
             for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
             {
+                if (m_GridWidgets[row][col].get() == nullptr)
+                {
+                    position.x += m_ColumnWidth[col];
+                    continue;
+                }
+
                 // Place the next widget on the correct position
                 switch (m_ObjLayout[row][col])
                 {
@@ -515,7 +536,10 @@ namespace tgui
         for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
         {
             for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
-                target.draw(*m_GridWidgets[row][col], states);
+            {
+                if (m_GridWidgets[row][col].get() != nullptr)
+                    target.draw(*m_GridWidgets[row][col], states);
+            }
         }
     }
 
