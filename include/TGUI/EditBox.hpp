@@ -485,10 +485,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to EditBox.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum EditBoxCallbacks
         {
+            /// Text changed
             TextChanged = ClickableWidgetCallbacksCount * 1,
+            /// Return key was pressed
             ReturnKeyPressed = ClickableWidgetCallbacksCount * 2,
+            /// Means all Callbacks defined in EditBox and its parent Widgets
             AllEditBoxCallbacks = ClickableWidgetCallbacksCount * 4 - 1,
             EditBoxCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
