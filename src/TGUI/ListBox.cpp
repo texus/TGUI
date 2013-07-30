@@ -1029,11 +1029,11 @@ namespace tgui
             }
             else if (property == "ItemHeight")
             {
-                setItemHeight(atoi(value.c_str()));
+                setItemHeight(std::stoi(value));
             }
             else if (property == "MaximumItems")
             {
-                setMaximumItems(atoi(value.c_str()));
+                setMaximumItems(std::stoi(value));
             }
             else if (property == "Borders")
             {

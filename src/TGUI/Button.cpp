@@ -685,7 +685,7 @@ namespace tgui
             }
             else if (property == "TextSize")
             {
-                setTextSize(atoi(value.c_str()));
+                setTextSize(std::stoi(value));
             }
             else // The property didn't match
                 return false;

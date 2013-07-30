@@ -532,15 +532,15 @@ namespace tgui
             }
             else if (property == "Minimum")
             {
-                setMinimum(atoi(value.c_str()));
+                setMinimum(std::stoi(value));
             }
             else if (property == "Maximum")
             {
-                setMaximum(atoi(value.c_str()));
+                setMaximum(std::stoi(value));
             }
             else if (property == "Value")
             {
-                setValue(atoi(value.c_str()));
+                setValue(std::stoi(value));
             }
             else if (property == "Text")
             {
@@ -552,7 +552,7 @@ namespace tgui
             }
             else if (property == "TextSize")
             {
-                setTextSize(atoi(value.c_str()));
+                setTextSize(std::stoi(value));
             }
             else // The property didn't match
                 return false;

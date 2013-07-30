@@ -726,7 +726,7 @@ namespace tgui
             }
             else if (property == "TextSize")
             {
-                setTextSize(atoi(value.c_str()));
+                setTextSize(std::stoi(value));
             }
             else if (property == "Borders")
             {

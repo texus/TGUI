@@ -257,7 +257,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+                setDistanceToSide(static_cast<unsigned int>(std::stoi(value)));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
@@ -616,7 +616,7 @@ namespace tgui
     {
         // Move the childwindow to the front
         m_Parent->moveWidgetToFront(this);
-        
+
         // Add the callback (if the user requested it)
         if (m_CallbackFunctions[LeftMousePressed].empty() == false)
         {
@@ -823,7 +823,7 @@ namespace tgui
             }
             else if (property == "TitleBarHeight")
             {
-                setTitleBarHeight(atoi(value.c_str()));
+                setTitleBarHeight(std::stoi(value));
             }
             else if (property == "BackgroundColor")
             {
@@ -851,7 +851,7 @@ namespace tgui
             }
             else if (property == "DistanceToSide")
             {
-                setDistanceToSide(atoi(value.c_str()));
+                setDistanceToSide(std::stoi(value));
             }
             else if (property == "TitleAlignment")
             {

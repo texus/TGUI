@@ -207,11 +207,11 @@ namespace tgui
         {
             if (property == "Rows")
             {
-                setRows(atof(value.c_str()));
+                setRows(std::stof(value));
             }
             else if (property == "Columns")
             {
-                setColumns(atof(value.c_str()));
+                setColumns(std::stof(value));
             }
             else // The property didn't match
                 return false;
