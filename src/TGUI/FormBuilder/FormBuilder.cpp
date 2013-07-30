@@ -93,7 +93,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         pictures.push_back(properties);
 
         // Add a picture to the form
-        tgui::Picture::Ptr picture(mainWindow, tgui::to_string(currentID));
+        tgui::Picture::Ptr picture(mainWindow, std::to_string(currentID));
         picture->load(pictures.back().filename.value);
 
         // Store the aspect ratio
@@ -108,7 +108,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         buttons.push_back(properties);
 
         // Add a button to the form
-        tgui::Button::Ptr button(mainWindow, tgui::to_string(currentID));
+        tgui::Button::Ptr button(mainWindow, std::to_string(currentID));
         button->load(buttons.back().configFile.value);
         button->setSize(256, 64);
 
@@ -124,7 +124,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         checkboxes.push_back(properties);
 
         // Add a checkbox to the form
-        tgui::Checkbox::Ptr checkbox(mainWindow, tgui::to_string(currentID));
+        tgui::Checkbox::Ptr checkbox(mainWindow, std::to_string(currentID));
         checkbox->load(checkboxes.back().configFile.value);
 
         // Store the aspect ratio
@@ -140,7 +140,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         radioButtons.push_back(properties);
 
         // Add a radio button to the form
-        tgui::RadioButton::Ptr radioButton(mainWindow, tgui::to_string(currentID));
+        tgui::RadioButton::Ptr radioButton(mainWindow, std::to_string(currentID));
         radioButton->load(radioButtons.back().configFile.value);
 
         // Store the aspect ratio
@@ -155,7 +155,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         labels.push_back(properties);
 
         // Add a label to the form
-        tgui::Label::Ptr label(mainWindow, tgui::to_string(currentID));
+        tgui::Label::Ptr label(mainWindow, std::to_string(currentID));
         label->setText("Label");
 
         // Store the aspect ratio
@@ -170,7 +170,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         editBoxes.push_back(properties);
 
         // Add an edit box to the form
-        tgui::EditBox::Ptr editBox(mainWindow, tgui::to_string(currentID));
+        tgui::EditBox::Ptr editBox(mainWindow, std::to_string(currentID));
         editBox->load(editBoxes.back().configFile.value);
         editBox->setBorders(2, 2, 2, 2);
         editBox->setSelectionPointColor(sf::Color(110, 110, 255));
@@ -190,7 +190,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         listBoxes.push_back(properties);
 
         // Add an list box to the form
-        tgui::ListBox::Ptr listBox(mainWindow, tgui::to_string(currentID));
+        tgui::ListBox::Ptr listBox(mainWindow, std::to_string(currentID));
         listBox->load(DEFAULT_THEME_FILE);
         listBox->setSize(200, 240);
         listBox->setItemHeight(30);
@@ -213,7 +213,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         comboBoxes.push_back(properties);
 
         // Add an combo box to the form
-        tgui::ComboBox::Ptr comboBox(mainWindow, tgui::to_string(currentID));
+        tgui::ComboBox::Ptr comboBox(mainWindow, std::to_string(currentID));
         comboBox->load(DEFAULT_THEME_FILE);
         comboBox->setSize(240, 36);
         comboBox->setMaximumItems(10);
@@ -236,7 +236,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         sliders.push_back(properties);
 
         // Add a slider to the form
-        tgui::Slider::Ptr slider(mainWindow, tgui::to_string(currentID));
+        tgui::Slider::Ptr slider(mainWindow, std::to_string(currentID));
         slider->load(sliders.back().configFile.value);
         slider->setVerticalScroll(false);
 
@@ -252,7 +252,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         scrollbars.push_back(properties);
 
         // Add a scrollbar to the form
-        tgui::Scrollbar::Ptr scrollbar(mainWindow, tgui::to_string(currentID));
+        tgui::Scrollbar::Ptr scrollbar(mainWindow, std::to_string(currentID));
         scrollbar->load(scrollbars.back().configFile.value);
         scrollbar->setMaximum(5);
         scrollbar->setLowValue(4);
@@ -270,7 +270,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         loadingBars.push_back(properties);
 
         // Add a loading bar to the form
-        tgui::LoadingBar::Ptr loadingBar(mainWindow, tgui::to_string(currentID));
+        tgui::LoadingBar::Ptr loadingBar(mainWindow, std::to_string(currentID));
         loadingBar->load(loadingBars.back().configFile.value);
         loadingBar->setValue(0);
 
@@ -286,7 +286,7 @@ unsigned int Builder::newWidget(unsigned int widgetID, const std::string widgetN
         textBoxes.push_back(properties);
 
         // Add a text box to the form
-        tgui::TextBox::Ptr textBox(mainWindow, tgui::to_string(currentID));
+        tgui::TextBox::Ptr textBox(mainWindow, std::to_string(currentID));
         textBox->load(textBoxes.back().configFile.value);
         textBox->setSize(320, 172);
         textBox->setTextSize(24);
@@ -601,7 +601,7 @@ unsigned int Builder::getClickedWidgetID(sf::Event& event)
         #define FindWidgetNr(Widget, widgets) \
         for (unsigned int i=0; i<widgets.size(); ++i) \
         { \
-            tgui::Widget::Ptr widget = mainWindow.get(tgui::to_string(widgets[i].id)); \
+            tgui::Widget::Ptr widget = mainWindow.get(std::to_string(widgets[i].id)); \
          \
             if (widget->mouseOnWidget(mouseX, mouseY)) \
             { \
@@ -690,7 +690,7 @@ void Builder::deleteWidget()
         unsigned int i;
 
         // Remove the widget from the window
-        mainWindow.remove(mainWindow.get(tgui::to_string(currentID)));
+        mainWindow.remove(mainWindow.get(std::to_string(currentID)));
 
         // Find and remove the properties of the widget
         #define FindWidgetWithID(widget) \
@@ -737,7 +737,7 @@ void Builder::moveWidgetX(float pixels)
     left += pixels;
 
     // Change the contents of the edit box
-    editbox->setText(tgui::to_string(left));
+    editbox->setText(std::to_string(left));
 
     #define FindWidgetWithID(Widget, widgets) \
     for (i=0; i<widgets.size(); ++i) \
@@ -779,7 +779,7 @@ void Builder::moveWidgetY(float pixels)
     top += pixels;
 
     // Change the contents of the edit box
-    editbox->setText(tgui::to_string(top));
+    editbox->setText(std::to_string(top));
 
     #define FindWidgetWithID(Widget, widgets) \
     for (i=0; i<widgets.size(); ++i) \
@@ -831,8 +831,8 @@ void Builder::resizeWidget(float addToWidth, float addToHeight)
     height += addToHeight;
 
     // Change the contents of the edit boxes
-    editboxWidth->setText(tgui::to_string(width));
-    editboxHeight->setText(tgui::to_string(height));
+    editboxWidth->setText(std::to_string(width));
+    editboxHeight->setText(std::to_string(height));
 
     #define FindWidgetWithID(Widget, widgets) \
     for (i=0; i<widgets.size(); ++i) \
@@ -967,7 +967,7 @@ bool Builder::loadForm()
                 labels.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Label::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Label::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setText(widget->getText());
                 realWidget->setTextSize(widget->getTextSize());
@@ -991,7 +991,7 @@ bool Builder::loadForm()
                 pictures.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Picture::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Picture::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedFilename());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1016,7 +1016,7 @@ bool Builder::loadForm()
                 buttons.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Button::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Button::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1046,7 +1046,7 @@ bool Builder::loadForm()
                 checkboxes.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Checkbox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Checkbox::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1081,7 +1081,7 @@ bool Builder::loadForm()
                 radioButtons.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::RadioButton::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::RadioButton::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1113,7 +1113,7 @@ bool Builder::loadForm()
                 editBoxes.back().textFont.value = "Global";
                 editBoxes.back().passwordChar.value = widget->getPasswordCharacter();
                 editBoxes.back().maximumCharacters.value = widget->getMaximumCharacters();
-                editBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                editBoxes.back().borders.value = "(" + std::to_string(widget->getBorders().x1) + "," + std::to_string(widget->getBorders().x2) + "," + std::to_string(widget->getBorders().x3) + "," + std::to_string(widget->getBorders().x4) + ")";
                 editBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 editBoxes.back().selectedTextColor.value = tgui::convertColorToString(widget->getSelectedTextColor());
                 editBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(widget->getSelectedTextBackgroundColor());
@@ -1122,7 +1122,7 @@ bool Builder::loadForm()
                 editBoxes.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::EditBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::EditBox::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1156,7 +1156,7 @@ bool Builder::loadForm()
                 sliders.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Slider::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Slider::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
 
@@ -1186,7 +1186,7 @@ bool Builder::loadForm()
                 scrollbars.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::Scrollbar::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::Scrollbar::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1213,7 +1213,7 @@ bool Builder::loadForm()
                 listBoxes.back().height.value = widget->getSize().y;
                 listBoxes.back().itemHeight.value = widget->getItemHeight();
                 listBoxes.back().maximumItems.value = widget->getMaximumItems();
-                listBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                listBoxes.back().borders.value = "(" + std::to_string(widget->getBorders().x1) + "," + std::to_string(widget->getBorders().x2) + "," + std::to_string(widget->getBorders().x3) + "," + std::to_string(widget->getBorders().x4) + ")";
                 listBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 listBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 listBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(widget->getSelectedBackgroundColor());
@@ -1234,7 +1234,7 @@ bool Builder::loadForm()
                 listBoxes.back().selectedItem.value = widget->getSelectedItemIndex();
 
                 // Draw the widget in the correct way
-                tgui::ListBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::ListBox::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setSize(static_cast<unsigned int>(widget->getSize().x), static_cast<unsigned int>(widget->getSize().y));
                 realWidget->setItemHeight(widget->getItemHeight());
@@ -1262,7 +1262,7 @@ bool Builder::loadForm()
                 comboBoxes.back().top.value = widget->getPosition().y;
                 comboBoxes.back().width.value = widget->getSize().x;
                 comboBoxes.back().height.value = widget->getSize().y;
-                comboBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                comboBoxes.back().borders.value = "(" + std::to_string(widget->getBorders().x1) + "," + std::to_string(widget->getBorders().x2) + "," + std::to_string(widget->getBorders().x3) + "," + std::to_string(widget->getBorders().x4) + ")";
                 comboBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 comboBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 comboBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(widget->getSelectedBackgroundColor());
@@ -1284,7 +1284,7 @@ bool Builder::loadForm()
                 comboBoxes.back().selectedItem.value = widget->getSelectedItemIndex();
 
                 // Draw the widget in the correct way
-                tgui::ComboBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::ComboBox::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
                 realWidget->setItemsToDisplay(widget->getItemsToDisplay());
@@ -1315,7 +1315,7 @@ bool Builder::loadForm()
                 loadingBars.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::LoadingBar::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::LoadingBar::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
@@ -1340,7 +1340,7 @@ bool Builder::loadForm()
                 textBoxes.back().textSize.value = widget->getTextSize();
                 textBoxes.back().textFont.value = "Global";
                 textBoxes.back().maximumCharacters.value = widget->getMaximumCharacters();
-                textBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                textBoxes.back().borders.value = "(" + std::to_string(widget->getBorders().x1) + "," + std::to_string(widget->getBorders().x2) + "," + std::to_string(widget->getBorders().x3) + "," + std::to_string(widget->getBorders().x4) + ")";
                 textBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 textBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 textBoxes.back().selectedTextColor.value = tgui::convertColorToString(widget->getSelectedTextColor());
@@ -1351,7 +1351,7 @@ bool Builder::loadForm()
                 textBoxes.back().callbackID.value = widget->getCallbackId();
 
                 // Draw the widget in the correct way
-                tgui::TextBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
+                tgui::TextBox::Ptr realWidget = mainWindow.get(std::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
                 realWidget->setSize(static_cast<unsigned int>(widget->getSize().x), static_cast<unsigned int>(widget->getSize().y));
                 realWidget->setTextSize(widget->getTextSize());
@@ -1493,17 +1493,17 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
-            line.append("(").append(tgui::to_string(pictures[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(pictures[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(pictures[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(pictures[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size       = ";
-            line.append("(").append(tgui::to_string(pictures[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(pictures[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(pictures[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(pictures[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
-            line.append(tgui::to_string(pictures[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(pictures[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1520,13 +1520,13 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
-            line.append("(").append(tgui::to_string(buttons[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(buttons[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(buttons[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(buttons[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size       = ";
-            line.append("(").append(tgui::to_string(buttons[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(buttons[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(buttons[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(buttons[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text       = \"";
@@ -1534,7 +1534,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize   = ";
-            line.append(tgui::to_string(buttons[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(buttons[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextColor  = ";
@@ -1543,7 +1543,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
-            line.append(tgui::to_string(buttons[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(buttons[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1560,17 +1560,17 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
-            line.append("(").append(tgui::to_string(checkboxes[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(checkboxes[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(checkboxes[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(checkboxes[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size       = ";
-            line.append("(").append(tgui::to_string(checkboxes[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(checkboxes[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(checkboxes[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(checkboxes[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Checked    = ";
-            line.append(tgui::to_string(checkboxes[widgetIndex].checked.value)).append("\n");
+            line.append(std::to_string(checkboxes[widgetIndex].checked.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text       = \"";
@@ -1578,7 +1578,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize   = ";
-            line.append(tgui::to_string(checkboxes[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(checkboxes[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextColor  = ";
@@ -1587,7 +1587,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
-            line.append(tgui::to_string(checkboxes[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(checkboxes[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1604,17 +1604,17 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
-            line.append("(").append(tgui::to_string(radioButtons[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(radioButtons[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(radioButtons[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(radioButtons[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size       = ";
-            line.append("(").append(tgui::to_string(radioButtons[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(radioButtons[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(radioButtons[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(radioButtons[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Checked    = ";
-            line.append(tgui::to_string(radioButtons[widgetIndex].checked.value)).append("\n");
+            line.append(std::to_string(radioButtons[widgetIndex].checked.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text       = \"";
@@ -1622,7 +1622,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize   = ";
-            line.append(tgui::to_string(radioButtons[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(radioButtons[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextColor  = ";
@@ -1631,7 +1631,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
-            line.append(tgui::to_string(radioButtons[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(radioButtons[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1644,8 +1644,8 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position         = ";
-            line.append("(").append(tgui::to_string(labels[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(labels[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(labels[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(labels[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text             = \"";
@@ -1653,7 +1653,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize         = ";
-            line.append(tgui::to_string(labels[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(labels[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextColor        = ";
@@ -1667,7 +1667,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID       = ";
-            line.append(tgui::to_string(labels[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(labels[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1684,13 +1684,13 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position            = ";
-            line.append("(").append(tgui::to_string(editBoxes[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(editBoxes[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(editBoxes[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(editBoxes[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size                = ";
-            line.append("(").append(tgui::to_string(editBoxes[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(editBoxes[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(editBoxes[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(editBoxes[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Text                = \"";
@@ -1698,7 +1698,7 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize            = ";
-            line.append(tgui::to_string(editBoxes[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(editBoxes[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             if (editBoxes[widgetIndex].passwordChar.value != '\0')
@@ -1710,7 +1710,7 @@ void Builder::saveForm()
             }
 
             line = TAB TAB "MaximumCharacters   = ";
-            line.append(tgui::to_string(editBoxes[widgetIndex].maximumCharacters.value)).append("\n");
+            line.append(std::to_string(editBoxes[widgetIndex].maximumCharacters.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders             = ";
@@ -1739,11 +1739,11 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectionPointWidth = ";
-            line.append(tgui::to_string(editBoxes[widgetIndex].selectionPointWidth.value)).append("\n");
+            line.append(std::to_string(editBoxes[widgetIndex].selectionPointWidth.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID          = ";
-            line.append(tgui::to_string(editBoxes[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(editBoxes[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1760,21 +1760,21 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position                = ";
-            line.append("(").append(tgui::to_string(listBoxes[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(listBoxes[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(listBoxes[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(listBoxes[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size                    = ";
-            line.append("(").append(tgui::to_string(listBoxes[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(listBoxes[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(listBoxes[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(listBoxes[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ItemHeight              = ";
-            line.append(tgui::to_string(listBoxes[widgetIndex].itemHeight.value)).append("\n");
+            line.append(std::to_string(listBoxes[widgetIndex].itemHeight.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "MaximumItems            = ";
-            line.append(tgui::to_string(listBoxes[widgetIndex].maximumItems.value)).append("\n");
+            line.append(std::to_string(listBoxes[widgetIndex].maximumItems.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders                 = ";
@@ -1846,11 +1846,11 @@ void Builder::saveForm()
             }
 
             line = TAB TAB "SelectedItem            = ";
-            line.append(tgui::to_string(listBoxes[widgetIndex].selectedItem.value)).append("\n");
+            line.append(std::to_string(listBoxes[widgetIndex].selectedItem.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID              = ";
-            line.append(tgui::to_string(listBoxes[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(listBoxes[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1867,13 +1867,13 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position                = ";
-            line.append("(").append(tgui::to_string(comboBoxes[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(comboBoxes[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(comboBoxes[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(comboBoxes[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size                    = ";
-            line.append("(").append(tgui::to_string(comboBoxes[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(comboBoxes[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(comboBoxes[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(comboBoxes[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders                 = ";
@@ -1945,15 +1945,15 @@ void Builder::saveForm()
             }
 
             line = TAB TAB "SelectedItem            = ";
-            line.append(tgui::to_string(comboBoxes[widgetIndex].selectedItem.value)).append("\n");
+            line.append(std::to_string(comboBoxes[widgetIndex].selectedItem.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "ItemsToDisplay          = ";
-            line.append(tgui::to_string(comboBoxes[widgetIndex].itemsToDisplay.value)).append("\n");
+            line.append(std::to_string(comboBoxes[widgetIndex].itemsToDisplay.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID              = ";
-            line.append(tgui::to_string(comboBoxes[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(comboBoxes[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -1970,33 +1970,33 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "VerticalScroll = ";
-            line.append(tgui::to_string(sliders[widgetIndex].verticalScroll.value)).append("\n");
+            line.append(std::to_string(sliders[widgetIndex].verticalScroll.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position       = ";
-            line.append("(").append(tgui::to_string(sliders[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(sliders[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(sliders[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(sliders[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size           = ";
-            line.append("(").append(tgui::to_string(sliders[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(sliders[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(sliders[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(sliders[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Value          = ";
-            line.append(tgui::to_string(sliders[widgetIndex].value.value)).append("\n");
+            line.append(std::to_string(sliders[widgetIndex].value.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Minimum        = ";
-            line.append(tgui::to_string(sliders[widgetIndex].minimum.value)).append("\n");
+            line.append(std::to_string(sliders[widgetIndex].minimum.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Maximum        = ";
-            line.append(tgui::to_string(sliders[widgetIndex].maximum.value)).append("\n");
+            line.append(std::to_string(sliders[widgetIndex].maximum.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID     = ";
-            line.append(tgui::to_string(sliders[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(sliders[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -2013,33 +2013,33 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "VerticalScroll = ";
-            line.append(tgui::to_string(scrollbars[widgetIndex].verticalScroll.value)).append("\n");
+            line.append(std::to_string(scrollbars[widgetIndex].verticalScroll.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position       = ";
-            line.append("(").append(tgui::to_string(scrollbars[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(scrollbars[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(scrollbars[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(scrollbars[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size           = ";
-            line.append("(").append(tgui::to_string(scrollbars[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(scrollbars[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(scrollbars[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(scrollbars[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "LowValue       = ";
-            line.append(tgui::to_string(scrollbars[widgetIndex].lowValue.value)).append("\n");
+            line.append(std::to_string(scrollbars[widgetIndex].lowValue.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Maximum        = ";
-            line.append(tgui::to_string(scrollbars[widgetIndex].maximum.value)).append("\n");
+            line.append(std::to_string(scrollbars[widgetIndex].maximum.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Value          = ";
-            line.append(tgui::to_string(scrollbars[widgetIndex].value.value)).append("\n");
+            line.append(std::to_string(scrollbars[widgetIndex].value.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID     = ";
-            line.append(tgui::to_string(scrollbars[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(scrollbars[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -2056,29 +2056,29 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position   = ";
-            line.append("(").append(tgui::to_string(loadingBars[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(loadingBars[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(loadingBars[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(loadingBars[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size       = ";
-            line.append("(").append(tgui::to_string(loadingBars[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(loadingBars[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(loadingBars[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(loadingBars[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Minimum    = ";
-            line.append(tgui::to_string(loadingBars[widgetIndex].minimum.value)).append("\n");
+            line.append(std::to_string(loadingBars[widgetIndex].minimum.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Maximum    = ";
-            line.append(tgui::to_string(loadingBars[widgetIndex].maximum.value)).append("\n");
+            line.append(std::to_string(loadingBars[widgetIndex].maximum.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Value      = ";
-            line.append(tgui::to_string(loadingBars[widgetIndex].value.value)).append("\n");
+            line.append(std::to_string(loadingBars[widgetIndex].value.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID = ";
-            line.append(tgui::to_string(loadingBars[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(loadingBars[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";
@@ -2095,13 +2095,13 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Position            = ";
-            line.append("(").append(tgui::to_string(textBoxes[widgetIndex].left.value)).append(",");
-            line.append(tgui::to_string(textBoxes[widgetIndex].top.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(textBoxes[widgetIndex].left.value)).append(",");
+            line.append(std::to_string(textBoxes[widgetIndex].top.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Size                = ";
-            line.append("(").append(tgui::to_string(textBoxes[widgetIndex].width.value)).append(",");
-            line.append(tgui::to_string(textBoxes[widgetIndex].height.value)).append(")").append("\n");
+            line.append("(").append(std::to_string(textBoxes[widgetIndex].width.value)).append(",");
+            line.append(std::to_string(textBoxes[widgetIndex].height.value)).append(")").append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             // Replace the newlines, tabs and quotes
@@ -2121,11 +2121,11 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "TextSize            = ";
-            line.append(tgui::to_string(textBoxes[widgetIndex].textSize.value)).append("\n");
+            line.append(std::to_string(textBoxes[widgetIndex].textSize.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "MaximumCharacters   = ";
-            line.append(tgui::to_string(textBoxes[widgetIndex].maximumCharacters.value)).append("\n");
+            line.append(std::to_string(textBoxes[widgetIndex].maximumCharacters.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "Borders             = ";
@@ -2164,11 +2164,11 @@ void Builder::saveForm()
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "SelectionPointWidth = ";
-            line.append(tgui::to_string(textBoxes[widgetIndex].selectionPointWidth.value)).append("\n");
+            line.append(std::to_string(textBoxes[widgetIndex].selectionPointWidth.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB TAB "CallbackID          = ";
-            line.append(tgui::to_string(textBoxes[widgetIndex].callbackID.value)).append("\n");
+            line.append(std::to_string(textBoxes[widgetIndex].callbackID.value)).append("\n");
             fwrite(line.c_str(), 1, line.size(), pFile);
 
             line = TAB "}\n\n";

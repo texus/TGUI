@@ -228,9 +228,9 @@ namespace tgui
         if (!Picture::getProperty(property, value))
         {
             if (property == "Rows")
-                value = to_string(getRows());
+                value = std::to_string(getRows());
             else if (property == "Columns")
-                value = to_string(getColumns());
+                value = std::to_string(getColumns());
             else // The property didn't match
                 return false;
         }

@@ -576,11 +576,11 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "Minimum")
-                value = "(" + to_string(getMinimum().x) + "," + to_string(getMinimum().y) + ")";
+                value = "(" + std::to_string(getMinimum().x) + "," + std::to_string(getMinimum().y) + ")";
             else if (property == "Maximum")
-                value = "(" + to_string(getMaximum().x) + "," + to_string(getMaximum().y) + ")";
+                value = "(" + std::to_string(getMaximum().x) + "," + std::to_string(getMaximum().y) + ")";
             else if (property == "Value")
-                value = "(" + to_string(getValue().x) + "," + to_string(getValue().y) + ")";
+                value = "(" + std::to_string(getValue().x) + "," + std::to_string(getValue().y) + ")";
             else if (property == "FixedThumbSize")
                 value = m_FixedThumbSize ? "true" : "false";
             else if (property == "EnableThumbCenter")

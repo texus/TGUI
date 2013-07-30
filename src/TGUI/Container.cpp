@@ -160,7 +160,7 @@ namespace tgui
 
             // Replace the brackets with the factor
             expression.erase(openingBracketPos, closingBracketPos - openingBracketPos + 1);
-            expression.insert(openingBracketPos, to_string(factor));
+            expression.insert(openingBracketPos, std::to_string(factor));
 
             // Find the next opening bracket
             openingBracketPos = expression.rfind('(');

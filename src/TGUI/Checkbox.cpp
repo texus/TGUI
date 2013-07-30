@@ -592,9 +592,9 @@ namespace tgui
             else if (property == "Text")
                 value = getText().toAnsiString();
             else if (property == "TextColor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
             else if (property == "TextSize")
-                value = to_string(getTextSize());
+                value = std::to_string(getTextSize());
             else if (property == "AllowTextClick")
                 value = m_AllowTextClick ? "true" : "false";
             else // The property didn't match

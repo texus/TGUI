@@ -1701,27 +1701,27 @@ namespace tgui
             else if (property == "Text")
                 value = getText().toAnsiString();
             else if (property == "TextSize")
-                value = to_string(getTextSize());
+                value = std::to_string(getTextSize());
             else if (property == "MaximumCharacters")
-                value = to_string(getMaximumCharacters());
+                value = std::to_string(getMaximumCharacters());
             else if (property == "Borders")
-                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
+                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
             else if (property == "BackgroundColor")
-                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
+                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "TextColor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
             else if (property == "SelectedTextColor")
-                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
-                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
+                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
+                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
             else if (property == "SelectedTextBackgroundColor")
-                value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
-                        + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
+                value = "(" + std::to_string(int(getSelectedTextBackgroundColor().r)) + "," + std::to_string(int(getSelectedTextBackgroundColor().g))
+                        + "," + std::to_string(int(getSelectedTextBackgroundColor().b)) + "," + std::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
             else if (property == "BorderColor")
-                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
+                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
             else if (property == "SelectionPointColor")
-                value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g)) + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
+                value = "(" + std::to_string(int(getSelectionPointColor().r)) + "," + std::to_string(int(getSelectionPointColor().g)) + "," + std::to_string(int(getSelectionPointColor().b)) + "," + std::to_string(int(getSelectionPointColor().a)) + ")";
             else if (property == "SelectionPointWidth")
-                value = to_string(getSelectionPointWidth());
+                value = std::to_string(getSelectionPointWidth());
             else // The property didn't match
                 return false;
         }

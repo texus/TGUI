@@ -769,11 +769,11 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "Minimum")
-                value = to_string(getMinimum());
+                value = std::to_string(getMinimum());
             else if (property == "Maximum")
-                value = to_string(getMaximum());
+                value = std::to_string(getMaximum());
             else if (property == "Value")
-                value = to_string(getValue());
+                value = std::to_string(getValue());
             else if (property == "VerticalScroll")
                 value = m_VerticalScroll ? "true" : "false";
             else // The property didn't match

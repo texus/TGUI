@@ -715,15 +715,15 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "TextColor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
             else if (property == "TextSize")
-                value = to_string(getTextSize());
+                value = std::to_string(getTextSize());
             else if (property == "TabHeight")
-                value = to_string(getTabHeight());
+                value = std::to_string(getTabHeight());
             else if (property == "MaximumTabWidth")
-                value = to_string(getMaximumTabWidth());
+                value = std::to_string(getMaximumTabWidth());
             else if (property == "DistanceToSide")
-                value = to_string(getDistanceToSide());
+                value = std::to_string(getDistanceToSide());
             else // The property didn't match
                 return false;
         }
