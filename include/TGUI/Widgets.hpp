@@ -418,9 +418,6 @@ namespace tgui
         // This is set to true for widgets that store other widgets inside them
         bool m_ContainerWidget;
 
-        // Instead of creating a new widget every time, one callback widget is always reused
-        Callback m_Callback;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

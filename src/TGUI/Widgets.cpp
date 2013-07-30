@@ -44,8 +44,7 @@ namespace tgui
     m_AllowFocus     (false),
     m_AnimatedWidget (false),
     m_DraggableWidget(false),
-    m_ContainerWidget(false),
-    m_Callback       ()
+    m_ContainerWidget(false)
     {
         m_Callback.widget = this;
         m_Callback.widgetType = Type_Unknown;
@@ -70,8 +69,7 @@ namespace tgui
     m_AllowFocus     (copy.m_AllowFocus),
     m_AnimatedWidget (copy.m_AnimatedWidget),
     m_DraggableWidget(copy.m_DraggableWidget),
-    m_ContainerWidget(copy.m_ContainerWidget),
-    m_Callback       (copy.m_Callback)
+    m_ContainerWidget(copy.m_ContainerWidget)
     {
         m_Callback.widget = this;
     }
@@ -324,17 +322,13 @@ namespace tgui
 
     void Widget::addCallback()
     {
-        // Get the list of callback functions
-        std::list<CallbackFunction>& functions = m_CallbackFunctions[m_Callback.trigger];
-
         // Loop through all callback functions
-        for (std::list<CallbackFunction>::const_iterator it = functions.begin(); it != functions.end(); ++it)
+        auto& functions = m_CallbackFunctions[m_Callback.trigger];
+        for (auto func = functions.cbegin(); func != functions.cend(); ++func)
         {
             // Pass the callback to the correct place
-            if (it->simpleFunction != nullptr)
-                it->simpleFunction();
-            else if (it->extendedFunction != nullptr)
-                it->extendedFunction(m_Callback);
+            if (*func != nullptr)
+                (*func)();
             else
                 m_Parent->addChildCallback(m_Callback);
         }
