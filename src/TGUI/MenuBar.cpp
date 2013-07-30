@@ -540,6 +540,14 @@ namespace tgui
                         m_Callback.index = m_VisibleMenu;
                         addCallback();
                     }
+
+                    if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                    {
+                        m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
+                        m_Menus[m_VisibleMenu].selectedMenuItem = -1;
+                    }
+
+                    m_VisibleMenu = -1;
                 }
             }
         }
