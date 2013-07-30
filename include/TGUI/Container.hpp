@@ -348,7 +348,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Used internally to get the size of a container.
+        /// \brief Returns the size of the container.
+        ///
+        /// This function will be able to return the size of the container, whether it is a widget like ChildWindow,
+        /// or the gui itself.
+        ///
+        /// \return Size of the container.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Vector2f getDisplaySize() = 0;
 
