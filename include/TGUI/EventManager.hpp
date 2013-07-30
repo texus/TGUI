@@ -51,7 +51,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // When this function is called then all the widgets receive the event (if there are widgets).
-        // The function returns false when the event is consumed and true when the event was ignored by all widgets.
+        // The function returns true when the event is consumed and false when the event was ignored by all widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool handleEvent(sf::Event& event);
 
