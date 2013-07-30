@@ -106,12 +106,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This function currently does nothing.
+        /// \brief Changes the size of the grid.
         ///
-        /// \param width   Currently ignored
-        /// \param height  Currently ignored
+        /// \param width   Width of the grid
+        /// \param height  Height of the grid
         ///
-        /// It is not yet possible to change the size directly.
+        /// Widgets in the grid will be repositionned to fill in the best way the available space of the grid.
+        /// If the size is too small to have all Widgets correctly placed, the size will be ignored and the grid auto-sized until
+        /// some Widgets are removed of the grid and the size was become valid again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
@@ -224,6 +226,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the minimum size required by the grid to display correctly all widgets.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Vector2f getMinSize();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Reposition all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updatePositionsOfAllWidgets();
@@ -258,7 +266,8 @@ namespace tgui
         std::vector<unsigned int> m_RowHeight;
         std::vector<unsigned int> m_ColumnWidth;
 
-        Vector2f  m_Size;
+        Vector2f m_Size; // Real (optimal) size of the grid
+        Vector2f m_IntendedSize; // Intended size that the grid should have if it is possible
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
