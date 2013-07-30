@@ -107,7 +107,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+                setDistanceToSide(static_cast<unsigned int>(std::stoi(value)));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MenuBar in " + configFileFilename + ".");
@@ -540,6 +540,14 @@ namespace tgui
                         m_Callback.index = m_VisibleMenu;
                         addCallback();
                     }
+
+                    if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                    {
+                        m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
+                        m_Menus[m_VisibleMenu].selectedMenuItem = -1;
+                    }
+
+                    m_VisibleMenu = -1;
                 }
             }
         }
@@ -636,6 +644,86 @@ namespace tgui
 
             m_VisibleMenu = -1;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "BackgroundColor")
+            {
+                setBackgroundColor(extractColor(value));
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "SelectedBackgroundColor")
+            {
+                setSelectedBackgroundColor(extractColor(value));
+            }
+            else if (property == "SelectedTextColor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(std::stoi(value));
+            }
+            else if (property == "DistanceToSide")
+            {
+                setDistanceToSide(std::stoi(value));
+            }
+            else if (property == "MinimumSubMenuWidth")
+            {
+                setMinimumSubMenuWidth(std::stoi(value));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Height")
+                value = std::to_string(getSize().y);
+            else if (property == "BackgroundColor")
+                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            else if (property == "TextColor")
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            else if (property == "SelectedBackgroundColor")
+                value = "(" + std::to_string(int(getSelectedBackgroundColor().r)) + "," + std::to_string(int(getSelectedBackgroundColor().g))
+                        + "," + std::to_string(int(getSelectedBackgroundColor().b)) + "," + std::to_string(int(getSelectedBackgroundColor().a)) + ")";
+            else if (property == "SelectedTextColor")
+                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
+                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+            else if (property == "TextSize")
+                value = std::to_string(getTextSize());
+            else if (property == "DistanceToSide")
+                value = std::to_string(getDistanceToSide());
+            else if (property == "MinimumSubMenuWidth")
+                value = std::to_string(getMinimumSubMenuWidth());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

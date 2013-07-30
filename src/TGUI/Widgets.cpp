@@ -44,8 +44,7 @@ namespace tgui
     m_AllowFocus     (false),
     m_AnimatedWidget (false),
     m_DraggableWidget(false),
-    m_ContainerWidget(false),
-    m_Callback       ()
+    m_ContainerWidget(false)
     {
         m_Callback.widget = this;
         m_Callback.widgetType = Type_Unknown;
@@ -70,8 +69,7 @@ namespace tgui
     m_AllowFocus     (copy.m_AllowFocus),
     m_AnimatedWidget (copy.m_AnimatedWidget),
     m_DraggableWidget(copy.m_DraggableWidget),
-    m_ContainerWidget(copy.m_ContainerWidget),
-    m_Callback       (copy.m_Callback)
+    m_ContainerWidget(copy.m_ContainerWidget)
     {
         m_Callback.widget = this;
     }
@@ -324,17 +322,13 @@ namespace tgui
 
     void Widget::addCallback()
     {
-        // Get the list of callback functions
-        std::list<CallbackFunction>& functions = m_CallbackFunctions[m_Callback.trigger];
-
         // Loop through all callback functions
-        for (std::list<CallbackFunction>::const_iterator it = functions.begin(); it != functions.end(); ++it)
+        auto& functions = m_CallbackFunctions[m_Callback.trigger];
+        for (auto func = functions.cbegin(); func != functions.cend(); ++func)
         {
             // Pass the callback to the correct place
-            if (it->simpleFunction != nullptr)
-                it->simpleFunction();
-            else if (it->extendedFunction != nullptr)
-                it->extendedFunction(m_Callback);
+            if (*func != nullptr)
+                (*func)();
             else
                 m_Parent->addChildCallback(m_Callback);
         }
@@ -398,7 +392,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseWheelMoved(int)
+    void Widget::mouseWheelMoved(int, int, int)
     {
     }
 
@@ -439,6 +433,80 @@ namespace tgui
     void Widget::mouseNoLongerDown()
     {
         m_MouseDown = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::setProperty(const std::string& property, const std::string& value)
+    {
+        if (property == "Left")
+        {
+            setPosition(std::stof(value), getPosition().y);
+        }
+        else if (property == "Top")
+        {
+            setPosition(getPosition().x, std::stof(value));
+        }
+        else if (property == "Width")
+        {
+            setSize(std::stof(value), getSize().y);
+        }
+        else if (property == "Height")
+        {
+            setSize(getSize().x, std::stof(value));
+        }
+        else if (property == "Visible")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Visible = true;
+            else if ((value == "false") || (value == "False"))
+                m_Visible = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Visible' property.");
+        }
+        else if (property == "Enabled")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Enabled = true;
+            else if ((value == "false") || (value == "False"))
+                m_Enabled = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Enabled' property.");
+        }
+        else if (property == "Transparency")
+        {
+            setTransparency(static_cast<char>(std::stoi(value)));
+        }
+        else // The property didn't match
+            return false;
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::getProperty(const std::string& property, std::string& value)
+    {
+        if (property == "Left")
+            value = std::to_string(getPosition().x);
+        else if (property == "Top")
+            value = std::to_string(getPosition().y);
+        else if (property == "Width")
+            value = std::to_string(getSize().x);
+        else if (property == "Height")
+            value = std::to_string(getSize().y);
+        else if (property == "Visible")
+            value = m_Visible ? "true" : "false";
+        else if (property == "Enabled")
+            value = m_Enabled ? "true" : "false";
+        else if (property == "Transparency")
+            value = std::to_string(int(getTransparency()));
+        else // The property didn't match
+            return false;
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

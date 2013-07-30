@@ -160,7 +160,7 @@ namespace tgui
 
             // Replace the brackets with the factor
             expression.erase(openingBracketPos, closingBracketPos - openingBracketPos + 1);
-            expression.insert(openingBracketPos, to_string(factor));
+            expression.insert(openingBracketPos, std::to_string(factor));
 
             // Find the next opening bracket
             openingBracketPos = expression.rfind('(');
@@ -359,7 +359,7 @@ namespace tgui
             return evaluate(expression);
         }
         else
-            return static_cast<float>(atof(expression.c_str()));
+            return std::stof(expression);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +391,7 @@ namespace tgui
             return static_cast<int>(evaluate(expression) + 0.5f);
         }
         else
-            return atoi(expression.c_str());
+            return std::stoi(expression);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -424,7 +424,7 @@ namespace tgui
             else if (line.substr(0, 11).compare("callbackid=") == 0) \
             { \
                 line.erase(0, 11); \
-                name->setCallbackId(readInt(line.c_str())); \
+                name->setCallbackId(readInt(line)); \
             }
 
         #define CHECK_FOR_QUOTES \
@@ -452,7 +452,7 @@ namespace tgui
                 boolean = false; \
             else \
             { \
-                if (atoi(line.c_str())) \
+                if (std::stoi(line)) \
                     boolean = true; \
                 else \
                     boolean = false; \
@@ -514,7 +514,7 @@ namespace tgui
         std::ifstream m_File;
 
         // Open the file
-        m_File.open(filename.c_str(), std::ifstream::in);
+        m_File.open(filename, std::ifstream::in);
 
         // Check if the file was not opened
         if (m_File.is_open() == false)
@@ -893,7 +893,7 @@ namespace tgui
                         {
                             // Remove the first part of the line
                             line.erase(0, 10);
-                            tab->setTabHeight(atoi(line.c_str()));
+                            tab->setTabHeight(std::stoi(line));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -901,12 +901,12 @@ namespace tgui
                         }
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
-                            tab->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            tab->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 15).compare("distancetoside=") == 0)
                         {
                             line.erase(0, 15);
-                            tab->setDistanceToSide(atoi(line.c_str()));
+                            tab->setDistanceToSide(std::stoi(line));
                         }
                         else if (line.substr(0, 4).compare("tab=") == 0)
                         {
@@ -939,7 +939,7 @@ namespace tgui
                                 else // There were no quotes
                                 {
                                     // Select the item
-                                    tab->select(atoi(line.c_str()));
+                                    tab->select(std::stoi(line));
                                 }
                             }
                         }
@@ -955,7 +955,7 @@ namespace tgui
                         else if (line.substr(0, 11).compare("callbackid=") == 0)
                         {
                             line.erase(0, 11);
-                            tab->setCallbackId(readInt(line.c_str()));
+                            tab->setCallbackId(readInt(line));
                         }
                         else // The line was wrong
                             failed = true;
@@ -1056,7 +1056,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            label->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            label->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -1107,7 +1107,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            button->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            button->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -1141,15 +1141,15 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
-                            slider->setValue(atoi(line.erase(0, 6).c_str()));
+                            slider->setValue(std::stoi(line.erase(0, 6)));
                         }
                         else if (line.substr(0, 8).compare("minimum=") == 0)
                         {
-                            slider->setMinimum(atoi(line.erase(0, 8).c_str()));
+                            slider->setMinimum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
-                            slider->setMaximum(atoi(line.erase(0, 8).c_str()));
+                            slider->setMaximum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 15).compare("verticalscroll=") == 0)
                         {
@@ -1218,7 +1218,7 @@ namespace tgui
                             line.erase(0, 11);
 
                             // Set the item height
-                            listBox->setItemHeight(atoi(line.c_str()));
+                            listBox->setItemHeight(std::stoi(line));
                         }
                         else if (line.substr(0, 20).compare("scrollbarconfigfile=") == 0)
                         {
@@ -1269,7 +1269,7 @@ namespace tgui
                             line.erase(0, 13);
 
                             // Set the maximum items
-                            listBox->setMaximumItems(atoi(line.c_str()));
+                            listBox->setMaximumItems(std::stoi(line));
                         }
                         else if (line.substr(0, 5).compare("item=") == 0)
                         {
@@ -1302,7 +1302,7 @@ namespace tgui
                                 else // There were no quotes
                                 {
                                     // Select the item
-                                    listBox->setSelectedItem(atoi(line.c_str()));
+                                    listBox->setSelectedItem(std::stoi(line));
                                 }
                             }
                             else
@@ -1359,7 +1359,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            editBox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            editBox->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -1404,7 +1404,7 @@ namespace tgui
                             line.erase(0, 20);
 
                             // Read the selection point width (0 and thus no selection point when it goes wrong)
-                            editBox->setSelectionPointWidth(atoi(line.c_str()));
+                            editBox->setSelectionPointWidth(std::stoi(line));
                         }
                         else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
                         {
@@ -1412,7 +1412,7 @@ namespace tgui
                             line.erase(0, 18);
 
                             // Read the maximum characters (0 and thus no limit when it goes wrong)
-                            editBox->setMaximumCharacters(atoi(line.c_str()));
+                            editBox->setMaximumCharacters(std::stoi(line));
                         }
                         else CHECK_SHARED_PROPERTIES(editBox)
                         else // The line was wrong
@@ -1476,7 +1476,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            textBox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            textBox->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 16).compare("backgroundcolor=") == 0)
                         {
@@ -1514,7 +1514,7 @@ namespace tgui
                             line.erase(0, 20);
 
                             // Read the selection point width (0 and thus no selection point when it goes wrong)
-                            textBox->setSelectionPointWidth(atoi(line.c_str()));
+                            textBox->setSelectionPointWidth(std::stoi(line));
                         }
                         else if (line.substr(0, 18).compare("maximumcharacters=") == 0)
                         {
@@ -1522,7 +1522,7 @@ namespace tgui
                             line.erase(0, 18);
 
                             // Read the maximum characters (0 and thus no limit when it goes wrong)
-                            textBox->setMaximumCharacters(atoi(line.c_str()));
+                            textBox->setMaximumCharacters(std::stoi(line));
                         }
                         else CHECK_SHARED_PROPERTIES(textBox)
                         else // The line was wrong
@@ -1578,7 +1578,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            checkbox->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            checkbox->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -1659,7 +1659,7 @@ namespace tgui
                             line.erase(0, 15);
 
                             // Set the nr of items to display
-                            comboBox->setItemsToDisplay(atoi(line.c_str()));
+                            comboBox->setItemsToDisplay(std::stoi(line));
                         }
                         else if (line.substr(0, 5).compare("item=") == 0)
                         {
@@ -1692,7 +1692,7 @@ namespace tgui
                                 else // There were no quotes
                                 {
                                     // Select the item
-                                    comboBox->setSelectedItem(atoi(line.c_str()));
+                                    comboBox->setSelectedItem(std::stoi(line));
                                 }
                             }
                             else
@@ -1796,15 +1796,15 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
-                            scrollbar->setValue(atoi(line.erase(0, 6).c_str()));
+                            scrollbar->setValue(std::stoi(line.erase(0, 6)));
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
-                            scrollbar->setMaximum(atoi(line.erase(0, 8).c_str()));
+                            scrollbar->setMaximum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 9).compare("lowvalue=") == 0)
                         {
-                            scrollbar->setLowValue(atoi(line.erase(0, 9).c_str()));
+                            scrollbar->setLowValue(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 15).compare("verticalscroll=") == 0)
                         {
@@ -1844,15 +1844,15 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
-                            loadingBar->setValue(atoi(line.erase(0, 6).c_str()));
+                            loadingBar->setValue(std::stoi(line.erase(0, 6)));
                         }
                         else if (line.substr(0, 8).compare("minimum=") == 0)
                         {
-                            loadingBar->setMinimum(atoi(line.erase(0, 8).c_str()));
+                            loadingBar->setMinimum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
-                            loadingBar->setMaximum(atoi(line.erase(0, 8).c_str()));
+                            loadingBar->setMaximum(std::stoi(line.erase(0, 8)));
                         }
                         else CHECK_SHARED_PROPERTIES(loadingBar)
                         else // The line was wrong
@@ -1881,15 +1881,15 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
-                            spinButton->setValue(atoi(line.erase(0, 6).c_str()));
+                            spinButton->setValue(std::stoi(line.erase(0, 6)));
                         }
                         else if (line.substr(0, 8).compare("minimum=") == 0)
                         {
-                            spinButton->setMinimum(atoi(line.erase(0, 8).c_str()));
+                            spinButton->setMinimum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
-                            spinButton->setMaximum(atoi(line.erase(0, 8).c_str()));
+                            spinButton->setMaximum(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 15).compare("verticalscroll=") == 0)
                         {
@@ -1956,7 +1956,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("textsize=") == 0)
                         {
                             // Change the text size
-                            radioButton->setTextSize(atoi(line.erase(0, 9).c_str()));
+                            radioButton->setTextSize(std::stoi(line.erase(0, 9)));
                         }
                         else if (line.substr(0, 10).compare("textcolor=") == 0)
                         {
@@ -2034,11 +2034,11 @@ namespace tgui
                         }
                         else if (line.substr(0, 13).compare("transparency=") == 0)
                         {
-                            child->setTransparency(static_cast<unsigned char>(atoi(line.erase(0, 13).c_str())));
+                            child->setTransparency(static_cast<unsigned char>(std::stoi(line.erase(0, 13))));
                         }
                         else if (line.substr(0, 15).compare("titlebarheight=") == 0)
                         {
-                            child->setTitleBarHeight(atoi(line.erase(0, 15).c_str()));
+                            child->setTitleBarHeight(std::stoi(line.erase(0, 15)));
                         }
                         else
                         {
@@ -2089,11 +2089,11 @@ namespace tgui
                         }
                         else if (line.substr(0, 5).compare("rows=") == 0)
                         {
-                            spriteSheet->setRows(atoi(line.erase(0, 5).c_str()));
+                            spriteSheet->setRows(std::stoi(line.erase(0, 5)));
                         }
                         else if (line.substr(0, 8).compare("columns=") == 0)
                         {
-                            spriteSheet->setColumns(atoi(line.erase(0, 8).c_str()));
+                            spriteSheet->setColumns(std::stoi(line.erase(0, 8)));
                         }
                         else if (line.substr(0, 6).compare("cells=") == 0)
                         {
@@ -2144,7 +2144,7 @@ namespace tgui
                                     if (commaPos != std::string::npos)
                                     {
                                         // Get the frame duration
-                                        int duration = atoi(line.substr(commaPos+1).c_str());
+                                        int duration = std::stoi(line.substr(commaPos+1));
                                         line.erase(commaPos);
 
                                         // The filename must start and end with quotes
@@ -2188,7 +2188,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 13).compare("currentframe=") == 0)
                         {
-                            animatedPicture->setFrame(static_cast<unsigned int>(atoi(line.erase(0, 13).c_str())));
+                            animatedPicture->setFrame(static_cast<unsigned int>(std::stoi(line.erase(0, 13))));
                         }
                         else CHECK_SHARED_PROPERTIES(animatedPicture)
                         else // The line was wrong

@@ -705,7 +705,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelMoved(int delta)
+    void Slider::mouseWheelMoved(int delta, int, int)
     {
         if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
             setValue(m_Minimum);
@@ -719,6 +719,69 @@ namespace tgui
     {
         // A slider can't be focused (yet)
         m_Parent->unfocusWidget(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Minimum")
+            {
+                setMinimum(std::stoi(value));
+            }
+            else if (property == "Maximum")
+            {
+                setMaximum(std::stoi(value));
+            }
+            else if (property == "Value")
+            {
+                setValue(std::stoi(value));
+            }
+            else if (property == "VerticalScroll")
+            {
+                if ((value == "true") || (value == "True"))
+                    setVerticalScroll(true);
+                else if ((value == "false") || (value == "False"))
+                    setVerticalScroll(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Minimum")
+                value = std::to_string(getMinimum());
+            else if (property == "Maximum")
+                value = std::to_string(getMaximum());
+            else if (property == "Value")
+                value = std::to_string(getValue());
+            else if (property == "VerticalScroll")
+                value = m_VerticalScroll ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

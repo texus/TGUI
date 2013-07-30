@@ -828,6 +828,45 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Scrollbar::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Slider::setProperty(property, value))
+        {
+            if (property == "AutoHide")
+            {
+                if ((value == "true") || (value == "True"))
+                    setAutoHide(true);
+                else if ((value == "false") || (value == "False"))
+                    setAutoHide(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Slider::getProperty(property, value))
+        {
+            if (property == "AutoHide")
+                value = m_AutoHide ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // If the scrollbar wasn't loaded then don't draw it

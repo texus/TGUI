@@ -252,7 +252,7 @@ namespace tgui
             }
             else if (property == "selectionpointwidth")
             {
-                m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(atof(value.c_str())), m_SelectionPoint.getSize().y));
+                m_SelectionPoint.setSize(sf::Vector2f(std::stof(value), m_SelectionPoint.getSize().y));
             }
             else if (property == "borders")
             {
@@ -1419,7 +1419,31 @@ namespace tgui
         {
             if ((key < '0') || (key > '9'))
             {
-                if (((key != '-') && (key != '+')) || ((m_SelStart != 0) && (m_SelEnd != 0)))
+                bool characterAccepted = false;
+                if ((m_SelStart == 0) || (m_SelEnd == 0))
+                {
+                    if ((key == '-') || (key == '+'))
+                    {
+                        if (!m_Text.isEmpty())
+                        {
+                            if ((m_Text[0] != '-') && (m_Text[0] != '+'))
+                            {
+                                // You are allowed to add a + or - at the beginning of the string
+                                characterAccepted = true;
+                            }
+                            else // You can't have multiple + and - characters after each other
+                                return;
+                        }
+                        else // This is the first character, so just add the + or -
+                            characterAccepted = true;
+                    }
+                    else // Only + and - symbols are allowed
+                        return;
+                }
+                else // + and - symbols can only be placed at the beginning
+                    return;
+
+                if (!characterAccepted)
                     return;
             }
         }
@@ -1489,6 +1513,132 @@ namespace tgui
             setSelectionPointPosition(m_SelEnd);
 
         Widget::widgetUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool EditBox::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(std::stoi(value));
+            }
+            else if (property == "PasswordCharacter")
+            {
+                if (value.length() == 1)
+                    setPasswordCharacter(value[0]);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+            }
+            else if (property == "MaximumCharacters")
+            {
+                setMaximumCharacters(std::stoi(value));
+            }
+            else if (property == "Borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextColor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextBackgroundColor")
+            {
+                setSelectedTextBackgroundColor(extractColor(value));
+            }
+            else if (property == "SelectionPointColor")
+            {
+                setSelectionPointColor(extractColor(value));
+            }
+            else if (property == "LimitTextWidth")
+            {
+                if ((value == "true") || (value == "True"))
+                    limitTextWidth(true);
+                else if ((value == "false") || (value == "False"))
+                    limitTextWidth(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
+            }
+            else if (property == "SelectionPointWidth")
+            {
+                setSelectionPointWidth(std::stoi(value));
+            }
+            else if (property == "NumbersOnly")
+            {
+                if ((value == "true") || (value == "True"))
+                    setNumbersOnly(true);
+                else if ((value == "false") || (value == "False"))
+                    setNumbersOnly(false);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'NumbersOnly' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool EditBox::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextSize")
+                value = std::to_string(getTextSize());
+            else if (property == "PasswordCharacter")
+                value = getPasswordCharacter();
+            else if (property == "MaximumCharacters")
+                value = std::to_string(getMaximumCharacters());
+            else if (property == "Borders")
+                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+            else if (property == "TextColor")
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            else if (property == "SelectedTextColor")
+                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
+                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+            else if (property == "SelectedTextBackgroundColor")
+                value = "(" + std::to_string(int(getSelectedTextBackgroundColor().r)) + "," + std::to_string(int(getSelectedTextBackgroundColor().g))
+                        + "," + std::to_string(int(getSelectedTextBackgroundColor().b)) + "," + std::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
+            else if (property == "SelectionPointColor")
+                value = "(" + std::to_string(int(getSelectionPointColor().r)) + "," + std::to_string(int(getSelectionPointColor().g))
+                        + "," + std::to_string(int(getSelectionPointColor().b)) + "," + std::to_string(int(getSelectionPointColor().a)) + ")";
+            else if (property == "LimitTextWidth")
+                value = m_LimitTextWidth ? "true" : "false";
+            else if (property == "SelectionPointWidth")
+                value = std::to_string(getSelectionPointWidth());
+            else if (property == "NumbersOnly")
+                value = m_NumbersOnly ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

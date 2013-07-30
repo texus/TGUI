@@ -355,7 +355,7 @@ namespace tgui
         ///
         /// \param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
         ///                 It will be fully kept on left, right and top.
-        ///                 At the bottom of the parent only the titlebar will be kept inside.
+        ///                 At the bottom of the parent only the title bar will be kept inside.
         ///                 It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +367,7 @@ namespace tgui
         ///
         /// \return  When it's set to true, the child window will always be kept automatically inside its parent.
         ///          It will be fully kept on left, right and top.
-        ///          At the bottom of the parent only the titlebar will be kept inside.
+        ///          At the bottom of the parent only the title bar will be kept inside.
         ///          It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,6 +395,20 @@ namespace tgui
         // Used to communicate with EventManager.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y);
+        virtual void leftMousePressed(float x, float y);
+        virtual void leftMouseReleased(float x, float y);
+        virtual void mouseMoved(float x, float y);
+        virtual void mouseWheelMoved(int delta, int x, int y);
+        virtual void mouseNoLongerDown();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
+        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool getProperty(const std::string& property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,12 +418,6 @@ namespace tgui
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(tgui::Container *const container);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Send the event to all underlying widgets.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void handleEvent(sf::Event& event, float mouseX = 0, float mouseY = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,11 +434,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChildWindowCallbacks
         {
-            Closed = WidgetCallbacksCount * 1,                      ///< Child window was closed
-            Moved = WidgetCallbacksCount * 2,                       ///< Child window was moved
-//            Resized = WidgetCallbacksCount * 4,
-            AllChildWindowCallbacks = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in ChildWindow and its base classes
-            ChildWindowCallbacksCount = WidgetCallbacksCount * 8
+            LeftMousePressed = WidgetCallbacksCount * 1,             ///< The left mouse button was pressed (child window was thus brough to front)
+            Closed = WidgetCallbacksCount * 2,                       ///< Child window was closed
+            Moved = WidgetCallbacksCount * 4,                        ///< Child window was moved
+//            Resized = WidgetCallbacksCount * 8,
+            AllChildWindowCallbacks = WidgetCallbacksCount * 16 - 1, ///< All triggers defined in ChildWindow and its base classes
+            ChildWindowCallbacksCount = WidgetCallbacksCount * 16
         };
 
 

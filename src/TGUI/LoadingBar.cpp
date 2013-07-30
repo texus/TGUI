@@ -522,6 +522,76 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool LoadingBar::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Minimum")
+            {
+                setMinimum(std::stoi(value));
+            }
+            else if (property == "Maximum")
+            {
+                setMaximum(std::stoi(value));
+            }
+            else if (property == "Value")
+            {
+                setValue(std::stoi(value));
+            }
+            else if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(std::stoi(value));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool LoadingBar::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Minimum")
+                value = std::to_string(getMinimum());
+            else if (property == "Maximum")
+                value = std::to_string(getMaximum());
+            else if (property == "Value")
+                value = std::to_string(getValue());
+            else if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextColor")
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            else if (property == "TextSize")
+                value = std::to_string(getTextSize());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void LoadingBar::recalculateSize()
     {
         // Don't calculate anything when the loading bar wasn't loaded correctly

@@ -52,7 +52,7 @@ namespace tgui
             m_File.close();
 
         // Open the file
-        m_File.open(filename.c_str(), std::ifstream::in);
+        m_File.open(filename, std::ifstream::in);
 
         // Check if the file was opened
         if (m_File.is_open())
@@ -113,7 +113,7 @@ namespace tgui
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
                     error = true;
                 }
 
@@ -122,13 +122,13 @@ namespace tgui
                     ++c;
                 else
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
                     error = true;
                 }
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
                     error = true;
                 }
 
@@ -138,6 +138,13 @@ namespace tgui
                 properties.push_back(property);
                 values.push_back(value);
             }
+        }
+
+        // Output an error when the section wasn't found
+        if (!sectionFound)
+        {
+            TGUI_OUTPUT("TGUI error: Section '" + section + "' was not found in the config file.");
+            error = true;
         }
 
         // The end of the file was reached
@@ -182,7 +189,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the left value and delete this part of the string
-                    rect.left = atoi(value.substr(0, commaPos).c_str());
+                    rect.left = std::stoi(value.substr(0, commaPos));
                     value.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -190,7 +197,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the top value and delete this part of the string
-                        rect.top = atoi(value.substr(0, commaPos).c_str());
+                        rect.top = std::stoi(value.substr(0, commaPos));
                         value.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -198,11 +205,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the width value and delete this part of the string
-                            rect.width = atoi(value.substr(0, commaPos).c_str());
+                            rect.width = std::stoi(value.substr(0, commaPos));
                             value.erase(0, commaPos+1);
 
                             // Get the height value
-                            rect.height = atoi(value.c_str());
+                            rect.height = std::stoi(value);
 
                             return true;
                         }

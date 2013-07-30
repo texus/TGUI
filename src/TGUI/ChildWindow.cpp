@@ -257,7 +257,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+                setDistanceToSide(static_cast<unsigned int>(std::stoi(value)));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
@@ -605,144 +605,312 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::leftMousePressed(float x, float y)
+    {
+        // Move the childwindow to the front
+        m_Parent->moveWidgetToFront(this);
+
+        // Add the callback (if the user requested it)
+        if (m_CallbackFunctions[LeftMousePressed].empty() == false)
+        {
+            m_Callback.trigger = LeftMousePressed;
+            m_Callback.mouse.x = x - getPosition().x;
+            m_Callback.mouse.y = y - getPosition().y;
+            addCallback();
+        }
+
+        // Check if the mouse is on top of the title bar
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
+        {
+            // Get the current position
+            Vector2f position = getPosition();
+
+            // Temporary set the close button to the correct position
+            m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
+
+            // Send the mouse press event to the close button
+            if (m_CloseButton->mouseOnWidget(x, y))
+                m_CloseButton->leftMousePressed(x, y);
+            else
+            {
+                // The mouse went down on the title bar
+                m_MouseDown = true;
+
+                // Remember where we are dragging the title bar
+                m_DraggingPosition.x = x - position.x;
+                m_DraggingPosition.y = y - position.y;
+            }
+
+            // Reset the position of the button
+            m_CloseButton->setPosition(0, 0);
+            return;
+        }
+        else // The mouse is not on top of the title bar
+        {
+            // When the mouse is not on the title bar, the mouse can't be on the close button
+            if (m_CloseButton->m_MouseHover)
+                m_CloseButton->mouseNotOnWidget();
+
+            // Check if the mouse is on top of the borders
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight)).contains(x, y))
+            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(x, y) == false))
+            {
+                // Don't send the event to the widgets
+                return;
+            }
+        }
+
+        ContainerWidget::leftMousePressed(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::leftMouseReleased(float x , float y)
+    {
+        // Check if the mouse is on top of the title bar
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
+        {
+            // Get the current position
+            Vector2f position = getPosition();
+
+            // Temporary set the close button to the correct position
+            m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
+
+            m_MouseDown = false;
+
+            // Check if the close button was clicked
+            if (m_CloseButton->m_MouseDown == true)
+            {
+                m_CloseButton->m_MouseDown = false;
+
+                // Check if the mouse is still on the close button
+                if (m_CloseButton->mouseOnWidget(x, y))
+                {
+                    // If a callback was requested then send it
+                    if (m_CallbackFunctions[Closed].empty() == false)
+                    {
+                        m_Callback.trigger = Closed;
+                        addCallback();
+                    }
+                    else // The user won't stop the closing, so destroy the window
+                    {
+                        destroy();
+                        return;
+                    }
+                }
+            }
+
+            // Tell the widgets that the mouse is no longer down
+            m_EventManager.mouseNoLongerDown();
+
+            // Reset the position of the button
+            m_CloseButton->setPosition(0, 0);
+            return;
+        }
+        else // The mouse is not on top of the title bar
+        {
+            // When the mouse is not on the title bar, the mouse can't be on the close button
+            if (m_CloseButton->m_MouseHover)
+                m_CloseButton->mouseNotOnWidget();
+
+            // Change the mouse down flag
+            m_MouseDown = false;
+            m_CloseButton->mouseNoLongerDown();
+
+            // Check if the mouse is on top of the borders
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight)).contains(x, y))
+            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(x, y) == false))
+            {
+                // Tell the widgets about that the mouse was released
+                m_EventManager.mouseNoLongerDown();
+
+                // Don't send the event to the widgets
+                return;
+            }
+        }
+
+        ContainerWidget::leftMouseReleased(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseMoved(float x, float y)
+    {
+        m_MouseHover = true;
+
+        // Check if you are dragging the child window
+        if (m_MouseDown == true)
+        {
+            // Move the child window
+            Vector2f position = getPosition();
+            setPosition(position.x + (x - position.x - m_DraggingPosition.x), position.y + (y - position.y - m_DraggingPosition.y));
+
+            // Add the callback (if the user requested it)
+            if (m_CallbackFunctions[Moved].empty() == false)
+            {
+                m_Callback.trigger = Moved;
+                m_Callback.position = getPosition();
+                addCallback();
+            }
+        }
+
+        // Check if the mouse is on top of the title bar
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
+        {
+            // Get the current position
+            Vector2f position = getPosition();
+
+            // Temporary set the close button to the correct position
+            m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
+
+            // Send the hover event to the close button
+            if (m_CloseButton->mouseOnWidget(x, y))
+                m_CloseButton->mouseMoved(x, y);
+
+            // Reset the position of the button
+            m_CloseButton->setPosition(0, 0);
+            return;
+        }
+        else // The mouse is not on top of the title bar
+        {
+            // When the mouse is not on the title bar, the mouse can't be on the close button
+            if (m_CloseButton->m_MouseHover)
+                m_CloseButton->mouseNotOnWidget();
+
+            // Check if the mouse is on top of the borders
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight)).contains(x, y))
+            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(x, y) == false))
+            {
+                // Don't send the event to the widgets
+                return;
+            }
+        }
+
+        ContainerWidget::mouseMoved(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseWheelMoved(int delta, int x, int y)
+    {
+        ContainerWidget::mouseWheelMoved(delta, x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseNoLongerDown()
+    {
+        ContainerWidget::mouseNoLongerDown();
+        m_CloseButton->mouseNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!ContainerWidget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "TitleBarHeight")
+            {
+                setTitleBarHeight(std::stoi(value));
+            }
+            else if (property == "BackgroundColor")
+            {
+                setBackgroundColor(extractColor(value));
+            }
+            else if (property == "Title")
+            {
+                setTitle(value);
+            }
+            else if (property == "TitleColor")
+            {
+                setTitleColor(extractColor(value));
+            }
+            else if (property == "BorderColor")
+            {
+                setBorderColor(extractColor(value));
+            }
+            else if (property == "Borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+            }
+            else if (property == "DistanceToSide")
+            {
+                setDistanceToSide(std::stoi(value));
+            }
+            else if (property == "TitleAlignment")
+            {
+                if ((value == "left") || (value == "Left"))
+                    setTitleAlignment(TitleAlignmentLeft);
+                else if ((value == "centered") || (value == "Centered"))
+                    setTitleAlignment(TitleAlignmentCentered);
+                else if ((value == "right") || (value == "Right"))
+                    setTitleAlignment(TitleAlignmentRight);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'TitleAlignment' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::getProperty(const std::string& property, std::string& value)
+    {
+        if (!ContainerWidget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "TitleBarHeight")
+                value = std::to_string(getTitleBarHeight());
+            else if (property == "BackgroundColor")
+                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            else if (property == "Title")
+                value = getTitle().toAnsiString();
+            else if (property == "TitleColor")
+                value = "(" + std::to_string(int(getTitleColor().r)) + "," + std::to_string(int(getTitleColor().g)) + "," + std::to_string(int(getTitleColor().b)) + "," + std::to_string(int(getTitleColor().a)) + ")";
+            else if (property == "BorderColor")
+                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+            else if (property == "Borders")
+                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+            else if (property == "DistanceToSide")
+                value = std::to_string(getDistanceToSide());
+            else if (property == "TitleAlignment")
+            {
+                if (m_TitleAlignment == TitleAlignmentLeft)
+                    value = "left";
+                else if (m_TitleAlignment == TitleAlignmentCentered)
+                    value = "centered";
+                else if (m_TitleAlignment == TitleAlignmentRight)
+                    value = "right";
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::initialize(tgui::Container *const parent)
     {
         m_Parent = parent;
         setGlobalFont(m_Parent->getGlobalFont());
         m_TitleText.setFont(m_Parent->getGlobalFont());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::handleEvent(sf::Event& event, float mouseX, float mouseY)
-    {
-        // Don't continue when the child window has not been loaded yet
-        if (m_Loaded == false)
-            return;
-
-        // On mouse move, set the hover flag
-        if (event.type == sf::Event::MouseMoved)
-            m_MouseHover = true;
-
-        // Check if something has to be done differently with the event
-        if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
-        {
-            // Check if you are dragging the child window
-            if ((event.type == sf::Event::MouseMoved) && (m_MouseDown == true))
-            {
-                // Move the child window
-                Vector2f position = getPosition();
-                setPosition(position.x + (mouseX - position.x - m_DraggingPosition.x), position.y + (mouseY - position.y - m_DraggingPosition.y));
-
-                // Add the callback (if the user requested it)
-                if (m_CallbackFunctions[Moved].empty() == false)
-                {
-                    m_Callback.trigger = Moved;
-                    m_Callback.position = getPosition();
-                    addCallback();
-                }
-            }
-
-            // Move the childwindow to the front when clicking on it
-            if (event.type == sf::Event::MouseButtonPressed)
-            {
-                m_Parent->focusWidget(this);
-                m_Parent->moveWidgetToFront(this);
-            }
-
-            // Check if the mouse is on top of the title bar
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(mouseX, mouseY))
-            {
-                // Get the current position
-                Vector2f position = getPosition();
-
-                // Temporary set the close button to the correct position
-                m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
-
-                // Call the correct function of the button
-                if (event.type == sf::Event::MouseMoved)
-                {
-                    // Send the hover event to the close button
-                    if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
-                        m_CloseButton->mouseMoved(mouseX, mouseY);
-                }
-                else if (event.type == sf::Event::MouseButtonPressed)
-                {
-                    // Send the mouse press event to the close button
-                    if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
-                        m_CloseButton->leftMousePressed(mouseX, mouseY);
-                    else
-                    {
-                        // The mouse went down on the title bar
-                        m_MouseDown = true;
-
-                        // Remember where we are dragging the title bar
-                        m_DraggingPosition.x = mouseX - position.x;
-                        m_DraggingPosition.y = mouseY - position.y;
-                    }
-                }
-                else if (event.type == sf::Event::MouseButtonReleased)
-                {
-                    m_MouseDown = false;
-
-                    // Check if the close button was clicked
-                    if (m_CloseButton->m_MouseDown == true)
-                    {
-                        m_CloseButton->m_MouseDown = false;
-
-                        // Check if the mouse is still on the close button
-                        if (m_CloseButton->mouseOnWidget(mouseX, mouseY))
-                        {
-                            // If a callback was requested then send it
-                            if (m_CallbackFunctions[Closed].empty() == false)
-                            {
-                                m_Callback.trigger = Closed;
-                                addCallback();
-                            }
-                            else // The user won't stop the closing, so destroy the window
-                            {
-                                destroy();
-                                return;
-                            }
-                        }
-                    }
-
-                    // Tell the widgets that the mouse is no longer down
-                    m_EventManager.mouseNoLongerDown();
-                }
-
-                // Reset the position of the button
-                m_CloseButton->setPosition(0, 0);
-                return;
-            }
-            else // The mouse is not on top of the titlebar
-            {
-                // When the mouse is not on the titlebar, the mouse can't be on the close button
-                if (m_CloseButton->m_MouseHover)
-                    m_CloseButton->mouseNotOnWidget();
-
-                // When the mouse went up then change the mouse down flag
-                if (event.type == sf::Event::MouseButtonReleased)
-                {
-                    m_MouseDown = false;
-                    m_CloseButton->mouseNoLongerDown();
-                }
-
-                // Check if the mouse is on top of the borders
-                if ((getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight)).contains(mouseX, mouseY))
-                &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(mouseX, mouseY) == false))
-                {
-                    // If the mouse was released then tell the widgets about it
-                    if (event.type == sf::Event::MouseButtonReleased)
-                        m_EventManager.mouseNoLongerDown();
-
-                    // Don't send the event to the widgets
-                    return;
-                }
-            }
-        }
-
-        ContainerWidget::handleEvent(event, mouseX - m_LeftBorder, mouseY - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

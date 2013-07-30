@@ -1615,6 +1615,123 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::widgetUnfocused()
+    {
+        // If there is a selection then undo it now
+        if (m_SelChars)
+            setSelectionPointPosition(m_SelEnd);
+
+        Widget::widgetUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TextBox::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "ConfigFile")
+            {
+                load(value);
+            }
+            else if (property == "Text")
+            {
+                setText(value);
+            }
+            else if (property == "TextSize")
+            {
+                setTextSize(std::stoi(value));
+            }
+            else if (property == "MaximumCharacters")
+            {
+                setMaximumCharacters(std::stoi(value));
+            }
+            else if (property == "Borders")
+            {
+                Vector4u borders;
+                if (extractVector4u(value, borders))
+                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+            }
+            else if (property == "BackgroundColor")
+            {
+                setBackgroundColor(extractColor(value));
+            }
+            else if (property == "TextColor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextColor")
+            {
+                setSelectedTextColor(extractColor(value));
+            }
+            else if (property == "SelectedTextBackgroundColor")
+            {
+                setSelectedTextBackgroundColor(extractColor(value));
+            }
+            else if (property == "BorderColor")
+            {
+                setBorderColor(extractColor(value));
+            }
+            else if (property == "SelectionPointColor")
+            {
+                setSelectionPointColor(extractColor(value));
+            }
+            else if (property == "SelectionPointWidth")
+            {
+                setSelectionPointWidth(std::stoi(value));
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TextBox::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "ConfigFile")
+                value = getLoadedConfigFile();
+            else if (property == "Text")
+                value = getText().toAnsiString();
+            else if (property == "TextSize")
+                value = std::to_string(getTextSize());
+            else if (property == "MaximumCharacters")
+                value = std::to_string(getMaximumCharacters());
+            else if (property == "Borders")
+                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+            else if (property == "BackgroundColor")
+                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            else if (property == "TextColor")
+                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            else if (property == "SelectedTextColor")
+                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
+                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+            else if (property == "SelectedTextBackgroundColor")
+                value = "(" + std::to_string(int(getSelectedTextBackgroundColor().r)) + "," + std::to_string(int(getSelectedTextBackgroundColor().g))
+                        + "," + std::to_string(int(getSelectedTextBackgroundColor().b)) + "," + std::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
+            else if (property == "BorderColor")
+                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+            else if (property == "SelectionPointColor")
+                value = "(" + std::to_string(int(getSelectionPointColor().r)) + "," + std::to_string(int(getSelectionPointColor().g)) + "," + std::to_string(int(getSelectionPointColor().b)) + "," + std::to_string(int(getSelectionPointColor().a)) + ")";
+            else if (property == "SelectionPointWidth")
+                value = std::to_string(getSelectionPointWidth());
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int TextBox::findSelectionPointPosition(float posX, float posY)
     {
         // This code will crash when the text box is empty. We need to avoid this.
@@ -2156,17 +2273,6 @@ namespace tgui
                 }
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::widgetUnfocused()
-    {
-        // If there is a selection then undo it now
-        if (m_SelChars)
-            setSelectionPointPosition(m_SelEnd);
-
-        Widget::widgetUnfocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

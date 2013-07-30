@@ -60,7 +60,7 @@ void Property##property::addProperty(tgui::Gui& gui, unsigned int propertyNumber
     editBox->setBorders(6, 4, 6, 4); \
     editBox->setPosition(gui.getWindow()->getSize().x / 2.f, 10 + (40.f * propertyNumber)); \
     editBox->setSize(gui.getWindow()->getSize().x / 2.0f - 10, 32); \
-    editBox->setText(tgui::to_string(value)); \
+    editBox->setText(std::to_string(value)); \
     editBox->setCallbackId(propertyNumber + 1); \
     editBox->bindCallback(tgui::EditBox::TextChanged); \
 }
@@ -672,7 +672,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             loadedDefaultPicture = false;
 
             // Load the new picture
-            tgui::Picture::Ptr picture = formWindow.get(tgui::to_string(id));
+            tgui::Picture::Ptr picture = formWindow.get(std::to_string(id));
             picture->load(filename.value);
 
             // Change the width and height properties
@@ -680,8 +680,8 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             height.value = static_cast<float>(picture->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -692,7 +692,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
                 loadedDefaultPicture = true;
 
                 // Load the default picture
-                tgui::Picture::Ptr picture = formWindow.get(tgui::to_string(id));
+                tgui::Picture::Ptr picture = formWindow.get(std::to_string(id));
                 picture->load("images/widgets/Picture.png");
 
                 // Adjust the scaling
@@ -706,7 +706,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the picture
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Picture_Top)
     {
@@ -714,7 +714,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the picture
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Picture_Width)
     {
@@ -722,7 +722,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the picture
-        static_cast<tgui::Picture::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Picture::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Picture_Height)
     {
@@ -730,7 +730,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the picture
-        static_cast<tgui::Picture::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Picture::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Picture_CallbackID)
     {
@@ -738,7 +738,7 @@ void PropertiesPicture::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -795,7 +795,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             loadedDefaultButton = false;
 
             // Load the new button
-            tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
+            tgui::Button::Ptr button = formWindow.get(std::to_string(id));
             button->load(configFile.value);
 
             // Change the width and height properties
@@ -803,8 +803,8 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             height.value = static_cast<float>(button->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -815,7 +815,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
                 loadedDefaultButton = true;
 
                 // Load the default button
-                tgui::Button::Ptr button = formWindow.get(tgui::to_string(id));
+                tgui::Button::Ptr button = formWindow.get(std::to_string(id));
                 button->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -829,7 +829,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the button
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Button_Top)
     {
@@ -837,7 +837,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the button
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Button_Width)
     {
@@ -845,7 +845,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the button
-        static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Button_Height)
     {
@@ -853,7 +853,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the button
-        static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Button_Text)
     {
@@ -861,7 +861,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Change the text of the button
-        static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setText(text.value);
+        static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setText(text.value);
     }
     else if (propertyNumber == Property_Button_TextSize)
     {
@@ -869,7 +869,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Change the text of the button
-        static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setTextSize(textSize.value);
+        static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setTextSize(textSize.value);
     }
     else if (propertyNumber == Property_Button_TextColor)
     {
@@ -893,10 +893,10 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(color);
+            static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            static_cast<tgui::Button::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(sf::Color::White);
+            static_cast<tgui::Button::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Button_TextFont)
     {
@@ -908,7 +908,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::Button>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::Button>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -922,7 +922,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::Button>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::Button>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -934,7 +934,7 @@ void PropertiesButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -994,7 +994,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             loadedDefaultCheckbox = false;
 
             // Load the new checkbox
-            tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
+            tgui::Checkbox::Ptr checkbox = formWindow.get(std::to_string(id));
             checkbox->load(configFile.value);
 
             // Change the width and height properties
@@ -1002,8 +1002,8 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             height.value = static_cast<float>(checkbox->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -1014,7 +1014,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
                 loadedDefaultCheckbox = true;
 
                 // Load the default checkbox
-                tgui::Checkbox::Ptr checkbox = formWindow.get(tgui::to_string(id));
+                tgui::Checkbox::Ptr checkbox = formWindow.get(std::to_string(id));
                 checkbox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -1028,7 +1028,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the checkbox
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Checkbox_Top)
     {
@@ -1036,7 +1036,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the checkbox
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Checkbox_Width)
     {
@@ -1044,7 +1044,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the checkbox
-        static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Checkbox_Height)
     {
@@ -1052,7 +1052,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the checkbox
-        static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Checkbox_Checked)
     {
@@ -1061,9 +1061,9 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
 
         // Change the checkbox image
         if (checked.value)
-            static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->check();
+            static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->check();
         else
-            static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->uncheck();
+            static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->uncheck();
     }
     else if (propertyNumber == Property_Checkbox_Text)
     {
@@ -1071,7 +1071,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Change the text of the checkbox
-        static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setText(text.value);
+        static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setText(text.value);
     }
     else if (propertyNumber == Property_Checkbox_TextSize)
     {
@@ -1079,7 +1079,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Change the text of the checkbox
-        static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setTextSize(textSize.value);
+        static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setTextSize(textSize.value);
     }
     else if (propertyNumber == Property_Checkbox_TextColor)
     {
@@ -1103,10 +1103,10 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(color);
+            static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            static_cast<tgui::Checkbox::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(sf::Color::White);
+            static_cast<tgui::Checkbox::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Checkbox_TextFont)
     {
@@ -1118,7 +1118,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::Checkbox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::Checkbox>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -1132,7 +1132,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::Checkbox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::Checkbox>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -1144,7 +1144,7 @@ void PropertiesCheckbox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -1174,7 +1174,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
             loadedDefaultCheckbox = false;
 
             // Load the new radio button
-            tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
+            tgui::RadioButton::Ptr radioButton = formWindow.get(std::to_string(id));
             radioButton->load(configFile.value);
 
             // Change the width and height properties
@@ -1182,8 +1182,8 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
             height.value = static_cast<float>(radioButton->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -1194,7 +1194,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
                 loadedDefaultCheckbox = true;
 
                 // Load the default radio button
-                tgui::RadioButton::Ptr radioButton = formWindow.get(tgui::to_string(id));
+                tgui::RadioButton::Ptr radioButton = formWindow.get(std::to_string(id));
                 radioButton->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -1208,7 +1208,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the radio button
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Checkbox_Top)
     {
@@ -1216,7 +1216,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the radio button
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Checkbox_Width)
     {
@@ -1224,7 +1224,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the radio button
-        static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Checkbox_Height)
     {
@@ -1232,7 +1232,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the radio button
-        static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Checkbox_Checked)
     {
@@ -1245,7 +1245,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
 
         // Change the radio button image
         if (checked.value)
-            static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->check();
+            static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->check();
         else
             formWindow.uncheckRadioButtons();
     }
@@ -1255,7 +1255,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Change the text of the radio button
-        static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setText(text.value);
+        static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setText(text.value);
     }
     else if (propertyNumber == Property_Checkbox_TextSize)
     {
@@ -1263,7 +1263,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Change the text of the radio button
-        static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setTextSize(textSize.value);
+        static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setTextSize(textSize.value);
     }
     else if (propertyNumber == Property_Checkbox_TextColor)
     {
@@ -1287,10 +1287,10 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(color);
+            static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            static_cast<tgui::RadioButton::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(sf::Color::White);
+            static_cast<tgui::RadioButton::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Checkbox_TextFont)
     {
@@ -1302,7 +1302,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::RadioButton>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::RadioButton>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -1316,7 +1316,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::RadioButton>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::RadioButton>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -1328,7 +1328,7 @@ void PropertiesRadioButton::updateProperty(tgui::Gui& formWindow, tgui::Gui& pro
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -1377,7 +1377,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the label
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Label_Top)
     {
@@ -1385,7 +1385,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the label
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Label_Text)
     {
@@ -1393,7 +1393,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Get the pointer to the label
-        tgui::Label::Ptr label = formWindow.get(tgui::to_string(id));
+        tgui::Label::Ptr label = formWindow.get(std::to_string(id));
 
         // Change the text of the label
         if (text.value.size())
@@ -1413,7 +1413,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Get the pointer to the label
-        tgui::Label::Ptr label = formWindow.get(tgui::to_string(id));
+        tgui::Label::Ptr label = formWindow.get(std::to_string(id));
 
         // Change the text of the label
         label->setTextSize(textSize.value);
@@ -1446,10 +1446,10 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(color);
+            static_cast<tgui::Label::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(color);
         }
         else // The string is empty, so use the default color
-            static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setTextColor(sf::Color::White);
+            static_cast<tgui::Label::Ptr>(formWindow.get(std::to_string(id)))->setTextColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Label_TextFont)
     {
@@ -1461,7 +1461,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::Label>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::Label>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -1475,7 +1475,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::Label>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::Label>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -1503,10 +1503,10 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
             sf::Color color = tgui::extractColor(strColor);
 
             // Use the new color
-            static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setBackgroundColor(color);
+            static_cast<tgui::Label::Ptr>(formWindow.get(std::to_string(id)))->setBackgroundColor(color);
         }
         else // The string is empty, so use the default color
-            static_cast<tgui::Label::Ptr>(formWindow.get(tgui::to_string(id)))->setBackgroundColor(sf::Color::White);
+            static_cast<tgui::Label::Ptr>(formWindow.get(std::to_string(id)))->setBackgroundColor(sf::Color::White);
     }
     else if (propertyNumber == Property_Label_CallbackID)
     {
@@ -1514,7 +1514,7 @@ void PropertiesLabel::updateProperty(tgui::Gui& formWindow, tgui::Gui& propertyW
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -1585,7 +1585,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             loadedDefaultEditBox = false;
 
             // Load the new edit box
-            tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+            tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
             editBox->load(configFile.value);
 
             // Reset the size
@@ -1596,8 +1596,8 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             height.value = static_cast<float>(editBox->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -1608,7 +1608,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
                 loadedDefaultEditBox = true;
 
                 // Load the default edit box
-                tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+                tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
                 editBox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the size
@@ -1622,7 +1622,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the edit box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_EditBox_Top)
     {
@@ -1630,7 +1630,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the edit box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_EditBox_Width)
     {
@@ -1638,7 +1638,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the edit box
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_EditBox_Height)
     {
@@ -1646,7 +1646,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the edit box
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_EditBox_Text)
     {
@@ -1654,7 +1654,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Change the text of the edit box
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setText(text.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setText(text.value);
     }
     else if (propertyNumber == Property_EditBox_TextSize)
     {
@@ -1662,7 +1662,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Change the text of the edit box
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setTextSize(textSize.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setTextSize(textSize.value);
     }
     else if (propertyNumber == Property_EditBox_TextFont)
     {
@@ -1674,7 +1674,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::EditBox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::EditBox>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -1688,7 +1688,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::EditBox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::EditBox>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -1706,7 +1706,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             passwordChar.value = property[0];
 
         // Change the password char
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setPasswordCharacter(passwordChar.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setPasswordCharacter(passwordChar.value);
     }
     else if (propertyNumber == Property_EditBox_MaximumCharacters)
     {
@@ -1714,7 +1714,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         maximumCharacters.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_MaximumCharacters"))->getText().toAnsiString().c_str());
 
         // Set the maximum characters
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximumCharacters(maximumCharacters.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setMaximumCharacters(maximumCharacters.value);
         static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->setMaximumCharacters(maximumCharacters.value);
     }
     else if (propertyNumber == Property_EditBox_Borders)
@@ -1737,7 +1737,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         tgui::extractVector4u(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
     }
     else if (propertyNumber == Property_EditBox_TextColor)
     {
@@ -1745,7 +1745,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         textColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextColor"))->getText();
 
         // Get the pointer to the edit box
-        tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+        tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (textColor.value.empty() == false)
@@ -1775,7 +1775,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedTextColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextColor"))->getText();
 
         // Get the pointer to the edit box
-        tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+        tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextColor.value.empty() == false)
@@ -1805,7 +1805,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedTextBackgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextBackgroundColor"))->getText();
 
         // Get the pointer to the edit box
-        tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+        tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextBackgroundColor.value.empty() == false)
@@ -1835,7 +1835,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectionPointColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectionPointColor"))->getText();
 
         // Get the pointer to the edit box
-        tgui::EditBox::Ptr editBox = formWindow.get(tgui::to_string(id));
+        tgui::EditBox::Ptr editBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectionPointColor.value.empty() == false)
@@ -1866,7 +1866,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectionPointWidth.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectionPointWidth"))->getText().toAnsiString().c_str());
 
         // Set the new width
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectionPointWidth(selectionPointWidth.value);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(std::to_string(id)))->setSelectionPointWidth(selectionPointWidth.value);
     }
     else if (propertyNumber == Property_EditBox_CallbackID)
     {
@@ -1874,7 +1874,7 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -1940,7 +1940,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         // Check if the config file exists
         if (checkIfFileExists(configFile.value.c_str()))
         {
-            tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+            tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
             listBox->load(configFile.value);
         }
     }
@@ -1950,7 +1950,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the list box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_ListBox_Top)
     {
@@ -1958,7 +1958,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the list box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_ListBox_Width)
     {
@@ -1966,7 +1966,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the size of the list box
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_ListBox_Height)
     {
@@ -1974,7 +1974,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the size of the list box
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_ListBox_ItemHeight)
     {
@@ -1982,7 +1982,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         itemHeight.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ItemHeight"))->getText().toAnsiString().c_str());
 
         // Change the item height in the list box
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setItemHeight(itemHeight.value);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setItemHeight(itemHeight.value);
     }
     else if (propertyNumber == Property_ListBox_MaximumItems)
     {
@@ -1990,7 +1990,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         maximumItems.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_MaximumItems"))->getText().toAnsiString().c_str());
 
         // Change the maximum items in the list box
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximumItems(maximumItems.value);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setMaximumItems(maximumItems.value);
 
         // If there is a maximum, then make sure that there aren't too many items
         if (maximumItems.value > 0)
@@ -2061,7 +2061,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         tgui::extractVector4u(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
     }
     else if (propertyNumber == Property_ListBox_BackgroundColor)
     {
@@ -2069,7 +2069,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         backgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BackgroundColor"))->getText();
 
         // Get a pointer to the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (backgroundColor.value.empty() == false)
@@ -2099,7 +2099,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         textColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextColor"))->getText();
 
         // Get a pointer to the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (textColor.value.empty() == false)
@@ -2129,7 +2129,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedBackgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedBackgroundColor"))->getText();
 
         // Get a pointer to the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedBackgroundColor.value.empty() == false)
@@ -2159,7 +2159,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedTextColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextColor"))->getText();
 
         // Get a pointer to the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextColor.value.empty() == false)
@@ -2189,7 +2189,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         borderColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BorderColor"))->getText();
 
         // Get a pointer to the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (borderColor.value.empty() == false)
@@ -2219,7 +2219,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         items.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Items"))->getText();
 
         // Remove all widgets from the list box
-        tgui::ListBox::Ptr listBox = formWindow.get(tgui::to_string(id));
+        tgui::ListBox::Ptr listBox = formWindow.get(std::to_string(id));
         listBox->removeAllItems();
 
         std::string strItems = items.value;
@@ -2296,9 +2296,9 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
 
         // Change the selected item in the list box
         if (selectedItem.value >= 0)
-            static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+            static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setSelectedItem(selectedItem.value);
         else
-            static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->deselectItem();
+            static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->deselectItem();
     }
     else if (propertyNumber == Property_ListBox_TextFont)
     {
@@ -2310,7 +2310,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::ListBox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::ListBox>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -2324,7 +2324,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::ListBox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::ListBox>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -2336,7 +2336,7 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setCallbackId(callbackID.value);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(std::to_string(id)))->setCallbackId(callbackID.value);
     }
 }
 
@@ -2405,14 +2405,14 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             loadedDefaultComboBox = false;
 
             // Load the new combo box
-            tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+            tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
             comboBox->load(configFile.value);
 
             // Change the height property
             height.value = static_cast<float>(comboBox->getSize().y);
 
             // Update the height value
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -2423,7 +2423,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
                 loadedDefaultComboBox = true;
 
                 // Load the default combo box
-                tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+                tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
                 comboBox->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -2437,7 +2437,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the combo box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_ComboBox_Top)
     {
@@ -2445,7 +2445,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the combo box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_ComboBox_Width)
     {
@@ -2453,7 +2453,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the size of the combo box
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_ComboBox_Height)
     {
@@ -2461,7 +2461,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the size of the combo box
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_ComboBox_Borders)
     {
@@ -2483,7 +2483,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         tgui::extractVector4u(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
     }
     else if (propertyNumber == Property_ComboBox_BackgroundColor)
     {
@@ -2491,7 +2491,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         backgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BackgroundColor"))->getText();
 
         // Get a pointer to the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (backgroundColor.value.empty() == false)
@@ -2521,7 +2521,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         textColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextColor"))->getText();
 
         // Get a pointer to the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (textColor.value.empty() == false)
@@ -2551,7 +2551,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         selectedBackgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedBackgroundColor"))->getText();
 
         // Get a pointer to the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedBackgroundColor.value.empty() == false)
@@ -2581,7 +2581,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         selectedTextColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextColor"))->getText();
 
         // Get a pointer to the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextColor.value.empty() == false)
@@ -2611,7 +2611,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         borderColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BorderColor"))->getText();
 
         // Get a pointer to the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (borderColor.value.empty() == false)
@@ -2641,7 +2641,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         items.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Items"))->getText();
 
         // Remove all widgets from the combo box
-        tgui::ComboBox::Ptr comboBox = formWindow.get(tgui::to_string(id));
+        tgui::ComboBox::Ptr comboBox = formWindow.get(std::to_string(id));
         comboBox->removeAllItems();
 
         std::string strItems = items.value;
@@ -2692,9 +2692,9 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
 
         // Change the selected item in the combo box
         if (selectedItem.value >= 0)
-            static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectedItem(selectedItem.value);
+            static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setSelectedItem(selectedItem.value);
         else
-            static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->deselectItem();
+            static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->deselectItem();
     }
     else if (propertyNumber == Property_ComboBox_ItemsToDisplay)
     {
@@ -2702,7 +2702,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         itemsToDisplay.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_ItemsToDisplay"))->getText().toAnsiString().c_str());
 
         // Change the amount of item to display in the combo box
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setItemsToDisplay(itemsToDisplay.value);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setItemsToDisplay(itemsToDisplay.value);
     }
     else if (propertyNumber == Property_ComboBox_TextFont)
     {
@@ -2714,7 +2714,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::ComboBox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::ComboBox>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -2728,7 +2728,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::ComboBox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::ComboBox>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -2740,7 +2740,7 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setCallbackId(callbackID.value);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(std::to_string(id)))->setCallbackId(callbackID.value);
     }
 }
 
@@ -2798,7 +2798,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             loadedDefaultSlider = false;
 
             // Load the new slider
-            tgui::Slider::Ptr slider = formWindow.get(tgui::to_string(id));
+            tgui::Slider::Ptr slider = formWindow.get(std::to_string(id));
             slider->load(configFile.value);
 
             // Reset the size
@@ -2809,8 +2809,8 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
             height.value = static_cast<float>(slider->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -2821,7 +2821,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
                 loadedDefaultSlider = true;
 
                 // Load the default slider
-                tgui::Slider::Ptr slider = formWindow.get(tgui::to_string(id));
+                tgui::Slider::Ptr slider = formWindow.get(std::to_string(id));
                 slider->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -2835,7 +2835,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the slider
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Slider_Top)
     {
@@ -2843,7 +2843,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the slider
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Slider_Width)
     {
@@ -2851,7 +2851,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the slider
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Slider_Height)
     {
@@ -2859,7 +2859,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the slider
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Slider_VerticalScroll)
     {
@@ -2867,7 +2867,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         verticalScroll.value = static_cast<tgui::ComboBox::Ptr>(propertyWindow.get("combo_VerticalScroll"))->getSelectedItemIndex();
 
         // Get a pointer to the slider and to the width and height properties
-        tgui::Slider::Ptr slider = formWindow.get(tgui::to_string(id));
+        tgui::Slider::Ptr slider = formWindow.get(std::to_string(id));
         tgui::EditBox::Ptr propertyWidth = propertyWindow.get("text_Width");
         tgui::EditBox::Ptr propertyHeight = propertyWindow.get("text_Height");
 
@@ -2895,7 +2895,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         value.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
 
         // Change the value of the slider
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value.value);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setValue(value.value);
     }
     else if (propertyNumber == Property_Slider_Minimum)
     {
@@ -2903,11 +2903,11 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         minimum.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Minimum"))->getText().toAnsiString().c_str());
 
         // Change the minimum value of the slider
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(minimum.value);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setMinimum(minimum.value);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Slider_Maximum)
     {
@@ -2915,11 +2915,11 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         maximum.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Maximum"))->getText().toAnsiString().c_str());
 
         // Change the maximum value of the slider
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setMaximum(maximum.value);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Slider::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::Slider::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Slider_CallbackID)
     {
@@ -2927,7 +2927,7 @@ void PropertiesSlider::updateProperty(tgui::Gui& formWindow, tgui::Gui& property
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -2985,7 +2985,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
             loadedDefaultScrollbar = false;
 
             // Load the new scrollbar
-            tgui::Scrollbar::Ptr scrollbar = formWindow.get(tgui::to_string(id));
+            tgui::Scrollbar::Ptr scrollbar = formWindow.get(std::to_string(id));
             scrollbar->load(configFile.value);
 
             // Reset the size
@@ -2996,8 +2996,8 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
             height.value = static_cast<float>(scrollbar->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -3008,7 +3008,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
                 loadedDefaultScrollbar = true;
 
                 // Load the default scrollbar
-                tgui::Scrollbar::Ptr scrollbar = formWindow.get(tgui::to_string(id));
+                tgui::Scrollbar::Ptr scrollbar = formWindow.get(std::to_string(id));
                 scrollbar->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -3022,7 +3022,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the scrollbar
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Scrollbar_Top)
     {
@@ -3030,7 +3030,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the scrollbar
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_Scrollbar_Width)
     {
@@ -3038,7 +3038,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the scrollbar
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Scrollbar_Height)
     {
@@ -3046,7 +3046,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the scrollbar
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_Scrollbar_VerticalScroll)
     {
@@ -3058,7 +3058,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         tgui::EditBox::Ptr propertyHeight = propertyWindow.get("text_Height");
 
         // Change the direction
-        tgui::Scrollbar::Ptr scrollbar = formWindow.get(tgui::to_string(id));
+        tgui::Scrollbar::Ptr scrollbar = formWindow.get(std::to_string(id));
         scrollbar->setVerticalScroll(!!verticalScroll.value);
 
         // Make temp buffers to switch the width and height
@@ -3090,7 +3090,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
                 value.value = maximum.value - lowValue.value;
 
                 // Adjust the property
-                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->setText(tgui::to_string(value.value));
+                static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->setText(std::to_string(value.value));
             }
         }
         else
@@ -3101,7 +3101,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         }
 
         // Change the value of the scrollbar
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value.value);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setValue(value.value);
     }
     else if (propertyNumber == Property_Scrollbar_LowValue)
     {
@@ -3109,11 +3109,11 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         lowValue.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_LowValue"))->getText().toAnsiString().c_str());
 
         // Change the low value of the scrollbar
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setLowValue(lowValue.value);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setLowValue(lowValue.value);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Scrollbar_Maximum)
     {
@@ -3121,11 +3121,11 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         maximum.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Maximum"))->getText().toAnsiString().c_str());
 
         // Change the maximum value of the scrollbar
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setMaximum(maximum.value);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::Scrollbar::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_Scrollbar_CallbackID)
     {
@@ -3133,7 +3133,7 @@ void PropertiesScrollbar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prope
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -3188,7 +3188,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
             loadedDefaultLoadingBar = false;
 
             // Load the new loading bar
-            tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
+            tgui::LoadingBar::Ptr loadingBar = formWindow.get(std::to_string(id));
             loadingBar->load(configFile.value);
 
             // Change the width and height properties
@@ -3196,8 +3196,8 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
             height.value = static_cast<float>(loadingBar->getSize().y);
 
             // Update the values
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(tgui::to_string(width.value));
-            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(tgui::to_string(height.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->setText(std::to_string(width.value));
+            static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->setText(std::to_string(height.value));
         }
         else // The file didn't exist
         {
@@ -3208,7 +3208,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
                 loadedDefaultLoadingBar = true;
 
                 // Load the default loading bar
-                tgui::LoadingBar::Ptr loadingBar = formWindow.get(tgui::to_string(id));
+                tgui::LoadingBar::Ptr loadingBar = formWindow.get(std::to_string(id));
                 loadingBar->load(DEFAULT_THEME_FILE);
 
                 // Adjust the scaling
@@ -3222,7 +3222,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the loading bar
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_LoadingBar_Top)
     {
@@ -3230,7 +3230,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the loading bar
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_LoadingBar_Width)
     {
@@ -3238,7 +3238,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the loading bar
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_LoadingBar_Height)
     {
@@ -3246,7 +3246,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the loading bar
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_LoadingBar_Value)
     {
@@ -3254,7 +3254,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         value.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
 
         // Change the value of the loading bar
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(value.value);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setValue(value.value);
     }
     else if (propertyNumber == Property_LoadingBar_Minimum)
     {
@@ -3262,15 +3262,15 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         minimum.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Minimum"))->getText().toAnsiString().c_str());
 
         // Change the minimum value of the loading bar
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(minimum.value);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setMinimum(minimum.value);
 
         // Reset the maximum
         int max = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Maximum"))->getText().toAnsiString().c_str());
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(max);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setMaximum(max);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_LoadingBar_Maximum)
     {
@@ -3278,15 +3278,15 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         maximum.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Maximum"))->getText().toAnsiString().c_str());
 
         // Change the maximum value of the loading bar
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximum(maximum.value);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setMaximum(maximum.value);
 
         // Reset the minimum
         int min = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Minimum"))->getText().toAnsiString().c_str());
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setMinimum(min);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setMinimum(min);
 
         // Reset the value
         int val = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Value"))->getText().toAnsiString().c_str());
-        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(tgui::to_string(id)))->setValue(val);
+        static_cast<tgui::LoadingBar::Ptr>(formWindow.get(std::to_string(id)))->setValue(val);
     }
     else if (propertyNumber == Property_LoadingBar_CallbackID)
     {
@@ -3294,7 +3294,7 @@ void PropertiesLoadingBar::updateProperty(tgui::Gui& formWindow, tgui::Gui& prop
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 
@@ -3363,7 +3363,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         // Check if the config file exists
         if (checkIfFileExists((configFile.value).c_str()))
         {
-            tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+            tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
             textBox->load(configFile.value);
         }
     }
@@ -3373,7 +3373,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         left.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Left"))->getText().toAnsiString().c_str()));
 
         // Change the position of the text box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_TextBox_Top)
     {
@@ -3381,7 +3381,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         top.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Top"))->getText().toAnsiString().c_str()));
 
         // Change the position of the text box
-        formWindow.get(tgui::to_string(id))->setPosition(left.value, top.value);
+        formWindow.get(std::to_string(id))->setPosition(left.value, top.value);
     }
     else if (propertyNumber == Property_TextBox_Width)
     {
@@ -3389,7 +3389,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         width.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Width"))->getText().toAnsiString().c_str()));
 
         // Change the width of the text box
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_TextBox_Height)
     {
@@ -3397,7 +3397,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         height.value = static_cast<float>(atof(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Height"))->getText().toAnsiString().c_str()));
 
         // Change the height of the text box
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSize(width.value, height.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setSize(width.value, height.value);
     }
     else if (propertyNumber == Property_TextBox_Text)
     {
@@ -3405,7 +3405,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         text.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->getText();
 
         // Change the text of the text box
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setText(text.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setText(text.value);
     }
     else if (propertyNumber == Property_TextBox_TextSize)
     {
@@ -3413,7 +3413,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         textSize.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextSize"))->getText().toAnsiString().c_str());
 
         // Change the text of the text box
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setTextSize(textSize.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setTextSize(textSize.value);
     }
     else if (propertyNumber == Property_TextBox_TextFont)
     {
@@ -3425,7 +3425,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         if (textFont.value.compare("Global") == 0)
         {
             // Set the new font
-            formWindow.get<tgui::TextBox>(tgui::to_string(id))->setTextFont(formWindow.globalFont);
+            formWindow.get<tgui::TextBox>(std::to_string(id))->setTextFont(formWindow.globalFont);
         }
         else // The global font is not used
         {
@@ -3439,7 +3439,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
 
             // Change the font
             if (fontName.compare("Default"))
-                formWindow.get<tgui::TextBox>(tgui::to_string(id))->setTextFont(sf::Font::getDefaultFont());
+                formWindow.get<tgui::TextBox>(std::to_string(id))->setTextFont(sf::Font::getDefaultFont());
         }
 */
         // You are not allowed the change the font yet
@@ -3451,7 +3451,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         maximumCharacters.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_MaximumCharacters"))->getText().toAnsiString().c_str());
 
         // Set the maximum characters
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setMaximumCharacters(maximumCharacters.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setMaximumCharacters(maximumCharacters.value);
         static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_Text"))->setMaximumCharacters(maximumCharacters.value);
     }
     else if (propertyNumber == Property_TextBox_Borders)
@@ -3474,7 +3474,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         tgui::extractVector4u(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
     }
     else if (propertyNumber == Property_TextBox_BackgroundColor)
     {
@@ -3482,7 +3482,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         backgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BackgroundColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (backgroundColor.value.empty() == false)
@@ -3512,7 +3512,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         textColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_TextColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (textColor.value.empty() == false)
@@ -3542,7 +3542,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedTextColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextColor.value.empty() == false)
@@ -3572,7 +3572,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectedTextBackgroundColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectedTextBackgroundColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectedTextBackgroundColor.value.empty() == false)
@@ -3602,7 +3602,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         borderColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_BorderColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (borderColor.value.empty() == false)
@@ -3632,7 +3632,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectionPointColor.value = static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectionPointColor"))->getText();
 
         // Get the pointer to the text box
-        tgui::TextBox::Ptr textBox = formWindow.get(tgui::to_string(id));
+        tgui::TextBox::Ptr textBox = formWindow.get(std::to_string(id));
 
         // Only continue when the string is not empty
         if (selectionPointColor.value.empty() == false)
@@ -3655,7 +3655,6 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         }
         else // The string is empty, so use the default color
             textBox->setSelectionPointColor(sf::Color::White);
-
     }
     else if (propertyNumber == Property_TextBox_SelectionPointWidth)
     {
@@ -3663,7 +3662,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         selectionPointWidth.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_SelectionPointWidth"))->getText().toAnsiString().c_str());
 
         // Set the new width
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setSelectionPointWidth(selectionPointWidth.value);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(std::to_string(id)))->setSelectionPointWidth(selectionPointWidth.value);
     }
     else if (propertyNumber == Property_TextBox_CallbackID)
     {
@@ -3671,7 +3670,7 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
         callbackID.value = atoi(static_cast<tgui::EditBox::Ptr>(propertyWindow.get("text_CallbackID"))->getText().toAnsiString().c_str());
 
         // Change the callback id
-        formWindow.get(tgui::to_string(id))->setCallbackId(callbackID.value);
+        formWindow.get(std::to_string(id))->setCallbackId(callbackID.value);
     }
 }
 

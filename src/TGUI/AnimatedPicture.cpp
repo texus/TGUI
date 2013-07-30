@@ -317,6 +317,56 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool AnimatedPicture::setProperty(const std::string& property, const std::string& value)
+    {
+        if (!Widget::setProperty(property, value))
+        {
+            if (property == "Playing")
+            {
+                if ((value == "true") || (value == "True"))
+                    m_Playing = true;
+                else if ((value == "false") || (value == "False"))
+                    m_Playing = false;
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Playing' property.");
+            }
+            else if (property == "Looping")
+            {
+                if ((value == "true") || (value == "True"))
+                    m_Looping = true;
+                else if ((value == "false") || (value == "False"))
+                    m_Looping = false;
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'Looping' property.");
+            }
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool AnimatedPicture::getProperty(const std::string& property, std::string& value)
+    {
+        if (!Widget::getProperty(property, value))
+        {
+            if (property == "Playing")
+                value = m_Playing ? "true" : "false";
+            else if (property == "Looping")
+                value = m_Looping ? "true" : "false";
+            else // The property didn't match
+                return false;
+        }
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void AnimatedPicture::update()
     {
         // Only continue when you are playing

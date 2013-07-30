@@ -506,9 +506,18 @@ namespace tgui
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
-        virtual void mouseWheelMoved(int delta);
+        virtual void mouseWheelMoved(int delta, int x, int y);
         virtual void mouseNotOnWidget();
         virtual void mouseNoLongerDown();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
+        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool getProperty(const std::string& property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
