@@ -39,7 +39,7 @@ namespace tgui
 
     MenuBar::MenuBar() :
     m_VisibleMenu        (-1),
-    m_TextFont           (NULL),
+    m_TextFont           (nullptr),
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
     {
@@ -475,19 +475,6 @@ namespace tgui
             }
         }
 
-        // Check if there is still a menu open
-        if (m_VisibleMenu != -1)
-        {
-            // If an item in that menu was selected then unselect it first
-            if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
-            {
-                m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
-                m_Menus[m_VisibleMenu].selectedMenuItem = -1;
-            }
-
-            m_VisibleMenu = -1;
-        }
-
         if (m_MouseHover)
             mouseLeftWidget();
 
@@ -497,44 +484,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMousePressed(float, float)
+    void MenuBar::leftMousePressed(float x, float y)
     {
+        // Check if a menu should be opened or closed
+        if (y <= m_Size.y + getPosition().y)
+        {
+            // Loop through the menus to check if the mouse is on top of them
+            float menuWidth = 0;
+            for (unsigned int i = 0; i < m_Menus.size(); ++i)
+            {
+                menuWidth += m_Menus[i].text.getLocalBounds().width + (2 * m_DistanceToSide);
+                if (x < menuWidth)
+                {
+                    // Close the menu when it was already open
+                    if (m_VisibleMenu == static_cast<int>(i))
+                    {
+                        if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                        {
+                            m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
+                            m_Menus[m_VisibleMenu].selectedMenuItem = -1;
+                        }
+
+                        m_VisibleMenu = -1;
+                    }
+
+                    // If this menu can be opened then do so
+                    else if (!m_Menus[i].menuItems.empty())
+                        m_VisibleMenu = static_cast<int>(i);
+
+                    break;
+                }
+            }
+        }
+
         m_MouseDown = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseReleased(float x, float y)
+    void MenuBar::leftMouseReleased(float, float y)
     {
         if (m_MouseDown)
         {
-            // Check if the mouse is on top of the menu bar (not on an open menus)
-            if (y <= m_Size.y + getPosition().y)
-            {
-                // Loop through the menus to check if the mouse is on top of them
-                float menuWidth = 0;
-                for (unsigned int i = 0; i < m_Menus.size(); ++i)
-                {
-                    menuWidth += m_Menus[i].text.getLocalBounds().width + (2 * m_DistanceToSide);
-                    if (x < menuWidth)
-                    {
-                        // Only give a callback when there is no menu to open
-                        if (m_Menus[i].menuItems.empty())
-                        {
-                            if (m_CallbackFunctions[MenuItemClicked].empty() == false)
-                            {
-                                m_Callback.trigger = MenuItemClicked;
-                                m_Callback.text = m_Menus[i].text.getString();
-                                m_Callback.index = i;
-                                addCallback();
-                            }
-                        }
-
-                        break;
-                    }
-                }
-            }
-            else // The mouse is on top of one of the menus
+            // Check if the mouse is on top of one of the menus
+            if (y > m_Size.y + getPosition().y)
             {
                 unsigned int selectedMenuItem = static_cast<unsigned int>((y - m_Size.y - getPosition().y) / m_Size.y);
 
@@ -564,43 +557,47 @@ namespace tgui
         // Check if the mouse is on top of the menu bar (not on an open menus)
         if (y <= m_Size.y + getPosition().y)
         {
-            // Loop through the menus to check if the mouse is on top of them
-            float menuWidth = 0;
-            for (unsigned int i = 0; i < m_Menus.size(); ++i)
+            // Don't open a menu without having clicked first
+            if (m_VisibleMenu != -1)
             {
-                menuWidth += m_Menus[i].text.getLocalBounds().width + (2 * m_DistanceToSide);
-                if (x < menuWidth)
+                // Loop through the menus to check if the mouse is on top of them
+                float menuWidth = 0;
+                for (unsigned int i = 0; i < m_Menus.size(); ++i)
                 {
-                    // Check if the menu is already open
-                    if (m_VisibleMenu == static_cast<int>(i))
+                    menuWidth += m_Menus[i].text.getLocalBounds().width + (2 * m_DistanceToSide);
+                    if (x < menuWidth)
                     {
-                        // If one of the menu items is selected then unselect it
-                        if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                        // Check if the menu is already open
+                        if (m_VisibleMenu == static_cast<int>(i))
                         {
-                            m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
-                            m_Menus[m_VisibleMenu].selectedMenuItem = -1;
-                        }
-                    }
-                    else // The menu isn't open yet
-                    {
-                        // If there is another menu open then close it first
-                        if (m_VisibleMenu != -1)
-                        {
-                            // If an item in that other menu was selected then unselect it first
+                            // If one of the menu items is selected then unselect it
                             if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
                             {
                                 m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
                                 m_Menus[m_VisibleMenu].selectedMenuItem = -1;
                             }
-
-                            m_VisibleMenu = -1;
                         }
+                        else // The menu isn't open yet
+                        {
+                            // If there is another menu open then close it first
+                            if (m_VisibleMenu != -1)
+                            {
+                                // If an item in that other menu was selected then unselect it first
+                                if (m_Menus[m_VisibleMenu].selectedMenuItem != -1)
+                                {
+                                    m_Menus[m_VisibleMenu].menuItems[m_Menus[m_VisibleMenu].selectedMenuItem].setColor(m_TextColor);
+                                    m_Menus[m_VisibleMenu].selectedMenuItem = -1;
+                                }
 
-                        // If this menu can be opened then do so
-                        if (!m_Menus[i].menuItems.empty())
-                            m_VisibleMenu = static_cast<int>(i);
+                                m_VisibleMenu = -1;
+                            }
+
+                            // If this menu can be opened then do so
+                            if (!m_Menus[i].menuItems.empty())
+                                m_VisibleMenu = static_cast<int>(i);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -625,7 +622,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::mouseNotOnWidget()
+    void MenuBar::mouseNoLongerDown()
     {
         // Check if there is still a menu open
         if (m_VisibleMenu != -1)
@@ -639,11 +636,6 @@ namespace tgui
 
             m_VisibleMenu = -1;
         }
-
-        if (m_MouseHover == true)
-            mouseLeftWidget();
-
-        m_MouseHover = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -72,13 +72,13 @@ namespace tgui
 
     LoadingBar::~LoadingBar()
     {
-        if (m_TextureBack_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
-        if (m_TextureBack_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
-        if (m_TextureBack_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
+        if (m_TextureBack_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
+        if (m_TextureBack_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
+        if (m_TextureBack_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
 
-        if (m_TextureFront_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
-        if (m_TextureFront_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
-        if (m_TextureFront_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
+        if (m_TextureFront_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_L);
+        if (m_TextureFront_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_M);
+        if (m_TextureFront_R.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_R);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,12 +126,12 @@ namespace tgui
         m_Loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_TextureBack_L.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
-        if (m_TextureBack_M.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
-        if (m_TextureBack_R.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
-        if (m_TextureFront_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_L);
-        if (m_TextureFront_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_M);
-        if (m_TextureFront_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureFront_R);
+        if (m_TextureBack_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_L);
+        if (m_TextureBack_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_M);
+        if (m_TextureBack_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureBack_R);
+        if (m_TextureFront_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_L);
+        if (m_TextureFront_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_M);
+        if (m_TextureFront_R.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureFront_R);
 
         // Open the config file
         ConfigFile configFile;
@@ -241,8 +241,8 @@ namespace tgui
         if (m_SplitImage)
         {
             // Make sure the required textures were loaded
-            if ((m_TextureBack_L.data != NULL) && (m_TextureBack_M.data != NULL) && (m_TextureBack_R.data != NULL)
-             && (m_TextureFront_L.data != NULL) && (m_TextureFront_M.data != NULL) && (m_TextureFront_R.data != NULL))
+            if ((m_TextureBack_L.data != nullptr) && (m_TextureBack_M.data != nullptr) && (m_TextureBack_R.data != nullptr)
+             && (m_TextureFront_L.data != nullptr) && (m_TextureFront_M.data != nullptr) && (m_TextureFront_R.data != nullptr))
             {
                 m_Size.x = static_cast<float>(m_TextureBack_L.getSize().x + m_TextureBack_M.getSize().x + m_TextureBack_R.getSize().x);
                 m_Size.y = static_cast<float>(m_TextureBack_M.getSize().y);
@@ -256,7 +256,7 @@ namespace tgui
         else // The image isn't split
         {
             // Make sure the required textures were loaded
-            if ((m_TextureBack_M.data != NULL) && (m_TextureFront_M.data != NULL))
+            if ((m_TextureBack_M.data != nullptr) && (m_TextureFront_M.data != nullptr))
             {
                 m_Size = Vector2f(m_TextureBack_M.getSize());
             }

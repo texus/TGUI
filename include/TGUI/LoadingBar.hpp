@@ -304,11 +304,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to LoadingBar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum LoadingBarCallbacks
         {
-            ValueChanged = ClickableWidgetCallbacksCount * 1,
-            LoadingBarFull = ClickableWidgetCallbacksCount * 2,
-            AllLoadingBarCallbacks = ClickableWidgetCallbacksCount * 4 - 1,
+            ValueChanged = ClickableWidgetCallbacksCount * 1,               ///< Value changed
+            LoadingBarFull = ClickableWidgetCallbacksCount * 2,             ///< Value reached the max value.
+            AllLoadingBarCallbacks = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in LoadingBar and its base classes
             LoadingBarCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 

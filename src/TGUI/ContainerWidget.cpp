@@ -185,7 +185,7 @@ namespace tgui
         else
         {
             // Loop through all callback functions and call them
-            for (std::list< boost::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
+            for (auto it = m_GlobalCallbackFunctions.cbegin(); it != m_GlobalCallbackFunctions.cend(); ++it)
                 (*it)(callback);
         }
     }

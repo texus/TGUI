@@ -538,10 +538,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to ListBox.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ListBoxCallbacks
         {
-            ItemSelected = WidgetCallbacksCount * 1,
-            AllListBoxCallbacks = WidgetCallbacksCount * 2 - 1,
+            ItemSelected = WidgetCallbacksCount * 1,            ///< A new item was selected
+            AllListBoxCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in ListBox and its base classes
             ListBoxCallbacksCount = WidgetCallbacksCount * 2
         };
 

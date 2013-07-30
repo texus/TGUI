@@ -220,10 +220,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to MessageBox.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MessageBoxCallbacks
         {
-            ButtonClicked            = ChildWindowCallbacksCount * 1,
-            AllMessageBoxCallbacks   = ChildWindowCallbacksCount * 2 - 1,
+            ButtonClicked            = ChildWindowCallbacksCount * 1,     ///< Button clicked
+            AllMessageBoxCallbacks   = ChildWindowCallbacksCount * 2 - 1, ///< All triggers defined in MessageBox and its base classes
             MessageBoxCallbacksCount = ChildWindowCallbacksCount * 2
         };
 

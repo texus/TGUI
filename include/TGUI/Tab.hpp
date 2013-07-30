@@ -397,10 +397,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Tab.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TabCallbacks
         {
-            TabChanged = WidgetCallbacksCount * 1,
-            AllTabCallbacks = WidgetCallbacksCount * 2 - 1,
+            TabChanged = WidgetCallbacksCount * 1,          ///< Current Tab changed
+            AllTabCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Tab and its base classes
             TabCallbacksCount = WidgetCallbacksCount * 2
         };
 

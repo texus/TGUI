@@ -75,10 +75,10 @@ namespace tgui
         m_Loaded = false;
 
          // If the radio button was loaded before then remove the old textures
-        if (m_TextureUnchecked.data != NULL) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureHover);
-        if (m_TextureFocused.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureFocused);
+        if (m_TextureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
+        if (m_TextureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureChecked);
+        if (m_TextureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover);
+        if (m_TextureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused);
 
         // Open the config file
         ConfigFile configFile;
@@ -153,7 +153,7 @@ namespace tgui
         }
 
         // Make sure the required texture was loaded
-        if ((m_TextureChecked.data != NULL) && (m_TextureUnchecked.data != NULL))
+        if ((m_TextureChecked.data != nullptr) && (m_TextureUnchecked.data != nullptr))
         {
             m_Loaded = true;
             m_Size = Vector2f(m_TextureChecked.getSize());
@@ -165,12 +165,12 @@ namespace tgui
         }
 
         // Check if optional textures were loaded
-        if (m_TextureFocused.data != NULL)
+        if (m_TextureFocused.data != nullptr)
         {
             m_AllowFocus = true;
             m_WidgetPhase |= WidgetPhase_Focused;
         }
-        if (m_TextureHover.data != NULL)
+        if (m_TextureHover.data != nullptr)
         {
             m_WidgetPhase |= WidgetPhase_Hover;
         }

@@ -335,7 +335,7 @@ namespace tgui
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
         virtual void mouseMoved(float x, float y);
-        virtual void mouseNotOnWidget();
+        virtual void mouseNoLongerDown();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,10 +365,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to MenuBar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MenuBarCallbacks
         {
-            MenuItemClicked = WidgetCallbacksCount * 1,
-            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1,
+            MenuItemClicked = WidgetCallbacksCount * 1,         ///< A menu item was clicked
+            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in MenuBar and its base classes
             MenuBarCallbacksCount = WidgetCallbacksCount * 2
         };
 

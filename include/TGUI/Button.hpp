@@ -248,11 +248,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Button.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ButtonCallbacks
         {
-            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,
-            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,
-            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1,
+            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,     ///< Space key was pressed
+            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,     ///< Return key was pressed
+            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in Button and its base classes
             ButtonCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 

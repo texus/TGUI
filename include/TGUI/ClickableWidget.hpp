@@ -119,12 +119,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to ClickableWidget.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ClickableWidgetCallbacks
         {
-            LeftMousePressed              = WidgetCallbacksCount * 1,
-            LeftMouseReleased             = WidgetCallbacksCount * 2,
-            LeftMouseClicked              = WidgetCallbacksCount * 4,
-            AllClickableWidgetCallbacks   = WidgetCallbacksCount * 8 - 1,
+            LeftMousePressed              = WidgetCallbacksCount * 1,     ///< The left mouse button was pressed
+            LeftMouseReleased             = WidgetCallbacksCount * 2,     ///< The left mouse button was released
+            LeftMouseClicked              = WidgetCallbacksCount * 4,     ///< The left mouse button was clicked
+            AllClickableWidgetCallbacks   = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in ClickableWidget and its base classes
             ClickableWidgetCallbacksCount = WidgetCallbacksCount * 8
         };
 

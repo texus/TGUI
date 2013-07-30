@@ -54,7 +54,7 @@ namespace tgui
     m_SelectionPointColor     (110, 110, 255),
     m_SelectionPointWidth     (2),
     m_SelectionTextsNeedUpdate(true),
-    m_Scroll                  (NULL),
+    m_Scroll                  (nullptr),
     m_PossibleDoubleClick     (false)
     {
         m_Callback.widgetType = Type_TextBox;
@@ -102,17 +102,17 @@ namespace tgui
     m_PossibleDoubleClick        (copy.m_PossibleDoubleClick)
     {
         // If there is a scrollbar then copy it
-        if (copy.m_Scroll != NULL)
+        if (copy.m_Scroll != nullptr)
             m_Scroll = new Scrollbar(*copy.m_Scroll);
         else
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::~TextBox()
     {
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
     }
 
@@ -123,10 +123,10 @@ namespace tgui
         if (this != &right)
         {
             // If there already was a scrollbar then delete it now
-            if (m_Scroll != NULL)
+            if (m_Scroll != nullptr)
             {
                 delete m_Scroll;
-                m_Scroll = NULL;
+                m_Scroll = nullptr;
             }
 
             TextBox temp(right);
@@ -181,10 +181,10 @@ namespace tgui
         m_LoadedConfigFile = configFileFilename;
 
         // If there already was a scrollbar then delete it now
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
         }
 
         // Open the config file
@@ -263,7 +263,7 @@ namespace tgui
                 {
                     // The scrollbar couldn't be loaded so it must be deleted
                     delete m_Scroll;
-                    m_Scroll = NULL;
+                    m_Scroll = nullptr;
 
                     return false;
                 }
@@ -306,13 +306,13 @@ namespace tgui
         if (height < 0) height = -height;
 
         // There is a minimum width
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
         else
             width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
 
         // There is also a minimum height
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // If there is a text then it should still fit inside the text box
             if (m_Text.getSize() > 0)
@@ -345,7 +345,7 @@ namespace tgui
         m_Size.y = static_cast<unsigned int>(height);
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
@@ -450,7 +450,7 @@ namespace tgui
         }
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
@@ -516,7 +516,7 @@ namespace tgui
             m_Size.x = 50 + m_LeftBorder + m_RightBorder;
 
         // There is also a minimum height (when there is no scrollbar)
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // If there is a text then it should still fit inside the text box
             if (m_Text.getSize() > 0)
@@ -533,7 +533,7 @@ namespace tgui
         }
 
         // If there is a scrollbar then reinitialize it
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
             m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder));
@@ -680,7 +680,7 @@ namespace tgui
         updateDisplayedText();
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             unsigned int newlines = 0;
             unsigned int newlinesAdded = 0;
@@ -742,7 +742,7 @@ namespace tgui
             return false;
 
         // If the scrollbar was already created then delete it first
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             delete m_Scroll;
 
         // load the scrollbar and check if it failed
@@ -751,7 +751,7 @@ namespace tgui
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_Scroll;
-            m_Scroll = NULL;
+            m_Scroll = nullptr;
 
             return false;
         }
@@ -773,7 +773,7 @@ namespace tgui
     {
         // Delete the scrollbar
         delete m_Scroll;
-        m_Scroll = NULL;
+        m_Scroll = nullptr;
 
         m_TopLine = 1;
     }
@@ -809,7 +809,7 @@ namespace tgui
         m_TextAfterSelection1.setColor(sf::Color(m_TextAfterSelection1.getColor().r, m_TextAfterSelection1.getColor().g, m_TextAfterSelection1.getColor().b, m_Opacity));
         m_TextAfterSelection2.setColor(sf::Color(m_TextAfterSelection2.getColor().r, m_TextAfterSelection2.getColor().g, m_TextAfterSelection2.getColor().b, m_Opacity));
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->setTransparency(m_Opacity);
     }
 
@@ -825,7 +825,7 @@ namespace tgui
         Vector2f position = getPosition();
 
         // Pass the event to the scrollbar (if there is one)
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
@@ -865,7 +865,7 @@ namespace tgui
         bool clickedOnTextBox = true;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Remember the old scrollbar value
             unsigned int oldValue = m_Scroll->getValue();
@@ -913,7 +913,7 @@ namespace tgui
                 updateDisplayedText();
 
                 // Check if there is a scrollbar
-                if (m_Scroll != NULL)
+                if (m_Scroll != nullptr)
                 {
                     unsigned int newlines = 0;
                     unsigned int newlinesAdded = 0;
@@ -992,7 +992,7 @@ namespace tgui
             return;
 
         // If there is a scrollbar then pass it the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_Scroll->m_MouseDown == true)
@@ -1063,7 +1063,7 @@ namespace tgui
         m_PossibleDoubleClick = false;
 
         // If there is a scrollbar then pass the event
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
             m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
@@ -1112,7 +1112,7 @@ namespace tgui
 
         m_MouseHover = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseHover = false;
     }
 
@@ -1122,7 +1122,7 @@ namespace tgui
     {
         m_MouseDown = false;
 
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             m_Scroll->m_MouseDown = false;
     }
 
@@ -1415,7 +1415,7 @@ namespace tgui
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd - 1);
 
-                if (m_Scroll != NULL)
+                if (m_Scroll != nullptr)
                 {
                     // Check if the scrollbar is behind the text
                     if (m_Scroll->getValue() > m_Scroll->getMaximum() - m_Scroll->getLowValue())
@@ -1459,7 +1459,7 @@ namespace tgui
                 // Set the selection point back on the correct position
                 setSelectionPointPosition(m_SelEnd);
 
-                if (m_Scroll != NULL)
+                if (m_Scroll != nullptr)
                 {
                     // Check if there is a risk that the scrollbar is going to be behind the text
                     if ((m_Scroll->getValue() == m_Scroll->getMaximum() - m_Scroll->getLowValue()) || (m_Scroll->getValue() > m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_LineHeight))
@@ -1506,7 +1506,7 @@ namespace tgui
                 return;
 
         // If there is a limit in the amount of lines then make a simulation
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // Don't continue when line height is 0
             if (m_LineHeight == 0)
@@ -1589,7 +1589,7 @@ namespace tgui
     void TextBox::mouseWheelMoved(int delta)
     {
         // Only do something when there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             if (m_Scroll->getLowValue() < m_Scroll->getMaximum())
             {
@@ -1746,7 +1746,7 @@ namespace tgui
         unsigned int line;
 
         // Check if there is a scrollbar
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
         {
             // If the position is negative then set the selection point before the first character
             if (posY < 0)
@@ -1813,7 +1813,7 @@ namespace tgui
             // Calculate the maximum line width
             float maxLineWidth;
 
-            if (m_Scroll == NULL)
+            if (m_Scroll == nullptr)
                 maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f;
             else
                 maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f - m_Scroll->getSize().x;
@@ -1925,7 +1925,7 @@ namespace tgui
         updateDisplayedText();
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             unsigned int newlines = 0;
             unsigned int newlinesAdded = 0;
@@ -2004,7 +2004,7 @@ namespace tgui
         float maxLineWidth;
 
         // Calculate the maximum line width
-        if (m_Scroll == NULL)
+        if (m_Scroll == nullptr)
             maxLineWidth = m_Size.x - m_LeftBorder - m_RightBorder - 4.f;
         else
             maxLineWidth = m_Size.x - m_LeftBorder - m_TopBorder - m_Scroll->getSize().x - 4.f;
@@ -2054,7 +2054,7 @@ namespace tgui
                 newlinesAddedBeforeSelection = newlinesAdded;
 
             // Check if there is a limit in the amount of lines
-            if (m_Scroll == NULL)
+            if (m_Scroll == nullptr)
             {
                 // Check if you passed this limit
                 if (m_Lines > (m_Size.y - m_TopBorder - m_BottomBorder) / m_LineHeight)
@@ -2076,7 +2076,7 @@ namespace tgui
             newlinesAddedBeforeSelection = newlinesAdded;
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Tell the scrollbar how many pixels the text contains
             m_Scroll->setMaximum(m_Lines * m_LineHeight);
@@ -2358,7 +2358,7 @@ namespace tgui
         target.draw(front, states);
 
         // Set the text on the correct position
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
             states.transform.translate(2, -static_cast<float>(m_Scroll->getValue()));
         else
             states.transform.translate(2, 0);
@@ -2513,7 +2513,7 @@ namespace tgui
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Check if there is a scrollbar
-        if (m_Scroll != NULL)
+        if (m_Scroll != nullptr)
         {
             // Reset the transformation
             states.transform = origTransform;

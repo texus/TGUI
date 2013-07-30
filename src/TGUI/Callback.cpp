@@ -32,23 +32,23 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CallbackFunction::CallbackFunction() :
-    simpleFunction  (NULL),
-    extendedFunction(NULL)
+    simpleFunction  (nullptr),
+    extendedFunction(nullptr)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CallbackFunction::CallbackFunction(boost::function<void()> function) :
+    CallbackFunction::CallbackFunction(std::function<void()> function) :
     simpleFunction  (function),
-    extendedFunction(NULL)
+    extendedFunction(nullptr)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CallbackFunction::CallbackFunction(boost::function<void(const Callback&)> function) :
-    simpleFunction  (NULL),
+    CallbackFunction::CallbackFunction(std::function<void(const Callback&)> function) :
+    simpleFunction  (nullptr),
     extendedFunction(function)
     {
     }
@@ -56,14 +56,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CallbackManager::bindCallback(boost::function<void()> func, unsigned int trigger)
+    void CallbackManager::bindCallback(std::function<void()> func, unsigned int trigger)
     {
         mapCallback(CallbackFunction(func), trigger);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CallbackManager::bindCallbackEx(boost::function<void(const Callback&)> func, unsigned int trigger)
+    void CallbackManager::bindCallbackEx(std::function<void(const Callback&)> func, unsigned int trigger)
     {
         mapCallback(CallbackFunction(func), trigger);
     }

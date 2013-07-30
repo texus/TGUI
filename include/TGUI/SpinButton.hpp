@@ -238,10 +238,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to SpinButton.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SpinButtonCallbacks
         {
-            ValueChanged = ClickableWidgetCallbacksCount * 1,
-            AllSpinButtonCallbacks = ClickableWidgetCallbacksCount * 2 - 1,
+            ValueChanged = ClickableWidgetCallbacksCount * 1,               ///< Value has changed
+            AllSpinButtonCallbacks = ClickableWidgetCallbacksCount * 2 - 1, ///< All triggers defined in TextBox and its base classes
             SpinButtonCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 

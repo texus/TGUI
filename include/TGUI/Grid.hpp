@@ -51,32 +51,15 @@ namespace tgui
             /// \brief The layout of the widget.
             enum Layouts
             {
-                /// Draw the widget in the upper left corner of the cell
-                UpperLeft,
-
-                /// Draw the widget at the upper side of the cell (horizontally centered)
-                Up,
-
-                /// Draw the widget in the upper right corner of the cell
-                UpperRight,
-
-                /// Draw the widget at the right side of the cell (vertically centered)
-                Right,
-
-                /// Draw the widget in the bottom right corner of the cell
-                BottomRight,
-
-                /// Draw the widget at the bottom of the cell (horizontally centered)
-                Bottom,
-
-                /// Draw the widget in the bottom left corner of the cell
-                BottomLeft,
-
-                /// Draw the widget at the left side of the cell (vertically centered)
-                Left,
-
-                /// Center the widget in the cell
-                Center
+                UpperLeft,   ///< Draw the widget in the upper left corner of the cell
+                Up,          ///< Draw the widget at the upper side of the cell (horizontally centered)
+                UpperRight,  ///< Draw the widget in the upper right corner of the cell
+                Right,       ///< Draw the widget at the right side of the cell (vertically centered)
+                BottomRight, ///< Draw the widget in the bottom right corner of the cell
+                Bottom,      ///< Draw the widget at the bottom of the cell (horizontally centered)
+                BottomLeft,  ///< Draw the widget in the bottom left corner of the cell
+                Left,        ///< Draw the widget at the left side of the cell (vertically centered)
+                Center       ///< Center the widget in the cell
             };
         };
 
@@ -184,29 +167,38 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new widget to the next column.
+        /// \brief Add a widget to the grid.
         ///
-        /// \param widget   Pointer to a fully created widget that will be added to the grid.
-        /// \param borders  Distance from the grid square to the widget (left, top, right, bottom).
-        /// \param layout   Where the widget is located in the square.
+        /// \param widget  Pointer to a fully created widget that will be added to the grid
+        /// \param row     The row in which the widget should be placed
+        /// \param column  The column in which the widget should be placed
+        /// \param borders  Distance from the grid square to the widget (left, top, right, bottom)
+        /// \param layout   Where the widget is located in the square
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addToRow(const Widget::Ptr& widget, const Vector4u& borders = Vector4u(0, 0, 0, 0), Layout::Layouts layout = Layout::Center);
+        void addWidget(const Widget::Ptr& widget,
+                       unsigned int       row,
+                       unsigned int       column,
+                       const Vector4u&    borders = Vector4u(0, 0, 0, 0),
+                       Layout::Layouts    layout  = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a new row to the grid.
+        /// \brief Returns the widget in a specific square of the grid.
         ///
-        /// \param rowHeight  The height of the row when it stays empty, or the minimum height when widgets are added to the row.
+        /// \param row     The row that the widget is in
+        /// \param column  The column that the widget is in
+        ///
+        /// When there is no widget in the square, the function will return a nullptr.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addRow(unsigned int rowHeight = 0);
+        Widget::Ptr getWidget(unsigned int row, unsigned int column);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Updates the position and size of the widget.
         ///
-        /// After an widget has been added to the grid, you will have to call this function when you change the size of the widget.
+        /// Once a widget has been added to the grid, you will have to call this function every time you change the size of the widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateWidgets();
@@ -246,9 +238,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Grid.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum GridCallbacks
         {
-            AllGridCallbacks = WidgetCallbacksCount - 1,
+            AllGridCallbacks = WidgetCallbacksCount - 1, ///< All Callbacks defined in Grid and its base classes
             GridCallbacksCount = WidgetCallbacksCount
         };
 

@@ -42,7 +42,7 @@ namespace tgui
 
     ChildWindow::ChildWindow() :
     m_Size             (0, 0),
-    m_BackgroundTexture(NULL),
+    m_BackgroundTexture(nullptr),
     m_TitleBarHeight   (0),
     m_SplitImage       (false),
     m_DraggingPosition (0, 0),
@@ -95,14 +95,14 @@ namespace tgui
 
     ChildWindow::~ChildWindow()
     {
-        if (m_TextureTitleBar_L.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
-        if (m_TextureTitleBar_M.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
-        if (m_TextureTitleBar_R.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
+        if (m_TextureTitleBar_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
+        if (m_TextureTitleBar_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
+        if (m_TextureTitleBar_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
 
-        if (m_IconTexture.data != NULL)
+        if (m_IconTexture.data != nullptr)
             TGUI_TextureManager.removeTexture(m_IconTexture);
 
-        if (m_IconTexture.data != NULL)
+        if (m_IconTexture.data != nullptr)
             TGUI_TextureManager.removeTexture(m_IconTexture);
 
         delete m_CloseButton;
@@ -162,12 +162,12 @@ namespace tgui
         m_Loaded = false;
 
         // Remove the textures when they were loaded before
-        if (m_TextureTitleBar_L.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
-        if (m_TextureTitleBar_M.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
-        if (m_TextureTitleBar_R.data != NULL) TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
-        if (m_CloseButton->m_TextureNormal_M.data != NULL) TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureNormal_M);
-        if (m_CloseButton->m_TextureHover_M.data != NULL)  TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureHover_M);
-        if (m_CloseButton->m_TextureDown_M.data != NULL)   TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureDown_M);
+        if (m_TextureTitleBar_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTitleBar_L);
+        if (m_TextureTitleBar_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTitleBar_M);
+        if (m_TextureTitleBar_R.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTitleBar_R);
+        if (m_CloseButton->m_TextureNormal_M.data != nullptr) TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureNormal_M);
+        if (m_CloseButton->m_TextureHover_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureHover_M);
+        if (m_CloseButton->m_TextureDown_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_CloseButton->m_TextureDown_M);
 
         // Open the config file
         ConfigFile configFile;
@@ -264,14 +264,14 @@ namespace tgui
         }
 
         // Initialize the close button if it was loaded
-        if (m_CloseButton->m_TextureNormal_M.data != NULL)
+        if (m_CloseButton->m_TextureNormal_M.data != nullptr)
         {
             // Check if optional textures were loaded
-            if (m_CloseButton->m_TextureHover_M.data != NULL)
+            if (m_CloseButton->m_TextureHover_M.data != nullptr)
             {
                 m_CloseButton->m_WidgetPhase |= WidgetPhase_Hover;
             }
-            if (m_CloseButton->m_TextureDown_M.data != NULL)
+            if (m_CloseButton->m_TextureDown_M.data != nullptr)
             {
                 m_CloseButton->m_WidgetPhase |= WidgetPhase_MouseDown;
             }
@@ -286,7 +286,7 @@ namespace tgui
         }
 
         // Make sure the required texture was loaded
-        if ((m_TextureTitleBar_M.data != NULL))
+        if ((m_TextureTitleBar_M.data != nullptr))
         {
             m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
         }
@@ -1077,7 +1077,7 @@ namespace tgui
         }
 
         // Draw the background image if there is one
-        if (m_BackgroundTexture != NULL)
+        if (m_BackgroundTexture != nullptr)
             target.draw(m_BackgroundSprite, states);
 
         // Calculate the clipping area

@@ -38,7 +38,7 @@ namespace tgui
     Panel::Panel() :
     m_Size                         (100, 100),
     m_BackgroundColor              (sf::Color::Transparent),
-    m_Texture                      (NULL)
+    m_Texture                      (nullptr)
     {
         m_Callback.widgetType = Type_Panel;
         m_AllowFocus = true;

@@ -86,7 +86,7 @@ int main()
 
     tgui::MenuBar::Ptr menu(gui);
     menu->load(THEME_CONFIG_FILE);
-    menu->setHeight(20);
+    menu->setSize(window.getSize().x, 20);
     menu->addMenu("File");
     menu->addMenuItem("File", "Load");
     menu->addMenuItem("File", "Save");

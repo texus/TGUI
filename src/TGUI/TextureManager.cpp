@@ -32,7 +32,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture() :
-    data(NULL)
+    data(nullptr)
     {
     }
 
@@ -130,7 +130,7 @@ namespace tgui
 
         // The image couldn't be loaded
         m_Data.pop_back();
-        texture.data = NULL;
+        texture.data = nullptr;
         return false;
     }
 
@@ -152,7 +152,7 @@ namespace tgui
         }
 
         // We didn't have the texture and we can't store it without a filename
-        newTexture.data = NULL;
+        newTexture.data = nullptr;
         return false;
     }
 
@@ -177,7 +177,7 @@ namespace tgui
         }
 
         // The pointer is now useless
-        textureToRemove.data = NULL;
+        textureToRemove.data = nullptr;
         return;
     }
 

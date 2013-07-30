@@ -70,10 +70,10 @@ namespace tgui
 
     SpinButton::~SpinButton()
     {
-        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,10 +120,10 @@ namespace tgui
         m_Loaded = false;
 
         // If the button was loaded before then remove the old textures first
-        if (m_TextureArrowUpNormal.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureArrowUpNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -198,7 +198,7 @@ namespace tgui
         }
 
         // Make sure the required textures were loaded
-        if ((m_TextureArrowUpNormal.data != NULL) && (m_TextureArrowDownNormal.data != NULL))
+        if ((m_TextureArrowUpNormal.data != nullptr) && (m_TextureArrowDownNormal.data != nullptr))
         {
             m_Size.x = m_TextureArrowUpNormal.getSize().x;
             m_Size.y = m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y;
@@ -210,7 +210,7 @@ namespace tgui
         }
 
         // Check if optional textures were loaded
-        if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+        if ((m_TextureArrowUpHover.data != nullptr) && (m_TextureArrowDownHover.data != nullptr))
         {
             m_WidgetPhase |= WidgetPhase_Hover;
         }

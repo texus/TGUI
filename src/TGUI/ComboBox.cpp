@@ -78,10 +78,10 @@ namespace tgui
 
     ComboBox::~ComboBox()
     {
-        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
         delete m_ListBox;
     }
@@ -131,10 +131,10 @@ namespace tgui
         m_Loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_TextureArrowUpNormal.data != NULL)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != NULL)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != NULL)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != NULL)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
+        if (m_TextureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
+        if (m_TextureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
+        if (m_TextureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -246,14 +246,14 @@ namespace tgui
         }
 
         // Make sure the required textures were loaded
-        if ((m_TextureArrowUpNormal.data == NULL) || (m_TextureArrowDownNormal.data == NULL))
+        if ((m_TextureArrowUpNormal.data == nullptr) || (m_TextureArrowDownNormal.data == nullptr))
         {
             TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + configFileFilename + " complete?");
             return false;
         }
 
         // Check if optional textures were loaded
-        if ((m_TextureArrowUpHover.data != NULL) && (m_TextureArrowDownHover.data != NULL))
+        if ((m_TextureArrowUpHover.data != nullptr) && (m_TextureArrowDownHover.data != nullptr))
         {
             m_WidgetPhase |= WidgetPhase_Hover;
         }
@@ -683,7 +683,7 @@ namespace tgui
                     if (m_ListBox->m_MouseDown == true)
                     {
                         // Make sure the mouse didn't went down on the scrollbar
-                        if ((m_ListBox->m_Scroll == NULL) || ((m_ListBox->m_Scroll != NULL) && (m_ListBox->m_Scroll->m_MouseDown == false)))
+                        if ((m_ListBox->m_Scroll == nullptr) || ((m_ListBox->m_Scroll != nullptr) && (m_ListBox->m_Scroll->m_MouseDown == false)))
                         {
                             // Stop showing the list
                             m_ShowList = false;
@@ -708,7 +708,7 @@ namespace tgui
                 m_ShowList = true;
 
                 // Check if there is a scrollbar
-                if (m_ListBox->m_Scroll != NULL)
+                if (m_ListBox->m_Scroll != nullptr)
                 {
                     // If the selected item is not visible then change the value of the scrollbar
                     if (m_NrOfItemsToDisplay > 0)
@@ -761,7 +761,7 @@ namespace tgui
         if (m_ShowList)
         {
             // Only do something when there is a scrollbar
-            if (m_ListBox->m_Scroll != NULL)
+            if (m_ListBox->m_Scroll != nullptr)
             {
                 if (m_ListBox->m_Scroll->getLowValue() < m_ListBox->m_Scroll->getMaximum())
                 {
@@ -819,7 +819,7 @@ namespace tgui
                     if (m_ListBox->m_MouseDown == true)
                     {
                         // Check if the mouse went down on the scrollbar
-                        if ((m_ListBox->m_Scroll != NULL) && (m_ListBox->m_Scroll->m_MouseDown == true))
+                        if ((m_ListBox->m_Scroll != nullptr) && (m_ListBox->m_Scroll->m_MouseDown == true))
                         {
                             m_MouseDown = false;
                             m_ListBox->mouseNotOnWidget();

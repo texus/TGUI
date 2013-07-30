@@ -362,13 +362,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Widget.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum WidgetCallbacks
         {
-            None = 0,
-            Focused = 1,
-            Unfocused = 2,
-            MouseEntered = 4,
-            MouseLeft = 8,
+            None = 0,                 ///< No trigger
+            Focused = 1,              ///< Widget gained focus.
+            Unfocused = 2,            ///< Widget lost focus.
+            MouseEntered = 4,         ///< Mouse cursor entered in the Widget area.
+            MouseLeft = 8,            ///< Mouse cursor left the Widget area.
             WidgetCallbacksCount = 16
         };
 
@@ -389,7 +392,7 @@ namespace tgui
         // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down
         unsigned char m_WidgetPhase;
 
-        // This will point to our parent widget. If there is no parent then this will be NULL.
+        // This will point to our parent widget. If there is no parent then this will be nullptr.
         Container* m_Parent;
 
         // How transparent is the widget

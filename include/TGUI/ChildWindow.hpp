@@ -147,17 +147,17 @@ namespace tgui
         /// \warning You should make sure that the texture stays alive.
         ///
         /// If the texture has a different size than the child window then it will be scaled to fill the whole window.
-        /// Pass NULL to this function to remove the background texture.
+        /// Pass nullptr to this function to remove the background texture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundTexture(sf::Texture *const texture = NULL);
+        void setBackgroundTexture(sf::Texture *const texture = nullptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the background texture of the child window.
         ///
         /// \return Pointer to the texture that is being used as background of the child window.
-        ///         This pointer is NULL when no background texture was set.
+        ///         This pointer is nullptr when no background texture was set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Texture* getBackgroundTexture();
@@ -435,13 +435,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to ChildWindow.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChildWindowCallbacks
         {
-            LeftMousePressed = WidgetCallbacksCount * 1,
-            Closed = WidgetCallbacksCount * 2,
-            Moved = WidgetCallbacksCount * 4,
+            LeftMousePressed = WidgetCallbacksCount * 1,             ///< The left mouse button was pressed (child window was thus brough to front)
+            Closed = WidgetCallbacksCount * 2,                       ///< Child window was closed
+            Moved = WidgetCallbacksCount * 4,                        ///< Child window was moved
 //            Resized = WidgetCallbacksCount * 8,
-            AllChildWindowCallbacks = WidgetCallbacksCount * 16 - 1,
+            AllChildWindowCallbacks = WidgetCallbacksCount * 16 - 1, ///< All triggers defined in ChildWindow and its base classes
             ChildWindowCallbacksCount = WidgetCallbacksCount * 16
         };
 

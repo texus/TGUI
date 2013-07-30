@@ -509,10 +509,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to TextBox.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TextBoxCallbacks
         {
-            TextChanged = WidgetCallbacksCount * 1,
-            AllTextBoxCallbacks = WidgetCallbacksCount * 2 - 1,
+            TextChanged = WidgetCallbacksCount * 1,             ///< Text has changed
+            AllTextBoxCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in TextBox and its base classes
             TextBoxCallbacksCount = WidgetCallbacksCount * 2
         };
 

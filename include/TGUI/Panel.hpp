@@ -108,17 +108,17 @@ namespace tgui
         /// \warning You should make sure that the texture stays alive.
         ///
         /// If the texture has a different size than the panel then it will be scaled to fill the whole panel.
-        /// Pass NULL to this function to remove the background texture.
+        /// Pass nullptr to this function to remove the background texture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundTexture(sf::Texture *const texture = NULL);
+        void setBackgroundTexture(sf::Texture *const texture = nullptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the background texture of the panel.
         ///
         /// \return Pointer to the texture that is being used as background of the panel.
-        ///         This pointer is NULL when no background texture was set.
+        ///         This pointer is nullptr when no background texture was set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Texture* getBackgroundTexture();
@@ -193,12 +193,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to Panel.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum PanelCallbacks
         {
-            LeftMousePressed = WidgetCallbacksCount * 1,
-            LeftMouseReleased = WidgetCallbacksCount * 2,
-            LeftMouseClicked = WidgetCallbacksCount * 4,
-            AllPanelCallbacks = WidgetCallbacksCount * 8 - 1,
+            LeftMousePressed = WidgetCallbacksCount * 1,      ///< The left mouse button was pressed
+            LeftMouseReleased = WidgetCallbacksCount * 2,     ///< The left mouse button was released
+            LeftMouseClicked = WidgetCallbacksCount * 4,      ///< The left mouse button was clicked
+            AllPanelCallbacks = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in Panel and its base classes
             PanelCallbacksCount = WidgetCallbacksCount * 8
         };
 
