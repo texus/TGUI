@@ -140,6 +140,13 @@ namespace tgui
             }
         }
 
+        // Output an error when the section wasn't found
+        if (!sectionFound)
+        {
+            TGUI_OUTPUT("TGUI error: Section '" + section + "' was not found in the config file.");
+            error = true;
+        }
+
         // The end of the file was reached
         return !error;
     }
