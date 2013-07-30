@@ -39,7 +39,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::handleEvent(sf::Event& event)
+    bool EventManager::handleEvent(sf::Event& event)
     {
         // Check if a mouse button has moved
         if (event.type == sf::Event::MouseMoved)
@@ -54,7 +54,7 @@ namespace tgui
                     if (m_Widgets[i]->m_DraggableWidget)
                     {
                         m_Widgets[i]->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-                        return;
+                        return true;
                     }
 
                     // Containers also need a different treatment
@@ -62,7 +62,7 @@ namespace tgui
                     {
                         // Make the event handler of the container do the rest
                         static_cast<ContainerWidget::Ptr>(m_Widgets[i])->handleEvent(event, static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-                        return;
+                        return true;
                     }
                 }
             }
@@ -79,7 +79,11 @@ namespace tgui
                 }
                 else // Send the event to the widget
                     widget->mouseMoved(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+
+                return true;
             }
+
+            return false;
         }
 
         // Check if a mouse button was pressed
@@ -111,10 +115,14 @@ namespace tgui
                     }
                     else // The event has to be sent to an widget
                         widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+
+                    return true;
                 }
                 else // The mouse didn't went down on an widget, so unfocus the focused widget
                     unfocusAllWidgets();
             }
+
+            return false;
         }
 
         // Check if a mouse button was released
@@ -147,6 +155,8 @@ namespace tgui
                                 (*it)->mouseNoLongerDown();
                         }
                     }
+
+                    return true;
                 }
                 else
                 {
@@ -158,8 +168,12 @@ namespace tgui
                         else
                             m_Widgets[i]->mouseNoLongerDown();
                     }
+
+                    return false;
                 }
             }
+
+            return false;
         }
 
         // Check if a key was pressed
@@ -193,8 +207,12 @@ namespace tgui
                             m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
                         }
                     }
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         // Check if a key was released
@@ -202,7 +220,9 @@ namespace tgui
         {
             // Change the focus to another widget when the tab key was pressed
             if (event.key.code == sf::Keyboard::Tab)
-                tabKeyPressed();
+                return tabKeyPressed();
+            else
+                return false;
         }
 
         // Also check if text was entered (not a special key)
@@ -222,8 +242,12 @@ namespace tgui
                     }
                     else // Tell the widget that the key was pressed
                         m_Widgets[m_FocusedWidget-1]->textEntered(event.text.unicode);
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         // Check for mouse wheel scrolling
@@ -241,8 +265,14 @@ namespace tgui
                 }
                 else // Send the event to the widget
                     widget->mouseWheelMoved(event.mouseWheel.delta);
+
+                return true;
             }
+
+            return false;
         }
+        else // Event is ignored
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,11 +357,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::tabKeyPressed()
+    bool EventManager::tabKeyPressed()
     {
         // Don't do anything when the tab key usage is disabled
         if (tabKeyUsageEnabled == false)
-            return;
+            return false;
 
         // Check if a container is focused
         if (m_FocusedWidget)
@@ -340,7 +370,7 @@ namespace tgui
             {
                 // Focus the next widget in container
                 if (static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
-                    return;
+                    return true;
             }
         }
 
@@ -364,7 +394,7 @@ namespace tgui
                     m_FocusedWidget = i+1;
                     m_Widgets[i]->m_Focused = true;
                     m_Widgets[i]->widgetFocused();
-                    return;
+                    return true;
                 }
             }
         }
@@ -388,11 +418,13 @@ namespace tgui
                         m_FocusedWidget = i+1;
                         m_Widgets[i]->m_Focused = true;
                         m_Widgets[i]->widgetFocused();
-                        return;
+                        return true;
                     }
                 }
             }
         }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
