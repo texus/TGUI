@@ -186,7 +186,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(std::stoi(value)));
+                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
             else if (property == "normalimage")
             {
@@ -684,19 +684,19 @@ namespace tgui
             }
             else if (property == "TextSize")
             {
-                setTextSize(std::stoi(value));
+                setTextSize(atoi(value.c_str()));
             }
             else if (property == "TabHeight")
             {
-                setTabHeight(std::stoi(value));
+                setTabHeight(atoi(value.c_str()));
             }
             else if (property == "MaximumTabWidth")
             {
-                setMaximumTabWidth(std::stoi(value));
+                setMaximumTabWidth(atoi(value.c_str()));
             }
             else if (property == "DistanceToSide")
             {
-                setDistanceToSide(std::stoi(value));
+                setDistanceToSide(atoi(value.c_str()));
             }
             else // The property didn't match
                 return false;

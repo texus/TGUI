@@ -441,19 +441,19 @@ namespace tgui
     {
         if (property == "Left")
         {
-            setPosition(std::stof(value), getPosition().y);
+            setPosition(atof(value.c_str()), getPosition().y);
         }
         else if (property == "Top")
         {
-            setPosition(getPosition().x, std::stof(value));
+            setPosition(getPosition().x, atof(value.c_str()));
         }
         else if (property == "Width")
         {
-            setSize(std::stof(value), getSize().y);
+            setSize(atof(value.c_str()), getSize().y);
         }
         else if (property == "Height")
         {
-            setSize(getSize().x, std::stof(value));
+            setSize(getSize().x, atof(value.c_str()));
         }
         else if (property == "Visible")
         {
@@ -475,7 +475,7 @@ namespace tgui
         }
         else if (property == "Transparency")
         {
-            setTransparency(static_cast<char>(std::stoi(value)));
+            setTransparency(static_cast<char>(atoi(value.c_str())));
         }
         else // The property didn't match
             return false;

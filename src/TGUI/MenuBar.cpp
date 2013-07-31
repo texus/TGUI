@@ -107,7 +107,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(std::stoi(value)));
+                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MenuBar in " + configFileFilename + ".");
@@ -674,15 +674,15 @@ namespace tgui
             }
             else if (property == "TextSize")
             {
-                setTextSize(std::stoi(value));
+                setTextSize(atoi(value.c_str()));
             }
             else if (property == "DistanceToSide")
             {
-                setDistanceToSide(std::stoi(value));
+                setDistanceToSide(atoi(value.c_str()));
             }
             else if (property == "MinimumSubMenuWidth")
             {
-                setMinimumSubMenuWidth(std::stoi(value));
+                setMinimumSubMenuWidth(atoi(value.c_str()));
             }
             else // The property didn't match
                 return false;

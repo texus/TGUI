@@ -852,7 +852,7 @@ namespace tgui
             }
             else if (property == "ItemsToDisplay")
             {
-                setItemsToDisplay(std::stoi(value));
+                setItemsToDisplay(atoi(value.c_str()));
             }
             else if (property == "BackgroundColor")
             {
@@ -884,7 +884,7 @@ namespace tgui
             }
             else if (property == "MaximumItems")
             {
-                setMaximumItems(std::stoi(value));
+                setMaximumItems(atoi(value.c_str()));
             }
             else // The property didn't match
                 return false;

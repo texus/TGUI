@@ -454,15 +454,15 @@ namespace tgui
             }
             else if (property == "Minimum")
             {
-                setMinimum(std::stoi(value));
+                setMinimum(atoi(value.c_str()));
             }
             else if (property == "Maximum")
             {
-                setMaximum(std::stoi(value));
+                setMaximum(atoi(value.c_str()));
             }
             else if (property == "Value")
             {
-                setValue(std::stoi(value));
+                setValue(atoi(value.c_str()));
             }
             else if (property == "VerticalScroll")
             {

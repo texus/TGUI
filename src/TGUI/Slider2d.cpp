@@ -487,8 +487,8 @@ namespace tgui
                         std::string::size_type commaPos = value.find(',');
                         if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
                         {
-                            setMinimum(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                                    std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                            setMinimum(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                    atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
                         }
                         else
                             TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
@@ -508,8 +508,8 @@ namespace tgui
                         std::string::size_type commaPos = value.find(',');
                         if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
                         {
-                            setMaximum(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                                    std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                            setMaximum(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                    atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
                         }
                         else
                             TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
@@ -529,8 +529,8 @@ namespace tgui
                         std::string::size_type commaPos = value.find(',');
                         if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
                         {
-                            setValue(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                                  std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                            setValue(sf::Vector2f(atof(value.substr(1, commaPos-1).c_str()),
+                                                  atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str())));
                         }
                         else
                             TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
