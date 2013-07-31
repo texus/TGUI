@@ -874,19 +874,19 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "TitleBarHeight")
-                value = std::to_string(getTitleBarHeight());
+                value = to_string(getTitleBarHeight());
             else if (property == "BackgroundColor")
-                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "Title")
                 value = getTitle().toAnsiString();
             else if (property == "TitleColor")
-                value = "(" + std::to_string(int(getTitleColor().r)) + "," + std::to_string(int(getTitleColor().g)) + "," + std::to_string(int(getTitleColor().b)) + "," + std::to_string(int(getTitleColor().a)) + ")";
+                value = "(" + to_string(int(getTitleColor().r)) + "," + to_string(int(getTitleColor().g)) + "," + to_string(int(getTitleColor().b)) + "," + to_string(int(getTitleColor().a)) + ")";
             else if (property == "BorderColor")
-                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
             else if (property == "Borders")
-                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
             else if (property == "DistanceToSide")
-                value = std::to_string(getDistanceToSide());
+                value = to_string(getDistanceToSide());
             else if (property == "TitleAlignment")
             {
                 if (m_TitleAlignment == TitleAlignmentLeft)

@@ -571,17 +571,17 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "Minimum")
-                value = std::to_string(getMinimum());
+                value = to_string(getMinimum());
             else if (property == "Maximum")
-                value = std::to_string(getMaximum());
+                value = to_string(getMaximum());
             else if (property == "Value")
-                value = std::to_string(getValue());
+                value = to_string(getValue());
             else if (property == "Text")
                 value = getText().toAnsiString();
             else if (property == "TextColor")
-                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "TextSize")
-                value = std::to_string(getTextSize());
+                value = to_string(getTextSize());
             else // The property didn't match
                 return false;
         }

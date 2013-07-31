@@ -903,23 +903,23 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "ItemsToDisplay")
-                value = std::to_string(getItemsToDisplay());
+                value = to_string(getItemsToDisplay());
             else if (property == "BackgroundColor")
-                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "TextColor")
-                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "SelectedBackgroundColor")
-                value = "(" + std::to_string(int(getSelectedBackgroundColor().r)) + "," + std::to_string(int(getSelectedBackgroundColor().g))
-                        + "," + std::to_string(int(getSelectedBackgroundColor().b)) + "," + std::to_string(int(getSelectedBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getSelectedBackgroundColor().r)) + "," + to_string(int(getSelectedBackgroundColor().g))
+                        + "," + to_string(int(getSelectedBackgroundColor().b)) + "," + to_string(int(getSelectedBackgroundColor().a)) + ")";
             else if (property == "SelectedTextColor")
-                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
-                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
+                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
             else if (property == "BorderColor")
-                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
             else if (property == "Borders")
-                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
             else if (property == "MaximumItems")
-                value = std::to_string(getMaximumItems());
+                value = to_string(getMaximumItems());
             else // The property didn't match
                 return false;
         }

@@ -113,7 +113,7 @@ namespace tgui
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
                     error = true;
                 }
 
@@ -122,13 +122,13 @@ namespace tgui
                     ++c;
                 else
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
                     error = true;
                 }
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + to_string(lineNumber) + ".");
                     error = true;
                 }
 

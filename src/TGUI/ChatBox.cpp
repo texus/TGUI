@@ -761,13 +761,13 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "TextSize")
-                value = std::to_string(getTextSize());
+                value = to_string(getTextSize());
             else if (property == "Borders")
-                value = "(" + std::to_string(getBorders().x1) + "," + std::to_string(getBorders().x2) + "," + std::to_string(getBorders().x3) + "," + std::to_string(getBorders().x4) + ")";
+                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
             else if (property == "BackgroundColor")
-                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "BorderColor")
-                value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
             else // The property didn't match
                 return false;
         }

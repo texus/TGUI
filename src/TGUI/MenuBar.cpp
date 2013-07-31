@@ -701,23 +701,23 @@ namespace tgui
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();
             else if (property == "Height")
-                value = std::to_string(getSize().y);
+                value = to_string(getSize().y);
             else if (property == "BackgroundColor")
-                value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "TextColor")
-                value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
             else if (property == "SelectedBackgroundColor")
-                value = "(" + std::to_string(int(getSelectedBackgroundColor().r)) + "," + std::to_string(int(getSelectedBackgroundColor().g))
-                        + "," + std::to_string(int(getSelectedBackgroundColor().b)) + "," + std::to_string(int(getSelectedBackgroundColor().a)) + ")";
+                value = "(" + to_string(int(getSelectedBackgroundColor().r)) + "," + to_string(int(getSelectedBackgroundColor().g))
+                        + "," + to_string(int(getSelectedBackgroundColor().b)) + "," + to_string(int(getSelectedBackgroundColor().a)) + ")";
             else if (property == "SelectedTextColor")
-                value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
-                        + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
+                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
             else if (property == "TextSize")
-                value = std::to_string(getTextSize());
+                value = to_string(getTextSize());
             else if (property == "DistanceToSide")
-                value = std::to_string(getDistanceToSide());
+                value = to_string(getDistanceToSide());
             else if (property == "MinimumSubMenuWidth")
-                value = std::to_string(getMinimumSubMenuWidth());
+                value = to_string(getMinimumSubMenuWidth());
             else // The property didn't match
                 return false;
         }

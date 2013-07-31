@@ -489,19 +489,19 @@ namespace tgui
     bool Widget::getProperty(const std::string& property, std::string& value)
     {
         if (property == "Left")
-            value = std::to_string(getPosition().x);
+            value = to_string(getPosition().x);
         else if (property == "Top")
-            value = std::to_string(getPosition().y);
+            value = to_string(getPosition().y);
         else if (property == "Width")
-            value = std::to_string(getSize().x);
+            value = to_string(getSize().x);
         else if (property == "Height")
-            value = std::to_string(getSize().y);
+            value = to_string(getSize().y);
         else if (property == "Visible")
             value = m_Visible ? "true" : "false";
         else if (property == "Enabled")
             value = m_Enabled ? "true" : "false";
         else if (property == "Transparency")
-            value = std::to_string(int(getTransparency()));
+            value = to_string(int(getTransparency()));
         else // The property didn't match
             return false;
 
