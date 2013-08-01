@@ -88,13 +88,7 @@ namespace tgui
 
         ~SharedWidgetPtr()
         {
-            if (*m_RefCount == 1)
-            {
-                delete m_WidgetPtr;
-                delete m_RefCount;
-            }
-            else
-                *m_RefCount -= 1;
+            reset();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,13 +97,7 @@ namespace tgui
         {
             if (this != &copy)
             {
-                if (*m_RefCount == 1)
-                {
-                    delete m_WidgetPtr;
-                    delete m_RefCount;
-                }
-                else
-                    *m_RefCount -= 1;
+                reset();
 
                 m_WidgetPtr = copy.get();
 
@@ -125,13 +113,7 @@ namespace tgui
         template <class U>
         SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<U>& copy)
         {
-            if (*m_RefCount == 1)
-            {
-                delete m_WidgetPtr;
-                delete m_RefCount;
-            }
-            else
-                *m_RefCount -= 1;
+            reset();
 
             m_WidgetPtr = static_cast<T*>(copy.get());
 
@@ -145,22 +127,32 @@ namespace tgui
 
         void init(Container& container, const sf::String& widgetName = "")
         {
+            reset();
+
+            m_RefCount = new unsigned int;
+            *m_RefCount = 1;
+
+            m_WidgetPtr = new T();
+            container.add(*this, widgetName);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void reset()
+        {
             if (m_WidgetPtr != nullptr)
             {
                 if (*m_RefCount == 1)
                 {
                     delete m_WidgetPtr;
                     delete m_RefCount;
+
+                    m_WidgetPtr = nullptr;
+                    m_RefCount = nullptr;
                 }
                 else
                     *m_RefCount -= 1;
             }
-
-            m_WidgetPtr = new T();
-            container.add(*this, widgetName);
-
-            m_RefCount = new unsigned int;
-            *m_RefCount = 1;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
