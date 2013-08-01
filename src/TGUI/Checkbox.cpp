@@ -275,6 +275,8 @@ namespace tgui
     {
         if (m_Checked == false)
         {
+            m_Checked = true;
+
             // Add the callback (if the user requested it)
             if (m_CallbackFunctions[Checked].empty() == false)
             {
@@ -283,8 +285,6 @@ namespace tgui
                 addCallback();
             }
         }
-
-        m_Checked = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +293,8 @@ namespace tgui
     {
         if (m_Checked)
         {
+            m_Checked = false;
+
             // Add the callback (if the user requested it)
             if (m_CallbackFunctions[Unchecked].empty() == false)
             {
@@ -301,8 +303,6 @@ namespace tgui
                 addCallback();
             }
         }
-
-        m_Checked = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
