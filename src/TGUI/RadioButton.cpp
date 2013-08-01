@@ -182,11 +182,14 @@ namespace tgui
 
     void RadioButton::check()
     {
-        // Tell our parent that all the radio buttons should be unchecked
-        m_Parent->uncheckRadioButtons();
+        if (m_Checked == false)
+        {
+            // Tell our parent that all the radio buttons should be unchecked
+            m_Parent->uncheckRadioButtons();
 
-        // Check this radio button
-        Checkbox::check();
+            // Check this radio button
+            Checkbox::check();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
