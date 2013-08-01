@@ -271,6 +271,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f Checkbox::getSize() const
+    {
+        if (m_Text.getString().isEmpty())
+            return m_Size;
+        else
+            return Vector2f((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Size.y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Checkbox::check()
     {
         if (m_Checked == false)
