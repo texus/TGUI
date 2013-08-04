@@ -282,6 +282,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Grid::changeWidgetBorders(const Widget::Ptr& widget, const Vector4u& borders)
+    {
+        // Find the widget in the grid
+        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        {
+            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            {
+                if (m_GridWidgets[row][col] == widget)
+                {
+                    // Change borders of the widget
+                    m_ObjBorders[row][col] = borders;
+                    // Update all widgets
+                    updateWidgets();
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Grid::changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout)
     {
         // Find the widget in the grid
