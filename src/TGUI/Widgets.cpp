@@ -511,7 +511,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::initialize(tgui::Container *const parent)
+    void Widget::initialize(Container *const parent)
     {
         m_Parent = parent;
     }

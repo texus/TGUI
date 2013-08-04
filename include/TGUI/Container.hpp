@@ -322,7 +322,7 @@ namespace tgui
         /// \param func  Pointer to a free function with a reference to a Callback widget as parameter.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void bindGlobalCallback(std::function<void(const tgui::Callback&)> func);
+        void bindGlobalCallback(std::function<void(const Callback&)> func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        void bindGlobalCallback(void (T::*func)(const tgui::Callback&), const T* const classPtr)
+        void bindGlobalCallback(void (T::*func)(const Callback&), const T* const classPtr)
         {
             m_GlobalCallbackFunctions.push_back(std::bind(func, classPtr, std::placeholders::_1));
         }

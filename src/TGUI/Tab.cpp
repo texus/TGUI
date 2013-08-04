@@ -734,7 +734,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::initialize(tgui::Container *const parent)
+    void Tab::initialize(Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());

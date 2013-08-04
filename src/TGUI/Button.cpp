@@ -719,7 +719,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::initialize(tgui::Container *const parent)
+    void Button::initialize(Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());

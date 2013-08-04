@@ -289,7 +289,7 @@ namespace tgui
             return;
         }
 
-        tgui::Label::Ptr label(*m_Panel);
+        Label::Ptr label(*m_Panel);
         label->setText(text);
         label->setTextColor(color);
         label->setTextSize(m_TextSize);
@@ -307,7 +307,7 @@ namespace tgui
         // Split the label over multiple lines if necessary
         while (label->getSize().x > width)
         {
-            tgui::Label::Ptr newLabel = m_Panel->copy(label);
+            Label::Ptr newLabel = m_Panel->copy(label);
             newLabel->setText("");
 
             while (label->getSize().x > width)
@@ -342,7 +342,7 @@ namespace tgui
 
         std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
         for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
-            static_cast<tgui::Label::Ptr>(*it)->setTextFont(font);
+            static_cast<Label::Ptr>(*it)->setTextFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -778,7 +778,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::initialize(tgui::Container *const parent)
+    void ChatBox::initialize(Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
@@ -794,7 +794,7 @@ namespace tgui
         {
             unsigned int index = i - 1;
 
-            static_cast<tgui::Label::Ptr>(labels[index])->setTextSize(m_TextSize);
+            static_cast<Label::Ptr>(labels[index])->setTextSize(m_TextSize);
 
             if (m_Scroll != nullptr)
                 labels[index]->setPosition(m_LeftBorder + 2, bottomPosition - (m_TextSize * 1.4f) + m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_Scroll->getValue());

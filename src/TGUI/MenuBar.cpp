@@ -728,7 +728,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::initialize(tgui::Container *const parent)
+    void MenuBar::initialize(Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());

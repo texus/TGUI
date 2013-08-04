@@ -52,7 +52,7 @@ namespace tgui
     m_KeepInParent     (false)
     {
         m_Callback.widgetType = Type_ChildWindow;
-        m_CloseButton = new tgui::Button();
+        m_CloseButton = new Button();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace tgui
         TGUI_TextureManager.copyTexture(childWindowToCopy.m_TextureTitleBar_R, m_TextureTitleBar_R);
 
         // Copy the button
-        m_CloseButton = new tgui::Button(*childWindowToCopy.m_CloseButton);
+        m_CloseButton = new Button(*childWindowToCopy.m_CloseButton);
 
         // Set the bakground sprite, if there is a background texture
         if (childWindowToCopy.m_BackgroundTexture)
@@ -609,7 +609,7 @@ namespace tgui
     {
         // Move the childwindow to the front
         m_Parent->moveWidgetToFront(this);
-        
+
         // Add the callback (if the user requested it)
         if (m_CallbackFunctions[LeftMousePressed].empty() == false)
         {
@@ -906,7 +906,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::initialize(tgui::Container *const parent)
+    void ChildWindow::initialize(Container *const parent)
     {
         m_Parent = parent;
         setGlobalFont(m_Parent->getGlobalFont());

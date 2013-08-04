@@ -335,7 +335,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::initialize(tgui::Container *const parent)
+    void Label::initialize(Container *const parent)
     {
 
         m_Parent = parent;

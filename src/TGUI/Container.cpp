@@ -2393,7 +2393,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::bindGlobalCallback(std::function<void(const tgui::Callback&)> func)
+    void Container::bindGlobalCallback(std::function<void(const Callback&)> func)
     {
         m_GlobalCallbackFunctions.push_back(func);
     }

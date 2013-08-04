@@ -286,7 +286,7 @@ namespace tgui
             button->load(m_ButtonConfigFileFilename);
             button->setTextSize(m_TextSize);
             button->setText(caption);
-            button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, tgui::Button::LeftMouseClicked | tgui::Button::SpaceKeyPressed | tgui::Button::ReturnKeyPressed);
+            button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
 
             m_Buttons.push_back(button);
 

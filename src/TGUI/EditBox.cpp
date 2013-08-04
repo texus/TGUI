@@ -1873,7 +1873,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::initialize(tgui::Container *const parent)
+    void EditBox::initialize(Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());

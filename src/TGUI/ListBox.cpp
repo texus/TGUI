@@ -1087,7 +1087,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::initialize(tgui::Container *const parent)
+    void ListBox::initialize(Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());

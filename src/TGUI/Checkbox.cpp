@@ -617,7 +617,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::initialize(tgui::Container *const parent)
+    void Checkbox::initialize(Container *const parent)
     {
         m_Parent = parent;
         m_Text.setFont(m_Parent->getGlobalFont());

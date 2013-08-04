@@ -2277,7 +2277,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::initialize(tgui::Container *const parent)
+    void TextBox::initialize(Container *const parent)
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());

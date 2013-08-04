@@ -199,7 +199,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ContainerWidget::initialize(tgui::Container *const parent)
+    void ContainerWidget::initialize(Container *const parent)
     {
         m_Parent = parent;
         setGlobalFont(m_Parent->getGlobalFont());

@@ -71,7 +71,7 @@ namespace tgui
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownHover, m_TextureArrowDownHover);
 
         // Copy the list box
-        m_ListBox = new tgui::ListBox(*copy.m_ListBox);
+        m_ListBox = new ListBox(*copy.m_ListBox);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -930,7 +930,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::initialize(tgui::Container *const parent)
+    void ComboBox::initialize(Container *const parent)
     {
         m_Parent = parent;
         m_ListBox->setTextFont(m_Parent->getGlobalFont());

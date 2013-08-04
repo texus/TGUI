@@ -152,7 +152,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        void bindCallbackEx(void (T::*func)(const tgui::Callback&), T* const classPtr, unsigned int trigger)
+        void bindCallbackEx(void (T::*func)(const Callback&), T* const classPtr, unsigned int trigger)
         {
             mapCallback(std::bind(func, classPtr, std::ref(m_Callback)), trigger);
         }
