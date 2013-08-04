@@ -402,7 +402,7 @@ namespace tgui
         if (m_CallbackFunctions[ButtonClicked].empty() == false)
         {
             m_Callback.trigger = ButtonClicked;
-            m_Callback.text    = static_cast<Button*>(callback.widget)->getText();
+            m_Callback.text    = Button::Ptr(callback.widget)->getText();
             addCallback();
         }
     }

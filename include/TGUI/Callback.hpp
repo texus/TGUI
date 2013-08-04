@@ -31,6 +31,7 @@
 #include <functional>
 
 #include <TGUI/Defines.hpp>
+#include <TGUI/SharedWidgetPtr.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +51,7 @@ namespace tgui
         unsigned int trigger;
 
         // Pointer to the widget
-        Widget* widget;
+        SharedWidgetPtr<Widget> widget;
 
         // The type of the widget
         WidgetTypes widgetType;
@@ -208,6 +209,9 @@ namespace tgui
 
         Callback m_Callback;
 
+
+        template <class T>
+        friend class SharedWidgetPtr;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

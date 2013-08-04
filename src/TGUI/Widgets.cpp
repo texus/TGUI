@@ -46,7 +46,7 @@ namespace tgui
     m_DraggableWidget(false),
     m_ContainerWidget(false)
     {
-        m_Callback.widget = this;
+        m_Callback.widget = nullptr;
         m_Callback.widgetType = Type_Unknown;
         m_Callback.id = 0;
     }
@@ -71,7 +71,7 @@ namespace tgui
     m_DraggableWidget(copy.m_DraggableWidget),
     m_ContainerWidget(copy.m_ContainerWidget)
     {
-        m_Callback.widget = this;
+        m_Callback.widget = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ namespace tgui
             m_DraggableWidget     = right.m_DraggableWidget;
             m_ContainerWidget     = right.m_ContainerWidget;
             m_Callback            = Callback();
-            m_Callback.widget     = this;
+            m_Callback.widget     = nullptr;
             m_Callback.widgetType = right.m_Callback.widgetType;
             m_Callback.id         = right.m_Callback.id;
         }

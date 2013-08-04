@@ -54,13 +54,19 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr(Container& container, const sf::String& widgetName = "")
+        SharedWidgetPtr(std::nullptr_t) :
+        m_WidgetPtr(nullptr)
         {
             m_RefCount = new unsigned int;
             *m_RefCount = 1;
+        }
 
-            m_WidgetPtr = new T();
-            container.add(*this, widgetName);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        SharedWidgetPtr(Container& container, const sf::String& widgetName = "") :
+        m_WidgetPtr(nullptr)
+        {
+            init(container, widgetName);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +140,8 @@ namespace tgui
 
             m_WidgetPtr = new T();
             container.add(*this, widgetName);
+
+            m_WidgetPtr->m_Callback.widget = *this;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +296,7 @@ namespace tgui
         {
             SharedWidgetPtr<T> pointer;
             pointer.m_WidgetPtr = m_WidgetPtr->clone();
+            pointer.m_WidgetPtr->m_Callback.widget = pointer;
             return pointer;
         }
 
