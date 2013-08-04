@@ -293,6 +293,7 @@ namespace tgui
                 {
                     // Change borders of the widget
                     m_ObjBorders[row][col] = borders;
+
                     // Update all widgets
                     updateWidgets();
                 }
