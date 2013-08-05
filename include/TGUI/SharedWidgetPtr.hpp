@@ -26,14 +26,16 @@
 #ifndef TGUI_SHARED_WIDGET_PTR_HPP
 #define TGUI_SHARED_WIDGET_PTR_HPP
 
-#include <cassert>
 
-#include <TGUI/Container.hpp>
+#include <SFML/System/String.hpp>
+
+#include <cstddef>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    class Container;
     class ContainerWidget;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,145 +47,58 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr() :
-        m_WidgetPtr(nullptr)
-        {
-            m_RefCount = new unsigned int;
-            *m_RefCount = 1;
-        }
+        SharedWidgetPtr();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr(std::nullptr_t) :
-        m_WidgetPtr(nullptr)
-        {
-            m_RefCount = new unsigned int;
-            *m_RefCount = 1;
-        }
+        SharedWidgetPtr(std::nullptr_t);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr(Container& container, const sf::String& widgetName = "") :
-        m_WidgetPtr(nullptr)
-        {
-            init(container, widgetName);
-        }
+        SharedWidgetPtr(Container& container, const sf::String& widgetName = "");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr(const SharedWidgetPtr<T>& copy)
-        {
-            m_WidgetPtr = copy.get();
-
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
-        }
+        SharedWidgetPtr(const SharedWidgetPtr<T>& copy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <class U>
-        SharedWidgetPtr(const SharedWidgetPtr<U>& copy)
-        {
-            m_WidgetPtr = static_cast<T*>(copy.get());
-
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
-        }
+        SharedWidgetPtr(const SharedWidgetPtr<U>& copy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ~SharedWidgetPtr()
-        {
-            reset();
-        }
+        ~SharedWidgetPtr();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<T>& copy)
-        {
-            if (this != &copy)
-            {
-                reset();
-
-                m_WidgetPtr = copy.get();
-
-                m_RefCount = copy.getRefCount();
-                *m_RefCount += 1;
-            }
-
-            return *this;
-        }
+        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<T>& copy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <class U>
-        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<U>& copy)
-        {
-            reset();
-
-            m_WidgetPtr = static_cast<T*>(copy.get());
-
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
-
-            return *this;
-        }
+        SharedWidgetPtr<T>& operator=(const SharedWidgetPtr<U>& copy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void init(Container& container, const sf::String& widgetName = "")
-        {
-            reset();
-
-            m_RefCount = new unsigned int;
-            *m_RefCount = 1;
-
-            m_WidgetPtr = new T();
-            container.add(*this, widgetName);
-
-            m_WidgetPtr->m_Callback.widget = *this;
-        }
+        void init(Container& container, const sf::String& widgetName = "");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void reset()
-        {
-            if (m_WidgetPtr != nullptr)
-            {
-                if (*m_RefCount == 1)
-                {
-                    delete m_WidgetPtr;
-                    delete m_RefCount;
-
-                    m_WidgetPtr = nullptr;
-                    m_RefCount = nullptr;
-                }
-                else
-                    *m_RefCount -= 1;
-            }
-        }
+        void reset();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool operator!() const
-        {
-            return m_WidgetPtr == nullptr;
-        }
+        bool operator!() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool operator ==(const SharedWidgetPtr<U>& right) const
-        {
-            return m_WidgetPtr == right.m_WidgetPtr;
-        }
+        bool operator ==(const SharedWidgetPtr<U>& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool operator ==(const SharedWidgetPtr<T>& right) const
-        {
-            return m_WidgetPtr == right.m_WidgetPtr;
-        }
+        bool operator ==(const SharedWidgetPtr<T>& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -218,17 +133,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         template <typename U>
-        bool operator !=(const SharedWidgetPtr<U>& right) const
-        {
-            return m_WidgetPtr != right.m_WidgetPtr;
-        }
+        bool operator !=(const SharedWidgetPtr<U>& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool operator !=(const SharedWidgetPtr<T>& right) const
-        {
-            return m_WidgetPtr != right.m_WidgetPtr;
-        }
+        bool operator !=(const SharedWidgetPtr<T>& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -262,43 +171,23 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        T& operator*() const
-        {
-            assert(m_WidgetPtr != nullptr);
-            return *m_WidgetPtr;
-        }
+        T& operator*() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        T* operator->() const
-        {
-            assert(m_WidgetPtr != nullptr);
-            return m_WidgetPtr;
-        }
+        T* operator->() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        T* get() const
-        {
-            return m_WidgetPtr;
-        }
+        T* get() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        unsigned int* getRefCount() const
-        {
-            return m_RefCount;
-        }
+        unsigned int* getRefCount() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SharedWidgetPtr clone() const
-        {
-            SharedWidgetPtr<T> pointer;
-            pointer.m_WidgetPtr = m_WidgetPtr->clone();
-            pointer.m_WidgetPtr->m_Callback.widget = pointer;
-            return pointer;
-        }
+        SharedWidgetPtr clone() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       private:

@@ -23,11 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/MenuBar.hpp>
+#include <cmath>
 
 #include <SFML/OpenGL.hpp>
-#include <cmath>
+
+#include <TGUI/Container.hpp>
+#include <TGUI/MenuBar.hpp>
 
 /// \todo Use images instead of a simple color
 

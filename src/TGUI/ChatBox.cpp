@@ -23,16 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/Slider.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ChatBox.hpp>
-
-#include <TGUI/ContainerWidget.hpp>
-#include <TGUI/Panel.hpp>
-
-#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Label.hpp>
+#include <TGUI/Panel.hpp>
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/SharedWidgetPtr.inl>
+#include <TGUI/ChatBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

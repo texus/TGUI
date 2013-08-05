@@ -26,6 +26,9 @@
 #ifndef TGUI_TEXT_BOX_HPP
 #define TGUI_TEXT_BOX_HPP
 
+
+#include <TGUI/Widgets.hpp>
+
 /// \todo  Rename Selection point position to caret position
 /// \todo  Double clicking should only select one word in TextBox. To select the whole text, you should click 3 times.
 /// \todo  Add a horizontal scrollbar in Textbox.
@@ -40,6 +43,8 @@
 
 namespace tgui
 {
+    class Scrollbar;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API TextBox : public Widget, public WidgetBorders

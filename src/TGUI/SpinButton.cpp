@@ -23,8 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/ClickableWidget.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/SpinButton.hpp>
 
 /// \todo Allow images next to each other (e.g. plus and minus icon).

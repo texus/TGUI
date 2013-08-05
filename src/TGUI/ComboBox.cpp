@@ -23,15 +23,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/ClickableWidget.hpp>
-#include <TGUI/Slider.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ListBox.hpp>
-#include <TGUI/ComboBox.hpp>
+#include <cmath>
 
 #include <SFML/OpenGL.hpp>
-#include <cmath>
+
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/ListBox.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/ComboBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -23,12 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/ClickableWidget.hpp>
-#include <TGUI/Tab.hpp>
+#include <cmath>
 
 #include <SFML/OpenGL.hpp>
-#include <cmath>
+
+#include <TGUI/Container.hpp>
+#include <TGUI/Tab.hpp>
 
 /// \todo  Cache size to speedup getSize function.
 

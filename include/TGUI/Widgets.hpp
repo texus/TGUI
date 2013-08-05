@@ -26,11 +26,12 @@
 #ifndef TGUI_WIDGETS_HPP
 #define TGUI_WIDGETS_HPP
 
+
+#include <TGUI/Defines.hpp>
+#include <TGUI/ConfigFile.hpp>
 #include <TGUI/Callback.hpp>
 #include <TGUI/Transformable.hpp>
-#include <TGUI/Container.hpp>
 #include <TGUI/SharedWidgetPtr.hpp>
-#include <TGUI/ConfigFile.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

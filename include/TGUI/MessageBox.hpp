@@ -26,6 +26,11 @@
 #ifndef TGUI_MESSAGE_BOX_HPP
 #define TGUI_MESSAGE_BOX_HPP
 
+
+#include <TGUI/Label.hpp>
+#include <TGUI/Button.hpp>
+#include <TGUI/ChildWindow.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui

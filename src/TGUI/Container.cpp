@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
-
 #include <stack>
 #include <cmath>
 #include <cassert>
+
+#include <TGUI/TGUI.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,6 +43,7 @@ namespace tgui
 
     Container::Container(const Container& containerToCopy) :
     m_GlobalFont             (containerToCopy.m_GlobalFont),
+    m_ContainerFocused       (false),
     m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the widgets

@@ -23,14 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets.hpp>
-#include <TGUI/ContainerWidget.hpp>
-#include <TGUI/ClickableWidget.hpp>
-#include <TGUI/Button.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/ChildWindow.hpp>
-
 #include <SFML/OpenGL.hpp>
+
+#include <TGUI/Button.hpp>
+#include <TGUI/ChildWindow.hpp>
 
 /// \todo Add SplitImage to title bar
 
