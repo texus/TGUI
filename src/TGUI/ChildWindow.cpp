@@ -54,7 +54,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-    ContainerWidget    (childWindowToCopy),
+    Container          (childWindowToCopy),
     WidgetBorders      (childWindowToCopy),
     m_LoadedConfigFile (childWindowToCopy.m_LoadedConfigFile),
     m_Size             (childWindowToCopy.m_Size),
@@ -112,7 +112,7 @@ namespace tgui
         if (this != &right)
         {
             ChildWindow temp(right);
-            this->ContainerWidget::operator=(right);
+            this->Container::operator=(right);
             this->WidgetBorders::operator=(right);
 
             // Delete the old close button
@@ -396,7 +396,7 @@ namespace tgui
 
     void ChildWindow::setTransparency(unsigned char transparency)
     {
-        ContainerWidget::setTransparency(transparency);
+        Container::setTransparency(transparency);
 
         m_BackgroundSprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
@@ -550,15 +550,15 @@ namespace tgui
         {
             if (y < 0)
                 Transformable::setPosition(getPosition().x, 0);
-            else if (y > m_Parent->getDisplaySize().y - m_TitleBarHeight)
-                Transformable::setPosition(getPosition().x, m_Parent->getDisplaySize().y - m_TitleBarHeight);
+            else if (y > m_Parent->getSize().y - m_TitleBarHeight)
+                Transformable::setPosition(getPosition().x, m_Parent->getSize().y - m_TitleBarHeight);
             else
                 Transformable::setPosition(getPosition().x, y);
 
             if (x < 0)
                 Transformable::setPosition(0, getPosition().y);
-            else if (x > m_Parent->getDisplaySize().x - getSize().x)
-                Transformable::setPosition(m_Parent->getDisplaySize().x - getSize().x, getPosition().y);
+            else if (x > m_Parent->getSize().x - getSize().x)
+                Transformable::setPosition(m_Parent->getSize().x - getSize().x, getPosition().y);
             else
                 Transformable::setPosition(x, getPosition().y);
         }
@@ -656,7 +656,7 @@ namespace tgui
             }
         }
 
-        ContainerWidget::leftMousePressed(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+        Container::leftMousePressed(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -725,7 +725,7 @@ namespace tgui
             }
         }
 
-        ContainerWidget::leftMouseReleased(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+        Container::leftMouseReleased(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -782,21 +782,21 @@ namespace tgui
             }
         }
 
-        ContainerWidget::mouseMoved(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+        Container::mouseMoved(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::mouseWheelMoved(int delta, int x, int y)
     {
-        ContainerWidget::mouseWheelMoved(delta, x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+        Container::mouseWheelMoved(delta, x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::mouseNoLongerDown()
     {
-        ContainerWidget::mouseNoLongerDown();
+        Container::mouseNoLongerDown();
         m_CloseButton->mouseNoLongerDown();
     }
 
@@ -804,7 +804,7 @@ namespace tgui
 
     bool ChildWindow::setProperty(const std::string& property, const std::string& value)
     {
-        if (!ContainerWidget::setProperty(property, value))
+        if (!Container::setProperty(property, value))
         {
             if (property == "ConfigFile")
             {
@@ -865,7 +865,7 @@ namespace tgui
 
     bool ChildWindow::getProperty(const std::string& property, std::string& value)
     {
-        if (!ContainerWidget::getProperty(property, value))
+        if (!Container::getProperty(property, value))
         {
             if (property == "ConfigFile")
                 value = getLoadedConfigFile();

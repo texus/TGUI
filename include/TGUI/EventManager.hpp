@@ -127,7 +127,6 @@ namespace tgui
         // The event handler can only be used by container widgets and by the window
         friend class Grid;
         friend class Container;
-        friend class ContainerWidget;
         friend class Panel;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

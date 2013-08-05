@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Widget.hpp>
-#include <TGUI/ContainerWidget.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/EventManager.hpp>
 
@@ -302,7 +302,7 @@ namespace tgui
             if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
             {
                 // Focus the next widget in container
-                if (static_cast<ContainerWidget::Ptr>(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
+                if (static_cast<Container::Ptr>(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
                     return true;
             }
         }

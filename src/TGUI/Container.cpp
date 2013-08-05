@@ -37,14 +37,17 @@ namespace tgui
 
     Container::Container()
     {
+        m_ContainerWidget = true;
+        m_AnimatedWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container(const Container& containerToCopy) :
-    m_GlobalFont             (containerToCopy.m_GlobalFont),
-    m_ContainerFocused       (false),
-    m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
+        Widget                   (containerToCopy),
+        m_GlobalFont             (containerToCopy.m_GlobalFont),
+        m_ContainerFocused       (false),
+        m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_EventManager.m_Widgets.size(); ++i)
@@ -70,8 +73,11 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
+            Widget::operator=(right);
+
             // Copy the font and the callback functions
             m_GlobalFont = right.m_GlobalFont;
+            m_ContainerFocused = false;
             m_GlobalCallbackFunctions = right.m_GlobalCallbackFunctions;
 
             // Remove all the old widgets
@@ -109,6 +115,225 @@ namespace tgui
     const sf::Font& Container::getGlobalFont() const
     {
         return m_GlobalFont;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<Widget::Ptr>& Container::getWidgets()
+    {
+        return m_EventManager.m_Widgets;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String>& Container::getWidgetNames()
+    {
+        return m_ObjName;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
+    {
+        assert(widgetPtr != nullptr);
+
+        widgetPtr->initialize(this);
+        m_EventManager.m_Widgets.push_back(widgetPtr);
+        m_ObjName.push_back(widgetName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Container::get(const sf::String& widgetName) const
+    {
+        for (unsigned int i = 0; i < m_ObjName.size(); ++i)
+        {
+            if (m_ObjName[i] == widgetName)
+                return m_EventManager.m_Widgets[i];
+        }
+
+        return Widget::Ptr();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Container::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
+    {
+        Widget::Ptr newWidget = oldWidget.clone();
+        add(newWidget, newWidgetName);
+        return newWidget;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::remove(const Widget::Ptr& widget)
+    {
+        remove(widget.get());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::remove(Widget* widget)
+    {
+        // Loop through every widget
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        {
+            // Check if the pointer matches
+            if (m_EventManager.m_Widgets[i].get() == widget)
+            {
+                // Unfocus the widget, just in case it was focused
+                m_EventManager.unfocusWidget(widget);
+
+                // Remove the widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
+
+                // Also emove the name it from the list
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::removeAllWidgets()
+    {
+        // Clear the lists
+        m_EventManager.m_Widgets.clear();
+        m_ObjName.clear();
+
+        // There are no more widgets, so none of the widgets can be focused
+        m_EventManager.m_FocusedWidget = 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::focusWidget(Widget *const widget)
+    {
+        m_EventManager.focusWidget(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::unfocusWidget(Widget *const widget)
+    {
+        m_EventManager.unfocusWidget(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::unfocusAllWidgets()
+    {
+        m_EventManager.unfocusAllWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::uncheckRadioButtons()
+    {
+        // Loop through all radio buttons and uncheck them
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        {
+            if (m_EventManager.m_Widgets[i]->m_Callback.widgetType == Type_RadioButton)
+                static_cast<RadioButton::Ptr>(m_EventManager.m_Widgets[i])->forceUncheck();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::moveWidgetToFront(Widget *const widget)
+    {
+        // Loop through all widgets
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        {
+            // Check if the widget is found
+            if (m_EventManager.m_Widgets[i].get() == widget)
+            {
+                // Copy the widget
+                m_EventManager.m_Widgets.push_back(m_EventManager.m_Widgets[i]);
+                m_ObjName.push_back(m_ObjName[i]);
+
+                // Focus the correct widget
+                if ((m_EventManager.m_FocusedWidget == 0) || (m_EventManager.m_FocusedWidget == i+1))
+                    m_EventManager.m_FocusedWidget = m_EventManager.m_Widgets.size()-1;
+                else if (m_EventManager.m_FocusedWidget > i+1)
+                    --m_EventManager.m_FocusedWidget;
+
+                // Remove the old widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
+                m_ObjName.erase(m_ObjName.begin() + i);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::moveWidgetToBack(Widget *const widget)
+    {
+        // Loop through all widgets
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        {
+            // Check if the widget is found
+            if (m_EventManager.m_Widgets[i].get() == widget)
+            {
+                // Copy the widget
+                Widget::Ptr obj = m_EventManager.m_Widgets[i];
+                std::string name = m_ObjName[i];
+                m_EventManager.m_Widgets.insert(m_EventManager.m_Widgets.begin(), obj);
+                m_ObjName.insert(m_ObjName.begin(), name);
+
+                // Focus the correct widget
+                if (m_EventManager.m_FocusedWidget == i + 1)
+                    m_EventManager.m_FocusedWidget = 1;
+                else if (m_EventManager.m_FocusedWidget)
+                    ++m_EventManager.m_FocusedWidget;
+
+                // Remove the old widget
+                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i + 1);
+                m_ObjName.erase(m_ObjName.begin() + i + 1);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::setTransparency(unsigned char transparency)
+    {
+        Widget::setTransparency(transparency);
+
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+            m_EventManager.m_Widgets[i]->setTransparency(transparency);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::bindGlobalCallback(std::function<void(const Callback&)> func)
+    {
+        m_GlobalCallbackFunctions.push_back(func);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::unbindGlobalCallback()
+    {
+        m_GlobalCallbackFunctions.clear();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states) const
+    {
+        // Draw all widgets when they are visible
+        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        {
+            if (m_EventManager.m_Widgets[i]->m_Visible)
+                m_EventManager.m_Widgets[i]->draw(*target, states);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2211,211 +2436,176 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
+    void Container::addChildCallback(const Callback& callback)
     {
-        assert(widgetPtr != nullptr);
-
-        widgetPtr->initialize(this);
-        m_EventManager.m_Widgets.push_back(widgetPtr);
-        m_ObjName.push_back(widgetName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Container::get(const sf::String& widgetName) const
-    {
-        for (unsigned int i = 0; i < m_ObjName.size(); ++i)
+        // If there is no global callback function then send the callback to the parent
+        if (m_GlobalCallbackFunctions.empty())
+            m_Parent->addChildCallback(callback);
+        else
         {
-            if (m_ObjName[i] == widgetName)
-                return m_EventManager.m_Widgets[i];
-        }
-
-        return Widget::Ptr();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Container::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
-    {
-        Widget::Ptr newWidget = oldWidget.clone();
-        add(newWidget, newWidgetName);
-        return newWidget;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<Widget::Ptr>& Container::getWidgets()
-    {
-        return m_EventManager.m_Widgets;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<sf::String>& Container::getWidgetNames()
-    {
-        return m_ObjName;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::remove(const Widget::Ptr& widget)
-    {
-        remove(widget.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::remove(Widget* widget)
-    {
-        // Loop through every widget
-        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
-        {
-            // Check if the pointer matches
-            if (m_EventManager.m_Widgets[i].get() == widget)
-            {
-                // Unfocus the widget, just in case it was focused
-                m_EventManager.unfocusWidget(widget);
-
-                // Remove the widget
-                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
-
-                // Also emove the name it from the list
-                m_ObjName.erase(m_ObjName.begin() + i);
-
-                break;
-            }
+            // Loop through all callback functions and call them
+            for (auto it = m_GlobalCallbackFunctions.cbegin(); it != m_GlobalCallbackFunctions.cend(); ++it)
+                (*it)(callback);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::removeAllWidgets()
+    void Container::leftMousePressed(float x, float y)
     {
-        // Clear the lists
-        m_EventManager.m_Widgets.clear();
-        m_ObjName.clear();
+        sf::Event event;
+        event.type = sf::Event::MouseButtonPressed;
+        event.mouseButton.button = sf::Mouse::Left;
+        event.mouseButton.x = static_cast<int>(x - getPosition().x);
+        event.mouseButton.y = static_cast<int>(y - getPosition().y);
 
-        // There are no more widgets, so none of the widgets can be focused
-        m_EventManager.m_FocusedWidget = 0;
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::uncheckRadioButtons()
+    void Container::leftMouseReleased(float x , float y)
     {
-        // Loop through all radio buttons and uncheck them
-        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
+        sf::Event event;
+        event.type = sf::Event::MouseButtonReleased;
+        event.mouseButton.button = sf::Mouse::Left;
+        event.mouseButton.x = static_cast<int>(x - getPosition().x);
+        event.mouseButton.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::mouseMoved(float x, float y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseMoved;
+        event.mouseMove.x = static_cast<int>(x - getPosition().x);
+        event.mouseMove.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::keyPressed(sf::Keyboard::Key key)
+    {
+        sf::Event event;
+        event.type = sf::Event::KeyPressed;
+        event.key.code = key;
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::textEntered(sf::Uint32 key)
+    {
+        sf::Event event;
+        event.type = sf::Event::TextEntered;
+        event.text.unicode = key;
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::mouseWheelMoved(int delta, int x, int y)
+    {
+        sf::Event event;
+        event.type = sf::Event::MouseWheelMoved;
+        event.mouseWheel.delta = delta;
+        event.mouseWheel.x = static_cast<int>(x - getPosition().x);
+        event.mouseWheel.y = static_cast<int>(y - getPosition().y);
+
+        // Let the event manager handle the event
+        m_EventManager.handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::mouseNotOnWidget()
+    {
+        if (m_MouseHover == true)
         {
-            if (m_EventManager.m_Widgets[i]->m_Callback.widgetType == Type_RadioButton)
-                static_cast<RadioButton::Ptr>(m_EventManager.m_Widgets[i])->forceUncheck();
+            mouseLeftWidget();
+            m_EventManager.mouseNotOnWidget();
+
+            m_MouseHover = false;
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::focusWidget(Widget *const widget)
+    void Container::mouseNoLongerDown()
     {
-        m_EventManager.focusWidget(widget);
+        Widget::mouseNoLongerDown();
+        m_EventManager.mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unfocusWidget(Widget *const widget)
+    void Container::initialize(Container *const parent)
     {
-        m_EventManager.unfocusWidget(widget);
+        m_Parent = parent;
+        setGlobalFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unfocusAllWidgets()
+    void Container::update()
     {
-        m_EventManager.unfocusAllWidgets();
+        m_EventManager.updateTime(m_AnimationTimeElapsed);
+        m_AnimationTimeElapsed = sf::Time();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::moveWidgetToFront(Widget *const widget)
+    bool Container::focusNextWidgetInContainer()
     {
-        // Loop through all widgets
-        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
-        {
-            // Check if the widget is found
-            if (m_EventManager.m_Widgets[i].get() == widget)
-            {
-                // Copy the widget
-                m_EventManager.m_Widgets.push_back(m_EventManager.m_Widgets[i]);
-                m_ObjName.push_back(m_ObjName[i]);
+        return m_EventManager.focusNextWidget();
+    }
 
-                // Focus the correct widget
-                if ((m_EventManager.m_FocusedWidget == 0) || (m_EventManager.m_FocusedWidget == i+1))
-                    m_EventManager.m_FocusedWidget = m_EventManager.m_Widgets.size()-1;
-                else if (m_EventManager.m_FocusedWidget > i+1)
-                    --m_EventManager.m_FocusedWidget;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                // Remove the old widget
-                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
-                m_ObjName.erase(m_ObjName.begin() + i);
-
-                break;
-            }
-        }
+    void GuiContainer::setSize(float width, float height)
+    {
+        m_Size.x = width;
+        m_Size.y = height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::moveWidgetToBack(Widget *const widget)
+    Vector2f GuiContainer::getSize() const
     {
-        // Loop through all widgets
-        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
-        {
-            // Check if the widget is found
-            if (m_EventManager.m_Widgets[i].get() == widget)
-            {
-                // Copy the widget
-                Widget::Ptr obj = m_EventManager.m_Widgets[i];
-                std::string name = m_ObjName[i];
-                m_EventManager.m_Widgets.insert(m_EventManager.m_Widgets.begin(), obj);
-                m_ObjName.insert(m_ObjName.begin(), name);
-
-                // Focus the correct widget
-                if (m_EventManager.m_FocusedWidget == i + 1)
-                    m_EventManager.m_FocusedWidget = 1;
-                else if (m_EventManager.m_FocusedWidget)
-                    ++m_EventManager.m_FocusedWidget;
-
-                // Remove the old widget
-                m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i + 1);
-                m_ObjName.erase(m_ObjName.begin() + i + 1);
-
-                break;
-            }
-        }
+        return m_Size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::bindGlobalCallback(std::function<void(const Callback&)> func)
+    GuiContainer* GuiContainer::clone()
     {
-        m_GlobalCallbackFunctions.push_back(func);
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unbindGlobalCallback()
+    bool GuiContainer::mouseOnWidget(float, float)
     {
-        m_GlobalCallbackFunctions.clear();
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states) const
+    void GuiContainer::draw(sf::RenderTarget&, sf::RenderStates) const
     {
-        // Draw all widgets when they are visible
-        for (unsigned int i = 0; i < m_EventManager.m_Widgets.size(); ++i)
-        {
-            if (m_EventManager.m_Widgets[i]->m_Visible)
-                m_EventManager.m_Widgets[i]->draw(*target, states);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -46,7 +46,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
-    ContainerWidget  (panelToCopy),
+    Container        (panelToCopy),
     m_Size           (panelToCopy.m_Size),
     m_BackgroundColor(panelToCopy.m_BackgroundColor),
     m_Texture        (panelToCopy.m_Texture)
@@ -73,7 +73,7 @@ namespace tgui
         if (this != &right)
         {
             Panel temp(right);
-            this->ContainerWidget::operator=(right);
+            this->Container::operator=(right);
 
             std::swap(m_Size,                          temp.m_Size);
             std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
@@ -155,7 +155,7 @@ namespace tgui
 
     void Panel::setTransparency(unsigned char transparency)
     {
-        ContainerWidget::setTransparency(transparency);
+        Container::setTransparency(transparency);
 
         m_BackgroundColor.a = m_Opacity;
 
@@ -202,7 +202,7 @@ namespace tgui
             }
         }
 
-        ContainerWidget::leftMousePressed(x, y);
+        Container::leftMousePressed(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ namespace tgui
 
         m_MouseDown = false;
 
-        ContainerWidget::leftMouseReleased(x, y);
+        Container::leftMouseReleased(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

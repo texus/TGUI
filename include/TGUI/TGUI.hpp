@@ -49,7 +49,7 @@
 #include <TGUI/MenuBar.hpp>
 #include <TGUI/ChatBox.hpp>
 
-#include <TGUI/ContainerWidget.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/MessageBox.hpp>

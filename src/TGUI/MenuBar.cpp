@@ -733,7 +733,7 @@ namespace tgui
     {
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
-        m_Size.x = m_Parent->getDisplaySize().x;
+        m_Size.x = m_Parent->getSize().x;
         m_Size.y = 20;
     }
 

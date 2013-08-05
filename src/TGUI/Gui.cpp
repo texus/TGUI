@@ -37,8 +37,10 @@ namespace tgui
     Gui::Gui() :
     m_Window(nullptr)
     {
+        m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
+
         // The main window is always focused
-        m_ContainerFocused = true;
+        m_Container.m_ContainerFocused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +48,11 @@ namespace tgui
     Gui::Gui(sf::RenderWindow& window) :
     m_Window(&window)
     {
+        m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
+        m_Container.setSize(m_Window->getSize().x, m_Window->getSize().y);
+
         // The main window is always focused
-        m_ContainerFocused = true;
+        m_Container.m_ContainerFocused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +60,7 @@ namespace tgui
     void Gui::setWindow(sf::RenderWindow& window)
     {
         m_Window = &window;
+        m_Container.setSize(m_Window->getSize().x, m_Window->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +100,12 @@ namespace tgui
             event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
         }
 
+        // Also watch for resize events
+        else if (event.type == sf::Event::Resized)
+            m_Container.setSize(event.size.width, event.size.height);
+
         // Let the event manager handle the event
-        return m_EventManager.handleEvent(event);
+        return m_Container.m_EventManager.handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +132,7 @@ namespace tgui
         }
 
         // Draw the window with all widgets inside it
-        drawWidgetContainer(m_Window, sf::RenderStates::Default);
+        m_Container.drawWidgetContainer(m_Window, sf::RenderStates::Default);
 
         // Reset clipping to its original state
         if (clippingEnabled)
@@ -152,31 +162,157 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Gui::getDisplaySize()
+    Vector2f Gui::getSize() const
     {
-        return Vector2f(m_Window->getSize());
+        return m_Container.getSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::setGlobalFont(const std::string& filename)
+    {
+        return m_Container.setGlobalFont(filename);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::setGlobalFont(const sf::Font& font)
+    {
+        m_Container.setGlobalFont(font);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Font& Gui::getGlobalFont() const
+    {
+        return m_Container.getGlobalFont();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector< Widget::Ptr >& Gui::getWidgets()
+    {
+        return m_Container.getWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String>& Gui::getWidgetNames()
+    {
+        return m_Container.getWidgetNames();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
+    {
+        m_Container.add(widgetPtr, widgetName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Gui::get(const sf::String& widgetName) const
+    {
+        return m_Container.get(widgetName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr Gui::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
+    {
+        return m_Container.copy(oldWidget, newWidgetName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::remove(const Widget::Ptr& widget)
+    {
+        m_Container.remove(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::removeAllWidgets()
+    {
+        m_Container.removeAllWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::focusWidget(Widget::Ptr& widget)
+    {
+        m_Container.focusWidget(&*widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::unfocusWidget(Widget::Ptr& widget)
+    {
+        m_Container.unfocusWidget(&*widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::unfocusAllWidgets()
+    {
+        m_Container.unfocusAllWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::uncheckRadioButtons()
+    {
+        m_Container.uncheckRadioButtons();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::moveWidgetToFront(Widget::Ptr& widget)
+    {
+        m_Container.moveWidgetToFront(&*widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::moveWidgetToBack(Widget::Ptr& widget)
+    {
+        m_Container.moveWidgetToBack(&*widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::bindGlobalCallback(std::function<void(const Callback&)> func)
+    {
+        m_Container.bindGlobalCallback(func);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::unbindGlobalCallback()
+    {
+        m_Container.unbindGlobalCallback();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::loadWidgetsFromFile(const std::string& filename)
+    {
+        return m_Container.loadWidgetsFromFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
-        m_EventManager.updateTime(elapsedTime);
+        m_Container.m_EventManager.updateTime(elapsedTime);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::addChildCallback(Callback& callback)
+    void Gui::addChildCallback(const Callback& callback)
     {
-        // If there is no global callback function then add the callback to the queue
-        if (m_GlobalCallbackFunctions.empty())
-            m_Callback.push(callback);
-        else
-        {
-            // Loop through all callback functions and call them
-            for (std::list< std::function<void(const Callback&)> >::const_iterator it = m_GlobalCallbackFunctions.begin(); it != m_GlobalCallbackFunctions.end(); ++it)
-                (*it)(callback);
-        }
+        // Add the callback to the queue
+        m_Callback.push(callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
