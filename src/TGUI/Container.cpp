@@ -505,7 +505,7 @@ namespace tgui
         std::stack<unsigned int> parentID;
         std::stack<unsigned int> progress;
         unsigned int widgetID = 0;
-        SharedWidgetPtr<Widget> extraPtr;
+        Widget::Ptr extraPtr;
         bool multilineComment = false;
 
         std::vector<std::string> defineTokens;
