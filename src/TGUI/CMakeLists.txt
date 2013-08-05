@@ -25,7 +25,6 @@ set(TGUI_SRC
     EventManager.cpp
     TextureManager.cpp
     Container.cpp
-    ContainerWidget.cpp
     Panel.cpp
     ChildWindow.cpp
     Grid.cpp
