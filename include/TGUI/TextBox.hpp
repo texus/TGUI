@@ -27,7 +27,7 @@
 #define TGUI_TEXT_BOX_HPP
 
 
-#include <TGUI/Widgets.hpp>
+#include <TGUI/Widget.hpp>
 
 /// \todo  Rename Selection point position to caret position
 /// \todo  Double clicking should only select one word in TextBox. To select the whole text, you should click 3 times.

@@ -3,7 +3,7 @@ set(TGUI_SRC
     TGUI.cpp
     Callback.cpp
     Transformable.cpp
-    Widgets.cpp
+    Widget.cpp
     Label.cpp
     Picture.cpp
     Button.cpp

@@ -27,7 +27,7 @@
 #define TGUI_TAB_HPP
 
 
-#include <TGUI/Widgets.hpp>
+#include <TGUI/Widget.hpp>
 
 /// \todo  Add an optional close button to the tabs.
 /// \todo  Add an extra tab that can be used to open a new tab.
