@@ -92,9 +92,9 @@ namespace tgui
         m_Loaded = false;
 
         // Create the text label if it doesn't exist yet
-        if (m_Label == nullptr)
+        if (get("MessageBoxText") == nullptr)
         {
-            this->add(m_Label, "MessageBoxText");
+            add(m_Label, "MessageBoxText");
 
             m_Label->setTextSize(m_TextSize);
         }
