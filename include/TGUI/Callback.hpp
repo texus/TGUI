@@ -44,6 +44,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API Callback
     {
+        Callback() : widget(nullptr) {};
+
         // The callback id that was passed to the widget. It is used to identify from what widget the callback came from.
         unsigned int id;
 

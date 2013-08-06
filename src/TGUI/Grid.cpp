@@ -214,7 +214,7 @@ namespace tgui
         // Create the column if it didn't exist yet
         if (m_GridWidgets[row].size() < col + 1)
         {
-            m_GridWidgets[row].resize(col + 1);
+            m_GridWidgets[row].resize(col + 1, nullptr);
             m_ObjBorders[row].resize(col + 1);
             m_ObjLayout[row].resize(col + 1);
         }
@@ -243,7 +243,7 @@ namespace tgui
         if ((m_GridWidgets.size() > row) && (m_GridWidgets[row].size() > col))
             return m_GridWidgets[row][col];
         else
-            return Widget::Ptr();
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

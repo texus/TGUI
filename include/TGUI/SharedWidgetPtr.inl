@@ -41,8 +41,7 @@ namespace tgui
     SharedWidgetPtr<T>::SharedWidgetPtr() :
     m_WidgetPtr(nullptr)
     {
-        m_RefCount = new unsigned int;
-        *m_RefCount = 1;
+        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +60,8 @@ namespace tgui
     SharedWidgetPtr<T>::SharedWidgetPtr(Gui& gui, const sf::String& widgetName) :
     m_WidgetPtr(nullptr)
     {
-        init(gui.m_Container, widgetName);
+        init();
+        gui.m_Container.add(*this, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,8 @@ namespace tgui
     SharedWidgetPtr<T>::SharedWidgetPtr(Container& container, const sf::String& widgetName) :
     m_WidgetPtr(nullptr)
     {
-        init(container, widgetName);
+        init();
+        container.add(*this, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +142,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <class T>
-    void SharedWidgetPtr<T>::init(Container& container, const sf::String& widgetName)
+    void SharedWidgetPtr<T>::init()
     {
         reset();
 
@@ -149,8 +150,6 @@ namespace tgui
         *m_RefCount = 1;
 
         m_WidgetPtr = new T();
-        container.add(*this, widgetName);
-
         m_WidgetPtr->m_Callback.widget = *this;
     }
 
@@ -255,7 +254,7 @@ namespace tgui
     template <class T>
     SharedWidgetPtr<T> SharedWidgetPtr<T>::clone() const
     {
-        SharedWidgetPtr<T> pointer;
+        SharedWidgetPtr<T> pointer = nullptr;
         pointer.m_WidgetPtr = m_WidgetPtr->clone();
         pointer.m_WidgetPtr->m_Callback.widget = pointer;
         return pointer;

@@ -404,7 +404,7 @@ namespace tgui
     Widget::Ptr EventManager::mouseOnWidget(float x, float y)
     {
         bool widgetFound = false;
-        Widget::Ptr widget;
+        Widget::Ptr widget = nullptr;
 
         // Loop through all widgets
         for (std::vector<Widget::Ptr>::reverse_iterator it = m_Widgets.rbegin(); it != m_Widgets.rend(); ++it)

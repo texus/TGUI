@@ -152,7 +152,7 @@ namespace tgui
                 return m_EventManager.m_Widgets[i];
         }
 
-        return Widget::Ptr();
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -730,7 +730,7 @@ namespace tgui
         std::stack<unsigned int> parentID;
         std::stack<unsigned int> progress;
         unsigned int widgetID = 0;
-        Widget::Ptr extraPtr;
+        Widget::Ptr extraPtr = nullptr;
         bool multilineComment = false;
 
         std::vector<std::string> defineTokens;
