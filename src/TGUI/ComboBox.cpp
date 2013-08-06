@@ -30,6 +30,8 @@
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ListBox.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/ChildWindow.hpp>
+#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ComboBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,17 +42,17 @@ namespace tgui
 
     ComboBox::ComboBox() :
     m_SeparateHoverImage(false),
-    m_ShowList          (false),
-    m_MouseOnListBox    (false),
     m_NrOfItemsToDisplay(0)
     {
         m_Callback.widgetType = Type_ComboBox;
         m_DraggableWidget = true;
 
-        m_ListBox = new ListBox();
+        m_ListBox->hide();
         m_ListBox->setSize(50, 24);
         m_ListBox->setItemHeight(24);
         m_ListBox->changeColors();
+        m_ListBox->bindCallback(&ComboBox::newItemSelectedCallbackFunction, this, ListBox::ItemSelected);
+        m_ListBox->bindCallback(&ComboBox::listBoxUnfocusedCallbackFunction, this, ListBox::Unfocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,17 +62,18 @@ namespace tgui
     WidgetBorders       (copy),
     m_LoadedConfigFile  (copy.m_LoadedConfigFile),
     m_SeparateHoverImage(copy.m_SeparateHoverImage),
-    m_ShowList          (copy.m_ShowList),
-    m_MouseOnListBox    (copy.m_MouseOnListBox),
-    m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay)
+    m_NrOfItemsToDisplay(copy.m_NrOfItemsToDisplay),
+    m_ListBox           (copy.m_ListBox.clone())
     {
+        m_ListBox->hide();
+        m_ListBox->unbindAllCallback();
+        m_ListBox->bindCallback(&ComboBox::newItemSelectedCallbackFunction, this, ListBox::ItemSelected);
+        m_ListBox->bindCallback(&ComboBox::listBoxUnfocusedCallbackFunction, this, ListBox::Unfocused);
+
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpNormal, m_TextureArrowUpNormal);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpHover, m_TextureArrowUpHover);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownNormal, m_TextureArrowDownNormal);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownHover, m_TextureArrowDownHover);
-
-        // Copy the list box
-        m_ListBox = new ListBox(*copy.m_ListBox);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,8 +84,6 @@ namespace tgui
         if (m_TextureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
         if (m_TextureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
         if (m_TextureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
-
-        delete m_ListBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,13 +96,8 @@ namespace tgui
             this->Widget::operator=(right);
             this->WidgetBorders::operator=(right);
 
-            // Delete the old list box
-            delete m_ListBox;
-
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
-            std::swap(m_ShowList,               temp.m_ShowList);
-            std::swap(m_MouseOnListBox,         temp.m_MouseOnListBox);
             std::swap(m_NrOfItemsToDisplay,     temp.m_NrOfItemsToDisplay);
             std::swap(m_ListBox,                temp.m_ListBox);
             std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
@@ -290,9 +286,9 @@ namespace tgui
 
         // Set the size of the list box
         if (m_NrOfItemsToDisplay > 0)
-            m_ListBox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) - m_TopBorder);
+            m_ListBox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) + 2*m_BottomBorder);
         else
-            m_ListBox->setSize(width, height * m_ListBox->getItems().size() - m_TopBorder);
+            m_ListBox->setSize(width, height * m_ListBox->getItems().size() + 2*m_BottomBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +308,7 @@ namespace tgui
         m_NrOfItemsToDisplay = nrOfItemsInList;
 
         if (m_NrOfItemsToDisplay < m_ListBox->m_Items.size())
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_NrOfItemsToDisplay * m_ListBox->getItemHeight()) + m_BottomBorder);
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_NrOfItemsToDisplay * m_ListBox->getItemHeight()) + 2*m_BottomBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,7 +423,7 @@ namespace tgui
         m_TopBorder    = topBorder;
         m_RightBorder  = rightBorder;
         m_BottomBorder = bottomBorder;
-        m_ListBox->setBorders(m_LeftBorder, 0, m_RightBorder, m_BottomBorder);
+        m_ListBox->setBorders(m_LeftBorder, m_BottomBorder, m_RightBorder, m_BottomBorder);
 
         // Don't set the width and height when loading failed
         if (m_Loaded == false)
@@ -451,7 +447,7 @@ namespace tgui
 
         // Make room to add another item, until there are enough items
         if ((m_NrOfItemsToDisplay == 0) || (m_NrOfItemsToDisplay > m_ListBox->getItems().size()))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * (m_ListBox->getItems().size() + 1)) + m_BottomBorder);
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * (m_ListBox->getItems().size() + 1)) + 2*m_BottomBorder);
 
         // Add the item
         return m_ListBox->addItem(item);
@@ -587,35 +583,11 @@ namespace tgui
         // Get the current position
         Vector2f position = getPosition();
 
-        if ((x > position.x) && (x < position.x + m_ListBox->getSize().x) && (y > position.y))
+        // Check if the mouse is on top of the combo box
+        if ((x > position.x) && (x < position.x + m_ListBox->getSize().x)
+         && (y > position.y) && (y < position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder))
         {
-            // Check if the mouse is on top of the combo box
-            if (y < position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder)
-            {
-                m_MouseOnListBox = false;
-                m_ListBox->mouseNotOnWidget();
-                return true;
-            }
-
-            // Check if the list box is visible
-            if (m_ShowList)
-            {
-                // Temporarily set the position for the list box
-                m_ListBox->setPosition(position.x, position.y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
-
-                // Pass the event to the list box
-                if (m_ListBox->mouseOnWidget(x, y))
-                {
-                    // Reset the position of the list box
-                    m_ListBox->setPosition(0, 0);
-
-                    m_MouseOnListBox = true;
-                    return true;
-                }
-
-                // Reset the position of the list box
-                m_ListBox->setPosition(0, 0);
-            }
+            return true;
         }
 
         if (m_MouseHover)
@@ -623,7 +595,6 @@ namespace tgui
 
         // The mouse is not on top of the combo box
         m_MouseHover = false;
-        m_ListBox->mouseNotOnWidget();
         return false;
     }
 
@@ -631,159 +602,44 @@ namespace tgui
 
     void ComboBox::leftMousePressed(float x, float y)
     {
-        if (m_Loaded == false)
-            return;
-
         m_MouseDown = true;
 
-        // Check if the list is visible and the mouse went down on top of the list box
-        if ((m_ShowList == true) && (m_MouseOnListBox == true))
+        // If the list wasn't visible then open it
+        if (!m_ListBox->isVisible())
         {
-            // Store the current selected item
-            int oldItem = m_ListBox->getSelectedItemIndex();
+            // Show the list
+            showListBox();
 
-            // Temporarily set the position for the list box
-            m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
-
-            // Pass the event to the list box
-            m_ListBox->leftMousePressed(x, y);
-
-            // Reset the position of the list box
-            m_ListBox->setPosition(0, 0);
-
-            // Add the callback (if the user requested it)
-            if ((oldItem != m_ListBox->getSelectedItemIndex()) && (m_CallbackFunctions[ItemSelected].empty() == false))
+            // Check if there is a scrollbar
+            if (m_ListBox->m_Scroll != nullptr)
             {
-                m_Callback.trigger = ItemSelected;
-                m_Callback.value   = m_ListBox->getSelectedItemIndex();
-                m_Callback.text    = m_ListBox->getSelectedItem();
-                addCallback();
+                // If the selected item is not visible then change the value of the scrollbar
+                if (m_NrOfItemsToDisplay > 0)
+                {
+                    if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) > m_NrOfItemsToDisplay)
+                        m_ListBox->m_Scroll->setValue((static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()) - m_NrOfItemsToDisplay + 1) * m_ListBox->getItemHeight());
+                    else
+                        m_ListBox->m_Scroll->setValue(0);
+                }
             }
         }
+        else // This list was already open, so close it now
+            hideListBox();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::leftMouseReleased(float x, float y)
     {
-        if (m_Loaded == false)
-            return;
-
-        // Make sure that the mouse went down on top of the combo box
-        if (m_MouseDown == true)
-        {
-            // Check if the list is visible
-            if (m_ShowList == true)
-            {
-                // Check if the mouse is on top of the list box
-                if (m_MouseOnListBox == true)
-                {
-                    // Check if the mouse went down on top of the list box
-                    if (m_ListBox->m_MouseDown == true)
-                    {
-                        // Make sure the mouse didn't went down on the scrollbar
-                        if ((m_ListBox->m_Scroll == nullptr) || ((m_ListBox->m_Scroll != nullptr) && (m_ListBox->m_Scroll->m_MouseDown == false)))
-                        {
-                            // Stop showing the list
-                            m_ShowList = false;
-                        }
-
-                        // Temporarily set the position for the list box
-                        m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
-
-                        // Pass the event to the list box
-                        m_ListBox->leftMouseReleased(x, y);
-
-                        // Reset the position of the list box
-                        m_ListBox->setPosition(0, 0);
-                    }
-                }
-                else // The mouse is not on top of the list box
-                    m_ShowList = false;
-            }
-            else // The list wasn't visible
-            {
-                // Show the list
-                m_ShowList = true;
-
-                // Check if there is a scrollbar
-                if (m_ListBox->m_Scroll != nullptr)
-                {
-                    // If the selected item is not visible then change the value of the scrollbar
-                    if (m_NrOfItemsToDisplay > 0)
-                    {
-                        if (static_cast<unsigned int>(m_ListBox->getSelectedItemIndex() + 1) > m_NrOfItemsToDisplay)
-                            m_ListBox->m_Scroll->setValue((static_cast<unsigned int>(m_ListBox->getSelectedItemIndex()) - m_NrOfItemsToDisplay + 1) * m_ListBox->getItemHeight());
-                        else
-                            m_ListBox->m_Scroll->setValue(0);
-                    }
-                }
-            }
-
-            // The mouse is no longer down
-            m_MouseDown = false;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::mouseMoved(float x, float y)
-    {
-        // Don't do anything when the combo box wasn't loaded correctly
-        if (m_Loaded == false)
-            return;
-
-        if (m_MouseHover == false)
-            mouseEnteredWidget();
-
-        m_MouseHover = true;
-
-        // Check if the list is visible and the mouse is on top of the list box
-        if ((m_ShowList == true) && (m_MouseOnListBox == true))
-        {
-            // Temporarily set the position for the list box
-            m_ListBox->setPosition(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
-
-            // Pass the event to the list box
-            m_ListBox->mouseMoved(x, y);
-
-            // Reset the position of the list box
-            m_ListBox->setPosition(0, 0);
-        }
+        m_MouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::mouseWheelMoved(int delta, int, int)
     {
-        // Check if the list is displayed
-        if (m_ShowList)
-        {
-            // Only do something when there is a scrollbar
-            if (m_ListBox->m_Scroll != nullptr)
-            {
-                if (m_ListBox->m_Scroll->getLowValue() < m_ListBox->m_Scroll->getMaximum())
-                {
-                    // Check if you are scrolling down
-                    if (delta < 0)
-                    {
-                        // Scroll down
-                        m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ListBox->m_ItemHeight / 2)) );
-                    }
-                    else // You are scrolling up
-                    {
-                        unsigned int change = static_cast<unsigned int>(delta) * (m_ListBox->m_ItemHeight / 2);
-
-                        // Scroll up
-                        if (change < m_ListBox->m_Scroll->getValue())
-                            m_ListBox->m_Scroll->setValue( m_ListBox->m_Scroll->getValue() - change );
-                        else
-                            m_ListBox->m_Scroll->setValue(0);
-                    }
-                }
-            }
-        }
-        else // The list isn't visible
+        // The list isn't visible
+        if (!m_ListBox->isVisible())
         {
             // Check if you are scrolling down
             if (delta < 0)
@@ -805,38 +661,7 @@ namespace tgui
 
     void ComboBox::mouseNoLongerDown()
     {
-        // Make sure that the mouse went down on top of the combo box
-        if (m_MouseDown == true)
-        {
-            // Check if the list is visible
-            if (m_ShowList == true)
-            {
-                // Check if the mouse is on top of the list box
-                if (m_MouseOnListBox == true)
-                {
-                    // Check if the mouse went down on top of the list box
-                    if (m_ListBox->m_MouseDown == true)
-                    {
-                        // Check if the mouse went down on the scrollbar
-                        if ((m_ListBox->m_Scroll != nullptr) && (m_ListBox->m_Scroll->m_MouseDown == true))
-                        {
-                            m_MouseDown = false;
-                            m_ListBox->mouseNotOnWidget();
-                            m_ListBox->mouseNoLongerDown();
-
-                            // Don't hide the list
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
         m_MouseDown = false;
-        m_ListBox->mouseNotOnWidget();
-        m_ListBox->mouseNoLongerDown();
-
-        m_ShowList = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -937,6 +762,79 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::showListBox()
+    {
+        if (!m_ListBox->isVisible())
+        {
+            m_ListBox->show();
+
+            Vector2f position(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder);
+
+            Widget* container = this;
+            while (container->getParent() != nullptr)
+            {
+                container = container->getParent();
+                position += container->getPosition();
+
+                // Child window needs an exception
+                if (container->getWidgetType() == Type_ChildWindow)
+                {
+                    ChildWindow* child = static_cast<ChildWindow*>(container);
+                    position.x += child->getBorders().x1;
+                    position.y += child->getBorders().x2 + child->getTitleBarHeight();
+                }
+            }
+
+            m_ListBox->setPosition(position);
+            static_cast<Container*>(container)->add(m_ListBox);
+            m_ListBox->focus();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::hideListBox()
+    {
+        // If the list was open then close it now
+        if (m_ListBox->isVisible())
+        {
+            m_ListBox->hide();
+
+            // Find the gui in order to remove the ListBox from it
+            Widget* container = this;
+            while (container->getParent() != nullptr)
+                container = container->getParent();
+
+            static_cast<Container*>(container)->remove(m_ListBox);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::newItemSelectedCallbackFunction()
+    {
+        if (m_CallbackFunctions[ItemSelected].empty() == false)
+        {
+            // When no item is selected then send an empty string, otherwise send the item
+            m_Callback.text    = m_ListBox->getSelectedItem();
+            m_Callback.value   = m_ListBox->getSelectedItemIndex();
+            m_Callback.trigger = ItemSelected;
+            addCallback();
+        }
+
+        hideListBox();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::listBoxUnfocusedCallbackFunction()
+    {
+        if (m_MouseHover == false)
+            hideListBox();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw anything when the combo box was not loaded correctly
@@ -1025,7 +923,7 @@ namespace tgui
         states.transform = oldTransform;
 
         // Set the arrow like it should (down when list box is invisible, up when it is visible)
-        if (m_ShowList)
+        if (m_ListBox->isVisible())
         {
             float scaleFactor =  static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowUpNormal.getSize().y;
             states.transform.translate(m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowUpNormal.getSize().x * scaleFactor), static_cast<float>(m_TopBorder));
@@ -1034,7 +932,7 @@ namespace tgui
             // Draw the arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
                 else
                     target.draw(m_TextureArrowUpNormal, states);
@@ -1043,13 +941,9 @@ namespace tgui
             {
                 target.draw(m_TextureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowUpHover, states);
             }
-
-            // Set the list box to the correct position and draw it
-            states.transform = oldTransform.translate(0, static_cast<float>(m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
-            target.draw(*m_ListBox, states);
         }
         else
         {
@@ -1060,7 +954,7 @@ namespace tgui
             // Draw the arrow
             if (m_SeparateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowDownHover, states);
                 else
                     target.draw(m_TextureArrowDownNormal, states);
@@ -1069,7 +963,7 @@ namespace tgui
             {
                 target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover) && (m_MouseOnListBox == false))
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                     target.draw(m_TextureArrowDownHover, states);
             }
         }
