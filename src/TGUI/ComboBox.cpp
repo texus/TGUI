@@ -600,7 +600,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMousePressed(float x, float y)
+    void ComboBox::leftMousePressed(float, float)
     {
         m_MouseDown = true;
 
@@ -629,7 +629,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMouseReleased(float x, float y)
+    void ComboBox::leftMouseReleased(float, float)
     {
         m_MouseDown = false;
     }
