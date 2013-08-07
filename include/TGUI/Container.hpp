@@ -442,17 +442,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the container.
+        /// \brief Doesn't has any effect.
         ///
-        /// \param width   Width of the container
-        /// \param height  Height of the container
+        /// \param width   Ignored
+        /// \param height  Ignored
+        ///
+        /// The window size cannot be changed by a widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the container.
+        /// \brief Returns the size of the container (same size as the window).
         ///
         /// \return Size of the container
         ///
@@ -487,7 +489,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        Vector2f m_Size;
+        sf::RenderWindow* m_Window;
 
 
         friend class Gui;

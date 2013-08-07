@@ -48,8 +48,8 @@ namespace tgui
     Gui::Gui(sf::RenderWindow& window) :
     m_Window(&window)
     {
+        m_Container.m_Window = &window;
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
-        m_Container.setSize(m_Window->getSize().x, m_Window->getSize().y);
 
         // The main window is always focused
         m_Container.m_ContainerFocused = true;
@@ -60,7 +60,7 @@ namespace tgui
     void Gui::setWindow(sf::RenderWindow& window)
     {
         m_Window = &window;
-        m_Container.setSize(m_Window->getSize().x, m_Window->getSize().y);
+        m_Container.m_Window = &window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +99,6 @@ namespace tgui
             event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
             event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
         }
-
-        // Also watch for resize events
-        else if (event.type == sf::Event::Resized)
-            m_Container.setSize(event.size.width, event.size.height);
 
         // Let the event manager handle the event
         return m_Container.m_EventManager.handleEvent(event);
