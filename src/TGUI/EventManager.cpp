@@ -426,7 +426,6 @@ namespace tgui
             }
         }
 
-        // The mouse isn't on any widget
         return widget;
     }
 
