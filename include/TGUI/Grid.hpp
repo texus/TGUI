@@ -184,7 +184,7 @@ namespace tgui
         void addWidget(const Widget::Ptr& widget,
                        unsigned int       row,
                        unsigned int       column,
-                       const Vector4u&    borders = Vector4u(0, 0, 0, 0),
+                       const Borders&     borders = Borders(0, 0, 0, 0),
                        Layout::Layouts    layout  = Layout::Center);
 
 
@@ -213,7 +213,7 @@ namespace tgui
         /// \brief Changes borders of a given widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeWidgetBorders(const Widget::Ptr& widget, const Vector4u& borders = Vector4u(0, 0, 0, 0));
+        void changeWidgetBorders(const Widget::Ptr& widget, const Borders& borders = Borders(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +270,7 @@ namespace tgui
       protected:
 
         std::vector< std::vector<Widget::Ptr> >     m_GridWidgets;
-        std::vector< std::vector<Vector4u> >        m_ObjBorders;
+        std::vector< std::vector<Borders> >         m_ObjBorders;
         std::vector< std::vector<Layout::Layouts> > m_ObjLayout;
 
         std::vector<unsigned int> m_RowHeight;

@@ -1733,11 +1733,11 @@ void PropertiesEditBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             strBorders.insert(strBorders.end(), ')');
 
         // Get the border size
-        tgui::Vector4u border;
-        tgui::extractVector4u(strBorders, border);
+        tgui::Borders border;
+        tgui::extractBorders(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::EditBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.left, border.top, border.right, border.bottom);
     }
     else if (propertyNumber == Property_EditBox_TextColor)
     {
@@ -2057,11 +2057,11 @@ void PropertiesListBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             strBorders.insert(strBorders.end(), ')');
 
         // Get the border size
-        tgui::Vector4u border;
-        tgui::extractVector4u(strBorders, border);
+        tgui::Borders border;
+        tgui::extractBorders(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::ListBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.left, border.top, border.right, border.bottom);
     }
     else if (propertyNumber == Property_ListBox_BackgroundColor)
     {
@@ -2479,11 +2479,11 @@ void PropertiesComboBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& proper
             strBorders.insert(strBorders.end(), ')');
 
         // Get the border size
-        tgui::Vector4u border;
-        tgui::extractVector4u(strBorders, border);
+        tgui::Borders border;
+        tgui::extractBorders(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::ComboBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.left, border.top, border.right, border.bottom);
     }
     else if (propertyNumber == Property_ComboBox_BackgroundColor)
     {
@@ -3470,11 +3470,11 @@ void PropertiesTextBox::updateProperty(tgui::Gui& formWindow, tgui::Gui& propert
             strBorders.insert(strBorders.end(), ')');
 
         // Get the border size
-        tgui::Vector4u border;
-        tgui::extractVector4u(strBorders, border);
+        tgui::Borders border;
+        tgui::extractBorders(strBorders, border);
 
         // Apply the borders
-        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.x1, border.x2, border.x3, border.x4);
+        static_cast<tgui::TextBox::Ptr>(formWindow.get(tgui::to_string(id)))->setBorders(border.left, border.top, border.right, border.bottom);
     }
     else if (propertyNumber == Property_TextBox_BackgroundColor)
     {

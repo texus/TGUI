@@ -197,9 +197,9 @@ namespace tgui
             }
             else if (property == "borders")
             {
-                Vector4u borders;
-                if (extractVector4u(value, borders))
-                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                Borders borders;
+                if (extractBorders(value, borders))
+                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
             }
             else if (property == "scrollbar")
             {
@@ -1037,9 +1037,9 @@ namespace tgui
             }
             else if (property == "Borders")
             {
-                Vector4u borders;
-                if (extractVector4u(value, borders))
-                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                Borders borders;
+                if (extractBorders(value, borders))
+                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
@@ -1076,7 +1076,7 @@ namespace tgui
             else if (property == "MaximumItems")
                 value = to_string(getMaximumItems());
             else if (property == "Borders")
-                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
+                value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
             else // The property didn't match
                 return false;
         }

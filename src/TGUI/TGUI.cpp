@@ -187,7 +187,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool extractVector4u(std::string string, Vector4u& vector)
+    bool extractBorders(std::string string, Borders& borders)
     {
         // Make sure that the line isn't empty
         if (string.empty() == false)
@@ -204,7 +204,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the first value and delete this part of the string
-                    vector.x1 = atoi(string.substr(0, commaPos).c_str());
+                    borders.left = atoi(string.substr(0, commaPos).c_str());
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -212,7 +212,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the second value and delete this part of the string
-                        vector.x2 = atoi(string.substr(0, commaPos).c_str());
+                        borders.top = atoi(string.substr(0, commaPos).c_str());
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -220,11 +220,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the third value and delete this part of the string
-                            vector.x3 = atoi(string.substr(0, commaPos).c_str());
+                            borders.right = atoi(string.substr(0, commaPos).c_str());
                             string.erase(0, commaPos+1);
 
                             // Get the fourth value
-                            vector.x4 = atoi(string.c_str());
+                            borders.bottom = atoi(string.c_str());
 
                             return true;
                         }

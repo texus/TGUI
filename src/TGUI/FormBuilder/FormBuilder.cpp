@@ -1113,7 +1113,7 @@ bool Builder::loadForm()
                 editBoxes.back().textFont.value = "Global";
                 editBoxes.back().passwordChar.value = widget->getPasswordCharacter();
                 editBoxes.back().maximumCharacters.value = widget->getMaximumCharacters();
-                editBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                editBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().left) + "," + tgui::to_string(widget->getBorders().top) + "," + tgui::to_string(widget->getBorders().right) + "," + tgui::to_string(widget->getBorders().bottom) + ")";
                 editBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 editBoxes.back().selectedTextColor.value = tgui::convertColorToString(widget->getSelectedTextColor());
                 editBoxes.back().selectedTextBackgroundColor.value = tgui::convertColorToString(widget->getSelectedTextBackgroundColor());
@@ -1131,7 +1131,7 @@ bool Builder::loadForm()
                 realWidget->setTextFont(mainWindow.getGlobalFont());
                 realWidget->setPasswordCharacter(widget->getPasswordCharacter());
                 realWidget->setMaximumCharacters(widget->getMaximumCharacters());
-                realWidget->setBorders(widget->getBorders().x1, widget->getBorders().x2, widget->getBorders().x3, widget->getBorders().x4);
+                realWidget->setBorders(widget->getBorders().left, widget->getBorders().top, widget->getBorders().right, widget->getBorders().bottom);
                 realWidget->changeColors(widget->getTextColor(), widget->getSelectedTextColor(), widget->getSelectedTextBackgroundColor());
                 realWidget->setSelectionPointColor(widget->getSelectionPointColor());
                 realWidget->setSelectionPointWidth(widget->getSelectionPointWidth());
@@ -1213,7 +1213,7 @@ bool Builder::loadForm()
                 listBoxes.back().height.value = widget->getSize().y;
                 listBoxes.back().itemHeight.value = widget->getItemHeight();
                 listBoxes.back().maximumItems.value = widget->getMaximumItems();
-                listBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                listBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().left) + "," + tgui::to_string(widget->getBorders().top) + "," + tgui::to_string(widget->getBorders().right) + "," + tgui::to_string(widget->getBorders().bottom) + ")";
                 listBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 listBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 listBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(widget->getSelectedBackgroundColor());
@@ -1240,7 +1240,7 @@ bool Builder::loadForm()
                 realWidget->setItemHeight(widget->getItemHeight());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setMaximumItems(widget->getMaximumItems());
-                realWidget->setBorders(widget->getBorders().x1, widget->getBorders().x2, widget->getBorders().x3, widget->getBorders().x4);
+                realWidget->setBorders(widget->getBorders().left, widget->getBorders().top, widget->getBorders().right, widget->getBorders().bottom);
                 realWidget->changeColors(widget->getBackgroundColor(), widget->getTextColor(), widget->getSelectedBackgroundColor(), widget->getSelectedTextColor(), widget->getBorderColor());
                 for (unsigned int j=0; j<items.size(); ++j) realWidget->addItem(items[j]);
                 realWidget->setSelectedItem(widget->getSelectedItem());
@@ -1262,7 +1262,7 @@ bool Builder::loadForm()
                 comboBoxes.back().top.value = widget->getPosition().y;
                 comboBoxes.back().width.value = widget->getSize().x;
                 comboBoxes.back().height.value = widget->getSize().y;
-                comboBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                comboBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().left) + "," + tgui::to_string(widget->getBorders().top) + "," + tgui::to_string(widget->getBorders().right) + "," + tgui::to_string(widget->getBorders().bottom) + ")";
                 comboBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 comboBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 comboBoxes.back().selectedBackgroundColor.value = tgui::convertColorToString(widget->getSelectedBackgroundColor());
@@ -1290,7 +1290,7 @@ bool Builder::loadForm()
                 realWidget->setItemsToDisplay(widget->getItemsToDisplay());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);
-                realWidget->setBorders(widget->getBorders().x1, widget->getBorders().x2, widget->getBorders().x3, widget->getBorders().x4);
+                realWidget->setBorders(widget->getBorders().left, widget->getBorders().top, widget->getBorders().right, widget->getBorders().bottom);
                 realWidget->changeColors(widget->getBackgroundColor(), widget->getTextColor(), widget->getSelectedBackgroundColor(), widget->getSelectedTextColor(), widget->getBorderColor());
                 for (unsigned int j=0; j<items.size(); ++j) realWidget->addItem(items[j]);
                 realWidget->setSelectedItem(widget->getSelectedItem());
@@ -1340,7 +1340,7 @@ bool Builder::loadForm()
                 textBoxes.back().textSize.value = widget->getTextSize();
                 textBoxes.back().textFont.value = "Global";
                 textBoxes.back().maximumCharacters.value = widget->getMaximumCharacters();
-                textBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().x1) + "," + tgui::to_string(widget->getBorders().x2) + "," + tgui::to_string(widget->getBorders().x3) + "," + tgui::to_string(widget->getBorders().x4) + ")";
+                textBoxes.back().borders.value = "(" + tgui::to_string(widget->getBorders().left) + "," + tgui::to_string(widget->getBorders().top) + "," + tgui::to_string(widget->getBorders().right) + "," + tgui::to_string(widget->getBorders().bottom) + ")";
                 textBoxes.back().backgroundColor.value = tgui::convertColorToString(widget->getBackgroundColor());
                 textBoxes.back().textColor.value = tgui::convertColorToString(widget->getTextColor());
                 textBoxes.back().selectedTextColor.value = tgui::convertColorToString(widget->getSelectedTextColor());
@@ -1361,7 +1361,7 @@ bool Builder::loadForm()
                 realWidget->setTextSize(widget->getTextSize());
                 realWidget->setTextFont(mainWindow.getGlobalFont());
                 realWidget->setMaximumCharacters(widget->getMaximumCharacters());
-                realWidget->setBorders(widget->getBorders().x1, widget->getBorders().x2, widget->getBorders().x3, widget->getBorders().x4);
+                realWidget->setBorders(widget->getBorders().left, widget->getBorders().top, widget->getBorders().right, widget->getBorders().bottom);
                 realWidget->changeColors(widget->getBackgroundColor(), widget->getTextColor(), widget->getSelectedTextColor(), widget->getSelectedTextBackgroundColor(), widget->getBorderColor());
                 realWidget->setSelectionPointColor(widget->getSelectionPointColor());
                 realWidget->setSelectionPointWidth(widget->getSelectionPointWidth());

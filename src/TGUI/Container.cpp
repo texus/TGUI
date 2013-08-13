@@ -1463,9 +1463,9 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            Vector4u borders;
-                            if (extractVector4u(line, borders))
-                                listBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            Borders borders;
+                            if (extractBorders(line, borders))
+                                listBox->setBorders(borders.left, borders.top, borders.right, borders.bottom);
                             else
                                 failed = true;
                         }
@@ -1565,9 +1565,9 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            Vector4u borders;
-                            if (extractVector4u(line, borders))
-                                editBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            Borders borders;
+                            if (extractBorders(line, borders))
+                                editBox->setBorders(borders.left, borders.top, borders.right, borders.bottom);
                             else
                                 failed = true;
                         }
@@ -1682,9 +1682,9 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            Vector4u borders;
-                            if (extractVector4u(line, borders))
-                                textBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            Borders borders;
+                            if (extractBorders(line, borders))
+                                textBox->setBorders(borders.left, borders.top, borders.right, borders.bottom);
                             else
                                 failed = true;
                         }
@@ -1853,9 +1853,9 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            Vector4u borders;
-                            if (extractVector4u(line, borders))
-                                comboBox->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            Borders borders;
+                            if (extractBorders(line, borders))
+                                comboBox->setBorders(borders.left, borders.top, borders.right, borders.bottom);
                             else
                                 failed = true;
                         }
@@ -2252,9 +2252,9 @@ namespace tgui
                             line.erase(0, 8);
 
                             // Get the borders
-                            Vector4u borders;
-                            if (extractVector4u(line, borders))
-                                child->setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                            Borders borders;
+                            if (extractBorders(line, borders))
+                                child->setBorders(borders.left, borders.top, borders.right, borders.bottom);
                             else
                                 failed = true;
                         }

@@ -247,9 +247,9 @@ namespace tgui
             }
             else if (property == "borders")
             {
-                Vector4u borders;
-                if (extractVector4u(value, borders))
-                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                Borders borders;
+                if (extractBorders(value, borders))
+                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
             }
             else if (property == "distancetoside")
             {
@@ -832,9 +832,9 @@ namespace tgui
             }
             else if (property == "Borders")
             {
-                Vector4u borders;
-                if (extractVector4u(value, borders))
-                    setBorders(borders.x1, borders.x2, borders.x3, borders.x4);
+                Borders borders;
+                if (extractBorders(value, borders))
+                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
@@ -880,7 +880,7 @@ namespace tgui
             else if (property == "BorderColor")
                 value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
             else if (property == "Borders")
-                value = "(" + to_string(getBorders().x1) + "," + to_string(getBorders().x2) + "," + to_string(getBorders().x3) + "," + to_string(getBorders().x4) + ")";
+                value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
             else if (property == "DistanceToSide")
                 value = to_string(getDistanceToSide());
             else if (property == "TitleAlignment")
