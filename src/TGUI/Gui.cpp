@@ -77,7 +77,7 @@ namespace tgui
         // Check if the event has something to do with the mouse
         if (event.type == sf::Event::MouseMoved)
         {
-            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getView());
+            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -85,7 +85,7 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getView());
+            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -93,7 +93,7 @@ namespace tgui
         }
         else if (event.type == sf::Event::MouseWheelMoved)
         {
-            Vector2f mouseCoords = m_Window->mapPixelToCoords(Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_Window->getView());
+            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -158,9 +158,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Gui::getSize() const
+    sf::Vector2f Gui::getSize() const
     {
-        return Vector2f(m_Window->getSize());
+        return sf::Vector2f(m_Window->getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

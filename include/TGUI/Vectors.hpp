@@ -240,14 +240,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    typedef sf::Vector2<float>        Vector2f;
-    typedef sf::Vector2<int>          Vector2i;
-    typedef sf::Vector2<unsigned int> Vector2u;
-
-    typedef sf::Vector3<float>        Vector3f;
-    typedef sf::Vector3<int>          Vector3i;
-    typedef sf::Vector3<unsigned int> Vector3u;
-
     typedef Vector4<float>            Vector4f;
     typedef Vector4<int>              Vector4i;
     typedef Vector4<unsigned int>     Vector4u;

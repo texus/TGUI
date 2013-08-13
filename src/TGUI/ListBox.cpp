@@ -274,9 +274,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f ListBox::getSize() const
+    sf::Vector2f ListBox::getSize() const
     {
-        return Vector2f(m_Size.x, m_Size.y);
+        return sf::Vector2f(m_Size.x, m_Size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -763,7 +763,7 @@ namespace tgui
     bool ListBox::mouseOnWidget(float x, float y)
     {
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Pass the event to the scrollbar (if there is one)
         if (m_Scroll != nullptr)
@@ -1102,20 +1102,20 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        Vector2f topLeftPosition;
-        Vector2f bottomRightPosition;
+        sf::Vector2f topLeftPosition;
+        sf::Vector2f bottomRightPosition;
 
-        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+            topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
             bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x + viewPosition.x, getPosition().y + m_Size.y - m_BottomBorder + viewPosition.y);
         }
         else
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - Vector2f(m_RightBorder, m_BottomBorder) + viewPosition);
+            topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Size) - sf::Vector2f(m_RightBorder, m_BottomBorder) + viewPosition);
         }
 
         // Adjust the transformation
@@ -1127,22 +1127,22 @@ namespace tgui
         // Draw the borders
         {
             // Draw left border
-            sf::RectangleShape border(Vector2f(m_LeftBorder, m_Size.y));
+            sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_Size.y));
             border.setFillColor(m_BorderColor);
             target.draw(border, states);
 
             // Draw top border
-            border.setSize(Vector2f(m_Size.x, m_TopBorder));
+            border.setSize(sf::Vector2f(m_Size.x, m_TopBorder));
             target.draw(border, states);
 
             // Draw right border
             border.setPosition(m_Size.x - m_RightBorder, 0);
-            border.setSize(Vector2f(m_RightBorder, m_Size.y));
+            border.setSize(sf::Vector2f(m_RightBorder, m_Size.y));
             target.draw(border, states);
 
             // Draw bottom border
             border.setPosition(0, m_Size.y - m_BottomBorder);
-            border.setSize(Vector2f(m_Size.x, m_BottomBorder));
+            border.setSize(sf::Vector2f(m_Size.x, m_BottomBorder));
             target.draw(border, states);
         }
 
@@ -1151,7 +1151,7 @@ namespace tgui
 
         // Draw the background
         {
-            sf::RectangleShape front(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
+            sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
                                               static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
             front.setFillColor(m_BackgroundColor);
             target.draw(front, states);
@@ -1213,7 +1213,7 @@ namespace tgui
                         states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue()));
 
                         // Create and draw the background
-                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
                         back.setFillColor(m_SelectedBackgroundColor);
                         target.draw(back, states);
 
@@ -1259,7 +1259,7 @@ namespace tgui
                         states.transform.translate(0, static_cast<float>(i * m_ItemHeight));
 
                         // Create and draw the background
-                        sf::RectangleShape back(Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
                         back.setFillColor(m_SelectedBackgroundColor);
                         target.draw(back, states);
 

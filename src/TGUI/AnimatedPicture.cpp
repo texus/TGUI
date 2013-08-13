@@ -121,7 +121,7 @@ namespace tgui
                 m_CurrentFrame = 0;
 
                 // Remember the size of this image
-                m_Size = Vector2f(tempTexture.getSize());
+                m_Size = sf::Vector2f(tempTexture.getSize());
             }
 
             // Add the texture
@@ -148,12 +148,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f AnimatedPicture::getSize() const
+    sf::Vector2f AnimatedPicture::getSize() const
     {
         if (m_Textures.empty() == false)
-            return Vector2f(m_Size.x, m_Size.y);
+            return sf::Vector2f(m_Size.x, m_Size.y);
         else
-            return Vector2f(0, 0);
+            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -326,11 +326,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Tab::getSize() const
+    sf::Vector2f Tab::getSize() const
     {
         // Make sure the tab has been loaded
         if (m_Loaded == false)
-            return Vector2f(0, 0);
+            return sf::Vector2f(0, 0);
 
         // Add the width of all the tabs together
         float width = 0;
@@ -343,7 +343,7 @@ namespace tgui
                 width += m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide);
         }
 
-        return Vector2f(width, m_TabHeight);
+        return sf::Vector2f(width, m_TabHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -944,8 +944,8 @@ namespace tgui
                 if (clippingRequired)
                 {
                     // Get the global position
-                    Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    Vector2f bottomRightPosition = states.transform.transformPoint(Vector2f(tabWidth - (2 * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    sf::Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
+                    sf::Vector2f bottomRightPosition = states.transform.transformPoint(sf::Vector2f(tabWidth - (2 * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

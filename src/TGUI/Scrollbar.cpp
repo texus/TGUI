@@ -299,7 +299,7 @@ namespace tgui
                     setSize(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
+                m_ThumbSize = sf::Vector2f(m_TextureThumbNormal.getSize());
             }
             else
             {
@@ -430,7 +430,7 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
             // Get the current position
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
 
             float thumbLeft = 0;
             float thumbTop = 0;
@@ -688,7 +688,7 @@ namespace tgui
                 return;
 
             // Get the current position
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
 
             // Check in which direction the scrollbar lies
             if (m_VerticalScroll)
@@ -875,7 +875,7 @@ namespace tgui
         if ((m_AutoHide == true) && (m_Maximum <= m_LowValue))
             return;
 
-        Vector2f scaling;
+        sf::Vector2f scaling;
 
         // Apply the transformation
         states.transform *= getTransform();

@@ -257,7 +257,7 @@ namespace tgui
             // Make sure the required textures were loaded
             if ((m_TextureBack_M.data != nullptr) && (m_TextureFront_M.data != nullptr))
             {
-                m_Size = Vector2f(m_TextureBack_M.getSize());
+                m_Size = sf::Vector2f(m_TextureBack_M.getSize());
             }
             else
             {

@@ -116,7 +116,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Grid::getSize() const
+    sf::Vector2f Grid::getSize() const
     {
         return m_Size;
     }
@@ -317,13 +317,13 @@ namespace tgui
                     // Recalculate the position of the widget
                     {
                         // Calculate the available space which is distributed when widgets are positionned.
-                        Vector2f availableSpace;
-                        Vector2f minSize = getMinSize();
+                        sf::Vector2f availableSpace;
+                        sf::Vector2f minSize = getMinSize();
                         if (m_Size.x > minSize.x)
                             availableSpace.x = m_Size.x - minSize.x;
                         if (m_Size.y > minSize.y)
                             availableSpace.y = m_Size.y - minSize.y;
-                        Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
+                        sf::Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
                                                   0.5 * availableSpace.y / m_RowHeight.size());
 
                         float left = 0;
@@ -392,10 +392,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Grid::getMinSize()
+    sf::Vector2f Grid::getMinSize()
     {
         // Calculate the required place to have all widgets in the grid.
-        Vector2f minSize;
+        sf::Vector2f minSize;
         // Loop through all rows to find the minimum height required by the grid
         for (std::vector<unsigned int>::const_iterator it = m_RowHeight.begin(); it != m_RowHeight.end(); ++it)
             minSize.y += static_cast<float>(*it);
@@ -409,13 +409,13 @@ namespace tgui
 
     void Grid::updatePositionsOfAllWidgets()
     {
-        Vector2f position;
-        Vector2f previousPosition;
+        sf::Vector2f position;
+        sf::Vector2f previousPosition;
 
         // Calculate m_Size and the available space which will be distributed when widgets will be positionned.
-        Vector2f availableSpace;
+        sf::Vector2f availableSpace;
         m_Size = m_IntendedSize;
-        Vector2f minSize = getMinSize();
+        sf::Vector2f minSize = getMinSize();
         if (m_IntendedSize.x > minSize.x)
             availableSpace.x = m_IntendedSize.x - minSize.x;
         else
@@ -424,7 +424,7 @@ namespace tgui
             availableSpace.y = m_IntendedSize.y - minSize.y;
         else
             m_Size.y = minSize.y;
-        Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
+        sf::Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
                                   0.5 * availableSpace.y / m_RowHeight.size());
 
         // Loop through all rows
@@ -442,7 +442,7 @@ namespace tgui
                     continue;
                 }
 
-                Vector2f cellPosition(position);
+                sf::Vector2f cellPosition(position);
 
                 // Place the next widget on the correct position
                 switch (m_ObjLayout[row][col])
@@ -513,7 +513,7 @@ namespace tgui
             return false;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Check if the mouse might be on top of the grid
         if ((x > position.x) && (y > position.y))

@@ -258,7 +258,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f ChatBox::getSize() const
+    sf::Vector2f ChatBox::getSize() const
     {
         return m_Panel->getSize();
     }
@@ -496,7 +496,7 @@ namespace tgui
     bool ChatBox::mouseOnWidget(float x, float y)
     {
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Pass the event to the scrollbar (if there is one)
         if (m_Scroll != nullptr)
@@ -811,22 +811,22 @@ namespace tgui
         target.draw(*m_Panel, states);
 
         // Draw left border
-        sf::RectangleShape border(Vector2f(m_LeftBorder, m_Panel->getSize().y));
+        sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_Panel->getSize().y));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(Vector2f(m_Panel->getSize().x, m_TopBorder));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x, m_TopBorder));
         target.draw(border, states);
 
         // Draw right border
         border.setPosition(m_Panel->getSize().x - m_RightBorder, 0);
-        border.setSize(Vector2f(m_RightBorder, m_Panel->getSize().y));
+        border.setSize(sf::Vector2f(m_RightBorder, m_Panel->getSize().y));
         target.draw(border, states);
 
         // Draw bottom border
         border.setPosition(0, m_Panel->getSize().y - m_BottomBorder);
-        border.setSize(Vector2f(m_Panel->getSize().x, m_BottomBorder));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x, m_BottomBorder));
         target.draw(border, states);
 
         // Check if there is a scrollbar

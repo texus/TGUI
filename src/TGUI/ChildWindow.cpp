@@ -272,7 +272,7 @@ namespace tgui
                 m_CloseButton->m_WidgetPhase |= WidgetPhase_MouseDown;
             }
 
-            m_CloseButton->m_Size = Vector2f(m_CloseButton->m_TextureNormal_M.getSize());
+            m_CloseButton->m_Size = sf::Vector2f(m_CloseButton->m_TextureNormal_M.getSize());
             m_CloseButton->m_Loaded = true;
         }
         else // Close button wan't loaded
@@ -325,9 +325,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f ChildWindow::getSize() const
+    sf::Vector2f ChildWindow::getSize() const
     {
-        return Vector2f(m_Size.x, m_Size.y);
+        return sf::Vector2f(m_Size.x, m_Size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,7 +619,7 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
         {
             // Get the current position
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
 
             // Temporary set the close button to the correct position
             m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
@@ -667,7 +667,7 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
         {
             // Get the current position
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
 
             // Temporary set the close button to the correct position
             m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
@@ -738,7 +738,7 @@ namespace tgui
         if (m_MouseDown == true)
         {
             // Move the child window
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
             setPosition(position.x + (x - position.x - m_DraggingPosition.x), position.y + (y - position.y - m_DraggingPosition.y));
 
             // Add the callback (if the user requested it)
@@ -754,7 +754,7 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
         {
             // Get the current position
-            Vector2f position = getPosition();
+            sf::Vector2f position = getPosition();
 
             // Temporary set the close button to the correct position
             m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
@@ -918,21 +918,21 @@ namespace tgui
             return;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_LeftBorder + viewPosition.x,
+        sf::Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_LeftBorder + viewPosition.x,
                                                                         position.y + m_TitleBarHeight + m_TopBorder + viewPosition.y);
-        Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + viewPosition.x,
+        sf::Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + viewPosition.x,
                                                                             position.y + m_TitleBarHeight + m_Size.y + m_TopBorder + viewPosition.y);
-        Vector2f topLeftTitleBarPosition;
-        Vector2f bottomRightTitleBarPosition;
+        sf::Vector2f topLeftTitleBarPosition;
+        sf::Vector2f bottomRightTitleBarPosition;
 
         if (m_IconTexture.data)
             topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_DistanceToSide + (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) + viewPosition.x,
@@ -1036,22 +1036,22 @@ namespace tgui
         states.transform = oldTransform.translate(0, static_cast<float>(m_TitleBarHeight));
 
         // Draw left border
-        sf::RectangleShape border(Vector2f(m_LeftBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_Size.y + m_TopBorder + m_BottomBorder));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_TopBorder));
+        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_TopBorder));
         target.draw(border, states);
 
         // Draw right border
         border.setPosition(m_Size.x + m_LeftBorder, 0);
-        border.setSize(Vector2f(m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        border.setSize(sf::Vector2f(m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder));
         target.draw(border, states);
 
         // Draw bottom border
         border.setPosition(0, m_Size.y + m_TopBorder);
-        border.setSize(Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_BottomBorder));
+        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_BottomBorder));
         target.draw(border, states);
 
         // Make room for the borders
@@ -1060,7 +1060,7 @@ namespace tgui
         // Draw the background
         if (m_BackgroundColor != sf::Color::Transparent)
         {
-            sf::RectangleShape background(Vector2f(m_Size.x, m_Size.y));
+            sf::RectangleShape background(sf::Vector2f(m_Size.x, m_Size.y));
             background.setFillColor(m_BackgroundColor);
             target.draw(background, states);
         }

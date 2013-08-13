@@ -293,12 +293,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f ComboBox::getSize() const
+    sf::Vector2f ComboBox::getSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_ListBox->getSize().x, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
+            return sf::Vector2f(m_ListBox->getSize().x, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder);
         else
-            return Vector2f(0, 0);
+            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,7 +581,7 @@ namespace tgui
             return false;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Check if the mouse is on top of the combo box
         if ((x > position.x) && (x < position.x + m_ListBox->getSize().x)
@@ -768,7 +768,7 @@ namespace tgui
         {
             m_ListBox->show();
 
-            Vector2f position(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder);
+            sf::Vector2f position(getPosition().x, getPosition().y + m_ListBox->getItemHeight() + m_TopBorder);
 
             Widget* container = this;
             while (container->getParent() != nullptr)
@@ -845,11 +845,11 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y)) + viewPosition.x,
+        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_LeftBorder, m_TopBorder) + viewPosition);
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + m_ListBox->getSize().x - m_RightBorder - (m_TextureArrowDownNormal.getSize().x * (static_cast<float>(m_ListBox->getItemHeight()) / m_TextureArrowDownNormal.getSize().y)) + viewPosition.x,
                                                                        getPosition().y + m_ListBox->getSize().y - m_BottomBorder + viewPosition.y);
 
         // Adjust the transformation
@@ -859,29 +859,29 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Draw left border
-        sf::RectangleShape border(Vector2f(m_LeftBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
+        sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
         border.setFillColor(m_ListBox->m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(Vector2f(m_ListBox->getSize().x, m_TopBorder));
+        border.setSize(sf::Vector2f(m_ListBox->getSize().x, m_TopBorder));
         target.draw(border, states);
 
         // Draw right border
         border.setPosition(m_ListBox->getSize().x - m_RightBorder, 0);
-        border.setSize(Vector2f(m_RightBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
+        border.setSize(sf::Vector2f(m_RightBorder, m_ListBox->getItemHeight() + m_TopBorder + m_BottomBorder));
         target.draw(border, states);
 
         // Draw bottom border
         border.setPosition(0, m_ListBox->getItemHeight() + m_TopBorder);
-        border.setSize(Vector2f(m_ListBox->getSize().x, m_BottomBorder));
+        border.setSize(sf::Vector2f(m_ListBox->getSize().x, m_BottomBorder));
         target.draw(border, states);
 
         // Move the front rect a little bit
         states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
 
         // Draw the combo box
-        sf::RectangleShape Front(Vector2f(static_cast<float>(m_ListBox->getSize().x - m_LeftBorder - m_RightBorder),
+        sf::RectangleShape Front(sf::Vector2f(static_cast<float>(m_ListBox->getSize().x - m_LeftBorder - m_RightBorder),
                                           static_cast<float>(m_ListBox->getItemHeight())));
         Front.setFillColor(m_ListBox->getBackgroundColor());
         target.draw(Front, states);

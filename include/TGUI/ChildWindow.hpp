@@ -142,7 +142,7 @@ namespace tgui
         /// The size returned by this function is the size of the child window, without the title bar nor the borders.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,7 +482,7 @@ namespace tgui
 
         std::string    m_LoadedConfigFile;
 
-        Vector2f       m_Size;
+        sf::Vector2f   m_Size;
 
         sf::Color      m_BackgroundColor;
         sf::Texture*   m_BackgroundTexture;
@@ -493,7 +493,7 @@ namespace tgui
         sf::Text       m_TitleText;
         unsigned int   m_TitleBarHeight;
         bool           m_SplitImage;
-        Vector2f       m_DraggingPosition;
+        sf::Vector2f   m_DraggingPosition;
         unsigned int   m_DistanceToSide;
         TitleAlignment m_TitleAlignment;
         sf::Color      m_BorderColor;

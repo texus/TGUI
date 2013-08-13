@@ -122,7 +122,7 @@ namespace tgui
         /// \return Size of the list box
         ///
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,7 +566,7 @@ namespace tgui
         int m_SelectedItem;
 
         // The size must be stored
-        Vector2u m_Size;
+        sf::Vector2u m_Size;
         unsigned int m_ItemHeight;
         unsigned int m_TextSize;
 

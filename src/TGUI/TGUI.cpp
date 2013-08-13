@@ -119,7 +119,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool extractVector2f(std::string string, Vector2f& vector)
+    bool extractVector2f(std::string string, sf::Vector2f& vector)
     {
         // Make sure that the string isn't empty
         if (string.empty() == false)
@@ -153,7 +153,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool extractVector2u(std::string string, Vector2u& vector)
+    bool extractVector2u(std::string string, sf::Vector2u& vector)
     {
         // Make sure that the string isn't empty
         if (string.empty() == false)

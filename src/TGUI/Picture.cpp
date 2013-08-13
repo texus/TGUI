@@ -185,7 +185,7 @@ namespace tgui
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
         {
-            Vector2f scaling;
+            sf::Vector2f scaling;
             scaling.x = m_Size.x / m_Texture.getSize().x;
             scaling.y = m_Size.y / m_Texture.getSize().y;
 

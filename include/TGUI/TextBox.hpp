@@ -132,7 +132,7 @@ namespace tgui
         /// \return Size of the text box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,7 +531,7 @@ namespace tgui
         std::string m_LoadedConfigFile;
 
         // The size of the text box
-        Vector2u m_Size;
+        sf::Vector2u m_Size;
 
         // Some information about the text
         sf::String   m_Text;

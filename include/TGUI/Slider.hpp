@@ -120,7 +120,7 @@ namespace tgui
         /// \return Size of the slider
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,7 +273,7 @@ namespace tgui
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
         bool m_MouseDownOnThumb;
-        Vector2f m_MouseDownOnThumbPos;
+        sf::Vector2f m_MouseDownOnThumbPos;
 
         unsigned int m_Minimum;
         unsigned int m_Maximum;
@@ -293,8 +293,8 @@ namespace tgui
         bool m_SeparateHoverImage;
 
         // The size of the slider and its thumb
-        Vector2f m_Size;
-        Vector2f m_ThumbSize;
+        sf::Vector2f m_Size;
+        sf::Vector2f m_ThumbSize;
 
         Texture m_TextureTrackNormal_L;
         Texture m_TextureTrackHover_L;

@@ -59,7 +59,7 @@ namespace tgui
         WidgetTypes widgetType;
 
         // When the mouse has something to do with the callback then this data will be filled
-        Vector2i mouse;
+        sf::Vector2i mouse;
 
         // This text is only used by some widgets, but it can be set together with some other member
         sf::String text;
@@ -67,9 +67,9 @@ namespace tgui
         // Only one of these things can be filled at a given time
         bool         checked;
         int          value;
-        Vector2f     value2d;
-        Vector2f     position;
-        Vector2f     size;
+        sf::Vector2f value2d;
+        sf::Vector2f position;
+        sf::Vector2f size;
         unsigned int index;
     };
 

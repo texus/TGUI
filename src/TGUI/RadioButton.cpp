@@ -154,7 +154,7 @@ namespace tgui
         if ((m_TextureChecked.data != nullptr) && (m_TextureUnchecked.data != nullptr))
         {
             m_Loaded = true;
-            m_Size = Vector2f(m_TextureChecked.getSize());
+            m_Size = sf::Vector2f(m_TextureChecked.getSize());
         }
         else
         {

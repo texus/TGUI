@@ -632,7 +632,7 @@ namespace tgui
         #define CHECK_SHARED_PROPERTIES(name) \
             if (line.substr(0, 5).compare("size=") == 0) \
             { \
-                Vector2f size; \
+                sf::Vector2f size; \
                 if (extractVector2f(line.erase(0, 5), size)) \
                     name->setSize(size.x, size.y); \
                 else \
@@ -641,7 +641,7 @@ namespace tgui
             else if (line.substr(0, 9).compare("position=") == 0) \
             { \
                 line.erase(0, 9); \
-                Vector2f position; \
+                sf::Vector2f position; \
                 if (extractVector2f(line, position)) \
                     name->setPosition(position); \
                 else \
@@ -1172,7 +1172,7 @@ namespace tgui
                         else if (line.substr(0, 9).compare("position=") == 0)
                         {
                             line.erase(0, 9);
-                            Vector2f position;
+                            sf::Vector2f position;
                             if (extractVector2f(line, position))
                                 tab->setPosition(position);
                             else
@@ -1951,7 +1951,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("value=") == 0)
                         {
-                            Vector2f value;
+                            sf::Vector2f value;
                             if (extractVector2f(line.erase(0, 6), value))
                                 slider->setValue(value);
                             else
@@ -1959,7 +1959,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 8).compare("minimum=") == 0)
                         {
-                            Vector2f minimum;
+                            sf::Vector2f minimum;
                             if (extractVector2f(line.erase(0, 8), minimum))
                                 slider->setMinimum(minimum);
                             else
@@ -1967,7 +1967,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 8).compare("maximum=") == 0)
                         {
-                            Vector2f maximum;
+                            sf::Vector2f maximum;
                             if (extractVector2f(line.erase(0, 8), maximum))
                                 slider->setMaximum(maximum);
                             else
@@ -2323,7 +2323,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 6).compare("cells=") == 0)
                         {
-                            Vector2u cells;
+                            sf::Vector2u cells;
                             if (extractVector2u(line.erase(0, 6), cells))
                                 spriteSheet->setCells(cells.x, cells.y);
                             else
@@ -2331,7 +2331,7 @@ namespace tgui
                         }
                         else if (line.substr(0, 12).compare("visiblecell=") == 0)
                         {
-                            Vector2u cell;
+                            sf::Vector2u cell;
                             if (extractVector2u(line.erase(0, 12), cell))
                                 spriteSheet->setVisibleCell(cell.x, cell.y);
                             else
@@ -2588,9 +2588,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f GuiContainer::getSize() const
+    sf::Vector2f GuiContainer::getSize() const
     {
-        return Vector2f(m_Window->getSize());
+        return sf::Vector2f(m_Window->getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

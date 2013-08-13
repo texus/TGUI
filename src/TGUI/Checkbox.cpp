@@ -258,7 +258,7 @@ namespace tgui
         if (m_TextSize == 0)
             setText(m_Text.getString());
 
-        Vector2f scaling(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
+        sf::Vector2f scaling(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
         m_TextureChecked.sprite.setScale(scaling);
         m_TextureUnchecked.sprite.setScale(scaling);
         m_TextureFocused.sprite.setScale(scaling);
@@ -270,12 +270,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Checkbox::getSize() const
+    sf::Vector2f Checkbox::getSize() const
     {
         if (m_Text.getString().isEmpty())
             return m_Size;
         else
-            return Vector2f((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Size.y);
+            return sf::Vector2f((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

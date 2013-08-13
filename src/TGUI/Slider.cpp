@@ -289,12 +289,12 @@ namespace tgui
             {
                 // Set the size of the slider
                 if (m_VerticalImage)
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y));
+                    m_Size = sf::Vector2f(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y));
                 else
-                    m_Size = Vector2f(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
+                    m_Size = sf::Vector2f(static_cast<float>(m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
+                m_ThumbSize = sf::Vector2f(m_TextureThumbNormal.getSize());
             }
             else
             {
@@ -315,10 +315,10 @@ namespace tgui
             if ((m_TextureTrackNormal_M.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
             {
                 // Set the size of the slider
-                m_Size = Vector2f(m_TextureTrackNormal_M.getSize());
+                m_Size = sf::Vector2f(m_TextureTrackNormal_M.getSize());
 
                 // Set the thumb size
-                m_ThumbSize = Vector2f(m_TextureThumbNormal.getSize());
+                m_ThumbSize = sf::Vector2f(m_TextureThumbNormal.getSize());
             }
             else
             {
@@ -390,12 +390,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Slider::getSize() const
+    sf::Vector2f Slider::getSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Size.x, m_Size.y);
+            return sf::Vector2f(m_Size.x, m_Size.y);
         else
-            return Vector2f(0, 0);
+            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,12 +472,12 @@ namespace tgui
             if (m_VerticalScroll)
             {
                 if (m_Size.x > m_Size.y)
-                    m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_Size = sf::Vector2f(m_Size.y, m_Size.x);
             }
             else // The slider lies horizontal
             {
                 if (m_Size.y > m_Size.x)
-                    m_Size = Vector2f(m_Size.y, m_Size.x);
+                    m_Size = sf::Vector2f(m_Size.y, m_Size.x);
             }
 
             // Set the thumb size
@@ -567,7 +567,7 @@ namespace tgui
         float thumbLeft,  thumbTop;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // The size is different when the image is rotated
         if (m_VerticalImage == m_VerticalScroll)
@@ -647,7 +647,7 @@ namespace tgui
         m_MouseHover = true;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Check if the mouse button is down
         if (m_MouseDown)
@@ -792,7 +792,7 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        Vector2f scaling;
+        sf::Vector2f scaling;
 
         // Apply the transformation
         states.transform *= getTransform();

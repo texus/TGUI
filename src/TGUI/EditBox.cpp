@@ -536,7 +536,7 @@ namespace tgui
         }
 
         // Set the size of the selection point
-        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
+        m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
 
         // Recalculate the position of the images and texts
@@ -763,7 +763,7 @@ namespace tgui
         setText(m_Text);
 
         // Set the size of the selection point
-        m_SelectionPoint.setSize(Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
+        m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(m_SelectionPoint.getSize().x),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
     }
 
@@ -936,7 +936,7 @@ namespace tgui
     void EditBox::setSelectionPointWidth(unsigned int width)
     {
         m_SelectionPoint.setPosition(m_SelectionPoint.getPosition().x + ((m_SelectionPoint.getSize().x - width) / 2.0f), m_SelectionPoint.getPosition().y);
-        m_SelectionPoint.setSize(Vector2f(static_cast<float>(width),
+        m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(width),
                                           m_Size.y - ((m_BottomBorder + m_TopBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
 
     }
@@ -1798,7 +1798,7 @@ namespace tgui
         float textY = getPosition().y;
 
         // Calculate the scaling
-        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+        sf::Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
 
         // Calculate the scale of the left and right border
         float borderScale;
@@ -1850,7 +1850,7 @@ namespace tgui
             textX += m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x - m_TextBeforeSelection.getPosition().x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
-            m_SelectedTextBackground.setSize(Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x - m_TextSelection.getPosition().x,
+            m_SelectedTextBackground.setSize(sf::Vector2f(m_TextSelection.findCharacterPos(m_TextSelection.getString().getSize()).x - m_TextSelection.getPosition().x,
                                                       (m_Size.y - ((m_TopBorder + m_BottomBorder) * scaling.y))));
             m_SelectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
 
@@ -1969,7 +1969,7 @@ namespace tgui
         }
 
         // Calculate the scaling
-        Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+        sf::Vector2f scaling(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
 
         // Calculate the scale of the left and right border
         float borderScale;
@@ -1982,12 +1982,12 @@ namespace tgui
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
-        Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale) + viewPosition.x,
+        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_LeftBorder * borderScale) + viewPosition.x,
                                                                    getPosition().y + (m_TopBorder * scaling.y) + viewPosition.y);
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + (m_Size.x - (m_RightBorder * borderScale)) + viewPosition.x,
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + (m_Size.x - (m_RightBorder * borderScale)) + viewPosition.x,
                                                                        getPosition().y + (m_Size.y - (m_BottomBorder * scaling.y)) + viewPosition.y);
 
         // Get the old clipping area

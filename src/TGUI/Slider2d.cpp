@@ -199,7 +199,7 @@ namespace tgui
         if ((m_TextureTrackNormal.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
         {
             // Set the size of the slider
-            m_Size = Vector2f(m_TextureTrackNormal.getSize());
+            m_Size = sf::Vector2f(m_TextureTrackNormal.getSize());
         }
         else
         {
@@ -242,7 +242,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::setMinimum(const Vector2f& minimum)
+    void Slider2d::setMinimum(const sf::Vector2f& minimum)
     {
         // Set the new minimum
         m_Minimum = minimum;
@@ -262,7 +262,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::setMaximum(const Vector2f& maximum)
+    void Slider2d::setMaximum(const sf::Vector2f& maximum)
     {
         // Set the new maximum
         m_Maximum = maximum;
@@ -282,7 +282,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::setValue(const Vector2f& value)
+    void Slider2d::setValue(const sf::Vector2f& value)
     {
         // Set the new value
         m_Value = value;
@@ -301,21 +301,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Slider2d::getMinimum() const
+    sf::Vector2f Slider2d::getMinimum() const
     {
         return m_Minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Slider2d::getMaximum() const
+    sf::Vector2f Slider2d::getMaximum() const
     {
         return m_Maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Slider2d::getValue() const
+    sf::Vector2f Slider2d::getValue() const
     {
         return m_Value;
     }
@@ -345,7 +345,7 @@ namespace tgui
 
     void Slider2d::centerThumb()
     {
-        setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
+        setValue(sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,7 +378,7 @@ namespace tgui
 
         if (m_ReturnThumbToCenter)
         {
-            setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
+            setValue(sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
 
             if (m_CallbackFunctions[ThumbReturnedToCenter].empty() == false)
             {
@@ -404,10 +404,10 @@ namespace tgui
         m_MouseHover = true;
 
         // Get the current position
-        Vector2f position = getPosition();
+        sf::Vector2f position = getPosition();
 
         // Remember the old value
-        Vector2f oldValue = m_Value;
+        sf::Vector2f oldValue = m_Value;
 
         // Check if the mouse button is down
         if (m_MouseDown)
@@ -453,9 +453,9 @@ namespace tgui
 
 		if (m_ReturnThumbToCenter)
 		{
-		    if (m_Value != Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
+		    if (m_Value != sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
 		    {
-		        setValue(Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
+		        setValue(sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
 
                 if (m_CallbackFunctions[ThumbReturnedToCenter].empty() == false)
                 {
@@ -605,14 +605,14 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Size) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Adjust the transformation
         states.transform *= getTransform();
 
         // Calculate the scale of the slider
-        Vector2f scaling;
+        sf::Vector2f scaling;
         scaling.x = m_Size.x / m_TextureTrackNormal.getSize().x;
         scaling.y = m_Size.y / m_TextureTrackNormal.getSize().y;
 

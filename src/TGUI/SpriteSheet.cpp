@@ -92,12 +92,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f SpriteSheet::getSize() const
+    sf::Vector2f SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return Vector2f(m_Size.x / m_Columns, m_Size.y / m_Rows);
+            return sf::Vector2f(m_Size.x / m_Columns, m_Size.y / m_Rows);
         else
-            return Vector2f(0, 0);
+            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

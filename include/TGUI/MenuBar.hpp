@@ -98,7 +98,7 @@ namespace tgui
         /// The height used by default is the height of the background image(s).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ namespace tgui
 
         const sf::Font* m_TextFont;
 
-        Vector2f     m_Size;
+        sf::Vector2f m_Size;
 
         unsigned int m_TextSize;
 
