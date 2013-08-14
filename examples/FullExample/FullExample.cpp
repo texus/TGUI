@@ -154,8 +154,6 @@ int main()
     textBox->setSize(180, 120);
     textBox->setTextSize(16);
 
-    comboBox->moveToFront();
-
     while (window.isOpen())
     {
         sf::Event event;
