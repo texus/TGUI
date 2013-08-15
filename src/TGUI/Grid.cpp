@@ -323,8 +323,8 @@ namespace tgui
                             availableSpace.x = m_Size.x - minSize.x;
                         if (m_Size.y > minSize.y)
                             availableSpace.y = m_Size.y - minSize.y;
-                        sf::Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
-                                                  0.5 * availableSpace.y / m_RowHeight.size());
+                        sf::Vector2f availSpaceOffset(0.5f * availableSpace.x / m_ColumnWidth.size(),
+                                                      0.5f * availableSpace.y / m_RowHeight.size());
 
                         float left = 0;
                         float top = 0;
@@ -427,8 +427,8 @@ namespace tgui
             availableSpace.y = m_IntendedSize.y - minSize.y;
         else
             m_Size.y = minSize.y;
-        sf::Vector2f availSpaceOffset(0.5 * availableSpace.x / m_ColumnWidth.size(),
-                                  0.5 * availableSpace.y / m_RowHeight.size());
+        sf::Vector2f availSpaceOffset(0.5f * availableSpace.x / m_ColumnWidth.size(),
+                                      0.5f * availableSpace.y / m_RowHeight.size());
 
         // Loop through all rows
         for (unsigned int row=0; row < m_GridWidgets.size(); ++row)

@@ -199,8 +199,8 @@ namespace tgui
         // Make sure the required textures were loaded
         if ((m_TextureArrowUpNormal.data != nullptr) && (m_TextureArrowDownNormal.data != nullptr))
         {
-            m_Size.x = m_TextureArrowUpNormal.getSize().x;
-            m_Size.y = m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y;
+            m_Size.x = static_cast<float>(m_TextureArrowUpNormal.getSize().x);
+            m_Size.y = static_cast<float>(m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y);
         }
         else
         {
@@ -600,7 +600,7 @@ namespace tgui
             }
 
             // Set the right arrow on the correct position
-            states.transform.translate(0, m_TextureArrowUpNormal.getSize().y);
+            states.transform.translate(0, static_cast<float>(m_TextureArrowUpNormal.getSize().y));
 
             // Draw the second arrow
             if (m_SeparateHoverImage)

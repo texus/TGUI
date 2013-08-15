@@ -349,7 +349,7 @@ void Builder::changeVisibleProperties()
     tgui::Button::Ptr button(propertyWindow);
     button->load(DEFAULT_THEME_FILE);
     button->setText("Delete widget");
-    button->setSize(propertyRenderWindow.getSize().x - 8.0, 40.0);
+    button->setSize(propertyRenderWindow.getSize().x - 8.0f, 40.0f);
     button->setCallbackId(50);
     button->bindCallback(tgui::Button::LeftMouseClicked);
 
@@ -1236,7 +1236,7 @@ bool Builder::loadForm()
                 // Draw the widget in the correct way
                 tgui::ListBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
-                realWidget->setSize(static_cast<unsigned int>(widget->getSize().x), static_cast<unsigned int>(widget->getSize().y));
+                realWidget->setSize(widget->getSize().x, widget->getSize().y);
                 realWidget->setItemHeight(widget->getItemHeight());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setMaximumItems(widget->getMaximumItems());
@@ -1353,7 +1353,7 @@ bool Builder::loadForm()
                 // Draw the widget in the correct way
                 tgui::TextBox::Ptr realWidget = mainWindow.get(tgui::to_string(id));
                 realWidget->load(widget->getLoadedConfigFile());
-                realWidget->setSize(static_cast<unsigned int>(widget->getSize().x), static_cast<unsigned int>(widget->getSize().y));
+                realWidget->setSize(widget->getSize().x, widget->getSize().y);
                 realWidget->setTextSize(widget->getTextSize());
                 realWidget->setPosition(widget->getPosition());
                 realWidget->setSize(widget->getSize().x, widget->getSize().y);

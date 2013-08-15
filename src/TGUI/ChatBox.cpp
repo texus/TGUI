@@ -288,7 +288,7 @@ namespace tgui
         label->setText(text);
         label->setTextColor(color);
         label->setTextSize(m_TextSize);
-        label->setPosition(m_LeftBorder + 2, m_Panel->getSize().y - (m_TextSize * 1.2f));
+        label->setPosition(m_LeftBorder + 2.0f, m_Panel->getSize().y - (m_TextSize * 1.2f));
 
         float width;
         if (m_Scroll == nullptr)
@@ -397,7 +397,7 @@ namespace tgui
         // Reposition the labels
         std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
         for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
-            (*it)->setPosition(m_LeftBorder + 2, (*it)->getPosition().y);
+            (*it)->setPosition(m_LeftBorder + 2.0f, (*it)->getPosition().y);
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != nullptr)
@@ -792,9 +792,9 @@ namespace tgui
             static_cast<Label::Ptr>(labels[index])->setTextSize(m_TextSize);
 
             if (m_Scroll != nullptr)
-                labels[index]->setPosition(m_LeftBorder + 2, bottomPosition - (m_TextSize * 1.4f) + m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_Scroll->getValue());
+                labels[index]->setPosition(m_LeftBorder + 2.0f, bottomPosition - (m_TextSize * 1.4f) + m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_Scroll->getValue());
             else
-                labels[index]->setPosition(m_LeftBorder + 2, bottomPosition - (m_TextSize * 1.4f));
+                labels[index]->setPosition(m_LeftBorder + 2.0f, bottomPosition - (m_TextSize * 1.4f));
 
             bottomPosition -= m_TextSize * 1.4f;
         }
@@ -811,29 +811,29 @@ namespace tgui
         target.draw(*m_Panel, states);
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_Panel->getSize().y));
+        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Panel->getSize().y));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_Panel->getSize().x, m_TopBorder));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x, static_cast<float>(m_TopBorder)));
         target.draw(border, states);
 
         // Draw right border
         border.setPosition(m_Panel->getSize().x - m_RightBorder, 0);
-        border.setSize(sf::Vector2f(m_RightBorder, m_Panel->getSize().y));
+        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Panel->getSize().y));
         target.draw(border, states);
 
         // Draw bottom border
         border.setPosition(0, m_Panel->getSize().y - m_BottomBorder);
-        border.setSize(sf::Vector2f(m_Panel->getSize().x, m_BottomBorder));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x, static_cast<float>(m_BottomBorder)));
         target.draw(border, states);
 
         // Check if there is a scrollbar
         if (m_Scroll != nullptr)
         {
             // Reset the transformation
-            states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, m_TopBorder);
+            states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);

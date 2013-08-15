@@ -467,7 +467,7 @@ namespace tgui
 
                     // There is a minimum width
                     if (width < m_MinimumSubMenuWidth)
-                        width = m_MinimumSubMenuWidth;
+                        width = static_cast<float>(m_MinimumSubMenuWidth);
 
                     // Check if the mouse is on top of the open menu
                     if (getTransform().transformRect(sf::FloatRect(left, m_Size.y, width, m_Size.y * m_Menus[m_VisibleMenu].menuItems.size())).contains(x, y))
@@ -751,7 +751,7 @@ namespace tgui
         // Draw the menus
         for (unsigned int i = 0; i < m_Menus.size(); ++i)
         {
-            states.transform.translate(m_DistanceToSide, 0);
+            states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
             target.draw(m_Menus[i].text, states);
 
             // Is the menu open?
@@ -769,7 +769,7 @@ namespace tgui
 
                 // There is a minimum width
                 if (menuWidth < m_MinimumSubMenuWidth)
-                    menuWidth = m_MinimumSubMenuWidth;
+                    menuWidth = static_cast<float>(m_MinimumSubMenuWidth);
 
                 // Draw the background of the menu
                 background = sf::RectangleShape(sf::Vector2f(menuWidth, m_Size.y * m_Menus[i].menuItems.size()));
@@ -786,7 +786,7 @@ namespace tgui
                     states.transform.translate(0, m_Menus[i].selectedMenuItem * -m_Size.y);
                 }
 
-                states.transform.translate(2 * m_DistanceToSide, 0);
+                states.transform.translate(2.0f * m_DistanceToSide, 0);
 
                 // Draw the menu items
                 for (unsigned int j = 0; j < m_Menus[i].menuItems.size(); ++j)

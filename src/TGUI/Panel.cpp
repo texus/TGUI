@@ -196,8 +196,8 @@ namespace tgui
             if (!m_CallbackFunctions[LeftMousePressed].empty())
             {
                 m_Callback.trigger = LeftMousePressed;
-                m_Callback.mouse.x = x - getPosition().x;
-                m_Callback.mouse.y = y - getPosition().y;
+                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
         }
@@ -214,8 +214,8 @@ namespace tgui
             if (!m_CallbackFunctions[LeftMouseReleased].empty())
             {
                 m_Callback.trigger = LeftMouseReleased;
-                m_Callback.mouse.x = x - getPosition().x;
-                m_Callback.mouse.y = y - getPosition().y;
+                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 
@@ -224,8 +224,8 @@ namespace tgui
                 if (!m_CallbackFunctions[LeftMouseClicked].empty())
                 {
                     m_Callback.trigger = LeftMouseClicked;
-                    m_Callback.mouse.x = x - getPosition().x;
-                    m_Callback.mouse.y = y - getPosition().y;
+                    m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
                     addCallback();
                 }
             }

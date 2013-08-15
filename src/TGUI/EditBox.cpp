@@ -397,7 +397,7 @@ namespace tgui
             if (m_TextureNormal_M.data != nullptr)
             {
                 m_Loaded = true;
-                setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
+                setSize(static_cast<float>(m_TextureNormal_M.getSize().x), static_cast<float>(m_TextureNormal_M.getSize().y));
             }
             else
             {
@@ -1076,8 +1076,8 @@ namespace tgui
         if (m_CallbackFunctions[LeftMousePressed].empty() == false)
         {
             m_Callback.trigger = LeftMousePressed;
-            m_Callback.mouse.x = x - getPosition().x;
-            m_Callback.mouse.y = y - getPosition().y;
+            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 

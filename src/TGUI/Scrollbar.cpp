@@ -323,7 +323,7 @@ namespace tgui
             {
                 // Set the size of the scrollbar
                 m_Loaded = true;
-                setSize(m_TextureTrackNormal_M.getSize().x, m_TextureTrackNormal_M.getSize().y);
+                setSize(static_cast<float>(m_TextureTrackNormal_M.getSize().x), static_cast<float>(m_TextureTrackNormal_M.getSize().y));
             }
             else
             {
@@ -461,7 +461,7 @@ namespace tgui
                 else // The arrows are not drawn at full size
                 {
                     thumbHeight = 0;
-                    thumbTop = m_TextureArrowUpNormal.getSize().y;
+                    thumbTop = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
                 }
             }
             else // The scrollbar lies horizontal
@@ -485,7 +485,7 @@ namespace tgui
                 else // The arrows are not drawn at full size
                 {
                     thumbWidth = 0;
-                    thumbLeft = m_TextureArrowUpNormal.getSize().y;
+                    thumbLeft = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
                 }
             }
 

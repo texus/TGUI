@@ -617,12 +617,12 @@ namespace tgui
             // Check if the middle image is drawn
             if (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x < m_Size.x)
             {
-                totalWidth = bounds_L.width + bounds_M.width + bounds_R.width;
+                totalWidth = static_cast<float>(bounds_L.width + bounds_M.width + bounds_R.width);
                 middleTextureWidth = totalWidth - (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x);
             }
             else // The loading bar is too small
             {
-                totalWidth = bounds_L.width + bounds_R.width;
+                totalWidth = static_cast<float>(bounds_L.width + bounds_R.width);
                 middleTextureWidth = 0;
             }
 
@@ -653,7 +653,7 @@ namespace tgui
                 }
                 else // Only a part of the left piece should be drawn
                 {
-                    bounds_L.width = frontSize;
+                    bounds_L.width = static_cast<int>(frontSize);
                     bounds_M.width = 0;
                     bounds_R.width = 0;
                 }

@@ -363,7 +363,7 @@ namespace tgui
             if (m_TextureNormal_M.data != nullptr)
             {
                 m_Loaded = true;
-                setSize(m_TextureNormal_M.getSize().x, m_TextureNormal_M.getSize().y);
+                setSize(static_cast<float>(m_TextureNormal_M.getSize().x), static_cast<float>(m_TextureNormal_M.getSize().y));
             }
             else
             {

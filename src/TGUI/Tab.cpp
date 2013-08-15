@@ -343,7 +343,7 @@ namespace tgui
                 width += m_MaximumTabWidth ? TGUI_MINIMUM(m_NameWidth[i] + (2 * m_DistanceToSide), m_MaximumTabWidth) : m_NameWidth[i] + (2 * m_DistanceToSide);
         }
 
-        return sf::Vector2f(width, m_TabHeight);
+        return sf::Vector2f(width, static_cast<float>(m_TabHeight));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -657,8 +657,8 @@ namespace tgui
                     m_Callback.trigger = TabChanged;
                     m_Callback.value   = m_SelectedTab;
                     m_Callback.text    = m_TabNames[i];
-                    m_Callback.mouse.x = x - getPosition().x;
-                    m_Callback.mouse.y = y - getPosition().y;
+                    m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
                     addCallback();
                 }
 
@@ -945,7 +945,7 @@ namespace tgui
                 {
                     // Get the global position
                     sf::Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    sf::Vector2f bottomRightPosition = states.transform.transformPoint(sf::Vector2f(tabWidth - (2 * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    sf::Vector2f bottomRightPosition = states.transform.transformPoint(sf::Vector2f(tabWidth - (2.0f * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

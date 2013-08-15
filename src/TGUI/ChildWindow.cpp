@@ -610,8 +610,8 @@ namespace tgui
         if (m_CallbackFunctions[LeftMousePressed].empty() == false)
         {
             m_Callback.trigger = LeftMousePressed;
-            m_Callback.mouse.x = x - getPosition().x;
-            m_Callback.mouse.y = y - getPosition().y;
+            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 
@@ -1036,22 +1036,22 @@ namespace tgui
         states.transform = oldTransform.translate(0, static_cast<float>(m_TitleBarHeight));
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(m_LeftBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Size.y + m_TopBorder + m_BottomBorder));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_TopBorder));
+        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TopBorder)));
         target.draw(border, states);
 
         // Draw right border
         border.setPosition(m_Size.x + m_LeftBorder, 0);
-        border.setSize(sf::Vector2f(m_RightBorder, m_Size.y + m_TopBorder + m_BottomBorder));
+        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Size.y + m_TopBorder + m_BottomBorder));
         target.draw(border, states);
 
         // Draw bottom border
         border.setPosition(0, m_Size.y + m_TopBorder);
-        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, m_BottomBorder));
+        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_BottomBorder)));
         target.draw(border, states);
 
         // Make room for the borders

@@ -191,7 +191,7 @@ namespace tgui
         if ((m_TextureChecked.data != nullptr) && (m_TextureUnchecked.data != nullptr))
         {
             m_Loaded = true;
-            setSize(m_TextureUnchecked.getSize().x, m_TextureUnchecked.getSize().y);
+            setSize(static_cast<float>(m_TextureUnchecked.getSize().x), static_cast<float>(m_TextureUnchecked.getSize().y));
         }
         else
         {
@@ -275,7 +275,7 @@ namespace tgui
         if (m_Text.getString().isEmpty())
             return m_Size;
         else
-            return sf::Vector2f((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width, m_Size.y);
+            return sf::Vector2f(static_cast<float>((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width), m_Size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,8 +462,8 @@ namespace tgui
         {
             m_Callback.trigger = LeftMouseReleased;
             m_Callback.checked = m_Checked;
-            m_Callback.mouse.x = x - getPosition().x;
-            m_Callback.mouse.y = y - getPosition().y;
+            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 
@@ -481,8 +481,8 @@ namespace tgui
             {
                 m_Callback.trigger = LeftMouseClicked;
                 m_Callback.checked = m_Checked;
-                m_Callback.mouse.x = x - getPosition().x;
-                m_Callback.mouse.y = y - getPosition().y;
+                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 

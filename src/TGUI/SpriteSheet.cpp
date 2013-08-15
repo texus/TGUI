@@ -204,11 +204,11 @@ namespace tgui
         {
             if (property == "Rows")
             {
-                setRows(atof(value.c_str()));
+                setRows(atoi(value.c_str()));
             }
             else if (property == "Columns")
             {
-                setColumns(atof(value.c_str()));
+                setColumns(atoi(value.c_str()));
             }
             else // The property didn't match
                 return false;

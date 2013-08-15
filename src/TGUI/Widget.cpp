@@ -443,19 +443,19 @@ namespace tgui
     {
         if (property == "Left")
         {
-            setPosition(atof(value.c_str()), getPosition().y);
+            setPosition(static_cast<float>(atof(value.c_str())), getPosition().y);
         }
         else if (property == "Top")
         {
-            setPosition(getPosition().x, atof(value.c_str()));
+            setPosition(getPosition().x, static_cast<float>(atof(value.c_str())));
         }
         else if (property == "Width")
         {
-            setSize(atof(value.c_str()), getSize().y);
+            setSize(static_cast<float>(atof(value.c_str())), getSize().y);
         }
         else if (property == "Height")
         {
-            setSize(getSize().x, atof(value.c_str()));
+            setSize(getSize().x, static_cast<float>(atof(value.c_str())));
         }
         else if (property == "Visible")
         {

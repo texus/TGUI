@@ -104,7 +104,7 @@ namespace tgui
             m_Loaded = true;
 
             // Remember the size of the texture
-            setSize(m_Texture.getSize().x, m_Texture.getSize().y);
+            setSize(static_cast<float>(m_Texture.getSize().x),static_cast<float>( m_Texture.getSize().y));
 
             return true;
         }

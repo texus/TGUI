@@ -409,7 +409,7 @@ namespace tgui
                     {
                         // Add the number
                         ++numbersBehindComma;
-                        numbers.back() += (nextChar - 48) / pow(10.f, numbersBehindComma);
+                        numbers.back() += static_cast<float>((nextChar - 48) / pow(10.f, numbersBehindComma));
                     }
                     else // No comma
                     {

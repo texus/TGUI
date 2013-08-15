@@ -348,17 +348,17 @@ namespace tgui
             return;
 
         // Calculate the button size
-        float buttonWidth = 5 * m_TextSize;
-        float buttonHeight = m_TextSize * 10.0 / 8.0;
+        float buttonWidth = 5.0f * m_TextSize;
+        float buttonHeight = m_TextSize * 10.0f / 8.0f;
         for (unsigned int i = 0; i < m_Buttons.size(); ++i)
         {
             float width = sf::Text(m_Buttons[i]->getText(), *m_Buttons[i]->getTextFont(), m_TextSize).getLocalBounds().width;
-            if (buttonWidth < width * 10.0 / 9.0)
-                buttonWidth = width * 10.0 / 9.0;
+            if (buttonWidth < width * 10.0f / 9.0f)
+                buttonWidth = width * 10.0f / 9.0f;
         }
 
         // Calculate the space needed for the buttons
-        float distance = buttonHeight * 2.0 / 3.0;
+        float distance = buttonHeight * 2.0f / 3.0f;
         float buttonsAreaWidth = distance;
         for (unsigned int i = 0; i < m_Buttons.size(); ++i)
         {
