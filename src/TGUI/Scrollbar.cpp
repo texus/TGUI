@@ -352,6 +352,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::setMaximum(unsigned int maximum)
+    {
+        Slider::setMaximum(maximum);
+
+        // When the value is above the maximum then adjust it
+        if (m_Maximum < m_LowValue)
+            setValue(0);
+        else if (m_Value > m_Maximum - m_LowValue)
+            setValue(m_Maximum - m_LowValue);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::setValue(unsigned int value)
     {
         if (m_Value != value)
@@ -360,7 +373,9 @@ namespace tgui
             m_Value = value;
 
             // When the value is above the maximum then adjust it
-            if (m_Value > m_Maximum - m_LowValue)
+            if (m_Maximum < m_LowValue)
+                m_Value = 0;
+            else if (m_Value > m_Maximum - m_LowValue)
                 m_Value = m_Maximum - m_LowValue;
 
             // Add the callback (if the user requested it)
@@ -379,6 +394,12 @@ namespace tgui
     {
         // Set the new value
         m_LowValue = lowValue;
+
+        // When the value is above the maximum then adjust it
+        if (m_Maximum < m_LowValue)
+            setValue(0);
+        else if (m_Value > m_Maximum - m_LowValue)
+            setValue(m_Maximum - m_LowValue);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
