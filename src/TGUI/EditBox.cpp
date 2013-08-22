@@ -958,18 +958,24 @@ namespace tgui
         if (numbersOnly && !m_Text.isEmpty())
         {
             sf::String newText;
+            bool commaFound = false;
+
+            if ((m_Text[0] == '+') || (m_Text[0] == '-'))
+                newText += m_Text[0];
+
             for (unsigned int i = 0; i < m_Text.getSize(); ++i)
             {
-                if (newText.isEmpty())
+                if (!commaFound)
                 {
-                    if ((m_Text[i] == '-') || (m_Text[i] == '+') || ((m_Text[i] >= '0') && (m_Text[i] <= '9')))
+                    if ((m_Text[i] == ',') || (m_Text[i] == '.'))
+                    {
                         newText += m_Text[i];
+                        commaFound = true;
+                    }
                 }
-                else
-                {
-                    if ((m_Text[i] >= '0') && (m_Text[i] <= '9'))
-                        newText += m_Text[i];
-                }
+
+                if ((m_Text[i] >= '0') && (m_Text[i] <= '9'))
+                    newText += m_Text[i];
             }
 
             // When the text changed then reposition the text
@@ -1419,31 +1425,30 @@ namespace tgui
         {
             if ((key < '0') || (key > '9'))
             {
-                bool characterAccepted = false;
-                if ((m_SelStart == 0) || (m_SelEnd == 0))
+                if ((key == '-') || (key == '+'))
                 {
-                    if ((key == '-') || (key == '+'))
+                    if ((m_SelStart == 0) || (m_SelEnd == 0))
                     {
                         if (!m_Text.isEmpty())
                         {
-                            if ((m_Text[0] != '-') && (m_Text[0] != '+'))
-                            {
-                                // You are allowed to add a + or - at the beginning of the string
-                                characterAccepted = true;
-                            }
-                            else // You can't have multiple + and - characters after each other
+                            // You can't have multiple + and - characters after each other
+                            if ((m_Text[0] == '-') || (m_Text[0] == '+'))
                                 return;
                         }
-                        else // This is the first character, so just add the + or -
-                            characterAccepted = true;
                     }
-                    else // Only + and - symbols are allowed
+                    else // + and - symbols are only allowed at the beginning of the line
                         return;
                 }
-                else // + and - symbols can only be placed at the beginning
-                    return;
-
-                if (!characterAccepted)
+                else if ((key == ',') || (key == '.'))
+                {
+                    // Only one comma is allowed
+                    for (auto it = m_Text.begin(); it != m_Text.end(); ++it)
+                    {
+                        if ((*it == ',') || (*it == '.'))
+                            return;
+                    }
+                }
+                else // Character not accepted
                     return;
             }
         }
