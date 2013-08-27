@@ -38,6 +38,7 @@ namespace tgui
     ChatBox::ChatBox() :
     m_TextSize   (15),
     m_BorderColor(sf::Color::Black),
+    m_MaxLines   (0),
     m_Scroll     (nullptr)
     {
         m_Callback.widgetType = Type_Unknown;
@@ -58,7 +59,8 @@ namespace tgui
     WidgetBorders     (copy),
     m_LoadedConfigFile(copy.m_LoadedConfigFile),
     m_TextSize        (copy.m_TextSize),
-    m_BorderColor     (copy.m_BorderColor)
+    m_BorderColor     (copy.m_BorderColor),
+    m_MaxLines        (copy.m_MaxLines)
     {
         m_Panel = new Panel(*copy.m_Panel);
 
@@ -99,6 +101,7 @@ namespace tgui
             std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
             std::swap(m_TextSize,         temp.m_TextSize);
             std::swap(m_BorderColor,      temp.m_BorderColor);
+            std::swap(m_MaxLines,         temp.m_MaxLines);
             std::swap(m_Panel,            temp.m_Panel);
             std::swap(m_Scroll,           temp.m_Scroll);
         }
@@ -317,6 +320,13 @@ namespace tgui
             label = newLabel;
         }
 
+        // Remove some lines if you exceed the maximum
+        if ((m_MaxLines > 0) && (m_MaxLines < m_Panel->getWidgets().size()))
+        {
+            auto& widgets = m_Panel->getWidgets();
+            widgets.erase(widgets.begin(), widgets.begin() + widgets.size() - m_MaxLines);
+        }
+
         if (m_Scroll != nullptr)
         {
             m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
@@ -348,12 +358,33 @@ namespace tgui
         if (lineIndex < m_Panel->getWidgets().size())
         {
             m_Panel->remove(m_Panel->getWidgets()[lineIndex]);
-            m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+
+            if (m_Scroll != nullptr)
+                m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+
             updateDisplayedText();
             return true;
         }
         else // Index too high
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setLineLimit(unsigned int maxLines)
+    {
+        m_MaxLines = maxLines;
+
+        if ((m_MaxLines > 0) && (m_MaxLines < m_Panel->getWidgets().size()))
+        {
+            auto& widgets = m_Panel->getWidgets();
+            widgets.erase(widgets.begin(), widgets.begin() + widgets.size() - m_MaxLines);
+
+            if (m_Scroll != nullptr)
+                m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+
+            updateDisplayedText();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

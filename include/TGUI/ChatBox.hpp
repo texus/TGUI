@@ -164,6 +164,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set a maximum amount of lines in the chat box.
+        ///
+        /// Only the last \a maxLines lines will be kept. Lines above those will be removed.
+        /// Set to 0 to disable the line limit (default).
+        ///
+        /// \param maxLines  The maximum amount of lines that the chat box can contain.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setLineLimit(unsigned int maxLines);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
@@ -382,6 +394,8 @@ namespace tgui
 
         unsigned int m_TextSize;
         sf::Color m_BorderColor;
+
+        unsigned int m_MaxLines;
 
         // The panel containing the labels
         Panel* m_Panel;
