@@ -268,8 +268,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color)
+    int ChatBox::addLine(const sf::String& text, const sf::Color& color)
     {
+        int linesAdded = 0;
+
         // Call this function for every line in the text
         std::string::size_type newlinePos = text.find("\n");
         if (newlinePos != std::string::npos)
@@ -277,14 +279,13 @@ namespace tgui
             std::string::size_type lastNewlinePos = 0;
             while (newlinePos != std::string::npos)
             {
-                addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
+                linesAdded += addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
 
                 lastNewlinePos = newlinePos + 1;
                 newlinePos = text.find("\n", lastNewlinePos);
             }
 
-            addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
-            return;
+            return addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos)) + linesAdded;
         }
 
         Label::Ptr label(*m_Panel);
@@ -292,6 +293,7 @@ namespace tgui
         label->setTextColor(color);
         label->setTextSize(m_TextSize);
         label->setPosition(m_LeftBorder + 2.0f, m_Panel->getSize().y - (m_TextSize * 1.2f));
+        linesAdded++;
 
         float width;
         if (m_Scroll == nullptr)
@@ -307,6 +309,7 @@ namespace tgui
         {
             Label::Ptr newLabel = m_Panel->copy(label);
             newLabel->setText("");
+            linesAdded++;
 
             while (label->getSize().x > width)
             {
@@ -337,6 +340,8 @@ namespace tgui
 
         // Reposition the labels
         updateDisplayedText();
+
+        return linesAdded;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

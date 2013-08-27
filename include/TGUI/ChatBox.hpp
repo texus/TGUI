@@ -134,8 +134,10 @@ namespace tgui
         /// \param text  Text that will be added to the chat box
         /// \param color Color of the text
         ///
+        /// \return The amount of lines that were added.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(const sf::String& text, const sf::Color& color = sf::Color::Black);
+        int addLine(const sf::String& text, const sf::Color& color = sf::Color::Black);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
