@@ -36,6 +36,9 @@ namespace tgui
     m_TextSize(16)
     {
         m_Callback.widgetType = Type_MessageBox;
+
+        add(m_Label, "MessageBoxText");
+        m_Label->setTextSize(m_TextSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,14 +94,6 @@ namespace tgui
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
 
-        // Create the text label if it doesn't exist yet
-        if (get("MessageBoxText") == nullptr)
-        {
-            add(m_Label, "MessageBoxText");
-
-            m_Label->setTextSize(m_TextSize);
-        }
-
         // Open the config file
         ConfigFile configFile;
         if (!configFile.open(configFileFilename))
@@ -142,7 +137,7 @@ namespace tgui
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ChildWindow in section MessageBox in " + configFileFilename + ".");
                     return false;
                 }
 
@@ -157,7 +152,7 @@ namespace tgui
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Button in section MessageBox in " + configFileFilename + ".");
                     return false;
                 }
 
