@@ -331,6 +331,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::String ChatBox::getLine(unsigned int lineIndex)
+    {
+        if (lineIndex < m_Panel->getWidgets().size())
+        {
+            return tgui::Label::Ptr(m_Panel->getWidgets()[lineIndex])->getText();
+        }
+        else // Index too high
+            return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChatBox::removeLine(unsigned int lineIndex)
+    {
+        if (lineIndex < m_Panel->getWidgets().size())
+        {
+            m_Panel->remove(m_Panel->getWidgets()[lineIndex]);
+            m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+            updateDisplayedText();
+            return true;
+        }
+        else // Index too high
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::setTextFont(const sf::Font& font)
     {
         m_Panel->setGlobalFont(font);
