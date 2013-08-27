@@ -1585,7 +1585,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelMoved(int delta)
+    void TextBox::mouseWheelMoved(int delta, int, int)
     {
         // Only do something when there is a scrollbar
         if (m_Scroll != nullptr)

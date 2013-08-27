@@ -680,7 +680,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseWheelMoved(int delta)
+    void ChatBox::mouseWheelMoved(int delta, int, int)
     {
         // Only do something when there is a scrollbar
         if (m_Scroll != nullptr)
