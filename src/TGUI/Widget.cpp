@@ -233,7 +233,8 @@ namespace tgui
 
     void Widget::focus()
     {
-        m_Parent->focusWidget(this);
+        if (m_Parent)
+            m_Parent->focusWidget(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,6 +408,10 @@ namespace tgui
             m_Callback.trigger = Focused;
             addCallback();
         }
+
+        // Make sure the parent is also focused
+        if (m_Parent)
+            m_Parent->focus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
