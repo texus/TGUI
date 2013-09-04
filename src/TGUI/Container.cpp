@@ -39,6 +39,7 @@ namespace tgui
     {
         m_ContainerWidget = true;
         m_AnimatedWidget = true;
+        m_AllowFocus = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,7 +183,8 @@ namespace tgui
             if (m_EventManager.m_Widgets[i].get() == widget)
             {
                 // Unfocus the widget, just in case it was focused
-                m_EventManager.unfocusWidget(widget);
+                if (widget->isFocused())
+                    m_EventManager.unfocusWidgets();
 
                 // Remove the widget
                 m_EventManager.m_Widgets.erase(m_EventManager.m_Widgets.begin() + i);
@@ -209,6 +211,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::focusWidget(const Widget::Ptr& widget)
+    {
+        focusWidget(widget.get());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::focusWidget(Widget *const widget)
     {
         m_EventManager.focusWidget(widget);
@@ -216,16 +225,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unfocusWidget(Widget *const widget)
+    void Container::focusNextWidget()
     {
-        m_EventManager.unfocusWidget(widget);
+        m_EventManager.focusNextWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unfocusAllWidgets()
+    void Container::focusPreviousWidget()
     {
-        m_EventManager.unfocusAllWidgets();
+        m_EventManager.focusPreviousWidget();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::unfocusWidgets()
+    {
+        m_EventManager.unfocusWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2551,6 +2567,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::widgetFocused()
+    {
+        m_EventManager.tabKeyPressed();
+        Widget::widgetFocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::widgetUnfocused()
+    {
+        m_EventManager.unfocusWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::initialize(Container *const parent)
     {
         m_Parent = parent;
@@ -2569,7 +2600,7 @@ namespace tgui
 
     bool Container::focusNextWidgetInContainer()
     {
-        return m_EventManager.focusNextWidget();
+        return m_EventManager.focusNextWidgetInContainer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

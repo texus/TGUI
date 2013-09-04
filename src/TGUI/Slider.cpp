@@ -718,7 +718,7 @@ namespace tgui
     void Slider::widgetFocused()
     {
         // A slider can't be focused (yet)
-        m_Parent->unfocusWidget(this);
+        unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

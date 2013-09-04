@@ -39,7 +39,6 @@ namespace tgui
     m_Texture                      (nullptr)
     {
         m_Callback.widgetType = Type_Panel;
-        m_AllowFocus = true;
         m_Loaded = true;
     }
 
@@ -234,21 +233,6 @@ namespace tgui
         m_MouseDown = false;
 
         Container::leftMouseReleased(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::widgetFocused()
-    {
-        m_EventManager.tabKeyPressed();
-        Widget::widgetFocused();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::widgetUnfocused()
-    {
-        m_EventManager.unfocusAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

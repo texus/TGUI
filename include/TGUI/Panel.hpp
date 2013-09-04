@@ -165,8 +165,6 @@ namespace tgui
         virtual bool mouseOnWidget(float x, float y);
         virtual void leftMousePressed(float x, float y);
         virtual void leftMouseReleased(float x, float y);
-        virtual void widgetFocused();
-        virtual void widgetUnfocused();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

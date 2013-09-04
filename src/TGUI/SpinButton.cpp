@@ -438,7 +438,7 @@ namespace tgui
     void SpinButton::widgetFocused()
     {
         // A spin button can't be focused
-        m_Parent->unfocusWidget(this);
+        unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

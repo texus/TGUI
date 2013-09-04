@@ -102,7 +102,7 @@ namespace tgui
                     return true;
                 }
                 else // The mouse didn't went down on an widget, so unfocus the focused widget
-                    unfocusAllWidgets();
+                    unfocusWidgets();
             }
 
             return false;
@@ -241,27 +241,119 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::unfocusWidget(Widget *const widget)
+    void EventManager::focusNextWidget()
     {
-        // Check if the widget is focused
-        if (widget->m_Focused)
+        // Loop all widgets behind the focused one
+        for (unsigned int i = m_FocusedWidget; i < m_Widgets.size(); ++i)
         {
-            // Focus the next widget
-            tabKeyPressed();
-
-            // Make sure that the widget gets unfocused
-            if (widget->m_Focused)
+            // If you are not allowed to focus the widget, then skip it
+            if (m_Widgets[i]->m_AllowFocus == true)
             {
-                widget->m_Focused = false;
-                widget->widgetUnfocused();
-                m_FocusedWidget = 0;
+                // Make sure that the widget is visible and enabled
+                if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
+                {
+                    if (m_FocusedWidget)
+                    {
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+                    }
+
+                    // Focus on the new widget
+                    m_FocusedWidget = i+1;
+                    m_Widgets[i]->m_Focused = true;
+                    m_Widgets[i]->widgetFocused();
+                    return;
+                }
+            }
+        }
+
+        // None of the widgets behind the focused one could be focused, so loop the ones before it
+        if (m_FocusedWidget)
+        {
+            for (unsigned int i = 0; i < m_FocusedWidget - 1; ++i)
+            {
+                // If you are not allowed to focus the widget, then skip it
+                if (m_Widgets[i]->m_AllowFocus == true)
+                {
+                    // Make sure that the widget is visible and enabled
+                    if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
+                    {
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+
+                        // Focus on the new widget
+                        m_FocusedWidget = i+1;
+                        m_Widgets[i]->m_Focused = true;
+                        m_Widgets[i]->widgetFocused();
+
+                        return;
+                    }
+                }
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EventManager::unfocusAllWidgets()
+    void EventManager::focusPreviousWidget()
+    {
+        // Loop the widgets before the focused one
+        if (m_FocusedWidget)
+        {
+            for (unsigned int i = m_FocusedWidget - 1; i > 0; --i)
+            {
+                // If you are not allowed to focus the widget, then skip it
+                if (m_Widgets[i-1]->m_AllowFocus == true)
+                {
+                    // Make sure that the widget is visible and enabled
+                    if ((m_Widgets[i-1]->m_Visible) && (m_Widgets[i-1]->m_Enabled))
+                    {
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+
+                        // Focus on the new widget
+                        m_FocusedWidget = i;
+                        m_Widgets[i-1]->m_Focused = true;
+                        m_Widgets[i-1]->widgetFocused();
+
+                        return;
+                    }
+                }
+            }
+        }
+
+        // None of the widgets before the focused one could be focused, so loop all widgets behind the focused one
+        for (unsigned int i = m_Widgets.size(); i > m_FocusedWidget; --i)
+        {
+            // If you are not allowed to focus the widget, then skip it
+            if (m_Widgets[i-1]->m_AllowFocus == true)
+            {
+                // Make sure that the widget is visible and enabled
+                if ((m_Widgets[i-1]->m_Visible) && (m_Widgets[i-1]->m_Enabled))
+                {
+                    if (m_FocusedWidget)
+                    {
+                        // unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
+                    }
+
+                    // Focus on the new widget
+                    m_FocusedWidget = i;
+                    m_Widgets[i-1]->m_Focused = true;
+                    m_Widgets[i-1]->widgetFocused();
+                    return;
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EventManager::unfocusWidgets()
     {
         if (m_FocusedWidget)
         {
@@ -302,7 +394,7 @@ namespace tgui
             if (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget)
             {
                 // Focus the next widget in container
-                if (static_cast<Container::Ptr>(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
+                if (Container::Ptr(m_Widgets[m_FocusedWidget-1])->focusNextWidgetInContainer())
                     return true;
             }
         }
@@ -357,12 +449,19 @@ namespace tgui
             }
         }
 
+        // If the currently focused container widget is the only widget to focus, then focus its next child widget
+        if ((m_FocusedWidget) && (m_Widgets[m_FocusedWidget-1]->m_ContainerWidget))
+        {
+            Container::Ptr(m_Widgets[m_FocusedWidget-1])->m_EventManager.tabKeyPressed();
+            return true;
+        }
+
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EventManager::focusNextWidget()
+    bool EventManager::focusNextWidgetInContainer()
     {
         // Don't do anything when the tab key usage is disabled
         if (tabKeyUsageEnabled == false)
@@ -395,7 +494,7 @@ namespace tgui
         }
 
         // We have the highest id
-        unfocusAllWidgets();
+        unfocusWidgets();
         return false;
     }
 

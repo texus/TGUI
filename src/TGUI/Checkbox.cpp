@@ -535,7 +535,7 @@ namespace tgui
     {
         // We can't be focused when we don't have a focus image
         if ((m_WidgetPhase & WidgetPhase_Focused) == 0)
-            m_Parent->unfocusWidget(this);
+            unfocus();
         else
             Widget::widgetFocused();
     }
