@@ -265,31 +265,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::setProperty(const std::string& property, const std::string& value)
+    bool Label::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
                 setText(value);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
-            else if (property == "AutoSize")
+            else if (property == "autosize")
             {
                 if ((value == "true") || (value == "True"))
                     setAutoSize(true);
@@ -308,21 +310,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::getProperty(const std::string& property, std::string& value)
+    bool Label::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Text")
+            else if (property == "text")
                 value = getText().toAnsiString();
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "AutoSize")
+            else if (property == "autosize")
                 value = m_AutoSize ? "true" : "false";
             else // The property didn't match
                 return false;

@@ -469,15 +469,17 @@ namespace tgui
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider2d::setProperty(const std::string& property, const std::string& value)
+    bool Slider2d::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Minimum")
+            else if (property == "minimum")
             {
                 if (value.length() >= 5)
                 {
@@ -498,7 +500,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
             }
-            else if (property == "Maximum")
+            else if (property == "maximum")
             {
                 if (value.length() >= 5)
                 {
@@ -519,7 +521,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
             }
-            else if (property == "Value")
+            else if (property == "value")
             {
                 if (value.length() >= 5)
                 {
@@ -540,7 +542,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
             }
-            else if (property == "FixedThumbSize")
+            else if (property == "fixedthumbsize")
             {
                 if ((value == "true") || (value == "True"))
                     setFixedThumbSize(true);
@@ -549,7 +551,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'FixedThumbSize' property.");
             }
-            else if (property == "EnableThumbCenter")
+            else if (property == "enablethumbcenter")
             {
                 if ((value == "true") || (value == "True"))
                     enableThumbCenter(true);
@@ -568,21 +570,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider2d::getProperty(const std::string& property, std::string& value)
+    bool Slider2d::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Minimum")
+            else if (property == "minimum")
                 value = "(" + to_string(getMinimum().x) + "," + to_string(getMinimum().y) + ")";
-            else if (property == "Maximum")
+            else if (property == "maximum")
                 value = "(" + to_string(getMaximum().x) + "," + to_string(getMaximum().y) + ")";
-            else if (property == "Value")
+            else if (property == "value")
                 value = "(" + to_string(getValue().x) + "," + to_string(getValue().y) + ")";
-            else if (property == "FixedThumbSize")
+            else if (property == "fixedthumbsize")
                 value = m_FixedThumbSize ? "true" : "false";
-            else if (property == "EnableThumbCenter")
+            else if (property == "enablethumbcenter")
                 value = m_ReturnThumbToCenter ? "true" : "false";
             else // The property didn't match
                 return false;

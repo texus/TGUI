@@ -287,14 +287,14 @@ namespace tgui
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setProperty(const std::string& property, const std::string& value);
+        virtual bool setProperty(std::string property, const std::string& value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool getProperty(const std::string& property, std::string& value);
+        virtual bool getProperty(std::string property, std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

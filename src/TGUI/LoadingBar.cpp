@@ -521,35 +521,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::setProperty(const std::string& property, const std::string& value)
+    bool LoadingBar::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Minimum")
+            else if (property == "minimum")
             {
                 setMinimum(atoi(value.c_str()));
             }
-            else if (property == "Maximum")
+            else if (property == "maximum")
             {
                 setMaximum(atoi(value.c_str()));
             }
-            else if (property == "Value")
+            else if (property == "value")
             {
                 setValue(atoi(value.c_str()));
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
                 setText(value);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
@@ -563,23 +565,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::getProperty(const std::string& property, std::string& value)
+    bool LoadingBar::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Minimum")
+            else if (property == "minimum")
                 value = to_string(getMinimum());
-            else if (property == "Maximum")
+            else if (property == "maximum")
                 value = to_string(getMaximum());
-            else if (property == "Value")
+            else if (property == "value")
                 value = to_string(getValue());
-            else if (property == "Text")
+            else if (property == "text")
                 value = getText().toAnsiString();
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
             else // The property didn't match
                 return false;

@@ -847,11 +847,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::setProperty(const std::string& property, const std::string& value)
+    bool Scrollbar::setProperty(std::string property, const std::string& value)
     {
         if (!Slider::setProperty(property, value))
         {
-            if (property == "AutoHide")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "autohide")
             {
                 if ((value == "true") || (value == "True"))
                     setAutoHide(true);
@@ -870,11 +872,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::getProperty(const std::string& property, std::string& value)
+    bool Scrollbar::getProperty(std::string property, std::string& value)
     {
         if (!Slider::getProperty(property, value))
         {
-            if (property == "AutoHide")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "autohide")
                 value = m_AutoHide ? "true" : "false";
             else // The property didn't match
                 return false;

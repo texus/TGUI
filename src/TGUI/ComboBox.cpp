@@ -666,39 +666,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setProperty(const std::string& property, const std::string& value)
+    bool ComboBox::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "ItemsToDisplay")
+            else if (property == "itemstodisplay")
             {
                 setItemsToDisplay(atoi(value.c_str()));
             }
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "SelectedBackgroundColor")
+            else if (property == "selectedbackgroundcolor")
             {
                 setSelectedBackgroundColor(extractColor(value));
             }
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
             {
                 setSelectedTextColor(extractColor(value));
             }
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
             {
                 setBorderColor(extractColor(value));
             }
-            else if (property == "Borders")
+            else if (property == "borders")
             {
                 Borders borders;
                 if (extractBorders(value, borders))
@@ -706,7 +708,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
-            else if (property == "MaximumItems")
+            else if (property == "maximumitems")
             {
                 setMaximumItems(atoi(value.c_str()));
             }
@@ -720,29 +722,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::getProperty(const std::string& property, std::string& value)
+    bool ComboBox::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "ItemsToDisplay")
+            else if (property == "itemstodisplay")
                 value = to_string(getItemsToDisplay());
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "SelectedBackgroundColor")
+            else if (property == "selectedbackgroundcolor")
                 value = "(" + to_string(int(getSelectedBackgroundColor().r)) + "," + to_string(int(getSelectedBackgroundColor().g))
                         + "," + to_string(int(getSelectedBackgroundColor().b)) + "," + to_string(int(getSelectedBackgroundColor().a)) + ")";
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
                 value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
                         + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
                 value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
-            else if (property == "Borders")
+            else if (property == "borders")
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "MaximumItems")
+            else if (property == "maximumitems")
                 value = to_string(getMaximumItems());
             else // The property didn't match
                 return false;

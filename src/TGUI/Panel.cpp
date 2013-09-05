@@ -240,11 +240,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::setProperty(const std::string& property, const std::string& value)
+    bool Panel::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
+        if (!Container::setProperty(property, value))
         {
-            if (property == "BackgroundColor")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
@@ -258,11 +260,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::getProperty(const std::string& property, std::string& value)
+    bool Panel::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "BackgroundColor")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else // The property didn't match
                 return false;

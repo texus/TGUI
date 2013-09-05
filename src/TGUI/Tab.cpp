@@ -670,31 +670,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::setProperty(const std::string& property, const std::string& value)
+    bool Tab::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "TabHeight")
+            else if (property == "tabheight")
             {
                 setTabHeight(atoi(value.c_str()));
             }
-            else if (property == "MaximumTabWidth")
+            else if (property == "maximumtabwidth")
             {
                 setMaximumTabWidth(atoi(value.c_str()));
             }
-            else if (property == "DistanceToSide")
+            else if (property == "distancetoside")
             {
                 setDistanceToSide(atoi(value.c_str()));
             }
@@ -708,21 +710,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::getProperty(const std::string& property, std::string& value)
+    bool Tab::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
-            else if (property == "TabHeight")
+            else if (property == "tabheight")
                 value = to_string(getTabHeight());
-            else if (property == "MaximumTabWidth")
+            else if (property == "maximumtabwidth")
                 value = to_string(getMaximumTabWidth());
-            else if (property == "DistanceToSide")
+            else if (property == "distancetoside")
                 value = to_string(getDistanceToSide());
             else // The property didn't match
                 return false;

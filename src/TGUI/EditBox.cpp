@@ -1521,34 +1521,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::setProperty(const std::string& property, const std::string& value)
+    bool EditBox::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
                 setText(value);
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "PasswordCharacter")
+            else if (property == "passwordcharacter")
             {
                 if (value.length() == 1)
                     setPasswordCharacter(value[0]);
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
             }
-            else if (property == "MaximumCharacters")
+            else if (property == "maximumcharacters")
             {
                 setMaximumCharacters(atoi(value.c_str()));
             }
-            else if (property == "Borders")
+            else if (property == "borders")
             {
                 Borders borders;
                 if (extractBorders(value, borders))
@@ -1556,23 +1558,23 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
             {
                 setSelectedTextColor(extractColor(value));
             }
-            else if (property == "SelectedTextBackgroundColor")
+            else if (property == "selectedtextbackgroundcolor")
             {
                 setSelectedTextBackgroundColor(extractColor(value));
             }
-            else if (property == "SelectionPointColor")
+            else if (property == "selectionpointcolor")
             {
                 setSelectionPointColor(extractColor(value));
             }
-            else if (property == "LimitTextWidth")
+            else if (property == "limittextwidth")
             {
                 if ((value == "true") || (value == "True"))
                     limitTextWidth(true);
@@ -1581,11 +1583,11 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
             }
-            else if (property == "SelectionPointWidth")
+            else if (property == "selectionpointwidth")
             {
                 setSelectionPointWidth(atoi(value.c_str()));
             }
-            else if (property == "NumbersOnly")
+            else if (property == "numbersonly")
             {
                 if ((value == "true") || (value == "True"))
                     setNumbersOnly(true);
@@ -1604,38 +1606,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::getProperty(const std::string& property, std::string& value)
+    bool EditBox::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Text")
+            else if (property == "text")
                 value = getText().toAnsiString();
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
-            else if (property == "PasswordCharacter")
+            else if (property == "passwordcharacter")
                 value = getPasswordCharacter();
-            else if (property == "MaximumCharacters")
+            else if (property == "maximumcharacters")
                 value = to_string(getMaximumCharacters());
-            else if (property == "Borders")
+            else if (property == "borders")
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
                 value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
                         + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
-            else if (property == "SelectedTextBackgroundColor")
+            else if (property == "selectedtextbackgroundcolor")
                 value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
                         + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
-            else if (property == "SelectionPointColor")
+            else if (property == "selectionpointcolor")
                 value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g))
                         + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
-            else if (property == "LimitTextWidth")
+            else if (property == "limittextwidth")
                 value = m_LimitTextWidth ? "true" : "false";
-            else if (property == "SelectionPointWidth")
+            else if (property == "selectionpointwidth")
                 value = to_string(getSelectionPointWidth());
-            else if (property == "NumbersOnly")
+            else if (property == "numbersonly")
                 value = m_NumbersOnly ? "true" : "false";
             else // The property didn't match
                 return false;

@@ -291,19 +291,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::setProperty(const std::string& property, const std::string& value)
+    bool MessageBox::setProperty(std::string property, const std::string& value)
     {
         if (!ChildWindow::setProperty(property, value))
         {
-            if (property == "Text")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "text")
             {
                 setText(value);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
@@ -317,15 +319,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::getProperty(const std::string& property, std::string& value)
+    bool MessageBox::getProperty(std::string property, std::string& value)
     {
         if (!ChildWindow::getProperty(property, value))
         {
-            if (property == "Text")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "text")
                 value = getText().toAnsiString();
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
             else // The property didn't match
                 return false;

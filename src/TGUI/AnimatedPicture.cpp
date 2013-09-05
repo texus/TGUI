@@ -315,11 +315,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::setProperty(const std::string& property, const std::string& value)
+    bool AnimatedPicture::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "Playing")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "playing")
             {
                 if ((value == "true") || (value == "True"))
                     m_Playing = true;
@@ -328,7 +330,7 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Playing' property.");
             }
-            else if (property == "Looping")
+            else if (property == "looping")
             {
                 if ((value == "true") || (value == "True"))
                     m_Looping = true;
@@ -347,13 +349,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::getProperty(const std::string& property, std::string& value)
+    bool AnimatedPicture::getProperty(std::string property, std::string& value)
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "Playing")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "playing")
                 value = m_Playing ? "true" : "false";
-            else if (property == "Looping")
+            else if (property == "looping")
                 value = m_Looping ? "true" : "false";
             else // The property didn't match
                 return false;
