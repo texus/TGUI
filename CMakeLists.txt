@@ -29,7 +29,6 @@ SET( MINOR_VERSION 6 )
 
 # project options
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
-tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
 
 # Set some useful compile flags.
 if( COMPILER_GCC )
