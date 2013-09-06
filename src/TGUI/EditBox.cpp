@@ -57,7 +57,6 @@ namespace tgui
         m_Callback.widgetType = Type_EditBox;
         m_AnimatedWidget = true;
         m_DraggableWidget = true;
-        m_AllowFocus = true;
 
         m_SelectionPoint.setSize(sf::Vector2f(1, 0));
 
@@ -384,6 +383,7 @@ namespace tgui
             // Check if optional textures were loaded
             if ((m_TextureFocused_L.data != nullptr) && (m_TextureFocused_M.data != nullptr) && (m_TextureFocused_R.data != nullptr))
             {
+                m_AllowFocus = true;
                 m_WidgetPhase |= WidgetPhase_Focused;
             }
             if ((m_TextureHover_L.data != nullptr) && (m_TextureHover_M.data != nullptr) && (m_TextureHover_R.data != nullptr))
@@ -408,6 +408,7 @@ namespace tgui
             // Check if optional textures were loaded
             if (m_TextureFocused_M.data != nullptr)
             {
+                m_AllowFocus = true;
                 m_WidgetPhase |= WidgetPhase_Focused;
             }
             if (m_TextureHover_M.data != nullptr)

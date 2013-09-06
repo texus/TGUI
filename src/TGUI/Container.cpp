@@ -2915,23 +2915,19 @@ namespace tgui
                 // Make sure that the widget is visible and enabled
                 if ((m_Widgets[i]->m_Visible) && (m_Widgets[i]->m_Enabled))
                 {
-                    // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_Widgets[i]->m_ContainerWidget) || (Container::Ptr(m_Widgets[i])->focusNextWidgetInContainer()))
+                    if (m_FocusedWidget > 0)
                     {
-                        if (m_FocusedWidget > 0)
-                        {
-                            // Unfocus the current widget
-                            m_Widgets[m_FocusedWidget-1]->m_Focused = false;
-                            m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
-                        }
-
-                        // Focus on the new widget
-                        m_FocusedWidget = i+1;
-                        m_Widgets[i]->m_Focused = true;
-                        m_Widgets[i]->widgetFocused();
-
-                        return true;
+                        // Unfocus the current widget
+                        m_Widgets[m_FocusedWidget-1]->m_Focused = false;
+                        m_Widgets[m_FocusedWidget-1]->widgetUnfocused();
                     }
+
+                    // Focus on the new widget
+                    m_FocusedWidget = i+1;
+                    m_Widgets[i]->m_Focused = true;
+                    m_Widgets[i]->widgetFocused();
+
+                    return true;
                 }
             }
         }
