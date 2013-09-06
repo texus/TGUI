@@ -577,9 +577,7 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
         {
-            for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                m_Widgets[i]->mouseNotOnWidget();
-
+            m_EventManager.mouseNotOnWidget();
             return true;
         }
         else
@@ -590,17 +588,12 @@ namespace tgui
             else
             {
                 if (m_MouseHover)
-                {
                     mouseLeftWidget();
 
-                    // Tell the widgets inside the child window that the mouse is no longer on top of them
-                    for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                        m_Widgets[i]->mouseNotOnWidget();
-
-                    m_CloseButton->mouseNotOnWidget();
-                    m_MouseHover = false;
-                }
-
+                // Tell the widgets inside the child window that the mouse is no longer on top of them
+                m_CloseButton->mouseNotOnWidget();
+                m_EventManager.mouseNotOnWidget();
+                m_MouseHover = false;
                 return false;
             }
         }
@@ -704,8 +697,7 @@ namespace tgui
             }
 
             // Tell the widgets that the mouse is no longer down
-            for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                m_Widgets[i]->mouseNoLongerDown();
+            m_EventManager.mouseNoLongerDown();
 
             // Reset the position of the button
             m_CloseButton->setPosition(0, 0);
@@ -726,8 +718,7 @@ namespace tgui
             &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TitleBarHeight + m_TopBorder), m_Size.x, m_Size.y)).contains(x, y) == false))
             {
                 // Tell the widgets about that the mouse was released
-                for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                    m_Widgets[i]->mouseNoLongerDown();
+                m_EventManager.mouseNoLongerDown();
 
                 // Don't send the event to the widgets
                 return;

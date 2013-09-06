@@ -47,7 +47,7 @@ namespace tgui
     m_Size        (gridToCopy.m_Size),
     m_IntendedSize(gridToCopy.m_IntendedSize)
     {
-        const std::vector<Widget::Ptr>& widgets = gridToCopy.m_Widgets;
+        const std::vector<Widget::Ptr>& widgets = gridToCopy.m_EventManager.m_Widgets;
 
         for (unsigned int row = 0; row < gridToCopy.m_GridWidgets.size(); ++row)
         {
@@ -527,16 +527,11 @@ namespace tgui
         }
 
         if (m_MouseHover)
-        {
             mouseLeftWidget();
 
-            // Tell the widgets inside the grid that the mouse is no longer on top of them
-            for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                m_Widgets[i]->mouseNotOnWidget();
-
-            m_MouseHover = false;
-        }
-
+        // Tell the widgets inside the grid that the mouse is no longer on top of them
+        m_EventManager.mouseNotOnWidget();
+        m_MouseHover = false;
         return false;
     }
 
