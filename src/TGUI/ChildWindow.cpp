@@ -26,6 +26,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Button.hpp>
+#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ChildWindow.hpp>
 
 /// \todo Add SplitImage to title bar
