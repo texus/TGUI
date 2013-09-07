@@ -22,7 +22,6 @@ set(TGUI_SRC
     Slider2d.cpp
     Tab.cpp
     ConfigFile.cpp
-    EventManager.cpp
     TextureManager.cpp
     Container.cpp
     Panel.cpp

@@ -101,7 +101,7 @@ namespace tgui
         }
 
         // Let the event manager handle the event
-        return m_Container.m_EventManager.handleEvent(event);
+        return m_Container.handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +307,8 @@ namespace tgui
 
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
-        m_Container.m_EventManager.updateTime(elapsedTime);
+        m_Container.m_AnimationTimeElapsed = elapsedTime;
+        m_Container.update();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

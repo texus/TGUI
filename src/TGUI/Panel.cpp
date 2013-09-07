@@ -172,16 +172,19 @@ namespace tgui
         // Check if the mouse is inside the panel
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
             return true;
-        else
+
+        if (m_MouseHover)
         {
-            if (m_MouseHover)
-                mouseLeftWidget();
+            mouseLeftWidget();
 
             // Tell the widgets inside the panel that the mouse is no longer on top of them
-            m_EventManager.mouseNotOnWidget();
+            for (unsigned int i = 0; i < m_Widgets.size(); ++i)
+                m_Widgets[i]->mouseNotOnWidget();
+
             m_MouseHover = false;
-            return false;
         }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
