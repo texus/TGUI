@@ -302,7 +302,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ChildWindow::getLoadedConfigFile()
+    const std::string& ChildWindow::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -812,35 +812,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::setProperty(const std::string& property, const std::string& value)
+    bool ChildWindow::setProperty(std::string property, const std::string& value)
     {
         if (!Container::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "TitleBarHeight")
+            else if (property == "titlebarheight")
             {
                 setTitleBarHeight(atoi(value.c_str()));
             }
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
-            else if (property == "Title")
+            else if (property == "title")
             {
                 setTitle(value);
             }
-            else if (property == "TitleColor")
+            else if (property == "titlecolor")
             {
                 setTitleColor(extractColor(value));
             }
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
             {
                 setBorderColor(extractColor(value));
             }
-            else if (property == "Borders")
+            else if (property == "borders")
             {
                 Borders borders;
                 if (extractBorders(value, borders))
@@ -848,11 +850,11 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
-            else if (property == "DistanceToSide")
+            else if (property == "distancetoside")
             {
                 setDistanceToSide(atoi(value.c_str()));
             }
-            else if (property == "TitleAlignment")
+            else if (property == "titlealignment")
             {
                 if ((value == "left") || (value == "Left"))
                     setTitleAlignment(TitleAlignmentLeft);
@@ -873,34 +875,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::getProperty(const std::string& property, std::string& value)
+    bool ChildWindow::getProperty(std::string property, std::string& value) const
     {
         if (!Container::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "TitleBarHeight")
+            else if (property == "titlebarheight")
                 value = to_string(getTitleBarHeight());
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "Title")
+            else if (property == "title")
                 value = getTitle().toAnsiString();
-            else if (property == "TitleColor")
+            else if (property == "titlecolor")
                 value = "(" + to_string(int(getTitleColor().r)) + "," + to_string(int(getTitleColor().g)) + "," + to_string(int(getTitleColor().b)) + "," + to_string(int(getTitleColor().a)) + ")";
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
                 value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
-            else if (property == "Borders")
+            else if (property == "borders")
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "DistanceToSide")
+            else if (property == "distancetoside")
                 value = to_string(getDistanceToSide());
-            else if (property == "TitleAlignment")
+            else if (property == "titlealignment")
             {
                 if (m_TitleAlignment == TitleAlignmentLeft)
-                    value = "left";
+                    value = "Left";
                 else if (m_TitleAlignment == TitleAlignmentCentered)
-                    value = "centered";
+                    value = "Centered";
                 else if (m_TitleAlignment == TitleAlignmentRight)
-                    value = "right";
+                    value = "Right";
             }
             else // The property didn't match
                 return false;
@@ -908,6 +912,25 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > ChildWindow::getPropertyList() const
+    {
+        auto list = Container::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"TitleBarHeight", "uint"},
+                                    {"BackgroundColor", "color"},
+                                    {"Title", "string"},
+                                    {"TitleColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"Borders", "borders"},
+                                    {"DistanceToSide", "uint"},
+                                    {"TitleAlignment", "custom"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

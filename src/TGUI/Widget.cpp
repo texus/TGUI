@@ -437,25 +437,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::setProperty(const std::string& property, const std::string& value)
+    bool Widget::setProperty(std::string property, const std::string& value)
     {
-        if (property == "Left")
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "left")
         {
             setPosition(static_cast<float>(atof(value.c_str())), getPosition().y);
         }
-        else if (property == "Top")
+        else if (property == "top")
         {
             setPosition(getPosition().x, static_cast<float>(atof(value.c_str())));
         }
-        else if (property == "Width")
+        else if (property == "width")
         {
             setSize(static_cast<float>(atof(value.c_str())), getSize().y);
         }
-        else if (property == "Height")
+        else if (property == "height")
         {
             setSize(getSize().x, static_cast<float>(atof(value.c_str())));
         }
-        else if (property == "Visible")
+        else if (property == "visible")
         {
             if ((value == "true") || (value == "True"))
                 m_Visible = true;
@@ -464,7 +466,7 @@ namespace tgui
             else
                 TGUI_OUTPUT("TGUI error: Failed to parse 'Visible' property.");
         }
-        else if (property == "Enabled")
+        else if (property == "enabled")
         {
             if ((value == "true") || (value == "True"))
                 m_Enabled = true;
@@ -473,7 +475,7 @@ namespace tgui
             else
                 TGUI_OUTPUT("TGUI error: Failed to parse 'Enabled' property.");
         }
-        else if (property == "Transparency")
+        else if (property == "transparency")
         {
             setTransparency(static_cast<char>(atoi(value.c_str())));
         }
@@ -486,27 +488,43 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::getProperty(const std::string& property, std::string& value)
+    bool Widget::getProperty(std::string property, std::string& value) const
     {
-        if (property == "Left")
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "left")
             value = to_string(getPosition().x);
-        else if (property == "Top")
+        else if (property == "top")
             value = to_string(getPosition().y);
-        else if (property == "Width")
+        else if (property == "width")
             value = to_string(getSize().x);
-        else if (property == "Height")
+        else if (property == "height")
             value = to_string(getSize().y);
-        else if (property == "Visible")
+        else if (property == "visible")
             value = m_Visible ? "true" : "false";
-        else if (property == "Enabled")
+        else if (property == "enabled")
             value = m_Enabled ? "true" : "false";
-        else if (property == "Transparency")
+        else if (property == "transparency")
             value = to_string(int(getTransparency()));
         else // The property didn't match
             return false;
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Widget::getPropertyList() const
+    {
+        return std::list< std::pair<std::string, std::string> >({   {"Left", "int"},
+                                                                    {"Top", "int"},
+                                                                    {"Width", "uint"},
+                                                                    {"Height", "uint"},
+                                                                    {"Visible", "bool"},
+                                                                    {"Enabled", "bool"},
+                                                                    {"Transparency", "byte"}
+                                                                });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

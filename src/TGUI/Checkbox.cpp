@@ -216,7 +216,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Checkbox::getLoadedConfigFile()
+    const std::string& Checkbox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -542,15 +542,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::setProperty(const std::string& property, const std::string& value)
+    bool Checkbox::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Checked")
+            else if (property == "checked")
             {
                 if ((value == "true") || (value == "True"))
                     check();
@@ -559,19 +561,19 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Checked' property.");
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
                 setText(value);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "AllowTextClick")
+            else if (property == "allowtextclick")
             {
                 if ((value == "true") || (value == "True"))
                     allowTextClick(true);
@@ -590,28 +592,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::getProperty(const std::string& property, std::string& value)
+    bool Checkbox::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            if (property == "ConfigFile")
-                value = getLoadedConfigFile();
-            else if (property == "Checked")
-                value = m_Checked ? "true" : "false";
-            else if (property == "Text")
-                value = getText().toAnsiString();
-            else if (property == "TextColor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
-                value = to_string(getTextSize());
-            else if (property == "AllowTextClick")
-                value = m_AllowTextClick ? "true" : "false";
-            else // The property didn't match
-                return false;
-        }
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "width")
+            value = to_string(m_TextureUnchecked.sprite.getGlobalBounds().width);
+        else if (property == "height")
+            value = to_string(m_TextureUnchecked.sprite.getGlobalBounds().height);
+        else if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "checked")
+            value = m_Checked ? "true" : "false";
+        else if (property == "text")
+            value = getText().toAnsiString();
+        else if (property == "textcolor")
+            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "allowtextclick")
+            value = m_AllowTextClick ? "true" : "false";
+        else
+            return Widget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Checkbox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Checked", "bool"},
+                                    {"Text", "string"},
+                                    {"TextColor", "color"},
+                                    {"TextSize", "uint"},
+                                    {"AllowTextClick", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

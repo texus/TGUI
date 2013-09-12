@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI Form Builder
-// Copyright (C) 2012 Bruno Van de Velde (VDV_B@hotmail.com)
+// TGUI - Texus's Graphical User Interface
+// Copyright (C) 2012-2013 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,131 +23,82 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _FORM_BUILDER_INCLUDED_
-#define _FORM_BUILDER_INCLUDED_
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifndef TGUI_FORM_BUILDER_FORM_BUILDER_HPP
+#define TGUI_FORM_BUILDER_FORM_BUILDER_HPP
 
 #include <TGUI/TGUI.hpp>
 
-#ifdef __APPLE__
-    #include "CoreFoundation/CoreFoundation.h"
-#endif
+#include <algorithm>
+#include <stdexcept>
+
+#include "WidgetData.hpp"
+#include "MenuBar.hpp"
+#include "Form.hpp"
+
+#define VERSION "v" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_THEME_FILE "images/widgets/Black.conf"
-
-#define VERSION "v0.2.x - 2013.07.04"
-
-
-struct Builder;
-#include "Properties.hpp"
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-enum squares
+class FormBuilder
 {
-    SQUARE_TOP_LEFT = 1,
-    SQUARE_LEFT,
-    SQUARE_TOP,
-    SQUARE_BOTTOM_LEFT,
-    SQUARE_TOP_RIGHT,
-    SQUARE_BOTTOM,
-    SQUARE_RIGHT,
-    SQUARE_BOTTOM_RIGHT
-};
+public:
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        FormBuilder();
+    int run();
 
-struct Builder
-{
-    // Constructor
-    Builder();
 
-    // Every widget needs a uinque id. This function gives them one.
-    unsigned int getUniqueID();
+private:
 
-    // Adds a new widget to the form
-    unsigned int newWidget(unsigned int widgetID, const std::string widgetName = "");
+    void initMenuBar();
+    void initWidgetsData();
+    void initWidgetsWindow();
+    void initPropertiesWindow();
 
-    // Change the properties that are displayed, e.g. when selecting another widget.
-    void changeVisibleProperties();
+    void handleEvents();
+    void update();
+    void draw();
 
-    // When another widget is selected, the property window has to be resized
-    void resizePropertyWindow();
+    void createLayer();
+    void removeLayer();
+    void errorMessage(const std::string& message);
 
-    // The contents of an edit box has changed, change the property.
-    void updateProperty(unsigned int propertyNumber);
+    void resize(unsigned int width, unsigned int height);
+    void menuBarCallback(const tgui::Callback& callback);
+    void leftMousePressed(int x, int y);
+    void moveWidget(int x, int y);
+    void scaleWidget(int x, int y);
 
-    // Changes the global font, which can be used by all widgets
-    void setGlobalFont(const sf::Font& font);
+    void recreateProperties();
+    void requestNewForm();
+    void createNewForm(const std::string& filename, float width, float height);
 
-    // Get the id of the clicked widget when you clicked on the window
-    unsigned int getClickedWidgetID(sf::Event& event);
+    void addWidget(const std::string& widgetName);
+    void activateWidget(WidgetData& data);
+    void selectDifferentWidget();
 
-    // Get the id of the scale square below the mouse
-    unsigned int getScaleSquareWidgetID(float mouseX, float mouseY);
+    void changeProperty(tgui::EditBox::Ptr value, tgui::EditBox::Ptr property);
+    void updateProperties();
 
-    // Delete the currently selected widget
-    void deleteWidget();
+private:
 
-    // Move the currently selected widget
-    void moveWidgetX(float pixels);
-    void moveWidgetY(float pixels);
+    sf::RenderWindow window;
+    tgui::Gui gui;
+    tgui::Panel::Ptr panel;
 
-    // This function is called to resize an widget.
-    void resizeWidget(float addToWidth, float addToHeight);
+    MenuBar menu;
 
-    // Calculates and stores the new aspect ratio of the widget
-    void storeWidgetsNewAspectRatio();
+    std::map<std::string, WidgetData> widgetsData;
 
-    // Load the form
-    bool loadForm();
+    std::list<Form> forms;
 
-    // Save the form
-    void saveForm();
+    Form* activeForm;
 
-    // The three windows
-    sf::RenderWindow mainRenderWindow;
-    sf::RenderWindow widgetsRenderWindow;
-    sf::RenderWindow propertyRenderWindow;
-
-    tgui::Gui mainWindow;
-    tgui::Gui widgetsWindow;
-    tgui::Gui propertyWindow;
-
-    // A list of all the widgets on the form
-    std::vector<PropertiesWindow>      windows;
-    std::vector<PropertiesPicture>     pictures;
-    std::vector<PropertiesButton>      buttons;
-    std::vector<PropertiesCheckbox>    checkboxes;
-    std::vector<PropertiesRadioButton> radioButtons;
-    std::vector<PropertiesLabel>       labels;
-    std::vector<PropertiesEditBox>     editBoxes;
-    std::vector<PropertiesListBox>     listBoxes;
-    std::vector<PropertiesComboBox>    comboBoxes;
-    std::vector<PropertiesSlider>      sliders;
-    std::vector<PropertiesScrollbar>   scrollbars;
-    std::vector<PropertiesLoadingBar>  loadingBars;
-    std::vector<PropertiesTextBox>     textBoxes;
-
-    // The id of the widget that is currently selected.
-    unsigned int currentID;
-
-    // True when an widget is being dragged
     bool draggingWidget;
-
-    // Greater than 0 when dragging one of the scale squares
-    unsigned int draggingSquare;
-
-    // Where was the mouse when dragging?
-    sf::Vector2f dragPos;
-
-    // Hold the aspect ratios of the widgets
-    std::vector<float> aspectRatios;
+    SelectionSquares scalingWidget;
+    sf::Vector2f oldMousePosition;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif
+#endif // TGUI_FORM_BUILDER_FORM_BUILDER_HPP
+

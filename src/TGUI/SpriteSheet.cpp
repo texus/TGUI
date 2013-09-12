@@ -83,11 +83,11 @@ namespace tgui
             return;
 
         // Store the new size
-        m_Size.x = m_Columns * width;
-        m_Size.y = m_Rows * height;
+        m_Size.x = width;
+        m_Size.y = height;
 
         // Make sure the sprite has the correct size
-        m_Texture.sprite.setScale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
+        m_Texture.sprite.setScale((m_Size.x * m_Columns) / m_Texture.data->texture.getSize().x, (m_Size.y * m_Rows) / m_Texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ namespace tgui
     sf::Vector2f SpriteSheet::getSize() const
     {
         if (m_Loaded)
-            return sf::Vector2f(m_Size.x / m_Columns, m_Size.y / m_Rows);
+            return m_Size;
         else
             return sf::Vector2f(0, 0);
     }
@@ -127,7 +127,7 @@ namespace tgui
                                                     static_cast<int>(m_Texture.data->texture.getSize().y / m_Rows)));
 
         // Make sure the sprite has the correct size
-        m_Texture.sprite.setScale(m_Size.x / m_Texture.data->texture.getSize().x, m_Size.y / m_Texture.data->texture.getSize().y);
+        m_Texture.sprite.setScale((m_Size.x * m_Columns) / m_Texture.data->texture.getSize().x, (m_Size.y * m_Rows) / m_Texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,15 +198,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpriteSheet::setProperty(const std::string& property, const std::string& value)
+    bool SpriteSheet::setProperty(std::string property, const std::string& value)
     {
         if (!Picture::setProperty(property, value))
         {
-            if (property == "Rows")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "rows")
             {
                 setRows(atoi(value.c_str()));
             }
-            else if (property == "Columns")
+            else if (property == "columns")
             {
                 setColumns(atoi(value.c_str()));
             }
@@ -220,13 +222,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpriteSheet::getProperty(const std::string& property, std::string& value)
+    bool SpriteSheet::getProperty(std::string property, std::string& value) const
     {
         if (!Picture::getProperty(property, value))
         {
-            if (property == "Rows")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "rows")
                 value = to_string(getRows());
-            else if (property == "Columns")
+            else if (property == "columns")
                 value = to_string(getColumns());
             else // The property didn't match
                 return false;
@@ -234,6 +238,18 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > SpriteSheet::getPropertyList() const
+    {
+        auto list = Picture::getPropertyList();
+        list.insert(list.end(), {
+                                    {"Rows", "uint"},
+                                    {"Columns", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

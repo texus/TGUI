@@ -283,7 +283,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& TextBox::getLoadedConfigFile()
+    const std::string& TextBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -1625,27 +1625,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::setProperty(const std::string& property, const std::string& value)
+    bool TextBox::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
-                setText(value);
+                std::string text;
+                decodeString(value, text);
+                setText(text);
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "MaximumCharacters")
+            else if (property == "maximumcharacters")
             {
                 setMaximumCharacters(atoi(value.c_str()));
             }
-            else if (property == "Borders")
+            else if (property == "borders")
             {
                 Borders borders;
                 if (extractBorders(value, borders))
@@ -1653,31 +1657,31 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
             {
                 setSelectedTextColor(extractColor(value));
             }
-            else if (property == "SelectedTextBackgroundColor")
+            else if (property == "selectedtextbackgroundcolor")
             {
                 setSelectedTextBackgroundColor(extractColor(value));
             }
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
             {
                 setBorderColor(extractColor(value));
             }
-            else if (property == "SelectionPointColor")
+            else if (property == "selectionpointcolor")
             {
                 setSelectionPointColor(extractColor(value));
             }
-            else if (property == "SelectionPointWidth")
+            else if (property == "selectionpointwidth")
             {
                 setSelectionPointWidth(atoi(value.c_str()));
             }
@@ -1691,35 +1695,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::getProperty(const std::string& property, std::string& value)
+    bool TextBox::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Text")
-                value = getText().toAnsiString();
-            else if (property == "TextSize")
+            else if (property == "text")
+                encodeString(getText(), value);
+            else if (property == "textsize")
                 value = to_string(getTextSize());
-            else if (property == "MaximumCharacters")
+            else if (property == "maximumcharacters")
                 value = to_string(getMaximumCharacters());
-            else if (property == "Borders")
+            else if (property == "borders")
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "TextColor")
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "SelectedTextColor")
+            else if (property == "selectedtextcolor")
                 value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
                         + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
-            else if (property == "SelectedTextBackgroundColor")
+            else if (property == "selectedtextbackgroundcolor")
                 value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
                         + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
-            else if (property == "BorderColor")
+            else if (property == "bordercolor")
                 value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
-            else if (property == "SelectionPointColor")
+            else if (property == "selectionpointcolor")
                 value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g)) + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
-            else if (property == "SelectionPointWidth")
+            else if (property == "selectionpointwidth")
                 value = to_string(getSelectionPointWidth());
             else // The property didn't match
                 return false;
@@ -1727,6 +1733,28 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > TextBox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Text", "string"},
+                                    {"TextSize", "uint"},
+                                    {"MaximumCharacters", "uint"},
+                                    {"Borders", "borders"},
+                                    {"BackgroundColor", "color"},
+                                    {"TextColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"SelectedTextBackgroundColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"SelectionPointColor", "color"},
+                                    {"SelectionPointWidth", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -219,7 +219,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& SpinButton::getLoadedConfigFile()
+    const std::string& SpinButton::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -443,27 +443,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::setProperty(const std::string& property, const std::string& value)
+    bool SpinButton::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Minimum")
+            else if (property == "minimum")
             {
                 setMinimum(atoi(value.c_str()));
             }
-            else if (property == "Maximum")
+            else if (property == "maximum")
             {
                 setMaximum(atoi(value.c_str()));
             }
-            else if (property == "Value")
+            else if (property == "value")
             {
                 setValue(atoi(value.c_str()));
             }
-            else if (property == "VerticalScroll")
+            else if (property == "verticalscroll")
             {
                 if ((value == "true") || (value == "True"))
                     setVerticalScroll(true);
@@ -482,19 +484,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::getProperty(const std::string& property, std::string& value)
+    bool SpinButton::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Minimum")
+            else if (property == "minimum")
                 value = to_string(getMinimum());
-            else if (property == "Maximum")
+            else if (property == "maximum")
                 value = to_string(getMaximum());
-            else if (property == "Value")
+            else if (property == "value")
                 value = to_string(getValue());
-            else if (property == "VerticalScroll")
+            else if (property == "verticalscroll")
                 value = m_VerticalScroll ? "true" : "false";
             else // The property didn't match
                 return false;
@@ -502,6 +506,21 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > SpinButton::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Minimum", "uint"},
+                                    {"Maximum", "uint"},
+                                    {"Value", "uint"},
+                                    {"VerticalScroll", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

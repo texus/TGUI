@@ -9,7 +9,7 @@ endif()
 include_directories( "${PROJECT_SOURCE_DIR}/include/TGUI/FormBuilder" )
 
 # Compile the source files
-add_executable(FormBuilder ${GUI_TYPE} "main.cpp" "Properties.cpp" "FormBuilder.cpp")
+add_executable(FormBuilder ${GUI_TYPE} "main.cpp" "FormBuilder.cpp" "Form.cpp" "MenuBar.cpp")
 
 # Link with SFML and TGUI
 target_link_libraries(FormBuilder ${PROJECT_NAME})

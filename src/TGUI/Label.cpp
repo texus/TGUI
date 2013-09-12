@@ -103,7 +103,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Label::getLoadedConfigFile()
+    const std::string& Label::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -132,8 +132,8 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_Text.setPosition(std::floor(x + 0.5f), std::floor(y + 0.5f));
-        m_Background.setPosition(x + m_Text.getLocalBounds().left, y + m_Text.getLocalBounds().top);
+        m_Text.setPosition(std::floor(x - m_Text.getLocalBounds().left + 0.5f), std::floor(y - m_Text.getLocalBounds().top + 0.5f));
+        m_Background.setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ namespace tgui
     {
         m_Text.setString(string);
 
-        m_Background.setPosition(getPosition().x + m_Text.getLocalBounds().left, getPosition().y + m_Text.getLocalBounds().top);
+        setPosition(getPosition());
 
         // Change the size of the label if necessary
         if (m_AutoSize)
@@ -166,6 +166,7 @@ namespace tgui
     void Label::setTextFont(const sf::Font& font)
     {
         m_Text.setFont(font);
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +196,7 @@ namespace tgui
     {
         m_Text.setCharacterSize(size);
 
-        m_Background.setPosition(getPosition().x + m_Text.getLocalBounds().left, getPosition().y + m_Text.getLocalBounds().top);
+        setPosition(getPosition());
 
         // Change the size of the label if necessary
         if (m_AutoSize)
@@ -265,31 +266,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::setProperty(const std::string& property, const std::string& value)
+    bool Label::setProperty(std::string property, const std::string& value)
     {
         if (!Widget::setProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
             {
                 load(value);
             }
-            else if (property == "Text")
+            else if (property == "text")
             {
-                setText(value);
+                std::string text;
+                decodeString(value, text);
+                setText(text);
             }
-            else if (property == "TextColor")
+            else if (property == "textcolor")
             {
                 setTextColor(extractColor(value));
             }
-            else if (property == "TextSize")
+            else if (property == "textsize")
             {
                 setTextSize(atoi(value.c_str()));
             }
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
             {
                 setBackgroundColor(extractColor(value));
             }
-            else if (property == "AutoSize")
+            else if (property == "autosize")
             {
                 if ((value == "true") || (value == "True"))
                     setAutoSize(true);
@@ -308,21 +313,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::getProperty(const std::string& property, std::string& value)
+    bool Label::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
-            if (property == "ConfigFile")
+            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+            if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "Text")
-                value = getText().toAnsiString();
-            else if (property == "TextColor")
+            else if (property == "text")
+                encodeString(getText(), value);
+            else if (property == "textcolor")
                 value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "TextSize")
+            else if (property == "textsize")
                 value = to_string(getTextSize());
-            else if (property == "BackgroundColor")
+            else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "AutoSize")
+            else if (property == "autosize")
                 value = m_AutoSize ? "true" : "false";
             else // The property didn't match
                 return false;
@@ -334,11 +341,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::list< std::pair<std::string, std::string> > Label::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Text", "string"},
+                                    {"TextColor", "color"},
+                                    {"TextSize", "uint"},
+                                    {"BackgroundColor", "color"},
+                                    {"AutoSize", "bool"}
+                                });
+        return list;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::initialize(Container *const parent)
     {
 
         m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +377,7 @@ namespace tgui
         float scaleViewY = target.getSize().y / target.getView().getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Text.getLocalBounds().left, m_Text.getLocalBounds().top) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
         sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Text.getLocalBounds().left, m_Text.getLocalBounds().top) + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area

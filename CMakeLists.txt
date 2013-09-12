@@ -29,7 +29,12 @@ SET( MINOR_VERSION 6 )
 
 # project options
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
-tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
+
+if(WINDOWS)
+    tgui_set_option( TGUI_BUILD_FORM_BUILDER FALSE BOOL "Build the TGUI Form Builder" )
+else()
+    tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
+endif()
 
 # Set some useful compile flags.
 if( COMPILER_GCC )
@@ -47,7 +52,7 @@ endif()
 # Define an option for choosing between static and dynamic C runtime (VC++ only)
 if(WINDOWS AND COMPILER_MSVC)
     tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
-    
+
     # Apply it globally by modifying the compiler flags
     if(TGUI_USE_STATIC_STD_LIBS)
         foreach(flag
