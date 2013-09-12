@@ -1,5 +1,0 @@
-TGUI no longer comes with an executable for the Form Builder, it will be build together with the TGUI libraries if you leave the TGUI_BUILD_FORM_BUILDER option checked in CMake.
-
-If the executable is not automatically copied into this folder then you will find it in a folder like build/src/TGUI/Release, depending on your configuration .
-If you were linking dynamically (TGUI_SHARED_LIBS checked in CMake) then you must also copy the tgui(-d).dll and the dlls from sfml (main, system, window and graphics) to this folder.
-

@@ -81,3 +81,9 @@ else()
              PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
 endif()
 
+# Build the Form Builder if requested
+if (TGUI_BUILD_FORM_BUILDER)
+    add_subdirectory(FormBuilder)
+endif()
+
+
