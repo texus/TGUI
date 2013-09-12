@@ -425,7 +425,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& EditBox::getLoadedConfigFile()
+    const std::string& EditBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -1541,10 +1541,15 @@ namespace tgui
             }
             else if (property == "passwordcharacter")
             {
-                if (value.length() == 1)
-                    setPasswordCharacter(value[0]);
+                if (!value.empty())
+                {
+                    if (value.length() == 1)
+                        setPasswordCharacter(value[0]);
+                    else
+                        TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+                }
                 else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+                    setPasswordCharacter('\0');
             }
             else if (property == "maximumcharacters")
             {
@@ -1606,7 +1611,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::getProperty(std::string property, std::string& value)
+    bool EditBox::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -1619,7 +1624,12 @@ namespace tgui
             else if (property == "textsize")
                 value = to_string(getTextSize());
             else if (property == "passwordcharacter")
-                value = getPasswordCharacter();
+            {
+                if (getPasswordCharacter())
+                    value = getPasswordCharacter();
+                else
+                    value = "";
+            }
             else if (property == "maximumcharacters")
                 value = to_string(getMaximumCharacters());
             else if (property == "borders")
@@ -1647,6 +1657,29 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > EditBox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Text", "string"},
+                                    {"TextSize", "uint"},
+                                    {"PasswordCharacter", "char"},
+                                    {"MaximumCharacters", "uint"},
+                                    {"Borders", "borders"},
+                                    {"TextColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"SelectedTextBackgroundColor", "color"},
+                                    {"SelectionPointColor", "color"},
+                                    {"LimitTextWidth", "bool"},
+                                    {"SelectionPointWidth", "uint"},
+                                    {"NumbersOnly", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

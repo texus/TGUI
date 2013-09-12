@@ -232,6 +232,14 @@ namespace tgui
                     return false;
                 }
             }
+            else if (property == "textcolor")
+            {
+                setTextColor(extractColor(value));
+            }
+            else if (property == "textsize")
+            {
+                setTextSize(atoi(value.c_str()));
+            }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + configFileFilename + ".");
         }
@@ -266,16 +274,18 @@ namespace tgui
             }
         }
 
+        m_Loaded = true;
+
         // Calculate the size of the front image (the size of the part that will be drawn)
         recalculateSize();
 
         // Loading has succeeded
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& LoadingBar::getLoadedConfigFile()
+    const std::string& LoadingBar::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -565,7 +575,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::getProperty(std::string property, std::string& value)
+    bool LoadingBar::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -591,6 +601,23 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > LoadingBar::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Minimum", "uint"},
+                                    {"Maximum", "uint"},
+                                    {"Value", "uint"},
+                                    {"Text", "string"},
+                                    {"TextColor", "color"},
+                                    {"TextSize", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

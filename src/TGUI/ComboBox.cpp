@@ -261,7 +261,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ComboBox::getLoadedConfigFile()
+    const std::string& ComboBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -286,9 +286,9 @@ namespace tgui
 
         // Set the size of the list box
         if (m_NrOfItemsToDisplay > 0)
-            m_ListBox->setSize(width, height * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) + 2*m_BottomBorder);
+            m_ListBox->setSize(width, m_ListBox->getItemHeight() * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) + 2*m_BottomBorder);
         else
-            m_ListBox->setSize(width, height * m_ListBox->getItems().size() + 2*m_BottomBorder);
+            m_ListBox->setSize(width, m_ListBox->getItemHeight() * m_ListBox->getItems().size() + 2*m_BottomBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,7 +462,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(unsigned int index)
+    bool ComboBox::setSelectedItem(int index)
     {
         return m_ListBox->setSelectedItem(index);
     }
@@ -712,6 +712,20 @@ namespace tgui
             {
                 setMaximumItems(atoi(value.c_str()));
             }
+            else if (property == "items")
+            {
+                removeAllItems();
+
+                std::vector<sf::String> items;
+                decodeList(value, items);
+
+                for (auto it = items.cbegin(); it != items.cend(); ++it)
+                    addItem(*it);
+            }
+            else if (property == "selecteditem")
+            {
+                setSelectedItem(atoi(value.c_str()));
+            }
             else // The property didn't match
                 return false;
         }
@@ -722,7 +736,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::getProperty(std::string property, std::string& value)
+    bool ComboBox::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -748,12 +762,37 @@ namespace tgui
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
             else if (property == "maximumitems")
                 value = to_string(getMaximumItems());
+            else if (property == "items")
+                encodeList(m_ListBox->getItems(), value);
+            else if (property == "selecteditem")
+                value = to_string(getSelectedItemIndex());
             else // The property didn't match
                 return false;
         }
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > ComboBox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"ItemsToDisplay", "uint"},
+                                    {"BackgroundColor", "color"},
+                                    {"TextColor", "color"},
+                                    {"SelectedBackgroundColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"Borders", "borders"},
+                                    {"MaximumItems", "uint"},
+                                    {"Items", "string"},
+                                    {"SelectedItem", "int"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

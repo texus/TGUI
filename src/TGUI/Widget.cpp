@@ -488,7 +488,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::getProperty(std::string property, std::string& value)
+    bool Widget::getProperty(std::string property, std::string& value) const
     {
         std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
@@ -511,6 +511,20 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Widget::getPropertyList() const
+    {
+        return std::list< std::pair<std::string, std::string> >({   {"Left", "int"},
+                                                                    {"Top", "int"},
+                                                                    {"Width", "uint"},
+                                                                    {"Height", "uint"},
+                                                                    {"Visible", "bool"},
+                                                                    {"Enabled", "bool"},
+                                                                    {"Transparency", "byte"}
+                                                                });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

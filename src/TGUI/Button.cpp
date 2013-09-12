@@ -392,7 +392,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Button::getLoadedConfigFile()
+    const std::string& Button::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -698,7 +698,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::getProperty(std::string property, std::string& value)
+    bool Button::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -718,6 +718,20 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Button::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Text", "string"},
+                                    {"TextColor", "color"},
+                                    {"TextSize", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

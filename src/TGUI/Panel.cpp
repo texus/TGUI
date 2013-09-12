@@ -260,9 +260,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::getProperty(std::string property, std::string& value)
+    bool Panel::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
+        if (!Container::getProperty(property, value))
         {
             std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
@@ -274,6 +274,17 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Panel::getPropertyList() const
+    {
+        auto list = Container::getPropertyList();
+        list.insert(list.end(), {
+                                    {"BackgroundColor", "color"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -283,7 +283,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& TextBox::getLoadedConfigFile()
+    const std::string& TextBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -1637,7 +1637,9 @@ namespace tgui
             }
             else if (property == "text")
             {
-                setText(value);
+                std::string text;
+                decodeString(value, text);
+                setText(text);
             }
             else if (property == "textsize")
             {
@@ -1693,7 +1695,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::getProperty(std::string property, std::string& value)
+    bool TextBox::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -1702,7 +1704,7 @@ namespace tgui
             if (property == "configfile")
                 value = getLoadedConfigFile();
             else if (property == "text")
-                value = getText().toAnsiString();
+                encodeString(getText(), value);
             else if (property == "textsize")
                 value = to_string(getTextSize());
             else if (property == "maximumcharacters")
@@ -1731,6 +1733,28 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > TextBox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Text", "string"},
+                                    {"TextSize", "uint"},
+                                    {"MaximumCharacters", "uint"},
+                                    {"Borders", "borders"},
+                                    {"BackgroundColor", "color"},
+                                    {"TextColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"SelectedTextBackgroundColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"SelectionPointColor", "color"},
+                                    {"SelectionPointWidth", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

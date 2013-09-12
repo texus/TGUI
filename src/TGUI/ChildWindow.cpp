@@ -301,7 +301,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ChildWindow::getLoadedConfigFile()
+    const std::string& ChildWindow::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -874,7 +874,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::getProperty(std::string property, std::string& value)
+    bool ChildWindow::getProperty(std::string property, std::string& value) const
     {
         if (!Container::getProperty(property, value))
         {
@@ -899,11 +899,11 @@ namespace tgui
             else if (property == "titlealignment")
             {
                 if (m_TitleAlignment == TitleAlignmentLeft)
-                    value = "left";
+                    value = "Left";
                 else if (m_TitleAlignment == TitleAlignmentCentered)
-                    value = "centered";
+                    value = "Centered";
                 else if (m_TitleAlignment == TitleAlignmentRight)
-                    value = "right";
+                    value = "Right";
             }
             else // The property didn't match
                 return false;
@@ -911,6 +911,25 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > ChildWindow::getPropertyList() const
+    {
+        auto list = Container::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"TitleBarHeight", "uint"},
+                                    {"BackgroundColor", "color"},
+                                    {"Title", "string"},
+                                    {"TitleColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"Borders", "borders"},
+                                    {"DistanceToSide", "uint"},
+                                    {"TitleAlignment", "custom"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

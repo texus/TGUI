@@ -105,6 +105,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMinimum(unsigned int minimum);
 
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Sets a maximum value.
         ///
@@ -112,7 +113,7 @@ namespace tgui
         ///
         /// When the minimum value is higher than the new maximum then it will be changed to this new maximum value.
         /// When the value is bigger than (maximum - low value), the value is set to maximum - low value.
-        /// The default maximum value is 0.
+        /// The default maximum value is 10.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximum(unsigned int maximum);
@@ -137,6 +138,7 @@ namespace tgui
         ///
         /// Until the maximum is bigger than this value, no scrollbar will be drawn.
         /// You can however choose to always draw the scrollbar by calling setAutoHide(false).
+        /// The default low value is 6.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLowValue(unsigned int lowValue);
@@ -204,12 +206,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
-        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        /// \internal
+        // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool setProperty(std::string property, const std::string& value);
-        virtual bool getProperty(std::string property, std::string& value);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        // This function is a (slow) way to get properties of the widget, no matter what type it is.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool getProperty(std::string property, std::string& value) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        // Returns a list of all properties that can be used in setProperty and getProperty.
+        // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::list< std::pair<std::string, std::string> > getPropertyList() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

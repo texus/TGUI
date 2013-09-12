@@ -218,7 +218,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Slider2d::getLoadedConfigFile()
+    const std::string& Slider2d::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -486,7 +486,7 @@ namespace tgui
                     if ((value[0] == '(') && (value[value.length()-1] == ')'))
                     {
                         std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                         {
                             setMinimum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
                                                     static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
@@ -507,7 +507,7 @@ namespace tgui
                     if ((value[0] == '(') && (value[value.length()-1] == ')'))
                     {
                         std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                         {
                             setMaximum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
                                                     static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
@@ -528,7 +528,7 @@ namespace tgui
                     if ((value[0] == '(') && (value[value.length()-1] == ')'))
                     {
                         std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos) == std::string::npos))
+                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                         {
                             setValue(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
                                                   static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
@@ -570,7 +570,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider2d::getProperty(std::string property, std::string& value)
+    bool Slider2d::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -594,6 +594,22 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Slider2d::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Minimum", "custom"},
+                                    {"Maximum", "custom"},
+                                    {"Value", "custom"},
+                                    {"FixedThumbSize", "bool"},
+                                    {"EnableThumbCenter", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

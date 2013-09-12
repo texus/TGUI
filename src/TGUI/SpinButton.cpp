@@ -219,7 +219,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& SpinButton::getLoadedConfigFile()
+    const std::string& SpinButton::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -484,7 +484,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::getProperty(std::string property, std::string& value)
+    bool SpinButton::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -506,6 +506,21 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > SpinButton::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Minimum", "uint"},
+                                    {"Maximum", "uint"},
+                                    {"Value", "uint"},
+                                    {"VerticalScroll", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

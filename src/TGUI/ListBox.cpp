@@ -24,6 +24,7 @@
 
 
 #include <cmath>
+#include <algorithm>
 
 #include <SFML/OpenGL.hpp>
 
@@ -237,7 +238,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ListBox::getLoadedConfigFile()
+    const std::string& ListBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -434,10 +435,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItem(unsigned int index)
+    bool ListBox::setSelectedItem(int index)
     {
+        if (index < 0)
+        {
+            deselectItem();
+            return true;
+        }
+
         // If the index is too high then deselect the items
-        if (index > m_Items.size()-1)
+        if (index > int(m_Items.size()-1))
         {
             TGUI_OUTPUT("TGUI warning: Failed to select the item in the list box. The index was too high.");
             m_SelectedItem = -1;
@@ -1045,6 +1052,20 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
             }
+            else if (property == "items")
+            {
+                removeAllItems();
+
+                std::vector<sf::String> items;
+                decodeList(value, items);
+
+                for (auto it = items.cbegin(); it != items.cend(); ++it)
+                    addItem(*it);
+            }
+            else if (property == "selecteditem")
+            {
+                setSelectedItem(atoi(value.c_str()));
+            }
             else // The property didn't match
                 return false;
         }
@@ -1055,7 +1076,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::getProperty(std::string property, std::string& value)
+    bool ListBox::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -1081,12 +1102,37 @@ namespace tgui
                 value = to_string(getMaximumItems());
             else if (property == "borders")
                 value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
+            else if (property == "items")
+                encodeList(m_Items, value);
+            else if (property == "selecteditem")
+                value = to_string(getSelectedItemIndex());
             else // The property didn't match
                 return false;
         }
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > ListBox::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"BackgroundColor", "color"},
+                                    {"TextColor", "color"},
+                                    {"SelectedBackgroundColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"BorderColor", "color"},
+                                    {"ItemHeight", "uint"},
+                                    {"MaximumItems", "uint"},
+                                    {"Borders", "borders"},
+                                    {"Items", "string"},
+                                    {"SelectedItem", "int"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1156,7 +1202,7 @@ namespace tgui
         // Draw the background
         {
             sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
-                                              static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
+                                                  static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
             front.setFillColor(m_BackgroundColor);
             target.draw(front, states);
         }

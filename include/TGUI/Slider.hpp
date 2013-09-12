@@ -91,7 +91,7 @@ namespace tgui
         /// The config file must contain a Slider section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(const std::string& configFileFilename);
+        virtual bool load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ namespace tgui
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile();
+        const std::string& getLoadedConfigFile() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ namespace tgui
         ///
         /// When the value is too big then it will be changed to this maximum.
         /// When the minimum value is higher than the new maximum then it will be changed to this new maximum value.
-        /// The default maximum value is 100.
+        /// The default maximum value is 10.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setMaximum(unsigned int maximum);
@@ -259,12 +259,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // These functions are a (slow) way to set properties on the widget, no matter what type it is.
-        // You can e.g. change the "Text" property, without even knowing that the widget is a button.
+        /// \internal
+        // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool setProperty(std::string property, const std::string& value);
-        virtual bool getProperty(std::string property, std::string& value);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        // This function is a (slow) way to get properties of the widget, no matter what type it is.
+        // When the requested property doesn't exist in the widget then the functions will return false.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool getProperty(std::string property, std::string& value) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        // Returns a list of all properties that can be used in setProperty and getProperty.
+        // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::list< std::pair<std::string, std::string> > getPropertyList() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

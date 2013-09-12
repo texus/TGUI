@@ -181,7 +181,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& MessageBox::getLoadedConfigFile()
+    const std::string& MessageBox::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -204,7 +204,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String MessageBox::getText()
+    sf::String MessageBox::getText() const
     {
         if (m_Loaded)
             return m_Label->getText();
@@ -319,7 +319,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::getProperty(std::string property, std::string& value)
+    bool MessageBox::getProperty(std::string property, std::string& value) const
     {
         if (!ChildWindow::getProperty(property, value))
         {
@@ -337,6 +337,19 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > MessageBox::getPropertyList() const
+    {
+        auto list = ChildWindow::getPropertyList();
+        list.insert(list.end(), {
+                                    {"Text", "string"},
+                                    {"TextColor", "color"},
+                                    {"TextSize", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

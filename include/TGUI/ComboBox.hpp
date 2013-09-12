@@ -102,7 +102,7 @@ namespace tgui
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile();
+        const std::string& getLoadedConfigFile() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,6 +331,7 @@ namespace tgui
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
         /// then you can use this function to select an item.
+        /// If the index is -1 then the \a deselectItem function will be called.
         ///
         /// \param index  The index of the item
         ///
@@ -341,7 +342,7 @@ namespace tgui
         /// \see setSelectedItem(sf::String)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItem(unsigned int index);
+        bool setSelectedItem(int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -544,7 +545,15 @@ namespace tgui
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool getProperty(std::string property, std::string& value);
+        virtual bool getProperty(std::string property, std::string& value) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        // Returns a list of all properties that can be used in setProperty and getProperty.
+        // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::list< std::pair<std::string, std::string> > getPropertyList() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

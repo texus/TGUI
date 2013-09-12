@@ -119,7 +119,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& MenuBar::getLoadedConfigFile()
+    const std::string& MenuBar::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -707,7 +707,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::getProperty(std::string property, std::string& value)
+    bool MenuBar::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -715,8 +715,6 @@ namespace tgui
 
             if (property == "configfile")
                 value = getLoadedConfigFile();
-            else if (property == "height")
-                value = to_string(getSize().y);
             else if (property == "backgroundcolor")
                 value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
             else if (property == "textcolor")
@@ -739,6 +737,24 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > MenuBar::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"BackgroundColor", "color"},
+                                    {"TextColor", "color"},
+                                    {"SelectedBackgroundColor", "color"},
+                                    {"SelectedTextColor", "color"},
+                                    {"TextSize", "uint"},
+                                    {"DistanceToSide", "uint"},
+                                    {"MinimumSubMenuWidth", "uint"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

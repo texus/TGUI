@@ -34,9 +34,9 @@ namespace tgui
 
     Slider::Slider() :
     m_MouseDownOnThumb    (false),
-    m_Minimum             (  0),
-    m_Maximum             (100),
-    m_Value               (  0),
+    m_Minimum             ( 0),
+    m_Maximum             (10),
+    m_Value               ( 0),
     m_VerticalScroll      (true),
     m_VerticalImage       (true),
     m_SplitImage          (false),
@@ -338,7 +338,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Slider::getLoadedConfigFile()
+    const std::string& Slider::getLoadedConfigFile() const
     {
         return m_LoadedConfigFile;
     }
@@ -764,7 +764,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::getProperty(std::string property, std::string& value)
+    bool Slider::getProperty(std::string property, std::string& value) const
     {
         if (!Widget::getProperty(property, value))
         {
@@ -786,6 +786,21 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Slider::getPropertyList() const
+    {
+        auto list = Widget::getPropertyList();
+        list.insert(list.end(), {
+                                    {"ConfigFile", "string"},
+                                    {"Minimum", "uint"},
+                                    {"Maximum", "uint"},
+                                    {"Value", "uint"},
+                                    {"VerticalScroll", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

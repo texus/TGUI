@@ -26,7 +26,7 @@
 #include <TGUI/Scrollbar.hpp>
 
 /// \todo Support SplitImage.
-/// \todo Arrow images should be allowed to point left and right. This will mess up most calculations.
+/// \todo Arrow images should be allowed to point left and right. This will mess up most of the current calculations.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,13 +35,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar() :
-    m_LowValue          (0),
+    m_LowValue          (6),
     m_AutoHide          (true),
     m_MouseDownOnArrow  (false)
     {
         m_Callback.widgetType = Type_Scrollbar;
-
-        m_Maximum = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -853,7 +851,11 @@ namespace tgui
         {
             std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "autohide")
+            if (property == "lowvalue")
+            {
+                setLowValue(atoi(value.c_str()));
+            }
+            else if (property == "autohide")
             {
                 if ((value == "true") || (value == "True"))
                     setAutoHide(true);
@@ -872,13 +874,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::getProperty(std::string property, std::string& value)
+    bool Scrollbar::getProperty(std::string property, std::string& value) const
     {
         if (!Slider::getProperty(property, value))
         {
             std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "autohide")
+            if (property == "lowvalue")
+                value = to_string(getLowValue());
+            else if (property == "autohide")
                 value = m_AutoHide ? "true" : "false";
             else // The property didn't match
                 return false;
@@ -886,6 +890,18 @@ namespace tgui
 
         // You pass here when one of the properties matched
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::list< std::pair<std::string, std::string> > Scrollbar::getPropertyList() const
+    {
+        auto list = Slider::getPropertyList();
+        list.insert(list.end(), {
+                                    {"LowValue", "uint"},
+                                    {"AutoHide", "bool"}
+                                });
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
