@@ -97,7 +97,6 @@ void FormBuilder::initMenuBar()
     }
 
     menu.addMenuItem("File", "New");
-    menu.addMenuItem("File", "Load");
     menu.addMenuItem("File", "Exit");
 //    menu.addMenuItem("View", "Widgets");
 //    menu.addMenuItem("View", "Properties");
@@ -933,6 +932,8 @@ void FormBuilder::createNewForm(const std::string& filename, float width, float 
 
     // Update the contents of the properties panel
     recreateProperties();
+
+    menu.addMenuItem("File", "Load");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
