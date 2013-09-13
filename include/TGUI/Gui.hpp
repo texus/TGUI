@@ -267,6 +267,31 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the name of a widget.
+        ///
+        /// \param widget  Widget of which the name should be changed
+        /// \param name    New name for the widget
+        ///
+        /// \return True when the name was changed, false when the widget wasn't part of this container.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setWidgetName(const Widget::Ptr& widget, const std::string& name);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the name of a widget.
+        ///
+        /// \param widget  Widget of which the name should be retrieved
+        /// \param name    Name for the widget
+        ///
+        /// \return False is returned when the widget wasn't part of this container.
+        ///         In this case the name parameter is left unchanged.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getWidgetName(const Widget::Ptr& widget, std::string& name) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Focuses an widget.
         ///
         /// The previously focused widget will be unfocused.
