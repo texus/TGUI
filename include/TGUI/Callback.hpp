@@ -53,7 +53,7 @@ namespace tgui
         unsigned int trigger;
 
         // Pointer to the widget
-        SharedWidgetPtr<Widget> widget;
+        Widget* widget;
 
         // The type of the widget
         WidgetTypes widgetType;
