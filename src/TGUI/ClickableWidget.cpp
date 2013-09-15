@@ -154,6 +154,70 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ClickableWidget::setProperty(std::string property, const std::string& value)
+    {
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "callback")
+        {
+            Widget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "LeftMousePressed") || (*it == "leftmousepressed"))
+                    bindCallback(LeftMousePressed);
+                else if ((*it == "LeftMouseReleased") || (*it == "leftmousereleased"))
+                    bindCallback(LeftMouseReleased);
+                else if ((*it == "LeftMouseClicked") || (*it == "leftmouseclicked"))
+                    bindCallback(LeftMouseClicked);
+            }
+        }
+        else // The property didn't match
+            return Widget::setProperty(property, value);
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ClickableWidget::getProperty(std::string property, std::string& value) const
+    {
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "callback")
+        {
+            std::string tempValue;
+            Widget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(LeftMousePressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMousePressed).size() == 1) && (m_CallbackFunctions.at(LeftMousePressed).front() == nullptr))
+                callbacks.push_back("LeftMousePressed");
+            if ((m_CallbackFunctions.find(LeftMouseReleased) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseReleased).size() == 1) && (m_CallbackFunctions.at(LeftMouseReleased).front() == nullptr))
+                callbacks.push_back("LeftMouseReleased");
+            if ((m_CallbackFunctions.find(LeftMouseClicked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseClicked).size() == 1) && (m_CallbackFunctions.at(LeftMouseClicked).front() == nullptr))
+                callbacks.push_back("LeftMouseClicked");
+
+            encodeList(callbacks, value);
+
+            if (value.empty() || tempValue.empty())
+                value += tempValue;
+            else
+                value += "," + tempValue;
+        }
+        else // The property didn't match
+            return Widget::getProperty(property, value);
+
+        // You pass here when one of the properties matched
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ClickableWidget::draw(sf::RenderTarget&, sf::RenderStates) const
     {
     }

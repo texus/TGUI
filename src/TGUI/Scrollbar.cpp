@@ -847,26 +847,23 @@ namespace tgui
 
     bool Scrollbar::setProperty(std::string property, const std::string& value)
     {
-        if (!Slider::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "lowvalue")
-            {
-                setLowValue(atoi(value.c_str()));
-            }
-            else if (property == "autohide")
-            {
-                if ((value == "true") || (value == "True"))
-                    setAutoHide(true);
-                else if ((value == "false") || (value == "False"))
-                    setAutoHide(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "lowvalue")
+        {
+            setLowValue(atoi(value.c_str()));
         }
+        else if (property == "autohide")
+        {
+            if ((value == "true") || (value == "True"))
+                setAutoHide(true);
+            else if ((value == "false") || (value == "False"))
+                setAutoHide(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
+        }
+        else // The property didn't match
+            return Slider::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -876,17 +873,14 @@ namespace tgui
 
     bool Scrollbar::getProperty(std::string property, std::string& value) const
     {
-        if (!Slider::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "lowvalue")
-                value = to_string(getLowValue());
-            else if (property == "autohide")
-                value = m_AutoHide ? "true" : "false";
-            else // The property didn't match
-                return false;
-        }
+        if (property == "lowvalue")
+            value = to_string(getLowValue());
+        else if (property == "autohide")
+            value = m_AutoHide ? "true" : "false";
+        else // The property didn't match
+            return Slider::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

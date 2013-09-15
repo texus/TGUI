@@ -814,60 +814,74 @@ namespace tgui
 
     bool ChildWindow::setProperty(std::string property, const std::string& value)
     {
-        if (!Container::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "titlebarheight")
-            {
-                setTitleBarHeight(atoi(value.c_str()));
-            }
-            else if (property == "backgroundcolor")
-            {
-                setBackgroundColor(extractColor(value));
-            }
-            else if (property == "title")
-            {
-                setTitle(value);
-            }
-            else if (property == "titlecolor")
-            {
-                setTitleColor(extractColor(value));
-            }
-            else if (property == "bordercolor")
-            {
-                setBorderColor(extractColor(value));
-            }
-            else if (property == "borders")
-            {
-                Borders borders;
-                if (extractBorders(value, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
-            }
-            else if (property == "distancetoside")
-            {
-                setDistanceToSide(atoi(value.c_str()));
-            }
-            else if (property == "titlealignment")
-            {
-                if ((value == "left") || (value == "Left"))
-                    setTitleAlignment(TitleAlignmentLeft);
-                else if ((value == "centered") || (value == "Centered"))
-                    setTitleAlignment(TitleAlignmentCentered);
-                else if ((value == "right") || (value == "Right"))
-                    setTitleAlignment(TitleAlignmentRight);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'TitleAlignment' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "titlebarheight")
+        {
+            setTitleBarHeight(atoi(value.c_str()));
+        }
+        else if (property == "backgroundcolor")
+        {
+            setBackgroundColor(extractColor(value));
+        }
+        else if (property == "title")
+        {
+            setTitle(value);
+        }
+        else if (property == "titlecolor")
+        {
+            setTitleColor(extractColor(value));
+        }
+        else if (property == "bordercolor")
+        {
+            setBorderColor(extractColor(value));
+        }
+        else if (property == "borders")
+        {
+            Borders borders;
+            if (extractBorders(value, borders))
+                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+        }
+        else if (property == "distancetoside")
+        {
+            setDistanceToSide(atoi(value.c_str()));
+        }
+        else if (property == "titlealignment")
+        {
+            if ((value == "left") || (value == "Left"))
+                setTitleAlignment(TitleAlignmentLeft);
+            else if ((value == "centered") || (value == "Centered"))
+                setTitleAlignment(TitleAlignmentCentered);
+            else if ((value == "right") || (value == "Right"))
+                setTitleAlignment(TitleAlignmentRight);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'TitleAlignment' property.");
+        }
+        else if (property == "callback")
+        {
+            Container::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "LeftMousePressed") || (*it == "leftmousepressed"))
+                    bindCallback(LeftMousePressed);
+                else if ((*it == "Closed") || (*it == "closed"))
+                    bindCallback(Closed);
+                else if ((*it == "Moved") || (*it == "moved"))
+                    bindCallback(Moved);
+            }
+        }
+        else // The property didn't match
+            return Container::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -877,38 +891,56 @@ namespace tgui
 
     bool ChildWindow::getProperty(std::string property, std::string& value) const
     {
-        if (!Container::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "titlebarheight")
-                value = to_string(getTitleBarHeight());
-            else if (property == "backgroundcolor")
-                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "title")
-                value = getTitle().toAnsiString();
-            else if (property == "titlecolor")
-                value = "(" + to_string(int(getTitleColor().r)) + "," + to_string(int(getTitleColor().g)) + "," + to_string(int(getTitleColor().b)) + "," + to_string(int(getTitleColor().a)) + ")";
-            else if (property == "bordercolor")
-                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
-            else if (property == "borders")
-                value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "distancetoside")
-                value = to_string(getDistanceToSide());
-            else if (property == "titlealignment")
-            {
-                if (m_TitleAlignment == TitleAlignmentLeft)
-                    value = "Left";
-                else if (m_TitleAlignment == TitleAlignmentCentered)
-                    value = "Centered";
-                else if (m_TitleAlignment == TitleAlignmentRight)
-                    value = "Right";
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "titlebarheight")
+            value = to_string(getTitleBarHeight());
+        else if (property == "backgroundcolor")
+            value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
+        else if (property == "title")
+            value = getTitle().toAnsiString();
+        else if (property == "titlecolor")
+            value = "(" + to_string(int(getTitleColor().r)) + "," + to_string(int(getTitleColor().g)) + "," + to_string(int(getTitleColor().b)) + "," + to_string(int(getTitleColor().a)) + ")";
+        else if (property == "bordercolor")
+            value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
+        else if (property == "borders")
+            value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
+        else if (property == "distancetoside")
+            value = to_string(getDistanceToSide());
+        else if (property == "titlealignment")
+        {
+            if (m_TitleAlignment == TitleAlignmentLeft)
+                value = "Left";
+            else if (m_TitleAlignment == TitleAlignmentCentered)
+                value = "Centered";
+            else if (m_TitleAlignment == TitleAlignmentRight)
+                value = "Right";
         }
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            Container::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(LeftMousePressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMousePressed).size() == 1) && (m_CallbackFunctions.at(LeftMousePressed).front() == nullptr))
+                callbacks.push_back("LeftMousePressed");
+            if ((m_CallbackFunctions.find(Closed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Closed).size() == 1) && (m_CallbackFunctions.at(Closed).front() == nullptr))
+                callbacks.push_back("Closed");
+            if ((m_CallbackFunctions.find(Moved) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Moved).size() == 1) && (m_CallbackFunctions.at(Moved).front() == nullptr))
+                callbacks.push_back("Moved");
+
+            encodeList(callbacks, value);
+
+            if (value.empty() || tempValue.empty())
+                value += tempValue;
+            else
+                value += "," + tempValue;
+        }
+        else // The property didn't match
+            return Container::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

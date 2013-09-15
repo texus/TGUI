@@ -205,26 +205,23 @@ namespace tgui
 
     bool Picture::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "filename")
-            {
-                load(value);
-            }
-            else if (property == "smooth")
-            {
-                if ((value == "true") || (value == "True"))
-                    setSmooth(true);
-                else if ((value == "false") || (value == "False"))
-                    setSmooth(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Smooth' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "filename")
+        {
+            load(value);
         }
+        else if (property == "smooth")
+        {
+            if ((value == "true") || (value == "True"))
+                setSmooth(true);
+            else if ((value == "false") || (value == "False"))
+                setSmooth(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Smooth' property.");
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -234,17 +231,14 @@ namespace tgui
 
     bool Picture::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "filename")
-                value = getLoadedFilename();
-            else if (property == "smooth")
-                value = isSmooth() ? "true" : "false";
-            else // The property didn't match
-                return false;
-        }
+        if (property == "filename")
+            value = getLoadedFilename();
+        else if (property == "smooth")
+            value = isSmooth() ? "true" : "false";
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -254,7 +248,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > Picture::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"Filename", "string"},
                                     {"Smooth", "bool"}

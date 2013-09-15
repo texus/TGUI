@@ -268,44 +268,41 @@ namespace tgui
 
     bool Label::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "text")
-            {
-                std::string text;
-                decodeString(value, text);
-                setText(text);
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else if (property == "backgroundcolor")
-            {
-                setBackgroundColor(extractColor(value));
-            }
-            else if (property == "autosize")
-            {
-                if ((value == "true") || (value == "True"))
-                    setAutoSize(true);
-                else if ((value == "false") || (value == "False"))
-                    setAutoSize(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'AutoSize' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "text")
+        {
+            std::string text;
+            decodeString(value, text);
+            setText(text);
+        }
+        else if (property == "textcolor")
+        {
+            setTextColor(extractColor(value));
+        }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "backgroundcolor")
+        {
+            setBackgroundColor(extractColor(value));
+        }
+        else if (property == "autosize")
+        {
+            if ((value == "true") || (value == "True"))
+                setAutoSize(true);
+            else if ((value == "false") || (value == "False"))
+                setAutoSize(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'AutoSize' property.");
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -315,25 +312,22 @@ namespace tgui
 
     bool Label::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "text")
-                encodeString(getText(), value);
-            else if (property == "textcolor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "textsize")
-                value = to_string(getTextSize());
-            else if (property == "backgroundcolor")
-                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "autosize")
-                value = m_AutoSize ? "true" : "false";
-            else // The property didn't match
-                return false;
-        }
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "text")
+            encodeString(getText(), value);
+        else if (property == "textcolor")
+            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "backgroundcolor")
+            value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
+        else if (property == "autosize")
+            value = m_AutoSize ? "true" : "false";
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -343,7 +337,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > Label::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"ConfigFile", "string"},
                                     {"Text", "string"},

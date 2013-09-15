@@ -317,31 +317,41 @@ namespace tgui
 
     bool AnimatedPicture::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "playing")
-            {
-                if ((value == "true") || (value == "True"))
-                    m_Playing = true;
-                else if ((value == "false") || (value == "False"))
-                    m_Playing = false;
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Playing' property.");
-            }
-            else if (property == "looping")
-            {
-                if ((value == "true") || (value == "True"))
-                    m_Looping = true;
-                else if ((value == "false") || (value == "False"))
-                    m_Looping = false;
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Looping' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "playing")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Playing = true;
+            else if ((value == "false") || (value == "False"))
+                m_Playing = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Playing' property.");
         }
+        else if (property == "looping")
+        {
+            if ((value == "true") || (value == "True"))
+                m_Looping = true;
+            else if ((value == "false") || (value == "False"))
+                m_Looping = false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Looping' property.");
+        }
+        else if (property == "callback")
+        {
+            ClickableWidget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "AnimationFinished") || (*it == "animationfinished"))
+                    bindCallback(AnimationFinished);
+            }
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -351,17 +361,31 @@ namespace tgui
 
     bool AnimatedPicture::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "playing")
-                value = m_Playing ? "true" : "false";
-            else if (property == "looping")
-                value = m_Looping ? "true" : "false";
-            else // The property didn't match
-                return false;
+        if (property == "playing")
+            value = m_Playing ? "true" : "false";
+        else if (property == "looping")
+            value = m_Looping ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            ClickableWidget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(AnimationFinished) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(AnimationFinished).size() == 1) && (m_CallbackFunctions.at(AnimationFinished).front() == nullptr))
+                callbacks.push_back("AnimationFinished");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
         }
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -371,7 +395,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > AnimatedPicture::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"Playing", "bool"},
                                     {"Looping", "bool"}

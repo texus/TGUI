@@ -533,41 +533,53 @@ namespace tgui
 
     bool LoadingBar::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "minimum")
-            {
-                setMinimum(atoi(value.c_str()));
-            }
-            else if (property == "maximum")
-            {
-                setMaximum(atoi(value.c_str()));
-            }
-            else if (property == "value")
-            {
-                setValue(atoi(value.c_str()));
-            }
-            else if (property == "text")
-            {
-                setText(value);
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "minimum")
+        {
+            setMinimum(atoi(value.c_str()));
+        }
+        else if (property == "maximum")
+        {
+            setMaximum(atoi(value.c_str()));
+        }
+        else if (property == "value")
+        {
+            setValue(atoi(value.c_str()));
+        }
+        else if (property == "text")
+        {
+            setText(value);
+        }
+        else if (property == "textcolor")
+        {
+            setTextColor(extractColor(value));
+        }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "callback")
+        {
+            ClickableWidget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "ValueChanged") || (*it == "valuechanged"))
+                    bindCallback(ValueChanged);
+                else if ((*it == "LoadingBarFull") || (*it == "loadingbarfull"))
+                    bindCallback(LoadingBarFull);
+            }
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -577,27 +589,43 @@ namespace tgui
 
     bool LoadingBar::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "minimum")
-                value = to_string(getMinimum());
-            else if (property == "maximum")
-                value = to_string(getMaximum());
-            else if (property == "value")
-                value = to_string(getValue());
-            else if (property == "text")
-                value = getText().toAnsiString();
-            else if (property == "textcolor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "textsize")
-                value = to_string(getTextSize());
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "minimum")
+            value = to_string(getMinimum());
+        else if (property == "maximum")
+            value = to_string(getMaximum());
+        else if (property == "value")
+            value = to_string(getValue());
+        else if (property == "text")
+            value = getText().toAnsiString();
+        else if (property == "textcolor")
+            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            ClickableWidget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+                callbacks.push_back("ValueChanged");
+            if ((m_CallbackFunctions.find(LoadingBarFull) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LoadingBarFull).size() == 1) && (m_CallbackFunctions.at(LoadingBarFull).front() == nullptr))
+                callbacks.push_back("LoadingBarFull");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
         }
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -607,7 +635,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > LoadingBar::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"ConfigFile", "string"},
                                     {"Minimum", "uint"},

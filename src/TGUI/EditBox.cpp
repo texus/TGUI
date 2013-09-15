@@ -1523,87 +1523,99 @@ namespace tgui
 
     bool EditBox::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "text")
-            {
-                setText(value);
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else if (property == "passwordcharacter")
-            {
-                if (!value.empty())
-                {
-                    if (value.length() == 1)
-                        setPasswordCharacter(value[0]);
-                    else
-                        TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
-                }
-                else
-                    setPasswordCharacter('\0');
-            }
-            else if (property == "maximumcharacters")
-            {
-                setMaximumCharacters(atoi(value.c_str()));
-            }
-            else if (property == "borders")
-            {
-                Borders borders;
-                if (extractBorders(value, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "selectedtextcolor")
-            {
-                setSelectedTextColor(extractColor(value));
-            }
-            else if (property == "selectedtextbackgroundcolor")
-            {
-                setSelectedTextBackgroundColor(extractColor(value));
-            }
-            else if (property == "selectionpointcolor")
-            {
-                setSelectionPointColor(extractColor(value));
-            }
-            else if (property == "limittextwidth")
-            {
-                if ((value == "true") || (value == "True"))
-                    limitTextWidth(true);
-                else if ((value == "false") || (value == "False"))
-                    limitTextWidth(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
-            }
-            else if (property == "selectionpointwidth")
-            {
-                setSelectionPointWidth(atoi(value.c_str()));
-            }
-            else if (property == "numbersonly")
-            {
-                if ((value == "true") || (value == "True"))
-                    setNumbersOnly(true);
-                else if ((value == "false") || (value == "False"))
-                    setNumbersOnly(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'NumbersOnly' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "text")
+        {
+            setText(value);
+        }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "passwordcharacter")
+        {
+            if (!value.empty())
+            {
+                if (value.length() == 1)
+                    setPasswordCharacter(value[0]);
+                else
+                    TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+            }
+            else
+                setPasswordCharacter('\0');
+        }
+        else if (property == "maximumcharacters")
+        {
+            setMaximumCharacters(atoi(value.c_str()));
+        }
+        else if (property == "borders")
+        {
+            Borders borders;
+            if (extractBorders(value, borders))
+                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+        }
+        else if (property == "textcolor")
+        {
+            setTextColor(extractColor(value));
+        }
+        else if (property == "selectedtextcolor")
+        {
+            setSelectedTextColor(extractColor(value));
+        }
+        else if (property == "selectedtextbackgroundcolor")
+        {
+            setSelectedTextBackgroundColor(extractColor(value));
+        }
+        else if (property == "selectionpointcolor")
+        {
+            setSelectionPointColor(extractColor(value));
+        }
+        else if (property == "limittextwidth")
+        {
+            if ((value == "true") || (value == "True"))
+                limitTextWidth(true);
+            else if ((value == "false") || (value == "False"))
+                limitTextWidth(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
+        }
+        else if (property == "selectionpointwidth")
+        {
+            setSelectionPointWidth(atoi(value.c_str()));
+        }
+        else if (property == "numbersonly")
+        {
+            if ((value == "true") || (value == "True"))
+                setNumbersOnly(true);
+            else if ((value == "false") || (value == "False"))
+                setNumbersOnly(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'NumbersOnly' property.");
+        }
+        else if (property == "callback")
+        {
+            ClickableWidget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "TextChanged") || (*it == "textchanged"))
+                    bindCallback(TextChanged);
+                else if ((*it == "ReturnKeyPressed") || (*it == "returnkeypressed"))
+                    bindCallback(ReturnKeyPressed);
+            }
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -1613,47 +1625,63 @@ namespace tgui
 
     bool EditBox::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "text")
-                value = getText().toAnsiString();
-            else if (property == "textsize")
-                value = to_string(getTextSize());
-            else if (property == "passwordcharacter")
-            {
-                if (getPasswordCharacter())
-                    value = getPasswordCharacter();
-                else
-                    value = "";
-            }
-            else if (property == "maximumcharacters")
-                value = to_string(getMaximumCharacters());
-            else if (property == "borders")
-                value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "textcolor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "selectedtextcolor")
-                value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
-                        + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
-            else if (property == "selectedtextbackgroundcolor")
-                value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
-                        + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
-            else if (property == "selectionpointcolor")
-                value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g))
-                        + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
-            else if (property == "limittextwidth")
-                value = m_LimitTextWidth ? "true" : "false";
-            else if (property == "selectionpointwidth")
-                value = to_string(getSelectionPointWidth());
-            else if (property == "numbersonly")
-                value = m_NumbersOnly ? "true" : "false";
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "text")
+            value = getText().toAnsiString();
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "passwordcharacter")
+        {
+            if (getPasswordCharacter())
+                value = getPasswordCharacter();
+            else
+                value = "";
         }
+        else if (property == "maximumcharacters")
+            value = to_string(getMaximumCharacters());
+        else if (property == "borders")
+            value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
+        else if (property == "textcolor")
+            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+        else if (property == "selectedtextcolor")
+            value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
+                    + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
+        else if (property == "selectedtextbackgroundcolor")
+            value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
+                    + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
+        else if (property == "selectionpointcolor")
+            value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g))
+                    + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
+        else if (property == "limittextwidth")
+            value = m_LimitTextWidth ? "true" : "false";
+        else if (property == "selectionpointwidth")
+            value = to_string(getSelectionPointWidth());
+        else if (property == "numbersonly")
+            value = m_NumbersOnly ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            ClickableWidget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(TextChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(TextChanged).size() == 1) && (m_CallbackFunctions.at(TextChanged).front() == nullptr))
+                callbacks.push_back("TextChanged");
+            if ((m_CallbackFunctions.find(ReturnKeyPressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ReturnKeyPressed).size() == 1) && (m_CallbackFunctions.at(ReturnKeyPressed).front() == nullptr))
+                callbacks.push_back("ReturnKeyPressed");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
+        }
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -1663,7 +1691,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > EditBox::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"ConfigFile", "string"},
                                     {"Text", "string"},

@@ -471,28 +471,23 @@ namespace tgui
 
     bool Slider2d::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
+        if (property == "configfile")
+        {
+            load(value);
+        }
+        else if (property == "minimum")
+        {
+            if (value.length() >= 5)
             {
-                load(value);
-            }
-            else if (property == "minimum")
-            {
-                if (value.length() >= 5)
+                if ((value[0] == '(') && (value[value.length()-1] == ')'))
                 {
-                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    std::string::size_type commaPos = value.find(',');
+                    if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
-                        {
-                            setMinimum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
-                                                    static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
-                        }
-                        else
-                            TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
+                        setMinimum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
+                                                static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
@@ -500,20 +495,20 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
             }
-            else if (property == "maximum")
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
+        }
+        else if (property == "maximum")
+        {
+            if (value.length() >= 5)
             {
-                if (value.length() >= 5)
+                if ((value[0] == '(') && (value[value.length()-1] == ')'))
                 {
-                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    std::string::size_type commaPos = value.find(',');
+                    if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
-                        {
-                            setMaximum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
-                                                    static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
-                        }
-                        else
-                            TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
+                        setMaximum(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
+                                                static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
@@ -521,20 +516,20 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
             }
-            else if (property == "value")
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
+        }
+        else if (property == "value")
+        {
+            if (value.length() >= 5)
             {
-                if (value.length() >= 5)
+                if ((value[0] == '(') && (value[value.length()-1] == ')'))
                 {
-                    if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                    std::string::size_type commaPos = value.find(',');
+                    if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        std::string::size_type commaPos = value.find(',');
-                        if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
-                        {
-                            setValue(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
-                                                  static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
-                        }
-                        else
-                            TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
+                        setValue(sf::Vector2f(static_cast<float>(atof(value.substr(1, commaPos-1).c_str())),
+                                              static_cast<float>(atof(value.substr(commaPos+1, value.length()-commaPos-2).c_str()))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
@@ -542,27 +537,44 @@ namespace tgui
                 else
                     TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
             }
-            else if (property == "fixedthumbsize")
-            {
-                if ((value == "true") || (value == "True"))
-                    setFixedThumbSize(true);
-                else if ((value == "false") || (value == "False"))
-                    setFixedThumbSize(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'FixedThumbSize' property.");
-            }
-            else if (property == "enablethumbcenter")
-            {
-                if ((value == "true") || (value == "True"))
-                    enableThumbCenter(true);
-                else if ((value == "false") || (value == "False"))
-                    enableThumbCenter(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'EnableThumbCenter' property.");
-            }
-            else // The property didn't match
-                return false;
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
         }
+        else if (property == "fixedthumbsize")
+        {
+            if ((value == "true") || (value == "True"))
+                setFixedThumbSize(true);
+            else if ((value == "false") || (value == "False"))
+                setFixedThumbSize(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'FixedThumbSize' property.");
+        }
+        else if (property == "enablethumbcenter")
+        {
+            if ((value == "true") || (value == "True"))
+                enableThumbCenter(true);
+            else if ((value == "false") || (value == "False"))
+                enableThumbCenter(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'EnableThumbCenter' property.");
+        }
+        else if (property == "callback")
+        {
+            ClickableWidget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "ValueChanged") || (*it == "valuechanged"))
+                    bindCallback(ValueChanged);
+                else if ((*it == "ThumbReturnedToCenter") || (*it == "thumbreturnedtocenter"))
+                    bindCallback(ThumbReturnedToCenter);
+            }
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -572,25 +584,41 @@ namespace tgui
 
     bool Slider2d::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "minimum")
-                value = "(" + to_string(getMinimum().x) + "," + to_string(getMinimum().y) + ")";
-            else if (property == "maximum")
-                value = "(" + to_string(getMaximum().x) + "," + to_string(getMaximum().y) + ")";
-            else if (property == "value")
-                value = "(" + to_string(getValue().x) + "," + to_string(getValue().y) + ")";
-            else if (property == "fixedthumbsize")
-                value = m_FixedThumbSize ? "true" : "false";
-            else if (property == "enablethumbcenter")
-                value = m_ReturnThumbToCenter ? "true" : "false";
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "minimum")
+            value = "(" + to_string(getMinimum().x) + "," + to_string(getMinimum().y) + ")";
+        else if (property == "maximum")
+            value = "(" + to_string(getMaximum().x) + "," + to_string(getMaximum().y) + ")";
+        else if (property == "value")
+            value = "(" + to_string(getValue().x) + "," + to_string(getValue().y) + ")";
+        else if (property == "fixedthumbsize")
+            value = m_FixedThumbSize ? "true" : "false";
+        else if (property == "enablethumbcenter")
+            value = m_ReturnThumbToCenter ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            ClickableWidget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+                callbacks.push_back("ValueChanged");
+            if ((m_CallbackFunctions.find(ThumbReturnedToCenter) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ThumbReturnedToCenter).size() == 1) && (m_CallbackFunctions.at(ThumbReturnedToCenter).front() == nullptr))
+                callbacks.push_back("ThumbReturnedToCenter");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
         }
+        else // The property didn't match
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -600,7 +628,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > Slider2d::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"ConfigFile", "string"},
                                     {"Minimum", "custom"},

@@ -200,21 +200,18 @@ namespace tgui
 
     bool SpriteSheet::setProperty(std::string property, const std::string& value)
     {
-        if (!Picture::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "rows")
-            {
-                setRows(atoi(value.c_str()));
-            }
-            else if (property == "columns")
-            {
-                setColumns(atoi(value.c_str()));
-            }
-            else // The property didn't match
-                return false;
+        if (property == "rows")
+        {
+            setRows(atoi(value.c_str()));
         }
+        else if (property == "columns")
+        {
+            setColumns(atoi(value.c_str()));
+        }
+        else // The property didn't match
+            return Picture::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -224,17 +221,14 @@ namespace tgui
 
     bool SpriteSheet::getProperty(std::string property, std::string& value) const
     {
-        if (!Picture::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "rows")
-                value = to_string(getRows());
-            else if (property == "columns")
-                value = to_string(getColumns());
-            else // The property didn't match
-                return false;
-        }
+        if (property == "rows")
+            value = to_string(getRows());
+        else if (property == "columns")
+            value = to_string(getColumns());
+        else // The property didn't match
+            return Picture::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

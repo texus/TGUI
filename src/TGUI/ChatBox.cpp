@@ -776,71 +776,68 @@ namespace tgui
 
     bool ChatBox::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "configfile")
         {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
-
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else if (property == "borders")
-            {
-                Borders borders;
-                if (extractBorders(value, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
-            }
-            else if (property == "backgroundcolor")
-            {
-                setBackgroundColor(extractColor(value));
-            }
-            else if (property == "bordercolor")
-            {
-                setBorderColor(extractColor(value));
-            }
-            else if (property == "lines")
-            {
-                std::vector<sf::String> lines;
-                decodeList(value, lines);
-
-                for (auto it = lines.cbegin(); it != lines.cend(); ++it)
-                {
-                    std::string line = *it;
-
-                    if ((line.length() >= 2) && (line[0] == '(' && line[line.length()-1] == ')'))
-                    {
-                        line.erase(0, 1);
-                        line.erase(line.length()-1, 1);
-
-                        std::string::size_type openBracketPos = line.rfind('(');
-                        std::string::size_type closeBracketPos = line.rfind(')');
-
-                        if ((openBracketPos == std::string::npos) || (closeBracketPos == std::string::npos) || (openBracketPos >= closeBracketPos))
-                            return false;
-
-                        sf::Color color = extractColor(line.substr(openBracketPos, closeBracketPos - openBracketPos + 1));
-
-                        std::string::size_type commaPos = line.rfind(',', openBracketPos);
-                        if (commaPos == std::string::npos)
-                            return false;
-
-                        line.erase(commaPos);
-
-                        addLine(line, color);
-                    }
-                    else
-                        return false;
-                }
-            }
-            else // The property didn't match
-                return false;
+            load(value);
         }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "borders")
+        {
+            Borders borders;
+            if (extractBorders(value, borders))
+                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+        }
+        else if (property == "backgroundcolor")
+        {
+            setBackgroundColor(extractColor(value));
+        }
+        else if (property == "bordercolor")
+        {
+            setBorderColor(extractColor(value));
+        }
+        else if (property == "lines")
+        {
+            std::vector<sf::String> lines;
+            decodeList(value, lines);
+
+            for (auto it = lines.cbegin(); it != lines.cend(); ++it)
+            {
+                std::string line = *it;
+
+                if ((line.length() >= 2) && (line[0] == '(' && line[line.length()-1] == ')'))
+                {
+                    line.erase(0, 1);
+                    line.erase(line.length()-1, 1);
+
+                    std::string::size_type openBracketPos = line.rfind('(');
+                    std::string::size_type closeBracketPos = line.rfind(')');
+
+                    if ((openBracketPos == std::string::npos) || (closeBracketPos == std::string::npos) || (openBracketPos >= closeBracketPos))
+                        return false;
+
+                    sf::Color color = extractColor(line.substr(openBracketPos, closeBracketPos - openBracketPos + 1));
+
+                    std::string::size_type commaPos = line.rfind(',', openBracketPos);
+                    if (commaPos == std::string::npos)
+                        return false;
+
+                    line.erase(commaPos);
+
+                    addLine(line, color);
+                }
+                else
+                    return false;
+            }
+        }
+        else // The property didn't match
+            return Widget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -850,33 +847,30 @@ namespace tgui
 
     bool ChatBox::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "borders")
+            value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
+        else if (property == "backgroundcolor")
+            value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
+        else if (property == "bordercolor")
+            value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
+        else if (property == "lines")
         {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+            std::vector<sf::String> lines;
+            std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "textsize")
-                value = to_string(getTextSize());
-            else if (property == "borders")
-                value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
-            else if (property == "backgroundcolor")
-                value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
-            else if (property == "bordercolor")
-                value = "(" + to_string(int(getBorderColor().r)) + "," + to_string(int(getBorderColor().g)) + "," + to_string(int(getBorderColor().b)) + "," + to_string(int(getBorderColor().a)) + ")";
-            else if (property == "lines")
-            {
-                std::vector<sf::String> lines;
-                std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
+            for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
+                lines.push_back("(" + Label::Ptr(*it)->getText() + "," + convertColorToString(Label::Ptr(*it)->getTextColor()) + ")");
 
-                for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
-                    lines.push_back("(" + Label::Ptr(*it)->getText() + "," + convertColorToString(Label::Ptr(*it)->getTextColor()) + ")");
-
-                encodeList(lines, value);
-            }
-            else // The property didn't match
-                return false;
+            encodeList(lines, value);
         }
+        else // The property didn't match
+            return Widget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

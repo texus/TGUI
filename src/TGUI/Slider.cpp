@@ -725,38 +725,48 @@ namespace tgui
 
     bool Slider::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "minimum")
-            {
-                setMinimum(atoi(value.c_str()));
-            }
-            else if (property == "maximum")
-            {
-                setMaximum(atoi(value.c_str()));
-            }
-            else if (property == "value")
-            {
-                setValue(atoi(value.c_str()));
-            }
-            else if (property == "verticalscroll")
-            {
-                if ((value == "true") || (value == "True"))
-                    setVerticalScroll(true);
-                else if ((value == "false") || (value == "False"))
-                    setVerticalScroll(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "minimum")
+        {
+            setMinimum(atoi(value.c_str()));
+        }
+        else if (property == "maximum")
+        {
+            setMaximum(atoi(value.c_str()));
+        }
+        else if (property == "value")
+        {
+            setValue(atoi(value.c_str()));
+        }
+        else if (property == "verticalscroll")
+        {
+            if ((value == "true") || (value == "True"))
+                setVerticalScroll(true);
+            else if ((value == "false") || (value == "False"))
+                setVerticalScroll(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+        }
+        else if (property == "callback")
+        {
+            Widget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "ValueChanged") || (*it == "valuechanged"))
+                    bindCallback(ValueChanged);
+            }
+        }
+        else // The property didn't match
+            return Widget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -766,23 +776,37 @@ namespace tgui
 
     bool Slider::getProperty(std::string property, std::string& value) const
     {
-        if (!Widget::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-                value = getLoadedConfigFile();
-            else if (property == "minimum")
-                value = to_string(getMinimum());
-            else if (property == "maximum")
-                value = to_string(getMaximum());
-            else if (property == "value")
-                value = to_string(getValue());
-            else if (property == "verticalscroll")
-                value = m_VerticalScroll ? "true" : "false";
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "minimum")
+            value = to_string(getMinimum());
+        else if (property == "maximum")
+            value = to_string(getMaximum());
+        else if (property == "value")
+            value = to_string(getValue());
+        else if (property == "verticalscroll")
+            value = m_VerticalScroll ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            Widget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+                callbacks.push_back("ValueChanged");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
         }
+        else // The property didn't match
+            return Widget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

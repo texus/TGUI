@@ -286,25 +286,35 @@ namespace tgui
 
     bool MessageBox::setProperty(std::string property, const std::string& value)
     {
-        if (!ChildWindow::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "text")
-            {
-                setText(value);
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else // The property didn't match
-                return false;
+        if (property == "text")
+        {
+            setText(value);
         }
+        else if (property == "textcolor")
+        {
+            setTextColor(extractColor(value));
+        }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "callback")
+        {
+            Widget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "ButtonClicked") || (*it == "buttonclicked"))
+                    bindCallback(ButtonClicked);
+            }
+        }
+        else // The property didn't match
+            return ChildWindow::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -314,19 +324,33 @@ namespace tgui
 
     bool MessageBox::getProperty(std::string property, std::string& value) const
     {
-        if (!ChildWindow::getProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "text")
-                value = getText().toAnsiString();
-            else if (property == "textcolor")
-                value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
-            else if (property == "textsize")
-                value = to_string(getTextSize());
-            else // The property didn't match
-                return false;
+        if (property == "text")
+            value = getText().toAnsiString();
+        else if (property == "textcolor")
+            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+        else if (property == "textsize")
+            value = to_string(getTextSize());
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            Widget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(ButtonClicked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ButtonClicked).size() == 1) && (m_CallbackFunctions.at(ButtonClicked).front() == nullptr))
+                callbacks.push_back("ButtonClicked");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
         }
+        else // The property didn't match
+            return ChildWindow::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;

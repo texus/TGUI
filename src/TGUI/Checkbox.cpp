@@ -544,47 +544,63 @@ namespace tgui
 
     bool Checkbox::setProperty(std::string property, const std::string& value)
     {
-        if (!Widget::setProperty(property, value))
-        {
-            std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
-            if (property == "configfile")
-            {
-                load(value);
-            }
-            else if (property == "checked")
-            {
-                if ((value == "true") || (value == "True"))
-                    check();
-                else if ((value == "false") || (value == "False"))
-                    uncheck();
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'Checked' property.");
-            }
-            else if (property == "text")
-            {
-                setText(value);
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(atoi(value.c_str()));
-            }
-            else if (property == "allowtextclick")
-            {
-                if ((value == "true") || (value == "True"))
-                    allowTextClick(true);
-                else if ((value == "false") || (value == "False"))
-                    allowTextClick(false);
-                else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'AllowTextClick' property.");
-            }
-            else // The property didn't match
-                return false;
+        if (property == "configfile")
+        {
+            load(value);
         }
+        else if (property == "checked")
+        {
+            if ((value == "true") || (value == "True"))
+                check();
+            else if ((value == "false") || (value == "False"))
+                uncheck();
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Checked' property.");
+        }
+        else if (property == "text")
+        {
+            setText(value);
+        }
+        else if (property == "textcolor")
+        {
+            setTextColor(extractColor(value));
+        }
+        else if (property == "textsize")
+        {
+            setTextSize(atoi(value.c_str()));
+        }
+        else if (property == "allowtextclick")
+        {
+            if ((value == "true") || (value == "True"))
+                allowTextClick(true);
+            else if ((value == "false") || (value == "False"))
+                allowTextClick(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'AllowTextClick' property.");
+        }
+        else if (property == "callback")
+        {
+            ClickableWidget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "Checked") || (*it == "checked"))
+                    bindCallback(Checked);
+                else if ((*it == "Unchecked") || (*it == "unchecked"))
+                    bindCallback(Unchecked);
+                else if ((*it == "SpaceKeyPressed") || (*it == "spacekeypressed"))
+                    bindCallback(SpaceKeyPressed);
+                else if ((*it == "ReturnKeyPressed") || (*it == "returnkeypressed"))
+                    bindCallback(ReturnKeyPressed);
+            }
+        }
+        else // The property didn't match
+            return ClickableWidget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -612,8 +628,31 @@ namespace tgui
             value = to_string(getTextSize());
         else if (property == "allowtextclick")
             value = m_AllowTextClick ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            ClickableWidget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(Checked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Checked).size() == 1) && (m_CallbackFunctions.at(Checked).front() == nullptr))
+                callbacks.push_back("Checked");
+            if ((m_CallbackFunctions.find(Unchecked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Unchecked).size() == 1) && (m_CallbackFunctions.at(Unchecked).front() == nullptr))
+                callbacks.push_back("Unchecked");
+            if ((m_CallbackFunctions.find(SpaceKeyPressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(SpaceKeyPressed).size() == 1) && (m_CallbackFunctions.at(SpaceKeyPressed).front() == nullptr))
+                callbacks.push_back("SpaceKeyPressed");
+            if ((m_CallbackFunctions.find(ReturnKeyPressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ReturnKeyPressed).size() == 1) && (m_CallbackFunctions.at(ReturnKeyPressed).front() == nullptr))
+                callbacks.push_back("ReturnKeyPressed");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
+        }
         else
-            return Widget::getProperty(property, value);
+            return ClickableWidget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -623,7 +662,7 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > Checkbox::getPropertyList() const
     {
-        auto list = Widget::getPropertyList();
+        auto list = ClickableWidget::getPropertyList();
         list.insert(list.end(), {
                                     {"ConfigFile", "string"},
                                     {"Checked", "bool"},

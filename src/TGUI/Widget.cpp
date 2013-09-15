@@ -479,6 +479,27 @@ namespace tgui
         {
             setTransparency(static_cast<char>(atoi(value.c_str())));
         }
+        else if (property == "callbackid")
+        {
+            m_Callback.id = static_cast<unsigned int>(std::atoi(value.c_str()));
+        }
+        else if (property == "callback")
+        {
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "Focused") || (*it == "focused"))
+                    bindCallback(Focused);
+                else if ((*it == "Unfocused") || (*it == "unfocused"))
+                    bindCallback(Unfocused);
+                else if ((*it == "MouseEntered") || (*it == "mouseentered"))
+                    bindCallback(MouseEntered);
+                else if ((*it == "MouseLeft") || (*it == "mouseleft"))
+                    bindCallback(MouseLeft);
+            }
+        }
         else // The property didn't match
             return false;
 
@@ -506,6 +527,23 @@ namespace tgui
             value = m_Enabled ? "true" : "false";
         else if (property == "transparency")
             value = to_string(int(getTransparency()));
+        else if (property == "callbackid")
+            value = to_string(m_Callback.id);
+        else if (property == "callback")
+        {
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(Focused) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Focused).size() == 1) && (m_CallbackFunctions.at(Focused).front() == nullptr))
+                callbacks.push_back("Focused");
+            if ((m_CallbackFunctions.find(Unfocused) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Unfocused).size() == 1) && (m_CallbackFunctions.at(Unfocused).front() == nullptr))
+                callbacks.push_back("Unfocused");
+            if ((m_CallbackFunctions.find(MouseEntered) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(MouseEntered).size() == 1) && (m_CallbackFunctions.at(MouseEntered).front() == nullptr))
+                callbacks.push_back("MouseEntered");
+            if ((m_CallbackFunctions.find(MouseLeft) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(MouseLeft).size() == 1) && (m_CallbackFunctions.at(MouseLeft).front() == nullptr))
+                callbacks.push_back("MouseLeft");
+
+            encodeList(callbacks, value);
+        }
         else // The property didn't match
             return false;
 
@@ -523,7 +561,9 @@ namespace tgui
                                                                     {"Height", "uint"},
                                                                     {"Visible", "bool"},
                                                                     {"Enabled", "bool"},
-                                                                    {"Transparency", "byte"}
+                                                                    {"Transparency", "byte"},
+                                                                    {"Callback", "custom"},
+                                                                    {"CallbackId", "uint"},
                                                                 });
     }
 
