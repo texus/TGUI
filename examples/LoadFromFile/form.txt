@@ -1,130 +1,119 @@
-// TGUI Object File
-// You can put spaces, tabs and comments wherever you want.
-// For boolean values, you can use false, true, 0 or 1.
-
 Window:
 {
-    Picture: "myPicture"  // This extra object name is optional and is only needed to access the object inside the program
-    {
-        Filename = "../Linux.jpg"
-    }
-    
-    Button:
-    {
-        ConfigFile = "../../widgets/Black.conf"
-        TextColor  = (200, 200, 200)
-        Text       = "Button"
-        Size       = (160, 40)
-        Position   = (20, 4)
-    }
+	Picture: ""
+	{
+		Filename = "../xubuntu_bg_aluminium.jpg"
+		Left = 0
+		Top = 0
+		Width = 800
+		Height = 600
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		CallbackId = 0
+		Smooth = false
+	}
 
-    Checkbox:
-    {
-        ConfigFile = "../../widgets/Black.conf"
-        TextColor  = (200, 200, 200)
-        Text       = "Checkbox"
-        Checked    = true
-        Position   = (20, 50)
-    }
+	Label: ""
+	{
+		ConfigFile = ""
+		Left = 200
+		Top = 100
+		Width = 161
+		Height = 30
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		CallbackId = 0
+		Text = "Username:"
+		TextColor = (255,255,255,255)
+		TextSize = 30
+		BackgroundColor = (0,0,0,0)
+		AutoSize = true
+	}
 
-    RadioButton:
-    {
-        ConfigFile = "../../widgets/Black.conf"
-        TextColor  = (200, 200, 200)
-        Text       = "Radio button 1"
-        Position   = (20, 100)
-    }
+	Label: ""
+	{
+		ConfigFile = ""
+		Left = 200
+		Top = 250
+		Width = 150
+		Height = 30
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		CallbackId = 0
+		Text = "Password:"
+		TextColor = (255,255,255,255)
+		TextSize = 30
+		BackgroundColor = (0,0,0,0)
+		AutoSize = true
+	}
 
-    RadioButton:
-    {
-        ConfigFile = "../../widgets/Black.conf"
-        TextColor  = (200, 200, 200)
-        Text       = "Radio button 2"
-        Position   = (20, 150)
-    }
+	EditBox: "Username"
+	{
+		ConfigFile = "../../widgets/Black.conf"
+		Left = 200
+		Top = 140
+		Width = 400
+		Height = 40
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		CallbackId = 0
+		Text = ""
+		TextSize = 25
+		MaximumCharacters = 0
+		Borders = (6,4,6,4)
+		TextColor = (200,200,200,255)
+		SelectedTextColor = (255,255,255,255)
+		SelectedTextBackgroundColor = (10,110,255,255)
+		SelectionPointColor = (110,110,255,255)
+		LimitTextWidth = false
+		SelectionPointWidth = 2
+		NumbersOnly = false
+	}
 
-    EditBox:
-    {
-        ConfigFile                  = "../../widgets/Black.conf"
-        Text                        = "This text is too long to fit inside the EditBox."
-//        PasswordChar                = "*"
-//        MaximumCharacters           = 4
-        Borders                     = (6, 2, 6, 2)
-        TextColor                   = (0, 200, 0)
-        SelectedTextColor           = (255, 0, 0)
-        SelectedTextBackgroundColor = (0, 0, 200)
-        SelectionPointWidth         = 2
-        SelectionPointColor         = (255, 255, 255)
-        Position                    = (20, 300)
-        Size                        = (360, 40)
-    }
+	EditBox: "Password"
+	{
+		ConfigFile = "../../widgets/Black.conf"
+		Left = 200
+		Top = 290
+		Width = 400
+		Height = 40
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		CallbackId = 0
+		Text = ""
+		TextSize = 25
+		PasswordCharacter = *
+		MaximumCharacters = 0
+		Borders = (6,4,6,4)
+		TextColor = (200,200,200,255)
+		SelectedTextColor = (255,255,255,255)
+		SelectedTextBackgroundColor = (10,110,255,255)
+		SelectionPointColor = (110,110,255,255)
+		LimitTextWidth = false
+		SelectionPointWidth = 2
+		NumbersOnly = false
+	}
 
-    Slider:
-    {
-        ConfigFile     = "../../widgets/Black.conf"
-        Minimum        = 0
-        Maximum        = 100
-        Value          = 30
-        VerticalScroll = false
-        Position       = (20, 360)
-    }
+	Button: ""
+	{
+		ConfigFile = "../../widgets/Black.conf"
+		Left = 270
+		Top = 440
+		Width = 260
+		Height = 60
+		Visible = true
+		Enabled = true
+		Transparency = 255
+		Callback = LeftMouseClicked
+		CallbackId = 1
+		Text = "Login"
+		TextColor = (200,200,200,255)
+		TextSize = 40
+	}
 
-    LoadingBar:
-    {
-        ConfigFile = "../../widgets/Black.conf"
-        Position   = (20, 400)
-        Maximum    = 500
-        CallbackId = 1
-    }
-
-    Scrollbar:
-    {
-        ConfigFile     = "../../widgets/Black.conf"
-        Position       = (20, 480)
-        LowValue       = 4
-        Maximum        = 5
-        VerticalScroll = false
-    }
-
-    Listbox:
-    {
-        ConfigFile              = "../../widgets/Black.conf"
-        Position                = (300, 20)
-        Size                    = (260, 200)
-        ItemHeight              = 40
-        ScrollbarConfigFile     = "../../widgets/Black.conf"
-        Borders                 = (2, 2, 2, 2)
-        BackgroundColor         = ( 50,  50,  50)
-        TextColor               = (200, 200, 200)
-        SelectedBackgroundColor = ( 10, 110, 255)
-        SelectedTextColor       = (255, 255, 255)
-        BorderColor             = (  0,   0,   0)
-        Item                    = "First"
-        Item                    = "Second"
-        Item                    = "Third"
-        Item                    = "Fourth"
-        Item                    = "Fifth"
-        Item                    = "Sixth"
-        Item                    = "Seventh"
-        SelectedItem            = "Third"   // Replacing "Third" by 3 also works.
-    }
-
-    ComboBox:
-    {
-        ConfigFile              = "../../widgets/Black.conf"
-        Size                    = (260, 40)
-        ItemsToDisplay          = 3
-        ScrollbarConfigFile     = "../../widgets/Black.conf"
-        BackgroundColor         = ( 50,  50,  50)
-        TextColor               = (200, 200, 200)
-        SelectedBackgroundColor = ( 10, 110, 255)
-        SelectedTextColor       = (255, 255, 255)
-        BorderColor             = (  0,   0,   0)
-        Borders                 = (2, 2, 2, 2)
-        Item                    = "First"
-        Item                    = "Second"
-        Item                    = "Third"
-        SelectedItem            = 2
-        Position                = (500, 330)
-    }
 }

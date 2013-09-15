@@ -113,7 +113,7 @@ int main()
     slider->setVerticalScroll(false);
     slider->setPosition(40, 250);
     slider->setSize(300, 25);
-    slider->setValue(20);
+    slider->setValue(2);
 
     tgui::Scrollbar::Ptr scrollbar(gui);
     scrollbar->load(THEME_CONFIG_FILE);
