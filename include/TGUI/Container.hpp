@@ -171,6 +171,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns a pointer to an earlier created widget.
+        ///
+        /// \param widgetName The name that was given to the widget when it was added to the container.
+        ///
+        /// \return Pointer to the earlier created widget.
+        ///         The pointer will already be casted to the desired type.
+        ///
+        /// \warning This function will return nullptr when an unknown widget name was passed.
+        ///
+        /// Usage example:
+        /// \code
+        /// tgui::Picture::Ptr pic(container, "picName");
+        /// tgui::Picture::Ptr pic2 = container.get<tgui::Picture>("picName");
+        /// \endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <class T>
+        typename T::Ptr get(const sf::String& widgetName) const
+        {
+            return typename T::Ptr(get(widgetName));
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Makes a copy of any existing widget and returns the pointer to the new widget.
         ///
         /// \param oldWidget     A pointer to the old widget.
