@@ -695,6 +695,32 @@ namespace tgui
         {
             setMinimumSubMenuWidth(atoi(value.c_str()));
         }
+        else if (property == "menus")
+        {
+            removeAllMenus();
+
+            std::vector<sf::String> menus;
+            decodeList(value, menus);
+
+            for (auto menuIt = menus.begin(); menuIt != menus.end(); ++menuIt)
+            {
+                std::string::size_type commaPos = menuIt->find(',');
+                if (commaPos != std::string::npos)
+                {
+                    std::vector<sf::String> menuItems;
+                    std::string menu = menuIt->toAnsiString().substr(0, commaPos);
+                    menuIt->erase(0, commaPos + 1);
+
+                   addMenu(menu);
+                   decodeList(*menuIt, menuItems);
+
+                   for (auto menuItemIt = menuItems.cbegin(); menuItemIt != menuItems.cend(); ++menuItemIt)
+                        addMenuItem(menu, *menuItemIt);
+                }
+                else // No comma found
+                    addMenu(*menuIt);
+            }
+        }
         else if (property == "callback")
         {
             Widget::setProperty(property, value);
@@ -739,6 +765,26 @@ namespace tgui
             value = to_string(getDistanceToSide());
         else if (property == "minimumsubmenuwidth")
             value = to_string(getMinimumSubMenuWidth());
+        else if (property == "menus")
+        {
+            std::vector<sf::String> menusList;
+
+            for (auto menuIt = m_Menus.cbegin(); menuIt != m_Menus.cend(); ++menuIt)
+            {
+                std::vector<sf::String> menuItemsList;
+                menuItemsList.push_back(menuIt->text.getString());
+
+                for (auto menuItemIt = menuIt->menuItems.cbegin(); menuItemIt != menuIt->menuItems.cend(); ++menuItemIt)
+                    menuItemsList.push_back(menuItemIt->getString());
+
+                std::string menuItemsString;
+                encodeList(menuItemsList, menuItemsString);
+
+                menusList.push_back(menuItemsString);
+            }
+
+            encodeList(menusList, value);
+        }
         else if (property == "callback")
         {
             std::string tempValue;
@@ -776,7 +822,8 @@ namespace tgui
                                     {"SelectedTextColor", "color"},
                                     {"TextSize", "uint"},
                                     {"DistanceToSide", "uint"},
-                                    {"MinimumSubMenuWidth", "uint"}
+                                    {"MinimumSubMenuWidth", "uint"},
+                                    {"menus", "string"}
                                 });
         return list;
     }
