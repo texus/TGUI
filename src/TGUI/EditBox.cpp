@@ -1692,21 +1692,19 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > EditBox::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Text", "string"},
-                                    {"TextSize", "uint"},
-                                    {"PasswordCharacter", "char"},
-                                    {"MaximumCharacters", "uint"},
-                                    {"Borders", "borders"},
-                                    {"TextColor", "color"},
-                                    {"SelectedTextColor", "color"},
-                                    {"SelectedTextBackgroundColor", "color"},
-                                    {"SelectionPointColor", "color"},
-                                    {"LimitTextWidth", "bool"},
-                                    {"SelectionPointWidth", "uint"},
-                                    {"NumbersOnly", "bool"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("Text", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("PasswordCharacter", "char"));
+        list.push_back(std::pair<std::string, std::string>("MaximumCharacters", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextBackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectionPointColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("LimitTextWidth", "bool"));
+        list.push_back(std::pair<std::string, std::string>("SelectionPointWidth", "uint"));
+        list.push_back(std::pair<std::string, std::string>("NumbersOnly", "bool"));
         return list;
     }
 

@@ -537,13 +537,11 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > SpinButton::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Minimum", "uint"},
-                                    {"Maximum", "uint"},
-                                    {"Value", "uint"},
-                                    {"VerticalScroll", "bool"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("Minimum", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Maximum", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Value", "uint"));
+        list.push_back(std::pair<std::string, std::string>("VerticalScroll", "bool"));
         return list;
     }
 

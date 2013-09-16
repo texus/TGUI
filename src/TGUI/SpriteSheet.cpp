@@ -239,10 +239,8 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > SpriteSheet::getPropertyList() const
     {
         auto list = Picture::getPropertyList();
-        list.insert(list.end(), {
-                                    {"Rows", "uint"},
-                                    {"Columns", "uint"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("Rows", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Columns", "uint"));
         return list;
     }
 

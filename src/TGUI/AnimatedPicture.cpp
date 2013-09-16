@@ -396,10 +396,8 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > AnimatedPicture::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"Playing", "bool"},
-                                    {"Looping", "bool"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("Playing", "bool"));
+        list.push_back(std::pair<std::string, std::string>("Looping", "bool"));
         return list;
     }
 

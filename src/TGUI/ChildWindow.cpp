@@ -951,17 +951,15 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > ChildWindow::getPropertyList() const
     {
         auto list = Container::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"TitleBarHeight", "uint"},
-                                    {"BackgroundColor", "color"},
-                                    {"Title", "string"},
-                                    {"TitleColor", "color"},
-                                    {"BorderColor", "color"},
-                                    {"Borders", "borders"},
-                                    {"DistanceToSide", "uint"},
-                                    {"TitleAlignment", "custom"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("TitleBarHeight", "uint"));
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("Title", "string"));
+        list.push_back(std::pair<std::string, std::string>("TitleColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("BorderColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
+        list.push_back(std::pair<std::string, std::string>("DistanceToSide", "uint"));
+        list.push_back(std::pair<std::string, std::string>("TitleAlignment", "custom"));
         return list;
     }
 

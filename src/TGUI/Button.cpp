@@ -753,12 +753,10 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Button::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Text", "string"},
-                                    {"TextColor", "color"},
-                                    {"TextSize", "uint"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("Text", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
         return list;
     }
 

@@ -881,14 +881,12 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > ChatBox::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"TextSize", "uint"},
-                                    {"Borders", "borders"},
-                                    {"BackgroundColor", "color"},
-                                    {"BorderColor", "color"},
-                                    {"Lines", "string"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("BorderColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("Lines", "string"));
         return list;
     }
 

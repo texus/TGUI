@@ -555,16 +555,17 @@ namespace tgui
 
     std::list< std::pair<std::string, std::string> > Widget::getPropertyList() const
     {
-        return std::list< std::pair<std::string, std::string> >({   {"Left", "int"},
-                                                                    {"Top", "int"},
-                                                                    {"Width", "uint"},
-                                                                    {"Height", "uint"},
-                                                                    {"Visible", "bool"},
-                                                                    {"Enabled", "bool"},
-                                                                    {"Transparency", "byte"},
-                                                                    {"Callback", "custom"},
-                                                                    {"CallbackId", "uint"},
-                                                                });
+        std::list< std::pair<std::string, std::string> > list;
+        list.push_back(std::pair<std::string, std::string>("Left", "int"));
+        list.push_back(std::pair<std::string, std::string>("Top", "int"));
+        list.push_back(std::pair<std::string, std::string>("Width", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Height", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Visible", "bool"));
+        list.push_back(std::pair<std::string, std::string>("Enabled", "bool"));
+        list.push_back(std::pair<std::string, std::string>("Transparency", "byte"));
+        list.push_back(std::pair<std::string, std::string>("Callback", "custom"));
+        list.push_back(std::pair<std::string, std::string>("CallbackId", "uint"));
+        return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

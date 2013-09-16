@@ -783,16 +783,14 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Tab::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"TextColor", "color"},
-                                    {"TextSize", "uint"},
-                                    {"TabHeight", "uint"},
-                                    {"MaximumTabWidth", "uint"},
-                                    {"DistanceToSide", "uint"},
-                                    {"Tabs", "string"},
-                                    {"SelectedTab", "int"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("TabHeight", "uint"));
+        list.push_back(std::pair<std::string, std::string>("MaximumTabWidth", "uint"));
+        list.push_back(std::pair<std::string, std::string>("DistanceToSide", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Tabs", "string"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTab", "int"));
         return list;
     }
 

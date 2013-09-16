@@ -629,14 +629,12 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Slider2d::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Minimum", "custom"},
-                                    {"Maximum", "custom"},
-                                    {"Value", "custom"},
-                                    {"FixedThumbSize", "bool"},
-                                    {"EnableThumbCenter", "bool"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("Minimum", "custom"));
+        list.push_back(std::pair<std::string, std::string>("Maximum", "custom"));
+        list.push_back(std::pair<std::string, std::string>("Value", "custom"));
+        list.push_back(std::pair<std::string, std::string>("FixedThumbSize", "bool"));
+        list.push_back(std::pair<std::string, std::string>("EnableThumbCenter", "bool"));
         return list;
     }
 

@@ -361,11 +361,9 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > MessageBox::getPropertyList() const
     {
         auto list = ChildWindow::getPropertyList();
-        list.insert(list.end(), {
-                                    {"Text", "string"},
-                                    {"TextColor", "color"},
-                                    {"TextSize", "uint"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("Text", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
         return list;
     }
 

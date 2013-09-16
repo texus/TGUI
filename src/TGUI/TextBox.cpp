@@ -1764,20 +1764,18 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > TextBox::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Text", "string"},
-                                    {"TextSize", "uint"},
-                                    {"MaximumCharacters", "uint"},
-                                    {"Borders", "borders"},
-                                    {"BackgroundColor", "color"},
-                                    {"TextColor", "color"},
-                                    {"SelectedTextColor", "color"},
-                                    {"SelectedTextBackgroundColor", "color"},
-                                    {"BorderColor", "color"},
-                                    {"SelectionPointColor", "color"},
-                                    {"SelectionPointWidth", "uint"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("Text", "string"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("MaximumCharacters", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextBackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("BorderColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectionPointColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectionPointWidth", "uint"));
         return list;
     }
 

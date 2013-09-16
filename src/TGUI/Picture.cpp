@@ -249,10 +249,8 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Picture::getPropertyList() const
     {
         auto list = ClickableWidget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"Filename", "string"},
-                                    {"Smooth", "bool"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("Filename", "string"));
+        list.push_back(std::pair<std::string, std::string>("Smooth", "bool"));
         return list;
     }
 

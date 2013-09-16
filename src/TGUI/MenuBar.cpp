@@ -814,17 +814,15 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > MenuBar::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"BackgroundColor", "color"},
-                                    {"TextColor", "color"},
-                                    {"SelectedBackgroundColor", "color"},
-                                    {"SelectedTextColor", "color"},
-                                    {"TextSize", "uint"},
-                                    {"DistanceToSide", "uint"},
-                                    {"MinimumSubMenuWidth", "uint"},
-                                    {"menus", "string"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedBackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("DistanceToSide", "uint"));
+        list.push_back(std::pair<std::string, std::string>("MinimumSubMenuWidth", "uint"));
+        list.push_back(std::pair<std::string, std::string>("menus", "string"));
         return list;
     }
 

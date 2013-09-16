@@ -891,14 +891,12 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Scrollbar::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"Maximum", "uint"},
-                                    {"LowValue", "uint"},
-                                    {"Value", "uint"},
-                                    {"AutoHide", "bool"},
-                                    {"VerticalScroll", "bool"}
-                                });
+
+        list.push_back(std::pair<std::string, std::string>("Maximum", "uint"));
+        list.push_back(std::pair<std::string, std::string>("LowValue", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Value", "uint"));
+        list.push_back(std::pair<std::string, std::string>("AutoHide", "bool"));
+        list.push_back(std::pair<std::string, std::string>("VerticalScroll", "bool"));
         return list;
     }
 

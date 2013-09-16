@@ -803,19 +803,17 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > ComboBox::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-        list.insert(list.end(), {
-                                    {"ConfigFile", "string"},
-                                    {"ItemsToDisplay", "uint"},
-                                    {"BackgroundColor", "color"},
-                                    {"TextColor", "color"},
-                                    {"SelectedBackgroundColor", "color"},
-                                    {"SelectedTextColor", "color"},
-                                    {"BorderColor", "color"},
-                                    {"Borders", "borders"},
-                                    {"MaximumItems", "uint"},
-                                    {"Items", "string"},
-                                    {"SelectedItem", "int"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
+        list.push_back(std::pair<std::string, std::string>("ItemsToDisplay", "uint"));
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedBackgroundColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("BorderColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
+        list.push_back(std::pair<std::string, std::string>("MaximumItems", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Items", "string"));
+        list.push_back(std::pair<std::string, std::string>("SelectedItem", "int"));
         return list;
     }
 

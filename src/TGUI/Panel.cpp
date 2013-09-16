@@ -314,9 +314,7 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Panel::getPropertyList() const
     {
         auto list = Container::getPropertyList();
-        list.insert(list.end(), {
-                                    {"BackgroundColor", "color"}
-                                });
+        list.push_back(std::pair<std::string, std::string>("BackgroundColor", "color"));
         return list;
     }
 
