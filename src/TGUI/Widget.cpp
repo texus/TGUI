@@ -439,7 +439,7 @@ namespace tgui
 
     bool Widget::setProperty(std::string property, const std::string& value)
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "left")
         {
@@ -511,7 +511,7 @@ namespace tgui
 
     bool Widget::getProperty(std::string property, std::string& value) const
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "left")
             value = to_string(getPosition().x);

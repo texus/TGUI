@@ -668,7 +668,7 @@ namespace tgui
 
     bool Button::setProperty(std::string property, const std::string& value)
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "configfile")
         {
@@ -712,7 +712,7 @@ namespace tgui
 
     bool Button::getProperty(std::string property, std::string& value) const
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "configfile")
             value = getLoadedConfigFile();

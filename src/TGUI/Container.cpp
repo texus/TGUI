@@ -546,7 +546,7 @@ namespace tgui
                     line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
 
                     // Convert the whole line to lowercase
-                    std::transform(line.begin(), line.end(), line.begin(), std::ptr_fun<int, int>(std::tolower));
+                    line = toLower(line);
                 }
                 else // A quote was found
                 {
@@ -557,7 +557,7 @@ namespace tgui
                     quotePos1 = line.find('"');
 
                     // Convert the part before the quote to lowercase
-                    std::transform(line.begin(), line.begin() + quotePos1, line.begin(), std::ptr_fun<int, int>(std::tolower));
+                    line = toLower(line.substr(0, quotePos1)) + line.substr(quotePos1);
 
                     // Search for a second quote
                     std::string::size_type quotePos2 = line.find('"', quotePos1 + 1);
@@ -618,7 +618,7 @@ namespace tgui
                             failed = true;
 
                         // Convert the part behind the quote to lowercase
-                        std::transform(line.begin() + quotePos2 + 1, line.end(), line.begin(), std::ptr_fun<int, int>(std::tolower));
+                        line = line.substr(0, quotePos2 + 1) + toLower(line.substr(quotePos2 + 1));
 
                         // Remove the quotes from the string
                         line.erase(quotePos1, 1);

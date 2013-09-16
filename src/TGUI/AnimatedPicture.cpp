@@ -317,7 +317,7 @@ namespace tgui
 
     bool AnimatedPicture::setProperty(std::string property, const std::string& value)
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "playing")
         {
@@ -361,7 +361,7 @@ namespace tgui
 
     bool AnimatedPicture::getProperty(std::string property, std::string& value) const
     {
-        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+        property = toLower(property);
 
         if (property == "playing")
             value = m_Playing ? "true" : "false";

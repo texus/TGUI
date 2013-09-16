@@ -87,8 +87,8 @@ namespace tgui
                     return !error;
 
                 // Convert the section names to lowercase in order to compare them
-                std::transform(section.begin(), section.end(), section.begin(), std::ptr_fun<int, int>(std::tolower));
-                std::transform(sectionName.begin(), sectionName.end(), sectionName.begin(), std::ptr_fun<int, int>(std::tolower));
+                section = toLower(section);
+                sectionName = toLower(sectionName);
 
                 // If this is the section we were looking for then start reading the properties
                 if ((section + ":") == sectionName)
@@ -108,7 +108,7 @@ namespace tgui
 
                 // Read the property in lowercase
                 property = readWord(line, c);
-                std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
+                property = toLower(property);
 
                 if (!removeWhitespace(line, c))
                 {
