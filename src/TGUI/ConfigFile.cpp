@@ -108,7 +108,7 @@ namespace tgui
 
                 // Read the property in lowercase
                 property = readWord(line, c);
-                std::transform(property.begin(), property.end(), property.begin(), [](int c) -> int { return std::tolower(c, std::locale()); });
+                std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
                 if (!removeWhitespace(line, c))
                 {

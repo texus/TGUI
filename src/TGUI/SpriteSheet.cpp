@@ -200,7 +200,7 @@ namespace tgui
 
     bool SpriteSheet::setProperty(std::string property, const std::string& value)
     {
-        std::transform(property.begin(), property.end(), property.begin(), [](int c) -> int { return std::tolower(c, std::locale()); });
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
         if (property == "rows")
         {
@@ -221,7 +221,7 @@ namespace tgui
 
     bool SpriteSheet::getProperty(std::string property, std::string& value) const
     {
-        std::transform(property.begin(), property.end(), property.begin(), [](int c) -> int { return std::tolower(c, std::locale()); });
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
         if (property == "rows")
             value = to_string(getRows());

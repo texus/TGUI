@@ -533,7 +533,7 @@ namespace tgui
 
     bool LoadingBar::setProperty(std::string property, const std::string& value)
     {
-        std::transform(property.begin(), property.end(), property.begin(), [](int c) -> int { return std::tolower(c, std::locale()); });
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
         if (property == "configfile")
         {
@@ -589,7 +589,7 @@ namespace tgui
 
     bool LoadingBar::getProperty(std::string property, std::string& value) const
     {
-        std::transform(property.begin(), property.end(), property.begin(), [](int c) -> int { return std::tolower(c, std::locale()); });
+        std::transform(property.begin(), property.end(), property.begin(), std::ptr_fun<int, int>(std::tolower));
 
         if (property == "configfile")
             value = getLoadedConfigFile();
