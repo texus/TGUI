@@ -36,10 +36,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox() :
-    m_TextSize   (15),
-    m_BorderColor(sf::Color::Black),
-    m_MaxLines   (0),
-    m_Scroll     (nullptr)
+        m_TextSize      (15),
+        m_BorderColor   (sf::Color::Black),
+        m_MaxLines      (0),
+        m_FullTextHeight(0),
+        m_Scroll        (nullptr)
     {
         m_Callback.widgetType = Type_ChatBox;
         m_DraggableWidget = true;
@@ -55,12 +56,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& copy) :
-    Widget            (copy),
-    WidgetBorders     (copy),
-    m_LoadedConfigFile(copy.m_LoadedConfigFile),
-    m_TextSize        (copy.m_TextSize),
-    m_BorderColor     (copy.m_BorderColor),
-    m_MaxLines        (copy.m_MaxLines)
+        Widget            (copy),
+        WidgetBorders     (copy),
+        m_LoadedConfigFile(copy.m_LoadedConfigFile),
+        m_TextSize        (copy.m_TextSize),
+        m_BorderColor     (copy.m_BorderColor),
+        m_MaxLines        (copy.m_MaxLines),
+        m_FullTextHeight  (copy.m_FullTextHeight)
     {
         m_Panel = new Panel(*copy.m_Panel);
 
@@ -102,6 +104,7 @@ namespace tgui
             std::swap(m_TextSize,         temp.m_TextSize);
             std::swap(m_BorderColor,      temp.m_BorderColor);
             std::swap(m_MaxLines,         temp.m_MaxLines);
+            std::swap(m_FullTextHeight,   temp.m_FullTextHeight);
             std::swap(m_Panel,            temp.m_Panel);
             std::swap(m_Scroll,           temp.m_Scroll);
         }
@@ -202,7 +205,7 @@ namespace tgui
                     m_Scroll->setVerticalScroll(true);
                     m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
                     m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
-                    m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+                    m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
                 }
             }
             else
@@ -254,8 +257,8 @@ namespace tgui
         float heightDiff = m_Panel->getSize().y - oldHeight;
 
         // Reposition all labels in the chatbox
-        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
-        for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
+        auto& labels = m_Panel->getWidgets();
+        for (auto it = labels.begin(); it != labels.end(); ++it)
             (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y + heightDiff);
     }
 
@@ -268,32 +271,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ChatBox::addLine(const sf::String& text, const sf::Color& color)
+    void ChatBox::addLine(sf::String text, const sf::Color& color)
     {
-        int linesAdded = 0;
+        auto& widgets = m_Panel->getWidgets();
 
-        // Call this function for every line in the text
-        std::string::size_type newlinePos = text.find("\n");
-        if (newlinePos != std::string::npos)
-        {
-            std::string::size_type lastNewlinePos = 0;
-            while (newlinePos != std::string::npos)
-            {
-                linesAdded += addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos));
-
-                lastNewlinePos = newlinePos + 1;
-                newlinePos = text.find("\n", lastNewlinePos);
-            }
-
-            return addLine(text.toWideString().substr(lastNewlinePos, newlinePos - lastNewlinePos)) + linesAdded;
-        }
+        // Remove the top line if you exceed the maximum
+        if ((m_MaxLines > 0) && (m_MaxLines < widgets.size() + 1))
+            removeLine(0);
 
         Label::Ptr label(*m_Panel);
         label->setText(text);
         label->setTextColor(color);
         label->setTextSize(m_TextSize);
-        label->setPosition(m_LeftBorder + 2.0f, m_Panel->getSize().y - (m_TextSize * 1.2f));
-        linesAdded++;
 
         float width;
         if (m_Scroll == nullptr)
@@ -305,34 +294,23 @@ namespace tgui
             width = 0;
 
         // Split the label over multiple lines if necessary
-        while (label->getSize().x > width)
+        unsigned int character = 1;
+        while (label->getSize().x + 4.0f > width)
         {
-            Label::Ptr newLabel = m_Panel->copy(label);
-            newLabel->setText("");
-            linesAdded++;
+            label->setText(text.toWideString().substr(0, character));
 
-            while (label->getSize().x > width)
-            {
-                sf::String string = label->getText();
-                newLabel->setText(string[string.getSize()-1] + newLabel->getText());
+            while (label->getSize().x + 4.0f <= width)
+                label->setText(text.toWideString().substr(0, ++character));
 
-                string.erase(string.getSize()-1, 1);
-                label->setText(string);
-            }
-
-            label = newLabel;
+            text.insert(character - 1, '\n');
+            label->setText(text);
         }
 
-        // Remove some lines if you exceed the maximum
-        if ((m_MaxLines > 0) && (m_MaxLines < m_Panel->getWidgets().size()))
-        {
-            auto& widgets = m_Panel->getWidgets();
-            widgets.erase(widgets.begin(), widgets.begin() + widgets.size() - m_MaxLines);
-        }
+        m_FullTextHeight += label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
 
         if (m_Scroll != nullptr)
         {
-            m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+            m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
 
             if (m_Scroll->getMaximum() > m_Scroll->getLowValue())
                 m_Scroll->setValue(m_Scroll->getMaximum() - m_Scroll->getLowValue());
@@ -340,8 +318,6 @@ namespace tgui
 
         // Reposition the labels
         updateDisplayedText();
-
-        return linesAdded;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,10 +338,12 @@ namespace tgui
     {
         if (lineIndex < m_Panel->getWidgets().size())
         {
-            m_Panel->remove(m_Panel->getWidgets()[lineIndex]);
+            tgui::Label::Ptr label = m_Panel->getWidgets()[lineIndex];
+            m_FullTextHeight -= label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+            m_Panel->remove(label);
 
             if (m_Scroll != nullptr)
-                m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+                m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
 
             updateDisplayedText();
             return true;
@@ -382,11 +360,15 @@ namespace tgui
 
         if ((m_MaxLines > 0) && (m_MaxLines < m_Panel->getWidgets().size()))
         {
-            auto& widgets = m_Panel->getWidgets();
-            widgets.erase(widgets.begin(), widgets.begin() + widgets.size() - m_MaxLines);
+            while (m_MaxLines < m_Panel->getWidgets().size())
+            {
+                tgui::Label::Ptr label = m_Panel->getWidgets()[0];
+                m_FullTextHeight -= label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+                m_Panel->remove(label);
+            }
 
             if (m_Scroll != nullptr)
-                m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+                m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
 
             updateDisplayedText();
         }
@@ -398,9 +380,9 @@ namespace tgui
     {
         m_Panel->setGlobalFont(font);
 
-        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
-        for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
-            static_cast<Label::Ptr>(*it)->setTextFont(font);
+        auto& labels = m_Panel->getWidgets();
+        for (auto it = labels.begin(); it != labels.end(); ++it)
+            Label::Ptr(*it)->setTextFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,16 +402,6 @@ namespace tgui
         // There is a minimum text size
         if (m_TextSize < 8)
             m_TextSize = 8;
-
-        // Update the position of the labels
-        updateDisplayedText();
-
-        // If there is a scrollbar then reinitialize it
-        if (m_Scroll != nullptr)
-        {
-            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +415,11 @@ namespace tgui
 
     void ChatBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
     {
+        // Reposition the labels
+        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
+        for (auto it = labels.begin(); it != labels.end(); ++it)
+            (*it)->setPosition((*it)->getPosition().x + leftBorder - m_LeftBorder, (*it)->getPosition().y);
+
         // Set the new border size
         m_LeftBorder   = leftBorder;
         m_TopBorder    = topBorder;
@@ -456,11 +433,6 @@ namespace tgui
 
         // Make sure that the panel has a valid size
         m_Panel->setSize(width, m_Panel->getSize().y);
-
-        // Reposition the labels
-        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
-        for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
-            (*it)->setPosition(m_LeftBorder + 2.0f, (*it)->getPosition().y);
 
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != nullptr)
@@ -526,7 +498,7 @@ namespace tgui
             m_Scroll->setVerticalScroll(true);
             m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
             m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setMaximum(static_cast<unsigned int>(m_Panel->getWidgets().size() * m_TextSize * 1.4f));
+            m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
 
             return true;
         }
@@ -655,7 +627,7 @@ namespace tgui
                         m_Scroll->setValue(m_Scroll->getValue()-1);
 
                         // Scroll down with the whole item height instead of with a single pixel
-                        m_Scroll->setValue(m_Scroll->getValue() + static_cast<unsigned int>(m_TextSize * 1.4f + 0.5) - (m_Scroll->getValue() % static_cast<unsigned int>(m_TextSize * 1.4f + 0.5f)));
+                        m_Scroll->setValue(m_Scroll->getValue() + m_TextSize - (m_Scroll->getValue() % m_TextSize));
                     }
                     else if (m_Scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
                     {
@@ -663,10 +635,10 @@ namespace tgui
                         m_Scroll->setValue(m_Scroll->getValue()+1);
 
                         // Scroll up with the whole item height instead of with a single pixel
-                        if (m_Scroll->getValue() % static_cast<unsigned int>(m_TextSize * 1.4f + 0.5f) > 0)
-                            m_Scroll->setValue(m_Scroll->getValue() - (m_Scroll->getValue() % static_cast<unsigned int>(m_TextSize * 1.4f + 0.5f)));
+                        if (m_Scroll->getValue() % m_TextSize > 0)
+                            m_Scroll->setValue(m_Scroll->getValue() - (m_Scroll->getValue() % m_TextSize));
                         else
-                            m_Scroll->setValue(m_Scroll->getValue() - static_cast<unsigned int>(m_TextSize * 1.4f + 0.5f));
+                            m_Scroll->setValue(m_Scroll->getValue() - m_TextSize);
                     }
 
                     updateDisplayedText();
@@ -754,11 +726,11 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (static_cast<unsigned int>(m_TextSize * 1.4f + 0.5) / 2)) );
+                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * m_TextSize));
                 }
                 else // You are scrolling up
                 {
-                    unsigned int change = static_cast<unsigned int>(delta) * (static_cast<unsigned int>(m_TextSize * 1.4f + 0.5) / 2);
+                    unsigned int change = static_cast<unsigned int>(delta) * m_TextSize;
 
                     // Scroll up
                     if (change < m_Scroll->getValue())
@@ -902,20 +874,33 @@ namespace tgui
 
     void ChatBox::updateDisplayedText()
     {
-        float bottomPosition = m_Panel->getSize().y;
-        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
-        for (unsigned int i = labels.size(); i > 0; --i)
+        float position;
+        if (m_Scroll != nullptr)
+            position = m_TopBorder + 2.0f - static_cast<float>(m_Scroll->getValue()) ;
+        else
+            position = m_TopBorder + 2.0f;
+
+        auto& labels = m_Panel->getWidgets();
+        for (auto it = labels.begin(); it != labels.end(); ++it)
         {
-            unsigned int index = i - 1;
+            tgui::Label::Ptr label = *it;
+            label->setPosition(m_LeftBorder + 2.0f, position);
 
-            static_cast<Label::Ptr>(labels[index])->setTextSize(m_TextSize);
+            position += label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+        }
 
-            if (m_Scroll != nullptr)
-                labels[index]->setPosition(m_LeftBorder + 2.0f, bottomPosition - (m_TextSize * 1.4f) + m_Scroll->getMaximum() - m_Scroll->getLowValue() - m_Scroll->getValue());
-            else
-                labels[index]->setPosition(m_LeftBorder + 2.0f, bottomPosition - (m_TextSize * 1.4f));
+        // Correct the position when there is no scrollbar
+        if ((m_Scroll == nullptr) && (!labels.empty()))
+        {
+            tgui::Label::Ptr label = labels.back();
+            position -= (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
 
-            bottomPosition -= m_TextSize * 1.4f;
+            if (position > m_Panel->getSize().y - m_TopBorder - m_BottomBorder)
+            {
+                float diff = position - (m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
+                for (auto it = labels.begin(); it != labels.end(); ++it)
+                    (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y - diff);
+            }
         }
     }
 
@@ -951,10 +936,8 @@ namespace tgui
         // Check if there is a scrollbar
         if (m_Scroll != nullptr)
         {
-            // Reset the transformation
-            states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
-
             // Draw the scrollbar
+            states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
             target.draw(*m_Scroll, states);
         }
     }

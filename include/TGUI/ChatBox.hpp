@@ -129,15 +129,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Add a new line of text to the chat box.
         ///
-        /// If the line doesn't fit inside the chat box then it will be split into multiple lines.
+        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// even if it is too long and gets split over multiple lines.
         ///
         /// \param text  Text that will be added to the chat box
         /// \param color Color of the text
         ///
-        /// \return The amount of lines that were added.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int addLine(const sf::String& text, const sf::Color& color = sf::Color::Black);
+        void addLine(sf::String text, const sf::Color& color = sf::Color::Black);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,6 +405,8 @@ namespace tgui
         sf::Color m_BorderColor;
 
         unsigned int m_MaxLines;
+
+        float m_FullTextHeight;
 
         // The panel containing the labels
         Panel* m_Panel;
