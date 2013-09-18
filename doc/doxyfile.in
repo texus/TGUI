@@ -52,7 +52,7 @@ PROJECT_LOGO           =
 # If a relative path is entered, it will be relative to the location
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = doc
+OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create
 # 4096 sub-directories (in 2 levels) under the output directory of each output
@@ -655,7 +655,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = include/TGUI
+INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -1000,21 +1000,21 @@ DOCSET_PUBLISHER_NAME  = Publisher
 # Microsoft HTML help workshop to generate a compiled HTML help file (.chm)
 # of the generated HTML documentation.
 
-GENERATE_HTMLHELP      = NO
+GENERATE_HTMLHELP      = @DOXYGEN_GENERATE_HTMLHELP@
 
 # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can
 # be used to specify the file name of the resulting .chm file. You
 # can add a path in front of the file if the result should not be
 # written to the html output directory.
 
-CHM_FILE               =
+CHM_FILE               = ../TGUI.chm
 
 # If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION tag can
 # be used to specify the location (absolute path including file name) of
 # the HTML help compiler (hhc.exe). If non-empty doxygen will try to run
 # the HTML help compiler on the generated index.hhp.
 
-HHC_LOCATION           =
+HHC_LOCATION           = "@DOXYGEN_HHC_PROGRAM@"
 
 # If the GENERATE_HTMLHELP tag is set to YES, the GENERATE_CHI flag
 # controls if a separate .chi index file is generated (YES) or that

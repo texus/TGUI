@@ -28,6 +28,7 @@ SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 6 )
 
 # project options
+tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
 
 if(WINDOWS)
@@ -88,6 +89,11 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
+
+# Build the documentation when requested
+if (TGUI_BUILD_DOC)
+    add_subdirectory(doc)
+endif()
 
 # Build examples
 # TODO
