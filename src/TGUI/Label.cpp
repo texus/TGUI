@@ -132,7 +132,7 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_Text.setPosition(x - m_Text.getLocalBounds().left, y - m_Text.getLocalBounds().top);
+        m_Text.setPosition(std::floor(x - m_Text.getLocalBounds().left + 0.5f), std::floor(y - m_Text.getLocalBounds().top + 0.5f));
         m_Background.setPosition(x, y);
     }
 
