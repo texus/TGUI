@@ -47,10 +47,13 @@ namespace tgui
     ChildWindow               (messageBoxToCopy),
     m_LoadedConfigFile        (messageBoxToCopy.m_LoadedConfigFile),
     m_ButtonConfigFileFilename(messageBoxToCopy.m_ButtonConfigFileFilename),
-    m_Buttons                 (messageBoxToCopy.m_Buttons),
-    m_Label                   (messageBoxToCopy.m_Label),
     m_TextSize                (messageBoxToCopy.m_TextSize)
     {
+        removeAllWidgets();
+
+        m_Label = messageBoxToCopy.m_Label.clone();
+        m_Label->setText("");
+        add(m_Label, "MessageBoxText");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
