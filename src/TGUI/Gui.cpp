@@ -106,8 +106,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::draw()
+    void Gui::draw(bool resetView)
     {
+        sf::View oldView = m_Window->getView();
+
+        // Reset the view when requested
+        if (resetView)
+            m_Window->setView(m_Window->getDefaultView());
+
         // Update the time
         updateTime(m_Clock.restart());
 
@@ -135,6 +141,8 @@ namespace tgui
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         else
             glDisable(GL_SCISSOR_TEST);
+
+        m_Window->setView(oldView);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
