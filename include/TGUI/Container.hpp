@@ -218,8 +218,6 @@ namespace tgui
         ///
         /// \param widget  Pointer to the widget to remove
         ///
-        /// \see remove(sf::String)
-        ///
         /// Usage example:
         /// \code
         /// tgui::Picture::Ptr pic(container, "picName");
@@ -233,8 +231,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
-        // Used internally to remove a widget from the container.
+        /// \brief Removes a single widget that was added to the container.
+        ///
+        /// \param widget  Pointer to the widget to remove
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void remove(Widget* widget);
 
@@ -283,8 +283,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
-        // Internally used to focus a widget.
+        /// \brief Focuses an widget.
+        ///
+        /// The previously focused widget will be unfocused.
+        ///
+        /// \param widget  The widget that has to be focused.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void focusWidget(Widget *const widget);
 
