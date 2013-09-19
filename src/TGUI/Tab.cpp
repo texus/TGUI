@@ -59,6 +59,8 @@ namespace tgui
     m_SeparateSelectedImage(copy.m_SeparateSelectedImage),
     m_TabHeight            (copy.m_TabHeight),
     m_TextSize             (copy.m_TextSize),
+    m_TextColor            (copy.m_TextColor),
+    m_SelectedTextColor    (copy.m_SelectedTextColor),
     m_MaximumTabWidth      (copy.m_MaximumTabWidth),
     m_DistanceToSide       (copy.m_DistanceToSide),
     m_SelectedTab          (copy.m_SelectedTab),
@@ -103,6 +105,8 @@ namespace tgui
             std::swap(m_SeparateSelectedImage, temp.m_SeparateSelectedImage);
             std::swap(m_TabHeight,             temp.m_TabHeight);
             std::swap(m_TextSize,              temp.m_TextSize);
+            std::swap(m_TextColor,             temp.m_TextColor);
+            std::swap(m_SelectedTextColor,     temp.m_SelectedTextColor);
             std::swap(m_MaximumTabWidth,       temp.m_MaximumTabWidth);
             std::swap(m_DistanceToSide,        temp.m_DistanceToSide);
             std::swap(m_SelectedTab,           temp.m_SelectedTab);
@@ -182,7 +186,11 @@ namespace tgui
             }
             else if (property == "textcolor")
             {
-                m_Text.setColor(configFile.readColor(value));
+                m_TextColor = configFile.readColor(value);
+            }
+            else if (property == "selectedtextcolor")
+            {
+                m_SelectedTextColor = configFile.readColor(value);
             }
             else if (property == "distancetoside")
             {
@@ -499,14 +507,28 @@ namespace tgui
 
     void Tab::setTextColor(const sf::Color& color)
     {
-        m_Text.setColor(color);
+        m_TextColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Tab::getTextColor() const
     {
-        return m_Text.getColor();
+        return m_TextColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::setSelectedTextColor(const sf::Color& color)
+    {
+        m_SelectedTextColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& Tab::getSelectedTextColor() const
+    {
+        return m_SelectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -607,8 +629,6 @@ namespace tgui
         m_TextureSelected_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureSelected_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureSelected_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-
-        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -988,6 +1008,12 @@ namespace tgui
 
             // Draw the text
             {
+                // Give the text the correct color
+                if (m_SelectedTab == static_cast<int>(i))
+                    tempText.setColor(sf::Color(m_SelectedTextColor.r, m_SelectedTextColor.g, m_SelectedTextColor.b, m_Opacity));
+                else
+                    tempText.setColor(sf::Color(m_TextColor.r, m_TextColor.g, m_TextColor.b, m_Opacity));
+
                 // Get the current size of the text, so that we can recalculate the position
                 tempText.setString(m_TabNames[i]);
                 realRect = tempText.getLocalBounds();
