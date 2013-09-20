@@ -20,12 +20,12 @@ endif()
 
 project(tgui)
 
-# include the configuration file
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
-
 # project version
 SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 6 )
+
+# include the configuration file
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 
 # project options
 tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
