@@ -81,15 +81,6 @@ else()
              PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
 endif()
 
-# Install the resources on linux
-if (LINUX)
-
-    # Install the widgets and fonts
-    install( DIRECTORY "${CMAKE_SOURCE_DIR}/widgets/" DESTINATION "/usr/local/share/tgui-${MAJOR_VERSION}.${MINOR_VERSION}/widgets" )
-    install( DIRECTORY "${CMAKE_SOURCE_DIR}/fonts/" DESTINATION "/usr/local/share/tgui-${MAJOR_VERSION}.${MINOR_VERSION}/fonts" )
-
-endif()
-
 # Build the Form Builder if requested
 if (TGUI_BUILD_FORM_BUILDER)
     add_subdirectory(FormBuilder)

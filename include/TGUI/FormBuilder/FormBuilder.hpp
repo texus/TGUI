@@ -37,18 +37,6 @@
 
 #define VERSION "v" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH)
 
-#ifdef SFML_SYSTEM_WINDOWS
-    const std::string imagesFolder = "images";
-    const std::string widgetsFolder = "widgets";
-    const std::string fontsFolder = ".";
-    const std::string dataFolder = ".";
-#else
-    const std::string imagesFolder = "/usr/local/share/tgui-" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "/form-builder-data/images";
-    const std::string widgetsFolder = "/usr/local/share/tgui-" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "/widgets";
-    const std::string fontsFolder = "/usr/local/share/tgui-" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "/fonts";
-    const std::string dataFolder = "/usr/local/share/tgui-" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "/form-builder-data";
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class FormBuilder
