@@ -255,12 +255,12 @@ namespace tgui
             *it = 0;
 
         // Loop through all widgets
-        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < m_GridWidgets.size(); ++row)
         {
             // Reset the row height
             m_RowHeight[row] = 0;
 
-            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
                 if (m_GridWidgets[row][col].get() == nullptr)
                     continue;
@@ -284,9 +284,9 @@ namespace tgui
     void Grid::changeWidgetBorders(const Widget::Ptr& widget, const Borders& borders)
     {
         // Find the widget in the grid
-        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < m_GridWidgets.size(); ++row)
         {
-            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
                 if (m_GridWidgets[row][col] == widget)
                 {
@@ -305,9 +305,9 @@ namespace tgui
     void Grid::changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout)
     {
         // Find the widget in the grid
-        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < m_GridWidgets.size(); ++row)
         {
-            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
                 if (m_GridWidgets[row][col] == widget)
                 {
@@ -319,10 +319,12 @@ namespace tgui
                         // Calculate the available space which is distributed when widgets are positionned.
                         sf::Vector2f availableSpace;
                         sf::Vector2f minSize = getMinSize();
+
                         if (m_Size.x > minSize.x)
                             availableSpace.x = m_Size.x - minSize.x;
                         if (m_Size.y > minSize.y)
                             availableSpace.y = m_Size.y - minSize.y;
+
                         sf::Vector2f availSpaceOffset(0.5f * availableSpace.x / m_ColumnWidth.size(),
                                                       0.5f * availableSpace.y / m_RowHeight.size());
 
@@ -398,11 +400,11 @@ namespace tgui
         sf::Vector2f minSize;
 
         // Loop through all rows to find the minimum height required by the grid
-        for (std::vector<unsigned int>::const_iterator it = m_RowHeight.begin(); it != m_RowHeight.end(); ++it)
+        for (auto it = m_RowHeight.cbegin(); it != m_RowHeight.cend(); ++it)
             minSize.y += static_cast<float>(*it);
 
         // Loop through all columns to find the minimum width required by the grid
-        for (std::vector<unsigned int>::const_iterator it = m_ColumnWidth.begin(); it != m_ColumnWidth.end(); ++it)
+        for (auto it = m_ColumnWidth.cbegin(); it != m_ColumnWidth.cend(); ++it)
             minSize.x += static_cast<float>(*it);
 
         return minSize;
@@ -419,25 +421,28 @@ namespace tgui
         sf::Vector2f availableSpace;
         m_Size = m_IntendedSize;
         sf::Vector2f minSize = getMinSize();
+
         if (m_IntendedSize.x > minSize.x)
             availableSpace.x = m_IntendedSize.x - minSize.x;
         else
             m_Size.x = minSize.x;
+
         if (m_IntendedSize.y > minSize.y)
             availableSpace.y = m_IntendedSize.y - minSize.y;
         else
             m_Size.y = minSize.y;
+
         sf::Vector2f availSpaceOffset(0.5f * availableSpace.x / m_ColumnWidth.size(),
                                       0.5f * availableSpace.y / m_RowHeight.size());
 
         // Loop through all rows
-        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < m_GridWidgets.size(); ++row)
         {
             // Remember the current position
             previousPosition = position;
 
             // Loop through all widgets in the row
-            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
                 if (m_GridWidgets[row][col].get() == nullptr)
                 {
@@ -504,7 +509,6 @@ namespace tgui
             position = previousPosition;
             position.y += m_RowHeight[row] + 2 * availSpaceOffset.y;
         }
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,9 +552,9 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw all widgets
-        for (unsigned int row=0; row < m_GridWidgets.size(); ++row)
+        for (unsigned int row = 0; row < m_GridWidgets.size(); ++row)
         {
-            for (unsigned int col=0; col < m_GridWidgets[row].size(); ++col)
+            for (unsigned int col = 0; col < m_GridWidgets[row].size(); ++col)
             {
                 if (m_GridWidgets[row][col].get() != nullptr)
                     target.draw(*m_GridWidgets[row][col], states);
