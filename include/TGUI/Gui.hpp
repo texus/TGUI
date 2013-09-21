@@ -274,8 +274,6 @@ namespace tgui
         ///
         /// \param widget  Pointer to the widget to remove
         ///
-        /// \see remove(sf::String)
-        ///
         /// Usage example:
         /// \code
         /// tgui::Picture::Ptr pic(container, "picName");

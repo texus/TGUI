@@ -128,6 +128,7 @@ namespace tgui
         /// When the text is auto-sized (default), then the size of the label will be changed to fit the whole text.
         ///
         /// \see setAutoSize
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
