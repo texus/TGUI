@@ -127,6 +127,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Check if the window is focused.
+        ///
+        /// When the window is unfocused, animations (e.g. flashing caret of an edit box) will be paused.
+        ///
+        /// \return Is the window currently focused?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool hasFocus();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the size of the container.
         ///
         /// \return Size of the container.
@@ -478,6 +489,9 @@ namespace tgui
 
         // The sfml window
         sf::RenderWindow* m_Window;
+
+        // Is the window focused?
+        bool m_Focused;
 
         // Internal container to store all widgets
         GuiContainer m_Container;

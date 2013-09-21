@@ -35,7 +35,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui() :
-    m_Window(nullptr)
+    m_Window (nullptr),
+    m_Focused(false)
     {
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
 
@@ -46,7 +47,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui(sf::RenderWindow& window) :
-    m_Window(&window)
+    m_Window (&window),
+    m_Focused(false)
     {
         m_Container.m_Window = &window;
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
@@ -100,6 +102,16 @@ namespace tgui
             event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
         }
 
+        // Keep track of whether the window is focused or not
+        else if (event.type == sf::Event::LostFocus)
+        {
+            m_Focused = false;
+        }
+        else if (event.type == sf::Event::GainedFocus)
+        {
+            m_Focused = true;
+        }
+
         // Let the event manager handle the event
         return m_Container.handleEvent(event);
     }
@@ -115,7 +127,10 @@ namespace tgui
             m_Window->setView(m_Window->getDefaultView());
 
         // Update the time
-        updateTime(m_Clock.restart());
+        if (m_Focused)
+            updateTime(m_Clock.restart());
+        else
+            m_Clock.restart();
 
         // Check if clipping is enabled
         GLboolean clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
@@ -162,6 +177,13 @@ namespace tgui
 
             return true;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::hasFocus()
+    {
+        return m_Focused;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
