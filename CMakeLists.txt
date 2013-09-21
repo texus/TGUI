@@ -95,12 +95,6 @@ if (TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
-# Build examples
-# TODO
-
 # install include files
 install(DIRECTORY include DESTINATION .)
-
-# Create uninstall
-# TODO
 
