@@ -354,6 +354,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::removeAllLines()
+    {
+        m_Panel->removeAllWidgets();
+
+        m_FullTextHeight = 0;
+
+        if (m_Scroll != nullptr)
+            m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
+
+        updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int ChatBox::getLineAmount()
     {
         return m_Panel->getWidgets().size();
@@ -783,6 +797,8 @@ namespace tgui
         }
         else if (property == "lines")
         {
+            removeAllLines();
+
             std::vector<sf::String> lines;
             decodeList(value, lines);
 
