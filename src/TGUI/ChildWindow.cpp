@@ -1062,24 +1062,24 @@ namespace tgui
             // Draw the text, depending on the alignment
             if (m_TitleAlignment == TitleAlignmentLeft)
             {
-                states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
+                states.transform.translate(std::floor(static_cast<float>(m_DistanceToSide) + 0.5f), 0);
                 target.draw(m_TitleText, states);
             }
             else if (m_TitleAlignment == TitleAlignmentCentered)
             {
                 if (m_IconTexture.data)
-                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                    states.transform.translate(std::floor(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 4*m_DistanceToSide - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f) + 0.5f), 0);
                 else
-                    states.transform.translate(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f), 0);
+                    states.transform.translate(std::floor(m_DistanceToSide + (((m_Size.x + m_LeftBorder + m_RightBorder) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width) / 2.0f) + 0.5f), 0);
 
                 target.draw(m_TitleText, states);
             }
             else // if (m_TitleAlignment == TitleAlignmentRight)
             {
                 if (m_IconTexture.data)
-                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width, 0);
+                    states.transform.translate(std::floor((m_Size.x + m_LeftBorder + m_RightBorder) - (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) - 3*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width + 0.5f), 0);
                 else
-                    states.transform.translate((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width, 0);
+                    states.transform.translate(std::floor((m_Size.x + m_LeftBorder + m_RightBorder) - 2*m_DistanceToSide - m_CloseButton->getSize().x - m_TitleText.getGlobalBounds().width + 0.5f), 0);
 
                 target.draw(m_TitleText, states);
             }
