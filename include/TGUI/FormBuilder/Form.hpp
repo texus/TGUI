@@ -73,6 +73,8 @@ public:
     const WidgetData* formData;
     WidgetData* activeWidget;
 
+    WidgetData* widgetToCopy;
+
 
 private:
 

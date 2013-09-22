@@ -36,7 +36,8 @@ Form::Form(tgui::Container& parent,
     window      (parent, name),
     widgets     (),
     formData    (formDataPtr),
-    activeWidget(formDataPtr)
+    activeWidget(formDataPtr),
+    widgetToCopy(nullptr)
 {
     window->load("images/widgets/White.conf");
     window->setSize(width, height);
@@ -173,6 +174,5 @@ void Form::moveWidget(float xDiff, float yDiff)
 
     repositionSelectionSquares();
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

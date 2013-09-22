@@ -371,7 +371,7 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
         // Remove the edit menu
         menu.removeMenuItem("Edit", "To front");
         menu.removeMenuItem("Edit", "To back");
-///     menu.removeMenuItem("Edit", "Copy");
+        menu.removeMenuItem("Edit", "Copy");
         menu.removeMenuItem("Edit", "Remove");
     }
     else if (callback.text == "Save")
@@ -384,23 +384,97 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
     }
     else if (callback.text == "To front")
     {
-        for (auto it = activeForm->widgets.begin(); it != activeForm->widgets.end(); ++it)
-        {
-            if (activeForm->activeWidget == &*it)
-            {
-                activeForm->activeWidget->widget->moveToFront();
-            }
-        }
+        activeForm->activeWidget->widget->moveToFront();
     }
     else if (callback.text == "To back")
     {
-        for (auto it = activeForm->widgets.begin(); it != activeForm->widgets.end(); ++it)
+        activeForm->activeWidget->widget->moveToBack();
+    }
+    else if (callback.text == "Copy")
+    {
+        activeForm->widgetToCopy = activeForm->activeWidget;
+
+        menu.addMenuItem("Edit", "Paste");
+    }
+    else if (callback.text == "Paste")
+    {
+        activeForm->widgets.push_back(*activeForm->widgetToCopy);
+        activeForm->activeWidget = &activeForm->widgets.back();
+
+        activeForm->activeWidget->widget = activeForm->widgetToCopy->widget.clone();
+        tgui::Panel::Ptr(activeForm->window->get("Panel"))->add(activeForm->activeWidget->widget);
+
+        // Get the name of the widget that you are copying
+        std::string widgetName;
+        tgui::Panel::Ptr(activeForm->window->get("Panel"))->getWidgetName(activeForm->widgetToCopy->widget, widgetName);
+
+        // Set the position of the new widget to (0, 0)
+        for (auto it = activeForm->activeWidget->properties.begin(); it != activeForm->activeWidget->properties.end(); ++it)
         {
-            if (activeForm->activeWidget == &*it)
+            if ((it->first == "Left") || (it->first == "Top"))
             {
-                activeForm->activeWidget->widget->moveToBack();
+                activeForm->activeWidget->widget->setProperty(it->first, "0");
             }
         }
+
+        // Give the widget a name and add it to the list
+        {
+            unsigned int number = 2;
+            bool found = true;
+            while (found)
+            {
+                found = false;
+
+                for (auto dataIt = activeForm->widgets.cbegin(); dataIt != activeForm->widgets.cend(); ++dataIt)
+                {
+                    for (auto propertyIt = dataIt->properties.cbegin(); propertyIt != dataIt->properties.cend(); ++propertyIt)
+                    {
+                        if (propertyIt->first == "Name")
+                        {
+                            if (propertyIt->second.value == widgetName + " (" + tgui::to_string(number) + ")")
+                            {
+                                number++;
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (found)
+                        break;
+                }
+            }
+
+            for (auto it = activeForm->activeWidget->properties.begin(); it != activeForm->activeWidget->properties.end(); ++it)
+            {
+                if (it->first == "Name")
+                {
+                    it->second.value = widgetName + " (" + tgui::to_string(number) + ")";
+
+                    tgui::Panel::Ptr(activeForm->window->get("Panel"))->setWidgetName(activeForm->activeWidget->widget, it->second.value);
+
+                    tgui::ChildWindow::Ptr propertyWindow = panel->get("PropertiesWindow");
+                    tgui::ComboBox::Ptr widgetSelector = propertyWindow->get("WidgetSelector");
+                    widgetSelector->addItem(it->second.value);
+                    break;
+                }
+            }
+        }
+
+        activeForm->repositionSelectionSquares();
+
+        // Initialize the value for all properties
+        for (auto it = activeForm->activeWidget->properties.begin(); it != activeForm->activeWidget->properties.end(); ++it)
+            activeForm->activeWidget->widget->getProperty(it->first, it->second.value);
+
+        // The properties of this new widget should be displayed
+        recreateProperties();
+
+        // Add edit option to the menu bar
+        menu.addMenuItem("Edit", "To front");
+        menu.addMenuItem("Edit", "To back");
+        menu.addMenuItem("Edit", "Copy");
+        menu.addMenuItem("Edit", "Remove");
     }
     else if (callback.text == "Remove")
     {
@@ -408,6 +482,10 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
         {
             if (&*it == activeForm->activeWidget)
             {
+                // If the copied widget is being removed then no longer allow pasting it
+                if (activeForm->activeWidget == activeForm->widgetToCopy)
+                    menu.removeMenuItem("Edit", "Paste");
+
                 std::string widgetName;
                 tgui::Panel::Ptr(activeForm->window->get("Panel"))->getWidgetName(it->widget, widgetName);
                 tgui::ComboBox::Ptr(tgui::ChildWindow::Ptr(panel->get("PropertiesWindow"))->get("WidgetSelector"))->removeItem(widgetName);
@@ -420,7 +498,7 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
                 // Remove the edit menu
                 menu.removeMenuItem("Edit", "To front");
                 menu.removeMenuItem("Edit", "To back");
-///                menu.removeMenuItem("Edit", "Copy");
+                menu.removeMenuItem("Edit", "Copy");
                 menu.removeMenuItem("Edit", "Remove");
 
                 break;
@@ -529,7 +607,7 @@ void FormBuilder::leftMousePressed(int posX, int posY)
                     // Remove the edit menu
                     menu.removeMenuItem("Edit", "To front");
                     menu.removeMenuItem("Edit", "To back");
-///                    menu.removeMenuItem("Edit", "Copy");
+                    menu.removeMenuItem("Edit", "Copy");
                     menu.removeMenuItem("Edit", "Remove");
                 }
             }
@@ -1016,7 +1094,7 @@ void FormBuilder::addWidget(const std::string& widgetName)
     // Add edit option to the menu bar
     menu.addMenuItem("Edit", "To front");
     menu.addMenuItem("Edit", "To back");
-///    menu.addMenuItem("Edit", "Copy");
+    menu.addMenuItem("Edit", "Copy");
     menu.addMenuItem("Edit", "Remove");
 }
 
@@ -1034,7 +1112,7 @@ void FormBuilder::activateWidget(WidgetData& data)
         // Add edit option to the menu bar
         menu.addMenuItem("Edit", "To front");
         menu.addMenuItem("Edit", "To back");
-///       menu.addMenuItem("Edit", "Copy");
+        menu.addMenuItem("Edit", "Copy");
         menu.addMenuItem("Edit", "Remove");
     }
 }
