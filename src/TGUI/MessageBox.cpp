@@ -303,6 +303,18 @@ namespace tgui
         {
             setTextSize(atoi(value.c_str()));
         }
+        else if (property == "buttons")
+        {
+            removeAllWidgets();
+            m_Buttons.clear();
+            add(m_Label);
+
+            std::vector<sf::String> buttons;
+            decodeList(value, buttons);
+
+            for (auto it = buttons.cbegin(); it != buttons.cend(); ++it)
+                addButton(*it);
+        }
         else if (property == "callback")
         {
             Widget::setProperty(property, value);
@@ -335,6 +347,14 @@ namespace tgui
             value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
             value = to_string(getTextSize());
+        else if (property == "buttons")
+        {
+            std::vector<sf::String> buttons;
+            for (auto it = m_Buttons.cbegin(); it != m_Buttons.cend(); ++it)
+                buttons.push_back((*it)->getText());
+
+            encodeList(buttons, value);
+        }
         else if (property == "callback")
         {
             std::string tempValue;
@@ -367,6 +387,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Text", "string"));
         list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
         list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Buttons", "string"));
         return list;
     }
 

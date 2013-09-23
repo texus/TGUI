@@ -41,11 +41,13 @@ namespace tgui
     MenuBar::MenuBar() :
     m_VisibleMenu        (-1),
     m_TextFont           (nullptr),
+    m_TextSize           (0),
     m_DistanceToSide     (4),
     m_MinimumSubMenuWidth(125)
     {
         m_Callback.widgetType = Type_MenuBar;
 
+        setSize(0, 20);
         changeColors();
 
         m_Loaded = true;
@@ -833,7 +835,6 @@ namespace tgui
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
         m_Size.x = m_Parent->getSize().x;
-        m_Size.y = 20;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

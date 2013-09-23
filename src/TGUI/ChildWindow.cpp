@@ -38,7 +38,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_Size             (0, 0),
+    m_Size             (200, 150),
     m_BackgroundTexture(nullptr),
     m_TitleBarHeight   (0),
     m_SplitImage       (false),
@@ -365,8 +365,8 @@ namespace tgui
         m_TitleBarHeight = height;
 
         // Set the size of the close button
-        m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->getSize().x,
-                               static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->getSize().y);
+        m_CloseButton->setSize(static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->m_TextureNormal_M.getSize().x,
+                               static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->m_TextureNormal_M.getSize().y);
 
         // Set the size of the text in the title bar
         m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);

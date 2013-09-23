@@ -859,7 +859,7 @@ namespace tgui
             std::vector<sf::String> lines;
             std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
 
-            for (std::vector<Widget::Ptr>::iterator it = labels.begin(); it != labels.end(); ++it)
+            for (auto it = labels.cbegin(); it != labels.cend(); ++it)
                 lines.push_back("(" + Label::Ptr(*it)->getText() + "," + convertColorToString(Label::Ptr(*it)->getTextColor()) + ")");
 
             encodeList(lines, value);
