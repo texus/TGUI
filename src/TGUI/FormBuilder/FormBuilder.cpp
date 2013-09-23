@@ -111,16 +111,19 @@ void FormBuilder::initWidgetsData()
 {
     widgetsData[""] = WidgetData();
     widgetsData["Button"] = WidgetData(tgui::Button::Ptr());
-    widgetsData["Picture"] = WidgetData(tgui::Picture::Ptr());
+    widgetsData["ChatBox"] = WidgetData(tgui::ChatBox::Ptr());
     widgetsData["Checkbox"] = WidgetData(tgui::Checkbox::Ptr());
-    widgetsData["RadioButton"] = WidgetData(tgui::RadioButton::Ptr());
-    widgetsData["Label"] = WidgetData(tgui::Label::Ptr());
-    widgetsData["EditBox"] = WidgetData(tgui::EditBox::Ptr());
-    widgetsData["ListBox"] = WidgetData(tgui::ListBox::Ptr());
     widgetsData["ComboBox"] = WidgetData(tgui::ComboBox::Ptr());
-    widgetsData["Slider"] = WidgetData(tgui::Slider::Ptr());
-    widgetsData["Scrollbar"] = WidgetData(tgui::Scrollbar::Ptr());
+    widgetsData["EditBox"] = WidgetData(tgui::EditBox::Ptr());
+    widgetsData["Label"] = WidgetData(tgui::Label::Ptr());
     widgetsData["LoadingBar"] = WidgetData(tgui::LoadingBar::Ptr());
+    widgetsData["ListBox"] = WidgetData(tgui::ListBox::Ptr());
+    widgetsData["MenuBar"] = WidgetData(tgui::MenuBar::Ptr());
+    widgetsData["Picture"] = WidgetData(tgui::Picture::Ptr());
+    widgetsData["RadioButton"] = WidgetData(tgui::RadioButton::Ptr());
+    widgetsData["Scrollbar"] = WidgetData(tgui::Scrollbar::Ptr());
+    widgetsData["Slider"] = WidgetData(tgui::Slider::Ptr());
+    widgetsData["SpinButton"] = WidgetData(tgui::SpinButton::Ptr());
     widgetsData["TextBox"] = WidgetData(tgui::TextBox::Ptr());
 
     tgui::Label::Ptr(widgetsData["Label"].widget)->setText("Label");
