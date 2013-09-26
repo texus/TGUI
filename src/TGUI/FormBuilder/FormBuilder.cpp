@@ -37,7 +37,7 @@ FormBuilder::FormBuilder() :
     scalingWidget   (NoSelectionSquare),
     oldMousePosition(0, 0)
 {
-    gui.setGlobalFont("DejaVuSans.ttf");
+    gui.setGlobalFont(FONTS_FOLDER "/" DEFAULT_FONT);
     panel->setGlobalFont(gui.getGlobalFont());
 
     initMenuBar();
@@ -66,9 +66,9 @@ int FormBuilder::run()
 
 void FormBuilder::initMenuBar()
 {
-    std::ifstream file("MenuBar");
+    std::ifstream file(DATA_FOLDER "/MenuBar");
     if (!file.is_open())
-        throw std::runtime_error("Failed to open 'MenuBar'.");
+        throw std::runtime_error("Failed to open '" DATA_FOLDER "/MenuBar'.");
 
     while (!file.eof())
     {
@@ -80,7 +80,7 @@ void FormBuilder::initMenuBar()
 
         menu.addMenuOrder(menuName);
 
-        std::ifstream subFile("MenuBar_" + menuName);
+        std::ifstream subFile(DATA_FOLDER "/MenuBar_" + menuName);
         if (subFile.is_open())
         {
             while (!subFile.eof())
@@ -134,7 +134,7 @@ void FormBuilder::initWidgetsData()
 void FormBuilder::initWidgetsWindow()
 {
     tgui::ChildWindow::Ptr widgetsWindow(*panel, "WidgetsWindow");
-    widgetsWindow->load("images/widgets/White.conf");
+    widgetsWindow->load(WIDGETS_FOLDER "/White.conf");
     widgetsWindow->setTitle("Widgets");
     widgetsWindow->setTitleBarHeight(20);
     widgetsWindow->setPosition(10, 30);
@@ -147,7 +147,7 @@ void FormBuilder::initWidgetsWindow()
     for (auto it = ++widgetsData.cbegin(); it != widgetsData.cend(); ++it)
     {
         tgui::Picture::Ptr picture(*widgetsWindow);
-        picture->load("images/" + it->first + ".png");
+        picture->load(IMAGES_FOLDER "/" + it->first + ".png");
         picture->setPosition(10.0f + ((i % 2) * 40), 10.0f + ((i / 2) * 40));
         picture->bindCallback(std::bind(&FormBuilder::addWidget, this, it->first), tgui::Picture::LeftMouseClicked);
 
@@ -160,7 +160,7 @@ void FormBuilder::initWidgetsWindow()
 void FormBuilder::initPropertiesWindow()
 {
     tgui::ChildWindow::Ptr propertiesWindow(*panel, "PropertiesWindow");
-    propertiesWindow->load("images/widgets/White.conf");
+    propertiesWindow->load(WIDGETS_FOLDER "/White.conf");
     propertiesWindow->setTitle("Properties");
     propertiesWindow->setTitleBarHeight(20);
     propertiesWindow->setBackgroundColor(sf::Color(220, 220, 220));
@@ -173,7 +173,7 @@ void FormBuilder::initPropertiesWindow()
     grid->setPosition(10, 40);
 
     tgui::ComboBox::Ptr widgetSelector(*propertiesWindow, "WidgetSelector");
-    widgetSelector->load("images/widgets/White.conf");
+    widgetSelector->load(WIDGETS_FOLDER "/White.conf");
     widgetSelector->setSize(grid->getSize().x, 20);
     widgetSelector->setPosition(grid->getPosition().x, grid->getPosition().y - widgetSelector->getSize().y - 10);
     widgetSelector->addItem("Window");
@@ -270,7 +270,7 @@ void FormBuilder::errorMessage(const std::string& message)
     createLayer();
 
     tgui::MessageBox::Ptr messageBox(*tgui::Panel::Ptr(gui.get("LayerPanel")));
-    messageBox->load("images/widgets/White.conf");
+    messageBox->load(WIDGETS_FOLDER "/White.conf");
     messageBox->setTitleBarHeight(20);
     messageBox->setText(message);
     messageBox->setTitle("Error");
@@ -876,7 +876,7 @@ void FormBuilder::recreateProperties()
             activeForm->activeWidget->widget->getProperty(it->first, it->second.value);
 
         tgui::EditBox::Ptr value(*grid, "Value" + it->first);
-        value->load("images/widgets/White.conf");
+        value->load(WIDGETS_FOLDER "/White.conf");
         value->setSize(140, 20);
         value->setText(it->second.value);
 
@@ -925,7 +925,7 @@ void FormBuilder::requestNewForm()
         createLayer();
 
         tgui::ChildWindow::Ptr requestNewFormWindow(*tgui::Panel::Ptr(gui.get("LayerPanel")));
-        requestNewFormWindow->load("images/widgets/White.conf");
+        requestNewFormWindow->load(WIDGETS_FOLDER "/White.conf");
         requestNewFormWindow->setTitleBarHeight(20);
         requestNewFormWindow->setSize(400, 210);
         requestNewFormWindow->setPosition((sf::Vector2f(window.getSize()) - requestNewFormWindow->getSize()) / 2.0f);
@@ -933,7 +933,7 @@ void FormBuilder::requestNewForm()
 
         // Add the first edit box to it
         tgui::EditBox::Ptr width(*requestNewFormWindow, "width");
-        width->load("images/widgets/White.conf");
+        width->load(WIDGETS_FOLDER "/White.conf");
         width->setPosition(70, 40);
         width->setSize(100, 24);
         width->setTextSize(16);
@@ -948,7 +948,7 @@ void FormBuilder::requestNewForm()
 
         // Create another edit box, for the filename
         tgui::EditBox::Ptr filename(*requestNewFormWindow, "filename");
-        filename->load("images/widgets/White.conf");
+        filename->load(WIDGETS_FOLDER "/White.conf");
         filename->setPosition(70, 110);
         filename->setSize(260, 24);
         filename->setText("form.txt");
@@ -977,7 +977,7 @@ void FormBuilder::requestNewForm()
 
         // Create the button
         tgui::Button::Ptr buttonCreate(*requestNewFormWindow);
-        buttonCreate->load("images/widgets/White.conf");
+        buttonCreate->load(WIDGETS_FOLDER "/White.conf");
         buttonCreate->setPosition(120, 160);
         buttonCreate->setSize(160, 30);
         buttonCreate->setTextSize(17);
@@ -1032,12 +1032,12 @@ void FormBuilder::addWidget(const std::string& widgetName)
     std::string value;
     if (activeForm->activeWidget->widget->getProperty("ConfigFile", value))
     {
-        value = "images/widgets/White.conf"; /// Open window to input ConfigFile
+        value = WIDGETS_FOLDER "/White.conf"; /// TODO: Open window to input ConfigFile
         activeForm->activeWidget->widget->setProperty("ConfigFile", value);
     }
     else if (activeForm->activeWidget->widget->getProperty("Filename", value))
     {
-        value = "images/EmptyPicture.png"; /// Open window to input Filename
+        value = IMAGES_FOLDER "/EmptyPicture.png"; /// TODO: Open window to input Filename
         activeForm->activeWidget->widget->setProperty("Filename", value);
     }
 

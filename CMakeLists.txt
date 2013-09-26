@@ -20,18 +20,22 @@ endif()
 
 project(tgui)
 
-# include the configuration file
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
-
 # project version
 SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 6 )
+
+# include the configuration file
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 
 # project options
 tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
 
-if(WINDOWS)
+if (LINUX)
+    tgui_set_option( TGUI_FORM_BUILDER_USE_LOCAL_FILES FALSE BOOL "Use resources from current directory instead of from installed files." )
+endif()
+
+if (WINDOWS)
     tgui_set_option( TGUI_BUILD_FORM_BUILDER FALSE BOOL "Build the TGUI Form Builder" )
 else()
     tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
@@ -89,6 +93,12 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
+
+# Install the widgets and fonts on linux
+if (LINUX)
+    install( DIRECTORY widgets fonts
+             DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}" )
+endif()
 
 # Build the documentation when requested
 if (TGUI_BUILD_DOC)

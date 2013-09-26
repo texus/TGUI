@@ -3,7 +3,7 @@ if(WINDOWS)
     set(GUI_TYPE WIN32)
 elseif(MACOSX)
     set(GUI_TYPE MACOSX_BUNDLE)
-endif() 
+endif()
 
 # Include the header files
 include_directories( "${PROJECT_SOURCE_DIR}/include/TGUI/FormBuilder" )
@@ -21,15 +21,45 @@ if (MACOSX)
     target_link_libraries(FormBuilder ${FOUNDATION_LIB})
 endif()
 
-# The Form Builder must remember the location of the libraries, even when installed
 if (LINUX)
-    set_property(TARGET FormBuilder PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
 
-# Install the Form Builder
-install( TARGETS FormBuilder
-         DESTINATION "${CMAKE_SOURCE_DIR}/form-builder"
-         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+    # Define the paths to the data files
+    if (NOT TGUI_FORM_BUILDER_USE_LOCAL_FILES)
+        add_definitions( -DWIDGETS_FOLDER="${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/widgets" )
+        add_definitions( -DIMAGES_FOLDER="${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/form-builder-data/images" )
+        add_definitions( -DDATA_FOLDER="${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/form-builder-data" )
+        add_definitions( -DFONTS_FOLDER="${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/fonts" )
+    endif()
+
+    # The Form Builder must remember the location of the libraries, even when installed
+    set_property(TARGET FormBuilder PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+    # Rename the form builder executable
+    add_custom_command( TARGET FormBuilder POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/src/TGUI/FormBuilder/FormBuilder" "${CMAKE_SOURCE_DIR}/form-builder" )
+    add_custom_command( TARGET FormBuilder POST_BUILD COMMAND mv ARGS -f "${CMAKE_SOURCE_DIR}/form-builder/FormBuilder" "${CMAKE_SOURCE_DIR}/form-builder/tgui-form-builder" )
+
+    # Install the Form Builder
+    install(FILES "${CMAKE_SOURCE_DIR}/form-builder/tgui-form-builder"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+
+    # Install the data files of the form builder
+    install( FILES "${CMAKE_SOURCE_DIR}/form-builder/MenuBar"
+                   "${CMAKE_SOURCE_DIR}/form-builder/MenuBar_File"
+                   "${CMAKE_SOURCE_DIR}/form-builder/MenuBar_Edit"
+             DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/form-builder-data/"
+             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+
+    install( DIRECTORY "${CMAKE_SOURCE_DIR}/form-builder/images"
+             DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}/form-builder-data" )
+
+else()
+
+    # Install the Form Builder
+    install( TARGETS FormBuilder
+             DESTINATION "${CMAKE_SOURCE_DIR}/form-builder"
+             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+endif()
 
 # Check if you were linking dynamically to TGUI on window
 if (WINDOWS AND TGUI_SHARED_LIBS)

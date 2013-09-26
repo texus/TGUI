@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "../../../include/TGUI/FormBuilder/Form.hpp"
+#include "../../../include/TGUI/FormBuilder/FormBuilder.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +39,7 @@ Form::Form(tgui::Container& parent,
     activeWidget(formDataPtr),
     widgetToCopy(nullptr)
 {
-    window->load("images/widgets/White.conf");
+    window->load(WIDGETS_FOLDER "/White.conf");
     window->setSize(width, height);
     window->setTitle(filename);
     window->setTitleBarHeight(20);
@@ -52,7 +52,7 @@ Form::Form(tgui::Container& parent,
     // Initialize the selection squares
     {
         tgui::Button::Ptr square(*window);
-        square->load("images/square/square.conf");
+        square->load(IMAGES_FOLDER "/square/square.conf");
         square->hide();
 
         window->copy(square, "LeftSquare");

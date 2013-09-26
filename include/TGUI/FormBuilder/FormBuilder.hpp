@@ -36,6 +36,23 @@
 #include "Form.hpp"
 
 #define VERSION "v" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH)
+#define DEFAULT_FONT  "DejaVuSans.ttf"
+
+#ifndef WIDGETS_FOLDER
+    #define WIDGETS_FOLDER  "widgets"
+#endif
+
+#ifndef IMAGES_FOLDER
+    #define IMAGES_FOLDER   "images"
+#endif
+
+#ifndef DATA_FOLDER
+    #define DATA_FOLDER     "."
+#endif
+
+#ifndef FONTS_FOLDER
+    #define FONTS_FOLDER    "."
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
