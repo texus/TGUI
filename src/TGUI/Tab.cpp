@@ -279,6 +279,8 @@ namespace tgui
             if ((m_TextureNormal_L.data != nullptr) && (m_TextureNormal_M.data != nullptr) && (m_TextureNormal_R.data != nullptr))
             {
                 m_TabHeight = m_TextureNormal_M.getSize().y;
+
+                m_TextureNormal_M.data->texture.setRepeated(true);
             }
             else
             {
@@ -290,6 +292,8 @@ namespace tgui
             if ((m_TextureSelected_L.data != nullptr) && (m_TextureSelected_M.data != nullptr) && (m_TextureSelected_R.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Selected;
+
+                m_TextureSelected_M.data->texture.setRepeated(true);
             }
         }
         else // The image isn't split

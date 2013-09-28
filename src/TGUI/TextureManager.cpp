@@ -40,28 +40,17 @@ namespace tgui
 
     sf::Vector2u Texture::getSize() const
     {
-        return sf::Vector2u(sprite.getTextureRect().width, sprite.getTextureRect().height);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Texture::getWidth() const
-    {
-        return sprite.getTextureRect().width;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Texture::getHeight() const
-    {
-        return sprite.getTextureRect().height;
+        if (data != nullptr)
+            return data->texture.getSize();
+        else
+            return sf::Vector2u(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Texture::isTransparentPixel(unsigned int x, unsigned int y)
     {
-        if (data->image.getPixel(sprite.getTextureRect().left + x, sprite.getTextureRect().top + y).a == 0)
+        if (data->image->getPixel(x + data->rect.left, y + data->rect.top).a == 0)
             return true;
         else
             return false;
@@ -75,61 +64,69 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool TextureManager::getTexture(const std::string& filename, Texture& texture, const sf::IntRect& rect)
     {
-        // Loop all our textures to check if we already have this one
-        for (std::list<TextureData>::iterator it = m_Data.begin(); it != m_Data.end(); ++it)
+        // Look if we already had this image
+        auto imageIt = m_ImageMap.find(filename);
+        if (imageIt != m_ImageMap.end())
         {
-            // Check if the filename matches
-            if (it->filename == filename)
+            // Loop all our textures to find the one containing the image
+            for (std::list<TextureData>::iterator it = imageIt->second.data.begin(); it != imageIt->second.data.end(); ++it)
             {
-                // The texture is now used at multiple places
-                ++(it->users);
+                // Only reuse the texture when the exact same part of the image is used
+                if (it->rect == rect)
+                {
+                    // The texture is now used at multiple places
+                    ++(it->users);
 
-                // We already have the texture, so pass the data
-                texture.data = &(*it);
+                    // We already have the texture, so pass the data
+                    texture.data = &(*it);
 
-                // Set the texture in the sprite
-                texture.sprite.setTexture(it->texture, true);
+                    // Set the texture in the sprite
+                    texture.sprite.setTexture(it->texture, true);
 
-                // Set only a part of the texture when asked
-                if (rect != sf::IntRect(0, 0, 0, 0))
-                    texture.sprite.setTextureRect(rect);
-
-                return true;
+                    return true;
+                }
             }
+        }
+        else // The image doesn't exist yet
+        {
+            auto it = m_ImageMap.insert(std::make_pair(filename, ImageMapData()));
+            imageIt = it.first;
         }
 
         // Add new data to the list
-        m_Data.push_back(TextureData());
-        TextureData& data = m_Data.back();
+        imageIt->second.data.push_back(TextureData());
+        texture.data = &imageIt->second.data.back();
+        texture.data->image = &imageIt->second.image;
+        texture.data->rect = rect;
 
         // load the image
-        if (data.image.loadFromFile(filename))
+        if (texture.data->image->loadFromFile(filename))
         {
             // Create a texture from the image
-            if (data.texture.loadFromImage(data.image))
+            bool success;
+            if (rect == sf::IntRect(0, 0, 0, 0))
+                success = texture.data->texture.loadFromImage(*texture.data->image);
+            else
+                success = texture.data->texture.loadFromImage(*texture.data->image, rect);
+
+            if (success)
             {
                 // Set the texture in the sprite
-                texture.sprite.setTexture(data.texture, true);
-
-                // Set only a part of the texture when asked
-                if (rect != sf::IntRect(0, 0, 0, 0))
-                    texture.sprite.setTextureRect(rect);
+                texture.sprite.setTexture(texture.data->texture, true);
 
                 // Set the other members of the data
-                data.filename = filename;
-                data.users = 1;
-
-                // Pass the pointer
-                texture.data = &data;
+                texture.data->filename = filename;
+                texture.data->users = 1;
                 return true;
             }
         }
 
         // The image couldn't be loaded
-        m_Data.pop_back();
+        m_ImageMap.erase(imageIt);
         texture.data = nullptr;
         return false;
     }
@@ -138,21 +135,30 @@ namespace tgui
 
     bool TextureManager::copyTexture(const Texture& textureToCopy, Texture& newTexture)
     {
-        // Loop all our textures to check if we already have this one
-        for (std::list<TextureData>::iterator it = m_Data.begin(); it != m_Data.end(); ++it)
+        // Ignore null pointers
+        if (textureToCopy.data == nullptr)
         {
-            // Check if the pointer points to our texture
-            if (&(*it) == textureToCopy.data)
+            newTexture.data = nullptr;
+            return true;
+        }
+
+        // Loop all our textures to check if we already have this one
+        for (auto imageIt = m_ImageMap.begin(); imageIt != m_ImageMap.end(); ++imageIt)
+        {
+            for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
             {
-                // The texture is now used at multiple places
-                ++(it->users);
-                newTexture = textureToCopy;
-                return true;
+                // Check if the pointer points to our texture
+                if (&(*dataIt) == textureToCopy.data)
+                {
+                    // The texture is now used at multiple places
+                    ++(dataIt->users);
+                    newTexture = textureToCopy;
+                    return true;
+                }
             }
         }
 
-        // We didn't have the texture and we can't store it without a filename
-        newTexture.data = nullptr;
+        TGUI_OUTPUT("TGUI warning: Can't copy texture that wasn't loaded by TextureManager.");
         return false;
     }
 
@@ -161,23 +167,32 @@ namespace tgui
     void TextureManager::removeTexture(Texture& textureToRemove)
     {
         // Loop all our textures to check which one it is
-        for (std::list<TextureData>::iterator it = m_Data.begin(); it != m_Data.end(); ++it)
+        for (auto imageIt = m_ImageMap.begin(); imageIt != m_ImageMap.end(); ++imageIt)
         {
-            // Check if the pointer points to our texture
-            if (&(*it) == textureToRemove.data)
+            for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
             {
-                // If this was the only place where the texture is used then delete it
-                if (--(it->users) == 0)
+                // Check if the pointer points to our texture
+                if (&(*dataIt) == textureToRemove.data)
                 {
-                    // Remove the texture from the list
-                    m_Data.erase(it);
-                    break;
+                    // If this was the only place where the texture is used then delete it
+                    if (--(dataIt->users) == 0)
+                    {
+                        // Remove the texture from the list, or even the whole image if it isn't used anywhere else
+                        int usage = std::count_if(imageIt->second.data.begin(), imageIt->second.data.end(), [dataIt](TextureData& data){ return data.image == dataIt->image; });
+                        if (usage == 1)
+                            m_ImageMap.erase(imageIt);
+                        else
+                            imageIt->second.data.erase(dataIt);
+                    }
+
+                    // The pointer is now useless
+                    textureToRemove.data = nullptr;
+                    return;
                 }
             }
         }
 
-        // The pointer is now useless
-        textureToRemove.data = nullptr;
+        TGUI_OUTPUT("TGUI warning: Can't remove texture that wasn't loaded by TextureManager.");
         return;
     }
 

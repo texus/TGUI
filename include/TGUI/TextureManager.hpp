@@ -38,8 +38,11 @@ namespace tgui
 
     struct TextureData
     {
-        sf::Image     image;
+        TextureData() : image(nullptr) {}
+
+        sf::Image*    image;
         sf::Texture   texture;
+        sf::IntRect   rect;
         std::string   filename;
         unsigned int  users;
     };
@@ -53,9 +56,6 @@ namespace tgui
         Texture();
 
         sf::Vector2u getSize() const;
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-
         bool isTransparentPixel(unsigned int x, unsigned int y);
 
         operator const sf::Sprite&() const;
@@ -109,7 +109,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::list<TextureData> m_Data;
+        struct ImageMapData
+        {
+            sf::Image image;
+            std::list<TextureData> data;
+        };
+
+        std::map<std::string, ImageMapData> m_ImageMap;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

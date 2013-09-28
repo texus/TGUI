@@ -228,7 +228,7 @@ namespace tgui
         Transformable::setPosition(x, y);
 
         m_TextureUnchecked.sprite.setPosition(x, y);
-        m_TextureChecked.sprite.setPosition(x, y + m_TextureUnchecked.getHeight() - m_TextureChecked.getHeight());
+        m_TextureChecked.sprite.setPosition(x, y + m_TextureUnchecked.getSize().y - m_TextureChecked.getSize().y);
         m_TextureFocused.sprite.setPosition(x, y);
         m_TextureHover.sprite.setPosition(x, y);
 

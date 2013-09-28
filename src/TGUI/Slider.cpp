@@ -295,6 +295,8 @@ namespace tgui
 
                 // Set the thumb size
                 m_ThumbSize = sf::Vector2f(m_TextureThumbNormal.getSize());
+
+                m_TextureTrackNormal_M.data->texture.setRepeated(true);
             }
             else
             {
@@ -307,6 +309,8 @@ namespace tgui
              && (m_TextureTrackHover_R.data != nullptr) && (m_TextureThumbHover.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
+
+                m_TextureTrackHover_M.data->texture.setRepeated(true);
             }
         }
         else // The image isn't split

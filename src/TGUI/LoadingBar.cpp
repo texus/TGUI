@@ -253,6 +253,9 @@ namespace tgui
             {
                 m_Size.x = static_cast<float>(m_TextureBack_L.getSize().x + m_TextureBack_M.getSize().x + m_TextureBack_R.getSize().x);
                 m_Size.y = static_cast<float>(m_TextureBack_M.getSize().y);
+
+                m_TextureBack_M.data->texture.setRepeated(true);
+                m_TextureFront_M.data->texture.setRepeated(true);
             }
             else
             {
@@ -305,6 +308,10 @@ namespace tgui
         // Set the size of the loading bar
         m_Size.x = width;
         m_Size.y = height;
+
+        float minimumWidth = (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * (m_Size.y / m_TextureBack_M.getSize().y);
+        if (m_Size.x < minimumWidth)
+            m_Size.x = minimumWidth;
 
         // Recalculate the size of the front image
         recalculateSize();
@@ -657,33 +664,15 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
+            float totalWidth = m_Size.x / (m_Size.y / m_TextureBack_M.getSize().y);
+
             // Get the bounds of the sprites
             sf::IntRect bounds_L = m_TextureFront_L.sprite.getTextureRect();
             sf::IntRect bounds_M = m_TextureFront_M.sprite.getTextureRect();
             sf::IntRect bounds_R = m_TextureFront_R.sprite.getTextureRect();
 
-            bounds_L.width = m_TextureBack_L.sprite.getTextureRect().width;
-            bounds_M.width = m_TextureBack_M.sprite.getTextureRect().width;
-            bounds_R.width = m_TextureBack_R.sprite.getTextureRect().width;
-
-            // Calculate the necessary sizes
-            float totalWidth;
-            float middleTextureWidth;
+            // Calculate the size of the part to display
             float frontSize;
-
-            // Check if the middle image is drawn
-            if (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x < m_Size.x)
-            {
-                totalWidth = static_cast<float>(bounds_L.width + bounds_M.width + bounds_R.width);
-                middleTextureWidth = totalWidth - (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x);
-            }
-            else // The loading bar is too small
-            {
-                totalWidth = static_cast<float>(bounds_L.width + bounds_R.width);
-                middleTextureWidth = 0;
-            }
-
-            // Only change the width when not dividing by zero
             if ((m_Maximum - m_Minimum) > 0)
                 frontSize = totalWidth * ((m_Value - m_Minimum) / static_cast<float>(m_Maximum - m_Minimum));
             else
@@ -696,15 +685,21 @@ namespace tgui
                 if (frontSize > m_TextureBack_L.getSize().x)
                 {
                     // Check if a piece of the right part should be drawn
-                    if (frontSize > m_TextureBack_L.getSize().x + middleTextureWidth)
+                    if (frontSize > totalWidth - m_TextureBack_R.getSize().x)
                     {
+                        bounds_L.width = m_TextureBack_L.getSize().x;
+                        bounds_M.width = totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x;
+
                         // Check if the bar is not full
                         if (frontSize < totalWidth)
-                            bounds_R.width = static_cast<int>(frontSize - ((m_TextureBack_L.getSize().x) + middleTextureWidth));
+                            bounds_R.width = static_cast<int>(frontSize - (totalWidth - m_TextureBack_R.getSize().x));
+                        else
+                            bounds_R.width = m_TextureBack_R.getSize().x;
                     }
                     else // Only a part of the middle image should be drawn
                     {
-                        bounds_M.width = static_cast<int>((frontSize - (m_TextureBack_L.getSize().x)) / middleTextureWidth * m_TextureBack_M.getSize().x);
+                        bounds_L.width = m_TextureBack_L.getSize().x;
+                        bounds_M.width = static_cast<int>(frontSize - (m_TextureBack_L.getSize().x));
                         bounds_R.width = 0;
                     }
                 }
@@ -725,6 +720,9 @@ namespace tgui
             m_TextureFront_L.sprite.setTextureRect(bounds_L);
             m_TextureFront_M.sprite.setTextureRect(bounds_M);
             m_TextureFront_R.sprite.setTextureRect(bounds_R);
+
+            // Make sure that the back image is displayed correctly
+            m_TextureBack_M.sprite.setTextureRect(sf::IntRect(0, 0, totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x, m_TextureBack_M.getSize().y));
         }
         else // The image is not split
         {
@@ -767,7 +765,6 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Get the scale the images
             float scalingY = m_Size.y / m_TextureBack_M.getSize().y;
 
             // Scale the image
@@ -781,13 +778,14 @@ namespace tgui
             if ((scalingY * (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x)) < m_Size.x)
             {
                 // Put the middle image on the correct position
-                states.transform.translate(m_TextureBack_L.sprite.getGlobalBounds().width, 0);
-
+                states.transform.translate(m_TextureBack_L.getSize().x, 0);
+/*
                 // Calculate the scale for our middle image
                 float scaleX = (m_Size.x - ((m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * scalingY)) / m_TextureBack_M.getSize().x;
 
                 // Set the scale for the middle image
                 states.transform.scale(scaleX / scalingY, 1);
+*/
 
                 // Draw the middle image
                 target.draw(m_TextureBack_M, states);
@@ -795,10 +793,10 @@ namespace tgui
 
                 // Put the right image on the correct position
                 states.transform.translate(m_TextureBack_M.sprite.getGlobalBounds().width, 0);
-
+/*
                 // Set the scale for the right image
                 states.transform.scale(scalingY / scaleX, 1);
-
+*/
                 // Draw the right image
                 target.draw(m_TextureBack_R, states);
                 target.draw(m_TextureFront_R, states);
@@ -806,7 +804,7 @@ namespace tgui
             else // The loading bar isn't width enough, we will draw it at minimum size
             {
                 // Put the right image on the correct position
-                states.transform.translate(m_TextureBack_L.sprite.getGlobalBounds().width, 0);
+                states.transform.translate(m_TextureBack_L.getSize().x, 0);
 
                 // Draw the right image
                 target.draw(m_TextureBack_R, states);

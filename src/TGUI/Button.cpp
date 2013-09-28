@@ -335,6 +335,8 @@ namespace tgui
                 m_Loaded = true;
                 setSize(static_cast<float>(m_TextureNormal_L.getSize().x + m_TextureNormal_M.getSize().x + m_TextureNormal_R.getSize().x),
                         static_cast<float>(m_TextureNormal_M.getSize().y));
+
+                m_TextureNormal_M.data->texture.setRepeated(true);
             }
             else
             {
@@ -347,14 +349,20 @@ namespace tgui
             {
                 m_AllowFocus = true;
                 m_WidgetPhase |= WidgetPhase_Focused;
+
+                m_TextureFocused_M.data->texture.setRepeated(true);
             }
             if ((m_TextureHover_L.data != nullptr) && (m_TextureHover_M.data != nullptr) && (m_TextureHover_R.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_Hover;
+
+                m_TextureHover_M.data->texture.setRepeated(true);
             }
             if ((m_TextureDown_L.data != nullptr) && (m_TextureDown_M.data != nullptr) && (m_TextureDown_R.data != nullptr))
             {
                 m_WidgetPhase |= WidgetPhase_MouseDown;
+
+                m_TextureDown_M.data->texture.setRepeated(true);
             }
         }
         else // The image isn't split
@@ -413,22 +421,24 @@ namespace tgui
             // Check if the middle image may be drawn
             if ((m_TextureNormal_M.sprite.getScale().y * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
             {
-                m_TextureDown_M.sprite.setPosition(x + (m_TextureDown_L.getWidth() * m_TextureDown_L.sprite.getScale().x), y);
-                m_TextureHover_M.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
-                m_TextureNormal_M.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
-                m_TextureFocused_M.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+                float scalingY = m_Size.y / m_TextureNormal_M.getSize().y;
 
-                m_TextureDown_R.sprite.setPosition(m_TextureDown_M.sprite.getPosition().x + (m_TextureDown_M.getWidth() * m_TextureDown_M.sprite.getScale().x), y);
-                m_TextureHover_R.sprite.setPosition(m_TextureHover_M.sprite.getPosition().x + (m_TextureHover_M.getWidth() * m_TextureHover_M.sprite.getScale().x), y);
-                m_TextureNormal_R.sprite.setPosition(m_TextureNormal_M.sprite.getPosition().x + (m_TextureNormal_M.getWidth() * m_TextureNormal_M.sprite.getScale().x), y);
-                m_TextureFocused_R.sprite.setPosition(m_TextureFocused_M.sprite.getPosition().x + (m_TextureFocused_M.getWidth() * m_TextureFocused_M.sprite.getScale().x), y);
+                m_TextureDown_M.sprite.setPosition(x + (m_TextureDown_L.getSize().x * m_TextureDown_L.sprite.getScale().x), y);
+                m_TextureHover_M.sprite.setPosition(x + (m_TextureHover_L.getSize().x * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_M.sprite.setPosition(x + (m_TextureNormal_L.getSize().x * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_M.sprite.setPosition(x + (m_TextureFocused_L.getSize().x * m_TextureFocused_L.sprite.getScale().x), y);
+
+                m_TextureDown_R.sprite.setPosition(m_TextureDown_M.sprite.getPosition().x + (m_TextureDown_M.sprite.getTextureRect().width * scalingY), y);
+                m_TextureHover_R.sprite.setPosition(m_TextureHover_M.sprite.getPosition().x + (m_TextureHover_M.sprite.getTextureRect().width * scalingY), y);
+                m_TextureNormal_R.sprite.setPosition(m_TextureNormal_M.sprite.getPosition().x + (m_TextureNormal_M.sprite.getTextureRect().width * scalingY), y);
+                m_TextureFocused_R.sprite.setPosition(m_TextureFocused_M.sprite.getPosition().x + (m_TextureFocused_M.sprite.getTextureRect().width * scalingY), y);
             }
             else // The middle image isn't drawn
             {
-                m_TextureDown_R.sprite.setPosition(x + (m_TextureDown_L.getWidth() * m_TextureDown_L.sprite.getScale().x), y);
-                m_TextureHover_R.sprite.setPosition(x + (m_TextureHover_L.getWidth() * m_TextureHover_L.sprite.getScale().x), y);
-                m_TextureNormal_R.sprite.setPosition(x + (m_TextureNormal_L.getWidth() * m_TextureNormal_L.sprite.getScale().x), y);
-                m_TextureFocused_R.sprite.setPosition(x + (m_TextureFocused_L.getWidth() * m_TextureFocused_L.sprite.getScale().x), y);
+                m_TextureDown_R.sprite.setPosition(x + (m_TextureDown_L.getSize().x * m_TextureDown_L.sprite.getScale().x), y);
+                m_TextureHover_R.sprite.setPosition(x + (m_TextureHover_L.getSize().x * m_TextureHover_L.sprite.getScale().x), y);
+                m_TextureNormal_R.sprite.setPosition(x + (m_TextureNormal_L.getSize().x * m_TextureNormal_L.sprite.getScale().x), y);
+                m_TextureFocused_R.sprite.setPosition(x + (m_TextureFocused_L.getSize().x * m_TextureFocused_L.sprite.getScale().x), y);
             }
         }
         else // The images aren't split
@@ -456,6 +466,10 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
+        // A negative size is not allowed for this widget
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+
         // Recalculate the text size when auto sizing
         if (m_TextSize == 0)
             setText(m_Text.getString());
@@ -464,32 +478,25 @@ namespace tgui
         if (m_SplitImage)
         {
             float scalingY = m_Size.y / m_TextureNormal_M.getSize().y;
+            float minimumWidth = (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * scalingY;
+
+            if (m_Size.x < minimumWidth)
+                m_Size.x = minimumWidth;
 
             m_TextureDown_L.sprite.setScale(scalingY, scalingY);
             m_TextureHover_L.sprite.setScale(scalingY, scalingY);
             m_TextureNormal_L.sprite.setScale(scalingY, scalingY);
             m_TextureFocused_L.sprite.setScale(scalingY, scalingY);
 
-            // Check if the middle image may be drawn
-            if (((scalingY) * (m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x)) < m_Size.x)
-            {
-                // Calculate the scale for our middle image
-                float scaleX = (m_Size.x / m_TextureNormal_M.getSize().x) -
-                               (((m_TextureNormal_L.getSize().x + m_TextureNormal_R.getSize().x) * (scalingY))
-                                / m_TextureNormal_M.getSize().x);
+            m_TextureDown_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureDown_M.getSize().y));
+            m_TextureHover_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureHover_M.getSize().y));
+            m_TextureNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureNormal_M.getSize().y));
+            m_TextureFocused_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureFocused_M.getSize().y));
 
-                m_TextureDown_M.sprite.setScale(scaleX, scalingY);
-                m_TextureHover_M.sprite.setScale(scaleX, scalingY);
-                m_TextureNormal_M.sprite.setScale(scaleX, scalingY);
-                m_TextureFocused_M.sprite.setScale(scaleX, scalingY);
-            }
-            else // The middle image is not drawn
-            {
-                m_TextureDown_M.sprite.setScale(0, 0);
-                m_TextureHover_M.sprite.setScale(0, 0);
-                m_TextureNormal_M.sprite.setScale(0, 0);
-                m_TextureFocused_M.sprite.setScale(0, 0);
-            }
+            m_TextureDown_M.sprite.setScale(scalingY, scalingY);
+            m_TextureHover_M.sprite.setScale(scalingY, scalingY);
+            m_TextureNormal_M.sprite.setScale(scalingY, scalingY);
+            m_TextureFocused_M.sprite.setScale(scalingY, scalingY);
 
             m_TextureDown_R.sprite.setScale(scalingY, scalingY);
             m_TextureHover_R.sprite.setScale(scalingY, scalingY);
@@ -498,10 +505,10 @@ namespace tgui
         }
         else // The image is not split
         {
-            m_TextureDown_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
-            m_TextureHover_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureDown_M.sprite.setScale(m_Size.x / m_TextureDown_M.getSize().x, m_Size.y / m_TextureDown_M.getSize().y);
+            m_TextureHover_M.sprite.setScale(m_Size.x / m_TextureHover_M.getSize().x, m_Size.y / m_TextureHover_M.getSize().y);
             m_TextureNormal_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
-            m_TextureFocused_M.sprite.setScale(m_Size.x / m_TextureNormal_M.getSize().x, m_Size.y / m_TextureNormal_M.getSize().y);
+            m_TextureFocused_M.sprite.setScale(m_Size.x / m_TextureFocused_M.getSize().x, m_Size.y / m_TextureFocused_M.getSize().y);
         }
 
         // Recalculate the position of the images
