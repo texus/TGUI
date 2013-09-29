@@ -779,13 +779,6 @@ namespace tgui
             {
                 // Put the middle image on the correct position
                 states.transform.translate(m_TextureBack_L.getSize().x, 0);
-/*
-                // Calculate the scale for our middle image
-                float scaleX = (m_Size.x - ((m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * scalingY)) / m_TextureBack_M.getSize().x;
-
-                // Set the scale for the middle image
-                states.transform.scale(scaleX / scalingY, 1);
-*/
 
                 // Draw the middle image
                 target.draw(m_TextureBack_M, states);
@@ -793,10 +786,7 @@ namespace tgui
 
                 // Put the right image on the correct position
                 states.transform.translate(m_TextureBack_M.sprite.getGlobalBounds().width, 0);
-/*
-                // Set the scale for the right image
-                states.transform.scale(scalingY / scaleX, 1);
-*/
+
                 // Draw the right image
                 target.draw(m_TextureBack_R, states);
                 target.draw(m_TextureFront_R, states);
