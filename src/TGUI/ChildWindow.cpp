@@ -217,6 +217,34 @@ namespace tgui
                     TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + configFileFilename + ".");
                     return false;
                 }
+
+                m_SplitImage = false;
+            }
+            else if (property == "titlebarimage_l")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_L))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_L in section ChildWindow in " + configFileFilename + ".");
+                    return false;
+                }
+            }
+            else if (property == "titlebarimage_m")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_M))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_M in section ChildWindow in " + configFileFilename + ".");
+                    return false;
+                }
+
+                m_SplitImage = true;
+            }
+            else if (property == "titlebarimage_r")
+            {
+                if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_R))
+                {
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_R in section ChildWindow in " + configFileFilename + ".");
+                    return false;
+                }
             }
             else if (property == "closebuttonseparatehoverimage")
             {
@@ -282,15 +310,34 @@ namespace tgui
             return false;
         }
 
-        // Make sure the required texture was loaded
-        if ((m_TextureTitleBar_M.data != nullptr))
+        // Check if the image is split
+        if (m_SplitImage)
         {
-            m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
+            // Make sure the required textures was loaded
+            if ((m_TextureTitleBar_L.data != nullptr) && (m_TextureTitleBar_M.data != nullptr) && (m_TextureTitleBar_R.data != nullptr))
+            {
+                m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
+
+                m_TextureTitleBar_M.data->texture.setRepeated(true);
+            }
+            else
+            {
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
+                return false;
+            }
         }
-        else
+        else // The image isn't split
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
-            return false;
+            // Make sure the required texture was loaded
+            if (m_TextureTitleBar_M.data != nullptr)
+            {
+                m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
+            }
+            else
+            {
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
+                return false;
+            }
         }
 
         // Set the size of the title text
@@ -318,6 +365,26 @@ namespace tgui
         // Set the size of the window
         m_Size.x = width;
         m_Size.y = height;
+
+        if (m_SplitImage)
+        {
+            float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
+            float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
+
+            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
+                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+
+            m_TextureTitleBar_L.sprite.setScale(scalingY, scalingY);
+            m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
+            m_TextureTitleBar_R.sprite.setScale(scalingY, scalingY);
+
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+        }
+        else // The image is not split
+        {
+            m_TextureTitleBar_M.sprite.setScale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M.getSize().x,
+                                                static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
+        }
 
         // If there is a background texture then resize it
         if (m_BackgroundTexture)
@@ -370,6 +437,27 @@ namespace tgui
 
         // Set the size of the text in the title bar
         m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
+
+        // Recalculate the scale of the title bar images
+        if (m_SplitImage)
+        {
+            float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
+            float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
+
+            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
+                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+
+            m_TextureTitleBar_L.sprite.setScale(scalingY, scalingY);
+            m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
+            m_TextureTitleBar_R.sprite.setScale(scalingY, scalingY);
+
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+        }
+        else // The image is not split
+        {
+            m_TextureTitleBar_M.sprite.setScale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M.getSize().x,
+                                                static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -466,6 +554,23 @@ namespace tgui
         m_TopBorder    = topBorder;
         m_RightBorder  = rightBorder;
         m_BottomBorder = bottomBorder;
+
+        // Recalculate the scale of the title bar images
+        if (m_SplitImage)
+        {
+            float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
+            float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
+
+            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
+                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+        }
+        else // The image is not split
+        {
+            m_TextureTitleBar_M.sprite.setScale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M.getSize().x,
+                                                static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1014,20 +1119,22 @@ namespace tgui
         // Check if the title bar image is split
         if (m_SplitImage)
         {
-            // Split image is not supported yet
-            return;
+            target.draw(m_TextureTitleBar_L, states);
+
+            states.transform.translate(m_TextureTitleBar_L.getSize().x * (static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y), 0);
+            target.draw(m_TextureTitleBar_M, states);
+
+            states.transform.translate(m_Size.x + m_LeftBorder + m_RightBorder - ((m_TextureTitleBar_R.getSize().x + m_TextureTitleBar_L.getSize().x)
+                                                                                  * (static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y)), 0);
+            target.draw(m_TextureTitleBar_R, states);
         }
         else // The title bar image isn't split
         {
-            // Scale the title bar
-            states.transform.scale((m_Size.x + m_LeftBorder + m_RightBorder) / m_TextureTitleBar_M.getSize().x, static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y);
-
             // Draw the title bar
             target.draw(m_TextureTitleBar_M, states);
-
-            // Undo the scaling
-            states.transform.scale(static_cast<float>(m_TextureTitleBar_M.getSize().x) / (m_Size.x + m_LeftBorder + m_RightBorder), static_cast<float>(m_TextureTitleBar_M.getSize().y) / m_TitleBarHeight);
         }
+
+        states.transform = oldTransform;
 
         // Draw a window icon if one was set
         if (m_IconTexture.data)
