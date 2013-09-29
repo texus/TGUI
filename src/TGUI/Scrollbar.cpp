@@ -283,6 +283,7 @@ namespace tgui
         if (m_SplitImage)
         {
             TGUI_OUTPUT("TGUI error: SplitImage is not supported in Scrollbar.");
+            return false;
 /*
             // Make sure the required textures were loaded
             if ((m_TextureTrackNormal_L.data != nullptr) && (m_TextureTrackNormal_M.data != nullptr) && (m_TextureTrackNormal_R.data != nullptr)

@@ -309,9 +309,12 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
-        float minimumWidth = (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * (m_Size.y / m_TextureBack_M.getSize().y);
-        if (m_Size.x < minimumWidth)
-            m_Size.x = minimumWidth;
+        if (m_SplitImage)
+        {
+            float minimumWidth = (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x) * (m_Size.y / m_TextureBack_M.getSize().y);
+            if (m_Size.x < minimumWidth)
+                m_Size.x = minimumWidth;
+        }
 
         // Recalculate the size of the front image
         recalculateSize();

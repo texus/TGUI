@@ -283,6 +283,9 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
+            TGUI_OUTPUT("TGUI error: SplitImage is not supported in Slider.");
+            return false;
+/*
             // Make sure the required textures were loaded
             if ((m_TextureTrackNormal_L.data != nullptr) && (m_TextureTrackNormal_M.data != nullptr)
              && (m_TextureTrackNormal_R.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
@@ -312,6 +315,7 @@ namespace tgui
 
                 m_TextureTrackHover_M.data->texture.setRepeated(true);
             }
+*/
         }
         else // The image isn't split
         {
@@ -363,6 +367,31 @@ namespace tgui
         if (m_Size.x < 0) m_Size.x = -m_Size.x;
         if (m_Size.y < 0) m_Size.y = -m_Size.y;
 
+        // Apply the miniumum size and set the texture rect of the middle image
+        if (m_SplitImage)
+        {
+            if (m_VerticalImage)
+            {
+                float scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+                float minimumHeight = (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_R.getSize().y) * scalingX;
+                if (m_Size.y < minimumHeight)
+                    m_Size.y = minimumHeight;
+
+                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, (m_Size.y - minimumHeight) / scalingX));
+                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackHover_M.getSize().x, (m_Size.y - minimumHeight) / scalingX));
+            }
+            else // Slider image lies horizontal
+            {
+                float scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+                float minimumWidth = (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scalingY;
+                if (m_Size.x < minimumWidth)
+                    m_Size.x = minimumWidth;
+
+                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureTrackNormal_M.getSize().y));
+                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureTrackHover_M.getSize().y));
+            }
+        }
+
         // Set the thumb size
         if (m_VerticalImage == m_VerticalScroll)
         {
@@ -377,7 +406,7 @@ namespace tgui
                 m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
             }
         }
-        else
+        else // m_VerticalImage != m_VerticalScroll
         {
             if (m_VerticalScroll)
             {
@@ -476,40 +505,16 @@ namespace tgui
             if (m_VerticalScroll)
             {
                 if (m_Size.x > m_Size.y)
-                    m_Size = sf::Vector2f(m_Size.y, m_Size.x);
+                    setSize(m_Size.y, m_Size.x);
+                else
+                    setSize(m_Size.x, m_Size.y);
             }
             else // The slider lies horizontal
             {
                 if (m_Size.y > m_Size.x)
-                    m_Size = sf::Vector2f(m_Size.y, m_Size.x);
-            }
-
-            // Set the thumb size
-            if (m_VerticalImage == m_VerticalScroll)
-            {
-                if (m_VerticalScroll)
-                {
-                    m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
-                    m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
-                }
+                    setSize(m_Size.y, m_Size.x);
                 else
-                {
-                    m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
-                    m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
-                }
-            }
-            else
-            {
-                if (m_VerticalScroll)
-                {
-                    m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
-                    m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
-                }
-                else
-                {
-                    m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
-                    m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
-                }
+                    setSize(m_Size.x, m_Size.y);
             }
         }
     }
