@@ -1014,9 +1014,9 @@ namespace tgui
             {
                 // Give the text the correct color
                 if (m_SelectedTab == static_cast<int>(i))
-                    tempText.setColor(sf::Color(m_SelectedTextColor.r, m_SelectedTextColor.g, m_SelectedTextColor.b, m_Opacity));
+                    tempText.setColor(m_SelectedTextColor);
                 else
-                    tempText.setColor(sf::Color(m_TextColor.r, m_TextColor.g, m_TextColor.b, m_Opacity));
+                    tempText.setColor(m_TextColor);
 
                 // Get the current size of the text, so that we can recalculate the position
                 tempText.setString(m_TabNames[i]);

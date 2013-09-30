@@ -757,12 +757,6 @@ namespace tgui
 
         if (m_Scroll != nullptr)
             m_Scroll->setTransparency(m_Opacity);
-
-        m_BackgroundColor.a = m_Opacity;
-        m_TextColor.a = m_Opacity;
-        m_SelectedBackgroundColor.a = m_Opacity;
-        m_SelectedTextColor.a = m_Opacity;
-        m_BorderColor.a = m_Opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

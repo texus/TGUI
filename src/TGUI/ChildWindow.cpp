@@ -496,11 +496,6 @@ namespace tgui
         m_TextureTitleBar_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
         m_CloseButton->setTransparency(m_Opacity);
-
-        m_TitleText.setColor(sf::Color(m_TitleText.getColor().r, m_TitleText.getColor().g, m_TitleText.getColor().b, m_Opacity));
-
-        m_BackgroundColor.a = m_Opacity;
-        m_BorderColor.a = m_Opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

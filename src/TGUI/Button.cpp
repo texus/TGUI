@@ -631,8 +631,6 @@ namespace tgui
         m_TextureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureFocused_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-
-        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

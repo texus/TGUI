@@ -157,8 +157,6 @@ namespace tgui
     {
         Container::setTransparency(transparency);
 
-        m_BackgroundColor.a = m_Opacity;
-
         m_Sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
 

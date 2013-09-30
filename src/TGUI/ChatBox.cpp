@@ -540,7 +540,6 @@ namespace tgui
     {
         Widget::setTransparency(transparency);
 
-        m_BorderColor.a = m_Opacity;
         m_Panel->setTransparency(transparency);
 
         if (m_Scroll != nullptr)

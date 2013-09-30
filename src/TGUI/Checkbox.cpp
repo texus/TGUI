@@ -419,8 +419,6 @@ namespace tgui
         m_TextureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureFocused.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-
-        m_Text.setColor(sf::Color(m_Text.getColor().r, m_Text.getColor().g, m_Text.getColor().b, m_Opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
