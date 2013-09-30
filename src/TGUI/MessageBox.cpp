@@ -51,9 +51,16 @@ namespace tgui
     {
         removeAllWidgets();
 
-        m_Label = messageBoxToCopy.m_Label.clone();
-        m_Label->setText("");
-        add(m_Label, "MessageBoxText");
+        m_Label = copy(messageBoxToCopy.m_Label, "MessageBoxText");
+
+        for (auto it = messageBoxToCopy.m_Buttons.begin(); it != messageBoxToCopy.m_Buttons.end(); ++it)
+        {
+            tgui::Button::Ptr button = copy(*it);
+            button->unbindAllCallback();
+            button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
+
+            m_Buttons.push_back(button);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
