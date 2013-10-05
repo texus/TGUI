@@ -35,7 +35,8 @@ FormBuilder::FormBuilder() :
     activeForm      (nullptr),
     draggingWidget  (false),
     scalingWidget   (NoSelectionSquare),
-    oldMousePosition(0, 0)
+    oldMousePosition(0, 0),
+    propertyChanged (false)
 {
     gui.setGlobalFont(FONTS_FOLDER "/" DEFAULT_FONT);
     panel->setGlobalFont(gui.getGlobalFont());
@@ -886,6 +887,7 @@ void FormBuilder::recreateProperties()
 
         // Set a callback when changing the value
         value->bindCallback(std::bind(&FormBuilder::changeProperty, this, value, property), tgui::EditBox::ReturnKeyPressed | tgui::EditBox::Unfocused);
+        value->bindCallback([=](){ propertyChanged = true; }, tgui::EditBox::TextChanged);
 
         // Don't allow text input for numbers
         if ((it->second.type == "int") || (it->second.type == "uint") || (it->second.type == "byte"))
@@ -1140,6 +1142,12 @@ void FormBuilder::selectDifferentWidget()
 
 void FormBuilder::changeProperty(tgui::EditBox::Ptr value, tgui::EditBox::Ptr property)
 {
+    // Ignore the callback when the contents of the edit box hasn't changed
+    if (!propertyChanged)
+        return;
+
+    propertyChanged = false;
+
     if (activeForm->activeWidget->widget != nullptr)
     {
         if (property->getText() == "Name")
