@@ -280,9 +280,12 @@ namespace tgui
             removeLine(0);
 
         Label::Ptr label(*m_Panel);
-        label->setText(text);
         label->setTextColor(color);
         label->setTextSize(m_TextSize);
+
+        Label::Ptr tempLine;
+        tempLine->setTextSize(m_TextSize);
+        tempLine->setTextFont(*label->getTextFont());
 
         float width;
         if (m_Scroll == nullptr)
@@ -294,17 +297,21 @@ namespace tgui
             width = 0;
 
         // Split the label over multiple lines if necessary
-        unsigned int character = 1;
-        while (label->getSize().x + 4.0f > width)
+        unsigned int pos = 0;
+        unsigned int size = 0;
+        while (pos + size < text.getSize())
         {
-            label->setText(text.toWideString().substr(0, character));
+            tempLine->setText(text.toWideString().substr(pos, ++size));
 
-            while (label->getSize().x + 4.0f <= width)
-                label->setText(text.toWideString().substr(0, ++character));
+            if (tempLine->getSize().x + 4.0f > width)
+            {
+                label->setText(label->getText() + text.toWideString().substr(pos, size - 1) + "\n");
 
-            text.insert(character - 1, '\n');
-            label->setText(text);
+                pos = pos + size - 1;
+                size = 0;
+            }
         }
+        label->setText(label->getText() + tempLine->getText());
 
         m_FullTextHeight += label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
 
