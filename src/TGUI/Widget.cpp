@@ -183,54 +183,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::extractPhases(std::string phases)
-    {
-        bool nextPhaseFound = true;
-        std::string::size_type commaPos;
-
-        while (nextPhaseFound)
-        {
-            // Search for the next comma
-            commaPos = phases.find(',', 0);
-
-            // Check if there was a comma
-            if (commaPos != std::string::npos)
-            {
-                // Get the next phase
-                std::string SinglePhase = phases.substr(0, commaPos);
-
-                // Store the phase
-                if (SinglePhase.compare("hover") == 0)
-                    m_WidgetPhase |= WidgetPhase_Hover;
-                else if (SinglePhase.compare("focus") == 0)
-                    m_WidgetPhase |= WidgetPhase_Focused;
-                else if (SinglePhase.compare("down") == 0)
-                    m_WidgetPhase |= WidgetPhase_MouseDown;
-                else if (SinglePhase.compare("selected") == 0)
-                    m_WidgetPhase |= WidgetPhase_Selected;
-
-                // Remove this phase from the string
-                phases.erase(0, commaPos+1);
-            }
-            else // There was no comma
-            {
-                nextPhaseFound = false;
-
-                // Store the phase
-                if (phases.compare("hover") == 0)
-                    m_WidgetPhase |= WidgetPhase_Hover;
-                else if (phases.compare("focus") == 0)
-                    m_WidgetPhase |= WidgetPhase_Focused;
-                else if (phases.compare("down") == 0)
-                    m_WidgetPhase |= WidgetPhase_MouseDown;
-                else if (phases.compare("selected") == 0)
-                    m_WidgetPhase |= WidgetPhase_Selected;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::focus()
     {
         if (m_Parent)
