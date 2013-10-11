@@ -71,8 +71,11 @@ endif()
 
 # Copy the resource files to the bundle on mac
 if (MACOSX)
-    install( DIRECTORY "${PROJECT_SOURCE_DIR}/form-builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
-    install( FILES "${PROJECT_SOURCE_DIR}/form-builder/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
-    install( FILES "${PROJECT_SOURCE_DIR}/form-builder/FormObjectsWindow.txt" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( DIRECTORY "${CMAKE_SOURCE_DIR}/form-builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( DIRECTORY "${CMAKE_SOURCE_DIR}/widgets" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${CMAKE_SOURCE_DIR}/fonts/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${CMAKE_SOURCE_DIR}/form-builder/MenuBar" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${CMAKE_SOURCE_DIR}/form-builder/MenuBar_File" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
+    install( FILES "${CMAKE_SOURCE_DIR}/form-builder/MenuBar_Edit" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
 endif()
 
