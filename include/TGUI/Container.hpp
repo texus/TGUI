@@ -135,7 +135,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds an widget to the container.
+        /// \brief Adds a widget to the container.
         ///
         /// \param widgetPtr   Pointer to the widget you would like to add
         /// \param widgetName  If you want to access the widget later then you must do this with this name
@@ -272,7 +272,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses an widget.
+        /// \brief Focuses a widget.
         ///
         /// The previously focused widget will be unfocused.
         ///
@@ -283,7 +283,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses an widget.
+        /// \brief Focuses a widget.
         ///
         /// The previously focused widget will be unfocused.
         ///
@@ -328,7 +328,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an widget before all other widgets.
+        /// \brief Places a widget before all other widgets.
         ///
         /// \param widget  The widget that should be moved to the front
         ///
@@ -337,7 +337,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an widget behind all other widgets.
+        /// \brief Places a widget behind all other widgets.
         ///
         /// \param widget  The widget that should be moved to the back
         ///

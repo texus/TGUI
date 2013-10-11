@@ -168,7 +168,7 @@ namespace tgui
         ///
         /// \return Is the widget loaded?
         ///
-        /// When an widget is not loaded correctly then it will not be drawn.
+        /// When a widget is not loaded correctly then it will not be drawn.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isLoaded() const;
@@ -419,7 +419,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        // When an widget is disabled, it will no longer receive events
+        // When a widget is disabled, it will no longer receive events
         bool m_Enabled;
 
         // Is the widget visible? When it is invisible it will not receive events and it won't be drawn.

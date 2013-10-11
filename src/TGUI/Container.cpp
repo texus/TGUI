@@ -970,7 +970,7 @@ namespace tgui
         // Loop through all widgets
         for (unsigned int i = 0; i < m_Widgets.size(); ++i)
         {
-            // Check if the widget is a container or an widget that uses the time
+            // Check if the widget is a container or a widget that uses the time
             if (m_Widgets[i]->m_AnimatedWidget)
             {
                 // Update the elapsed time
@@ -1004,7 +1004,7 @@ namespace tgui
                 }
             }
 
-            // Check if the mouse is on top of an widget
+            // Check if the mouse is on top of a widget
             Widget::Ptr widget = mouseOnWhichWidget(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
             if (widget != nullptr)
             {
@@ -1022,7 +1022,7 @@ namespace tgui
             // Check if the left mouse was pressed
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                // Check if the mouse is on top of an widget
+                // Check if the mouse is on top of a widget
                 Widget::Ptr widget = mouseOnWhichWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 if (widget != nullptr)
                 {
@@ -1044,7 +1044,7 @@ namespace tgui
                     widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     return true;
                 }
-                else // The mouse didn't went down on an widget, so unfocus the focused widget
+                else // The mouse didn't went down on a widget, so unfocus the focused widget
                     unfocusWidgets();
             }
 
@@ -1057,7 +1057,7 @@ namespace tgui
             // Check if the left mouse was released
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                // Check if the mouse is on top of an widget
+                // Check if the mouse is on top of a widget
                 Widget::Ptr widget = mouseOnWhichWidget(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                 if (widget != nullptr)
                     widget->leftMouseReleased(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));

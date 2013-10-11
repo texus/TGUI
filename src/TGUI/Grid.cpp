@@ -56,7 +56,7 @@ namespace tgui
                 // Find the widget that belongs in this square
                 for (unsigned int i = 0; i < widgets.size(); ++i)
                 {
-                    // If an widget matches then add it to the grid
+                    // If a widget matches then add it to the grid
                     if (widgets[i] == gridToCopy.m_GridWidgets[row][col])
                         addWidget(widgets[i], row, col, gridToCopy.m_ObjBorders[row][col], gridToCopy.m_ObjLayout[row][col]);
                 }

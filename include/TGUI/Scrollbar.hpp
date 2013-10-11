@@ -111,7 +111,6 @@ namespace tgui
         ///
         /// \param maximum  The new maximum value
         ///
-        /// When the minimum value is higher than the new maximum then it will be changed to this new maximum value.
         /// When the value is bigger than (maximum - low value), the value is set to maximum - low value.
         /// The default maximum value is 10.
         ///

@@ -76,7 +76,7 @@ namespace tgui
         /// \brief Loads a texture.
         ///
         /// \param filename  Filename of the image to load.
-        /// \param texture   The texture widget to store the loaded image.
+        /// \param texture   The texture object to store the loaded image.
         /// \param rect      Load only part of the image. Don't pass this parameter if you want to load the full image.
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.

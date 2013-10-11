@@ -181,7 +181,7 @@ namespace tgui
         ///
         /// \param buttonCaption  The caption of the button.
         ///
-        /// When receiving a callback with the ButtonClicked trigge then callback.text will contain this caption to identify
+        /// When receiving a callback with the ButtonClicked trigger then callback.text will contain this caption to identify
         /// the clicked button.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

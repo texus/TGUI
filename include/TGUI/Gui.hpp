@@ -202,7 +202,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds an widget to the container.
+        /// \brief Adds a widget to the container.
         ///
         /// \param widgetPtr   Pointer to the widget you would like to add
         /// \param widgetName  If you want to access the widget later then you must do this with this name
@@ -330,7 +330,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses an widget.
+        /// \brief Focuses a widget.
         ///
         /// The previously focused widget will be unfocused.
         ///
@@ -375,7 +375,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an widget before all other widgets.
+        /// \brief Places a widget before all other widgets.
         ///
         /// \param widget  The widget that should be moved to the front
         ///
@@ -384,7 +384,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places an widget behind all other widgets.
+        /// \brief Places a widget behind all other widgets.
         ///
         /// \param widget  The widget that should be moved to the back
         ///
@@ -468,12 +468,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // TGUI uses this function internally to handle widget callbacks.
-        // When you tell an widget to send its callbacks to its parent then this function is called.
+        // When you tell a widget to send its callbacks to its parent then this function is called.
         //
         // When one or more global callback functions were set then these functions will be called.
         // Otherwise, the callback will be added to the callback queue and you will be able to poll it later with pollCallback.
         //
-        // You can use this function to fake an widget callback.
+        // You can use this function to fake a widget callback.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addChildCallback(const Callback& callback);
 
