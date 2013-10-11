@@ -43,6 +43,7 @@ endif()
 
 # Set some useful compile flags.
 if( COMPILER_GCC )
+
     if( NOT CMAKE_CXX_FLAGS )
         set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++0x" CACHE STRING "C++ compiler flags" FORCE )
         set( CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE )
@@ -52,6 +53,19 @@ if( COMPILER_GCC )
         set( CMAKE_CXX_FLAGS_DEBUG "-g -O0 -std=c++0x" CACHE STRING "C++ compiler flags (debug)" FORCE )
         set( CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "C++ compiler flags (debug)" FORCE )
     endif()
+
+elseif ( COMPILER_CLANG )
+
+    if( NOT CMAKE_CXX_FLAGS )
+        set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11 -stdlib=libc++" CACHE STRING "C++ compiler flags" FORCE )
+        set( CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE )
+    endif()
+
+    if( NOT CMAKE_CXX_FLAGS_DEBUG )
+        set( CMAKE_CXX_FLAGS_DEBUG "-g -O0 -std=c++11 -stdlib=libc++" CACHE STRING "C++ compiler flags (debug)" FORCE )
+        set( CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "C++ compiler flags (debug)" FORCE )
+    endif()
+
 endif()
 
 # Define an option for choosing between static and dynamic C runtime (VC++ only)
