@@ -35,6 +35,10 @@
 #include "MenuBar.hpp"
 #include "Form.hpp"
 
+#ifdef __APPLE__
+    #include "CoreFoundation/CoreFoundation.h"
+#endif
+
 #define VERSION "v" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH)
 #define DEFAULT_FONT  "DejaVuSans.ttf"
 
