@@ -89,7 +89,7 @@ namespace tgui
         /// \brief Share the image with another texture.
         ///
         /// \param textureToCopy  The original texture.
-        /// \param newTexture     The texture that will get the same image as the texture that is being c
+        /// \param newTexture     The texture that will get the same image as the texture that is being copied
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool copyTexture(const Texture& textureToCopy, Texture& newTexture);
