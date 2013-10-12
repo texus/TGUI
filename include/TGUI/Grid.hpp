@@ -194,7 +194,7 @@ namespace tgui
         /// \param row     The row that the widget is in
         /// \param column  The column that the widget is in
         ///
-        /// When there is no widget in the square, the function will return a nullptr.
+        /// \return The widget inside the given square, or nullptr when the square doesn't contain a widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr getWidget(unsigned int row, unsigned int column);
@@ -212,12 +212,18 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes borders of a given widget.
         ///
+        /// \param widget  The widget to which borders should be added
+        /// \param borders The new borders around the widget
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeWidgetBorders(const Widget::Ptr& widget, const Borders& borders = Borders(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the layout of a given widget.
+        ///
+        /// \param widget  The widget for which the layout should be changed
+        /// \param layout  The new layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout = Layout::Center);
