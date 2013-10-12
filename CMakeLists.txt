@@ -84,6 +84,13 @@ if(WINDOWS AND COMPILER_MSVC)
     endif()
 endif()
 
+# Set the correct architecture on mac
+if ( MACOSX )
+    if( NOT CMAKE_OSX_ARCHITECTURES )
+        set( CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE )
+    endif()
+endif()
+
 # Link to the static sfml libraries when building tgui statically
 if(NOT TGUI_SHARED_LIBS)
     set(SFML_STATIC_LIBRARIES TRUE)
