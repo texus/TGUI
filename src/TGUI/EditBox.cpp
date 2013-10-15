@@ -511,9 +511,9 @@ namespace tgui
             m_TextureNormal_L.sprite.setScale(scalingY, scalingY);
             m_TextureFocused_L.sprite.setScale(scalingY, scalingY);
 
-            m_TextureHover_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureHover_M.getSize().y));
-            m_TextureNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureNormal_M.getSize().y));
-            m_TextureFocused_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureFocused_M.getSize().y));
+            m_TextureHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureHover_M.getSize().y));
+            m_TextureNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureNormal_M.getSize().y));
+            m_TextureFocused_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureFocused_M.getSize().y));
 
             m_TextureHover_M.sprite.setScale(scalingY, scalingY);
             m_TextureNormal_M.sprite.setScale(scalingY, scalingY);

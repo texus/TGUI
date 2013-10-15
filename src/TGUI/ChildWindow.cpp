@@ -380,7 +380,7 @@ namespace tgui
             m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
             m_TextureTitleBar_R.sprite.setScale(scalingY, scalingY);
 
-            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY), m_TextureTitleBar_M.getSize().y));
         }
         else // The image is not split
         {
@@ -453,7 +453,7 @@ namespace tgui
             m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
             m_TextureTitleBar_R.sprite.setScale(scalingY, scalingY);
 
-            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY), m_TextureTitleBar_M.getSize().y));
         }
         else // The image is not split
         {
@@ -561,7 +561,7 @@ namespace tgui
             if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
                 m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
 
-            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, ((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY, m_TextureTitleBar_M.getSize().y));
+            m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY), m_TextureTitleBar_M.getSize().y));
         }
         else // The image is not split
         {

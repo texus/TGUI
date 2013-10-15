@@ -286,9 +286,9 @@ namespace tgui
 
         // Set the size of the list box
         if (m_NrOfItemsToDisplay > 0)
-            m_ListBox->setSize(width, m_ListBox->getItemHeight() * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) + 2*m_BottomBorder);
+            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size())) + 2*m_BottomBorder));
         else
-            m_ListBox->setSize(width, m_ListBox->getItemHeight() * m_ListBox->getItems().size() + 2*m_BottomBorder);
+            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * m_ListBox->getItems().size() + 2*m_BottomBorder));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

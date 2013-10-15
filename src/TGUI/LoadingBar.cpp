@@ -689,7 +689,7 @@ namespace tgui
                     if (frontSize > totalWidth - m_TextureBack_R.getSize().x)
                     {
                         bounds_L.width = m_TextureBack_L.getSize().x;
-                        bounds_M.width = totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x;
+                        bounds_M.width = static_cast<int>(totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x);
 
                         // Check if the bar is not full
                         if (frontSize < totalWidth)
@@ -723,7 +723,7 @@ namespace tgui
             m_TextureFront_R.sprite.setTextureRect(bounds_R);
 
             // Make sure that the back image is displayed correctly
-            m_TextureBack_M.sprite.setTextureRect(sf::IntRect(0, 0, totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x, m_TextureBack_M.getSize().y));
+            m_TextureBack_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(totalWidth - m_TextureBack_L.getSize().x - m_TextureBack_R.getSize().x), m_TextureBack_M.getSize().y));
         }
         else // The image is not split
         {
@@ -779,7 +779,7 @@ namespace tgui
             if ((scalingY * (m_TextureBack_L.getSize().x + m_TextureBack_R.getSize().x)) < m_Size.x)
             {
                 // Put the middle image on the correct position
-                states.transform.translate(m_TextureBack_L.getSize().x, 0);
+                states.transform.translate(static_cast<float>(m_TextureBack_L.getSize().x), 0);
 
                 // Draw the middle image
                 target.draw(m_TextureBack_M, states);
@@ -795,7 +795,7 @@ namespace tgui
             else // The loading bar isn't width enough, we will draw it at minimum size
             {
                 // Put the right image on the correct position
-                states.transform.translate(m_TextureBack_L.getSize().x, 0);
+                states.transform.translate(static_cast<float>(m_TextureBack_L.getSize().x), 0);
 
                 // Draw the right image
                 target.draw(m_TextureBack_R, states);

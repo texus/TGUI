@@ -377,8 +377,8 @@ namespace tgui
                 if (m_Size.y < minimumHeight)
                     m_Size.y = minimumHeight;
 
-                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, (m_Size.y - minimumHeight) / scalingX));
-                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackHover_M.getSize().x, (m_Size.y - minimumHeight) / scalingX));
+                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scalingX)));
+                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackHover_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scalingX)));
             }
             else // Slider image lies horizontal
             {
@@ -387,8 +387,8 @@ namespace tgui
                 if (m_Size.x < minimumWidth)
                     m_Size.x = minimumWidth;
 
-                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureTrackNormal_M.getSize().y));
-                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, (m_Size.x - minimumWidth) / scalingY, m_TextureTrackHover_M.getSize().y));
+                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureTrackNormal_M.getSize().y));
+                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureTrackHover_M.getSize().y));
             }
         }
 
