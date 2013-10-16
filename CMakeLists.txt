@@ -73,8 +73,8 @@ if(SFML_OS_WINDOWS)
     tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
 
     # The following combination of flags is not valid
-    if (BUILD_SHARED_LIBS AND TGUI_USE_STATIC_STD_LIBS)
-        message(FATAL_ERROR "BUILD_SHARED_LIBS and TGUI_USE_STATIC_STD_LIBS cannot be used together")
+    if (TGUI_SHARED_LIBS AND TGUI_USE_STATIC_STD_LIBS)
+        message(FATAL_ERROR "TGUI_SHARED_LIBS and TGUI_USE_STATIC_STD_LIBS cannot be used together")
     endif()
 
     # Apply it globally by modifying the compiler flags
