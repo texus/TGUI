@@ -31,18 +31,18 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
 
-if (LINUX)
+if (SFML_OS_LINUX)
     tgui_set_option( TGUI_FORM_BUILDER_USE_LOCAL_FILES FALSE BOOL "Use resources from current directory instead of from installed files." )
 endif()
 
-if (WINDOWS)
+if (SFML_OS_WINDOWS)
     tgui_set_option( TGUI_BUILD_FORM_BUILDER FALSE BOOL "Build the TGUI Form Builder" )
 else()
     tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
 endif()
 
 # Set some useful compile flags.
-if( COMPILER_GCC )
+if( SFML_COMPILER_GCC )
 
     if( NOT CMAKE_CXX_FLAGS )
         set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++0x" CACHE STRING "C++ compiler flags" FORCE )
@@ -54,7 +54,7 @@ if( COMPILER_GCC )
         set( CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "C++ compiler flags (debug)" FORCE )
     endif()
 
-elseif ( COMPILER_CLANG )
+elseif ( SFML_COMPILER_CLANG )
 
     if( NOT CMAKE_CXX_FLAGS )
         set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11 -stdlib=libc++" CACHE STRING "C++ compiler flags" FORCE )
@@ -69,11 +69,16 @@ elseif ( COMPILER_CLANG )
 endif()
 
 # Define an option for choosing between static and dynamic C runtime (VC++ only)
-if(WINDOWS AND COMPILER_MSVC)
+if(SFML_OS_WINDOWS)
     tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
 
+    # The following combination of flags is not valid
+    if (BUILD_SHARED_LIBS AND TGUI_USE_STATIC_STD_LIBS)
+        message(FATAL_ERROR "BUILD_SHARED_LIBS and TGUI_USE_STATIC_STD_LIBS cannot be used together")
+    endif()
+
     # Apply it globally by modifying the compiler flags
-    if(TGUI_USE_STATIC_STD_LIBS)
+    if(SFML_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
         foreach(flag
                 CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
                 CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
@@ -85,7 +90,7 @@ if(WINDOWS AND COMPILER_MSVC)
 endif()
 
 # Set the correct architecture on mac
-if ( MACOSX )
+if ( SFML_OS_MACOSX )
     if( NOT CMAKE_OSX_ARCHITECTURES )
         set( CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE )
     endif()
@@ -97,7 +102,7 @@ if(NOT TGUI_SHARED_LIBS)
 endif()
 
 # Find sfml (also look for the main component when using Visual Studio)
-if (WINDOWS AND COMPILER_MSVC)
+if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)
     find_package( SFML 2 COMPONENTS main graphics window system )
 else()
     find_package( SFML 2 COMPONENTS graphics window system )
@@ -116,7 +121,7 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 add_subdirectory(src/TGUI)
 
 # Install the widgets and fonts on linux
-if (LINUX)
+if (SFML_OS_LINUX)
     install( DIRECTORY widgets fonts
              DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}" )
 endif()

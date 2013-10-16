@@ -1,7 +1,7 @@
 # Make a GUI application (so without the command line)
-if(WINDOWS)
+if(SFML_OS_WINDOWS)
     set(GUI_TYPE WIN32)
-elseif(MACOSX)
+elseif(SFML_OS_MACOSX)
     set(GUI_TYPE MACOSX_BUNDLE)
 endif()
 
@@ -16,12 +16,12 @@ target_link_libraries(FormBuilder ${PROJECT_NAME})
 target_link_libraries(FormBuilder ${SFML_LIBRARIES} ${OPENGL_gl_LIBRARY})
 
 # On mac, also link with the Foundation framework
-if (MACOSX)
+if (SFML_OS_MACOSX)
     find_library(FOUNDATION_LIB Foundation VARIANT framework)
     target_link_libraries(FormBuilder ${FOUNDATION_LIB})
 endif()
 
-if (LINUX)
+if (SFML_OS_LINUX)
 
     # Define the paths to the data files
     if (NOT TGUI_FORM_BUILDER_USE_LOCAL_FILES)
@@ -62,7 +62,7 @@ else()
 endif()
 
 # Check if you were linking dynamically to TGUI on window
-if (WINDOWS AND TGUI_SHARED_LIBS)
+if (SFML_OS_WINDOWS AND TGUI_SHARED_LIBS)
 
     # Put the tgui.dll file in the Form Builder folder
     install( FILES "${PROJECT_BINARY_DIR}/lib/tgui.dll" DESTINATION "${CMAKE_SOURCE_DIR}/form-builder" )
@@ -70,7 +70,7 @@ if (WINDOWS AND TGUI_SHARED_LIBS)
 endif()
 
 # Copy the resource files to the bundle on mac
-if (MACOSX)
+if (SFML_OS_MACOSX)
     install( DIRECTORY "${CMAKE_SOURCE_DIR}/form-builder/images" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
     install( DIRECTORY "${CMAKE_SOURCE_DIR}/widgets" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
     install( FILES "${CMAKE_SOURCE_DIR}/fonts/DejaVuSans.ttf" DESTINATION "${PROJECT_SOURCE_DIR}/form-builder/FormBuilder.app/Contents/Resources" )
