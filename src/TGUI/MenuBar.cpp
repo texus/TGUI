@@ -133,6 +133,10 @@ namespace tgui
         m_Size.x = width;
         m_Size.y = height;
 
+        // A negative size is not allowed for this widget
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+
         setTextSize(static_cast<unsigned int>(height * 0.85f));
     }
 
