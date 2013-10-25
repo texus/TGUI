@@ -1,6 +1,7 @@
 
 set(TGUI_SRC
     TGUI.cpp
+    Clipboard.cpp
     Callback.cpp
     Transformable.cpp
     Widget.cpp

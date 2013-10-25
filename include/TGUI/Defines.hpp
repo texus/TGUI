@@ -113,6 +113,10 @@ namespace tgui
     /// The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.
     extern TGUI_API TextureManager TGUI_TextureManager;
 
+    /// The internal clipboard that widgets use
+    class Clipboard;
+    extern TGUI_API Clipboard TGUI_Clipboard;
+
     /// When disabling the tab key usage, pressing tab will no longer focus another widget, but in the future this will allow to use tabs in TextBox.
     extern TGUI_API bool tabKeyUsageEnabled;
 

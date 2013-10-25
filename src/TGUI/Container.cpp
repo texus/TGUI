@@ -1085,19 +1085,8 @@ namespace tgui
                 // Check if there is a focused widget
                 if (m_FocusedWidget)
                 {
-                    // Check the pressed key
-                    if ((event.key.code == sf::Keyboard::Left)
-                     || (event.key.code == sf::Keyboard::Right)
-                     || (event.key.code == sf::Keyboard::Up)
-                     || (event.key.code == sf::Keyboard::Down)
-                     || (event.key.code == sf::Keyboard::BackSpace)
-                     || (event.key.code == sf::Keyboard::Delete)
-                     || (event.key.code == sf::Keyboard::Space)
-                     || (event.key.code == sf::Keyboard::Return))
-                    {
-                        // Tell the widget that the key was pressed
-                        m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
-                    }
+                    // Tell the widget that the key was pressed
+                    m_Widgets[m_FocusedWidget-1]->keyPressed(event.key.code);
 
                     return true;
                 }

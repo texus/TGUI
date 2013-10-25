@@ -29,6 +29,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/EditBox.hpp>
+#include <TGUI/Clipboard.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1396,6 +1397,49 @@ namespace tgui
                 addCallback();
             }
         }
+        else
+        {
+            // Check if you are copying, pasting or cutting text
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+            {
+                if (key == sf::Keyboard::C)
+                {
+                    TGUI_Clipboard.set(m_TextSelection.getString());
+                }
+                else if (key == sf::Keyboard::V)
+                {
+                    auto clipboardContents = TGUI_Clipboard.get();
+
+                    // Only continue pasting if you actually have to do something
+                    if ((m_SelChars > 0) || (clipboardContents.getSize() > 0))
+                    {
+                        deleteSelectedCharacters();
+
+                        unsigned int oldCaretPos = m_SelEnd;
+
+                        if (m_Text.getSize() > m_SelEnd)
+                            setText(m_Text.toWideString().substr(0, m_SelEnd) + TGUI_Clipboard.get() + m_Text.toWideString().substr(m_SelEnd, m_Text.getSize() - m_SelEnd));
+                        else
+                            setText(m_Text + clipboardContents);
+
+                        setSelectionPointPosition(oldCaretPos + clipboardContents.getSize());
+
+                        // Add the callback (if the user requested it)
+                        if (m_CallbackFunctions[TextChanged].empty() == false)
+                        {
+                            m_Callback.trigger = TextChanged;
+                            m_Callback.text    = m_Text;
+                            addCallback();
+                        }
+                    }
+                }
+                else if (key == sf::Keyboard::X)
+                {
+                    TGUI_Clipboard.set(m_TextSelection.getString());
+                    deleteSelectedCharacters();
+                }
+            }
+        }
     }
 
 
@@ -1801,6 +1845,10 @@ namespace tgui
 
     void EditBox::deleteSelectedCharacters()
     {
+        // Nothing to delete when no text was selected
+        if (m_SelChars == 0)
+            return;
+
         // Check if the characters were selected from left to right
         if (m_SelStart < m_SelEnd)
         {
