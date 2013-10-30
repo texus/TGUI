@@ -36,7 +36,7 @@ namespace tgui
 
     Gui::Gui() :
     m_Window (nullptr),
-    m_Focused(false)
+    m_Focused(true)
     {
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
 
@@ -48,7 +48,7 @@ namespace tgui
 
     Gui::Gui(sf::RenderWindow& window) :
     m_Window (&window),
-    m_Focused(false)
+    m_Focused(true)
     {
         m_Container.m_Window = &window;
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
