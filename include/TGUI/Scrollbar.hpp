@@ -153,6 +153,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes how much the value changes when pressing one of the arrows of the scrollbar
+        ///
+        /// \param scrollAmount  How far should the scrollbar scroll when an arrow is clicked?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowScrollAmount(unsigned int scrollAmount);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns how much the value changes when pressing one of the arrows of the scrollbar
+        ///
+        /// \return How far should the scrollbar scroll when an arrow is clicked?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getArrowScrollAmount();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes whether the scrollbar should hide automatically or not.
         ///
         /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
@@ -257,6 +275,9 @@ namespace tgui
 
         // Maximum should be above this value before the scrollbar is needed
         unsigned int m_LowValue;
+
+        // How far should the value change when pressing one of the arrows?
+        unsigned int m_ScrollAmount;
 
         // When no scrollbar is needed, should the scrollbar be drawn or stay hidden?
         bool m_AutoHide;

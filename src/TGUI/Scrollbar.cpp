@@ -36,6 +36,7 @@ namespace tgui
 
     Scrollbar::Scrollbar() :
     m_LowValue          (6),
+    m_ScrollAmount      (1),
     m_AutoHide          (true),
     m_MouseDownOnArrow  (false)
     {
@@ -47,6 +48,7 @@ namespace tgui
     Scrollbar::Scrollbar(const Scrollbar& copy) :
     Slider            (copy),
     m_LowValue        (copy.m_LowValue),
+    m_ScrollAmount    (copy.m_ScrollAmount),
     m_AutoHide        (copy.m_AutoHide),
     m_MouseDownOnArrow(copy.m_MouseDownOnArrow)
     {
@@ -77,6 +79,7 @@ namespace tgui
             this->Slider::operator=(right);
 
             std::swap(m_LowValue,               temp.m_LowValue);
+            std::swap(m_ScrollAmount,           temp.m_ScrollAmount);
             std::swap(m_AutoHide,               temp.m_AutoHide);
             std::swap(m_MouseDownOnArrow,       temp.m_MouseDownOnArrow);
             std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
@@ -410,6 +413,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::setArrowScrollAmount(unsigned int scrollAmount)
+    {
+        m_ScrollAmount = scrollAmount;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Scrollbar::getArrowScrollAmount()
+    {
+        return m_ScrollAmount;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::setAutoHide(bool autoHide)
     {
         m_AutoHide = autoHide;
@@ -599,6 +616,9 @@ namespace tgui
             // Only continue when the calculations can be made
             if (m_Maximum > m_LowValue)
             {
+                bool valueDown = false;
+                bool valueUp = false;
+
                 // Check in which direction the scrollbar lies
                 if (m_VerticalScroll)
                 {
@@ -613,31 +633,19 @@ namespace tgui
                     {
                         // Check if you clicked on the top arrow
                         if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * scalingX))
-                        {
-                            if (m_Value > 0)
-                                setValue(m_Value - 1);
-                        }
+                            valueDown = true;
 
                         // Check if you clicked the down arrow
                         else if (y > getPosition().y + m_Size.y - (m_TextureArrowUpNormal.getSize().y * scalingX))
-                        {
-                            if (m_Value < (m_Maximum - m_LowValue))
-                                setValue(m_Value + 1);
-                        }
+                            valueUp = true;
                     }
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
                         if (y < getPosition().y + (m_TextureArrowUpNormal.getSize().y * ((m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
-                        {
-                            if (m_Value > 0)
-                                setValue(m_Value - 1);
-                        }
+                            valueDown = true;
                         else // You clicked on the bottom arrow
-                        {
-                            if (m_Value < (m_Maximum - m_LowValue))
-                                setValue(m_Value + 1);
-                        }
+                            valueUp = true;
                     }
                 }
                 else // The scrollbar lies horizontal
@@ -653,32 +661,35 @@ namespace tgui
                     {
                         // Check if you clicked on the left arrow
                         if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * scalingY))
-                        {
-                            if (m_Value > 0)
-                                setValue(m_Value - 1);
-                        }
+                            valueDown = true;
 
                         // Check if you clicked the right arrow
                         else if (x > getPosition().x + m_Size.x - (m_TextureArrowUpNormal.getSize().y * scalingY))
-                        {
-                            if (m_Value < (m_Maximum - m_LowValue))
-                                setValue(m_Value + 1);
-                        }
+                            valueUp = true;
                     }
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
                         if (x < getPosition().x + (m_TextureArrowUpNormal.getSize().y * ((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y)))
-                        {
-                            if (m_Value > 0)
-                                setValue(m_Value - 1);
-                        }
+                            valueDown = true;
                         else // You clicked on the right arrow
-                        {
-                            if (m_Value < (m_Maximum - m_LowValue))
-                                setValue(m_Value + 1);
-                        }
+                            valueUp = true;
                     }
+                }
+
+                if (valueDown)
+                {
+                    if (m_Value > m_ScrollAmount)
+                        setValue(m_Value - m_ScrollAmount);
+                    else
+                        setValue(0);
+                }
+                if (valueUp)
+                {
+                    if (m_Value + m_ScrollAmount < m_Maximum - m_LowValue + 1)
+                        setValue(m_Value + m_ScrollAmount);
+                    else
+                        setValue(m_Maximum - m_LowValue);
                 }
             }
         }
