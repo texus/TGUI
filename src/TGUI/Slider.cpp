@@ -283,9 +283,6 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            TGUI_OUTPUT("TGUI error: SplitImage is not supported in Slider.");
-            return false;
-/*
             // Make sure the required textures were loaded
             if ((m_TextureTrackNormal_L.data != nullptr) && (m_TextureTrackNormal_M.data != nullptr)
              && (m_TextureTrackNormal_R.data != nullptr) && (m_TextureThumbNormal.data != nullptr))
@@ -315,7 +312,6 @@ namespace tgui
 
                 m_TextureTrackHover_M.data->texture.setRepeated(true);
             }
-*/
         }
         else // The image isn't split
         {
@@ -353,6 +349,77 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+
+        if (m_SplitImage)
+        {
+            m_TextureTrackNormal_L.sprite.setPosition(x, y);
+            m_TextureTrackHover_L.sprite.setPosition(x, y);
+
+            // Swap the width and height meanings depending on how the slider lies
+            float width;
+            float height;
+            if (m_VerticalScroll)
+            {
+                width = m_Size.x;
+                height = m_Size.y;
+            }
+            else
+            {
+                width = m_Size.y;
+                height = m_Size.x;
+            }
+
+            if (m_VerticalImage)
+            {
+                // Check if the middle image may be drawn
+                if ((m_TextureTrackNormal_M.sprite.getScale().x * (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_R.getSize().y)) < height)
+                {
+                    float scalingX = width / m_TextureTrackNormal_M.getSize().x;
+
+                    m_TextureTrackNormal_M.sprite.setPosition(x, y + (m_TextureTrackNormal_L.getSize().y * m_TextureTrackNormal_L.sprite.getScale().y));
+                    m_TextureTrackHover_M.sprite.setPosition(x, y + (m_TextureTrackHover_L.getSize().y * m_TextureTrackHover_L.sprite.getScale().y));
+
+                    m_TextureTrackNormal_R.sprite.setPosition(x, m_TextureTrackNormal_M.sprite.getPosition().y + (m_TextureTrackNormal_M.sprite.getTextureRect().height * scalingX));
+                    m_TextureTrackHover_R.sprite.setPosition(x, m_TextureTrackHover_M.sprite.getPosition().y + (m_TextureTrackHover_M.sprite.getTextureRect().height * scalingX));
+                }
+                else // The middle image isn't drawn
+                {
+                    m_TextureTrackNormal_R.sprite.setPosition(x, y + (m_TextureTrackNormal_L.getSize().y * m_TextureTrackNormal_L.sprite.getScale().y));
+                    m_TextureTrackHover_R.sprite.setPosition(x, y + (m_TextureTrackHover_L.getSize().y * m_TextureTrackHover_L.sprite.getScale().y));
+                }
+            }
+            else // The slider image lies vertical
+            {
+                // Check if the middle image may be drawn
+                if ((m_TextureTrackNormal_M.sprite.getScale().y * (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x)) < height)
+                {
+                    float scalingY = width / m_TextureTrackNormal_M.getSize().y;
+
+                    m_TextureTrackNormal_M.sprite.setPosition(x + (m_TextureTrackNormal_L.getSize().x * m_TextureTrackNormal_L.sprite.getScale().x), y);
+                    m_TextureTrackHover_M.sprite.setPosition(x + (m_TextureTrackHover_L.getSize().x * m_TextureTrackHover_L.sprite.getScale().x), y);
+
+                    m_TextureTrackNormal_R.sprite.setPosition(m_TextureTrackNormal_M.sprite.getPosition().x + (m_TextureTrackNormal_M.sprite.getTextureRect().width * scalingY), y);
+                    m_TextureTrackHover_R.sprite.setPosition(m_TextureTrackHover_M.sprite.getPosition().x + (m_TextureTrackHover_M.sprite.getTextureRect().width * scalingY), y);
+                }
+                else // The middle image isn't drawn
+                {
+                    m_TextureTrackNormal_R.sprite.setPosition(x + (m_TextureTrackNormal_L.getSize().x * m_TextureTrackNormal_L.sprite.getScale().x), y);
+                    m_TextureTrackHover_R.sprite.setPosition(x + (m_TextureTrackHover_L.getSize().x * m_TextureTrackHover_L.sprite.getScale().x), y);
+                }
+            }
+        }
+        else // The images aren't split
+        {
+            m_TextureTrackNormal_M.sprite.setPosition(x, y);
+            m_TextureTrackHover_M.sprite.setPosition(x, y);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Slider::setSize(float width, float height)
     {
         // Don't do anything when the slider wasn't loaded correctly
@@ -370,25 +437,106 @@ namespace tgui
         // Apply the miniumum size and set the texture rect of the middle image
         if (m_SplitImage)
         {
+            float scaling;
             if (m_VerticalImage)
             {
-                float scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().x;
-                float minimumHeight = (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_R.getSize().y) * scalingX;
-                if (m_Size.y < minimumHeight)
-                    m_Size.y = minimumHeight;
+                if (m_VerticalScroll)
+                {
+                    scaling = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+                    float minimumHeight = (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_R.getSize().y) * scaling;
 
-                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scalingX)));
-                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackHover_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scalingX)));
+                    if (m_Size.y < minimumHeight)
+                        m_Size.y = minimumHeight;
+
+                    m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scaling)));
+                    m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackHover_M.getSize().x, static_cast<int>((m_Size.y - minimumHeight) / scaling)));
+                }
+                else
+                {
+                    scaling = m_Size.y / m_TextureTrackNormal_M.getSize().x;
+                    float minimumWidth = (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scaling;
+
+                    if (m_Size.x < minimumWidth)
+                        m_Size.x = minimumWidth;
+
+                    m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, static_cast<int>((m_Size.x - minimumWidth) / scaling)));
+                    m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, m_TextureTrackNormal_M.getSize().x, static_cast<int>((m_Size.x - minimumWidth) / scaling)));
+                }
             }
-            else // Slider image lies horizontal
+            else
             {
-                float scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().y;
-                float minimumWidth = (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scalingY;
-                if (m_Size.x < minimumWidth)
-                    m_Size.x = minimumWidth;
+                if (m_VerticalScroll)
+                {
+                    scaling = m_Size.x / m_TextureTrackNormal_M.getSize().y;
+                    float minimumHeight = (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_R.getSize().y) * scaling;
 
-                m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureTrackNormal_M.getSize().y));
-                m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scalingY), m_TextureTrackHover_M.getSize().y));
+                    if (m_Size.y < minimumHeight)
+                        m_Size.y = minimumHeight;
+
+                    m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.y - minimumHeight) / scaling), m_TextureTrackNormal_M.getSize().y));
+                    m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.y - minimumHeight) / scaling), m_TextureTrackHover_M.getSize().y));
+                }
+                else
+                {
+                    scaling = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+                    float minimumWidth = (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scaling;
+
+                    if (m_Size.x < minimumWidth)
+                        m_Size.x = minimumWidth;
+
+                    m_TextureTrackNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scaling), m_TextureTrackNormal_M.getSize().y));
+                    m_TextureTrackHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_Size.x - minimumWidth) / scaling), m_TextureTrackHover_M.getSize().y));
+                }
+            }
+
+            m_TextureTrackNormal_L.sprite.setScale(scaling, scaling);
+            m_TextureTrackHover_L.sprite.setScale(scaling, scaling);
+
+            m_TextureTrackNormal_M.sprite.setScale(scaling, scaling);
+            m_TextureTrackHover_M.sprite.setScale(scaling, scaling);
+
+            m_TextureTrackNormal_R.sprite.setScale(scaling, scaling);
+            m_TextureTrackHover_R.sprite.setScale(scaling, scaling);
+        }
+        else // The image is not split
+        {
+            if (m_VerticalImage == m_VerticalScroll)
+            {
+                m_TextureTrackNormal_M.sprite.setScale(m_Size.x / m_TextureTrackNormal_M.getSize().x, m_Size.y / m_TextureTrackNormal_M.getSize().y);
+                m_TextureTrackHover_M.sprite.setScale(m_Size.x / m_TextureTrackHover_M.getSize().x, m_Size.y / m_TextureTrackHover_M.getSize().y);
+            }
+            else
+            {
+                m_TextureTrackNormal_M.sprite.setScale(m_Size.y / m_TextureTrackNormal_M.getSize().x, m_Size.x / m_TextureTrackNormal_M.getSize().y);
+                m_TextureTrackHover_M.sprite.setScale(m_Size.y / m_TextureTrackHover_M.getSize().x, m_Size.x / m_TextureTrackHover_M.getSize().y);
+            }
+        }
+
+        // Apply the scaling to the thumb image
+        if (m_VerticalImage)
+        {
+            if (m_VerticalScroll)
+            {
+                m_TextureThumbNormal.sprite.setScale(m_Size.x / m_TextureTrackNormal_M.getSize().x, m_Size.x / m_TextureTrackNormal_M.getSize().x);
+                m_TextureThumbHover.sprite.setScale(m_Size.x / m_TextureTrackHover_M.getSize().x, m_Size.x / m_TextureTrackHover_M.getSize().x);
+            }
+            else // Slider is displayed horizontal
+            {
+                m_TextureThumbNormal.sprite.setScale(m_Size.y / m_TextureTrackNormal_M.getSize().x, m_Size.y / m_TextureTrackNormal_M.getSize().x);
+                m_TextureThumbHover.sprite.setScale(m_Size.y / m_TextureTrackHover_M.getSize().x, m_Size.y / m_TextureTrackHover_M.getSize().x);
+            }
+        }
+        else // Slider image lies horizontal
+        {
+            if (m_VerticalScroll)
+            {
+                m_TextureThumbNormal.sprite.setScale(m_Size.x / m_TextureTrackNormal_M.getSize().y, m_Size.x / m_TextureTrackNormal_M.getSize().y);
+                m_TextureThumbHover.sprite.setScale(m_Size.x / m_TextureTrackHover_M.getSize().y, m_Size.x / m_TextureTrackHover_M.getSize().y);
+            }
+            else // Slider is displayed horizontal
+            {
+                m_TextureThumbNormal.sprite.setScale(m_Size.y / m_TextureTrackNormal_M.getSize().y, m_Size.y / m_TextureTrackNormal_M.getSize().y);
+                m_TextureThumbHover.sprite.setScale(m_Size.y / m_TextureTrackHover_M.getSize().y, m_Size.y / m_TextureTrackHover_M.getSize().y);
             }
         }
 
@@ -419,6 +567,9 @@ namespace tgui
                 m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
             }
         }
+
+        // Recalculate the position of the images
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,39 +722,25 @@ namespace tgui
         if (m_Loaded == false)
             return false;
 
-        // Calculate the thumb size and position
-        float thumbWidth, thumbHeight;
-        float thumbLeft,  thumbTop;
-
         // Get the current position
         sf::Vector2f position = getPosition();
 
-        // The size is different when the image is rotated
-        if (m_VerticalImage == m_VerticalScroll)
-        {
-            thumbWidth = m_ThumbSize.x;
-            thumbHeight = m_ThumbSize.y;
-        }
-        else
-        {
-            thumbWidth = m_ThumbSize.y;
-            thumbHeight = m_ThumbSize.x;
-        }
-
         // Calculate the thumb position
+        float thumbLeft;
+        float thumbTop;
         if (m_VerticalScroll)
         {
-            thumbLeft = (m_Size.x - thumbWidth) / 2.0f;
-            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (thumbHeight / 2.0f);
+            thumbLeft = (m_Size.x - m_ThumbSize.x) / 2.0f;
+            thumbTop = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (m_ThumbSize.y / 2.0f);
         }
         else // The slider lies horizontal
         {
-            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (thumbWidth / 2.0f);
-            thumbTop = (m_Size.y - thumbHeight) / 2.0f;
+            thumbLeft = ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (m_ThumbSize.x / 2.0f);
+            thumbTop = (m_Size.y - m_ThumbSize.y) / 2.0f;
         }
 
         // Check if the mouse is on top of the thumb
-        if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth, thumbHeight).contains(x, y))
+        if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, m_ThumbSize.x, m_ThumbSize.y).contains(x, y))
         {
             m_MouseDownOnThumb = true;
             m_MouseDownOnThumbPos.x = x - position.x - thumbLeft;
@@ -842,214 +979,122 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        sf::Vector2f scaling;
-
-        // Apply the transformation
-        states.transform *= getTransform();
-
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
         // Check if the image is split
         if (m_SplitImage)
         {
-            // Get the scale factors
-            if (m_VerticalScroll == m_VerticalImage)
+            // Set the rotation
+            if ((m_VerticalImage == true) && (m_VerticalScroll == false))
             {
-                scaling.x = m_Size.x / (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x);
-                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+                states.transform.rotate(-90,
+                                        getPosition().x + m_TextureTrackNormal_L.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_L.getSize().x),
+                                        getPosition().y + m_TextureTrackNormal_L.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_M.getSize().x));
             }
-            else
+            else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
             {
-                // Check in what direction the slider should rotate
-                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
-                {
-                    // Set the rotation
-                    states.transform.rotate(-90,
-                                            (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x) * 0.5f,
-                                            m_TextureTrackNormal_M.getSize().x * 0.5f);
-                }
-                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
-                {
-                    // Set the rotation
-                    states.transform.rotate(90,
-                                            (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y) * 0.5f,
-                                            m_TextureTrackNormal_M.getSize().y * 0.5f);
-                }
-
-                scaling.x = m_Size.x / (m_TextureTrackNormal_L.getSize().y + m_TextureTrackNormal_M.getSize().y + m_TextureTrackNormal_R.getSize().y);
-                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
+                states.transform.rotate(90,
+                                        getPosition().x + m_TextureTrackNormal_L.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_L.getSize().y),
+                                        getPosition().y + m_TextureTrackNormal_L.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_L.getSize().y));
             }
 
-            // Set the scale for the left image
-            states.transform.scale(scaling.y, scaling.y);
+//            std::cout << m_TextureTrackNormal_R.sprite.getPosition().x << " " << m_TextureTrackNormal_R.sprite.getPosition().y << std::endl;
 
-            // Draw the left image
+            if (m_SeparateHoverImage)
             {
-                // Check if there is a separate hover image
-                if (m_SeparateHoverImage)
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
                 {
-                    // Draw the correct image
-                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                        target.draw(m_TextureTrackHover_L, states);
-                    else
-                        target.draw(m_TextureTrackNormal_L, states);
+                    target.draw(m_TextureTrackHover_L, states);
+                    target.draw(m_TextureTrackHover_M, states);
+                    target.draw(m_TextureTrackHover_R, states);
                 }
                 else
                 {
-                    // Draw the normal track image
                     target.draw(m_TextureTrackNormal_L, states);
-
-                    // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                        target.draw(m_TextureTrackHover_L, states);
-                }
-
-                // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
-//                    target.draw(m_SpriteFocused_L, states);
-            }
-
-            // Check if the middle image may be drawn
-            if ((scaling.y * (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x))
-                < scaling.x * (m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x))
-            {
-                // Calculate the scale for our middle image
-                float scaleX = (((m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_M.getSize().x + m_TextureTrackNormal_R.getSize().x)  * scaling.x)
-                                 - ((m_TextureTrackNormal_L.getSize().x + m_TextureTrackNormal_R.getSize().x) * scaling.y))
-                               / m_TextureTrackNormal_M.getSize().x;
-
-                // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L.getSize().x), 0);
-
-                // Set the scale for the middle image
-                states.transform.scale(scaleX / scaling.y, 1);
-
-                // Draw the middle image
-                {
-                    // Check if there is a separate hover image
-                    if (m_SeparateHoverImage)
-                    {
-                        // Draw the correct image
-                        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                            target.draw(m_TextureTrackHover_M, states);
-                        else
-                            target.draw(m_TextureTrackNormal_M, states);
-                    }
-                    else
-                    {
-                        // Draw the normal track image
-                        target.draw(m_TextureTrackNormal_M, states);
-
-                        // When the mouse is on top of the slider then draw the hover image
-                        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                            target.draw(m_TextureTrackHover_M, states);
-                    }
-
-                    // When the slider is focused then draw an extra image
-//                    if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
-//                        target.draw(m_SpriteFocused_M, states);
-                }
-
-                // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_M.getSize().x), 0);
-
-                // Set the scale for the right image
-                states.transform.scale(scaling.y / scaleX, 1);
-            }
-            else // The middle image is not drawn
-                states.transform.translate(static_cast<float>(m_TextureTrackNormal_L.getSize().x), 0);
-
-            // Draw the right image
-            {
-                // Check if there is a separate hover image
-                if (m_SeparateHoverImage)
-                {
-                    // Draw the correct image
-                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                        target.draw(m_TextureTrackHover_R, states);
-                    else
-                        target.draw(m_TextureTrackNormal_R, states);
-                }
-                else
-                {
-                    // Draw the normal track image
+                    target.draw(m_TextureTrackNormal_M, states);
                     target.draw(m_TextureTrackNormal_R, states);
-
-                    // When the mouse is on top of the slider then draw the hover image
-                    if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                        target.draw(m_TextureTrackHover_R, states);
                 }
+            }
+            else // The hover image is drawn on top of the normal one
+            {
+                target.draw(m_TextureTrackNormal_L, states);
+                target.draw(m_TextureTrackNormal_M, states);
+                target.draw(m_TextureTrackNormal_R, states);
 
-                // When the slider is focused then draw an extra image
-//                if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
-//                    target.draw(m_SpriteFocused_R, states);
+                // When the mouse is on top of the button then draw an extra image
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                {
+                    target.draw(m_TextureTrackHover_L, states);
+                    target.draw(m_TextureTrackHover_M, states);
+                    target.draw(m_TextureTrackHover_R, states);
+                }
             }
         }
         else // The image is not split
         {
-            if (m_VerticalScroll == m_VerticalImage)
+            // Set the rotation
+            if ((m_VerticalImage == true) && (m_VerticalScroll == false))
             {
-                // Set the scaling
-                scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
-                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
-                states.transform.scale(scaling);
+                states.transform.rotate(-90,
+                                        getPosition().x + m_TextureTrackNormal_M.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_M.getSize().x),
+                                        getPosition().y + m_TextureTrackNormal_M.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_M.getSize().x));
+            }
+            else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
+            {
+                states.transform.rotate(90,
+                                        getPosition().x + m_TextureTrackNormal_M.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_M.getSize().y),
+                                        getPosition().y + m_TextureTrackNormal_M.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_M.getSize().y));
+            }
+
+            if (m_SeparateHoverImage)
+            {
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                    target.draw(m_TextureTrackHover_M, states);
+                else
+                    target.draw(m_TextureTrackNormal_M, states);
             }
             else
             {
-                // Set the scaling
-                scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
-                scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
-                states.transform.scale(scaling);
+                // Draw the normal track image
+                target.draw(m_TextureTrackNormal_M, states);
 
-                // Set the rotation
-                if ((m_VerticalImage == true) && (m_VerticalScroll == false))
-                    states.transform.rotate(-90, m_TextureTrackNormal_M.getSize().x * 0.5f, m_TextureTrackNormal_M.getSize().x * 0.5f);
-                else // if ((m_VerticalImage == false) && (m_VerticalScroll == true))
-                    states.transform.rotate(90, m_TextureTrackNormal_M.getSize().y * 0.5f, m_TextureTrackNormal_M.getSize().y * 0.5f);
+                // When the mouse is on top of the slider then draw the hover image
+                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                    target.draw(m_TextureTrackHover_M, states);
             }
-
-            // Draw the normal track image
-            target.draw(m_TextureTrackNormal_M, states);
-
-            // When the mouse is on top of the slider then draw the hover image
-            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                target.draw(m_TextureTrackHover_M, states);
         }
 
         // Reset the transform
         states.transform = oldTransform;
+        states.transform *= getTransform();
 
         // The thumb will be on a different position when we are scrolling vertically or not
         if (m_VerticalScroll)
         {
             // Set the translation and scale for the thumb
-            states.transform.translate(static_cast<int>(m_Size.x - m_ThumbSize.x) * 0.5f,
+            states.transform.translate((m_Size.x - m_ThumbSize.x) * 0.5f,
                                        ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (m_ThumbSize.y * 0.5f));
-
-            // Set the scale for the thumb
-            states.transform.scale(scaling.x, scaling.x);
         }
         else // the slider lies horizontal
         {
             // Set the translation and scale for the thumb
             states.transform.translate(((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (m_ThumbSize.x * 0.5f),
                                         (m_Size.y - m_ThumbSize.y) * 0.5f);
-
-            // Set the scale for the thumb
-            states.transform.scale(scaling.y, scaling.y);
         }
 
         // It is possible that the image is not drawn in the same direction than the loaded image
         if ((m_VerticalImage == true) && (m_VerticalScroll == false))
         {
-            // Set the rotation
-            states.transform.rotate(-90, m_TextureThumbNormal.getSize().x * 0.5f, m_TextureThumbNormal.getSize().x * 0.5f);
+            states.transform.rotate(-90,
+                                    m_TextureThumbNormal.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_M.getSize().x),
+                                    m_TextureThumbNormal.getSize().x * 0.5f * (m_Size.y / m_TextureTrackNormal_M.getSize().x));
         }
         else if ((m_VerticalImage == false) && (m_VerticalScroll == true))
         {
-            // Set the rotation
-            states.transform.rotate(90, m_TextureThumbNormal.getSize().y * 0.5f, m_TextureThumbNormal.getSize().y * 0.5f);
+            states.transform.rotate(90,
+                                    m_TextureThumbNormal.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_M.getSize().y),
+                                    m_TextureThumbNormal.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_M.getSize().y));
         }
 
         // Draw the normal thumb image
