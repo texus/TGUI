@@ -15,6 +15,11 @@ add_executable(FormBuilder ${GUI_TYPE} "main.cpp" "FormBuilder.cpp" "Form.cpp" "
 target_link_libraries(FormBuilder ${PROJECT_NAME})
 target_link_libraries(FormBuilder ${SFML_LIBRARIES} ${OPENGL_gl_LIBRARY})
 
+# When linking statically, also link the sfml dependencies
+if (SFML_STATIC_LIBRARIES)
+    target_link_libraries(FormBuilder ${SFML_GRAPHICS_DEPENDENCIES} ${SFML_WINDOW_DEPENDENCIES} ${SFML_SYSTEM_DEPENDENCIES})
+endif()
+
 # On mac, also link with the Foundation framework
 if (SFML_OS_MACOSX)
     find_library(FOUNDATION_LIB Foundation VARIANT framework)
