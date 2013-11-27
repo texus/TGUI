@@ -49,6 +49,7 @@
 #include <TGUI/Tab.hpp>
 #include <TGUI/MenuBar.hpp>
 #include <TGUI/ChatBox.hpp>
+#include <TGUI/Knob.hpp>
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Panel.hpp>

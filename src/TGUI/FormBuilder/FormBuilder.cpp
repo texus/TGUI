@@ -890,7 +890,7 @@ void FormBuilder::recreateProperties()
         value->bindCallback([=](){ propertyChanged = true; }, tgui::EditBox::TextChanged);
 
         // Don't allow text input for numbers
-        if ((it->second.type == "int") || (it->second.type == "uint") || (it->second.type == "byte"))
+        if ((it->second.type == "float") || (it->second.type == "int") || (it->second.type == "uint") || (it->second.type == "byte"))
             value->setNumbersOnly(true);
 
         grid->addWidget(property, row, 0);
