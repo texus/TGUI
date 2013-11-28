@@ -999,8 +999,6 @@ namespace tgui
                                         getPosition().y + m_TextureTrackNormal_L.getSize().y * 0.5f * (m_Size.x / m_TextureTrackNormal_L.getSize().y));
             }
 
-//            std::cout << m_TextureTrackNormal_R.sprite.getPosition().x << " " << m_TextureTrackNormal_R.sprite.getPosition().y << std::endl;
-
             if (m_SeparateHoverImage)
             {
                 if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))

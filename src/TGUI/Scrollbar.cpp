@@ -684,7 +684,7 @@ namespace tgui
                     else
                         setValue(0);
                 }
-                if (valueUp)
+                else if (valueUp)
                 {
                     if (m_Value + m_ScrollAmount < m_Maximum - m_LowValue + 1)
                         setValue(m_Value + m_ScrollAmount);
