@@ -924,32 +924,12 @@ namespace tgui
         if ((m_AutoHide == true) && (m_Maximum <= m_LowValue))
             return;
 
-        sf::Vector2f scaling;
-
-        // Apply the transformation
-        states.transform *= getTransform();
-
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Get the scale factors
-        if (m_VerticalScroll == m_VerticalImage)
-        {
-            // Set the scaling
-            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
-            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
-            states.transform.scale(scaling);
-        }
-        else
-        {
-            // Set the scaling
-            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
-            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
-            states.transform.scale(scaling);
-
-            // Set the rotation
+        // Set the rotation
+        if (m_VerticalScroll != m_VerticalImage)
             states.transform.rotate(-90, m_TextureTrackNormal_M.getSize().x * 0.5f, m_TextureTrackNormal_M.getSize().x * 0.5f);
-        }
 
         // Draw the track image
         if (m_SeparateHoverImage)
@@ -969,6 +949,20 @@ namespace tgui
 
         // Reset the transformation (in case there was any rotation)
         states.transform = oldTransform;
+        states.transform *= getTransform();
+
+        // Get the scale factors
+        sf::Vector2f scaling;
+        if (m_VerticalScroll == m_VerticalImage)
+        {
+            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+        }
+        else
+        {
+            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
+            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
+        }
 
         // The calculation depends on the direction of the scrollbar
         if (m_VerticalScroll)
