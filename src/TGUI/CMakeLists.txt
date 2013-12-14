@@ -33,6 +33,7 @@ set(TGUI_SRC
     MenuBar.cpp
     ChatBox.cpp
     MessageBox.cpp
+    Knob.cpp
 )
 
 # add the sfml and tgui include directories
