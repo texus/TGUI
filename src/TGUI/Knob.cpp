@@ -526,7 +526,7 @@ namespace tgui
                 m_foregroundTexture.sprite.setRotation(360 - angle + m_imageRotation);
 
             // Calculate the difference in degrees between the start and end rotation
-            float allowedAngle;
+            float allowedAngle = 0;
             if (m_startRotation == m_endRotation)
                 allowedAngle = 360;
             else
@@ -699,7 +699,7 @@ namespace tgui
     void Knob::recalculateRotation()
     {
         // Calculate the difference in degrees between the start and end rotation
-        float allowedAngle;
+        float allowedAngle = 0;
         if (m_startRotation == m_endRotation)
             allowedAngle = 360;
         else
