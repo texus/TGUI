@@ -27,12 +27,13 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Knob.hpp>
-#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    const double pi = 3.14159265358979f;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Knob::Knob() :
@@ -470,7 +471,7 @@ namespace tgui
             }
             else
             {
-                angle = std::atan2(centerPosition.y - y, x - centerPosition.x) * 180.0f / M_PI;
+                angle = std::atan2(centerPosition.y - y, x - centerPosition.x) * 180.0f / pi;
                 if (angle < 0)
                     angle += 360;
             }
