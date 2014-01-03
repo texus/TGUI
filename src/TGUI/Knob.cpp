@@ -548,22 +548,22 @@ namespace tgui
             if (m_clockwiseTurning)
             {
                 if (angle < m_startRotation)
-                    setValue(((m_startRotation - angle) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
+                    setValue(static_cast<int>(((m_startRotation - angle) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 else
                 {
                     if (angle == m_startRotation)
                         setValue(m_minimum);
                     else
-                        setValue((((360.0 - angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
+                        setValue(static_cast<int>((((360.0 - angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 }
             }
             else // counter-clockwise
             {
                 if (angle >= m_startRotation)
-                    setValue(((angle - m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
+                    setValue(static_cast<int>(((angle - m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 else
                 {
-                    setValue(((angle + (360.0 - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum);
+                    setValue(static_cast<int>(((angle + (360.0 - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 }
             }
         }
@@ -601,11 +601,11 @@ namespace tgui
         }
         else if (property == "startrotation")
         {
-            m_startRotation = atoi(value.c_str());
+            m_startRotation = static_cast<float>(atof(value.c_str()));
         }
         else if (property == "endrotation")
         {
-            m_endRotation = atoi(value.c_str());
+            m_endRotation = static_cast<float>(atof(value.c_str()));
         }
         else if (property == "clockwiseturning")
         {
