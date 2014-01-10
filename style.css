@@ -127,6 +127,11 @@ li
     line-height: 1.4em;
 }
 
+p.SmallText
+{
+    font-size: 0.8em;
+}
+
 p.SmallBottomMargin
 {
     margin-top: 0em;
