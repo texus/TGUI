@@ -1,0 +1,146 @@
+h1#Title
+{
+    margin-bottom: 0em;
+}
+
+p#SubTitle
+{
+    margin-top: 0em;
+    margin-bottom: 1.5em;
+}
+
+body
+{
+    background-color: #e6e6e6;
+
+    margin-left: 0em;
+    margin-right: 0em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+div
+{
+    margin-bottom: 2.75em;
+}
+
+div.SmallTopMargin
+{
+    margin-top: 10em;
+}
+
+div.SmallerMargin
+{
+    margin-bottom: 1.5em;
+}
+
+div#Background
+{
+    background-color: white;
+    
+    border-style: ridge;
+    border-width: 4px;
+    border-color: black;
+    
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    
+    min-width: 60em;
+    width: 80%;
+}
+
+div.NavigationBar
+{
+    margin-bottom: 10px;
+}
+
+ul.NavigationBar
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+li.NavigationBar
+{
+    display: inline;
+    line-height: 2.5em;
+}
+
+a.NavigationBar:link, a.NavigationBar:visited
+{
+    color: #777777;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 0.5em;
+}
+
+a.NavigationBar:hover, a.NavigationBar:active
+{
+    color: black;
+    background-color: #e6e6e6;
+}
+
+.BehindFloat
+{
+    clear: both;
+}
+
+img
+{
+    margin-top: 0em;
+    margin-bottom: 2em;
+    
+    max-width: 100%;
+
+    display: block;
+}
+
+img.ThumbnailBlackTheme, img.ThumbnailBabyBlueTheme
+{
+    display: inline;
+    float: left;
+    margin: 10px;
+}
+
+img.SmallBottomMargin
+{
+    margin-bottom: 0.25em;
+}
+
+p
+{
+    line-height: 1.4em;
+}
+
+li
+{
+    line-height: 1.4em;
+}
+
+p.SmallBottomMargin
+{
+    margin-top: 0em;
+    margin-bottom: 0.2em;
+}
+
+pre
+{
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+div.Space
+{
+    margin-top: 20em;
+    margin-bottom: 20em;
+}
