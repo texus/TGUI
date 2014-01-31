@@ -63,8 +63,6 @@ namespace tgui
     m_Size               (copy.m_Size),
     m_ThumbSize          (copy.m_ThumbSize)
     {
-
-        // Copy the textures
         TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_L, m_TextureTrackNormal_L);
         TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_L, m_TextureTrackHover_L);
         TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_M, m_TextureTrackNormal_M);
@@ -79,7 +77,6 @@ namespace tgui
 
     Slider::~Slider()
     {
-        // Remove all the textures
         if (m_TextureTrackNormal_L.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
         if (m_TextureTrackHover_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
         if (m_TextureTrackNormal_M.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
@@ -351,7 +348,7 @@ namespace tgui
 
     void Slider::setPosition(float x, float y)
     {
-        Transformable::setPosition(x, y);
+        Widget::setPosition(x, y);
 
         if (m_SplitImage)
         {
@@ -614,7 +611,7 @@ namespace tgui
 
         // The minimum can't be below the maximum
         if (m_Minimum > m_Maximum)
-            m_Minimum = m_Maximum;
+            setMinimum(m_Maximum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -672,13 +669,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::getVerticalScroll() const
-    {
-        return m_VerticalScroll;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     unsigned int Slider::getMinimum() const
     {
         return m_Minimum;
@@ -696,6 +686,13 @@ namespace tgui
     unsigned int Slider::getValue() const
     {
         return m_Value;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getVerticalScroll() const
+    {
+        return m_VerticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -840,13 +837,6 @@ namespace tgui
                 }
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Slider::keyPressed(sf::Keyboard::Key)
-    {
-        /// TODO: Respond on arrow presses
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
