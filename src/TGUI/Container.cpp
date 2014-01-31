@@ -415,7 +415,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_Widgets.size(); ++i)
         {
             if (m_Widgets[i]->m_Callback.widgetType == Type_RadioButton)
-                static_cast<RadioButton::Ptr>(m_Widgets[i])->forceUncheck();
+                static_cast<RadioButton::Ptr>(m_Widgets[i])->uncheck();
         }
     }
 
