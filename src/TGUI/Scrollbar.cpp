@@ -35,10 +35,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar() :
-    m_LowValue          (6),
-    m_ScrollAmount      (1),
+    m_MouseDownOnThumb  (false),
+    m_Minimum           ( 0),
+    m_Maximum           (10),
+    m_Value             ( 0),
+    m_LowValue          ( 6),
+    m_VerticalScroll    (true),
+    m_VerticalImage     (true),
+    m_ScrollAmount      ( 1),
     m_AutoHide          (true),
-    m_MouseDownOnArrow  (false)
+    m_MouseDownOnArrow  (false),
+    m_SplitImage        (false),
+    m_SeparateHoverImage(false)
     {
         m_Callback.widgetType = Type_Scrollbar;
     }
@@ -46,12 +54,32 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar(const Scrollbar& copy) :
-    Slider            (copy),
-    m_LowValue        (copy.m_LowValue),
-    m_ScrollAmount    (copy.m_ScrollAmount),
-    m_AutoHide        (copy.m_AutoHide),
-    m_MouseDownOnArrow(copy.m_MouseDownOnArrow)
+    Widget               (copy),
+    m_LoadedConfigFile   (copy.m_LoadedConfigFile),
+    m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
+    m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
+    m_Minimum            (copy.m_Minimum),
+    m_Maximum            (copy.m_Maximum),
+    m_Value              (copy.m_Value),
+    m_LowValue           (copy.m_LowValue),
+    m_VerticalScroll     (copy.m_VerticalScroll),
+    m_VerticalImage      (copy.m_VerticalImage),
+    m_ScrollAmount       (copy.m_ScrollAmount),
+    m_AutoHide           (copy.m_AutoHide),
+    m_MouseDownOnArrow   (copy.m_MouseDownOnArrow),
+    m_SplitImage         (copy.m_SplitImage),
+    m_SeparateHoverImage (copy.m_SeparateHoverImage),
+    m_Size               (copy.m_Size),
+    m_ThumbSize          (copy.m_ThumbSize)
     {
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_L, m_TextureTrackNormal_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_L, m_TextureTrackHover_L);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_M, m_TextureTrackNormal_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_M, m_TextureTrackHover_M);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackNormal_R, m_TextureTrackNormal_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureTrackHover_R, m_TextureTrackHover_R);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbNormal, m_TextureThumbNormal);
+        TGUI_TextureManager.copyTexture(copy.m_TextureThumbHover, m_TextureThumbHover);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpNormal, m_TextureArrowUpNormal);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpHover, m_TextureArrowUpHover);
         TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownNormal, m_TextureArrowDownNormal);
@@ -66,6 +94,14 @@ namespace tgui
         if (m_TextureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
         if (m_TextureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
         if (m_TextureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_TextureTrackNormal_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_L);
+        if (m_TextureTrackHover_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_L);
+        if (m_TextureTrackNormal_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_M);
+        if (m_TextureTrackHover_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_M);
+        if (m_TextureTrackNormal_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureTrackNormal_R);
+        if (m_TextureTrackHover_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureTrackHover_R);
+        if (m_TextureThumbNormal.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureThumbNormal);
+        if (m_TextureThumbHover.data != nullptr)      TGUI_TextureManager.removeTexture(m_TextureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,12 +112,32 @@ namespace tgui
         if (this != &right)
         {
             Scrollbar temp(right);
-            this->Slider::operator=(right);
+            this->Widget::operator=(right);
 
+            std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
+            std::swap(m_MouseDownOnThumb,       temp.m_MouseDownOnThumb);
+            std::swap(m_MouseDownOnThumbPos,    temp.m_MouseDownOnThumbPos);
+            std::swap(m_Minimum,                temp.m_Minimum);
+            std::swap(m_Maximum,                temp.m_Maximum);
+            std::swap(m_Value,                  temp.m_Value);
             std::swap(m_LowValue,               temp.m_LowValue);
+            std::swap(m_VerticalScroll,         temp.m_VerticalScroll);
+            std::swap(m_VerticalImage,          temp.m_VerticalImage);
             std::swap(m_ScrollAmount,           temp.m_ScrollAmount);
             std::swap(m_AutoHide,               temp.m_AutoHide);
             std::swap(m_MouseDownOnArrow,       temp.m_MouseDownOnArrow);
+            std::swap(m_SplitImage,             temp.m_SplitImage);
+            std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
+            std::swap(m_Size,                   temp.m_Size);
+            std::swap(m_ThumbSize,              temp.m_ThumbSize);
+            std::swap(m_TextureTrackNormal_L,   temp.m_TextureTrackNormal_L);
+            std::swap(m_TextureTrackHover_L,    temp.m_TextureTrackHover_L);
+            std::swap(m_TextureTrackNormal_M,   temp.m_TextureTrackNormal_M);
+            std::swap(m_TextureTrackHover_M,    temp.m_TextureTrackHover_M);
+            std::swap(m_TextureTrackNormal_R,   temp.m_TextureTrackNormal_R);
+            std::swap(m_TextureTrackHover_R,    temp.m_TextureTrackHover_R);
+            std::swap(m_TextureThumbNormal,     temp.m_TextureThumbNormal);
+            std::swap(m_TextureThumbHover,      temp.m_TextureThumbHover);
             std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
             std::swap(m_TextureArrowUpHover,    temp.m_TextureArrowUpHover);
             std::swap(m_TextureArrowDownNormal, temp.m_TextureArrowDownNormal);
@@ -347,20 +403,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setPosition(float x, float y)
+    const std::string& Scrollbar::getLoadedConfigFile() const
     {
-        Transformable::setPosition(x, y);
+        return m_LoadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Scrollbar::setSize(float width, float height)
     {
-        // Don't do anything when the slider wasn't loaded correctly
+        // Don't do anything when the scrollbar wasn't loaded correctly
         if (m_Loaded == false)
             return;
 
-        // Set the size of the slider
+        // Set the size of the scrollbar
         m_Size.x = width;
         m_Size.y = height;
 
@@ -395,9 +451,6 @@ namespace tgui
                 m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
             }
         }
-
-        // Recalculate the position of the images
-        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -412,16 +465,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setMinimum(unsigned int)
-    {
-        // Do nothing. The minimum may not be changed.
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Scrollbar::setMaximum(unsigned int maximum)
     {
-        Slider::setMaximum(maximum);
+        // Set the new maximum
+        if (maximum > 0)
+            m_Maximum = maximum;
+        else
+            m_Maximum = 1;
+
+        // When the value is above the maximum then adjust it
+        if (m_Value > m_Maximum)
+            setValue(m_Maximum);
 
         // When the value is above the maximum then adjust it
         if (m_Maximum < m_LowValue)
@@ -471,9 +525,58 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::setVerticalScroll(bool verticalScroll)
+    {
+        // Only continue when the value changed
+        if (m_VerticalScroll != verticalScroll)
+        {
+            // Change the internal value
+            m_VerticalScroll = verticalScroll;
+
+            // Swap the width and height if needed
+            if (m_VerticalScroll)
+            {
+                if (m_Size.x > m_Size.y)
+                    setSize(m_Size.y, m_Size.x);
+                else
+                    setSize(m_Size.x, m_Size.y);
+            }
+            else // The scrollbar lies horizontal
+            {
+                if (m_Size.y > m_Size.x)
+                    setSize(m_Size.y, m_Size.x);
+                else
+                    setSize(m_Size.x, m_Size.y);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Scrollbar::getMaximum() const
+    {
+        return m_Maximum;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Scrollbar::getValue() const
+    {
+        return m_Value;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int Scrollbar::getLowValue() const
     {
         return m_LowValue;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Scrollbar::getVerticalScroll() const
+    {
+        return m_VerticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,10 +611,21 @@ namespace tgui
 
     void Scrollbar::setTransparency(unsigned char transparency)
     {
-        Slider::setTransparency(transparency);
+        Widget::setTransparency(transparency);
+
+        m_TextureTrackNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_L.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_M.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureTrackHover_R.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
+        m_TextureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_TextureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
 
         m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+
         m_TextureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
         m_TextureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
     }
@@ -922,13 +1036,65 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::mouseWheelMoved(int delta, int, int)
+    {
+        if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
+            setValue(m_Minimum);
+        else
+            setValue(static_cast<unsigned int>(m_Value - delta));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::widgetFocused()
+    {
+        // A scrollbar can't be focused (yet)
+        unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Scrollbar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
-        if (property == "lowvalue")
+        if (property == "configfile")
+        {
+            load(value);
+        }
+        else if (property == "maximum")
+        {
+            setMaximum(atoi(value.c_str()));
+        }
+        else if (property == "value")
+        {
+            setValue(atoi(value.c_str()));
+        }
+        else if (property == "lowvalue")
         {
             setLowValue(atoi(value.c_str()));
+        }
+        else if (property == "verticalscroll")
+        {
+            if ((value == "true") || (value == "True"))
+                setVerticalScroll(true);
+            else if ((value == "false") || (value == "False"))
+                setVerticalScroll(false);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+        }
+        else if (property == "callback")
+        {
+            Widget::setProperty(property, value);
+
+            std::vector<sf::String> callbacks;
+            decodeList(value, callbacks);
+
+            for (auto it = callbacks.begin(); it != callbacks.end(); ++it)
+            {
+                if ((*it == "ValueChanged") || (*it == "valuechanged"))
+                    bindCallback(ValueChanged);
+            }
         }
         else if (property == "autohide")
         {
@@ -940,7 +1106,7 @@ namespace tgui
                 TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
         }
         else // The property didn't match
-            return Slider::setProperty(property, value);
+            return Widget::setProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -952,12 +1118,37 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == "lowvalue")
+        if (property == "configfile")
+            value = getLoadedConfigFile();
+        else if (property == "maximum")
+            value = to_string(getMaximum());
+        else if (property == "value")
+            value = to_string(getValue());
+        else if (property == "lowvalue")
             value = to_string(getLowValue());
+        else if (property == "verticalscroll")
+            value = m_VerticalScroll ? "true" : "false";
+        else if (property == "callback")
+        {
+            std::string tempValue;
+            Widget::getProperty(property, tempValue);
+
+            std::vector<sf::String> callbacks;
+
+            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+                callbacks.push_back("ValueChanged");
+
+            encodeList(callbacks, value);
+
+            if (value.empty())
+                value = tempValue;
+            else if (!tempValue.empty())
+                value += "," + tempValue;
+        }
         else if (property == "autohide")
             value = m_AutoHide ? "true" : "false";
         else // The property didn't match
-            return Slider::getProperty(property, value);
+            return Widget::getProperty(property, value);
 
         // You pass here when one of the properties matched
         return true;
@@ -968,12 +1159,12 @@ namespace tgui
     std::list< std::pair<std::string, std::string> > Scrollbar::getPropertyList() const
     {
         auto list = Widget::getPropertyList();
-
+        list.push_back(std::pair<std::string, std::string>("ConfigFile", "string"));
         list.push_back(std::pair<std::string, std::string>("Maximum", "uint"));
-        list.push_back(std::pair<std::string, std::string>("LowValue", "uint"));
         list.push_back(std::pair<std::string, std::string>("Value", "uint"));
-        list.push_back(std::pair<std::string, std::string>("AutoHide", "bool"));
+        list.push_back(std::pair<std::string, std::string>("LowValue", "uint"));
         list.push_back(std::pair<std::string, std::string>("VerticalScroll", "bool"));
+        list.push_back(std::pair<std::string, std::string>("AutoHide", "bool"));
         return list;
     }
 

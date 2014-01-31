@@ -35,7 +35,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Scrollbar : public Slider
+    class TGUI_API Scrollbar : public Widget
     {
       public:
 
@@ -95,20 +95,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// \brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// This function completely overwrites the previous position.
-        /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable widget is (0, 0).
-        ///
-        /// \param x X coordinate of the new position
-        /// \param y Y coordinate of the new position
-        ///
-        /// \see move, getPosition
+        /// \return Filename of loaded config file.
+        ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(float x, float y);
-        using Transformable::setPosition;
+        const std::string& getLoadedConfigFile() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,18 +121,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Does nothing.
-        ///
-        /// \param minimum  Unused parameter
-        ///
-        /// This function is overridden from Slider so that the minimum can't be changed.
-        /// The minimum will always stay 0.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMinimum(unsigned int minimum);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,12 +161,52 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes whether the scrollbar lies vertical or horizontal.
+        ///
+        /// \param verticallScroll  Does the scrollbar lie vertically?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setVerticalScroll(bool verticallScroll);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the maximum value.
+        ///
+        /// \return The current maximum value
+        ///
+        /// The default maximum value is 10.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getMaximum() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the current value.
+        ///
+        /// \return The current value
+        ///
+        /// The default value is 0.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getValue() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Returns the low value.
         ///
         /// \see setLowValue
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getLowValue() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns whether the scrollbar lies vertical or horizontal.
+        ///
+        /// \return Does the scrollbar lie vertically?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getVerticalScroll() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,6 +281,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void mouseWheelMoved(int delta, int x, int y);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void widgetFocused();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
@@ -301,16 +332,33 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ScrollbarCallbacks
         {
-            AllScrollbarCallbacks = SliderCallbacksCount - 1, ///< All triggers defined in Scrollbar and its base classes
-            ScrollbarCallbacksCount = SliderCallbacksCount
+            ValueChanged = WidgetCallbacksCount * 1,              ///< Value changed (thumb moved)
+            AllScrollbarCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Scrollbar and its base classes
+            ScrollbarCallbacksCount = WidgetCallbacksCount * 2
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
+        std::string m_LoadedConfigFile;
+
+        // When the mouse went down, did it go down on top of the thumb? If so, where?
+        bool m_MouseDownOnThumb;
+        sf::Vector2f m_MouseDownOnThumbPos;
+
+        unsigned int m_Minimum;
+        unsigned int m_Maximum;
+        unsigned int m_Value;
+
         // Maximum should be above this value before the scrollbar is needed
         unsigned int m_LowValue;
+
+        // Is the scrollbar draw vertically?
+        bool m_VerticalScroll;
+
+        // Does the image lie vertically?
+        bool m_VerticalImage;
 
         // How far should the value change when pressing one of the arrows?
         unsigned int m_ScrollAmount;
@@ -320,6 +368,27 @@ namespace tgui
 
         // Did the mouse went down on one of the arrows?
         bool m_MouseDownOnArrow;
+
+        // If this is true then the L, M and R images will be used.
+        // If it is false then the scrollbar is just one big image that will be stored in the M image.
+        bool m_SplitImage;
+
+        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
+        bool m_SeparateHoverImage;
+
+        // The size of the scrollbar and its thumb
+        sf::Vector2f m_Size;
+        sf::Vector2f m_ThumbSize;
+
+        Texture m_TextureTrackNormal_L;
+        Texture m_TextureTrackHover_L;
+        Texture m_TextureTrackNormal_M;
+        Texture m_TextureTrackHover_M;
+        Texture m_TextureTrackNormal_R;
+        Texture m_TextureTrackHover_R;
+
+        Texture m_TextureThumbNormal;
+        Texture m_TextureThumbHover;
 
         Texture m_TextureArrowUpNormal;
         Texture m_TextureArrowUpHover;
