@@ -49,6 +49,7 @@ namespace tgui
     m_SeparateHoverImage(false)
     {
         m_Callback.widgetType = Type_Scrollbar;
+        m_DraggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,84 +645,7 @@ namespace tgui
 
         // Check if the mouse is on top of the scrollbar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
-        {
-            // Get the current position
-            sf::Vector2f position = getPosition();
-
-            float thumbLeft = 0;
-            float thumbTop = 0;
-
-            // Calculate the thumb size
-            float thumbWidth = m_ThumbSize.x;
-            float thumbHeight = m_ThumbSize.y;
-
-            // The scaling depends on how the scrollbar lies
-            if (m_VerticalScroll)
-            {
-                float scalingX;
-                if (m_VerticalImage == m_VerticalScroll)
-                    scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().x;
-                else
-                    scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
-
-                // Check if the arrows are drawn at full size
-                if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
-                {
-                    // Calculate the track and thumb height
-                    float realTrackHeight = m_Size.y - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX);
-                    thumbHeight = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
-
-                    // Calculate the top position of the thumb
-                    thumbTop = (m_TextureArrowUpNormal.getSize().y * scalingX) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackHeight - thumbHeight));
-                }
-                else // The arrows are not drawn at full size
-                {
-                    thumbHeight = 0;
-                    thumbTop = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
-                }
-            }
-            else // The scrollbar lies horizontal
-            {
-                float scalingY;
-                if (m_VerticalImage == m_VerticalScroll)
-                    scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().y;
-                else
-                    scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
-
-                // Check if the arrows are drawn at full size
-                if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
-                {
-                    // Calculate the track and thumb height
-                    float realTrackWidth = m_Size.x - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY);
-                    thumbWidth = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
-
-                    // Calculate the left position of the thumb
-                    thumbLeft = (m_TextureArrowUpNormal.getSize().y * scalingY) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackWidth - thumbWidth));
-                }
-                else // The arrows are not drawn at full size
-                {
-                    thumbWidth = 0;
-                    thumbLeft = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
-                }
-            }
-
-            // Check if the mouse is on top of the thumb
-            if (sf::FloatRect(position.x + thumbLeft, position.y + thumbTop, thumbWidth, thumbHeight).contains(x, y))
-            {
-                if (m_MouseDown == false)
-                {
-                    m_MouseDownOnThumbPos.x = x - position.x - thumbLeft;
-                    m_MouseDownOnThumbPos.y = y - position.y - thumbTop;
-                }
-
-                m_MouseDownOnThumb = true;
-                return true;
-            }
-            else // The mouse is not on top of the thumb
-                m_MouseDownOnThumb = false;
-
             return true;
-        }
 
         if (m_MouseHover)
             mouseLeftWidget();
@@ -779,6 +703,20 @@ namespace tgui
             else // The arrows are not drawn at full size (there is no track)
                 m_MouseDownOnArrow = true;
         }
+
+        sf::Vector2f position = getPosition();
+        sf::FloatRect thumbRect = getThumbRect();
+
+        // Check if the mouse is on top of the thumb
+        if (sf::FloatRect(position.x + thumbRect.left, position.y + thumbRect.top, thumbRect.width, thumbRect.height).contains(x, y))
+        {
+            m_MouseDownOnThumbPos.x = x - position.x - thumbRect.left;
+            m_MouseDownOnThumbPos.y = y - position.y - thumbRect.top;
+
+            m_MouseDownOnThumb = true;
+        }
+        else // The mouse is not on top of the thumb
+            m_MouseDownOnThumb = false;
 
         // Refresh the scrollbar value
         if (m_MouseDownOnArrow == false)
@@ -964,6 +902,12 @@ namespace tgui
                             }
                         }
                     }
+
+                    sf::FloatRect thumbRect = getThumbRect();
+
+                    m_MouseDownOnThumbPos.x = x - position.x - thumbRect.left;
+                    m_MouseDownOnThumbPos.y = y - position.y - thumbRect.top;
+                    m_MouseDownOnThumb = true;
                 }
             }
             else // the scrollbar lies horizontal
@@ -1029,6 +973,12 @@ namespace tgui
                             }
                         }
                     }
+
+                    sf::FloatRect thumbRect = getThumbRect();
+
+                    m_MouseDownOnThumbPos.x = x - position.x - thumbRect.left;
+                    m_MouseDownOnThumbPos.y = y - position.y - thumbRect.top;
+                    m_MouseDownOnThumb = true;
                 }
             }
         }
@@ -1166,6 +1116,65 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("VerticalScroll", "bool"));
         list.push_back(std::pair<std::string, std::string>("AutoHide", "bool"));
         return list;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::FloatRect Scrollbar::getThumbRect()
+    {
+        sf::FloatRect thumbRect(0, 0, m_ThumbSize.x, m_ThumbSize.y);
+
+        // The scaling depends on how the scrollbar lies
+        if (m_VerticalScroll)
+        {
+            float scalingX;
+            if (m_VerticalImage == m_VerticalScroll)
+                scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+            else
+                scalingX = m_Size.x / m_TextureTrackNormal_M.getSize().y;
+
+            // Check if the arrows are drawn at full size
+            if (m_Size.y > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX)
+            {
+                // Calculate the track and thumb height
+                float realTrackHeight = m_Size.y - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingX);
+                thumbRect.height = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackHeight);
+
+                // Calculate the top position of the thumb
+                thumbRect.top = (m_TextureArrowUpNormal.getSize().y * scalingX) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackHeight - thumbRect.height));
+            }
+            else // The arrows are not drawn at full size
+            {
+                thumbRect.height = 0;
+                thumbRect.top = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
+            }
+        }
+        else // The scrollbar lies horizontal
+        {
+            float scalingY;
+            if (m_VerticalImage == m_VerticalScroll)
+                scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+            else
+                scalingY = m_Size.y / m_TextureTrackNormal_M.getSize().x;
+
+            // Check if the arrows are drawn at full size
+            if (m_Size.x > (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY)
+            {
+                // Calculate the track and thumb height
+                float realTrackWidth = m_Size.x - ((m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y) * scalingY);
+                thumbRect.width = ((static_cast<float>(m_LowValue) / m_Maximum) * realTrackWidth);
+
+                // Calculate the left position of the thumb
+                thumbRect.left = (m_TextureArrowUpNormal.getSize().y * scalingY) + ((static_cast<float>(m_Value) / (m_Maximum - m_LowValue)) * (realTrackWidth - thumbRect.width));
+            }
+            else // The arrows are not drawn at full size
+            {
+                thumbRect.width = 0;
+                thumbRect.left = static_cast<float>(m_TextureArrowUpNormal.getSize().y);
+            }
+        }
+
+        return thumbRect;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
