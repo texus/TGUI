@@ -847,9 +847,6 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
-        // Set the mouse down flag to true
-        m_MouseDown = true;
-
         // This will be true when the click didn't occur on the scrollbar
         bool clickedOnTextBox = true;
 
@@ -961,10 +958,10 @@ namespace tgui
 
                 // If the next click comes soon enough then it will be a double click
                 m_PossibleDoubleClick = true;
-            }
 
-            // Set the mouse down flag
-            m_MouseDown = true;
+                // Set the mouse down flag
+                m_MouseDown = true;
+            }
 
             // The selection point should be visible
             m_SelectionPointVisible = true;
@@ -1058,7 +1055,7 @@ namespace tgui
             m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
 
             // Check if you are dragging the thumb of the scrollbar
-            if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
+            if (m_Scroll->m_MouseDown)
             {
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_Scroll->getValue();
