@@ -285,7 +285,7 @@ namespace tgui
         // Check if the image is split
         if (m_SplitImage)
         {
-            TGUI_OUTPUT("TGUI error: SplitImage is not supported in Scrollbar.");
+            TGUI_OUTPUT("TGUI error: SplitImage is not yet supported in Scrollbar.");
             return false;
 /*
             // Make sure the required textures were loaded
@@ -343,6 +343,71 @@ namespace tgui
 
         // When there is no error we will return true
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::setPosition(float x, float y)
+    {
+        Transformable::setPosition(x, y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::setSize(float width, float height)
+    {
+        // Don't do anything when the slider wasn't loaded correctly
+        if (m_Loaded == false)
+            return;
+
+        // Set the size of the slider
+        m_Size.x = width;
+        m_Size.y = height;
+
+        // A negative size is not allowed for this widget
+        if (m_Size.x < 0) m_Size.x = -m_Size.x;
+        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+
+        // Set the thumb size
+        if (m_VerticalImage == m_VerticalScroll)
+        {
+            if (m_VerticalScroll)
+            {
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
+            }
+            else
+            {
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
+            }
+        }
+        else // m_VerticalImage != m_VerticalScroll
+        {
+            if (m_VerticalScroll)
+            {
+                m_ThumbSize.x = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().y;
+                m_ThumbSize.y = (m_Size.x / m_TextureTrackNormal_M.getSize().y) * m_TextureThumbNormal.getSize().x;
+            }
+            else
+            {
+                m_ThumbSize.x = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().y;
+                m_ThumbSize.y = (m_Size.y / m_TextureTrackNormal_M.getSize().x) * m_TextureThumbNormal.getSize().x;
+            }
+        }
+
+        // Recalculate the position of the images
+        setPosition(getPosition());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Scrollbar::getSize() const
+    {
+        if (m_Loaded)
+            return sf::Vector2f(m_Size.x, m_Size.y);
+        else
+            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -924,8 +989,25 @@ namespace tgui
         if ((m_AutoHide == true) && (m_Maximum <= m_LowValue))
             return;
 
+        // Get the scale factors
+        sf::Vector2f scaling;
+        if (m_VerticalScroll == m_VerticalImage)
+        {
+            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
+            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
+        }
+        else
+        {
+            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
+            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
+        }
+
         // Remember the current transformation
+        states.transform *= getTransform();
         sf::Transform oldTransform = states.transform;
+
+        // Set the scale of the track image
+        states.transform.scale(scaling.x, scaling.y);
 
         // Set the rotation
         if (m_VerticalScroll != m_VerticalImage)
@@ -949,20 +1031,6 @@ namespace tgui
 
         // Reset the transformation (in case there was any rotation)
         states.transform = oldTransform;
-        states.transform *= getTransform();
-
-        // Get the scale factors
-        sf::Vector2f scaling;
-        if (m_VerticalScroll == m_VerticalImage)
-        {
-            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().x;
-            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().y;
-        }
-        else
-        {
-            scaling.x = m_Size.x / m_TextureTrackNormal_M.getSize().y;
-            scaling.y = m_Size.y / m_TextureTrackNormal_M.getSize().x;
-        }
 
         // The calculation depends on the direction of the scrollbar
         if (m_VerticalScroll)
@@ -1028,13 +1096,9 @@ namespace tgui
                         target.draw(m_TextureThumbHover, states);
                 }
 
-                // Reset the transformation
+                // Set the transformation of the second arrow
                 states.transform = oldTransform;
-
-                // Change the position of the second arrow
                 states.transform.translate(0, m_Size.y - (m_TextureArrowDownNormal.getSize().y * scaling.x));
-
-                // Set the scale of the arrow
                 states.transform.scale(scaling.x, scaling.x);
             }
             else // The arrows can't be drawn at full size
@@ -1058,30 +1122,8 @@ namespace tgui
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
-                // Reset the transformation
-                states.transform = oldTransform;
-
                 // Change the position of the second arrow
-                states.transform.translate(0, m_Size.y - (m_TextureArrowDownNormal.getSize().y * scaling.x));
-
-                // Set the scale of the arrow
-                states.transform.scale(scaling.x, (m_Size.y * 0.5f) / m_TextureArrowUpNormal.getSize().y);
-            }
-
-            // Draw the second arrow
-            if (m_SeparateHoverImage)
-            {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
-                else
-                    target.draw(m_TextureArrowDownNormal, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
-                target.draw(m_TextureArrowDownNormal, states);
-
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
+                states.transform.translate(0, m_TextureArrowUpNormal.getSize().y);
             }
         }
         else // The scrollbar lies horizontal
@@ -1150,14 +1192,11 @@ namespace tgui
                         target.draw(m_TextureThumbHover, states);
                 }
 
-                // Reset the transformation
+                // Set the transformation of the second arrow
                 states.transform = oldTransform;
-
-                // Change the position of the second arrow
                 states.transform.translate(m_Size.x - (m_TextureArrowDownNormal.getSize().y * scaling.y), 0);
-
-                // Set the scale of the arrow
                 states.transform.scale(scaling.y, scaling.y);
+                states.transform.rotate(-90, m_TextureArrowUpNormal.getSize().x * 0.5f, m_TextureArrowUpNormal.getSize().x * 0.5f);
             }
             else // The arrows can't be drawn at full size
             {
@@ -1183,34 +1222,25 @@ namespace tgui
                         target.draw(m_TextureArrowUpHover, states);
                 }
 
-                // Reset the transformation
-                states.transform = oldTransform;
-
-                // Change the position of the second arrow
-                states.transform.translate(m_Size.x - (m_TextureArrowDownNormal.getSize().y * scaling.y), 0);
-
-                // Set the scale of the arrow
-                states.transform.scale((m_Size.x * 0.5f) / m_TextureArrowUpNormal.getSize().y, scaling.y);
+                // Set the translation of the second arrow
+                states.transform.translate(0, m_TextureArrowDownNormal.getSize().y);
             }
+        }
 
-            // Rotate the arrow
-            states.transform.rotate(-90, m_TextureArrowUpNormal.getSize().x * 0.5f, m_TextureArrowUpNormal.getSize().x * 0.5f);
-
-            // Draw the second arrow
-            if (m_SeparateHoverImage)
-            {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
-                else
-                    target.draw(m_TextureArrowDownNormal, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
+        // Draw the second arrow
+        if (m_SeparateHoverImage)
+        {
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                target.draw(m_TextureArrowDownHover, states);
+            else
                 target.draw(m_TextureArrowDownNormal, states);
+        }
+        else // The hover image should be drawn on top of the normal image
+        {
+            target.draw(m_TextureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-                    target.draw(m_TextureArrowUpHover, states);
-            }
+            if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                target.draw(m_TextureArrowDownHover, states);
         }
     }
 
