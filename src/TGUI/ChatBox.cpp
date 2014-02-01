@@ -295,7 +295,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize)
+    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font)
     {
         auto& widgets = m_Panel->getWidgets();
 
@@ -306,6 +306,9 @@ namespace tgui
         Label::Ptr label(*m_Panel);
         label->setTextColor(color);
         label->setTextSize(textSize);
+
+        if (font != nullptr)
+            label->setTextFont(*font);
 
         Label::Ptr tempLine;
         tempLine->setTextSize(textSize);

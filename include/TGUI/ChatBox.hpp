@@ -179,9 +179,10 @@ namespace tgui
         /// \param text      Text that will be added to the chat box
         /// \param color     Color of the text
         /// \param textSize  Size of the text
+        /// \param font      Font of the text (nullptr to use default font)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(const sf::String& text, const sf::Color& color, unsigned int textSize);
+        void addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font = nullptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +239,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the text.
+        /// \brief Changes the default font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
@@ -250,7 +251,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the text.
+        /// \brief Returns the default font of the text.
         ///
         /// \return  Pointer to the font that is currently being used
         ///
