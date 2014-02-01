@@ -847,6 +847,9 @@ namespace tgui
         if (m_Loaded == false)
             return;
 
+        // Set the mouse down flag
+        m_MouseDown = true;
+
         // This will be true when the click didn't occur on the scrollbar
         bool clickedOnTextBox = true;
 
@@ -958,9 +961,6 @@ namespace tgui
 
                 // If the next click comes soon enough then it will be a double click
                 m_PossibleDoubleClick = true;
-
-                // Set the mouse down flag
-                m_MouseDown = true;
             }
 
             // The selection point should be visible
