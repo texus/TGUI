@@ -348,6 +348,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the line spacing of all lines.
+        ///
+        /// By default, line spacing is chosen based on the font and character size. This also means that when mixing different
+        /// text styles in ChatBox, lines can have different line spacings.
+        /// By calling this function, all line spacings will be set to the value passed to this function.
+        ///
+        /// The line spacing should be equal or greater than the text size to avoid overlapping lines.
+        ///
+        /// \param lineSpacing  New line spacing for all lines
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setLineSpacing(unsigned int lineSpacing);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar of the chat box.
         ///
         /// \param scrollbarConfigFileFilename  Filename of the config file.
@@ -446,9 +461,9 @@ namespace tgui
       private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Calculate the space between two lines.
+        // Retrieve the space of one of the lines.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getLinesOffset(unsigned int characterSize);
+        unsigned int getLineSpacing(unsigned int lineNumber);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -493,6 +508,7 @@ namespace tgui
 
         std::string m_LoadedConfigFile;
 
+        unsigned int m_LineSpacing;
         unsigned int m_TextSize;
         sf::Color m_TextColor;
         sf::Color m_BorderColor;
