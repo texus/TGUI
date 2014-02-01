@@ -313,7 +313,7 @@ namespace tgui
         }
         label->setText(label->getText() + tempLine->getText());
 
-        m_FullTextHeight += label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+        m_FullTextHeight += label->getSize().y + getLinesOffset(label->getTextSize());
 
         if (m_Scroll != nullptr)
         {
@@ -346,7 +346,7 @@ namespace tgui
         if (lineIndex < m_Panel->getWidgets().size())
         {
             tgui::Label::Ptr label = m_Panel->getWidgets()[lineIndex];
-            m_FullTextHeight -= label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+            m_FullTextHeight -= label->getSize().y + getLinesOffset(label->getTextSize());
             m_Panel->remove(label);
 
             if (m_Scroll != nullptr)
@@ -391,7 +391,7 @@ namespace tgui
             while (m_MaxLines < m_Panel->getWidgets().size())
             {
                 tgui::Label::Ptr label = m_Panel->getWidgets()[0];
-                m_FullTextHeight -= label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+                m_FullTextHeight -= label->getSize().y + getLinesOffset(label->getTextSize());
                 m_Panel->remove(label);
             }
 
@@ -893,6 +893,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int ChatBox::getLinesOffset(unsigned int characterSize)
+    {
+        unsigned int lineSpacing = m_Panel->getGlobalFont().getLineSpacing(characterSize);
+
+        if (lineSpacing > characterSize)
+            return lineSpacing - characterSize;
+        else
+            return static_cast<int>(std::ceil(characterSize / 10.0));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::initialize(Container *const parent)
     {
         m_Parent = parent;
@@ -915,14 +927,14 @@ namespace tgui
             tgui::Label::Ptr label = *it;
             label->setPosition(m_LeftBorder + 2.0f, position);
 
-            position += label->getSize().y + (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+            position += label->getSize().y + getLinesOffset(label->getTextSize());
         }
 
         // Correct the position when there is no scrollbar
         if ((m_Scroll == nullptr) && (!labels.empty()))
         {
             tgui::Label::Ptr label = labels.back();
-            position -= (label->getTextFont()->getLineSpacing(label->getTextSize()) - label->getTextSize());
+            position -= getLinesOffset(label->getTextSize());
 
             if (position > m_Panel->getSize().y - m_TopBorder - m_BottomBorder)
             {
