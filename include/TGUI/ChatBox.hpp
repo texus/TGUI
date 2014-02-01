@@ -132,11 +132,56 @@ namespace tgui
         /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
+        /// The default text color and character size will be used.
+        ///
         /// \param text  Text that will be added to the chat box
-        /// \param color Color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(sf::String text, const sf::Color& color = sf::Color::Black);
+        void addLine(const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Add a new line of text to the chat box.
+        ///
+        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// even if it is too long and gets split over multiple lines.
+        ///
+        /// The default text color will be used.
+        ///
+        /// \param text      Text that will be added to the chat box
+        /// \param textSize  Size of the text
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addLine(const sf::String& text, unsigned int textSize);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Add a new line of text to the chat box.
+        ///
+        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// even if it is too long and gets split over multiple lines.
+        ///
+        /// The default character size will be used.
+        ///
+        /// \param text   Text that will be added to the chat box
+        /// \param color  Color of the text
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addLine(const sf::String& text, const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Add a new line of text to the chat box.
+        ///
+        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// even if it is too long and gets split over multiple lines.
+        ///
+        /// \param text      Text that will be added to the chat box
+        /// \param color     Color of the text
+        /// \param textSize  Size of the text
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addLine(const sf::String& text, const sf::Color& color, unsigned int textSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,9 +259,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// \brief Changes the default character size of the text.
         ///
-        /// \param size  The new text size.
+        /// \param size  The new default text size.
         ///              The minimum text size is 8.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,12 +269,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// \brief Returns the default character size of the text.
         ///
-        /// \return The current text size.
+        /// \return The currently used default text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the default color of the text.
+        ///
+        /// \param size  The new default text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the default color of the text.
+        ///
+        /// \return The currently used default text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::Color& getTextColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -430,6 +493,7 @@ namespace tgui
         std::string m_LoadedConfigFile;
 
         unsigned int m_TextSize;
+        sf::Color m_TextColor;
         sf::Color m_BorderColor;
 
         unsigned int m_MaxLines;

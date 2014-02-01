@@ -36,7 +36,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox() :
-        m_TextSize      (15),
+        m_TextSize      (16),
+        m_TextColor     (sf::Color::Black),
         m_BorderColor   (sf::Color::Black),
         m_MaxLines      (0),
         m_FullTextHeight(0),
@@ -60,6 +61,7 @@ namespace tgui
         WidgetBorders     (copy),
         m_LoadedConfigFile(copy.m_LoadedConfigFile),
         m_TextSize        (copy.m_TextSize),
+        m_TextColor       (copy.m_TextColor),
         m_BorderColor     (copy.m_BorderColor),
         m_MaxLines        (copy.m_MaxLines),
         m_FullTextHeight  (copy.m_FullTextHeight)
@@ -102,6 +104,7 @@ namespace tgui
 
             std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
             std::swap(m_TextSize,         temp.m_TextSize);
+            std::swap(m_TextColor,        temp.m_TextColor);
             std::swap(m_BorderColor,      temp.m_BorderColor);
             std::swap(m_MaxLines,         temp.m_MaxLines);
             std::swap(m_FullTextHeight,   temp.m_FullTextHeight);
@@ -271,7 +274,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(sf::String text, const sf::Color& color)
+    void ChatBox::addLine(const sf::String& text)
+    {
+        addLine(text, m_TextColor, m_TextSize);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::addLine(const sf::String& text, const sf::Color& color)
+    {
+        addLine(text, color, m_TextSize);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::addLine(const sf::String& text, unsigned int textSize)
+    {
+        addLine(text, m_TextColor, textSize);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize)
     {
         auto& widgets = m_Panel->getWidgets();
 
@@ -281,10 +305,10 @@ namespace tgui
 
         Label::Ptr label(*m_Panel);
         label->setTextColor(color);
-        label->setTextSize(m_TextSize);
+        label->setTextSize(textSize);
 
         Label::Ptr tempLine;
-        tempLine->setTextSize(m_TextSize);
+        tempLine->setTextSize(textSize);
         tempLine->setTextFont(*label->getTextFont());
 
         float width;
@@ -437,6 +461,20 @@ namespace tgui
     unsigned int ChatBox::getTextSize() const
     {
         return m_TextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setTextColor(const sf::Color& color)
+    {
+        m_TextColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& ChatBox::getTextColor() const
+    {
+        return m_TextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
