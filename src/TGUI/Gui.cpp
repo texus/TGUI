@@ -74,12 +74,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::handleEvent(sf::Event event)
+    bool Gui::handleEvent(sf::Event event, bool resetView)
     {
         // Check if the event has something to do with the mouse
         if (event.type == sf::Event::MouseMoved)
         {
-            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getView());
+            sf::Vector2f mouseCoords;
+            if (resetView)
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getDefaultView());
+            else
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -87,7 +91,11 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getView());
+            sf::Vector2f mouseCoords;
+            if (resetView)
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getDefaultView());
+            else
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -95,7 +103,11 @@ namespace tgui
         }
         else if (event.type == sf::Event::MouseWheelMoved)
         {
-            sf::Vector2f mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_Window->getView());
+            sf::Vector2f mouseCoords;
+            if (resetView)
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_Window->getDefaultView());
+            else
+                mouseCoords = m_Window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_Window->getView());
 
             // Adjust the mouse position of the event
             event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
