@@ -1145,7 +1145,7 @@ namespace tgui
     bool Container::focusNextWidgetInContainer()
     {
         // Don't do anything when the tab key usage is disabled
-        if (tabKeyUsageEnabled == false)
+        if (TGUI_TabKeyUsageEnabled == false)
             return false;
 
         // Loop through all widgets
@@ -1188,7 +1188,7 @@ namespace tgui
     bool Container::tabKeyPressed()
     {
         // Don't do anything when the tab key usage is disabled
-        if (tabKeyUsageEnabled == false)
+        if (TGUI_TabKeyUsageEnabled == false)
             return false;
 
         // Check if a container is focused
