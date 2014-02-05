@@ -62,6 +62,10 @@ namespace tgui
 
     bool Label::load(const std::string& configFileFilename)
     {
+        // Don't continue when the config file was empty
+        if (configFileFilename.empty())
+            return true;
+
         m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
