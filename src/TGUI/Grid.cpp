@@ -266,12 +266,12 @@ namespace tgui
                     continue;
 
                 // Remember the biggest column width
-                if (m_ColumnWidth[col] < m_GridWidgets[row][col]->getSize().x + m_ObjBorders[row][col].left + m_ObjBorders[row][col].right)
-                    m_ColumnWidth[col] = static_cast<unsigned int>(m_GridWidgets[row][col]->getSize().x + m_ObjBorders[row][col].left + m_ObjBorders[row][col].right);
+                if (m_ColumnWidth[col] < m_GridWidgets[row][col]->getFullSize().x + m_ObjBorders[row][col].left + m_ObjBorders[row][col].right)
+                    m_ColumnWidth[col] = static_cast<unsigned int>(m_GridWidgets[row][col]->getFullSize().x + m_ObjBorders[row][col].left + m_ObjBorders[row][col].right);
 
                 // Remember the biggest row height
-                if (m_RowHeight[row] < m_GridWidgets[row][col]->getSize().y + m_ObjBorders[row][col].top + m_ObjBorders[row][col].bottom)
-                    m_RowHeight[row] = static_cast<unsigned int>(m_GridWidgets[row][col]->getSize().y + m_ObjBorders[row][col].top + m_ObjBorders[row][col].bottom);
+                if (m_RowHeight[row] < m_GridWidgets[row][col]->getFullSize().y + m_ObjBorders[row][col].top + m_ObjBorders[row][col].bottom)
+                    m_RowHeight[row] = static_cast<unsigned int>(m_GridWidgets[row][col]->getFullSize().y + m_ObjBorders[row][col].top + m_ObjBorders[row][col].bottom);
             }
         }
 
@@ -345,43 +345,43 @@ namespace tgui
                             break;
 
                         case Layout::Up:
-                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
+                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
                             top += static_cast<float>(m_ObjBorders[row][col].top) + availSpaceOffset.y;
                             break;
 
                         case Layout::UpperRight:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
                             top += static_cast<float>(m_ObjBorders[row][col].top) + availSpaceOffset.y;
                             break;
 
                         case Layout::Right:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
-                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
+                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                             break;
 
                         case Layout::BottomRight:
-                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                            left += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                             break;
 
                         case Layout::Bottom:
-                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                             break;
 
                         case Layout::BottomLeft:
                             left += static_cast<float>(m_ObjBorders[row][col].left) + availSpaceOffset.x;
-                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                            top += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                             break;
 
                         case Layout::Left:
                             left += static_cast<float>(m_ObjBorders[row][col].left) + availSpaceOffset.x;
-                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                             break;
 
                         case Layout::Center:
-                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
-                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                            left += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
+                            top += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                             break;
                         }
 
@@ -461,43 +461,43 @@ namespace tgui
                     break;
 
                 case Layout::Up:
-                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
+                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
                     cellPosition.y += static_cast<float>(m_ObjBorders[row][col].top) + availSpaceOffset.y;
                     break;
 
                 case Layout::UpperRight:
-                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
+                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
                     cellPosition.y += static_cast<float>(m_ObjBorders[row][col].top) + availSpaceOffset.y;
                     break;
 
                 case Layout::Right:
-                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
-                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
+                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                     break;
 
                 case Layout::BottomRight:
-                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getSize().x + availSpaceOffset.x;
-                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                    cellPosition.x += m_ColumnWidth[col] - m_ObjBorders[row][col].right - m_GridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
+                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                     break;
 
                 case Layout::Bottom:
-                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
+                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                     break;
 
                 case Layout::BottomLeft:
                     cellPosition.x += static_cast<float>(m_ObjBorders[row][col].left) + availSpaceOffset.x;
-                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getSize().y + availSpaceOffset.y;
+                    cellPosition.y += m_RowHeight[row] - m_ObjBorders[row][col].bottom - m_GridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                     break;
 
                 case Layout::Left:
                     cellPosition.x += static_cast<float>(m_ObjBorders[row][col].left) + availSpaceOffset.x;
-                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                     break;
 
                 case Layout::Center:
-                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.x += m_ObjBorders[row][col].left + (((m_ColumnWidth[col] - m_ObjBorders[row][col].left - m_ObjBorders[row][col].right) - m_GridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
+                    cellPosition.y += m_ObjBorders[row][col].top + (((m_RowHeight[row] - m_ObjBorders[row][col].top - m_ObjBorders[row][col].bottom) - m_GridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                     break;
                 }
 

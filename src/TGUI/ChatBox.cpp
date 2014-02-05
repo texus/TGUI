@@ -209,8 +209,8 @@ namespace tgui
                 {
                     // Initialize the scrollbar
                     m_Scroll->setVerticalScroll(true);
-                    m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
-                    m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
+                    m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y));
+                    m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y);
                     m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
                 }
             }
@@ -242,9 +242,9 @@ namespace tgui
 
         // There is a minimum width
         if (m_Scroll == nullptr)
-            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder, width);
+            width = TGUI_MAXIMUM(50, width);
         else
-            width = TGUI_MAXIMUM(50 + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
+            width = TGUI_MAXIMUM(50 + m_Scroll->getSize().x, width);
 
         // Remember the old height
         float oldHeight = m_Panel->getSize().y;
@@ -255,8 +255,8 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != nullptr)
         {
-            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y - m_TopBorder - m_BottomBorder));
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y));
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y);
         }
 
         // Find out how much the height has changed
@@ -273,6 +273,14 @@ namespace tgui
     sf::Vector2f ChatBox::getSize() const
     {
         return m_Panel->getSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChatBox::getFullSize() const
+    {
+        return sf::Vector2f(getSize().x + m_LeftBorder + m_RightBorder,
+                            getSize().y + m_TopBorder + m_BottomBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,11 +325,9 @@ namespace tgui
         tempLine->setTextSize(textSize);
         tempLine->setTextFont(*label->getTextFont());
 
-        float width;
-        if (m_Scroll == nullptr)
-            width = m_Panel->getSize().x - m_LeftBorder - m_RightBorder;
-        else
-            width = m_Panel->getSize().x - m_LeftBorder - m_RightBorder - m_Scroll->getSize().x;
+        float width = m_Panel->getSize().x;
+        if (m_Scroll)
+            width -= m_Scroll->getSize().x;
 
         if (width < 0)
             width = 0;
@@ -486,31 +492,10 @@ namespace tgui
 
     void ChatBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
     {
-        // Reposition the labels
-        std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
-        for (auto it = labels.begin(); it != labels.end(); ++it)
-            (*it)->setPosition((*it)->getPosition().x + leftBorder - m_LeftBorder, (*it)->getPosition().y);
-
-        // Set the new border size
         m_LeftBorder   = leftBorder;
         m_TopBorder    = topBorder;
         m_RightBorder  = rightBorder;
         m_BottomBorder = bottomBorder;
-
-        // There is a minimum width
-        float width = m_Panel->getSize().x;
-        if (width < (50.f + m_LeftBorder + m_RightBorder))
-            width = 50.f + m_LeftBorder + m_RightBorder;
-
-        // Make sure that the panel has a valid size
-        m_Panel->setSize(width, m_Panel->getSize().y);
-
-        // If there is a scrollbar then reinitialize it
-        if (m_Scroll != nullptr)
-        {
-            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -576,8 +561,8 @@ namespace tgui
         {
             // Initialize the scrollbar
             m_Scroll->setVerticalScroll(true);
-            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
-            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y) - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, m_Panel->getSize().y);
+            m_Scroll->setLowValue(static_cast<unsigned int>(m_Panel->getSize().y));
             m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
 
             return true;
@@ -616,7 +601,7 @@ namespace tgui
         if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(position.x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
+            m_Scroll->setPosition(position.x + m_Panel->getSize().x - m_Scroll->getSize().x, position.y);
 
             // Pass the event
             m_Scroll->mouseOnWidget(x, y);
@@ -626,10 +611,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the list box
-        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder),
-                                                       static_cast<float>(m_TopBorder),
-                                                       m_Panel->getSize().x - m_LeftBorder - m_RightBorder,
-                                                       m_Panel->getSize().y - m_TopBorder - m_BottomBorder)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Panel->getSize().x, m_Panel->getSize().y)).contains(x, y))
             return true;
         else // The mouse is not on top of the list box
         {
@@ -659,7 +641,7 @@ namespace tgui
             unsigned int oldValue = m_Scroll->getValue();
 
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
+            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_Scroll->getSize().x, getPosition().y);
 
             // Pass the event
             if (m_Scroll->mouseOnWidget(x, y))
@@ -688,7 +670,7 @@ namespace tgui
                 unsigned int oldValue = m_Scroll->getValue();
 
                 // Temporarily set the position of the scroll
-                m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
+                m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_Scroll->getSize().x, getPosition().y);
 
                 // Pass the event
                 m_Scroll->leftMouseReleased(x, y);
@@ -742,7 +724,7 @@ namespace tgui
         if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
+            m_Scroll->setPosition(getPosition().x + m_Panel->getSize().x - m_Scroll->getSize().x, getPosition().y);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -805,7 +787,7 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * m_TextSize));
+                    m_Scroll->setValue(m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * m_TextSize));
                 }
                 else // You are scrolling up
                 {
@@ -813,7 +795,7 @@ namespace tgui
 
                     // Scroll up
                     if (change < m_Scroll->getValue())
-                        m_Scroll->setValue( m_Scroll->getValue() - change );
+                        m_Scroll->setValue(m_Scroll->getValue() - change);
                     else
                         m_Scroll->setValue(0);
                 }
@@ -974,17 +956,15 @@ namespace tgui
 
     void ChatBox::updateDisplayedText()
     {
-        float position;
-        if (m_Scroll != nullptr)
-            position = m_TopBorder + 2.0f - static_cast<float>(m_Scroll->getValue()) ;
-        else
-            position = m_TopBorder + 2.0f;
+        float position = 2.0f;
+        if (m_Scroll)
+            position -= static_cast<float>(m_Scroll->getValue());
 
         auto& labels = m_Panel->getWidgets();
         for (unsigned int i = 0; i < labels.size(); ++i)
         {
             tgui::Label::Ptr label = labels[i];
-            label->setPosition(m_LeftBorder + 2.0f, position);
+            label->setPosition(2.0f, position);
 
             position += getLineSpacing(i);
         }
@@ -993,9 +973,9 @@ namespace tgui
         if ((m_Scroll == nullptr) && (!labels.empty()))
         {
             tgui::Label::Ptr label = labels.back();
-            if (position > m_Panel->getSize().y - m_TopBorder - m_BottomBorder)
+            if (position > m_Panel->getSize().y)
             {
-                float diff = position - (m_Panel->getSize().y - m_TopBorder - m_BottomBorder);
+                float diff = position - m_Panel->getSize().y;
                 for (auto it = labels.begin(); it != labels.end(); ++it)
                     (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y - diff);
             }
@@ -1013,29 +993,31 @@ namespace tgui
         target.draw(*m_Panel, states);
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Panel->getSize().y));
+        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Panel->getSize().y + m_TopBorder));
+        border.setPosition(-static_cast<float>(m_LeftBorder), -static_cast<float>(m_TopBorder));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_Panel->getSize().x, static_cast<float>(m_TopBorder)));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x + m_RightBorder, static_cast<float>(m_TopBorder)));
+        border.setPosition(0, -static_cast<float>(m_TopBorder));
         target.draw(border, states);
 
         // Draw right border
-        border.setPosition(m_Panel->getSize().x - m_RightBorder, 0);
-        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Panel->getSize().y));
+        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Panel->getSize().y + m_BottomBorder));
+        border.setPosition(m_Panel->getSize().x, 0);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setPosition(0, m_Panel->getSize().y - m_BottomBorder);
-        border.setSize(sf::Vector2f(m_Panel->getSize().x, static_cast<float>(m_BottomBorder)));
+        border.setSize(sf::Vector2f(m_Panel->getSize().x + m_LeftBorder, static_cast<float>(m_BottomBorder)));
+        border.setPosition(-static_cast<float>(m_LeftBorder), m_Panel->getSize().y);
         target.draw(border, states);
 
         // Check if there is a scrollbar
         if (m_Scroll != nullptr)
         {
             // Draw the scrollbar
-            states.transform.translate(m_Panel->getSize().x - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
+            states.transform.translate(m_Panel->getSize().x - m_Scroll->getSize().x, 0);
             target.draw(*m_Scroll, states);
         }
     }

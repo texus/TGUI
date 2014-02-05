@@ -373,8 +373,8 @@ namespace tgui
             float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
             float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
 
-            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
-                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+            if (m_Size.x + m_LeftBorder + m_RightBorder < minimumWidth)
+                m_Size.x = minimumWidth - m_LeftBorder - m_RightBorder;
 
             m_TextureTitleBar_L.sprite.setScale(scalingY, scalingY);
             m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
@@ -398,6 +398,14 @@ namespace tgui
     sf::Vector2f ChildWindow::getSize() const
     {
         return sf::Vector2f(m_Size.x, m_Size.y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChildWindow::getFullSize() const
+    {
+        return sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder,
+                            m_Size.y + m_TopBorder + m_BottomBorder + m_TitleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,8 +454,8 @@ namespace tgui
             float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
             float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
 
-            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
-                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+            if (m_Size.x + m_LeftBorder + m_RightBorder < minimumWidth)
+                m_Size.x = minimumWidth - m_LeftBorder - m_RightBorder;
 
             m_TextureTitleBar_L.sprite.setScale(scalingY, scalingY);
             m_TextureTitleBar_M.sprite.setScale(scalingY, scalingY);
@@ -558,8 +566,8 @@ namespace tgui
             float scalingY = static_cast<float>(m_TitleBarHeight) / m_TextureTitleBar_M.getSize().y;
             float minimumWidth = ((m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_R.getSize().x) * scalingY);
 
-            if (m_Size.x < minimumWidth + m_LeftBorder + m_RightBorder)
-                m_Size.x = minimumWidth + m_LeftBorder + m_RightBorder;
+            if (m_Size.x + m_LeftBorder + m_RightBorder < minimumWidth)
+                m_Size.x = minimumWidth - m_LeftBorder - m_RightBorder;
 
             m_TextureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_Size.x + m_LeftBorder + m_RightBorder) - minimumWidth) / scalingY), m_TextureTitleBar_M.getSize().y));
         }
@@ -678,7 +686,7 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight + m_TopBorder))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
         {
             for (unsigned int i = 0; i < m_Widgets.size(); ++i)
                 m_Widgets[i]->mouseNotOnWidget();
@@ -1093,9 +1101,9 @@ namespace tgui
 
         // Get the global position
         sf::Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_LeftBorder + viewPosition.x,
-                                                                        position.y + m_TitleBarHeight + m_TopBorder + viewPosition.y);
+                                                                            position.y + m_TitleBarHeight + m_TopBorder + viewPosition.y);
         sf::Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + viewPosition.x,
-                                                                            position.y + m_TitleBarHeight + m_Size.y + m_TopBorder + viewPosition.y);
+                                                                                position.y + m_TitleBarHeight + m_Size.y + m_TopBorder + viewPosition.y);
         sf::Vector2f topLeftTitleBarPosition;
         sf::Vector2f bottomRightTitleBarPosition;
 
@@ -1203,22 +1211,22 @@ namespace tgui
         states.transform = oldTransform.translate(0, static_cast<float>(m_TitleBarHeight));
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Size.y + m_TopBorder + m_BottomBorder));
+        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Size.y + m_TopBorder));
         border.setFillColor(m_BorderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TopBorder)));
+        border.setSize(sf::Vector2f(m_Size.x + m_RightBorder, static_cast<float>(m_TopBorder)));
         target.draw(border, states);
 
         // Draw right border
+        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Size.y + m_BottomBorder));
         border.setPosition(m_Size.x + m_LeftBorder, 0);
-        border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Size.y + m_TopBorder + m_BottomBorder));
         target.draw(border, states);
 
         // Draw bottom border
+        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder, static_cast<float>(m_BottomBorder)));
         border.setPosition(0, m_Size.y + m_TopBorder);
-        border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_BottomBorder)));
         target.draw(border, states);
 
         // Make room for the borders

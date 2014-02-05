@@ -269,6 +269,13 @@ namespace tgui
 
     sf::Vector2f RadioButton::getSize() const
     {
+        return m_Size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f RadioButton::getFullSize() const
+    {
         if (m_Text.getString().isEmpty())
             return m_Size;
         else

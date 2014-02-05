@@ -148,6 +148,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the entire size that the widget is using.
+        ///
+        /// This function will return a value equal or greater than what getSize returns.
+        /// If the widget would e.g. have borders around it then this function will return the size, including these borders.
+        ///
+        /// \return Full size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getFullSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Scale the widget
         ///
         /// \param factorX  Horizontal scale factor

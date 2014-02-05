@@ -224,8 +224,8 @@ namespace tgui
                 {
                     // Initialize the scrollbar
                     m_Scroll->setVerticalScroll(true);
-                    m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
-                    m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+                    m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y));
+                    m_Scroll->setLowValue(m_Size.y);
                     m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
                 }
             }
@@ -253,13 +253,13 @@ namespace tgui
 
         // There is a minimum width
         if (m_Scroll == nullptr)
-            width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder, width);
+            width = TGUI_MAXIMUM(50.f, width);
         else
-            width = TGUI_MAXIMUM(50.f + m_LeftBorder + m_RightBorder + m_Scroll->getSize().x, width);
+            width = TGUI_MAXIMUM(50.f + m_Scroll->getSize().x, width);
 
         // There is also a minimum list box height
-        if (height < (m_ItemHeight + m_TopBorder + m_BottomBorder))
-            height = static_cast<float>(m_ItemHeight + m_TopBorder + m_BottomBorder);
+        if (height < m_ItemHeight)
+            height = static_cast<float>(m_ItemHeight);
 
         // Store the values
         m_Size.x = static_cast<unsigned int>(width);
@@ -268,8 +268,8 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_Scroll != nullptr)
         {
-            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y));
+            m_Scroll->setLowValue(m_Size.y);
         }
     }
 
@@ -282,11 +282,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f ListBox::getFullSize() const
+    {
+        return sf::Vector2f(getSize().x + m_LeftBorder + m_RightBorder,
+                            getSize().y + m_TopBorder + m_BottomBorder);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::changeColors(const sf::Color& backgroundColor,         const sf::Color& textColor,
                                const sf::Color& selectedBackgroundColor, const sf::Color& selectedTextColor,
                                const sf::Color& borderColor)
     {
-        // Store the new colors
         m_BackgroundColor         = backgroundColor;
         m_TextColor               = textColor;
         m_SelectedBackgroundColor = selectedBackgroundColor;
@@ -389,7 +396,7 @@ namespace tgui
             if (m_Scroll == nullptr)
             {
                 // Calculate the amount of items that fit in the list box
-                unsigned int maximumItems = (m_Size.y - m_TopBorder - m_BottomBorder) / m_ItemHeight;
+                unsigned int maximumItems = m_Size.y / m_ItemHeight;
 
                 // Check if the item still fits in the list box
                 if (m_Items.size() == maximumItems)
@@ -620,8 +627,8 @@ namespace tgui
         {
             // Initialize the scrollbar
             m_Scroll->setVerticalScroll(true);
-            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
+            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y));
+            m_Scroll->setLowValue(m_Size.y);
             m_Scroll->setMaximum(m_Items.size() * m_ItemHeight);
 
             return true;
@@ -716,37 +723,10 @@ namespace tgui
 
     void ListBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
     {
-        // Set the new border size
         m_LeftBorder   = leftBorder;
         m_TopBorder    = topBorder;
         m_RightBorder  = rightBorder;
         m_BottomBorder = bottomBorder;
-
-        // There is a minimum width
-        if (m_Size.x < (50 + m_LeftBorder + m_RightBorder))
-            m_Size.x = 50 + m_LeftBorder + m_RightBorder;
-
-        // There is also a minimum height (when there is no scrollbar)
-        if (m_Scroll == nullptr)
-        {
-            // If there are items then they should still fit inside the list box
-            if (m_Items.size() > 0)
-            {
-                if (m_Size.y < ((m_Items.size() * m_ItemHeight) - m_TopBorder - m_BottomBorder))
-                    m_Size.y = (m_Items.size() * m_ItemHeight) - m_TopBorder - m_BottomBorder;
-            }
-            else // There are no items
-            {
-                // At least one item should fit inside the list box
-                if (m_Size.y < (m_ItemHeight - m_TopBorder - m_BottomBorder))
-                    m_Size.y = m_ItemHeight - m_TopBorder - m_BottomBorder;
-            }
-        }
-        else // There is a scrollbar, so reinitialize it
-        {
-            m_Scroll->setSize(m_Scroll->getSize().x, static_cast<float>(m_Size.y) - m_TopBorder - m_BottomBorder);
-            m_Scroll->setLowValue(m_Size.y - m_TopBorder - m_BottomBorder);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -770,7 +750,7 @@ namespace tgui
         if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(position.x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, position.y + m_TopBorder);
+            m_Scroll->setPosition(position.x + m_Size.x - m_Scroll->getSize().x, position.y);
 
             // Pass the event
             m_Scroll->mouseOnWidget(x, y);
@@ -780,7 +760,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the list box
-        if (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder), static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(m_Size.x), static_cast<float>(m_Size.y))).contains(x, y))
             return true;
         else // The mouse is not on top of the list box
         {
@@ -806,7 +786,7 @@ namespace tgui
         if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x, getPosition().y + m_TopBorder);
+            m_Scroll->setPosition(getPosition().x + m_Size.x - m_Scroll->getSize().x, getPosition().y);
 
             // Pass the event
             if (m_Scroll->mouseOnWidget(x, y))
@@ -829,7 +809,7 @@ namespace tgui
             if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
             {
                 // Check if we clicked on the first (perhaps partially) visible item
-                if (y - getPosition().y - m_TopBorder <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
+                if (y - getPosition().y <= (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight)))
                 {
                     // We clicked on the first visible item
                     m_SelectedItem = static_cast<int>(m_Scroll->getValue() / m_ItemHeight);
@@ -838,15 +818,15 @@ namespace tgui
                 {
                     // Calculate on what item we clicked
                     if ((m_Scroll->getValue() % m_ItemHeight) == 0)
-                        m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / m_ItemHeight + (m_Scroll->getValue() / m_ItemHeight));
+                        m_SelectedItem = static_cast<int>((y - getPosition().y) / m_ItemHeight + (m_Scroll->getValue() / m_ItemHeight));
                     else
-                        m_SelectedItem = static_cast<int>((((y - getPosition().y - m_TopBorder) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 1);
+                        m_SelectedItem = static_cast<int>((((y - getPosition().y) - (m_ItemHeight - (m_Scroll->getValue() % m_ItemHeight))) / m_ItemHeight) + (m_Scroll->getValue() / m_ItemHeight) + 1);
                 }
             }
             else // There is no scrollbar or it is not displayed
             {
                 // Calculate on which item we clicked
-                m_SelectedItem = static_cast<int>((y - getPosition().y - m_TopBorder) / m_ItemHeight);
+                m_SelectedItem = static_cast<int>((y - getPosition().y) / m_ItemHeight);
 
                 // When you clicked behind the last item then unselect the selected item
                 if (m_SelectedItem > static_cast<int>(m_Items.size())-1)
@@ -880,7 +860,7 @@ namespace tgui
             unsigned int oldValue = m_Scroll->getValue();
 
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_RightBorder - m_Scroll->getSize().x), getPosition().y + m_TopBorder);
+            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_Scroll->getSize().x), getPosition().y);
 
             // Pass the event
             m_Scroll->leftMouseReleased(x, y);
@@ -926,7 +906,7 @@ namespace tgui
         if (m_Scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_RightBorder - m_Scroll->getSize().x), getPosition().y + m_TopBorder);
+            m_Scroll->setPosition(getPosition().x + (m_Size.x - m_Scroll->getSize().x), getPosition().y);
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_Scroll->m_MouseDown) && (m_Scroll->m_MouseDownOnThumb))
@@ -959,7 +939,7 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_Scroll->setValue( m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ItemHeight / 2)) );
+                    m_Scroll->setValue(m_Scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_ItemHeight / 2)));
                 }
                 else // You are scrolling up
                 {
@@ -967,7 +947,7 @@ namespace tgui
 
                     // Scroll up
                     if (change < m_Scroll->getValue())
-                        m_Scroll->setValue( m_Scroll->getValue() - change );
+                        m_Scroll->setValue(m_Scroll->getValue() - change);
                     else
                         m_Scroll->setValue(0);
                 }
@@ -1175,13 +1155,13 @@ namespace tgui
 
         if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder)) + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_RightBorder - m_Scroll->getSize().x + viewPosition.x, getPosition().y + m_Size.y - m_BottomBorder + viewPosition.y);
+            topLeftPosition = states.transform.transformPoint(getPosition() + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition().x + m_Size.x - m_Scroll->getSize().x + viewPosition.x, getPosition().y + m_Size.y + viewPosition.y);
         }
         else
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder)) + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Size) - sf::Vector2f(static_cast<float>(m_RightBorder), static_cast<float>(m_BottomBorder)) + viewPosition);
+            topLeftPosition = states.transform.transformPoint(getPosition() + viewPosition);
+            bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_Size) + viewPosition);
         }
 
         // Adjust the transformation
@@ -1193,35 +1173,31 @@ namespace tgui
         // Draw the borders
         {
             // Draw left border
-            sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), static_cast<float>(m_Size.y)));
+            sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Size.y + m_TopBorder));
+            border.setPosition(-static_cast<float>(m_LeftBorder), -static_cast<float>(m_TopBorder));
             border.setFillColor(m_BorderColor);
             target.draw(border, states);
 
             // Draw top border
-            border.setSize(sf::Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_TopBorder)));
+            border.setSize(sf::Vector2f(m_Size.x + m_RightBorder, static_cast<float>(m_TopBorder)));
+            border.setPosition(0, -static_cast<float>(m_TopBorder));
             target.draw(border, states);
 
             // Draw right border
-            border.setPosition(static_cast<float>(m_Size.x - m_RightBorder), 0);
-            border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), static_cast<float>(m_Size.y)));
+            border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Size.y + m_BottomBorder));
+            border.setPosition(m_Size.x, 0);
             target.draw(border, states);
 
             // Draw bottom border
-            border.setPosition(0, static_cast<float>(m_Size.y - m_BottomBorder));
-            border.setSize(sf::Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_BottomBorder)));
+            border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder, static_cast<float>(m_BottomBorder)));
+            border.setPosition(-static_cast<float>(m_LeftBorder), m_Size.y);
             target.draw(border, states);
         }
 
-        // Move the front rect a little bit
-        states.transform.translate(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder));
-
         // Draw the background
-        {
-            sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder),
-                                                  static_cast<float>(m_Size.y - m_TopBorder - m_BottomBorder)));
-            front.setFillColor(m_BackgroundColor);
-            target.draw(front, states);
-        }
+        sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_Size.y)));
+        front.setFillColor(m_BackgroundColor);
+        target.draw(front, states);
 
         // Get the old clipping area
         GLint scissor[4];
@@ -1279,7 +1255,7 @@ namespace tgui
                         states.transform.translate(0, (static_cast<float>(i * m_ItemHeight) - m_Scroll->getValue()));
 
                         // Create and draw the background
-                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_ItemHeight)));
                         back.setFillColor(m_SelectedBackgroundColor);
                         target.draw(back, states);
 
@@ -1325,7 +1301,7 @@ namespace tgui
                         states.transform.translate(0, static_cast<float>(i * m_ItemHeight));
 
                         // Create and draw the background
-                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x - m_LeftBorder - m_RightBorder), static_cast<float>(m_ItemHeight)));
+                        sf::RectangleShape back(sf::Vector2f(static_cast<float>(m_Size.x), static_cast<float>(m_ItemHeight)));
                         back.setFillColor(m_SelectedBackgroundColor);
                         target.draw(back, states);
 
@@ -1358,7 +1334,7 @@ namespace tgui
         {
             // Reset the transformation
             states.transform = oldTransform;
-            states.transform.translate(static_cast<float>(m_Size.x) - m_RightBorder - m_Scroll->getSize().x, static_cast<float>(m_TopBorder));
+            states.transform.translate(static_cast<float>(m_Size.x) - m_Scroll->getSize().x, 0);
 
             // Draw the scrollbar
             target.draw(*m_Scroll, states);
