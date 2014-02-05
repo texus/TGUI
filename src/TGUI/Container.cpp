@@ -104,7 +104,7 @@ namespace tgui
 
     bool Container::setGlobalFont(const std::string& filename)
     {
-        return m_GlobalFont.loadFromFile(filename);
+        return m_GlobalFont.loadFromFile(getResourcePath() + filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

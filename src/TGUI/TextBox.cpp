@@ -178,7 +178,7 @@ namespace tgui
 
     bool TextBox::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = configFileFilename;
+        m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // If there already was a scrollbar then delete it now
         if (m_Scroll != nullptr)
@@ -189,9 +189,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_LoadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -200,7 +200,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("TextBox", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -253,7 +253,7 @@ namespace tgui
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -276,7 +276,7 @@ namespace tgui
                 }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChatBox in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChatBox in " + m_LoadedConfigFile + ".");
         }
 
         return true;

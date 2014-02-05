@@ -155,7 +155,7 @@ namespace tgui
 
     bool ChildWindow::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = configFileFilename;
+        m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // Until the loading succeeds, the child window will be marked as unloaded
         m_Loaded = false;
@@ -170,9 +170,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_LoadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -181,7 +181,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("ChildWindow", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -190,9 +190,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = configFileFilename.substr(0, slashPos+1);
+            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -216,7 +216,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -226,7 +226,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_L))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_L in section ChildWindow in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_L in section ChildWindow in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -234,7 +234,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_M in section ChildWindow in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_M in section ChildWindow in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -244,7 +244,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureTitleBar_R))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_R in section ChildWindow in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_R in section ChildWindow in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -256,7 +256,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureNormal_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonNormalImage in section Button in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonNormalImage in section Button in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -264,7 +264,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureHover_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonHoverImage in section Button in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonHoverImage in section Button in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -272,7 +272,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_CloseButton->m_TextureDown_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonDownImage in section Button in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonDownImage in section Button in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -287,7 +287,7 @@ namespace tgui
                 setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + m_LoadedConfigFile + ".");
         }
 
         // Initialize the close button if it was loaded
@@ -308,7 +308,7 @@ namespace tgui
         }
         else // Close button wan't loaded
         {
-            TGUI_OUTPUT("TGUI error: Missing a CloseButtonNormalImage property in section ChildWindow in " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Missing a CloseButtonNormalImage property in section ChildWindow in " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -324,7 +324,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
         }
@@ -337,7 +337,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
         }

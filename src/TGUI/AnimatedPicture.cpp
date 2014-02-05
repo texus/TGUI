@@ -107,13 +107,13 @@ namespace tgui
     bool AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
         // Check if the filename is empty
-        if (filename.empty() == true)
+        if (filename.empty())
             return false;
 
         Texture tempTexture;
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(filename, tempTexture))
+        if (TGUI_TextureManager.getTexture(getResourcePath() + filename, tempTexture))
         {
             // If this is the first frame then set it as the current displayed frame
             if (m_Textures.empty())

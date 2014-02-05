@@ -112,7 +112,7 @@ namespace tgui
 
     bool Knob::load(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -123,9 +123,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -134,7 +134,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("Knob", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -143,9 +143,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = configFileFilename.substr(0, slashPos+1);
+            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -157,7 +157,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_backgroundTexture))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackgroundImage in section Knob in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackgroundImage in section Knob in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
@@ -165,7 +165,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_foregroundTexture))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ForegroundImage in section Knob in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ForegroundImage in section Knob in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
@@ -174,7 +174,7 @@ namespace tgui
                 m_imageRotation = static_cast<float>(atof(value.c_str()));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Knob in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Knob in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures was loaded
@@ -189,7 +189,7 @@ namespace tgui
         }
         else
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the knob. Is the Knob section in " + configFileFilename + " complete?");
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?");
             return false;
         }
 

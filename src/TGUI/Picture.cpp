@@ -83,8 +83,6 @@ namespace tgui
 
     bool Picture::load(const std::string& filename)
     {
-        m_LoadedFilename = filename;
-
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
         m_Size.x = 0;
@@ -94,12 +92,14 @@ namespace tgui
         if (filename.empty())
             return false;
 
+        m_LoadedFilename = getResourcePath() + filename;
+
         // If we have already loaded a texture then first delete it
         if (m_Texture.data != nullptr)
             TGUI_TextureManager.removeTexture(m_Texture);
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(filename, m_Texture))
+        if (TGUI_TextureManager.getTexture(m_LoadedFilename, m_Texture))
         {
             m_Loaded = true;
 

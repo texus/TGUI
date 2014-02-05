@@ -119,7 +119,7 @@ namespace tgui
 
     bool LoadingBar::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = configFileFilename;
+        m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -134,9 +134,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_LoadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -145,7 +145,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("LoadingBar", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -154,9 +154,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = configFileFilename.substr(0, slashPos+1);
+            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -168,7 +168,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureBack_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -178,7 +178,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureFront_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -186,7 +186,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureBack_L))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_L in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_L in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -194,7 +194,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureBack_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_M in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_M in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -204,7 +204,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureBack_R))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_R in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_R in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -212,7 +212,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureFront_L))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_L in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_L in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -220,7 +220,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureFront_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_M in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_M in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -228,7 +228,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureFront_R))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_R in section LoadingBar in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_R in section LoadingBar in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -241,7 +241,7 @@ namespace tgui
                 setTextSize(atoi(value.c_str()));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + m_LoadedConfigFile + ".");
         }
 
         // Check if the image is split
@@ -259,7 +259,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
         }
@@ -272,7 +272,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
         }

@@ -135,7 +135,7 @@ namespace tgui
 
     bool Tab::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = configFileFilename;
+        m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -150,9 +150,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_LoadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -161,7 +161,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("Tab", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -170,9 +170,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
+        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = configFileFilename.substr(0, slashPos+1);
+            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -200,7 +200,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -210,7 +210,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -218,7 +218,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_L))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -226,7 +226,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -236,7 +236,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureNormal_R))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -244,7 +244,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_L))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_L in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_L in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -252,7 +252,7 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_M))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_M in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_M in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -260,12 +260,12 @@ namespace tgui
             {
                 if (!configFile.readTexture(value, configFileFolder, m_TextureSelected_R))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_R in section Tab in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage_R in section Tab in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Tab in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Tab in " + m_LoadedConfigFile + ".");
         }
 
         // Clear the vectors
@@ -284,7 +284,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the tab. Is the Tab section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the tab. Is the Tab section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
 
@@ -305,7 +305,7 @@ namespace tgui
             }
             else
             {
-                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Tab section in " + configFileFilename + " complete?");
+                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Tab section in " + m_LoadedConfigFile + " complete?");
                 return false;
             }
 

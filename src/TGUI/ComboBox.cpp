@@ -120,7 +120,7 @@ namespace tgui
 
     bool ComboBox::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = configFileFilename;
+        m_LoadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
         m_Loaded = false;
@@ -133,9 +133,9 @@ namespace tgui
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(configFileFilename))
+        if (!configFile.open(m_LoadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -144,7 +144,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("ComboBox", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + configFileFilename + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
             return false;
         }
 
@@ -195,33 +195,33 @@ namespace tgui
             }
             else if (property == "arrowupnormalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpNormal))
+                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_TextureArrowUpNormal))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section ComboBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section ComboBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowuphoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpHover))
+                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_TextureArrowUpHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section ComboBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section ComboBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowdownnormalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownNormal))
+                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_TextureArrowDownNormal))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section ComboBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section ComboBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowdownhoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownHover))
+                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_TextureArrowDownHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section ComboBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section ComboBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
             }
@@ -229,7 +229,7 @@ namespace tgui
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ComboBox in " + configFileFilename + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ComboBox in " + m_LoadedConfigFile + ".");
                     return false;
                 }
 
@@ -237,13 +237,13 @@ namespace tgui
                     return false;
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ComboBox in " + configFileFilename + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ComboBox in " + m_LoadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
         if ((m_TextureArrowUpNormal.data == nullptr) || (m_TextureArrowDownNormal.data == nullptr))
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + configFileFilename + " complete?");
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_LoadedConfigFile + " complete?");
             return false;
         }
 
