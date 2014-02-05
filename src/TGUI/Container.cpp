@@ -520,7 +520,7 @@ namespace tgui
         std::list<Widget*> widgetPtr;
 
         // Open the file
-        std::ifstream m_File(filename);
+        std::ifstream m_File(getResourcePath() + filename);
 
         // Check if the file was not opened
         if (m_File.is_open() == false)
