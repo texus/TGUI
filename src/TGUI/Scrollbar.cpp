@@ -472,10 +472,6 @@ namespace tgui
             m_Maximum = 1;
 
         // When the value is above the maximum then adjust it
-        if (m_Value > m_Maximum)
-            setValue(m_Maximum);
-
-        // When the value is above the maximum then adjust it
         if (m_Maximum < m_LowValue)
             setValue(0);
         else if (m_Value > m_Maximum - m_LowValue)
