@@ -36,7 +36,6 @@ namespace tgui
 
     Scrollbar::Scrollbar() :
     m_MouseDownOnThumb  (false),
-    m_Minimum           ( 0),
     m_Maximum           (10),
     m_Value             ( 0),
     m_LowValue          ( 6),
@@ -59,7 +58,6 @@ namespace tgui
     m_LoadedConfigFile   (copy.m_LoadedConfigFile),
     m_MouseDownOnThumb   (copy.m_MouseDownOnThumb),
     m_MouseDownOnThumbPos(copy.m_MouseDownOnThumbPos),
-    m_Minimum            (copy.m_Minimum),
     m_Maximum            (copy.m_Maximum),
     m_Value              (copy.m_Value),
     m_LowValue           (copy.m_LowValue),
@@ -118,7 +116,6 @@ namespace tgui
             std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
             std::swap(m_MouseDownOnThumb,       temp.m_MouseDownOnThumb);
             std::swap(m_MouseDownOnThumbPos,    temp.m_MouseDownOnThumbPos);
-            std::swap(m_Minimum,                temp.m_Minimum);
             std::swap(m_Maximum,                temp.m_Maximum);
             std::swap(m_Value,                  temp.m_Value);
             std::swap(m_LowValue,               temp.m_LowValue);
@@ -988,8 +985,8 @@ namespace tgui
 
     void Scrollbar::mouseWheelMoved(int delta, int, int)
     {
-        if (static_cast<int>(m_Value) - delta < static_cast<int>(m_Minimum))
-            setValue(m_Minimum);
+        if (static_cast<int>(m_Value) - delta < 0)
+            setValue(0);
         else
             setValue(static_cast<unsigned int>(m_Value - delta));
     }

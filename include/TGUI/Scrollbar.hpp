@@ -356,7 +356,6 @@ namespace tgui
         bool m_MouseDownOnThumb;
         sf::Vector2f m_MouseDownOnThumbPos;
 
-        unsigned int m_Minimum;
         unsigned int m_Maximum;
         unsigned int m_Value;
 
