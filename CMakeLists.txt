@@ -66,16 +66,6 @@ elseif ( SFML_COMPILER_CLANG )
         endif()
     endif()
 
-    if( NOT CMAKE_CXX_FLAGS_DEBUG )
-        set( CMAKE_CXX_FLAGS_DEBUG "-g -O0 -std=c++11" CACHE STRING "C++ compiler flags (debug)" FORCE )
-        set( CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "C++ compiler flags (debug)" FORCE )
-
-        # On mac, clang needs another parameter
-        if (SFML_OS_MACOSX)
-            set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -stdlib=libc++" CACHE STRING "C++ compiler flags" FORCE )
-        endif()
-    endif()
-
 endif()
 
 # Define an option for choosing between static and dynamic C runtime (VC++ only)
