@@ -941,7 +941,7 @@ namespace tgui
         if (lineSpacing > line->getTextSize())
             return lineSpacing;
         else
-            return static_cast<int>(std::ceil(line->getSize().y * 13.5 / 10.0));
+            return static_cast<unsigned int>(std::ceil(line->getSize().y * 13.5 / 10.0));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
