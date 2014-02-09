@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -220,6 +219,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>setLineLimit()
 : <a class="el" href="classtgui_1_1ChatBox.html#aeba2fc7b8c81d798141c172a195408a2">tgui::ChatBox</a>
 </li>
+<li>setLineSpacing()
+: <a class="el" href="classtgui_1_1ChatBox.html#a78fc5fce4e06d2e08af03ec52a3ef57a">tgui::ChatBox</a>
+</li>
 <li>setLooping()
 : <a class="el" href="classtgui_1_1AnimatedPicture.html#abf4858d851589009b18f08d22f8b0444">tgui::AnimatedPicture</a>
 </li>
@@ -248,7 +250,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>setMinimum()
 : <a class="el" href="classtgui_1_1Knob.html#aaeec61ceba3a6827cde9807c39b0cafa">tgui::Knob</a>
 , <a class="el" href="classtgui_1_1LoadingBar.html#a56ee9bd4b1f061656231368a82f00734">tgui::LoadingBar</a>
-, <a class="el" href="classtgui_1_1Scrollbar.html#acfd23470a93137d8c88a64192aaa7370">tgui::Scrollbar</a>
 , <a class="el" href="classtgui_1_1Slider2d.html#a43ff3d52ce51f992a75d35dbf21de9dc">tgui::Slider2d</a>
 , <a class="el" href="classtgui_1_1Slider.html#a4b92404c47c119c94b12d99385d9258b">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1SpinButton.html#ade7331a82bcd05e284f5c4460fdc54ab">tgui::SpinButton</a>
@@ -264,12 +265,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>setPosition()
 : <a class="el" href="classtgui_1_1Button.html#a67c5854f011853ec4ec8a1c1fcb0f32a">tgui::Button</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a1c583d7c94e5c30d384f51065cffed42">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1ChildWindow.html#aca5a90058b1f9a1f1abada9228652ad8">tgui::ChildWindow</a>
 , <a class="el" href="classtgui_1_1EditBox.html#a5b8e875f66ee7d417518c2f5145013fb">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1Knob.html#ab19c8815a019bc4d92580b74d9d6f7fe">tgui::Knob</a>
 , <a class="el" href="classtgui_1_1Label.html#a528198b24711e3e40b20c4481e7aad97">tgui::Label</a>
 , <a class="el" href="classtgui_1_1Picture.html#a90541c511f957dc325295c30d93bd3d2">tgui::Picture</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a2fc32ac361b92b278ec048acecf8f993">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1Slider.html#a739da15ea860933b9f66d095c5e12888">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">tgui::Transformable</a>
 </li>
@@ -319,7 +320,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>
 , <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>
 , <a class="el" href="classtgui_1_1ChatBox.html#ae4e3b04d06e7856be2254d9a8bd9b6bc">tgui::ChatBox</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#af254b99f25c367d638056302f6dc64e8">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1ChildWindow.html#aa62686e7aca2953833a6124fb24cf9c0">tgui::ChildWindow</a>
 , <a class="el" href="classtgui_1_1ClickableWidget.html#a3a70bf0ea8995af8b201481e1e4778f6">tgui::ClickableWidget</a>
 , <a class="el" href="classtgui_1_1ComboBox.html#a8252de1d8fd87906ef3607d462b73e7f">tgui::ComboBox</a>
@@ -333,6 +333,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classtgui_1_1MenuBar.html#a00b3c962382fc40091b085640f63507e">tgui::MenuBar</a>
 , <a class="el" href="classtgui_1_1Panel.html#a67b154cc09a2ca84d115c888ed94fc5c">tgui::Panel</a>
 , <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#abe0b926c30991ef515b2b69e4384aa23">tgui::RadioButton</a>
+, <a class="el" href="classtgui_1_1Scrollbar.html#a71d7956059a12e9e7a087ae116ef2bba">tgui::Scrollbar</a>
 , <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>
 , <a class="el" href="classtgui_1_1Slider.html#a4bc51c5176ad2de2e93a2e8703ed0931">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>
@@ -352,16 +354,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>setText()
 : <a class="el" href="classtgui_1_1Button.html#a795805fb4ade278b3cb3b4737add2b44">tgui::Button</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a73b5d0927692491223f8756d5afc1ab7">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1EditBox.html#a9e8ebf1a284bd52b2f8dc89eb4dd4377">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1Label.html#a40250b2d3b859306b33cf255c293dfd9">tgui::Label</a>
 , <a class="el" href="classtgui_1_1LoadingBar.html#a0e0e8be0da8c09e0d2ed526417719295">tgui::LoadingBar</a>
 , <a class="el" href="classtgui_1_1MessageBox.html#a7071b725d4d8ea029eec6e318bd7aac3">tgui::MessageBox</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a071c015076736935904888fdc2504e10">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a6c68bf92460392926530fa32bcd32367">tgui::TextBox</a>
 </li>
 <li>setTextColor()
 : <a class="el" href="classtgui_1_1Button.html#aa0e37b0cec902799e7f8eb7daa1cfe2f">tgui::Button</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a2082f24305acf4b5885884d6f084fc95">tgui::Checkbox</a>
+, <a class="el" href="classtgui_1_1ChatBox.html#a60feb5664b457d509c6fea60c5b5bffc">tgui::ChatBox</a>
 , <a class="el" href="classtgui_1_1ComboBox.html#a8d31544636bd8539d29eae892892fce1">tgui::ComboBox</a>
 , <a class="el" href="classtgui_1_1EditBox.html#aa7b8d869bf0a69920af343e394d359db">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1Label.html#ac184c5f7e733fb64c7cfe5dbf94dc702">tgui::Label</a>
@@ -369,13 +371,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classtgui_1_1LoadingBar.html#a5d4298c3b4723df150a52611ba046990">tgui::LoadingBar</a>
 , <a class="el" href="classtgui_1_1MenuBar.html#af880183dd5132c4592486f9995c5c1bf">tgui::MenuBar</a>
 , <a class="el" href="classtgui_1_1MessageBox.html#a0a5579d477fbd922206ec7bbaf5be73c">tgui::MessageBox</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a050587e374526291fbfa1925c230c64c">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1Tab.html#a23c94fd4375fff1dc04a89d7a5a84e04">tgui::Tab</a>
 , <a class="el" href="classtgui_1_1TextBox.html#ac5a83442811852099628b9f716541744">tgui::TextBox</a>
 </li>
 <li>setTextFont()
 : <a class="el" href="classtgui_1_1Button.html#ad41ce4e53364f89ae488673eb2ef9a82">tgui::Button</a>
 , <a class="el" href="classtgui_1_1ChatBox.html#a5d58802a4ebf57393cb0190b51978e9d">tgui::ChatBox</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a0fa78bd06775e36cc8c729c14e4781fd">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1ComboBox.html#aefc59024ba6fd524bef5e945eab74354">tgui::ComboBox</a>
 , <a class="el" href="classtgui_1_1EditBox.html#a8fb95b93ce549432aa90ee601bbb1409">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1Label.html#a032c9f3cf568313edc4ef45fa0ca3e44">tgui::Label</a>
@@ -383,18 +385,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classtgui_1_1LoadingBar.html#a178ec465f96823269610b87f29bdaa43">tgui::LoadingBar</a>
 , <a class="el" href="classtgui_1_1MenuBar.html#a538b513fd4efe913a8894e8f964c4258">tgui::MenuBar</a>
 , <a class="el" href="classtgui_1_1MessageBox.html#a1f8b7bd30e6242bc17ee33112bd47837">tgui::MessageBox</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a3d8a9c550609250b078528e099afdcdc">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1Tab.html#aeb8a1fcd328ef0d36c20a44d10334e2d">tgui::Tab</a>
 , <a class="el" href="classtgui_1_1TextBox.html#aa60c1bbb6fabbac6210378f0fe9838eb">tgui::TextBox</a>
 </li>
 <li>setTextSize()
 : <a class="el" href="classtgui_1_1Button.html#a162b29d09ec523f4b46276edf47af241">tgui::Button</a>
 , <a class="el" href="classtgui_1_1ChatBox.html#a1451021294045657666facd053ac9276">tgui::ChatBox</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a32af1d2dcaeabf90b96e10bd48cca659">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1EditBox.html#aef0ea0ae49cd062959632cd1c708956f">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1Label.html#a8aa2e6e1af5edb78f97cc30d954009de">tgui::Label</a>
 , <a class="el" href="classtgui_1_1LoadingBar.html#adee6c4d1f3ac7646471bcd4fbfcbacef">tgui::LoadingBar</a>
 , <a class="el" href="classtgui_1_1MenuBar.html#a7f172b408b783ce7d68602409d6daa87">tgui::MenuBar</a>
 , <a class="el" href="classtgui_1_1MessageBox.html#ac993f73fa5c590b1a4695ab25c35b935">tgui::MessageBox</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a967461cf753183f545a025e41cd665e3">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1Tab.html#a8062b3c62d96a190bc3e88a25e65412b">tgui::Tab</a>
 , <a class="el" href="classtgui_1_1TextBox.html#aabf542400cc53864f32cade83d4e3953">tgui::TextBox</a>
 </li>
@@ -414,7 +417,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classtgui_1_1AnimatedPicture.html#a58fc6e159cdd28165b96c62490313973">tgui::AnimatedPicture</a>
 , <a class="el" href="classtgui_1_1Button.html#aa85df39d8f7e334dc52815792c070a42">tgui::Button</a>
 , <a class="el" href="classtgui_1_1ChatBox.html#ac4eff04b4f1d4f96b7e4fcb45ed970f3">tgui::ChatBox</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a2bbaa57dfdcd280460232b6888d5ee43">tgui::Checkbox</a>
 , <a class="el" href="classtgui_1_1ChildWindow.html#ad2e96cae316b2881e3dcd66a3ba4f58a">tgui::ChildWindow</a>
 , <a class="el" href="classtgui_1_1ComboBox.html#a545477f1d375e6e65e1bf6665c50b9d7">tgui::ComboBox</a>
 , <a class="el" href="classtgui_1_1Container.html#a4f7789039a99eba1ee65c5a916f12e25">tgui::Container</a>
@@ -424,6 +426,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classtgui_1_1LoadingBar.html#af0bff8f323081b1d0343f9ae746c8108">tgui::LoadingBar</a>
 , <a class="el" href="classtgui_1_1Panel.html#ae2488465327b745a2e260645fdbc7881">tgui::Panel</a>
 , <a class="el" href="classtgui_1_1Picture.html#a3ed10f1daa8b05c111e9edd6a71d0365">tgui::Picture</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a89406b47faa1fb563df964fd9f7cbf02">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1Scrollbar.html#a9963e165eae7c1088f0761ce99793fce">tgui::Scrollbar</a>
 , <a class="el" href="classtgui_1_1Slider2d.html#a079121475d1f9fc9edf265ca4bd54ac2">tgui::Slider2d</a>
 , <a class="el" href="classtgui_1_1Slider.html#a46473d0e23f332c129d373c9ec467467">tgui::Slider</a>
@@ -441,7 +444,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classtgui_1_1SpinButton.html#a66a0af9b4c2621d3a39b2ddc913f51ee">tgui::SpinButton</a>
 </li>
 <li>setVerticalScroll()
-: <a class="el" href="classtgui_1_1Slider.html#a13959b69396960b1213d309afd5ee997">tgui::Slider</a>
+: <a class="el" href="classtgui_1_1Scrollbar.html#a1c2fc17d1fee201c19a8278567112b1b">tgui::Scrollbar</a>
+, <a class="el" href="classtgui_1_1Slider.html#a13959b69396960b1213d309afd5ee997">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1SpinButton.html#a61f1ef7b820e6b97002bc51d1741b9fa">tgui::SpinButton</a>
 </li>
 <li>setVisibleCell()
@@ -458,7 +462,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">tgui::Widget</a>
 </li>
 <li>Slider()
-: <a class="el" href="classtgui_1_1Slider.html#abd11b483ba86b2fc4c710244e3aded6f">tgui::Slider</a>
+: <a class="el" href="classtgui_1_1Slider.html#ad7ecc77c6b7ae143bc152c60836564ea">tgui::Slider</a>
 </li>
 <li>Slider2d()
 : <a class="el" href="classtgui_1_1Slider2d.html#a1f0e40afc946e5cb10d202952d059de2">tgui::Slider2d</a>
@@ -471,7 +475,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>SpaceKeyPressed
 : <a class="el" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37a0a9da4f078cc8fb86c1b41d935f635d1">tgui::Button</a>
-, <a class="el" href="classtgui_1_1Checkbox.html#a0c8e53a6d26f53b1210da471e0469f96ad5a8584fe2517260ca8ecc627181b69d">tgui::Checkbox</a>
+, <a class="el" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eabab5740d1c4fd457dbd75622d4644d9836">tgui::RadioButton</a>
 </li>
 <li>SpinButton()
 : <a class="el" href="classtgui_1_1SpinButton.html#adfe26b0c8132aa7f4ff2978248de3c86">tgui::SpinButton</a>
@@ -492,7 +496,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

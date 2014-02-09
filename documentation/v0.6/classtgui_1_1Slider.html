@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -103,7 +102,6 @@ Inheritance diagram for tgui::Slider:</div>
 <area href="classtgui_1_1Widget.html" title="The parent class for every widget. " alt="tgui::Widget" shape="rect" coords="148,56,286,80"/>
 <area href="classtgui_1_1Transformable.html" alt="tgui::Transformable" shape="rect" coords="148,0,286,24"/>
 <area href="classtgui_1_1CallbackManager.html" alt="tgui::CallbackManager" shape="rect" coords="296,0,434,24"/>
-<area href="classtgui_1_1Scrollbar.html" alt="tgui::Scrollbar" shape="rect" coords="148,168,286,192"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -269,6 +267,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a210df9a024de335a91b20524c9e0395f">move</a> (const sf::Vector2f &amp;offset)</td></tr>
 <tr class="memdesc:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the widget by a given offset.  <a href="#a210df9a024de335a91b20524c9e0395f">More...</a><br/></td></tr>
 <tr class="separator:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="#a4f11a7e9d86943a5cc8114b2431c1570">More...</a><br/></td></tr>
+<tr class="separator:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#aff4e891c0d8a1ea574f24ad625bc4dee">scale</a> (float factorX, float factorY)</td></tr>
 <tr class="memdesc:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale the widget.  <a href="#aff4e891c0d8a1ea574f24ad625bc4dee">More...</a><br/></td></tr>
 <tr class="separator:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -543,8 +544,6 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>The config file must contain a <a class="el" href="classtgui_1_1Slider.html">Slider</a> section with the needed information. </p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1Scrollbar.html#a793bcebb0958f189e228d6ee2ffed1dc">tgui::Scrollbar</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a449ccb3a8c201ba7137e8620519f20d1"></a>
@@ -603,8 +602,6 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>When the value is too big then it will be changed to this maximum. When the minimum value is higher than the new maximum then it will be changed to this new maximum value. The default maximum value is 10. </p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1Scrollbar.html#a4c91febe4d27d01163a5463b90c62c6d">tgui::Scrollbar</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a4b92404c47c119c94b12d99385d9258b"></a>
@@ -637,8 +634,6 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <p>When the value is too small then it will be changed to this minimum. When the maximum value is lower than the new minimum then it will be changed to this new minimum value. The default minimum value is 0. </p>
-
-<p>Reimplemented in <a class="el" href="classtgui_1_1Scrollbar.html#acfd23470a93137d8c88a64192aaa7370">tgui::Scrollbar</a>.</p>
 
 </div>
 </div>
@@ -767,8 +762,6 @@ Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#a4d577707ade1f73003c502a36cbcc295">tgui::Widget</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1Scrollbar.html#a9963e165eae7c1088f0761ce99793fce">tgui::Scrollbar</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a622029a8ca11ced0dad198f135c05f91"></a>
@@ -802,8 +795,6 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>The value can't be smaller than the minimum or bigger than the maximum. The default value is 0. </p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1Scrollbar.html#a31ca273e28fa3cc3d06e9fd279ad8b4c">tgui::Scrollbar</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a13959b69396960b1213d309afd5ee997"></a>
@@ -836,7 +827,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

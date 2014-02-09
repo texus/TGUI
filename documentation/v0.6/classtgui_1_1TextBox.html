@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -153,6 +152,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1959b7dbbdd99f964948285dbc854f41"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a1959b7dbbdd99f964948285dbc854f41">getSize</a> () const </td></tr>
 <tr class="memdesc:a1959b7dbbdd99f964948285dbc854f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the text box.  <a href="#a1959b7dbbdd99f964948285dbc854f41">More...</a><br/></td></tr>
 <tr class="separator:a1959b7dbbdd99f964948285dbc854f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a682490d9575a3eeb936de18a80764f"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a5a682490d9575a3eeb936de18a80764f">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a5a682490d9575a3eeb936de18a80764f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the full size of the text box.  <a href="#a5a682490d9575a3eeb936de18a80764f">More...</a><br/></td></tr>
+<tr class="separator:a5a682490d9575a3eeb936de18a80764f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c68bf92460392926530fa32bcd32367"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a6c68bf92460392926530fa32bcd32367">setText</a> (const sf::String &amp;text)</td></tr>
 <tr class="memdesc:a6c68bf92460392926530fa32bcd32367"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the text of the text box.  <a href="#a6c68bf92460392926530fa32bcd32367">More...</a><br/></td></tr>
 <tr class="separator:a6c68bf92460392926530fa32bcd32367"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -581,6 +583,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a5a682490d9575a3eeb936de18a80764f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::TextBox::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the full size of the text box. </p>
+<p>This is the size including the borders.</p>
+<dl class="section return"><dt>Returns</dt><dd>Full size of the text box </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">tgui::Transformable</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aef15f37a865b1de0916d09bd538eec49"></a>
 <div class="memitem">
 <div class="memproto">
@@ -712,6 +743,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the size of the text box. </p>
+<p>This size does not include the borders.</p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the text box </dd></dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
@@ -1173,6 +1205,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Changes the size of the text box. </p>
+<p>This size does not include the borders.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">width</td><td>The new width of the text box </td></tr>
@@ -1323,7 +1356,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

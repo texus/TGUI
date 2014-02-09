@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -166,8 +165,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa62686e7aca2953833a6124fb24cf9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the child window.  <a href="#aa62686e7aca2953833a6124fb24cf9c0">More...</a><br/></td></tr>
 <tr class="separator:aa62686e7aca2953833a6124fb24cf9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbf60d36a5348a6cb318b617b42d50b6"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#afbf60d36a5348a6cb318b617b42d50b6">getSize</a> () const </td></tr>
-<tr class="memdesc:afbf60d36a5348a6cb318b617b42d50b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the panel.  <a href="#afbf60d36a5348a6cb318b617b42d50b6">More...</a><br/></td></tr>
+<tr class="memdesc:afbf60d36a5348a6cb318b617b42d50b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the drawable area of the child window.  <a href="#afbf60d36a5348a6cb318b617b42d50b6">More...</a><br/></td></tr>
 <tr class="separator:afbf60d36a5348a6cb318b617b42d50b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9819ff1000029cbec40aa2794af3d93"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#ae9819ff1000029cbec40aa2794af3d93">getFullSize</a> () const </td></tr>
+<tr class="memdesc:ae9819ff1000029cbec40aa2794af3d93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the full child window.  <a href="#ae9819ff1000029cbec40aa2794af3d93">More...</a><br/></td></tr>
+<tr class="separator:ae9819ff1000029cbec40aa2794af3d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50c2bfe9ad2db740a84936684dc8858d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a50c2bfe9ad2db740a84936684dc8858d">setBackgroundTexture</a> (sf::Texture *const texture=nullptr)</td></tr>
 <tr class="memdesc:a50c2bfe9ad2db740a84936684dc8858d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the background texture of the child window.  <a href="#a50c2bfe9ad2db740a84936684dc8858d">More...</a><br/></td></tr>
 <tr class="separator:a50c2bfe9ad2db740a84936684dc8858d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -676,6 +678,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae9819ff1000029cbec40aa2794af3d93"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::ChildWindow::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the size of the full child window. </p>
+<dl class="section return"><dt>Returns</dt><dd>Size of the child window</dd></dl>
+<p>The size returned by this function is the size of the child window, including the title bar and the borders. </p>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">tgui::Transformable</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a535b5a1eeb024c72dc8c34658e8da474"></a>
 <div class="memitem">
 <div class="memproto">
@@ -715,8 +746,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the size of the panel. </p>
-<dl class="section return"><dt>Returns</dt><dd>Size of the panel</dd></dl>
+<p>Returns the size of the drawable area of the child window. </p>
+<dl class="section return"><dt>Returns</dt><dd>Size of the child window</dd></dl>
 <p>The size returned by this function is the size of the child window, without the title bar nor the borders. </p>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
@@ -1328,7 +1359,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

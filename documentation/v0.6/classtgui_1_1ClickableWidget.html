@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -105,11 +104,11 @@ Inheritance diagram for tgui::ClickableWidget:</div>
 <area href="classtgui_1_1CallbackManager.html" alt="tgui::CallbackManager" shape="rect" coords="296,0,434,24"/>
 <area href="classtgui_1_1AnimatedPicture.html" title="Load multiple images and add then behind each other to create a simple animation or even a movie..." alt="tgui::AnimatedPicture" shape="rect" coords="296,168,434,192"/>
 <area href="classtgui_1_1Button.html" alt="tgui::Button" shape="rect" coords="296,224,434,248"/>
-<area href="classtgui_1_1Checkbox.html" alt="tgui::Checkbox" shape="rect" coords="296,280,434,304"/>
-<area href="classtgui_1_1EditBox.html" alt="tgui::EditBox" shape="rect" coords="296,336,434,360"/>
-<area href="classtgui_1_1Label.html" alt="tgui::Label" shape="rect" coords="296,392,434,416"/>
-<area href="classtgui_1_1LoadingBar.html" alt="tgui::LoadingBar" shape="rect" coords="296,448,434,472"/>
-<area href="classtgui_1_1Picture.html" alt="tgui::Picture" shape="rect" coords="296,504,434,528"/>
+<area href="classtgui_1_1EditBox.html" alt="tgui::EditBox" shape="rect" coords="296,280,434,304"/>
+<area href="classtgui_1_1Label.html" alt="tgui::Label" shape="rect" coords="296,336,434,360"/>
+<area href="classtgui_1_1LoadingBar.html" alt="tgui::LoadingBar" shape="rect" coords="296,392,434,416"/>
+<area href="classtgui_1_1Picture.html" alt="tgui::Picture" shape="rect" coords="296,448,434,472"/>
+<area href="classtgui_1_1RadioButton.html" alt="tgui::RadioButton" shape="rect" coords="296,504,434,528"/>
 <area href="classtgui_1_1Slider2d.html" alt="tgui::Slider2d" shape="rect" coords="296,560,434,584"/>
 <area href="classtgui_1_1SpinButton.html" alt="tgui::SpinButton" shape="rect" coords="296,616,434,640"/>
 </map>
@@ -249,6 +248,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a210df9a024de335a91b20524c9e0395f">move</a> (const sf::Vector2f &amp;offset)</td></tr>
 <tr class="memdesc:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the widget by a given offset.  <a href="#a210df9a024de335a91b20524c9e0395f">More...</a><br/></td></tr>
 <tr class="separator:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="#a4f11a7e9d86943a5cc8114b2431c1570">More...</a><br/></td></tr>
+<tr class="separator:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#aff4e891c0d8a1ea574f24ad625bc4dee">scale</a> (float factorX, float factorY)</td></tr>
 <tr class="memdesc:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale the widget.  <a href="#aff4e891c0d8a1ea574f24ad625bc4dee">More...</a><br/></td></tr>
 <tr class="separator:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -403,7 +405,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1Checkbox.html#a3777b048b46f850eb7dd3749af4ed39f">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a831d7c1520efc00ebd1228c05fad6497">tgui::AnimatedPicture</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a1dd2155546ab717c456cbf9214f41d46">tgui::SpriteSheet</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1RadioButton.html#a5ab0ad595894ea9a6efb08b973608ed5">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a831d7c1520efc00ebd1228c05fad6497">tgui::AnimatedPicture</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a1dd2155546ab717c456cbf9214f41d46">tgui::SpriteSheet</a>.</p>
 
 </div>
 </div>
@@ -475,7 +477,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#a0bde1aa906ff8c526764787b3a7d8343">tgui::Transformable</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1EditBox.html#ab17ae25e2075263097608092c1d0837f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>, <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>, <a class="el" href="classtgui_1_1Checkbox.html#af254b99f25c367d638056302f6dc64e8">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1LoadingBar.html#a07a41b1b2ad021958d7e6eb0529cdcbf">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Label.html#a8d1683b8a0a419194043ded4443aa55f">tgui::Label</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a99fdf0ad8728fbf5a1ed33a3e7127d84">tgui::SpriteSheet</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1EditBox.html#ab17ae25e2075263097608092c1d0837f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>, <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>, <a class="el" href="classtgui_1_1RadioButton.html#abe0b926c30991ef515b2b69e4384aa23">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1LoadingBar.html#a07a41b1b2ad021958d7e6eb0529cdcbf">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Label.html#a8d1683b8a0a419194043ded4443aa55f">tgui::Label</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a99fdf0ad8728fbf5a1ed33a3e7127d84">tgui::SpriteSheet</a>.</p>
 
 </div>
 </div>
@@ -485,7 +487,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

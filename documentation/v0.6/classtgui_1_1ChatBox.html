@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -152,9 +151,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a46bafbba28f776e699bf13be0c1c51c1"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a46bafbba28f776e699bf13be0c1c51c1">getSize</a> () const </td></tr>
 <tr class="memdesc:a46bafbba28f776e699bf13be0c1c51c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the chat box.  <a href="#a46bafbba28f776e699bf13be0c1c51c1">More...</a><br/></td></tr>
 <tr class="separator:a46bafbba28f776e699bf13be0c1c51c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12c7e57942602ec62534717c42dc6b24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a12c7e57942602ec62534717c42dc6b24">addLine</a> (sf::String text, const sf::Color &amp;color=sf::Color::Black)</td></tr>
-<tr class="memdesc:a12c7e57942602ec62534717c42dc6b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new line of text to the chat box.  <a href="#a12c7e57942602ec62534717c42dc6b24">More...</a><br/></td></tr>
-<tr class="separator:a12c7e57942602ec62534717c42dc6b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af24b8538a236144880864070ede04fd6"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#af24b8538a236144880864070ede04fd6">getFullSize</a> () const </td></tr>
+<tr class="memdesc:af24b8538a236144880864070ede04fd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the full size of the chat box.  <a href="#af24b8538a236144880864070ede04fd6">More...</a><br/></td></tr>
+<tr class="separator:af24b8538a236144880864070ede04fd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4f3a6b72787f598db549478093a0079"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#ad4f3a6b72787f598db549478093a0079">addLine</a> (const sf::String &amp;text)</td></tr>
+<tr class="memdesc:ad4f3a6b72787f598db549478093a0079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new line of text to the chat box.  <a href="#ad4f3a6b72787f598db549478093a0079">More...</a><br/></td></tr>
+<tr class="separator:ad4f3a6b72787f598db549478093a0079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a839d31cc28b30be3d4aa5ac88265637c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a839d31cc28b30be3d4aa5ac88265637c">addLine</a> (const sf::String &amp;text, unsigned int textSize)</td></tr>
+<tr class="memdesc:a839d31cc28b30be3d4aa5ac88265637c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new line of text to the chat box.  <a href="#a839d31cc28b30be3d4aa5ac88265637c">More...</a><br/></td></tr>
+<tr class="separator:a839d31cc28b30be3d4aa5ac88265637c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9089353b93dba3d348763e676919666b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a9089353b93dba3d348763e676919666b">addLine</a> (const sf::String &amp;text, const sf::Color &amp;color)</td></tr>
+<tr class="memdesc:a9089353b93dba3d348763e676919666b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new line of text to the chat box.  <a href="#a9089353b93dba3d348763e676919666b">More...</a><br/></td></tr>
+<tr class="separator:a9089353b93dba3d348763e676919666b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a207a72470735f9128b9c2113a19e4f11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a207a72470735f9128b9c2113a19e4f11">addLine</a> (const sf::String &amp;text, const sf::Color &amp;color, unsigned int textSize, const sf::Font *font=nullptr)</td></tr>
+<tr class="memdesc:a207a72470735f9128b9c2113a19e4f11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new line of text to the chat box.  <a href="#a207a72470735f9128b9c2113a19e4f11">More...</a><br/></td></tr>
+<tr class="separator:a207a72470735f9128b9c2113a19e4f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad0fdb38607fca93c5605ba07bb42ac2"><td class="memItemLeft" align="right" valign="top">sf::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#aad0fdb38607fca93c5605ba07bb42ac2">getLine</a> (unsigned int lineIndex)</td></tr>
 <tr class="memdesc:aad0fdb38607fca93c5605ba07bb42ac2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the contents of the requested line.  <a href="#aad0fdb38607fca93c5605ba07bb42ac2">More...</a><br/></td></tr>
 <tr class="separator:aad0fdb38607fca93c5605ba07bb42ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,17 +182,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aeba2fc7b8c81d798141c172a195408a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a maximum amount of lines in the chat box.  <a href="#aeba2fc7b8c81d798141c172a195408a2">More...</a><br/></td></tr>
 <tr class="separator:aeba2fc7b8c81d798141c172a195408a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d58802a4ebf57393cb0190b51978e9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a5d58802a4ebf57393cb0190b51978e9d">setTextFont</a> (const sf::Font &amp;font)</td></tr>
-<tr class="memdesc:a5d58802a4ebf57393cb0190b51978e9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the font of the text.  <a href="#a5d58802a4ebf57393cb0190b51978e9d">More...</a><br/></td></tr>
+<tr class="memdesc:a5d58802a4ebf57393cb0190b51978e9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the default font of the text.  <a href="#a5d58802a4ebf57393cb0190b51978e9d">More...</a><br/></td></tr>
 <tr class="separator:a5d58802a4ebf57393cb0190b51978e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf9ce3233638ea2dd117becb83dc59ce"><td class="memItemLeft" align="right" valign="top">const sf::Font *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#acf9ce3233638ea2dd117becb83dc59ce">getTextFont</a> () const </td></tr>
-<tr class="memdesc:acf9ce3233638ea2dd117becb83dc59ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the font of the text.  <a href="#acf9ce3233638ea2dd117becb83dc59ce">More...</a><br/></td></tr>
+<tr class="memdesc:acf9ce3233638ea2dd117becb83dc59ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the default font of the text.  <a href="#acf9ce3233638ea2dd117becb83dc59ce">More...</a><br/></td></tr>
 <tr class="separator:acf9ce3233638ea2dd117becb83dc59ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1451021294045657666facd053ac9276"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a1451021294045657666facd053ac9276">setTextSize</a> (unsigned int size)</td></tr>
-<tr class="memdesc:a1451021294045657666facd053ac9276"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the character size of the text.  <a href="#a1451021294045657666facd053ac9276">More...</a><br/></td></tr>
+<tr class="memdesc:a1451021294045657666facd053ac9276"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the default character size of the text.  <a href="#a1451021294045657666facd053ac9276">More...</a><br/></td></tr>
 <tr class="separator:a1451021294045657666facd053ac9276"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16b9fb1438cea91963bce26c1fe49ff3"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a16b9fb1438cea91963bce26c1fe49ff3">getTextSize</a> () const </td></tr>
-<tr class="memdesc:a16b9fb1438cea91963bce26c1fe49ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the character size of the text.  <a href="#a16b9fb1438cea91963bce26c1fe49ff3">More...</a><br/></td></tr>
+<tr class="memdesc:a16b9fb1438cea91963bce26c1fe49ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the default character size of the text.  <a href="#a16b9fb1438cea91963bce26c1fe49ff3">More...</a><br/></td></tr>
 <tr class="separator:a16b9fb1438cea91963bce26c1fe49ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60feb5664b457d509c6fea60c5b5bffc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a60feb5664b457d509c6fea60c5b5bffc">setTextColor</a> (const sf::Color &amp;color)</td></tr>
+<tr class="memdesc:a60feb5664b457d509c6fea60c5b5bffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the default color of the text.  <a href="#a60feb5664b457d509c6fea60c5b5bffc">More...</a><br/></td></tr>
+<tr class="separator:a60feb5664b457d509c6fea60c5b5bffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00cb473b252f9cfe522f70f9b0146b6e"><td class="memItemLeft" align="right" valign="top">const sf::Color &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a00cb473b252f9cfe522f70f9b0146b6e">getTextColor</a> () const </td></tr>
+<tr class="memdesc:a00cb473b252f9cfe522f70f9b0146b6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the default color of the text.  <a href="#a00cb473b252f9cfe522f70f9b0146b6e">More...</a><br/></td></tr>
+<tr class="separator:a00cb473b252f9cfe522f70f9b0146b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a0ed5d6331dfd9acca3816f7f256590"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a1a0ed5d6331dfd9acca3816f7f256590">setBorders</a> (unsigned int leftBorder=0, unsigned int topBorder=0, unsigned int rightBorder=0, unsigned int bottomBorder=0)</td></tr>
 <tr class="memdesc:a1a0ed5d6331dfd9acca3816f7f256590"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the border width and border height of the chat box.  <a href="#a1a0ed5d6331dfd9acca3816f7f256590">More...</a><br/></td></tr>
 <tr class="separator:a1a0ed5d6331dfd9acca3816f7f256590"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,6 +214,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5aa67674235a41a1881ce52d5737554f"><td class="memItemLeft" align="right" valign="top">const sf::Color &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a5aa67674235a41a1881ce52d5737554f">getBorderColor</a> () const </td></tr>
 <tr class="memdesc:a5aa67674235a41a1881ce52d5737554f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the border color that is currently being used inside the chat box.  <a href="#a5aa67674235a41a1881ce52d5737554f">More...</a><br/></td></tr>
 <tr class="separator:a5aa67674235a41a1881ce52d5737554f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a78fc5fce4e06d2e08af03ec52a3ef57a">setLineSpacing</a> (unsigned int lineSpacing)</td></tr>
+<tr class="memdesc:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the line spacing of all lines.  <a href="#a78fc5fce4e06d2e08af03ec52a3ef57a">More...</a><br/></td></tr>
+<tr class="separator:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b28860724fb92c5903102d85f18b465"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a1b28860724fb92c5903102d85f18b465">setScrollbar</a> (const std::string &amp;scrollbarConfigFileFilename)</td></tr>
 <tr class="memdesc:a1b28860724fb92c5903102d85f18b465"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the scrollbar of the chat box.  <a href="#a1b28860724fb92c5903102d85f18b465">More...</a><br/></td></tr>
 <tr class="separator:a1b28860724fb92c5903102d85f18b465"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -421,21 +441,133 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a12c7e57942602ec62534717c42dc6b24"></a>
+<a class="anchor" id="ad4f3a6b72787f598db549478093a0079"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void tgui::ChatBox::addLine </td>
           <td>(</td>
-          <td class="paramtype">sf::String&#160;</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a new line of text to the chat box. </p>
+<p>The whole text passed to this function will be considered as one line for the <em>getLine</em> and <em>removeLine</em> functions, even if it is too long and gets split over multiple lines.</p>
+<p>The default text color and character size will be used.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text that will be added to the chat box </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a839d31cc28b30be3d4aa5ac88265637c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::addLine </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>textSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a new line of text to the chat box. </p>
+<p>The whole text passed to this function will be considered as one line for the <em>getLine</em> and <em>removeLine</em> functions, even if it is too long and gets split over multiple lines.</p>
+<p>The default text color will be used.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text that will be added to the chat box </td></tr>
+    <tr><td class="paramname">textSize</td><td>Size of the text </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9089353b93dba3d348763e676919666b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::addLine </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
           <td class="paramname"><em>text</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const sf::Color &amp;&#160;</td>
-          <td class="paramname"><em>color</em> = <code>sf::Color::Black</code>&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a new line of text to the chat box. </p>
+<p>The whole text passed to this function will be considered as one line for the <em>getLine</em> and <em>removeLine</em> functions, even if it is too long and gets split over multiple lines.</p>
+<p>The default character size will be used.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text that will be added to the chat box </td></tr>
+    <tr><td class="paramname">color</td><td>Color of the text </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a207a72470735f9128b9c2113a19e4f11"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::addLine </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::Color &amp;&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>textSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::Font *&#160;</td>
+          <td class="paramname"><em>font</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -451,6 +583,8 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">text</td><td>Text that will be added to the chat box </td></tr>
     <tr><td class="paramname">color</td><td>Color of the text </td></tr>
+    <tr><td class="paramname">textSize</td><td>Size of the text </td></tr>
+    <tr><td class="paramname">font</td><td>Font of the text (nullptr to use default font) </td></tr>
   </table>
   </dd>
 </dl>
@@ -490,6 +624,35 @@ Public Member Functions</h2></td></tr>
 
 <p>Get the border color that is currently being used inside the chat box. </p>
 <dl class="section return"><dt>Returns</dt><dd>The color of the borders </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af24b8538a236144880864070ede04fd6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::ChatBox::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the full size of the chat box. </p>
+<p>This is the size including the borders.</p>
+<dl class="section return"><dt>Returns</dt><dd>Full size of the chat box </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">tgui::Transformable</a>.</p>
 
 </div>
 </div>
@@ -576,9 +739,28 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the size of the chat box. </p>
+<p>This size does not include the borders.</p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the chat box </dd></dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a00cb473b252f9cfe522f70f9b0146b6e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const sf::Color&amp; tgui::ChatBox::getTextColor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the default color of the text. </p>
+<dl class="section return"><dt>Returns</dt><dd>The currently used default text color. </dd></dl>
 
 </div>
 </div>
@@ -595,7 +777,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the font of the text. </p>
+<p>Returns the default font of the text. </p>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the font that is currently being used </dd></dl>
 
 </div>
@@ -613,8 +795,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the character size of the text. </p>
-<dl class="section return"><dt>Returns</dt><dd>The current text size. </dd></dl>
+<p>Returns the default character size of the text. </p>
+<dl class="section return"><dt>Returns</dt><dd>The currently used default text size. </dd></dl>
 
 </div>
 </div>
@@ -860,6 +1042,32 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a78fc5fce4e06d2e08af03ec52a3ef57a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::setLineSpacing </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>lineSpacing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the line spacing of all lines. </p>
+<p>By default, line spacing is chosen based on the font and character size. This also means that when mixing different text styles in <a class="el" href="classtgui_1_1ChatBox.html">ChatBox</a>, lines can have different line spacings. By calling this function, all line spacings will be set to the value passed to this function.</p>
+<p>The line spacing should be equal or greater than the text size to avoid overlapping lines.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lineSpacing</td><td>New line spacing for all lines </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a1b28860724fb92c5903102d85f18b465"></a>
 <div class="memitem">
 <div class="memproto">
@@ -922,6 +1130,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Changes the size of the chat box. </p>
+<p>This size does not include the borders.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">width</td><td>The new width of the chat box </td></tr>
@@ -931,6 +1140,30 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#a0bde1aa906ff8c526764787b3a7d8343">tgui::Transformable</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a60feb5664b457d509c6fea60c5b5bffc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::setTextColor </td>
+          <td>(</td>
+          <td class="paramtype">const sf::Color &amp;&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the default color of the text. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>The new default text color. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -948,7 +1181,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Changes the font of the text. </p>
+<p>Changes the default font of the text. </p>
 <p>When you don't call this function then the global font will be use. This global font can be changed with the setGlobalFont function from the parent.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -973,10 +1206,10 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Changes the character size of the text. </p>
+<p>Changes the default character size of the text. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">size</td><td>The new text size. The minimum text size is 8. </td></tr>
+    <tr><td class="paramname">size</td><td>The new default text size. The minimum text size is 8. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1024,7 +1257,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

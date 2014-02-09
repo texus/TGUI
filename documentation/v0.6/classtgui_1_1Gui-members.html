@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -97,7 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#ab3a740095edfa6e6d6069d45db65196f">bindGlobalCallback</a>(std::function&lt; void(const Callback &amp;)&gt; func)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#acfa787b1008ef8ff7efd81b6b03d0d27">bindGlobalCallback</a>(void(T::*func)(const Callback &amp;), const T *const classPtr)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a85b168ac24f353bdb9c245f0b9e202eb">copy</a>(const Widget::Ptr &amp;oldWidget, const sf::String &amp;newWidgetName=&quot;&quot;)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a363e05a9968afd064e303e900419b02e">draw</a>(bool resetView=false)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a62b90328070cb976d2d48bd78e0a4601">draw</a>(bool resetView=true)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#aae7143950d0a28701f52a837a3377686">focusNextWidget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#aca075164dc3b0d376de6759c3a4ba70d">focusPreviousWidget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#aa32bae17af0790c071e4ccd75f974e26">focusWidget</a>(Widget::Ptr &amp;widget)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
@@ -111,7 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a713a6f3fa37941cdc9fa956858e1e612">getWindow</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9">Gui</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14">Gui</a>(sf::RenderWindow &amp;window)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a5ed041b03290df56b6fa965363972f3d">handleEvent</a>(sf::Event event)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a7a343c9bf03fe4fedf4e51b07cbf4ce3">handleEvent</a>(sf::Event event, bool resetView=true)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a801cdea9a5b01d19bd9a958862929ad6">hasFocus</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a6acae4d0274424e93d18ff1b39a842d6">loadWidgetsFromFile</a>(const std::string &amp;filename)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Gui.html#a30f625fc62ac8956661dbbaaf821689f">moveWidgetToBack</a>(Widget::Ptr &amp;widget)</td><td class="entry"><a class="el" href="classtgui_1_1Gui.html">tgui::Gui</a></td><td class="entry"></td></tr>
@@ -130,7 +129,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -2,7 +2,7 @@ var searchData=
 [
   ['imagemapdata',['ImageMapData',['../structtgui_1_1TextureManager_1_1ImageMapData.html',1,'tgui::TextureManager']]],
   ['incrementvalue',['incrementValue',['../classtgui_1_1LoadingBar.html#a65529267ffb5f70f6fa644479ce81ddf',1,'tgui::LoadingBar']]],
-  ['ischecked',['isChecked',['../classtgui_1_1Checkbox.html#ab39b8d6ef714d84c84a13bb979dd4d0d',1,'tgui::Checkbox']]],
+  ['ischecked',['isChecked',['../classtgui_1_1RadioButton.html#a1adc6c060edf4f2dc575d26df180b7f1',1,'tgui::RadioButton']]],
   ['isdisabled',['isDisabled',['../classtgui_1_1Widget.html#a5a5be7793ed808d9e119fb14621b6712',1,'tgui::Widget']]],
   ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1',1,'tgui::Widget']]],
   ['isfocused',['isFocused',['../classtgui_1_1Widget.html#af9a2f1246195375dea450655b23cdf6d',1,'tgui::Widget']]],

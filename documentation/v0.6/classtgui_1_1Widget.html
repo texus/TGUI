@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -114,9 +113,10 @@ Inheritance diagram for tgui::Widget:</div>
 <area href="classtgui_1_1Knob.html" alt="tgui::Knob" shape="rect" coords="296,336,434,360"/>
 <area href="classtgui_1_1ListBox.html" alt="tgui::ListBox" shape="rect" coords="296,392,434,416"/>
 <area href="classtgui_1_1MenuBar.html" alt="tgui::MenuBar" shape="rect" coords="296,448,434,472"/>
-<area href="classtgui_1_1Slider.html" alt="tgui::Slider" shape="rect" coords="296,504,434,528"/>
-<area href="classtgui_1_1Tab.html" alt="tgui::Tab" shape="rect" coords="296,560,434,584"/>
-<area href="classtgui_1_1TextBox.html" alt="tgui::TextBox" shape="rect" coords="296,616,434,640"/>
+<area href="classtgui_1_1Scrollbar.html" alt="tgui::Scrollbar" shape="rect" coords="296,504,434,528"/>
+<area href="classtgui_1_1Slider.html" alt="tgui::Slider" shape="rect" coords="296,560,434,584"/>
+<area href="classtgui_1_1Tab.html" alt="tgui::Tab" shape="rect" coords="296,616,434,640"/>
+<area href="classtgui_1_1TextBox.html" alt="tgui::TextBox" shape="rect" coords="296,672,434,696"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -233,6 +233,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7528dd61c9b68bb3ebbe4af302224d3 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">getSize</a> () const =0</td></tr>
 <tr class="memdesc:ac7528dd61c9b68bb3ebbe4af302224d3 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="#ac7528dd61c9b68bb3ebbe4af302224d3">More...</a><br/></td></tr>
 <tr class="separator:ac7528dd61c9b68bb3ebbe4af302224d3 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="#a4f11a7e9d86943a5cc8114b2431c1570">More...</a><br/></td></tr>
+<tr class="separator:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#aff4e891c0d8a1ea574f24ad625bc4dee">scale</a> (float factorX, float factorY)</td></tr>
 <tr class="memdesc:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale the widget.  <a href="#aff4e891c0d8a1ea574f24ad625bc4dee">More...</a><br/></td></tr>
 <tr class="separator:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -772,7 +775,7 @@ focusNextWidget </dd></dl>
 </dl>
 <p>Note that this will only change the transparency of the images. The parts of the widgets that use a color will not be changed. You must change them yourself by setting the alpha channel of the color. </p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a545477f1d375e6e65e1bf6665c50b9d7">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ab4315825b8ef7d985348f0e64306515c">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#a6bf813b178f989558688d75d945bd332">tgui::EditBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a374c8715c9b4b6195a8bf5eee2a819f2">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#a577c9dd4579031ae88f97423dcdc8548">tgui::Tab</a>, <a class="el" href="classtgui_1_1Container.html#a4f7789039a99eba1ee65c5a916f12e25">tgui::Container</a>, <a class="el" href="classtgui_1_1ChatBox.html#ac4eff04b4f1d4f96b7e4fcb45ed970f3">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1Knob.html#a57cb245fd6ec8fe4fdff10ffb1bdd686">tgui::Knob</a>, <a class="el" href="classtgui_1_1LoadingBar.html#af0bff8f323081b1d0343f9ae746c8108">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Checkbox.html#a2bbaa57dfdcd280460232b6888d5ee43">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a58fc6e159cdd28165b96c62490313973">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Slider.html#a46473d0e23f332c129d373c9ec467467">tgui::Slider</a>, <a class="el" href="classtgui_1_1Slider2d.html#a079121475d1f9fc9edf265ca4bd54ac2">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1ChildWindow.html#ad2e96cae316b2881e3dcd66a3ba4f58a">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Button.html#aa85df39d8f7e334dc52815792c070a42">tgui::Button</a>, <a class="el" href="classtgui_1_1SpinButton.html#a7e90baacb4788a0ac6bc1777742b17f5">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a9963e165eae7c1088f0761ce99793fce">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Picture.html#a3ed10f1daa8b05c111e9edd6a71d0365">tgui::Picture</a>, and <a class="el" href="classtgui_1_1Panel.html#ae2488465327b745a2e260645fdbc7881">tgui::Panel</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a545477f1d375e6e65e1bf6665c50b9d7">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ab4315825b8ef7d985348f0e64306515c">tgui::ListBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a374c8715c9b4b6195a8bf5eee2a819f2">tgui::TextBox</a>, <a class="el" href="classtgui_1_1EditBox.html#a6bf813b178f989558688d75d945bd332">tgui::EditBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#ac4eff04b4f1d4f96b7e4fcb45ed970f3">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1Tab.html#a577c9dd4579031ae88f97423dcdc8548">tgui::Tab</a>, <a class="el" href="classtgui_1_1Container.html#a4f7789039a99eba1ee65c5a916f12e25">tgui::Container</a>, <a class="el" href="classtgui_1_1Knob.html#a57cb245fd6ec8fe4fdff10ffb1bdd686">tgui::Knob</a>, <a class="el" href="classtgui_1_1LoadingBar.html#af0bff8f323081b1d0343f9ae746c8108">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1RadioButton.html#a89406b47faa1fb563df964fd9f7cbf02">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a58fc6e159cdd28165b96c62490313973">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a9963e165eae7c1088f0761ce99793fce">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider.html#a46473d0e23f332c129d373c9ec467467">tgui::Slider</a>, <a class="el" href="classtgui_1_1Slider2d.html#a079121475d1f9fc9edf265ca4bd54ac2">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1ChildWindow.html#ad2e96cae316b2881e3dcd66a3ba4f58a">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Button.html#aa85df39d8f7e334dc52815792c070a42">tgui::Button</a>, <a class="el" href="classtgui_1_1SpinButton.html#a7e90baacb4788a0ac6bc1777742b17f5">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Picture.html#a3ed10f1daa8b05c111e9edd6a71d0365">tgui::Picture</a>, and <a class="el" href="classtgui_1_1Panel.html#ae2488465327b745a2e260645fdbc7881">tgui::Panel</a>.</p>
 
 </div>
 </div>
@@ -836,7 +839,7 @@ focusNextWidget </dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

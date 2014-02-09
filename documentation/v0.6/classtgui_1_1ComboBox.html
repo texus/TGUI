@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -153,6 +152,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1695b351dea2d80358c94220cf2bbf3b"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ComboBox.html#a1695b351dea2d80358c94220cf2bbf3b">getSize</a> () const </td></tr>
 <tr class="memdesc:a1695b351dea2d80358c94220cf2bbf3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the combo box.  <a href="#a1695b351dea2d80358c94220cf2bbf3b">More...</a><br/></td></tr>
 <tr class="separator:a1695b351dea2d80358c94220cf2bbf3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a450edc857bdec77db22ba2f4410e8e7e"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ComboBox.html#a450edc857bdec77db22ba2f4410e8e7e">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a450edc857bdec77db22ba2f4410e8e7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the full size of the combo box.  <a href="#a450edc857bdec77db22ba2f4410e8e7e">More...</a><br/></td></tr>
+<tr class="separator:a450edc857bdec77db22ba2f4410e8e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ab7be7d7df69ebf3dec9e8ec1233b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ComboBox.html#ae1ab7be7d7df69ebf3dec9e8ec1233b0">setItemsToDisplay</a> (unsigned int nrOfItemsInListToDisplay)</td></tr>
 <tr class="memdesc:ae1ab7be7d7df69ebf3dec9e8ec1233b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the number of items that are displayed in the list.  <a href="#ae1ab7be7d7df69ebf3dec9e8ec1233b0">More...</a><br/></td></tr>
 <tr class="separator:ae1ab7be7d7df69ebf3dec9e8ec1233b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -615,6 +617,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a450edc857bdec77db22ba2f4410e8e7e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::ComboBox::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the full size of the combo box. </p>
+<p>The size returned by this function includes the borders.</p>
+<dl class="section return"><dt>Returns</dt><dd>The full size of the combo box </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">tgui::Transformable</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a7d5ff355bbe8aca142be6f4cbcac564a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -839,6 +870,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the size of the combo box. </p>
+<p>The size returned by this function does not include the borders.</p>
 <dl class="section return"><dt>Returns</dt><dd>The size of the combo box </dd></dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
@@ -1354,10 +1386,11 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Changes the size of the combo box. </p>
+<p>This size does not include the borders.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">width</td><td>The new width of the combo box (borders included) </td></tr>
-    <tr><td class="paramname">height</td><td>The new height of the combo box (borders included) </td></tr>
+    <tr><td class="paramname">width</td><td>The new width of the combo box </td></tr>
+    <tr><td class="paramname">height</td><td>The new height of the combo box </td></tr>
   </table>
   </dd>
 </dl>
@@ -1456,7 +1489,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

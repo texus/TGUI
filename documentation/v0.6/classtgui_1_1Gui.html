@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -108,12 +107,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a713a6f3fa37941cdc9fa956858e1e612"><td class="memItemLeft" align="right" valign="top">sf::RenderWindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a713a6f3fa37941cdc9fa956858e1e612">getWindow</a> ()</td></tr>
 <tr class="memdesc:a713a6f3fa37941cdc9fa956858e1e612"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the window on which the gui is being drawn.  <a href="#a713a6f3fa37941cdc9fa956858e1e612">More...</a><br/></td></tr>
 <tr class="separator:a713a6f3fa37941cdc9fa956858e1e612"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ed041b03290df56b6fa965363972f3d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a5ed041b03290df56b6fa965363972f3d">handleEvent</a> (sf::Event event)</td></tr>
-<tr class="memdesc:a5ed041b03290df56b6fa965363972f3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Passes the event to the widgets.  <a href="#a5ed041b03290df56b6fa965363972f3d">More...</a><br/></td></tr>
-<tr class="separator:a5ed041b03290df56b6fa965363972f3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a363e05a9968afd064e303e900419b02e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a363e05a9968afd064e303e900419b02e">draw</a> (bool resetView=false)</td></tr>
-<tr class="memdesc:a363e05a9968afd064e303e900419b02e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws all the widgets that were added to the gui.  <a href="#a363e05a9968afd064e303e900419b02e">More...</a><br/></td></tr>
-<tr class="separator:a363e05a9968afd064e303e900419b02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a343c9bf03fe4fedf4e51b07cbf4ce3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a7a343c9bf03fe4fedf4e51b07cbf4ce3">handleEvent</a> (sf::Event event, bool resetView=true)</td></tr>
+<tr class="memdesc:a7a343c9bf03fe4fedf4e51b07cbf4ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Passes the event to the widgets.  <a href="#a7a343c9bf03fe4fedf4e51b07cbf4ce3">More...</a><br/></td></tr>
+<tr class="separator:a7a343c9bf03fe4fedf4e51b07cbf4ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62b90328070cb976d2d48bd78e0a4601"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a62b90328070cb976d2d48bd78e0a4601">draw</a> (bool resetView=true)</td></tr>
+<tr class="memdesc:a62b90328070cb976d2d48bd78e0a4601"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws all the widgets that were added to the gui.  <a href="#a62b90328070cb976d2d48bd78e0a4601">More...</a><br/></td></tr>
+<tr class="separator:a62b90328070cb976d2d48bd78e0a4601"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f852a4c2d7fd7b831d73fcc98e1c953"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html#a3f852a4c2d7fd7b831d73fcc98e1c953">pollCallback</a> (<a class="el" href="structtgui_1_1Callback.html">Callback</a> &amp;callback)</td></tr>
 <tr class="memdesc:a3f852a4c2d7fd7b831d73fcc98e1c953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next callback from the callback queue.  <a href="#a3f852a4c2d7fd7b831d73fcc98e1c953">More...</a><br/></td></tr>
 <tr class="separator:a3f852a4c2d7fd7b831d73fcc98e1c953"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -396,7 +395,7 @@ template&lt;typename T &gt; </div>
 </div><!-- fragment --> 
 </div>
 </div>
-<a class="anchor" id="a363e05a9968afd064e303e900419b02e"></a>
+<a class="anchor" id="a62b90328070cb976d2d48bd78e0a4601"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -404,7 +403,7 @@ template&lt;typename T &gt; </div>
           <td class="memname">void tgui::Gui::draw </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>resetView</em> = <code>false</code></td><td>)</td>
+          <td class="paramname"><em>resetView</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -413,7 +412,7 @@ template&lt;typename T &gt; </div>
 <p>Draws all the widgets that were added to the gui. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">resetView</td><td>Reset the view of the window while drawing the gui. If false, the current view will be used, otherwise the view will be reset.</td></tr>
+    <tr><td class="paramname">resetView</td><td>Reset the view of the window while drawing the gui. This parameter must be the same as the one passed to the handleEvent function. If false, the current view will be used, otherwise the view will be reset. If false then make sure the same view is set when calling this function and when calling handleEvent.</td></tr>
   </table>
   </dd>
 </dl>
@@ -678,7 +677,7 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a5ed041b03290df56b6fa965363972f3d"></a>
+<a class="anchor" id="a7a343c9bf03fe4fedf4e51b07cbf4ce3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -686,8 +685,18 @@ template&lt;class T &gt; </div>
           <td class="memname">bool tgui::Gui::handleEvent </td>
           <td>(</td>
           <td class="paramtype">sf::Event&#160;</td>
-          <td class="paramname"><em>event</em></td><td>)</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>resetView</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -695,7 +704,8 @@ template&lt;class T &gt; </div>
 <p>Passes the event to the widgets. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">event</td><td>The event that was polled from the gui</td></tr>
+    <tr><td class="paramname">event</td><td>The event that was polled from the gui </td></tr>
+    <tr><td class="paramname">resetView</td><td>Reset the view of the window while calculation the mouse coordinates. This parameter must be the same as the one passed to the draw function. If false, the current view will be used, otherwise the view will be reset. If false then make sure the same view is set when calling this function and when calling draw.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1078,7 +1088,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

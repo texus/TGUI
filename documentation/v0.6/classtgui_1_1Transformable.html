@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -107,9 +106,10 @@ Inheritance diagram for tgui::Transformable:</div>
 <area href="classtgui_1_1Knob.html" alt="tgui::Knob" shape="rect" coords="138,336,266,360"/>
 <area href="classtgui_1_1ListBox.html" alt="tgui::ListBox" shape="rect" coords="138,392,266,416"/>
 <area href="classtgui_1_1MenuBar.html" alt="tgui::MenuBar" shape="rect" coords="138,448,266,472"/>
-<area href="classtgui_1_1Slider.html" alt="tgui::Slider" shape="rect" coords="138,504,266,528"/>
-<area href="classtgui_1_1Tab.html" alt="tgui::Tab" shape="rect" coords="138,560,266,584"/>
-<area href="classtgui_1_1TextBox.html" alt="tgui::TextBox" shape="rect" coords="138,616,266,640"/>
+<area href="classtgui_1_1Scrollbar.html" alt="tgui::Scrollbar" shape="rect" coords="138,504,266,528"/>
+<area href="classtgui_1_1Slider.html" alt="tgui::Slider" shape="rect" coords="138,560,266,584"/>
+<area href="classtgui_1_1Tab.html" alt="tgui::Tab" shape="rect" coords="138,616,266,640"/>
+<area href="classtgui_1_1TextBox.html" alt="tgui::TextBox" shape="rect" coords="138,672,266,696"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -142,6 +142,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7528dd61c9b68bb3ebbe4af302224d3"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">getSize</a> () const =0</td></tr>
 <tr class="memdesc:ac7528dd61c9b68bb3ebbe4af302224d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="#ac7528dd61c9b68bb3ebbe4af302224d3">More...</a><br/></td></tr>
 <tr class="separator:ac7528dd61c9b68bb3ebbe4af302224d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11a7e9d86943a5cc8114b2431c1570"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a4f11a7e9d86943a5cc8114b2431c1570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="#a4f11a7e9d86943a5cc8114b2431c1570">More...</a><br/></td></tr>
+<tr class="separator:a4f11a7e9d86943a5cc8114b2431c1570"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff4e891c0d8a1ea574f24ad625bc4dee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#aff4e891c0d8a1ea574f24ad625bc4dee">scale</a> (float factorX, float factorY)</td></tr>
 <tr class="memdesc:aff4e891c0d8a1ea574f24ad625bc4dee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale the widget.  <a href="#aff4e891c0d8a1ea574f24ad625bc4dee">More...</a><br/></td></tr>
 <tr class="separator:aff4e891c0d8a1ea574f24ad625bc4dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,6 +196,35 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a4f11a7e9d86943a5cc8114b2431c1570"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::Transformable::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the entire size that the widget is using. </p>
+<p>This function will return a value equal or greater than what getSize returns. If the widget would e.g. have borders around it then this function will return the size, including these borders.</p>
+<dl class="section return"><dt>Returns</dt><dd>Full size of the widget </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classtgui_1_1ChildWindow.html#ae9819ff1000029cbec40aa2794af3d93">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1RadioButton.html#aae7cda9232e90c5642f85f6029a3cd35">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1TextBox.html#a5a682490d9575a3eeb936de18a80764f">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#af24b8538a236144880864070ede04fd6">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a450edc857bdec77db22ba2f4410e8e7e">tgui::ComboBox</a>, and <a class="el" href="classtgui_1_1ListBox.html#a8cbf503c2308a20aed4e7a132afda7c5">tgui::ListBox</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aedc24e5fd37da909d6b6f0f850d278dc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -236,7 +268,7 @@ Public Member Functions</h2></td></tr>
 <p>Returns the size of the widget. </p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the widget </dd></dl>
 
-<p>Implemented in <a class="el" href="classtgui_1_1GuiContainer.html#a8e34a8768e8a2fcd8407ad6df2b81f36">tgui::GuiContainer</a>, <a class="el" href="classtgui_1_1ChildWindow.html#afbf60d36a5348a6cb318b617b42d50b6">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Checkbox.html#a3777b048b46f850eb7dd3749af4ed39f">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1Knob.html#aa8395b0ddb840c1966565dc2e7e775fc">tgui::Knob</a>, <a class="el" href="classtgui_1_1Slider.html#ab078e5d3b1628bec3a239b1b2d294cbe">tgui::Slider</a>, <a class="el" href="classtgui_1_1TextBox.html#a1959b7dbbdd99f964948285dbc854f41">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#ad5773cdbf4003d656c0ccd743998abb4">tgui::Tab</a>, <a class="el" href="classtgui_1_1Grid.html#af56f5d03311ac6cfae7145526ee2eae5">tgui::Grid</a>, <a class="el" href="classtgui_1_1ChatBox.html#a46bafbba28f776e699bf13be0c1c51c1">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ab1c05e3e91a65b17f06fde46f68f8a18">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a1695b351dea2d80358c94220cf2bbf3b">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a831d7c1520efc00ebd1228c05fad6497">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#aef9a7d2d1fe3facffd1d233747543819">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1Panel.html#af36d8de3d9a3633fa00d2eaa5cdbc4b7">tgui::Panel</a>, <a class="el" href="classtgui_1_1MenuBar.html#ae8203ae8bfc117b0c3ce91d4442242a9">tgui::MenuBar</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a1dd2155546ab717c456cbf9214f41d46">tgui::SpriteSheet</a>.</p>
+<p>Implemented in <a class="el" href="classtgui_1_1GuiContainer.html#a8e34a8768e8a2fcd8407ad6df2b81f36">tgui::GuiContainer</a>, <a class="el" href="classtgui_1_1ChildWindow.html#afbf60d36a5348a6cb318b617b42d50b6">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1RadioButton.html#a5ab0ad595894ea9a6efb08b973608ed5">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Knob.html#aa8395b0ddb840c1966565dc2e7e775fc">tgui::Knob</a>, <a class="el" href="classtgui_1_1Slider.html#ab078e5d3b1628bec3a239b1b2d294cbe">tgui::Slider</a>, <a class="el" href="classtgui_1_1TextBox.html#a1959b7dbbdd99f964948285dbc854f41">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#ad5773cdbf4003d656c0ccd743998abb4">tgui::Tab</a>, <a class="el" href="classtgui_1_1Grid.html#af56f5d03311ac6cfae7145526ee2eae5">tgui::Grid</a>, <a class="el" href="classtgui_1_1ChatBox.html#a46bafbba28f776e699bf13be0c1c51c1">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a1695b351dea2d80358c94220cf2bbf3b">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ab1c05e3e91a65b17f06fde46f68f8a18">tgui::ListBox</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a735eb72b319652104f2bcb6dccdd5d86">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a831d7c1520efc00ebd1228c05fad6497">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#aef9a7d2d1fe3facffd1d233747543819">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1Panel.html#af36d8de3d9a3633fa00d2eaa5cdbc4b7">tgui::Panel</a>, <a class="el" href="classtgui_1_1MenuBar.html#ae8203ae8bfc117b0c3ce91d4442242a9">tgui::MenuBar</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a1dd2155546ab717c456cbf9214f41d46">tgui::SpriteSheet</a>.</p>
 
 </div>
 </div>
@@ -412,7 +444,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classtgui_1_1Transformable.html#a9b2bed702aca5b2a0652e62967751503" title="Move the widget by a given offset. ">move</a>, <a class="el" href="classtgui_1_1Transformable.html#aedc24e5fd37da909d6b6f0f850d278dc" title="get the position of the widget ">getPosition</a> </dd></dl>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1ChildWindow.html#aca5a90058b1f9a1f1abada9228652ad8">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1EditBox.html#a5b8e875f66ee7d417518c2f5145013fb">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a67c5854f011853ec4ec8a1c1fcb0f32a">tgui::Button</a>, <a class="el" href="classtgui_1_1Picture.html#a90541c511f957dc325295c30d93bd3d2">tgui::Picture</a>, <a class="el" href="classtgui_1_1Checkbox.html#a1c583d7c94e5c30d384f51065cffed42">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1Knob.html#ab19c8815a019bc4d92580b74d9d6f7fe">tgui::Knob</a>, <a class="el" href="classtgui_1_1Slider.html#a739da15ea860933b9f66d095c5e12888">tgui::Slider</a>, and <a class="el" href="classtgui_1_1Label.html#a528198b24711e3e40b20c4481e7aad97">tgui::Label</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1ChildWindow.html#aca5a90058b1f9a1f1abada9228652ad8">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1EditBox.html#a5b8e875f66ee7d417518c2f5145013fb">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a67c5854f011853ec4ec8a1c1fcb0f32a">tgui::Button</a>, <a class="el" href="classtgui_1_1Picture.html#a90541c511f957dc325295c30d93bd3d2">tgui::Picture</a>, <a class="el" href="classtgui_1_1Knob.html#ab19c8815a019bc4d92580b74d9d6f7fe">tgui::Knob</a>, <a class="el" href="classtgui_1_1RadioButton.html#a2fc32ac361b92b278ec048acecf8f993">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#a739da15ea860933b9f66d095c5e12888">tgui::Slider</a>, and <a class="el" href="classtgui_1_1Label.html#a528198b24711e3e40b20c4481e7aad97">tgui::Label</a>.</p>
 
 </div>
 </div>
@@ -483,7 +515,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classtgui_1_1GuiContainer.html#a968a8772f2b2664af411d04bda2d19ca">tgui::GuiContainer</a>, <a class="el" href="classtgui_1_1EditBox.html#ab17ae25e2075263097608092c1d0837f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>, <a class="el" href="classtgui_1_1ChildWindow.html#aa62686e7aca2953833a6124fb24cf9c0">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>, <a class="el" href="classtgui_1_1Checkbox.html#af254b99f25c367d638056302f6dc64e8">tgui::Checkbox</a>, <a class="el" href="classtgui_1_1Knob.html#ad74c08a65b4466e001155def1a0aa5ca">tgui::Knob</a>, <a class="el" href="classtgui_1_1Slider.html#a4bc51c5176ad2de2e93a2e8703ed0931">tgui::Slider</a>, <a class="el" href="classtgui_1_1TextBox.html#a1180d706cf3d56c3eec13a254bc57c81">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#af318f2da78e97bc7aacbd5d542bfda16">tgui::Tab</a>, <a class="el" href="classtgui_1_1Grid.html#a2453bed68d7d64d7ae34c14b00158e5e">tgui::Grid</a>, <a class="el" href="classtgui_1_1ChatBox.html#ae4e3b04d06e7856be2254d9a8bd9b6bc">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a3d9f7e4868a75cbc6627bc7052f42799">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a8252de1d8fd87906ef3607d462b73e7f">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1LoadingBar.html#a07a41b1b2ad021958d7e6eb0529cdcbf">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Label.html#a8d1683b8a0a419194043ded4443aa55f">tgui::Label</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#a3a70bf0ea8995af8b201481e1e4778f6">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1Panel.html#a67b154cc09a2ca84d115c888ed94fc5c">tgui::Panel</a>, <a class="el" href="classtgui_1_1MenuBar.html#a00b3c962382fc40091b085640f63507e">tgui::MenuBar</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a99fdf0ad8728fbf5a1ed33a3e7127d84">tgui::SpriteSheet</a>.</p>
+<p>Implemented in <a class="el" href="classtgui_1_1GuiContainer.html#a968a8772f2b2664af411d04bda2d19ca">tgui::GuiContainer</a>, <a class="el" href="classtgui_1_1EditBox.html#ab17ae25e2075263097608092c1d0837f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>, <a class="el" href="classtgui_1_1ChildWindow.html#aa62686e7aca2953833a6124fb24cf9c0">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>, <a class="el" href="classtgui_1_1Knob.html#ad74c08a65b4466e001155def1a0aa5ca">tgui::Knob</a>, <a class="el" href="classtgui_1_1RadioButton.html#abe0b926c30991ef515b2b69e4384aa23">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#a4bc51c5176ad2de2e93a2e8703ed0931">tgui::Slider</a>, <a class="el" href="classtgui_1_1TextBox.html#a1180d706cf3d56c3eec13a254bc57c81">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#af318f2da78e97bc7aacbd5d542bfda16">tgui::Tab</a>, <a class="el" href="classtgui_1_1Grid.html#a2453bed68d7d64d7ae34c14b00158e5e">tgui::Grid</a>, <a class="el" href="classtgui_1_1ChatBox.html#ae4e3b04d06e7856be2254d9a8bd9b6bc">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a8252de1d8fd87906ef3607d462b73e7f">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a3d9f7e4868a75cbc6627bc7052f42799">tgui::ListBox</a>, <a class="el" href="classtgui_1_1LoadingBar.html#a07a41b1b2ad021958d7e6eb0529cdcbf">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a71d7956059a12e9e7a087ae116ef2bba">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Label.html#a8d1683b8a0a419194043ded4443aa55f">tgui::Label</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#a3a70bf0ea8995af8b201481e1e4778f6">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1Panel.html#a67b154cc09a2ca84d115c888ed94fc5c">tgui::Panel</a>, <a class="el" href="classtgui_1_1MenuBar.html#a00b3c962382fc40091b085640f63507e">tgui::MenuBar</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a99fdf0ad8728fbf5a1ed33a3e7127d84">tgui::SpriteSheet</a>.</p>
 
 </div>
 </div>
@@ -493,7 +525,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

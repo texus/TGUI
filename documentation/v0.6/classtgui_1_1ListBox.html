@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -153,6 +152,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab1c05e3e91a65b17f06fde46f68f8a18"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#ab1c05e3e91a65b17f06fde46f68f8a18">getSize</a> () const </td></tr>
 <tr class="memdesc:ab1c05e3e91a65b17f06fde46f68f8a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the list box.  <a href="#ab1c05e3e91a65b17f06fde46f68f8a18">More...</a><br/></td></tr>
 <tr class="separator:ab1c05e3e91a65b17f06fde46f68f8a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cbf503c2308a20aed4e7a132afda7c5"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#a8cbf503c2308a20aed4e7a132afda7c5">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a8cbf503c2308a20aed4e7a132afda7c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the full size of the list box.  <a href="#a8cbf503c2308a20aed4e7a132afda7c5">More...</a><br/></td></tr>
+<tr class="separator:a8cbf503c2308a20aed4e7a132afda7c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2dfc91dc0cf7b52800dd0bd670f2756b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ListBox.html#a2dfc91dc0cf7b52800dd0bd670f2756b">changeColors</a> (const sf::Color &amp;backgroundColor=sf::Color::White, const sf::Color &amp;textColor=sf::Color::Black, const sf::Color &amp;selectedBackgroundColor=sf::Color(50, 100, 200), const sf::Color &amp;selectedTextColor=sf::Color::White, const sf::Color &amp;borderColor=sf::Color::Black)</td></tr>
 <tr class="memdesc:a2dfc91dc0cf7b52800dd0bd670f2756b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the colors used in the list box.  <a href="#a2dfc91dc0cf7b52800dd0bd670f2756b">More...</a><br/></td></tr>
 <tr class="separator:a2dfc91dc0cf7b52800dd0bd670f2756b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -613,6 +615,35 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a8cbf503c2308a20aed4e7a132afda7c5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::ListBox::getFullSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the full size of the list box. </p>
+<p>The size returned by this function includes the borders.</p>
+<dl class="section return"><dt>Returns</dt><dd>Full size of the list box </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">tgui::Transformable</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a2d6b41ac3a4e105062df1731006d5bd5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -835,6 +866,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the size of the list box. </p>
+<p>The size returned by this function does not include the borders.</p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the list box </dd></dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
@@ -1455,7 +1487,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

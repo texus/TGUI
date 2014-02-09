@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -196,96 +195,94 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> mouseMoved(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> keyPressed(sf::Keyboard::Key key);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> mouseWheelMoved(<span class="keywordtype">int</span> delta, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> mouseWheelMoved(<span class="keywordtype">int</span> delta, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> widgetFocused();</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> widgetFocused();</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="comment">// This function is a (slow) way to set properties on the widget, no matter what type it is.</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> setProperty(std::string property, <span class="keyword">const</span> std::string&amp; value);</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        <span class="comment">// This function is a (slow) way to get properties of the widget, no matter what type it is.</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> getProperty(std::string property, std::string&amp; value) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <span class="comment">// Returns a list of all properties that can be used in setProperty and getProperty.</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        <span class="comment">// The second value in the pair is the type of the property (e.g. int, uint, string, ...).</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> std::list&lt; std::pair&lt;std::string, std::string&gt; &gt; getPropertyList() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="comment">// This function is a (slow) way to set properties on the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> setProperty(std::string property, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <span class="comment">// This function is a (slow) way to get properties of the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> getProperty(std::string property, std::string&amp; value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        <span class="comment">// Returns a list of all properties that can be used in setProperty and getProperty.</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="comment">// The second value in the pair is the type of the property (e.g. int, uint, string, ...).</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> std::list&lt; std::pair&lt;std::string, std::string&gt; &gt; getPropertyList() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;      <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;</div>
-<div class="line"><a name="l00319"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">  319</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">SliderCallbacks</a></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        {</div>
-<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68daa86c4dcc0625ae735f3e4ae4437c9554">  321</a></span>&#160;            ValueChanged = WidgetCallbacksCount * 1,           </div>
-<div class="line"><a name="l00322"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68dae2a0124712ba909fd55c855553825432">  322</a></span>&#160;            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            SliderCallbacksCount = WidgetCallbacksCount * 2</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        };</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">  314</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">SliderCallbacks</a></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        {</div>
+<div class="line"><a name="l00316"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68daa86c4dcc0625ae735f3e4ae4437c9554">  316</a></span>&#160;            ValueChanged = WidgetCallbacksCount * 1,           </div>
+<div class="line"><a name="l00317"></a><span class="lineno"><a class="line" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68dae2a0124712ba909fd55c855553825432">  317</a></span>&#160;            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, </div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;            SliderCallbacksCount = WidgetCallbacksCount * 2</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        };</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        std::string m_LoadedConfigFile;</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;      <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        std::string m_LoadedConfigFile;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        <span class="comment">// When the mouse went down, did it go down on top of the thumb? If so, where?</span></div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keywordtype">bool</span> m_MouseDownOnThumb;</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        sf::Vector2f m_MouseDownOnThumbPos;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Minimum;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Maximum;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Value;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <span class="comment">// Is the slider draw vertically?</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="keywordtype">bool</span> m_VerticalScroll;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="comment">// Does the image lie vertically?</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="keywordtype">bool</span> m_VerticalImage;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="comment">// If this is true then the L, M and R images will be used.</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="comment">// If it is false then the slider is just one big image that will be stored in the M image.</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="keywordtype">bool</span> m_SplitImage;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="comment">// Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?</span></div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        <span class="keywordtype">bool</span> m_SeparateHoverImage;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        <span class="comment">// The size of the slider and its thumb</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        sf::Vector2f m_Size;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        sf::Vector2f m_ThumbSize;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_L;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_L;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_M;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_M;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_R;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_R;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureThumbNormal;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureThumbHover;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    };</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        <span class="comment">// When the mouse went down, did it go down on top of the thumb? If so, where?</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        <span class="keywordtype">bool</span> m_MouseDownOnThumb;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        sf::Vector2f m_MouseDownOnThumbPos;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Minimum;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Maximum;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_Value;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="comment">// Is the slider draw vertically?</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        <span class="keywordtype">bool</span> m_VerticalScroll;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        <span class="comment">// Does the image lie vertically?</span></div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        <span class="keywordtype">bool</span> m_VerticalImage;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="comment">// If this is true then the L, M and R images will be used.</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="comment">// If it is false then the slider is just one big image that will be stored in the M image.</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="keywordtype">bool</span> m_SplitImage;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="comment">// Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="keywordtype">bool</span> m_SeparateHoverImage;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="comment">// The size of the slider and its thumb</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        sf::Vector2f m_Size;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        sf::Vector2f m_ThumbSize;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_L;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_L;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_M;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_M;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackNormal_R;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureTrackHover_R;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureThumbNormal;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureThumbHover;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    };</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;}</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;</div>
 <div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;}</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="preprocessor">#endif // TGUI_SLIDER_HPP</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#endif // TGUI_SLIDER_HPP</span></div>
 <div class="ttc" id="classtgui_1_1Transformable_html_a4847f802d66cdf386d09595fecfa3131"><div class="ttname"><a href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">tgui::Transformable::setPosition</a></div><div class="ttdeci">virtual void setPosition(float x, float y)</div><div class="ttdoc">Set the position of the widget. </div></div>
 <div class="ttc" id="classtgui_1_1Widget_html"><div class="ttname"><a href="classtgui_1_1Widget.html">tgui::Widget</a></div><div class="ttdoc">The parent class for every widget. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:45</div></div>
 <div class="ttc" id="structtgui_1_1Texture_html"><div class="ttname"><a href="structtgui_1_1Texture.html">tgui::Texture</a></div><div class="ttdef"><b>Definition:</b> TextureManager.hpp:52</div></div>
 <div class="ttc" id="classtgui_1_1Slider_html"><div class="ttname"><a href="classtgui_1_1Slider.html">tgui::Slider</a></div><div class="ttdef"><b>Definition:</b> Slider.hpp:38</div></div>
 <div class="ttc" id="classtgui_1_1SharedWidgetPtr_html"><div class="ttname"><a href="classtgui_1_1SharedWidgetPtr.html">tgui::SharedWidgetPtr</a></div><div class="ttdef"><b>Definition:</b> SharedWidgetPtr.hpp:44</div></div>
-<div class="ttc" id="classtgui_1_1Slider_html_a84e644bd1c79428f53507234b427a68d"><div class="ttname"><a href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">tgui::Slider::SliderCallbacks</a></div><div class="ttdeci">SliderCallbacks</div><div class="ttdoc">Defines specific triggers to Slider. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:319</div></div>
+<div class="ttc" id="classtgui_1_1Slider_html_a84e644bd1c79428f53507234b427a68d"><div class="ttname"><a href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">tgui::Slider::SliderCallbacks</a></div><div class="ttdeci">SliderCallbacks</div><div class="ttdoc">Defines specific triggers to Slider. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:314</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

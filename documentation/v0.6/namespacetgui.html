@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -83,7 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">tgui Namespace Reference</div>  </div>
 </div><!--header-->
@@ -185,26 +184,23 @@ Enumerations</h2></td></tr>
 <tr class="memdesc:a6f721be5dfcacf4e5b73b8d3aef75b14"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of all widget types.  <a href="namespacetgui.html#a6f721be5dfcacf4e5b73b8d3aef75b14">More...</a><br/></td></tr>
 <tr class="separator:a6f721be5dfcacf4e5b73b8d3aef75b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:ad05a151325e6532ff272998766c442db"><td class="memItemLeft" align="right" valign="top">TGUI_API <a class="el" href="classtgui_1_1TextureManager.html">TextureManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#ad05a151325e6532ff272998766c442db">TGUI_TextureManager</a></td></tr>
-<tr class="memdesc:ad05a151325e6532ff272998766c442db"><td class="mdescLeft">&#160;</td><td class="mdescRight">The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.  <a href="#ad05a151325e6532ff272998766c442db">More...</a><br/></td></tr>
-<tr class="separator:ad05a151325e6532ff272998766c442db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7773e0b63384f139652866d364598be7"><td class="memItemLeft" align="right" valign="top">TGUI_API bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#a7773e0b63384f139652866d364598be7">tabKeyUsageEnabled</a></td></tr>
-<tr class="memdesc:a7773e0b63384f139652866d364598be7"><td class="mdescLeft">&#160;</td><td class="mdescRight">When disabling the tab key usage, pressing tab will no longer focus another widget, but in the future this will allow to use tabs in <a class="el" href="classtgui_1_1TextBox.html">TextBox</a>.  <a href="#a7773e0b63384f139652866d364598be7">More...</a><br/></td></tr>
-<tr class="separator:a7773e0b63384f139652866d364598be7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a9f51281faa5f0543418b35e4e5c849f4"><td class="memItemLeft" align="right" valign="top">TGUI_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#a9f51281faa5f0543418b35e4e5c849f4">enableTabKeyUsage</a> ()</td></tr>
+<tr class="memdesc:a9f51281faa5f0543418b35e4e5c849f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">While tab key usage is enabled (default), pressing tab will focus another widget.  <a href="#a9f51281faa5f0543418b35e4e5c849f4">More...</a><br/></td></tr>
+<tr class="separator:a9f51281faa5f0543418b35e4e5c849f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a961d5f6c9743d5c20cfc7872bd2504d2"><td class="memItemLeft" align="right" valign="top">TGUI_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#a961d5f6c9743d5c20cfc7872bd2504d2">disableTabKeyUsage</a> ()</td></tr>
+<tr class="memdesc:a961d5f6c9743d5c20cfc7872bd2504d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">When disabling the tab key usage, pressing tab will no longer focus another widget.  <a href="#a961d5f6c9743d5c20cfc7872bd2504d2">More...</a><br/></td></tr>
+<tr class="separator:a961d5f6c9743d5c20cfc7872bd2504d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ff0bfc29ca323f7de787b4acce869b6"><td class="memItemLeft" align="right" valign="top">TGUI_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#a2ff0bfc29ca323f7de787b4acce869b6">setResourcePath</a> (const std::string &amp;path)</td></tr>
+<tr class="memdesc:a2ff0bfc29ca323f7de787b4acce869b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new resource path.  <a href="#a2ff0bfc29ca323f7de787b4acce869b6">More...</a><br/></td></tr>
+<tr class="separator:a2ff0bfc29ca323f7de787b4acce869b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2efca1c075fdbd9f7fb9270a798ae664"><td class="memItemLeft" align="right" valign="top">TGUI_API const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#a2efca1c075fdbd9f7fb9270a798ae664">getResourcePath</a> ()</td></tr>
+<tr class="memdesc:a2efca1c075fdbd9f7fb9270a798ae664"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the resource path.  <a href="#a2efca1c075fdbd9f7fb9270a798ae664">More...</a><br/></td></tr>
+<tr class="separator:a2efca1c075fdbd9f7fb9270a798ae664"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Double clicking should only select one word in <a class="el" href="classtgui_1_1EditBox.html">EditBox</a>. To select the whole text, you should click 3 times. </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd><p class="startdd">Add an optional close button to the tabs. </p>
-<p class="enddd">Add an extra tab that can be used to open a new tab. </p>
-</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd><p class="startdd">Rename Selection point position to caret position </p>
-<p>Double clicking should only select one word in <a class="el" href="classtgui_1_1TextBox.html">TextBox</a>. To select the whole text, you should click 3 times. </p>
-<p class="enddd">Add a horizontal scrollbar in Textbox.</p>
-</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Fix behavior problem: When pressing the down arrow when the selection point is at the beginning of the text, the selection point moves at the end of the line because it is not allowed to be in front. This problem will be hard to correct: m_DisplayedText may not be used as reference to m_SelEnd. This bug can thus only be solved after implementing decent word wrapping. </dd></dl>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<div class="textblock"></div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a class="anchor" id="a6f721be5dfcacf4e5b73b8d3aef75b14"></a>
 <div class="memitem">
 <div class="memproto">
@@ -219,39 +215,89 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="a7773e0b63384f139652866d364598be7"></a>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a961d5f6c9743d5c20cfc7872bd2504d2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">TGUI_API bool tgui::tabKeyUsageEnabled</td>
+          <td class="memname">TGUI_API void tgui::disableTabKeyUsage </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>When disabling the tab key usage, pressing tab will no longer focus another widget, but in the future this will allow to use tabs in <a class="el" href="classtgui_1_1TextBox.html">TextBox</a>. </p>
+<p>When disabling the tab key usage, pressing tab will no longer focus another widget. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad05a151325e6532ff272998766c442db"></a>
+<a class="anchor" id="a9f51281faa5f0543418b35e4e5c849f4"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">TGUI_API <a class="el" href="classtgui_1_1TextureManager.html">TextureManager</a> tgui::TGUI_TextureManager</td>
+          <td class="memname">TGUI_API void tgui::enableTabKeyUsage </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The texture manager will not just load the textures, but will also make sure that the textures are only loaded once. </p>
+<p>While tab key usage is enabled (default), pressing tab will focus another widget. </p>
+
+</div>
+</div>
+<a class="anchor" id="a2efca1c075fdbd9f7fb9270a798ae664"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_API const std::string&amp; tgui::getResourcePath </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the resource path. </p>
+<p>This pathname is placed in front of every filename that is used to load a resource.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current resource path </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a2ff0bfc29ca323f7de787b4acce869b6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TGUI_API void tgui::setResourcePath </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set a new resource path. </p>
+<p>This pathname is placed in front of every filename that is used to load a resource.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>New resource path </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

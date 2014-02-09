@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -115,13 +114,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define TGUI_RADIO_BUTTON_HPP</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;TGUI/Checkbox.hpp&gt;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;TGUI/ClickableWidget.hpp&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>tgui</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html">   38</a></span>&#160;    <span class="keyword">class </span>TGUI_API <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a> : <span class="keyword">public</span> <a class="code" href="classtgui_1_1Checkbox.html">Checkbox</a></div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html">   38</a></span>&#160;    <span class="keyword">class </span>TGUI_API <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a> : <span class="keyword">public</span> <a class="code" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
@@ -134,48 +133,159 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>(<span class="keyword">const</span> <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>&amp; copy);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>&amp; operator= (<span class="keyword">const</span> <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>&amp; right);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">// Makes a copy of the widget by calling the copy constructor.</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="comment">// This function calls new and if you use this function then you are responsible for calling delete.</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>* clone();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>&amp; operator= (<span class="keyword">const</span> <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>&amp; right);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">bool</span> load(<span class="keyword">const</span> std::string&amp; configFileFilename);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordtype">void</span> check();</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordtype">void</span> uncheck();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordtype">void</span> forceUncheck();</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="comment">// Makes a copy of the widget by calling the copy constructor.</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="comment">// This function calls new and if you use this function then you are responsible for calling delete.</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <a class="code" href="classtgui_1_1RadioButton.html">RadioButton</a>* clone();</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordtype">bool</span> load(<span class="keyword">const</span> std::string&amp; configFileFilename);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">const</span> std::string&amp; getLoadedConfigFile() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setPosition(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">using</span> <a class="code" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">Transformable::setPosition</a>;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">  126</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">RadioButtonCallbacks</a></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        {</div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eaba1d9372f71161f3533555d6fa4f09c59d">  128</a></span>&#160;            AllRadioButtonCallbacks = CheckboxCallbacksCount - 1, </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            RadioButtonCallbacksCount = CheckboxCallbacksCount</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        };</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    };</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;}</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">#endif // TGUI_RADIO_BUTTON_HPP</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setSize(<span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">virtual</span> sf::Vector2f getSize() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keyword">virtual</span> sf::Vector2f getFullSize() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> check();</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> uncheck();</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keywordtype">bool</span> isChecked() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <span class="keywordtype">void</span> setText(<span class="keyword">const</span> sf::String&amp; text);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        sf::String getText() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keywordtype">void</span> setTextFont(<span class="keyword">const</span> sf::Font&amp; font);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        <span class="keyword">const</span> sf::Font* getTextFont() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="keywordtype">void</span> setTextColor(<span class="keyword">const</span> sf::Color&amp; color);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        <span class="keyword">const</span> sf::Color&amp; getTextColor() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <span class="keywordtype">void</span> setTextSize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> getTextSize() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        <span class="keywordtype">void</span> allowTextClick(<span class="keywordtype">bool</span> acceptTextClick = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setTransparency(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> transparency);</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> mouseOnWidget(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> leftMouseReleased(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> keyPressed(sf::Keyboard::Key key);</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> widgetFocused();</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="comment">// This function is a (slow) way to set properties on the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> setProperty(std::string property, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <span class="comment">// This function is a (slow) way to get properties of the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> getProperty(std::string property, std::string&amp; value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="comment">// Returns a list of all properties that can be used in setProperty and getProperty.</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="comment">// The second value in the pair is the type of the property (e.g. int, uint, string, ...).</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> std::list&lt; std::pair&lt;std::string, std::string&gt; &gt; getPropertyList() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        <span class="comment">// This function is called when the widget is added to a container.</span></div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> initialize(<a class="code" href="classtgui_1_1Container.html">Container</a> *<span class="keyword">const</span> container);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;      <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
+<div class="line"><a name="l00346"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">  346</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">RadioButtonCallbacks</a></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        {</div>
+<div class="line"><a name="l00348"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eaba8cbfcd14e5464294a54e38bf98284462">  348</a></span>&#160;            Checked = ClickableWidgetCallbacksCount * 1,                      </div>
+<div class="line"><a name="l00349"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eaba9de7b5942b65912585f4e0ddd8fb3932">  349</a></span>&#160;            Unchecked = ClickableWidgetCallbacksCount * 2,                    </div>
+<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eabab5740d1c4fd457dbd75622d4644d9836">  350</a></span>&#160;            SpaceKeyPressed = ClickableWidgetCallbacksCount * 8,              </div>
+<div class="line"><a name="l00351"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eaba6111e7b638ec81dd7a15688911dcea95">  351</a></span>&#160;            ReturnKeyPressed = ClickableWidgetCallbacksCount * 16,            </div>
+<div class="line"><a name="l00352"></a><span class="lineno"><a class="line" href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eaba1d9372f71161f3533555d6fa4f09c59d">  352</a></span>&#160;            AllRadioButtonCallbacks = ClickableWidgetCallbacksCount * 32 - 1, </div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            RadioButtonCallbacksCount = ClickableWidgetCallbacksCount * 32</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        };</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        std::string m_LoadedConfigFile;</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        <span class="comment">// This is the checked flag. When the radio button is checked then this variable will be true.</span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <span class="keywordtype">bool</span> m_Checked;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        <span class="comment">// When this boolean is true (default) then the radio button will also be checked by clicking on the text.</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        <span class="keywordtype">bool</span> m_AllowTextClick;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        <span class="comment">// This will contain the text that is written next to radio button.</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;        sf::Text m_Text;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <span class="comment">// This will store the size of the text ( 0 to auto size )</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_TextSize;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureUnchecked;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureChecked;</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    };</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;}</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="preprocessor">#endif // TGUI_RADIO_BUTTON_HPP</span></div>
+<div class="ttc" id="classtgui_1_1Transformable_html_a4847f802d66cdf386d09595fecfa3131"><div class="ttname"><a href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">tgui::Transformable::setPosition</a></div><div class="ttdeci">virtual void setPosition(float x, float y)</div><div class="ttdoc">Set the position of the widget. </div></div>
 <div class="ttc" id="classtgui_1_1RadioButton_html"><div class="ttname"><a href="classtgui_1_1RadioButton.html">tgui::RadioButton</a></div><div class="ttdef"><b>Definition:</b> RadioButton.hpp:38</div></div>
-<div class="ttc" id="classtgui_1_1RadioButton_html_a4592b743363ad4f651aa4bfa2c861eab"><div class="ttname"><a href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">tgui::RadioButton::RadioButtonCallbacks</a></div><div class="ttdeci">RadioButtonCallbacks</div><div class="ttdoc">Defines specific triggers to RadioButton. </div><div class="ttdef"><b>Definition:</b> RadioButton.hpp:126</div></div>
-<div class="ttc" id="classtgui_1_1Checkbox_html"><div class="ttname"><a href="classtgui_1_1Checkbox.html">tgui::Checkbox</a></div><div class="ttdef"><b>Definition:</b> Checkbox.hpp:38</div></div>
+<div class="ttc" id="structtgui_1_1Texture_html"><div class="ttname"><a href="structtgui_1_1Texture.html">tgui::Texture</a></div><div class="ttdef"><b>Definition:</b> TextureManager.hpp:52</div></div>
+<div class="ttc" id="classtgui_1_1RadioButton_html_a4592b743363ad4f651aa4bfa2c861eab"><div class="ttname"><a href="classtgui_1_1RadioButton.html#a4592b743363ad4f651aa4bfa2c861eab">tgui::RadioButton::RadioButtonCallbacks</a></div><div class="ttdeci">RadioButtonCallbacks</div><div class="ttdoc">Defines specific triggers to RadioButton. </div><div class="ttdef"><b>Definition:</b> RadioButton.hpp:346</div></div>
+<div class="ttc" id="classtgui_1_1ClickableWidget_html"><div class="ttname"><a href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></div><div class="ttdef"><b>Definition:</b> ClickableWidget.hpp:38</div></div>
+<div class="ttc" id="classtgui_1_1Container_html"><div class="ttname"><a href="classtgui_1_1Container.html">tgui::Container</a></div><div class="ttdoc">Parent class for widgets that store multiple widgets. </div><div class="ttdef"><b>Definition:</b> Container.hpp:43</div></div>
 <div class="ttc" id="classtgui_1_1SharedWidgetPtr_html"><div class="ttname"><a href="classtgui_1_1SharedWidgetPtr.html">tgui::SharedWidgetPtr</a></div><div class="ttdef"><b>Definition:</b> SharedWidgetPtr.hpp:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

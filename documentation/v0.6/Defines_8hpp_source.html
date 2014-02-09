@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -190,68 +189,87 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">namespace </span>tgui</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;{</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">extern</span> TGUI_API TextureManager <a class="code" href="namespacetgui.html#ad05a151325e6532ff272998766c442db">TGUI_TextureManager</a>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">class </span>Clipboard;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">extern</span> TGUI_API Clipboard TGUI_Clipboard;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    TGUI_API <span class="keywordtype">void</span> <a class="code" href="namespacetgui.html#a9f51281faa5f0543418b35e4e5c849f4">enableTabKeyUsage</a>();</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keyword">extern</span> TGUI_API <span class="keywordtype">bool</span> <a class="code" href="namespacetgui.html#a7773e0b63384f139652866d364598be7">tabKeyUsageEnabled</a>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="comment">// Get a sf::Color from a string. The string must look like: &quot;(r, g, b)&quot; or &quot;(r, g, b, a)&quot;.</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="comment">// When this function fails then it will return black.</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment"></span>    TGUI_API sf::Color extractColor(std::string <span class="keywordtype">string</span>);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="comment">// This function does exactly the opposite of extractColor.</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="comment">// The returned string will be &quot;(r,g,b)&quot; when a=255 or &quot;(r,g,b,a)&quot; when a&lt;255.</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="comment"></span>    TGUI_API std::string convertColorToString(<span class="keyword">const</span> sf::Color&amp; color);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="comment">// Get a sf::Vector2f from a string. The string must look like: &quot;(x, y)&quot;.</span></div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractVector2f(std::string <span class="keywordtype">string</span>, sf::Vector2f&amp; vector);</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="comment">// Get a sf::Vector2u from a string. The string must look like: &quot;(x, y)&quot;.</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractVector2u(std::string <span class="keywordtype">string</span>, sf::Vector2u&amp; vector);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="comment">// Get a tgui::Borders from a string. The string must look like: &quot;(left, top, right, bottom)&quot;.</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractBorders(std::string <span class="keywordtype">string</span>, Borders&amp; borders);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    TGUI_API <span class="keywordtype">void</span> <a class="code" href="namespacetgui.html#a961d5f6c9743d5c20cfc7872bd2504d2">disableTabKeyUsage</a>();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    TGUI_API <span class="keywordtype">void</span> <a class="code" href="namespacetgui.html#a2ff0bfc29ca323f7de787b4acce869b6">setResourcePath</a>(<span class="keyword">const</span> std::string&amp; path);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    TGUI_API <span class="keyword">const</span> std::string&amp; <a class="code" href="namespacetgui.html#a2efca1c075fdbd9f7fb9270a798ae664">getResourcePath</a>();</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">namespace </span>tgui</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;{</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keyword">extern</span> TGUI_API TextureManager TGUI_TextureManager;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">class </span>Clipboard;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">extern</span> TGUI_API Clipboard TGUI_Clipboard;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="comment">// Converts a string containing e.g. newlines and tabs into a compact string.</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="comment">// The original string can be obtained by callig the decodeString on the resulting string.</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment"></span>    <span class="keywordtype">void</span> encodeString(<span class="keyword">const</span> std::string&amp; origString, std::string&amp; encodedString);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="comment">// Converts an encoded string back into the original string.</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment"></span>    <span class="keywordtype">void</span> decodeString(<span class="keyword">const</span> std::string&amp; encodedString, std::string&amp; decodedString);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keyword">extern</span> TGUI_API <span class="keywordtype">bool</span> TGUI_TabKeyUsageEnabled;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keyword">extern</span> TGUI_API std::string TGUI_ResourcePath;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="comment">// Get a sf::Color from a string. The string must look like: &quot;(r, g, b)&quot; or &quot;(r, g, b, a)&quot;.</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="comment">// When this function fails then it will return black.</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment"></span>    TGUI_API sf::Color extractColor(std::string <span class="keywordtype">string</span>);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="comment">// Turns a list of strings into a string. Use the decodeList function to get the list back.</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">void</span> encodeList(<span class="keyword">const</span> std::vector&lt;sf::String&gt;&amp; list, std::string&amp; encodedString);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="comment">// This function does exactly the opposite of extractColor.</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="comment">// The returned string will be &quot;(r,g,b)&quot; when a=255 or &quot;(r,g,b,a)&quot; when a&lt;255.</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment"></span>    TGUI_API std::string convertColorToString(<span class="keyword">const</span> sf::Color&amp; color);</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">// Turns a list of strings into a string. Use the decodeList function to get the list back.</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">void</span> decodeList(<span class="keyword">const</span> std::string&amp; encodedString, std::vector&lt;sf::String&gt;&amp; list);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">// Get a sf::Vector2f from a string. The string must look like: &quot;(x, y)&quot;.</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractVector2f(std::string <span class="keywordtype">string</span>, sf::Vector2f&amp; vector);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="comment">// Converts a string to lowercase.</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment"></span>    std::string toLower(std::string str);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="comment">// Get a sf::Vector2u from a string. The string must look like: &quot;(x, y)&quot;.</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractVector2u(std::string <span class="keywordtype">string</span>, sf::Vector2u&amp; vector);</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;}</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">#endif // TGUI_DEFINES_HPP</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="comment">// Get a tgui::Borders from a string. The string must look like: &quot;(left, top, right, bottom)&quot;.</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">bool</span> extractBorders(std::string <span class="keywordtype">string</span>, Borders&amp; borders);</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="comment">// Converts a string containing e.g. newlines and tabs into a compact string.</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="comment">// The original string can be obtained by callig the decodeString on the resulting string.</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"></span>    <span class="keywordtype">void</span> encodeString(<span class="keyword">const</span> std::string&amp; origString, std::string&amp; encodedString);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="comment">// Converts an encoded string back into the original string.</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment"></span>    <span class="keywordtype">void</span> decodeString(<span class="keyword">const</span> std::string&amp; encodedString, std::string&amp; decodedString);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="comment">// Turns a list of strings into a string. Use the decodeList function to get the list back.</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">void</span> encodeList(<span class="keyword">const</span> std::vector&lt;sf::String&gt;&amp; list, std::string&amp; encodedString);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="comment">// Turns a list of strings into a string. Use the decodeList function to get the list back.</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment"></span>    TGUI_API <span class="keywordtype">void</span> decodeList(<span class="keyword">const</span> std::string&amp; encodedString, std::vector&lt;sf::String&gt;&amp; list);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="comment">// Converts a string to lowercase.</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment"></span>    std::string toLower(std::string str);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;}</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">#endif // TGUI_DEFINES_HPP</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="namespacetgui_html_a6f721be5dfcacf4e5b73b8d3aef75b14"><div class="ttname"><a href="namespacetgui.html#a6f721be5dfcacf4e5b73b8d3aef75b14">tgui::WidgetTypes</a></div><div class="ttdeci">WidgetTypes</div><div class="ttdoc">A list of all widget types. </div><div class="ttdef"><b>Definition:</b> Defines.hpp:79</div></div>
-<div class="ttc" id="namespacetgui_html_ad05a151325e6532ff272998766c442db"><div class="ttname"><a href="namespacetgui.html#ad05a151325e6532ff272998766c442db">tgui::TGUI_TextureManager</a></div><div class="ttdeci">TGUI_API TextureManager TGUI_TextureManager</div><div class="ttdoc">The texture manager will not just load the textures, but will also make sure that the textures are on...</div></div>
-<div class="ttc" id="namespacetgui_html_a7773e0b63384f139652866d364598be7"><div class="ttname"><a href="namespacetgui.html#a7773e0b63384f139652866d364598be7">tgui::tabKeyUsageEnabled</a></div><div class="ttdeci">TGUI_API bool tabKeyUsageEnabled</div><div class="ttdoc">When disabling the tab key usage, pressing tab will no longer focus another widget, but in the future this will allow to use tabs in TextBox. </div></div>
+<div class="ttc" id="namespacetgui_html_a9f51281faa5f0543418b35e4e5c849f4"><div class="ttname"><a href="namespacetgui.html#a9f51281faa5f0543418b35e4e5c849f4">tgui::enableTabKeyUsage</a></div><div class="ttdeci">TGUI_API void enableTabKeyUsage()</div><div class="ttdoc">While tab key usage is enabled (default), pressing tab will focus another widget. ...</div></div>
+<div class="ttc" id="namespacetgui_html_a961d5f6c9743d5c20cfc7872bd2504d2"><div class="ttname"><a href="namespacetgui.html#a961d5f6c9743d5c20cfc7872bd2504d2">tgui::disableTabKeyUsage</a></div><div class="ttdeci">TGUI_API void disableTabKeyUsage()</div><div class="ttdoc">When disabling the tab key usage, pressing tab will no longer focus another widget. </div></div>
+<div class="ttc" id="namespacetgui_html_a2efca1c075fdbd9f7fb9270a798ae664"><div class="ttname"><a href="namespacetgui.html#a2efca1c075fdbd9f7fb9270a798ae664">tgui::getResourcePath</a></div><div class="ttdeci">TGUI_API const std::string &amp; getResourcePath()</div><div class="ttdoc">Return the resource path. </div></div>
+<div class="ttc" id="namespacetgui_html_a2ff0bfc29ca323f7de787b4acce869b6"><div class="ttname"><a href="namespacetgui.html#a2ff0bfc29ca323f7de787b4acce869b6">tgui::setResourcePath</a></div><div class="ttdeci">TGUI_API void setResourcePath(const std::string &amp;path)</div><div class="ttdoc">Set a new resource path. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:06 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

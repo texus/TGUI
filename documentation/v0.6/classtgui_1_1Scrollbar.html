@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.0</span>
+   &#160;<span id="projectnumber">v0.6.1</span>
    </div>
   </td>
  </tr>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -100,7 +99,6 @@ Inheritance diagram for tgui::Scrollbar:</div>
  <div class="center">
   <img src="classtgui_1_1Scrollbar.png" usemap="#tgui::Scrollbar_map" alt=""/>
   <map id="tgui::Scrollbar_map" name="tgui::Scrollbar_map">
-<area href="classtgui_1_1Slider.html" alt="tgui::Slider" shape="rect" coords="148,112,286,136"/>
 <area href="classtgui_1_1Widget.html" title="The parent class for every widget. " alt="tgui::Widget" shape="rect" coords="148,56,286,80"/>
 <area href="classtgui_1_1Transformable.html" alt="tgui::Transformable" shape="rect" coords="148,0,286,24"/>
 <area href="classtgui_1_1CallbackManager.html" alt="tgui::CallbackManager" shape="rect" coords="296,0,434,24"/>
@@ -109,16 +107,11 @@ Inheritance diagram for tgui::Scrollbar:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a83a25c3c387f06719be915f1d6a04d25"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25">ScrollbarCallbacks</a> { <a class="el" href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25a209ad1d877bc0c59378cdf46df961ca0">AllScrollbarCallbacks</a> = SliderCallbacksCount - 1
+<tr class="memitem:a83a25c3c387f06719be915f1d6a04d25"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25">ScrollbarCallbacks</a> { <a class="el" href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25ace48f6f8d2cd422d7ada0ed89e57b291">ValueChanged</a> = WidgetCallbacksCount * 1, 
+<a class="el" href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25a209ad1d877bc0c59378cdf46df961ca0">AllScrollbarCallbacks</a> = WidgetCallbacksCount * 2 - 1
  }</td></tr>
 <tr class="memdesc:a83a25c3c387f06719be915f1d6a04d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines specific triggers to <a class="el" href="classtgui_1_1Scrollbar.html">Scrollbar</a>.  <a href="classtgui_1_1Scrollbar.html#a83a25c3c387f06719be915f1d6a04d25">More...</a><br/></td></tr>
 <tr class="separator:a83a25c3c387f06719be915f1d6a04d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_types_classtgui_1_1Slider"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classtgui_1_1Slider')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classtgui_1_1Slider.html">tgui::Slider</a></td></tr>
-<tr class="memitem:a84e644bd1c79428f53507234b427a68d inherit pub_types_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">SliderCallbacks</a> { <a class="el" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68daa86c4dcc0625ae735f3e4ae4437c9554">ValueChanged</a> = WidgetCallbacksCount * 1, 
-<a class="el" href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68dae2a0124712ba909fd55c855553825432">AllSliderCallbacks</a> = WidgetCallbacksCount * 2 - 1
- }</td></tr>
-<tr class="memdesc:a84e644bd1c79428f53507234b427a68d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines specific triggers to <a class="el" href="classtgui_1_1Slider.html">Slider</a>.  <a href="classtgui_1_1Slider.html#a84e644bd1c79428f53507234b427a68d">More...</a><br/></td></tr>
-<tr class="separator:a84e644bd1c79428f53507234b427a68d inherit pub_types_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a25dd8c95455abb649c5743e17af8f5d5 inherit pub_types_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a25dd8c95455abb649c5743e17af8f5d5">WidgetCallbacks</a> { <br/>
 &#160;&#160;<a class="el" href="classtgui_1_1Widget.html#a25dd8c95455abb649c5743e17af8f5d5a4530774e69a5208696242000e875141b">None</a> = 0, 
@@ -149,9 +142,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a793bcebb0958f189e228d6ee2ffed1dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a793bcebb0958f189e228d6ee2ffed1dc">load</a> (const std::string &amp;configFileFilename)</td></tr>
 <tr class="memdesc:a793bcebb0958f189e228d6ee2ffed1dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#a793bcebb0958f189e228d6ee2ffed1dc">More...</a><br/></td></tr>
 <tr class="separator:a793bcebb0958f189e228d6ee2ffed1dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfd23470a93137d8c88a64192aaa7370"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#acfd23470a93137d8c88a64192aaa7370">setMinimum</a> (unsigned int minimum)</td></tr>
-<tr class="memdesc:acfd23470a93137d8c88a64192aaa7370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing.  <a href="#acfd23470a93137d8c88a64192aaa7370">More...</a><br/></td></tr>
-<tr class="separator:acfd23470a93137d8c88a64192aaa7370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a532454b4b160ed08aea303e987a0a6ed"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a532454b4b160ed08aea303e987a0a6ed">getLoadedConfigFile</a> () const </td></tr>
+<tr class="memdesc:a532454b4b160ed08aea303e987a0a6ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the config file that was used to load the widget.  <a href="#a532454b4b160ed08aea303e987a0a6ed">More...</a><br/></td></tr>
+<tr class="separator:a532454b4b160ed08aea303e987a0a6ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71d7956059a12e9e7a087ae116ef2bba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a71d7956059a12e9e7a087ae116ef2bba">setSize</a> (float width, float height)</td></tr>
+<tr class="memdesc:a71d7956059a12e9e7a087ae116ef2bba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the scrollbar.  <a href="#a71d7956059a12e9e7a087ae116ef2bba">More...</a><br/></td></tr>
+<tr class="separator:a71d7956059a12e9e7a087ae116ef2bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a735eb72b319652104f2bcb6dccdd5d86"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a735eb72b319652104f2bcb6dccdd5d86">getSize</a> () const </td></tr>
+<tr class="memdesc:a735eb72b319652104f2bcb6dccdd5d86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the scrollbar.  <a href="#a735eb72b319652104f2bcb6dccdd5d86">More...</a><br/></td></tr>
+<tr class="separator:a735eb72b319652104f2bcb6dccdd5d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c91febe4d27d01163a5463b90c62c6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a4c91febe4d27d01163a5463b90c62c6d">setMaximum</a> (unsigned int maximum)</td></tr>
 <tr class="memdesc:a4c91febe4d27d01163a5463b90c62c6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a maximum value.  <a href="#a4c91febe4d27d01163a5463b90c62c6d">More...</a><br/></td></tr>
 <tr class="separator:a4c91febe4d27d01163a5463b90c62c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,9 +160,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae5b746dbf436a2676892c61a33441938"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#ae5b746dbf436a2676892c61a33441938">setLowValue</a> (unsigned int lowValue)</td></tr>
 <tr class="memdesc:ae5b746dbf436a2676892c61a33441938"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the 'low value'.  <a href="#ae5b746dbf436a2676892c61a33441938">More...</a><br/></td></tr>
 <tr class="separator:ae5b746dbf436a2676892c61a33441938"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c2fc17d1fee201c19a8278567112b1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a1c2fc17d1fee201c19a8278567112b1b">setVerticalScroll</a> (bool verticallScroll)</td></tr>
+<tr class="memdesc:a1c2fc17d1fee201c19a8278567112b1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether the scrollbar lies vertical or horizontal.  <a href="#a1c2fc17d1fee201c19a8278567112b1b">More...</a><br/></td></tr>
+<tr class="separator:a1c2fc17d1fee201c19a8278567112b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14fdfc5aaa6e25090ebff1ad933d5e24"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a14fdfc5aaa6e25090ebff1ad933d5e24">getMaximum</a> () const </td></tr>
+<tr class="memdesc:a14fdfc5aaa6e25090ebff1ad933d5e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum value.  <a href="#a14fdfc5aaa6e25090ebff1ad933d5e24">More...</a><br/></td></tr>
+<tr class="separator:a14fdfc5aaa6e25090ebff1ad933d5e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad187cbcfa14cf29ccd1178f649c9f526"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#ad187cbcfa14cf29ccd1178f649c9f526">getValue</a> () const </td></tr>
+<tr class="memdesc:ad187cbcfa14cf29ccd1178f649c9f526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value.  <a href="#ad187cbcfa14cf29ccd1178f649c9f526">More...</a><br/></td></tr>
+<tr class="separator:ad187cbcfa14cf29ccd1178f649c9f526"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac368d7b0c87bc9dc4983cac11789459b"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#ac368d7b0c87bc9dc4983cac11789459b">getLowValue</a> () const </td></tr>
 <tr class="memdesc:ac368d7b0c87bc9dc4983cac11789459b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the low value.  <a href="#ac368d7b0c87bc9dc4983cac11789459b">More...</a><br/></td></tr>
 <tr class="separator:ac368d7b0c87bc9dc4983cac11789459b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84febc071d5710ad3d0bdcaac9118dec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a84febc071d5710ad3d0bdcaac9118dec">getVerticalScroll</a> () const </td></tr>
+<tr class="memdesc:a84febc071d5710ad3d0bdcaac9118dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the scrollbar lies vertical or horizontal.  <a href="#a84febc071d5710ad3d0bdcaac9118dec">More...</a><br/></td></tr>
+<tr class="separator:a84febc071d5710ad3d0bdcaac9118dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c33a9bdd7648f2dbead9b44cf43cf0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a8c33a9bdd7648f2dbead9b44cf43cf0f">setArrowScrollAmount</a> (unsigned int scrollAmount)</td></tr>
 <tr class="memdesc:a8c33a9bdd7648f2dbead9b44cf43cf0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes how much the value changes when pressing one of the arrows of the scrollbar.  <a href="#a8c33a9bdd7648f2dbead9b44cf43cf0f">More...</a><br/></td></tr>
 <tr class="separator:a8c33a9bdd7648f2dbead9b44cf43cf0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,46 +190,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9963e165eae7c1088f0761ce99793fce"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a9963e165eae7c1088f0761ce99793fce">setTransparency</a> (unsigned char transparency)</td></tr>
 <tr class="memdesc:a9963e165eae7c1088f0761ce99793fce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the transparency of the widget.  <a href="#a9963e165eae7c1088f0761ce99793fce">More...</a><br/></td></tr>
 <tr class="separator:a9963e165eae7c1088f0761ce99793fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classtgui_1_1Slider"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Slider')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Slider.html">tgui::Slider</a></td></tr>
-<tr class="memitem:abd11b483ba86b2fc4c710244e3aded6f inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#abd11b483ba86b2fc4c710244e3aded6f">Slider</a> ()</td></tr>
-<tr class="memdesc:abd11b483ba86b2fc4c710244e3aded6f inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#abd11b483ba86b2fc4c710244e3aded6f">More...</a><br/></td></tr>
-<tr class="separator:abd11b483ba86b2fc4c710244e3aded6f inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7ecc77c6b7ae143bc152c60836564ea inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#ad7ecc77c6b7ae143bc152c60836564ea">Slider</a> (const <a class="el" href="classtgui_1_1Slider.html">Slider</a> &amp;copy)</td></tr>
-<tr class="memdesc:ad7ecc77c6b7ae143bc152c60836564ea inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#ad7ecc77c6b7ae143bc152c60836564ea">More...</a><br/></td></tr>
-<tr class="separator:ad7ecc77c6b7ae143bc152c60836564ea inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6dd3eb154faa4bd3ec923ecb44cefae4 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a6dd3eb154faa4bd3ec923ecb44cefae4">~Slider</a> ()</td></tr>
-<tr class="memdesc:a6dd3eb154faa4bd3ec923ecb44cefae4 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a6dd3eb154faa4bd3ec923ecb44cefae4">More...</a><br/></td></tr>
-<tr class="separator:a6dd3eb154faa4bd3ec923ecb44cefae4 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a449ccb3a8c201ba7137e8620519f20d1 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Slider.html">Slider</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a449ccb3a8c201ba7137e8620519f20d1">operator=</a> (const <a class="el" href="classtgui_1_1Slider.html">Slider</a> &amp;right)</td></tr>
-<tr class="memdesc:a449ccb3a8c201ba7137e8620519f20d1 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a449ccb3a8c201ba7137e8620519f20d1">More...</a><br/></td></tr>
-<tr class="separator:a449ccb3a8c201ba7137e8620519f20d1 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5a04078facfb77ed3b3f3e9197004bf inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#af5a04078facfb77ed3b3f3e9197004bf">getLoadedConfigFile</a> () const </td></tr>
-<tr class="memdesc:af5a04078facfb77ed3b3f3e9197004bf inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the config file that was used to load the widget.  <a href="#af5a04078facfb77ed3b3f3e9197004bf">More...</a><br/></td></tr>
-<tr class="separator:af5a04078facfb77ed3b3f3e9197004bf inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a739da15ea860933b9f66d095c5e12888 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a739da15ea860933b9f66d095c5e12888">setPosition</a> (float x, float y)</td></tr>
-<tr class="memdesc:a739da15ea860933b9f66d095c5e12888 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the position of the widget.  <a href="#a739da15ea860933b9f66d095c5e12888">More...</a><br/></td></tr>
-<tr class="separator:a739da15ea860933b9f66d095c5e12888 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4bc51c5176ad2de2e93a2e8703ed0931 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a4bc51c5176ad2de2e93a2e8703ed0931">setSize</a> (float width, float height)</td></tr>
-<tr class="memdesc:a4bc51c5176ad2de2e93a2e8703ed0931 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the slider.  <a href="#a4bc51c5176ad2de2e93a2e8703ed0931">More...</a><br/></td></tr>
-<tr class="separator:a4bc51c5176ad2de2e93a2e8703ed0931 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab078e5d3b1628bec3a239b1b2d294cbe inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#ab078e5d3b1628bec3a239b1b2d294cbe">getSize</a> () const </td></tr>
-<tr class="memdesc:ab078e5d3b1628bec3a239b1b2d294cbe inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the slider.  <a href="#ab078e5d3b1628bec3a239b1b2d294cbe">More...</a><br/></td></tr>
-<tr class="separator:ab078e5d3b1628bec3a239b1b2d294cbe inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13959b69396960b1213d309afd5ee997 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a13959b69396960b1213d309afd5ee997">setVerticalScroll</a> (bool verticallScroll)</td></tr>
-<tr class="memdesc:a13959b69396960b1213d309afd5ee997 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether the slider lies vertical or horizontal.  <a href="#a13959b69396960b1213d309afd5ee997">More...</a><br/></td></tr>
-<tr class="separator:a13959b69396960b1213d309afd5ee997 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70110335286301fc8207c80c0439c2f2 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a70110335286301fc8207c80c0439c2f2">getMinimum</a> () const </td></tr>
-<tr class="memdesc:a70110335286301fc8207c80c0439c2f2 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the minimum value.  <a href="#a70110335286301fc8207c80c0439c2f2">More...</a><br/></td></tr>
-<tr class="separator:a70110335286301fc8207c80c0439c2f2 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7295325a7fa07648c73479fedec7c7aa inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a7295325a7fa07648c73479fedec7c7aa">getMaximum</a> () const </td></tr>
-<tr class="memdesc:a7295325a7fa07648c73479fedec7c7aa inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum value.  <a href="#a7295325a7fa07648c73479fedec7c7aa">More...</a><br/></td></tr>
-<tr class="separator:a7295325a7fa07648c73479fedec7c7aa inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92cf4eec6b3a3219509e759d43d0733e inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a92cf4eec6b3a3219509e759d43d0733e">getValue</a> () const </td></tr>
-<tr class="memdesc:a92cf4eec6b3a3219509e759d43d0733e inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value.  <a href="#a92cf4eec6b3a3219509e759d43d0733e">More...</a><br/></td></tr>
-<tr class="separator:a92cf4eec6b3a3219509e759d43d0733e inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f2d62cf5eb1a27818ae4c9cb4bebdf7 inherit pub_methods_classtgui_1_1Slider"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Slider.html#a4f2d62cf5eb1a27818ae4c9cb4bebdf7">getVerticalScroll</a> () const </td></tr>
-<tr class="memdesc:a4f2d62cf5eb1a27818ae4c9cb4bebdf7 inherit pub_methods_classtgui_1_1Slider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the slider lies vertical or horizontal.  <a href="#a4f2d62cf5eb1a27818ae4c9cb4bebdf7">More...</a><br/></td></tr>
-<tr class="separator:a4f2d62cf5eb1a27818ae4c9cb4bebdf7 inherit pub_methods_classtgui_1_1Slider"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a60c5722d15d0733f6743bf57c86d1c6a inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a> ()</td></tr>
 <tr class="memdesc:a60c5722d15d0733f6743bf57c86d1c6a inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a60c5722d15d0733f6743bf57c86d1c6a">More...</a><br/></td></tr>
@@ -293,6 +264,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a98900d9b8ec4166e5127532bfbd5cc59">~Transformable</a> ()</td></tr>
 <tr class="memdesc:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a98900d9b8ec4166e5127532bfbd5cc59">More...</a><br/></td></tr>
 <tr class="separator:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">setPosition</a> (float x, float y)</td></tr>
+<tr class="memdesc:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the position of the widget.  <a href="#a4847f802d66cdf386d09595fecfa3131">More...</a><br/></td></tr>
+<tr class="separator:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ada03924f27c6779fe0514060b14a7401">setPosition</a> (const sf::Vector2f &amp;position)</td></tr>
 <tr class="memdesc:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the position of the widget  <a href="#ada03924f27c6779fe0514060b14a7401">More...</a><br/></td></tr>
 <tr class="separator:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -305,6 +279,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a210df9a024de335a91b20524c9e0395f">move</a> (const sf::Vector2f &amp;offset)</td></tr>
 <tr class="memdesc:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the widget by a given offset.  <a href="#a210df9a024de335a91b20524c9e0395f">More...</a><br/></td></tr>
 <tr class="separator:a210df9a024de335a91b20524c9e0395f inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a> () const </td></tr>
+<tr class="memdesc:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="#a4f11a7e9d86943a5cc8114b2431c1570">More...</a><br/></td></tr>
+<tr class="separator:a4f11a7e9d86943a5cc8114b2431c1570 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#aff4e891c0d8a1ea574f24ad625bc4dee">scale</a> (float factorX, float factorY)</td></tr>
 <tr class="memdesc:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale the widget.  <a href="#aff4e891c0d8a1ea574f24ad625bc4dee">More...</a><br/></td></tr>
 <tr class="separator:aff4e891c0d8a1ea574f24ad625bc4dee inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -349,7 +326,10 @@ Public Member Functions</h2></td></tr>
 
 <p>Defines specific triggers to <a class="el" href="classtgui_1_1Scrollbar.html">Scrollbar</a>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a83a25c3c387f06719be915f1d6a04d25a209ad1d877bc0c59378cdf46df961ca0"></a>AllScrollbarCallbacks</em>&#160;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a83a25c3c387f06719be915f1d6a04d25ace48f6f8d2cd422d7ada0ed89e57b291"></a>ValueChanged</em>&#160;</td><td class="fielddoc">
+<p>Value changed (thumb moved) </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a83a25c3c387f06719be915f1d6a04d25a209ad1d877bc0c59378cdf46df961ca0"></a>AllScrollbarCallbacks</em>&#160;</td><td class="fielddoc">
 <p>All triggers defined in <a class="el" href="classtgui_1_1Scrollbar.html">Scrollbar</a> and its base classes. </p>
 </td></tr>
 </table>
@@ -460,6 +440,24 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a532454b4b160ed08aea303e987a0a6ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; tgui::Scrollbar::getLoadedConfigFile </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the filename of the config file that was used to load the widget. </p>
+<dl class="section return"><dt>Returns</dt><dd>Filename of loaded config file. Empty string when no config file was loaded yet. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ac368d7b0c87bc9dc4983cac11789459b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -478,12 +476,93 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a793bcebb0958f189e228d6ee2ffed1dc"></a>
+<a class="anchor" id="a14fdfc5aaa6e25090ebff1ad933d5e24"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::Scrollbar::getMaximum </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the maximum value. </p>
+<dl class="section return"><dt>Returns</dt><dd>The current maximum value</dd></dl>
+<p>The default maximum value is 10. </p>
+
+</div>
+</div>
+<a class="anchor" id="a735eb72b319652104f2bcb6dccdd5d86"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual sf::Vector2f tgui::Scrollbar::getSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the size of the scrollbar. </p>
+<dl class="section return"><dt>Returns</dt><dd>Size of the scrollbar </dd></dl>
+
+<p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad187cbcfa14cf29ccd1178f649c9f526"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::Scrollbar::getValue </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the current value. </p>
+<dl class="section return"><dt>Returns</dt><dd>The current value</dd></dl>
+<p>The default value is 0. </p>
+
+</div>
+</div>
+<a class="anchor" id="a84febc071d5710ad3d0bdcaac9118dec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::Scrollbar::getVerticalScroll </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns whether the scrollbar lies vertical or horizontal. </p>
+<dl class="section return"><dt>Returns</dt><dd>Does the scrollbar lie vertically? </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a793bcebb0958f189e228d6ee2ffed1dc"></a>
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">bool tgui::Scrollbar::load </td>
@@ -493,11 +572,6 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Loads the widget. </p>
@@ -508,8 +582,6 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <p>The config file must contain a <a class="el" href="classtgui_1_1Scrollbar.html">Scrollbar</a> section with the needed information. </p>
-
-<p>Reimplemented from <a class="el" href="classtgui_1_1Slider.html#a7c762cacb4257baadd29b4f71657ce1f">tgui::Slider</a>.</p>
 
 </div>
 </div>
@@ -615,9 +687,6 @@ Public Member Functions</h2></td></tr>
 <a class="anchor" id="a4c91febe4d27d01163a5463b90c62c6d"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void tgui::Scrollbar::setMaximum </td>
@@ -627,11 +696,6 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Sets a maximum value. </p>
@@ -643,11 +707,9 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>When the value is bigger than (maximum - low value), the value is set to maximum - low value. The default maximum value is 10. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Slider.html#af1a606bfa6f3965ad2a0323c8170377d">tgui::Slider</a>.</p>
-
 </div>
 </div>
-<a class="anchor" id="acfd23470a93137d8c88a64192aaa7370"></a>
+<a class="anchor" id="a71d7956059a12e9e7a087ae116ef2bba"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -655,11 +717,21 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tgui::Scrollbar::setMinimum </td>
+          <td class="memname">void tgui::Scrollbar::setSize </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>minimum</em></td><td>)</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -669,16 +741,16 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Does nothing. </p>
+<p>Changes the size of the scrollbar. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">minimum</td><td>Unused parameter</td></tr>
+    <tr><td class="paramname">width</td><td>The new width of the scrollbar </td></tr>
+    <tr><td class="paramname">height</td><td>The new height of the scrollbar </td></tr>
   </table>
   </dd>
 </dl>
-<p>This function is overridden from <a class="el" href="classtgui_1_1Slider.html">Slider</a> so that the minimum can't be changed. The minimum will always stay 0. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Slider.html#a4b92404c47c119c94b12d99385d9258b">tgui::Slider</a>.</p>
+<p>Implements <a class="el" href="classtgui_1_1Transformable.html#a0bde1aa906ff8c526764787b3a7d8343">tgui::Transformable</a>.</p>
 
 </div>
 </div>
@@ -713,16 +785,13 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>Note that this will only change the transparency of the images. The parts of the widgets that use a color will not be changed. You must change them yourself by setting the alpha channel of the color. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Slider.html#a46473d0e23f332c129d373c9ec467467">tgui::Slider</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#a4d577707ade1f73003c502a36cbcc295">tgui::Widget</a>.</p>
 
 </div>
 </div>
 <a class="anchor" id="a31ca273e28fa3cc3d06e9fd279ad8b4c"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void tgui::Scrollbar::setValue </td>
@@ -732,11 +801,6 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Changes the current value. </p>
@@ -748,7 +812,29 @@ Public Member Functions</h2></td></tr>
 </dl>
 <p>The value has to be smaller than maximum - low value. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Slider.html#a622029a8ca11ced0dad198f135c05f91">tgui::Slider</a>.</p>
+</div>
+</div>
+<a class="anchor" id="a1c2fc17d1fee201c19a8278567112b1b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Scrollbar::setVerticalScroll </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>verticallScroll</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes whether the scrollbar lies vertical or horizontal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">verticallScroll</td><td>Does the scrollbar lie vertically? </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -758,7 +844,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 16 2014 17:09:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
