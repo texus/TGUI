@@ -1173,24 +1173,24 @@ namespace tgui
         // Draw the borders
         {
             // Draw left border
-            sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Size.y + m_TopBorder));
+            sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), static_cast<float>(m_Size.y + m_TopBorder)));
             border.setPosition(-static_cast<float>(m_LeftBorder), -static_cast<float>(m_TopBorder));
             border.setFillColor(m_BorderColor);
             target.draw(border, states);
 
             // Draw top border
-            border.setSize(sf::Vector2f(m_Size.x + m_RightBorder, static_cast<float>(m_TopBorder)));
+            border.setSize(sf::Vector2f(static_cast<float>(m_Size.x + m_RightBorder), static_cast<float>(m_TopBorder)));
             border.setPosition(0, -static_cast<float>(m_TopBorder));
             target.draw(border, states);
 
             // Draw right border
-            border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), m_Size.y + m_BottomBorder));
-            border.setPosition(m_Size.x, 0);
+            border.setSize(sf::Vector2f(static_cast<float>(m_RightBorder), static_cast<float>(m_Size.y + m_BottomBorder)));
+            border.setPosition(static_cast<float>(m_Size.x), 0);
             target.draw(border, states);
 
             // Draw bottom border
-            border.setSize(sf::Vector2f(m_Size.x + m_LeftBorder, static_cast<float>(m_BottomBorder)));
-            border.setPosition(-static_cast<float>(m_LeftBorder), m_Size.y);
+            border.setSize(sf::Vector2f(static_cast<float>(m_Size.x + m_LeftBorder), static_cast<float>(m_BottomBorder)));
+            border.setPosition(-static_cast<float>(m_LeftBorder), static_cast<float>(m_Size.y));
             target.draw(border, states);
         }
 

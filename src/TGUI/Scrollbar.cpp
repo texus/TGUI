@@ -1316,7 +1316,7 @@ namespace tgui
                 }
 
                 // Change the position of the second arrow
-                states.transform.translate(0, m_TextureArrowUpNormal.getSize().y);
+                states.transform.translate(0, static_cast<float>(m_TextureArrowUpNormal.getSize().y));
             }
         }
         else // The scrollbar lies horizontal
@@ -1416,7 +1416,7 @@ namespace tgui
                 }
 
                 // Set the translation of the second arrow
-                states.transform.translate(0, m_TextureArrowDownNormal.getSize().y);
+                states.transform.translate(0, static_cast<float>(m_TextureArrowDownNormal.getSize().y));
             }
         }
 

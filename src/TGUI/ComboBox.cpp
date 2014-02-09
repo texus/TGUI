@@ -279,7 +279,7 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Set the height of the combo box
-        m_ListBox->setItemHeight(TGUI_MAXIMUM(10, height));
+        m_ListBox->setItemHeight(TGUI_MAXIMUM(10, static_cast<unsigned int>(height)));
 
         // Set the size of the list box
         if (m_NrOfItemsToDisplay > 0)
@@ -446,7 +446,7 @@ namespace tgui
 
         // Make room to add another item, until there are enough items
         if ((m_NrOfItemsToDisplay == 0) || (m_NrOfItemsToDisplay > m_ListBox->getItems().size()))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * (m_ListBox->getItems().size() + 1)));
+            m_ListBox->setSize(m_ListBox->getSize().x, static_cast<float>(m_ListBox->getItemHeight() * (m_ListBox->getItems().size() + 1)));
 
         // Add the item
         return m_ListBox->addItem(item);
