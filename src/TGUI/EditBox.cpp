@@ -2008,6 +2008,10 @@ namespace tgui
 
     void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Don't draw anything when the edit box was not loaded correctly
+        if (m_Loaded == false)
+            return;
+
         if (m_SplitImage)
         {
             if (m_SeparateHoverImage)
