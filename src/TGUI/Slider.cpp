@@ -586,13 +586,13 @@ namespace tgui
         // Set the new minimum
         m_Minimum = minimum;
 
-        // When the value is below the minimum then adjust it
-        if (m_Value < m_Minimum)
-            setValue(m_Minimum);
-
         // The maximum can't be below the minimum
         if (m_Maximum < m_Minimum)
             m_Maximum = m_Minimum;
+
+        // When the value is below the minimum then adjust it
+        if (m_Value < m_Minimum)
+            setValue(m_Minimum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -605,13 +605,13 @@ namespace tgui
         else
             m_Maximum = 1;
 
-        // When the value is above the maximum then adjust it
-        if (m_Value > m_Maximum)
-            setValue(m_Maximum);
-
         // The minimum can't be below the maximum
         if (m_Minimum > m_Maximum)
             setMinimum(m_Maximum);
+
+        // When the value is above the maximum then adjust it
+        if (m_Value > m_Maximum)
+            setValue(m_Maximum);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

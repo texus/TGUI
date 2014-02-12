@@ -284,13 +284,13 @@ namespace tgui
             // Set the new minimum
             m_minimum = minimum;
 
-            // When the value is below the minimum then adjust it
-            if (m_value < m_minimum)
-                setValue(m_minimum);
-
             // The maximum can't be below the minimum
             if (m_maximum < m_minimum)
                 m_maximum = m_minimum;
+
+            // When the value is below the minimum then adjust it
+            if (m_value < m_minimum)
+                setValue(m_minimum);
 
             // The knob might have to point in a different direction even though it has the same value
             recalculateRotation();
@@ -309,13 +309,13 @@ namespace tgui
             else
                 m_maximum = 1;
 
-            // When the value is above the maximum then adjust it
-            if (m_value > m_maximum)
-                setValue(m_maximum);
-
             // The minimum can't be below the maximum
             if (m_minimum > m_maximum)
                 m_minimum = m_maximum;
+
+            // When the value is above the maximum then adjust it
+            if (m_value > m_maximum)
+                setValue(m_maximum);
 
             // The knob might have to point in a different direction even though it has the same value
             recalculateRotation();
