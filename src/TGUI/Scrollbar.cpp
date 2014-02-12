@@ -25,9 +25,6 @@
 
 #include <TGUI/Scrollbar.hpp>
 
-/// \todo Support SplitImage.
-/// \todo Arrow images should be allowed to point left and right. This will mess up most of the current calculations.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui

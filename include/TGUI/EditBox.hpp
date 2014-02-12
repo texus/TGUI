@@ -28,8 +28,6 @@
 
 #include <TGUI/ClickableWidget.hpp>
 
-/// \todo  Double clicking should only select one word in EditBox. To select the whole text, you should click 3 times.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
