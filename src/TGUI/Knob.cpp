@@ -234,8 +234,7 @@ namespace tgui
         m_foregroundTexture.sprite.setScale(m_size.x / m_backgroundTexture.getSize().x, m_size.y / m_backgroundTexture.getSize().y);
 
         // Reposition the foreground image
-        m_foregroundTexture.sprite.setPosition((getPosition().x + (m_backgroundTexture.getSize().x / 2.0f)) * (m_size.x / m_backgroundTexture.getSize().x),
-                                               (getPosition().y + (m_backgroundTexture.getSize().y / 2.0f)) * (m_size.y / m_backgroundTexture.getSize().y));
+        m_foregroundTexture.sprite.setPosition(getPosition().x + (m_size.x / 2.0f), getPosition().y + (m_size.y / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
