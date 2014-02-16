@@ -1109,7 +1109,7 @@ namespace tgui
         else if (event.type == sf::Event::TextEntered)
         {
             // Check if the character that we pressed is allowed
-            if ((event.text.unicode >= 30) && (event.text.unicode != 127))
+            if ((event.text.unicode >= 32) && (event.text.unicode != 127))
             {
                 // Tell the widget that the key was pressed
                 if (m_FocusedWidget)
