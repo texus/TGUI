@@ -3,8 +3,6 @@
 
 <link rel="stylesheet" type="text/css" href="{{site.baseurl}}style.css">
 
-<title>TGUI</title>
-
 <meta name="description" content="TGUI is an easy to use cross-platform c++ GUI for SFML" />
 <meta name="keywords" content="TGUI, SFML, GUI, UI" />
 
