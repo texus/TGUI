@@ -1,0 +1,11 @@
+<div class="NavigationBar">
+    <ul class="NavigationBar">
+        <li class="NavigationBar"><a href="{{site.baseurl}}index.html" class="NavigationBar">Home</a></li>
+        <li class="NavigationBar"><a href="{{site.baseurl}}download/index.html" class="NavigationBar">Download</a></li>
+        <li class="NavigationBar"><a href="{{site.baseurl}}example-code/index.html" class="NavigationBar">Example code</a></li>
+        <li class="NavigationBar"><a href="{{site.baseurl}}tutorials/index.html" class="NavigationBar">Tutorials</a></li>
+        <li class="NavigationBar"><a href="{{site.baseurl}}documentation/index.html" class="NavigationBar">Documentation</a></li>
+        <li class="NavigationBar"><a href="http://old.tgui.eu/blog/" class="NavigationBar">Blog</a></li>
+        <li class="NavigationBar"><a href="http://forum.tgui.eu/" class="NavigationBar">Forum</a></li>
+    </ul>
+</div>

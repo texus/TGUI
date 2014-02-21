@@ -1,0 +1,27 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<link rel="stylesheet" type="text/css" href="{{site.baseurl}}style.css">
+
+<title>TGUI</title>
+
+<meta name="description" content="TGUI is an easy to use cross-platform c++ GUI for SFML" />
+<meta name="keywords" content="TGUI, SFML, GUI, UI" />
+
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+  _paq.push(["setCookieDomain", "*.tgui.eu"]);
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://statistics.tgui.eu/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "1"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->

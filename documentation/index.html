@@ -1,49 +1,19 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-
-    <link rel="stylesheet" type="text/css" href="../style.css">
+    {% include head.ext %}
 
     <title>TGUI documentation</title>
-
-    <!-- Piwik -->
-    <script type="text/javascript">
-      var _paq = _paq || [];
-      _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-      _paq.push(["setCookieDomain", "*.tgui.eu"]);
-      _paq.push(["trackPageView"]);
-      _paq.push(["enableLinkTracking"]);
-
-      (function() {
-        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://statistics.tgui.eu/";
-        _paq.push(["setTrackerUrl", u+"piwik.php"]);
-        _paq.push(["setSiteId", "1"]);
-        var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-        g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
-      })();
-    </script>
-    <!-- End Piwik Code -->
 </head>
 
 <body>
 <div id="Background">
 
-    <h1 id="Title">TGUI</h1>
-    <p id="SubTitle">GUI library for SFML</p>
+    {% include header.ext %}
 
-    <div class="NavigationBar">
-        <ul class="NavigationBar">
-            <li class="NavigationBar"><a href="../index.html" class="NavigationBar">Home</a></li>
-            <li class="NavigationBar"><a href="../download/index.html" class="NavigationBar">Download</a></li>
-            <li class="NavigationBar"><a href="../example-code/index.html" class="NavigationBar">Example code</a></li>
-            <li class="NavigationBar"><a href="../tutorials/index.html" class="NavigationBar">Tutorials</a></li>
-            <li class="NavigationBar"><a href="index.html" class="NavigationBar">Documentation</a></li>
-            <li class="NavigationBar"><a href="http://old.tgui.eu/blog/" class="NavigationBar">Blog</a></li>
-            <li class="NavigationBar"><a href="http://forum.tgui.eu/" class="NavigationBar">Forum</a></li>
-        </ul>
-    </div>
+    {% include navigation.ext %}
 
     <h2>Documentation</h2>
 
