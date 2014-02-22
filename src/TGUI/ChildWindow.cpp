@@ -38,7 +38,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_Size             (200, 150),
+    m_Size             (0, 0),
     m_BackgroundTexture(nullptr),
     m_TitleBarHeight   (0),
     m_SplitImage       (false),
@@ -318,6 +318,11 @@ namespace tgui
             {
                 m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
 
+                float width = m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_M.getSize().x + m_TextureTitleBar_R.getSize().x;
+
+                m_Loaded = true;
+                setSize(width, width * 3.0f / 4.0f);
+
                 m_TextureTitleBar_M.data->texture.setRepeated(true);
             }
             else
@@ -332,6 +337,9 @@ namespace tgui
             if (m_TextureTitleBar_M.data != nullptr)
             {
                 m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
+
+                m_Loaded = true;
+                setSize(m_TextureTitleBar_M.getSize().x, m_TextureTitleBar_M.getSize().x * 3.0f / 4.0f);
             }
             else
             {
@@ -344,7 +352,7 @@ namespace tgui
         m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
 
         // When there is no error we will return true
-        return m_Loaded = true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
