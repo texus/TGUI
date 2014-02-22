@@ -1,3 +1,5 @@
+<p class="SmallText SmallBottomMargin"><a href="{{site.baseurl}}privacy-policy/">Privacy Policy</a></p>
+
 <!-- Quantcast Tag -->
 <script type="text/javascript">
 var _qevents = _qevents || [];
