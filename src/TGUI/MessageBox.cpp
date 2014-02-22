@@ -49,8 +49,6 @@ namespace tgui
     m_ButtonConfigFileFilename(messageBoxToCopy.m_ButtonConfigFileFilename),
     m_TextSize                (messageBoxToCopy.m_TextSize)
     {
-        removeAllWidgets();
-
         m_Label = copy(messageBoxToCopy.m_Label, "MessageBoxText");
 
         for (auto it = messageBoxToCopy.m_Buttons.begin(); it != messageBoxToCopy.m_Buttons.end(); ++it)
