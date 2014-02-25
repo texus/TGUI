@@ -149,3 +149,17 @@ div.Space
     margin-top: 20em;
     margin-bottom: 20em;
 }
+
+div.Follow
+{
+    margin-top: 1em;
+    float:right;
+}
+
+img.Follow
+{
+    float: left;
+    display: inline;
+    margin-left: 0.4em;
+    margin-right: 0em;
+}
