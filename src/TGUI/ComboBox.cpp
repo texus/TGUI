@@ -675,7 +675,7 @@ namespace tgui
         }
         else if (property == "itemstodisplay")
         {
-            setItemsToDisplay(atoi(value.c_str()));
+            setItemsToDisplay(std::stoi(value));
         }
         else if (property == "backgroundcolor")
         {
@@ -707,7 +707,7 @@ namespace tgui
         }
         else if (property == "maximumitems")
         {
-            setMaximumItems(atoi(value.c_str()));
+            setMaximumItems(std::stoi(value));
         }
         else if (property == "items")
         {
@@ -721,7 +721,7 @@ namespace tgui
         }
         else if (property == "selecteditem")
         {
-            setSelectedItem(atoi(value.c_str()));
+            setSelectedItem(std::stoi(value));
         }
         else if (property == "callback")
         {

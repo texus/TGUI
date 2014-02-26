@@ -96,7 +96,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the red value and delete this part of the string
-                    red = atoi(string.substr(0, commaPos).c_str());
+                    red = std::stoi(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -104,7 +104,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the green value and delete this part of the string
-                        green = atoi(string.substr(0, commaPos).c_str());
+                        green = std::stoi(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma (optional)
@@ -112,16 +112,16 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the blue value and delete this part of the string
-                            blue = atoi(string.substr(0, commaPos).c_str());
+                            blue = std::stoi(string.substr(0, commaPos));
                             string.erase(0, commaPos+1);
 
                             // Get the alpha value
-                            alpha = atoi(string.c_str());
+                            alpha = std::stoi(string);
                         }
                         else // No alpha value was passed
                         {
                             // Get the blue value
-                            blue = atoi(string.substr(0, commaPos).c_str());
+                            blue = std::stoi(string.substr(0, commaPos));
                         }
 
                         // All values have to be unsigned chars
@@ -175,11 +175,11 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the x value and delete this part of the string
-                    vector.x = static_cast<float>(atof(string.substr(0, commaPos).c_str()));
+                    vector.x = std::stof(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Get the y value
-                    vector.y = static_cast<float>(atof(string.c_str()));
+                    vector.y = std::stof(string);
 
                     return true;
                 }
@@ -209,11 +209,11 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the x value and delete this part of the string
-                    vector.x = static_cast<unsigned int>(atoi(string.substr(0, commaPos).c_str()));
+                    vector.x = std::stoul(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Get the y value
-                    vector.y = static_cast<unsigned int>(atoi(string.c_str()));
+                    vector.y = std::stoul(string);
 
                     return true;
                 }
@@ -243,7 +243,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the first value and delete this part of the string
-                    borders.left = atoi(string.substr(0, commaPos).c_str());
+                    borders.left = std::stoi(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -251,7 +251,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the second value and delete this part of the string
-                        borders.top = atoi(string.substr(0, commaPos).c_str());
+                        borders.top = std::stoi(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -259,11 +259,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the third value and delete this part of the string
-                            borders.right = atoi(string.substr(0, commaPos).c_str());
+                            borders.right = std::stoi(string.substr(0, commaPos));
                             string.erase(0, commaPos+1);
 
                             // Get the fourth value
-                            borders.bottom = atoi(string.c_str());
+                            borders.bottom = std::stoi(string);
 
                             return true;
                         }

@@ -171,7 +171,7 @@ namespace tgui
             }
             else if (property == "imagerotation")
             {
-                m_imageRotation = static_cast<float>(atof(value.c_str()));
+                m_imageRotation = std::stof(value);
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Knob in " + m_loadedConfigFile + ".");
@@ -588,23 +588,23 @@ namespace tgui
         }
         else if (property == "minimum")
         {
-            setMinimum(atoi(value.c_str()));
+            setMinimum(std::stoi(value));
         }
         else if (property == "maximum")
         {
-            setMaximum(atoi(value.c_str()));
+            setMaximum(std::stoi(value));
         }
         else if (property == "value")
         {
-            setValue(atoi(value.c_str()));
+            setValue(std::stoi(value));
         }
         else if (property == "startrotation")
         {
-            m_startRotation = static_cast<float>(atof(value.c_str()));
+            m_startRotation = std::stof(value);
         }
         else if (property == "endrotation")
         {
-            m_endRotation = static_cast<float>(atof(value.c_str()));
+            m_endRotation = std::stof(value);
         }
         else if (property == "clockwiseturning")
         {

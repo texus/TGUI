@@ -988,8 +988,8 @@ void FormBuilder::requestNewForm()
         auto createForm = [this, width, height, filename]()
                           {
                               createNewForm(filename->getText(),
-                                            static_cast<float>(std::atof(width->getText().toAnsiString().c_str())),
-                                            static_cast<float>(std::atof(height->getText().toAnsiString().c_str())));
+                                            std::stof(width->getText().toAnsiString()),
+                                            std::stof(height->getText().toAnsiString()));
                               removeLayer();
                           };
         buttonCreate->bindCallback(createForm, tgui::Button::LeftMouseClicked);
@@ -1211,11 +1211,11 @@ void FormBuilder::changeProperty(tgui::EditBox::Ptr value, tgui::EditBox::Ptr pr
                     }
                     else if (it->first == "Width")
                     {
-                        activeForm->window->setSize(static_cast<float>(std::atof(it->second.value.c_str())), activeForm->window->getSize().y);
+                        activeForm->window->setSize(std::stof(it->second.value), activeForm->window->getSize().y);
                     }
                     else if (it->first == "Height")
                     {
-                        activeForm->window->setSize(activeForm->window->getSize().x, static_cast<float>(std::atof(it->second.value.c_str())));
+                        activeForm->window->setSize(activeForm->window->getSize().x, std::stof(it->second.value));
                     }
 
                     break;

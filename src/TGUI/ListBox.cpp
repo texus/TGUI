@@ -1010,11 +1010,11 @@ namespace tgui
         }
         else if (property == "itemheight")
         {
-            setItemHeight(atoi(value.c_str()));
+            setItemHeight(std::stoi(value));
         }
         else if (property == "maximumitems")
         {
-            setMaximumItems(atoi(value.c_str()));
+            setMaximumItems(std::stoi(value));
         }
         else if (property == "borders")
         {
@@ -1036,7 +1036,7 @@ namespace tgui
         }
         else if (property == "selecteditem")
         {
-            setSelectedItem(atoi(value.c_str()));
+            setSelectedItem(std::stoi(value));
         }
         else if (property == "callback")
         {

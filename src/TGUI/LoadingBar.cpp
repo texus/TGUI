@@ -238,7 +238,7 @@ namespace tgui
             }
             else if (property == "textsize")
             {
-                setTextSize(atoi(value.c_str()));
+                setTextSize(std::stoi(value));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + m_LoadedConfigFile + ".");
@@ -549,15 +549,15 @@ namespace tgui
         }
         else if (property == "minimum")
         {
-            setMinimum(atoi(value.c_str()));
+            setMinimum(std::stoi(value));
         }
         else if (property == "maximum")
         {
-            setMaximum(atoi(value.c_str()));
+            setMaximum(std::stoi(value));
         }
         else if (property == "value")
         {
-            setValue(atoi(value.c_str()));
+            setValue(std::stoi(value));
         }
         else if (property == "text")
         {
@@ -569,7 +569,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(atoi(value.c_str()));
+            setTextSize(std::stoi(value));
         }
         else if (property == "callback")
         {

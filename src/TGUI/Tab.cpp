@@ -192,7 +192,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(static_cast<unsigned int>(atoi(value.c_str())));
+                setDistanceToSide(std::stoul(value));
             }
             else if (property == "normalimage")
             {
@@ -706,19 +706,19 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(atoi(value.c_str()));
+            setTextSize(std::stoi(value));
         }
         else if (property == "tabheight")
         {
-            setTabHeight(atoi(value.c_str()));
+            setTabHeight(std::stoi(value));
         }
         else if (property == "maximumtabwidth")
         {
-            setMaximumTabWidth(atoi(value.c_str()));
+            setMaximumTabWidth(std::stoi(value));
         }
         else if (property == "distancetoside")
         {
-            setDistanceToSide(atoi(value.c_str()));
+            setDistanceToSide(std::stoi(value));
         }
         else if (property == "tabs")
         {
@@ -732,7 +732,7 @@ namespace tgui
         }
         else if (property == "selectedtab")
         {
-            select(atoi(value.c_str()));
+            select(std::stoi(value));
         }
         else if (property == "callback")
         {

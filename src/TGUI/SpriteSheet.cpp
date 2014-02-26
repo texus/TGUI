@@ -204,11 +204,11 @@ namespace tgui
 
         if (property == "rows")
         {
-            setRows(atoi(value.c_str()));
+            setRows(std::stoi(value));
         }
         else if (property == "columns")
         {
-            setColumns(atoi(value.c_str()));
+            setColumns(std::stoi(value));
         }
         else // The property didn't match
             return Picture::setProperty(property, value);

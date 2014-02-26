@@ -254,7 +254,7 @@ namespace tgui
             }
             else if (property == "selectionpointwidth")
             {
-                m_SelectionPoint.setSize(sf::Vector2f(static_cast<float>(atof(value.c_str())), m_SelectionPoint.getSize().y));
+                m_SelectionPoint.setSize(sf::Vector2f(std::stof(value), m_SelectionPoint.getSize().y));
             }
             else if (property == "borders")
             {
@@ -1567,7 +1567,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(atoi(value.c_str()));
+            setTextSize(std::stoi(value));
         }
         else if (property == "passwordcharacter")
         {
@@ -1583,7 +1583,7 @@ namespace tgui
         }
         else if (property == "maximumcharacters")
         {
-            setMaximumCharacters(atoi(value.c_str()));
+            setMaximumCharacters(std::stoi(value));
         }
         else if (property == "borders")
         {
@@ -1620,7 +1620,7 @@ namespace tgui
         }
         else if (property == "selectionpointwidth")
         {
-            setSelectionPointWidth(atoi(value.c_str()));
+            setSelectionPointWidth(std::stoi(value));
         }
         else if (property == "numbersonly")
         {

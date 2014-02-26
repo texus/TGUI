@@ -1632,11 +1632,11 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(atoi(value.c_str()));
+            setTextSize(std::stoi(value));
         }
         else if (property == "maximumcharacters")
         {
-            setMaximumCharacters(atoi(value.c_str()));
+            setMaximumCharacters(std::stoi(value));
         }
         else if (property == "borders")
         {
@@ -1672,7 +1672,7 @@ namespace tgui
         }
         else if (property == "selectionpointwidth")
         {
-            setSelectionPointWidth(atoi(value.c_str()));
+            setSelectionPointWidth(std::stoi(value));
         }
         else if (property == "callback")
         {

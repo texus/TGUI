@@ -395,19 +395,19 @@ namespace tgui
 
         if (property == "left")
         {
-            setPosition(static_cast<float>(atof(value.c_str())), getPosition().y);
+            setPosition(std::stof(value), getPosition().y);
         }
         else if (property == "top")
         {
-            setPosition(getPosition().x, static_cast<float>(atof(value.c_str())));
+            setPosition(getPosition().x, std::stof(value));
         }
         else if (property == "width")
         {
-            setSize(static_cast<float>(atof(value.c_str())), getSize().y);
+            setSize(std::stof(value), getSize().y);
         }
         else if (property == "height")
         {
-            setSize(getSize().x, static_cast<float>(atof(value.c_str())));
+            setSize(getSize().x, std::stof(value));
         }
         else if (property == "visible")
         {
@@ -429,11 +429,11 @@ namespace tgui
         }
         else if (property == "transparency")
         {
-            setTransparency(static_cast<char>(atoi(value.c_str())));
+            setTransparency(static_cast<char>(std::stoi(value)));
         }
         else if (property == "callbackid")
         {
-            m_Callback.id = static_cast<unsigned int>(std::atoi(value.c_str()));
+            m_Callback.id = std::stoul(value);
         }
         else if (property == "callback")
         {

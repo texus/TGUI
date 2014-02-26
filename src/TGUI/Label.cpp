@@ -272,7 +272,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(atoi(value.c_str()));
+            setTextSize(stoi(value));
         }
         else if (property == "backgroundcolor")
         {
