@@ -349,9 +349,9 @@ namespace tgui
         if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "buttons")
         {
             std::vector<sf::String> buttons;

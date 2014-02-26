@@ -197,8 +197,8 @@ void FormBuilder::initPropertiesWindow()
 
     widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Name", WidgetData::Property("string", "Window")));
     widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Filename", WidgetData::Property("string", activeForm->window->getTitle())));
-    widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Width", WidgetData::Property("uint", tgui::to_string(int(activeForm->window->getSize().x)))));
-    widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Height", WidgetData::Property("uint", tgui::to_string(int(activeForm->window->getSize().y)))));
+    widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Width", WidgetData::Property("uint", std::to_string(int(activeForm->window->getSize().x)))));
+    widgetsData[""].properties.emplace(widgetsData[""].properties.end(), std::make_pair("Height", WidgetData::Property("uint", std::to_string(int(activeForm->window->getSize().y)))));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
                     {
                         if (propertyIt->first == "Name")
                         {
-                            if (propertyIt->second.value == widgetName + " (" + tgui::to_string(number) + ")")
+                            if (propertyIt->second.value == widgetName + " (" + std::to_string(number) + ")")
                             {
                                 number++;
                                 found = true;
@@ -453,7 +453,7 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
             {
                 if (it->first == "Name")
                 {
-                    it->second.value = widgetName + " (" + tgui::to_string(number) + ")";
+                    it->second.value = widgetName + " (" + std::to_string(number) + ")";
 
                     tgui::Panel::Ptr(activeForm->window->get("Panel"))->setWidgetName(activeForm->activeWidget->widget, it->second.value);
 
@@ -1057,7 +1057,7 @@ void FormBuilder::addWidget(const std::string& widgetName)
                 {
                     if (propertyIt->first == "Name")
                     {
-                        if (propertyIt->second.value == widgetName + tgui::to_string(number))
+                        if (propertyIt->second.value == widgetName + std::to_string(number))
                         {
                             number++;
                             found = true;
@@ -1075,7 +1075,7 @@ void FormBuilder::addWidget(const std::string& widgetName)
         {
             if (it->first == "Name")
             {
-                it->second.value = widgetName + tgui::to_string(number);
+                it->second.value = widgetName + std::to_string(number);
 
                 tgui::Panel::Ptr(activeForm->window->get("Panel"))->setWidgetName(activeForm->activeWidget->widget, it->second.value);
 

@@ -644,15 +644,15 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = to_string(getMinimum());
+            value = std::to_string(getMinimum());
         else if (property == "maximum")
-            value = to_string(getMaximum());
+            value = std::to_string(getMaximum());
         else if (property == "value")
-            value = to_string(getValue());
+            value = std::to_string(getValue());
         else if (property == "startrotation")
-            value = to_string(m_startRotation);
+            value = std::to_string(m_startRotation);
         else if (property == "endrotation")
-            value = to_string(m_endRotation);
+            value = std::to_string(m_endRotation);
         else if (property == "clockwiseturning")
             value = m_clockwiseTurning ? "true" : "false";
         else if (property == "callback")

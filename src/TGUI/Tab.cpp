@@ -763,19 +763,19 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "tabheight")
-            value = to_string(getTabHeight());
+            value = std::to_string(getTabHeight());
         else if (property == "maximumtabwidth")
-            value = to_string(getMaximumTabWidth());
+            value = std::to_string(getMaximumTabWidth());
         else if (property == "distancetoside")
-            value = to_string(getDistanceToSide());
+            value = std::to_string(getDistanceToSide());
         else if (property == "tabs")
             encodeList(m_TabNames, value);
         else if (property == "selectedtab")
-            value = to_string(getSelectedIndex());
+            value = std::to_string(getSelectedIndex());
         else if (property == "callback")
         {
             std::string tempValue;

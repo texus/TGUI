@@ -305,11 +305,11 @@ namespace tgui
         else if (property == "text")
             encodeString(getText(), value);
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "backgroundcolor")
-            value = "(" + to_string(int(getBackgroundColor().r)) + "," + to_string(int(getBackgroundColor().g)) + "," + to_string(int(getBackgroundColor().b)) + "," + to_string(int(getBackgroundColor().a)) + ")";
+            value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "autosize")
             value = m_AutoSize ? "true" : "false";
         else // The property didn't match

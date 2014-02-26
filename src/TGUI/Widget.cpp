@@ -466,21 +466,21 @@ namespace tgui
         property = toLower(property);
 
         if (property == "left")
-            value = to_string(getPosition().x);
+            value = std::to_string(getPosition().x);
         else if (property == "top")
-            value = to_string(getPosition().y);
+            value = std::to_string(getPosition().y);
         else if (property == "width")
-            value = to_string(getSize().x);
+            value = std::to_string(getSize().x);
         else if (property == "height")
-            value = to_string(getSize().y);
+            value = std::to_string(getSize().y);
         else if (property == "visible")
             value = m_Visible ? "true" : "false";
         else if (property == "enabled")
             value = m_Enabled ? "true" : "false";
         else if (property == "transparency")
-            value = to_string(int(getTransparency()));
+            value = std::to_string(int(getTransparency()));
         else if (property == "callbackid")
-            value = to_string(m_Callback.id);
+            value = std::to_string(m_Callback.id);
         else if (property == "callback")
         {
             std::vector<sf::String> callbacks;

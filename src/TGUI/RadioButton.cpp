@@ -610,9 +610,9 @@ namespace tgui
         property = toLower(property);
 
         if (property == "width")
-            value = to_string(m_TextureUnchecked.sprite.getGlobalBounds().width);
+            value = std::to_string(m_TextureUnchecked.sprite.getGlobalBounds().width);
         else if (property == "height")
-            value = to_string(m_TextureUnchecked.sprite.getGlobalBounds().height);
+            value = std::to_string(m_TextureUnchecked.sprite.getGlobalBounds().height);
         else if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "checked")
@@ -620,9 +620,9 @@ namespace tgui
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "allowtextclick")
             value = m_AllowTextClick ? "true" : "false";
         else if (property == "callback")

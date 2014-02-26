@@ -224,9 +224,9 @@ namespace tgui
         property = toLower(property);
 
         if (property == "rows")
-            value = to_string(getRows());
+            value = std::to_string(getRows());
         else if (property == "columns")
-            value = to_string(getColumns());
+            value = std::to_string(getColumns());
         else // The property didn't match
             return Picture::getProperty(property, value);
 

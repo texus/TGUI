@@ -602,17 +602,17 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = to_string(getMinimum());
+            value = std::to_string(getMinimum());
         else if (property == "maximum")
-            value = to_string(getMaximum());
+            value = std::to_string(getMaximum());
         else if (property == "value")
-            value = to_string(getValue());
+            value = std::to_string(getValue());
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "callback")
         {
             std::string tempValue;

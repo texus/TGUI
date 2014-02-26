@@ -1061,11 +1061,11 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "maximum")
-            value = to_string(getMaximum());
+            value = std::to_string(getMaximum());
         else if (property == "value")
-            value = to_string(getValue());
+            value = std::to_string(getValue());
         else if (property == "lowvalue")
-            value = to_string(getLowValue());
+            value = std::to_string(getLowValue());
         else if (property == "verticalscroll")
             value = m_VerticalScroll ? "true" : "false";
         else if (property == "callback")

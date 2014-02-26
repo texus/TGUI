@@ -144,15 +144,15 @@ namespace tgui
     {
         // Return the color as a string
         if (color.a < 255)
-            return "(" + tgui::to_string((unsigned int)color.r)
-                 + "," + tgui::to_string((unsigned int)color.g)
-                 + "," + tgui::to_string((unsigned int)color.b)
-                 + "," + tgui::to_string((unsigned int)color.a)
+            return "(" + std::to_string((unsigned int)color.r)
+                 + "," + std::to_string((unsigned int)color.g)
+                 + "," + std::to_string((unsigned int)color.b)
+                 + "," + std::to_string((unsigned int)color.a)
                  + ")";
         else
-            return "(" + tgui::to_string((unsigned int)color.r)
-                 + "," + tgui::to_string((unsigned int)color.g)
-                 + "," + tgui::to_string((unsigned int)color.b)
+            return "(" + std::to_string((unsigned int)color.r)
+                 + "," + std::to_string((unsigned int)color.g)
+                 + "," + std::to_string((unsigned int)color.b)
                  + ")";
     }
 

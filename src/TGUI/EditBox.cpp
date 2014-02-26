@@ -1664,7 +1664,7 @@ namespace tgui
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textsize")
-            value = to_string(getTextSize());
+            value = std::to_string(getTextSize());
         else if (property == "passwordcharacter")
         {
             if (getPasswordCharacter())
@@ -1673,24 +1673,24 @@ namespace tgui
                 value = "";
         }
         else if (property == "maximumcharacters")
-            value = to_string(getMaximumCharacters());
+            value = std::to_string(getMaximumCharacters());
         else if (property == "borders")
-            value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
+            value = "(" + std::to_string(getBorders().left) + "," + std::to_string(getBorders().top) + "," + std::to_string(getBorders().right) + "," + std::to_string(getBorders().bottom) + ")";
         else if (property == "textcolor")
-            value = "(" + to_string(int(getTextColor().r)) + "," + to_string(int(getTextColor().g)) + "," + to_string(int(getTextColor().b)) + "," + to_string(int(getTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
         else if (property == "selectedtextcolor")
-            value = "(" + to_string(int(getSelectedTextColor().r)) + "," + to_string(int(getSelectedTextColor().g))
-                    + "," + to_string(int(getSelectedTextColor().b)) + "," + to_string(int(getSelectedTextColor().a)) + ")";
+            value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
+                    + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
         else if (property == "selectedtextbackgroundcolor")
-            value = "(" + to_string(int(getSelectedTextBackgroundColor().r)) + "," + to_string(int(getSelectedTextBackgroundColor().g))
-                    + "," + to_string(int(getSelectedTextBackgroundColor().b)) + "," + to_string(int(getSelectedTextBackgroundColor().a)) + ")";
+            value = "(" + std::to_string(int(getSelectedTextBackgroundColor().r)) + "," + std::to_string(int(getSelectedTextBackgroundColor().g))
+                    + "," + std::to_string(int(getSelectedTextBackgroundColor().b)) + "," + std::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
         else if (property == "selectionpointcolor")
-            value = "(" + to_string(int(getSelectionPointColor().r)) + "," + to_string(int(getSelectionPointColor().g))
-                    + "," + to_string(int(getSelectionPointColor().b)) + "," + to_string(int(getSelectionPointColor().a)) + ")";
+            value = "(" + std::to_string(int(getSelectionPointColor().r)) + "," + std::to_string(int(getSelectionPointColor().g))
+                    + "," + std::to_string(int(getSelectionPointColor().b)) + "," + std::to_string(int(getSelectionPointColor().a)) + ")";
         else if (property == "limittextwidth")
             value = m_LimitTextWidth ? "true" : "false";
         else if (property == "selectionpointwidth")
-            value = to_string(getSelectionPointWidth());
+            value = std::to_string(getSelectionPointWidth());
         else if (property == "numbersonly")
             value = m_NumbersOnly ? "true" : "false";
         else if (property == "callback")

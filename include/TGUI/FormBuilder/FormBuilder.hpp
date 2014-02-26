@@ -39,7 +39,7 @@
     #include "CoreFoundation/CoreFoundation.h"
 #endif
 
-#define VERSION "v" + tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH)
+#define VERSION "v" + std::to_string(TGUI_VERSION_MAJOR) + "." + std::to_string(TGUI_VERSION_MINOR) + "." + std::to_string(TGUI_VERSION_PATCH)
 #define DEFAULT_FONT  "DejaVuSans.ttf"
 
 #ifndef WIDGETS_FOLDER
