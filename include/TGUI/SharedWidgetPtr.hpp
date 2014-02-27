@@ -109,14 +109,14 @@ namespace tgui
         template <typename U>
         bool friend operator ==(const SharedWidgetPtr<T>& left, const U* right)
         {
-            return left.m_WidgetPtr == right;
+            return left.m_widgetPtr == right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         bool friend operator ==(const SharedWidgetPtr<T>& left, const T* right)
         {
-            return left.m_WidgetPtr == right;
+            return left.m_widgetPtr == right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,14 +124,14 @@ namespace tgui
         template <typename U>
         bool friend operator ==(const U* left, const SharedWidgetPtr<T>& right)
         {
-            return left == right.m_WidgetPtr;
+            return left == right.m_widgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         bool friend operator ==(const T* left, const SharedWidgetPtr<T>& right)
         {
-            return left == right.m_WidgetPtr;
+            return left == right.m_widgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,14 +148,14 @@ namespace tgui
         template <typename U>
         bool friend operator !=(const SharedWidgetPtr<T>& left, const U* right)
         {
-            return left.m_WidgetPtr != right;
+            return left.m_widgetPtr != right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         bool friend operator !=(const SharedWidgetPtr<T>& left, const T* right)
         {
-            return left.m_WidgetPtr != right;
+            return left.m_widgetPtr != right;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,14 +163,14 @@ namespace tgui
         template <typename U>
         bool friend operator !=(const U* left, const SharedWidgetPtr<T>& right)
         {
-            return left != right.m_WidgetPtr;
+            return left != right.m_widgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         bool friend operator !=(const T* left, const SharedWidgetPtr<T>& right)
         {
-            return left != right.m_WidgetPtr;
+            return left != right.m_widgetPtr;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,8 +196,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       private:
 
-        T* m_WidgetPtr;
-        unsigned int* m_RefCount;
+        T* m_widgetPtr;
+        unsigned int* m_refCount;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -35,27 +35,27 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel() :
-    m_Size                         (100, 100),
-    m_BackgroundColor              (220, 220, 220),
-    m_Texture                      (nullptr)
+    m_size                         (100, 100),
+    m_backgroundColor              (220, 220, 220),
+    m_texture                      (nullptr)
     {
-        m_Callback.widgetType = Type_Panel;
-        m_Loaded = true;
+        m_callback.widgetType = Type_Panel;
+        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
     Container        (panelToCopy),
-    m_Size           (panelToCopy.m_Size),
-    m_BackgroundColor(panelToCopy.m_BackgroundColor),
-    m_Texture        (panelToCopy.m_Texture)
+    m_size           (panelToCopy.m_size),
+    m_backgroundColor(panelToCopy.m_backgroundColor),
+    m_texture        (panelToCopy.m_texture)
     {
-        if (m_Texture)
+        if (m_texture)
         {
-            m_Sprite.setTexture(*m_Texture);
-            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
-            m_Sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+            m_sprite.setTexture(*m_texture);
+            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
+            m_sprite.setColor(sf::Color(255, 255, 255, m_opacity));
         }
     }
 
@@ -75,10 +75,10 @@ namespace tgui
             Panel temp(right);
             this->Container::operator=(right);
 
-            std::swap(m_Size,                          temp.m_Size);
-            std::swap(m_BackgroundColor,               temp.m_BackgroundColor);
-            std::swap(m_Texture,                       temp.m_Texture);
-            std::swap(m_Sprite,                        temp.m_Sprite);
+            std::swap(m_size,                          temp.m_size);
+            std::swap(m_backgroundColor,               temp.m_backgroundColor);
+            std::swap(m_texture,                       temp.m_texture);
+            std::swap(m_sprite,                        temp.m_sprite);
         }
 
         return *this;
@@ -100,19 +100,19 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Set the size of the panel
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
         // If there is a background texture then resize it
-        if (m_Texture)
-            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+        if (m_texture)
+            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Panel::getSize() const
     {
-        return sf::Vector2f(m_Size.x, m_Size.y);
+        return sf::Vector2f(m_size.x, m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,13 +120,13 @@ namespace tgui
     void Panel::setBackgroundTexture(sf::Texture *const texture)
     {
         // Store the texture
-        m_Texture = texture;
+        m_texture = texture;
 
         // Set the texture for the sprite
-        if (m_Texture)
+        if (m_texture)
         {
-            m_Sprite.setTexture(*m_Texture, true);
-            m_Sprite.setScale(m_Size.x / m_Texture->getSize().x, m_Size.y / m_Texture->getSize().y);
+            m_sprite.setTexture(*m_texture, true);
+            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
         }
     }
 
@@ -134,21 +134,21 @@ namespace tgui
 
     sf::Texture* Panel::getBackgroundTexture()
     {
-        return m_Texture;
+        return m_texture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Panel::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        m_BackgroundColor = backgroundColor;
+        m_backgroundColor = backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Panel::getBackgroundColor() const
     {
-        return m_BackgroundColor;
+        return m_backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ namespace tgui
     {
         Container::setTransparency(transparency);
 
-        m_Sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,22 +165,22 @@ namespace tgui
     bool Panel::mouseOnWidget(float x, float y)
     {
         // Don't continue when the panel has not been loaded yet
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return false;
 
         // Check if the mouse is inside the panel
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
             return true;
 
-        if (m_MouseHover)
+        if (m_mouseHover)
         {
             mouseLeftWidget();
 
             // Tell the widgets inside the panel that the mouse is no longer on top of them
-            for (unsigned int i = 0; i < m_Widgets.size(); ++i)
-                m_Widgets[i]->mouseNotOnWidget();
+            for (unsigned int i = 0; i < m_widgets.size(); ++i)
+                m_widgets[i]->mouseNotOnWidget();
 
-            m_MouseHover = false;
+            m_mouseHover = false;
         }
 
         return false;
@@ -192,13 +192,13 @@ namespace tgui
     {
         if (mouseOnWidget(x, y))
         {
-            m_MouseDown = true;
+            m_mouseDown = true;
 
-            if (!m_CallbackFunctions[LeftMousePressed].empty())
+            if (!m_callbackFunctions[LeftMousePressed].empty())
             {
-                m_Callback.trigger = LeftMousePressed;
-                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                m_callback.trigger = LeftMousePressed;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
         }
@@ -212,27 +212,27 @@ namespace tgui
     {
         if (mouseOnWidget(x, y))
         {
-            if (!m_CallbackFunctions[LeftMouseReleased].empty())
+            if (!m_callbackFunctions[LeftMouseReleased].empty())
             {
-                m_Callback.trigger = LeftMouseReleased;
-                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                m_callback.trigger = LeftMouseReleased;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 
-            if (m_MouseDown)
+            if (m_mouseDown)
             {
-                if (!m_CallbackFunctions[LeftMouseClicked].empty())
+                if (!m_callbackFunctions[LeftMouseClicked].empty())
                 {
-                    m_Callback.trigger = LeftMouseClicked;
-                    m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                    m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    m_callback.trigger = LeftMouseClicked;
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                     addCallback();
                 }
             }
         }
 
-        m_MouseDown = false;
+        m_mouseDown = false;
 
         Container::leftMouseReleased(x, y);
     }
@@ -286,11 +286,11 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(LeftMousePressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMousePressed).size() == 1) && (m_CallbackFunctions.at(LeftMousePressed).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMousePressed) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMousePressed).size() == 1) && (m_callbackFunctions.at(LeftMousePressed).front() == nullptr))
                 callbacks.push_back("LeftMousePressed");
-            if ((m_CallbackFunctions.find(LeftMouseReleased) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseReleased).size() == 1) && (m_CallbackFunctions.at(LeftMouseReleased).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMouseReleased) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMouseReleased).size() == 1) && (m_callbackFunctions.at(LeftMouseReleased).front() == nullptr))
                 callbacks.push_back("LeftMouseReleased");
-            if ((m_CallbackFunctions.find(LeftMouseClicked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseClicked).size() == 1) && (m_CallbackFunctions.at(LeftMouseClicked).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMouseClicked) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMouseClicked).size() == 1) && (m_callbackFunctions.at(LeftMouseClicked).front() == nullptr))
                 callbacks.push_back("LeftMouseClicked");
 
             encodeList(callbacks, value);
@@ -321,7 +321,7 @@ namespace tgui
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the texture wasn't created
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Calculate the scale factor of the view
@@ -330,7 +330,7 @@ namespace tgui
 
         // Get the global position
         sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
@@ -355,16 +355,16 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw the background
-        if (m_BackgroundColor != sf::Color::Transparent)
+        if (m_backgroundColor != sf::Color::Transparent)
         {
-            sf::RectangleShape background(m_Size);
-            background.setFillColor(m_BackgroundColor);
+            sf::RectangleShape background(m_size);
+            background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
 
         // Draw the background texture if there is one
-        if (m_Texture)
-            target.draw(m_Sprite, states);
+        if (m_texture)
+            target.draw(m_sprite, states);
 
         // Draw the widgets
         drawWidgetContainer(&target, states);

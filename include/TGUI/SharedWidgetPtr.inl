@@ -39,7 +39,7 @@ namespace tgui
 
     template <class T>
     SharedWidgetPtr<T>::SharedWidgetPtr() :
-    m_WidgetPtr(nullptr)
+    m_widgetPtr(nullptr)
     {
         init();
     }
@@ -48,8 +48,8 @@ namespace tgui
 
     template <class T>
     SharedWidgetPtr<T>::SharedWidgetPtr(std::nullptr_t) :
-    m_WidgetPtr(nullptr),
-    m_RefCount (nullptr)
+    m_widgetPtr(nullptr),
+    m_refCount (nullptr)
     {
     }
 
@@ -57,17 +57,17 @@ namespace tgui
 
     template <class T>
     SharedWidgetPtr<T>::SharedWidgetPtr(Gui& gui, const sf::String& widgetName) :
-    m_WidgetPtr(nullptr)
+    m_widgetPtr(nullptr)
     {
         init();
-        gui.m_Container.add(*this, widgetName);
+        gui.m_container.add(*this, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <class T>
     SharedWidgetPtr<T>::SharedWidgetPtr(Container& container, const sf::String& widgetName) :
-    m_WidgetPtr(nullptr)
+    m_widgetPtr(nullptr)
     {
         init();
         container.add(*this, widgetName);
@@ -80,15 +80,15 @@ namespace tgui
     {
         if (copy.get() != nullptr)
         {
-            m_WidgetPtr = copy.get();
+            m_widgetPtr = copy.get();
 
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
+            m_refCount = copy.getRefCount();
+            *m_refCount += 1;
         }
         else
         {
-            m_WidgetPtr = nullptr;
-            m_RefCount = nullptr;
+            m_widgetPtr = nullptr;
+            m_refCount = nullptr;
         }
     }
 
@@ -100,15 +100,15 @@ namespace tgui
     {
         if (copy.get() != nullptr)
         {
-            m_WidgetPtr = static_cast<T*>(copy.get());
+            m_widgetPtr = static_cast<T*>(copy.get());
 
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
+            m_refCount = copy.getRefCount();
+            *m_refCount += 1;
         }
         else
         {
-            m_WidgetPtr = nullptr;
-            m_RefCount = nullptr;
+            m_widgetPtr = nullptr;
+            m_refCount = nullptr;
         }
     }
 
@@ -131,15 +131,15 @@ namespace tgui
 
             if (copy.get() != nullptr)
             {
-                m_WidgetPtr = copy.get();
+                m_widgetPtr = copy.get();
 
-                m_RefCount = copy.getRefCount();
-                *m_RefCount += 1;
+                m_refCount = copy.getRefCount();
+                *m_refCount += 1;
             }
             else
             {
-                m_WidgetPtr = nullptr;
-                m_RefCount = nullptr;
+                m_widgetPtr = nullptr;
+                m_refCount = nullptr;
             }
         }
 
@@ -156,15 +156,15 @@ namespace tgui
 
         if (copy.get() != nullptr)
         {
-            m_WidgetPtr = static_cast<T*>(copy.get());
+            m_widgetPtr = static_cast<T*>(copy.get());
 
-            m_RefCount = copy.getRefCount();
-            *m_RefCount += 1;
+            m_refCount = copy.getRefCount();
+            *m_refCount += 1;
         }
         else
         {
-            m_WidgetPtr = nullptr;
-            m_RefCount = nullptr;
+            m_widgetPtr = nullptr;
+            m_refCount = nullptr;
         }
 
         return *this;
@@ -177,11 +177,11 @@ namespace tgui
     {
         reset();
 
-        m_RefCount = new unsigned int;
-        *m_RefCount = 1;
+        m_refCount = new unsigned int;
+        *m_refCount = 1;
 
-        m_WidgetPtr = new T();
-        m_WidgetPtr->m_Callback.widget = get();
+        m_widgetPtr = new T();
+        m_widgetPtr->m_callback.widget = get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,18 +189,18 @@ namespace tgui
     template <class T>
     void SharedWidgetPtr<T>::reset()
     {
-        if (m_WidgetPtr != nullptr)
+        if (m_widgetPtr != nullptr)
         {
-            if (*m_RefCount == 1)
+            if (*m_refCount == 1)
             {
-                delete m_WidgetPtr;
-                delete m_RefCount;
+                delete m_widgetPtr;
+                delete m_refCount;
 
-                m_WidgetPtr = nullptr;
-                m_RefCount = nullptr;
+                m_widgetPtr = nullptr;
+                m_refCount = nullptr;
             }
             else
-                *m_RefCount -= 1;
+                *m_refCount -= 1;
         }
     }
 
@@ -209,7 +209,7 @@ namespace tgui
     template <class T>
     bool SharedWidgetPtr<T>::operator!() const
     {
-        return m_WidgetPtr == nullptr;
+        return m_widgetPtr == nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +218,7 @@ namespace tgui
     template <typename U>
     bool SharedWidgetPtr<T>::operator ==(const SharedWidgetPtr<U>& right) const
     {
-        return m_WidgetPtr == right.m_WidgetPtr;
+        return m_widgetPtr == right.m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ namespace tgui
     template <class T>
     bool SharedWidgetPtr<T>::operator ==(const SharedWidgetPtr<T>& right) const
     {
-        return m_WidgetPtr == right.m_WidgetPtr;
+        return m_widgetPtr == right.m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ namespace tgui
     template <typename U>
     bool SharedWidgetPtr<T>::operator !=(const SharedWidgetPtr<U>& right) const
     {
-        return m_WidgetPtr != right.m_WidgetPtr;
+        return m_widgetPtr != right.m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +243,7 @@ namespace tgui
     template <class T>
     bool SharedWidgetPtr<T>::operator !=(const SharedWidgetPtr<T>& right) const
     {
-        return m_WidgetPtr != right.m_WidgetPtr;
+        return m_widgetPtr != right.m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,8 +251,8 @@ namespace tgui
     template <class T>
     T& SharedWidgetPtr<T>::operator*() const
     {
-        assert(m_WidgetPtr != nullptr);
-        return *m_WidgetPtr;
+        assert(m_widgetPtr != nullptr);
+        return *m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,8 +260,8 @@ namespace tgui
     template <class T>
     T* SharedWidgetPtr<T>::operator->() const
     {
-        assert(m_WidgetPtr != nullptr);
-        return m_WidgetPtr;
+        assert(m_widgetPtr != nullptr);
+        return m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ namespace tgui
     template <class T>
     T* SharedWidgetPtr<T>::get() const
     {
-        return m_WidgetPtr;
+        return m_widgetPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ namespace tgui
     template <class T>
     unsigned int* SharedWidgetPtr<T>::getRefCount() const
     {
-        return m_RefCount;
+        return m_refCount;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,15 +285,15 @@ namespace tgui
     template <class T>
     SharedWidgetPtr<T> SharedWidgetPtr<T>::clone() const
     {
-        if (m_WidgetPtr != nullptr)
+        if (m_widgetPtr != nullptr)
         {
             SharedWidgetPtr<T> pointer = nullptr;
 
-            pointer.m_RefCount = new unsigned int;
-            *pointer.m_RefCount = 1;
+            pointer.m_refCount = new unsigned int;
+            *pointer.m_refCount = 1;
 
-            pointer.m_WidgetPtr = m_WidgetPtr->clone();
-            pointer.m_WidgetPtr->m_Callback.widget = pointer.get();
+            pointer.m_widgetPtr = m_widgetPtr->clone();
+            pointer.m_widgetPtr->m_callback.widget = pointer.get();
             return pointer;
         }
         else

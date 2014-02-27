@@ -156,7 +156,7 @@ namespace tgui
         template <typename T>
         void bindCallbackEx(void (T::*func)(const Callback&), T* const classPtr, unsigned int trigger)
         {
-            mapCallback(std::bind(func, classPtr, std::ref(m_Callback)), trigger);
+            mapCallback(std::bind(func, classPtr, std::ref(m_callback)), trigger);
         }
 
 
@@ -207,9 +207,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::map<unsigned int, std::list<std::function<void()>>> m_CallbackFunctions;
+        std::map<unsigned int, std::list<std::function<void()>>> m_callbackFunctions;
 
-        Callback m_Callback;
+        Callback m_callback;
 
 
         template <class T>

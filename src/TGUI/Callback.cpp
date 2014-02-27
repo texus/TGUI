@@ -40,7 +40,7 @@ namespace tgui
 
     void CallbackManager::bindCallbackEx(std::function<void(const Callback&)> func, unsigned int trigger)
     {
-        mapCallback(std::bind(func, std::ref(m_Callback)), trigger);
+        mapCallback(std::bind(func, std::ref(m_callback)), trigger);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ namespace tgui
         {
             if (trigger >= counter)
             {
-                m_CallbackFunctions.erase(counter);
+                m_callbackFunctions.erase(counter);
                 trigger -= counter;
             }
 
@@ -74,7 +74,7 @@ namespace tgui
 
     void CallbackManager::unbindAllCallback()
     {
-        m_CallbackFunctions.clear();
+        m_callbackFunctions.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ namespace tgui
         {
             if (trigger >= counter)
             {
-                m_CallbackFunctions[counter].push_back(function);
+                m_callbackFunctions[counter].push_back(function);
                 trigger -= counter;
             }
 

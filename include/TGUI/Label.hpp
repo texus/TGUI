@@ -301,13 +301,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        sf::RectangleShape m_Background;
+        sf::RectangleShape m_background;
 
-        sf::Text m_Text;
+        sf::Text m_text;
 
-        bool m_AutoSize;
+        bool m_autoSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

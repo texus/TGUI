@@ -315,21 +315,21 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        sf::Vector2f m_Minimum;
-        sf::Vector2f m_Maximum;
-        sf::Vector2f m_Value;
+        sf::Vector2f m_minimum;
+        sf::Vector2f m_maximum;
+        sf::Vector2f m_value;
 
-        bool m_ReturnThumbToCenter;
-        bool m_FixedThumbSize;
+        bool m_returnThumbToCenter;
+        bool m_fixedThumbSize;
 
-        Texture m_TextureThumbNormal;
-        Texture m_TextureThumbHover;
-        Texture m_TextureTrackNormal;
-        Texture m_TextureTrackHover;
+        Texture m_textureThumbNormal;
+        Texture m_textureThumbHover;
+        Texture m_textureTrackNormal;
+        Texture m_textureTrackHover;
 
-        bool m_SeparateHoverImage;
+        bool m_separateHoverImage;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

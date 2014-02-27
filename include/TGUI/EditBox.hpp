@@ -543,73 +543,73 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string   m_LoadedConfigFile;
+        std::string   m_loadedConfigFile;
 
         // Is the selection point visible or not?
-        bool          m_SelectionPointVisible;
+        bool          m_selectionPointVisible;
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the limitTextWidth(bool) function.
-        bool          m_LimitTextWidth;
+        bool          m_limitTextWidth;
 
         // The text inside the edit box
-        sf::String    m_DisplayedText;
-        sf::String    m_Text;
+        sf::String    m_displayedText;
+        sf::String    m_text;
 
         // This will store the size of the text ( 0 to auto size )
-        unsigned int  m_TextSize;
+        unsigned int  m_textSize;
 
         // The text alignment
-        Alignment::Alignments m_TextAlignment;
+        Alignment::Alignments m_textAlignment;
 
         // The selection
-        unsigned int  m_SelChars;
-        unsigned int  m_SelStart;
-        unsigned int  m_SelEnd;
+        unsigned int  m_selChars;
+        unsigned int  m_selStart;
+        unsigned int  m_selEnd;
 
         // The password character
-        char          m_PasswordChar;
+        char          m_passwordChar;
 
         // The maximum allowed characters.
         // Zero by default, meaning no limit.
-        unsigned int  m_MaxChars;
+        unsigned int  m_maxChars;
 
         // If true then the image is split in three parts
-        bool          m_SplitImage;
+        bool          m_splitImage;
 
         // When the text width is not limited, you can scroll the edit box and only a part will be visible.
-        unsigned int  m_TextCropPosition;
+        unsigned int  m_textCropPosition;
 
         // The rectangle behind the selected text
-        sf::RectangleShape  m_SelectedTextBackground;
+        sf::RectangleShape  m_selectedTextBackground;
 
         // The flickering selection point
-        sf::RectangleShape  m_SelectionPoint;
+        sf::RectangleShape  m_selectionPoint;
 
         // We need three SFML texts to draw our text, and one more for calculations.
-        sf::Text m_TextBeforeSelection;
-        sf::Text m_TextSelection;
-        sf::Text m_TextAfterSelection;
-        sf::Text m_TextFull;
+        sf::Text m_textBeforeSelection;
+        sf::Text m_textSelection;
+        sf::Text m_textAfterSelection;
+        sf::Text m_textFull;
 
-        Texture  m_TextureNormal_L;
-        Texture  m_TextureNormal_M;
-        Texture  m_TextureNormal_R;
+        Texture  m_textureNormal_L;
+        Texture  m_textureNormal_M;
+        Texture  m_textureNormal_R;
 
-        Texture  m_TextureHover_L;
-        Texture  m_TextureHover_M;
-        Texture  m_TextureHover_R;
+        Texture  m_textureHover_L;
+        Texture  m_textureHover_M;
+        Texture  m_textureHover_R;
 
-        Texture  m_TextureFocused_L;
-        Texture  m_TextureFocused_M;
-        Texture  m_TextureFocused_R;
+        Texture  m_textureFocused_L;
+        Texture  m_textureFocused_M;
+        Texture  m_textureFocused_R;
 
         // Is there a possibility that the user is going to double click?
-        bool m_PossibleDoubleClick;
+        bool m_possibleDoubleClick;
 
-        bool m_NumbersOnly;
-        bool m_SeparateHoverImage;
+        bool m_numbersOnly;
+        bool m_separateHoverImage;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

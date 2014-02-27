@@ -33,31 +33,31 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox() :
-    m_TextSize(16)
+    m_textSize(16)
     {
-        m_Callback.widgetType = Type_MessageBox;
+        m_callback.widgetType = Type_MessageBox;
 
-        add(m_Label, "MessageBoxText");
-        m_Label->setTextSize(m_TextSize);
+        add(m_label, "MessageBoxText");
+        m_label->setTextSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
     ChildWindow               (messageBoxToCopy),
-    m_LoadedConfigFile        (messageBoxToCopy.m_LoadedConfigFile),
-    m_ButtonConfigFileFilename(messageBoxToCopy.m_ButtonConfigFileFilename),
-    m_TextSize                (messageBoxToCopy.m_TextSize)
+    m_loadedConfigFile        (messageBoxToCopy.m_loadedConfigFile),
+    m_buttonConfigFileFilename(messageBoxToCopy.m_buttonConfigFileFilename),
+    m_textSize                (messageBoxToCopy.m_textSize)
     {
-        m_Label = copy(messageBoxToCopy.m_Label, "MessageBoxText");
+        m_label = copy(messageBoxToCopy.m_label, "MessageBoxText");
 
-        for (auto it = messageBoxToCopy.m_Buttons.begin(); it != messageBoxToCopy.m_Buttons.end(); ++it)
+        for (auto it = messageBoxToCopy.m_buttons.begin(); it != messageBoxToCopy.m_buttons.end(); ++it)
         {
             tgui::Button::Ptr button = copy(*it);
             button->unbindAllCallback();
             button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
 
-            m_Buttons.push_back(button);
+            m_buttons.push_back(button);
         }
     }
 
@@ -76,11 +76,11 @@ namespace tgui
             MessageBox temp(right);
             this->ChildWindow::operator=(right);
 
-            std::swap(m_LoadedConfigFile,         temp.m_LoadedConfigFile);
-            std::swap(m_ButtonConfigFileFilename, temp.m_ButtonConfigFileFilename);
-            std::swap(m_Buttons,                  temp.m_Buttons);
-            std::swap(m_Label,                    temp.m_Label);
-            std::swap(m_TextSize,                 temp.m_TextSize);
+            std::swap(m_loadedConfigFile,         temp.m_loadedConfigFile);
+            std::swap(m_buttonConfigFileFilename, temp.m_buttonConfigFileFilename);
+            std::swap(m_buttons,                  temp.m_buttons);
+            std::swap(m_label,                    temp.m_label);
+            std::swap(m_textSize,                 temp.m_textSize);
         }
 
         return *this;
@@ -97,16 +97,16 @@ namespace tgui
 
     bool MessageBox::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = getResourcePath() + configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        m_loaded = false;
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(m_LoadedConfigFile))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -115,7 +115,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("MessageBox", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -139,13 +139,13 @@ namespace tgui
 
             if (property == "textcolor")
             {
-                m_Label->setTextColor(configFile.readColor(value));
+                m_label->setTextColor(configFile.readColor(value));
             }
             else if (property == "childwindow")
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ChildWindow in section MessageBox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + ".");
                     return false;
                 }
 
@@ -160,40 +160,40 @@ namespace tgui
             {
                 if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Button in section MessageBox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + ".");
                     return false;
                 }
 
-                m_ButtonConfigFileFilename = configFileFolder + value.substr(1, value.length()-2);
+                m_buttonConfigFileFilename = configFileFolder + value.substr(1, value.length()-2);
                 buttonPropertyFound = true;
             }
             else
             {
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MessageBox in " + m_LoadedConfigFile + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MessageBox in " + m_loadedConfigFile + ".");
             }
         }
 
         if (!childWindowPropertyFound)
         {
-            TGUI_OUTPUT("TGUI error: Missing a ChildWindow property in section MessageBox in " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + ".");
             return false;
         }
         if (!buttonPropertyFound)
         {
-            TGUI_OUTPUT("TGUI error: Missing a Button property in section MessageBox in " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Missing a Button property in section MessageBox in " + m_loadedConfigFile + ".");
             return false;
         }
 
-        return m_Loaded = true;
+        return m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::setText(const sf::String& text)
     {
-        if (m_Loaded)
+        if (m_loaded)
         {
-            m_Label->setText(text);
+            m_label->setText(text);
 
             rearrange();
         }
@@ -207,8 +207,8 @@ namespace tgui
 
     sf::String MessageBox::getText() const
     {
-        if (m_Loaded)
-            return m_Label->getText();
+        if (m_loaded)
+            return m_label->getText();
         else
         {
             TGUI_OUTPUT("TGUI error: Failed to set the text. MessageBox was not loaded completely.");
@@ -220,42 +220,42 @@ namespace tgui
 
     void MessageBox::setTextFont(const sf::Font& font)
     {
-        m_Label->setTextFont(font);
+        m_label->setTextFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font* MessageBox::getTextFont() const
     {
-        return m_Label->getTextFont();
+        return m_label->getTextFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::setTextColor(const sf::Color& color)
     {
-        m_Label->setTextColor(color);
+        m_label->setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& MessageBox::getTextColor() const
     {
-        return m_Label->getTextColor();
+        return m_label->getTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::setTextSize(unsigned int size)
     {
-        m_TextSize = size;
+        m_textSize = size;
 
-        if (m_Loaded)
+        if (m_loaded)
         {
-            m_Label->setTextSize(size);
+            m_label->setTextSize(size);
 
-            for (unsigned int i = 0; i < m_Buttons.size(); ++i)
-                m_Buttons[i]->setTextSize(m_TextSize);
+            for (unsigned int i = 0; i < m_buttons.size(); ++i)
+                m_buttons[i]->setTextSize(m_textSize);
 
             rearrange();
         }
@@ -265,22 +265,22 @@ namespace tgui
 
     unsigned int MessageBox::getTextSize() const
     {
-        return m_TextSize;
+        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::addButton(const sf::String& caption)
     {
-        if (m_Loaded)
+        if (m_loaded)
         {
             Button::Ptr button(*this);
-            button->load(m_ButtonConfigFileFilename);
-            button->setTextSize(m_TextSize);
+            button->load(m_buttonConfigFileFilename);
+            button->setTextSize(m_textSize);
             button->setText(caption);
             button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
 
-            m_Buttons.push_back(button);
+            m_buttons.push_back(button);
 
             rearrange();
         }
@@ -311,8 +311,8 @@ namespace tgui
         else if (property == "buttons")
         {
             removeAllWidgets();
-            m_Buttons.clear();
-            add(m_Label);
+            m_buttons.clear();
+            add(m_label);
 
             std::vector<sf::String> buttons;
             decodeList(value, buttons);
@@ -355,7 +355,7 @@ namespace tgui
         else if (property == "buttons")
         {
             std::vector<sf::String> buttons;
-            for (auto it = m_Buttons.cbegin(); it != m_Buttons.cend(); ++it)
+            for (auto it = m_buttons.cbegin(); it != m_buttons.cend(); ++it)
                 buttons.push_back((*it)->getText());
 
             encodeList(buttons, value);
@@ -367,7 +367,7 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(ButtonClicked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ButtonClicked).size() == 1) && (m_CallbackFunctions.at(ButtonClicked).front() == nullptr))
+            if ((m_callbackFunctions.find(ButtonClicked) != m_callbackFunctions.end()) && (m_callbackFunctions.at(ButtonClicked).size() == 1) && (m_callbackFunctions.at(ButtonClicked).front() == nullptr))
                 callbacks.push_back("ButtonClicked");
 
             encodeList(callbacks, value);
@@ -400,15 +400,15 @@ namespace tgui
 
     void MessageBox::rearrange()
     {
-        if (!m_Loaded)
+        if (!m_loaded)
             return;
 
         // Calculate the button size
-        float buttonWidth = 5.0f * m_TextSize;
-        float buttonHeight = m_TextSize * 10.0f / 8.0f;
-        for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+        float buttonWidth = 5.0f * m_textSize;
+        float buttonHeight = m_textSize * 10.0f / 8.0f;
+        for (unsigned int i = 0; i < m_buttons.size(); ++i)
         {
-            float width = sf::Text(m_Buttons[i]->getText(), *m_Buttons[i]->getTextFont(), m_TextSize).getLocalBounds().width;
+            float width = sf::Text(m_buttons[i]->getText(), *m_buttons[i]->getTextFont(), m_textSize).getLocalBounds().width;
             if (buttonWidth < width * 10.0f / 9.0f)
                 buttonWidth = width * 10.0f / 9.0f;
         }
@@ -416,15 +416,15 @@ namespace tgui
         // Calculate the space needed for the buttons
         float distance = buttonHeight * 2.0f / 3.0f;
         float buttonsAreaWidth = distance;
-        for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+        for (unsigned int i = 0; i < m_buttons.size(); ++i)
         {
-            m_Buttons[i]->setSize(buttonWidth, buttonHeight);
-            buttonsAreaWidth += m_Buttons[i]->getSize().x + distance;
+            m_buttons[i]->setSize(buttonWidth, buttonHeight);
+            buttonsAreaWidth += m_buttons[i]->getSize().x + distance;
         }
 
         // Calculate the suggested size of the window
-        float width = 2*distance + m_Label->getSize().x;
-        float height = 3*distance + m_Label->getSize().y + buttonHeight;
+        float width = 2*distance + m_label->getSize().x;
+        float height = 3*distance + m_label->getSize().y + buttonHeight;
 
         // Make sure the buttons fit inside the message box
         if (buttonsAreaWidth > width)
@@ -434,16 +434,16 @@ namespace tgui
         setSize(width, height);
 
         // Set the text on the correct position
-        m_Label->setPosition(distance, distance);
+        m_label->setPosition(distance, distance);
 
         // Set the buttons on the correct position
         float leftPosition = 0;
-        float topPosition = 2*distance + m_Label->getSize().y;
-        for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+        float topPosition = 2*distance + m_label->getSize().y;
+        for (unsigned int i = 0; i < m_buttons.size(); ++i)
         {
-            leftPosition += distance + ((width - buttonsAreaWidth) / (m_Buttons.size()+1));
-            m_Buttons[i]->setPosition(leftPosition, topPosition);
-            leftPosition += m_Buttons[i]->getSize().x;
+            leftPosition += distance + ((width - buttonsAreaWidth) / (m_buttons.size()+1));
+            m_buttons[i]->setPosition(leftPosition, topPosition);
+            leftPosition += m_buttons[i]->getSize().x;
         }
     }
 
@@ -451,10 +451,10 @@ namespace tgui
 
     void MessageBox::ButtonClickedCallbackFunction(const Callback& callback)
     {
-        if (m_CallbackFunctions[ButtonClicked].empty() == false)
+        if (m_callbackFunctions[ButtonClicked].empty() == false)
         {
-            m_Callback.trigger = ButtonClicked;
-            m_Callback.text    = static_cast<Button*>(callback.widget)->getText();
+            m_callback.trigger = ButtonClicked;
+            m_callback.text    = static_cast<Button*>(callback.widget)->getText();
             addCallback();
         }
     }

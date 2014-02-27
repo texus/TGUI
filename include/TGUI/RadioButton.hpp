@@ -357,24 +357,24 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
         // This is the checked flag. When the radio button is checked then this variable will be true.
-        bool m_Checked;
+        bool m_checked;
 
         // When this boolean is true (default) then the radio button will also be checked by clicking on the text.
-        bool m_AllowTextClick;
+        bool m_allowTextClick;
 
         // This will contain the text that is written next to radio button.
-        sf::Text m_Text;
+        sf::Text m_text;
 
         // This will store the size of the text ( 0 to auto size )
-        unsigned int m_TextSize;
+        unsigned int m_textSize;
 
-        Texture m_TextureUnchecked;
-        Texture m_TextureChecked;
-        Texture m_TextureHover;
-        Texture m_TextureFocused;
+        Texture m_textureUnchecked;
+        Texture m_textureChecked;
+        Texture m_textureHover;
+        Texture m_textureFocused;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

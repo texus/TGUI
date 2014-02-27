@@ -34,9 +34,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Transformable::Transformable() :
-    m_Position(0, 0),
-    m_TransformNeedUpdate(true),
-    m_Transform()
+    m_position(0, 0),
+    m_transformNeedUpdate(true),
+    m_transform()
     {
     }
 
@@ -50,10 +50,10 @@ namespace tgui
 
     void Transformable::setPosition(float x, float y)
     {
-        m_Position.x = std::floor(x + 0.5f);
-        m_Position.y = std::floor(y + 0.5f);
+        m_position.x = std::floor(x + 0.5f);
+        m_position.y = std::floor(y + 0.5f);
 
-        m_TransformNeedUpdate = true;
+        m_transformNeedUpdate = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,21 +67,21 @@ namespace tgui
 
     const sf::Vector2f& Transformable::getPosition() const
     {
-        return m_Position;
+        return m_position;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Transformable::move(float offsetX, float offsetY)
     {
-        setPosition(m_Position.x + offsetX, m_Position.y + offsetY);
+        setPosition(m_position.x + offsetX, m_position.y + offsetY);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Transformable::move(const sf::Vector2f& offset)
     {
-        setPosition(m_Position.x + offset.x, m_Position.y + offset.y);
+        setPosition(m_position.x + offset.x, m_position.y + offset.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,16 +109,16 @@ namespace tgui
 
     const sf::Transform& Transformable::getTransform() const
     {
-        if (m_TransformNeedUpdate)
+        if (m_transformNeedUpdate)
         {
-            m_Transform = sf::Transform( 1, 0, m_Position.x,
-                                         0, 1, m_Position.y,
+            m_transform = sf::Transform( 1, 0, m_position.x,
+                                         0, 1, m_position.y,
                                          0.f, 0.f, 1.f);
 
-            m_TransformNeedUpdate = false;
+            m_transformNeedUpdate = false;
         }
 
-        return m_Transform;
+        return m_transform;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

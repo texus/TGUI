@@ -292,35 +292,35 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        Texture m_TextureNormal_L;
-        Texture m_TextureHover_L;
-        Texture m_TextureDown_L;
-        Texture m_TextureFocused_L;
+        Texture m_textureNormal_L;
+        Texture m_textureHover_L;
+        Texture m_textureDown_L;
+        Texture m_textureFocused_L;
 
-        Texture m_TextureNormal_M;
-        Texture m_TextureHover_M;
-        Texture m_TextureDown_M;
-        Texture m_TextureFocused_M;
+        Texture m_textureNormal_M;
+        Texture m_textureHover_M;
+        Texture m_textureDown_M;
+        Texture m_textureFocused_M;
 
-        Texture m_TextureNormal_R;
-        Texture m_TextureHover_R;
-        Texture m_TextureDown_R;
-        Texture m_TextureFocused_R;
+        Texture m_textureNormal_R;
+        Texture m_textureHover_R;
+        Texture m_textureDown_R;
+        Texture m_textureFocused_R;
 
         // If this is true then the L, M and R images will be used.
         // If it is false then the button is just one big image that will be stored in the M image.
-        bool m_SplitImage;
+        bool m_splitImage;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_SeparateHoverImage;
+        bool m_separateHoverImage;
 
         // The SFML text
-        sf::Text m_Text;
+        sf::Text m_text;
 
         // This will store the size of the text ( 0 to auto size )
-        unsigned int m_TextSize;
+        unsigned int m_textSize;
 
 
         friend class ChildWindow;

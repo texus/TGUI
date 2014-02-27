@@ -449,35 +449,35 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string   m_LoadedConfigFile;
+        std::string   m_loadedConfigFile;
 
-        bool          m_SplitImage;
-        bool          m_SeparateSelectedImage;
+        bool          m_splitImage;
+        bool          m_separateSelectedImage;
 
-        unsigned int  m_TabHeight;
-        unsigned int  m_TextSize;
+        unsigned int  m_tabHeight;
+        unsigned int  m_textSize;
 
-        sf::Color     m_TextColor;
-        sf::Color     m_SelectedTextColor;
+        sf::Color     m_textColor;
+        sf::Color     m_selectedTextColor;
 
-        unsigned int  m_MaximumTabWidth;
+        unsigned int  m_maximumTabWidth;
 
         // The distance between the side of the tab and the text that is drawn on top of the tab.
-        unsigned int m_DistanceToSide;
+        unsigned int m_distanceToSide;
 
-        int  m_SelectedTab;
+        int  m_selectedTab;
 
-        std::vector<sf::String> m_TabNames;
-        std::vector<float>      m_NameWidth;
+        std::vector<sf::String> m_tabNames;
+        std::vector<float>      m_nameWidth;
 
-        Texture  m_TextureNormal_L;
-        Texture  m_TextureNormal_M;
-        Texture  m_TextureNormal_R;
-        Texture  m_TextureSelected_L;
-        Texture  m_TextureSelected_M;
-        Texture  m_TextureSelected_R;
+        Texture  m_textureNormal_L;
+        Texture  m_textureNormal_M;
+        Texture  m_textureNormal_R;
+        Texture  m_textureSelected_L;
+        Texture  m_textureSelected_M;
+        Texture  m_textureSelected_R;
 
-        sf::Text      m_Text;
+        sf::Text m_text;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

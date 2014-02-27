@@ -273,15 +273,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::vector< std::vector<Widget::Ptr> >     m_GridWidgets;
-        std::vector< std::vector<Borders> >         m_ObjBorders;
-        std::vector< std::vector<Layout::Layouts> > m_ObjLayout;
+        std::vector< std::vector<Widget::Ptr> >     m_gridWidgets;
+        std::vector< std::vector<Borders> >         m_objBorders;
+        std::vector< std::vector<Layout::Layouts> > m_objLayout;
 
-        std::vector<unsigned int> m_RowHeight;
-        std::vector<unsigned int> m_ColumnWidth;
+        std::vector<unsigned int> m_rowHeight;
+        std::vector<unsigned int> m_columnWidth;
 
-        sf::Vector2f m_Size; // Real (optimal) size of the grid
-        sf::Vector2f m_IntendedSize; // Intended size that the grid should have if it is possible
+        sf::Vector2f m_size; // Real (optimal) size of the grid
+        sf::Vector2f m_intendedSize; // Intended size that the grid should have if it is possible
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

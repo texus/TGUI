@@ -32,20 +32,20 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpriteSheet::SpriteSheet() :
-    m_Rows       (1),
-    m_Columns    (1),
-    m_VisibleCell(1, 1)
+    m_rows       (1),
+    m_columns    (1),
+    m_visibleCell(1, 1)
     {
-        m_Callback.widgetType = Type_SpriteSheet;
+        m_callback.widgetType = Type_SpriteSheet;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpriteSheet::SpriteSheet(const SpriteSheet& copy) :
     Picture      (copy),
-    m_Rows       (copy.m_Rows),
-    m_Columns    (copy.m_Columns),
-    m_VisibleCell(copy.m_VisibleCell)
+    m_rows       (copy.m_rows),
+    m_columns    (copy.m_columns),
+    m_visibleCell(copy.m_visibleCell)
     {
     }
 
@@ -59,9 +59,9 @@ namespace tgui
             SpriteSheet temp(right);
             this->Picture::operator=(right);
 
-            std::swap(m_Rows,        temp.m_Rows);
-            std::swap(m_Columns,     temp.m_Columns);
-            std::swap(m_VisibleCell, temp.m_VisibleCell);
+            std::swap(m_rows,        temp.m_rows);
+            std::swap(m_columns,     temp.m_columns);
+            std::swap(m_visibleCell, temp.m_visibleCell);
         }
 
         return *this;
@@ -79,23 +79,23 @@ namespace tgui
     void SpriteSheet::setSize(float width, float height)
     {
         // Make sure that the picture was already loaded
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Store the new size
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
         // Make sure the sprite has the correct size
-        m_Texture.sprite.setScale((m_Size.x * m_Columns) / m_Texture.data->texture.getSize().x, (m_Size.y * m_Rows) / m_Texture.data->texture.getSize().y);
+        m_texture.sprite.setScale((m_size.x * m_columns) / m_texture.data->texture.getSize().x, (m_size.y * m_rows) / m_texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f SpriteSheet::getSize() const
     {
-        if (m_Loaded)
-            return m_Size;
+        if (m_loaded)
+            return m_size;
         else
             return sf::Vector2f(0, 0);
     }
@@ -105,7 +105,7 @@ namespace tgui
     void SpriteSheet::setCells(unsigned int rows, unsigned int columns)
     {
         // Make sure that the picture was already loaded
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // You can't have 0 rows
@@ -117,45 +117,45 @@ namespace tgui
             columns = 1;
 
         // Store the number of rows and columns
-        m_Rows = rows;
-        m_Columns = columns;
+        m_rows = rows;
+        m_columns = columns;
 
         // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.data->texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.data->texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.data->texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.data->texture.getSize().y / m_Rows)));
+        m_texture.sprite.setTextureRect(sf::IntRect((m_visibleCell.x-1) * m_texture.data->texture.getSize().x / m_columns,
+                                                    (m_visibleCell.y-1) * m_texture.data->texture.getSize().y / m_rows,
+                                                    static_cast<int>(m_texture.data->texture.getSize().x / m_columns),
+                                                    static_cast<int>(m_texture.data->texture.getSize().y / m_rows)));
 
         // Make sure the sprite has the correct size
-        m_Texture.sprite.setScale((m_Size.x * m_Columns) / m_Texture.data->texture.getSize().x, (m_Size.y * m_Rows) / m_Texture.data->texture.getSize().y);
+        m_texture.sprite.setScale((m_size.x * m_columns) / m_texture.data->texture.getSize().x, (m_size.y * m_rows) / m_texture.data->texture.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpriteSheet::setRows(unsigned int rows)
     {
-        setCells(rows, m_Columns);
+        setCells(rows, m_columns);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SpriteSheet::getRows() const
     {
-        return m_Rows;
+        return m_rows;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpriteSheet::setColumns(unsigned int columns)
     {
-        setCells(m_Rows, columns);
+        setCells(m_rows, columns);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SpriteSheet::getColumns() const
     {
-        return m_Columns;
+        return m_columns;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,37 +163,37 @@ namespace tgui
     void SpriteSheet::setVisibleCell(unsigned int row, unsigned int column)
     {
         // Make sure that the picture was already loaded
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // You can't make a row visible that doesn't exist
-        if (row > m_Rows)
-            row = m_Rows;
+        if (row > m_rows)
+            row = m_rows;
         else if (row == 0)
             row = 1;
 
         // You can't make a column visible that doesn't exist
-        if (column > m_Columns)
-            column = m_Columns;
+        if (column > m_columns)
+            column = m_columns;
         else if (column == 0)
             column = 1;
 
         // store the visible cell
-        m_VisibleCell.x = column;
-        m_VisibleCell.y = row;
+        m_visibleCell.x = column;
+        m_visibleCell.y = row;
 
         // Make the correct part of the image visible
-        m_Texture.sprite.setTextureRect(sf::IntRect((m_VisibleCell.x-1) * m_Texture.data->texture.getSize().x / m_Columns,
-                                                    (m_VisibleCell.y-1) * m_Texture.data->texture.getSize().y / m_Rows,
-                                                    static_cast<int>(m_Texture.data->texture.getSize().x / m_Columns),
-                                                    static_cast<int>(m_Texture.data->texture.getSize().y / m_Rows)));
+        m_texture.sprite.setTextureRect(sf::IntRect((m_visibleCell.x-1) * m_texture.data->texture.getSize().x / m_columns,
+                                                    (m_visibleCell.y-1) * m_texture.data->texture.getSize().y / m_rows,
+                                                    static_cast<int>(m_texture.data->texture.getSize().x / m_columns),
+                                                    static_cast<int>(m_texture.data->texture.getSize().y / m_rows)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2u SpriteSheet::getVisibleCell() const
     {
-        return m_VisibleCell;
+        return m_visibleCell;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

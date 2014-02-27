@@ -636,22 +636,22 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        bool m_SeparateHoverImage;
+        bool m_separateHoverImage;
 
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
-        unsigned int m_NrOfItemsToDisplay;
+        unsigned int m_nrOfItemsToDisplay;
 
         // Internally a list box is used to store all items
-        ListBox::Ptr m_ListBox;
+        ListBox::Ptr m_listBox;
 
         // The textures for the arrow image
-        Texture m_TextureArrowUpNormal;
-        Texture m_TextureArrowUpHover;
-        Texture m_TextureArrowDownNormal;
-        Texture m_TextureArrowDownHover;
+        Texture m_textureArrowUpNormal;
+        Texture m_textureArrowUpHover;
+        Texture m_textureArrowDownNormal;
+        Texture m_textureArrowDownHover;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

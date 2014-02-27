@@ -32,16 +32,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ClickableWidget::ClickableWidget() :
-    m_Size(0, 0)
+    m_size(0, 0)
     {
-        m_Callback.widgetType = Type_ClickableWidget;
+        m_callback.widgetType = Type_ClickableWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ClickableWidget::ClickableWidget(const ClickableWidget& copy) :
     Widget(copy),
-    m_Size(copy.m_Size)
+    m_size(copy.m_size)
     {
     }
 
@@ -61,7 +61,7 @@ namespace tgui
             ClickableWidget temp(right);
             this->Widget::operator=(right);
 
-            std::swap(m_Size, temp.m_Size);
+            std::swap(m_size, temp.m_size);
         }
 
         return *this;
@@ -78,15 +78,15 @@ namespace tgui
 
     void ClickableWidget::setSize(float width, float height)
     {
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f ClickableWidget::getSize() const
     {
-        return m_Size;
+        return m_size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,10 +98,10 @@ namespace tgui
             return true;
         else
         {
-            if (m_MouseHover)
+            if (m_mouseHover)
                 mouseLeftWidget();
 
-            m_MouseHover = false;
+            m_mouseHover = false;
             return false;
         }
     }
@@ -111,14 +111,14 @@ namespace tgui
     void ClickableWidget::leftMousePressed(float x, float y)
     {
         // Set the mouse down flag
-        m_MouseDown = true;
+        m_mouseDown = true;
 
         // Add the callback (if the user requested it)
-        if (m_CallbackFunctions[LeftMousePressed].empty() == false)
+        if (m_callbackFunctions[LeftMousePressed].empty() == false)
         {
-            m_Callback.trigger = LeftMousePressed;
-            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+            m_callback.trigger = LeftMousePressed;
+            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
     }
@@ -128,27 +128,27 @@ namespace tgui
     void ClickableWidget::leftMouseReleased(float x, float y)
     {
         // Add the callback (if the user requested it)
-        if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
+        if (m_callbackFunctions[LeftMouseReleased].empty() == false)
         {
-            m_Callback.trigger = LeftMouseReleased;
-            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+            m_callback.trigger = LeftMouseReleased;
+            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 
         // Check if we clicked on the label (not just mouse release)
-        if (m_MouseDown == true)
+        if (m_mouseDown == true)
         {
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[LeftMouseClicked].empty() == false)
+            if (m_callbackFunctions[LeftMouseClicked].empty() == false)
             {
-                m_Callback.trigger = LeftMouseClicked;
-                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                m_callback.trigger = LeftMouseClicked;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 
-            m_MouseDown = false;
+            m_mouseDown = false;
         }
     }
 
@@ -195,11 +195,11 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(LeftMousePressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMousePressed).size() == 1) && (m_CallbackFunctions.at(LeftMousePressed).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMousePressed) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMousePressed).size() == 1) && (m_callbackFunctions.at(LeftMousePressed).front() == nullptr))
                 callbacks.push_back("LeftMousePressed");
-            if ((m_CallbackFunctions.find(LeftMouseReleased) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseReleased).size() == 1) && (m_CallbackFunctions.at(LeftMouseReleased).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMouseReleased) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMouseReleased).size() == 1) && (m_callbackFunctions.at(LeftMouseReleased).front() == nullptr))
                 callbacks.push_back("LeftMouseReleased");
-            if ((m_CallbackFunctions.find(LeftMouseClicked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(LeftMouseClicked).size() == 1) && (m_CallbackFunctions.at(LeftMouseClicked).front() == nullptr))
+            if ((m_callbackFunctions.find(LeftMouseClicked) != m_callbackFunctions.end()) && (m_callbackFunctions.at(LeftMouseClicked).size() == 1) && (m_callbackFunctions.at(LeftMouseClicked).front() == nullptr))
                 callbacks.push_back("LeftMouseClicked");
 
             encodeList(callbacks, value);

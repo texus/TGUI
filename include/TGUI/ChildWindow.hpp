@@ -502,31 +502,31 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string    m_LoadedConfigFile;
+        std::string    m_loadedConfigFile;
 
-        sf::Vector2f   m_Size;
+        sf::Vector2f   m_size;
 
-        sf::Color      m_BackgroundColor;
-        sf::Texture*   m_BackgroundTexture;
-        sf::Sprite     m_BackgroundSprite;
+        sf::Color      m_backgroundColor;
+        sf::Texture*   m_backgroundTexture;
+        sf::Sprite     m_backgroundSprite;
 
-        Texture        m_IconTexture;
+        Texture        m_iconTexture;
 
-        sf::Text       m_TitleText;
-        unsigned int   m_TitleBarHeight;
-        bool           m_SplitImage;
-        sf::Vector2f   m_DraggingPosition;
-        unsigned int   m_DistanceToSide;
-        TitleAlignment m_TitleAlignment;
-        sf::Color      m_BorderColor;
+        sf::Text       m_titleText;
+        unsigned int   m_titleBarHeight;
+        bool           m_splitImage;
+        sf::Vector2f   m_draggingPosition;
+        unsigned int   m_distanceToSide;
+        TitleAlignment m_titleAlignment;
+        sf::Color      m_borderColor;
 
-        Texture   m_TextureTitleBar_L;
-        Texture   m_TextureTitleBar_M;
-        Texture   m_TextureTitleBar_R;
+        Texture   m_textureTitleBar_L;
+        Texture   m_textureTitleBar_M;
+        Texture   m_textureTitleBar_R;
 
-        Button*  m_CloseButton;
+        Button* m_closeButton;
 
-        bool m_KeepInParent;
+        bool m_keepInParent;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

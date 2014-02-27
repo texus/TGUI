@@ -243,14 +243,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
-        std::string m_ButtonConfigFileFilename;
+        std::string m_loadedConfigFile;
+        std::string m_buttonConfigFileFilename;
 
-        std::vector<Button::Ptr> m_Buttons;
+        std::vector<Button::Ptr> m_buttons;
 
-        Label::Ptr m_Label;
+        Label::Ptr m_label;
 
-        unsigned int m_TextSize;
+        unsigned int m_textSize;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

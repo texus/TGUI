@@ -586,62 +586,62 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
         // The size of the text box
-        sf::Vector2u m_Size;
+        sf::Vector2u m_size;
 
         // Some information about the text
-        sf::String   m_Text;
-        sf::String   m_DisplayedText;
-        unsigned int m_TextSize;
-        unsigned int m_LineHeight;
-        unsigned int m_Lines;
+        sf::String   m_text;
+        sf::String   m_displayedText;
+        unsigned int m_textSize;
+        unsigned int m_lineHeight;
+        unsigned int m_lines;
 
         // The maximum characters (0 by default, which means no limit)
-        unsigned int m_MaxChars;
+        unsigned int m_maxChars;
 
         // What is known about the visible lines?
-        unsigned int m_TopLine;
-        unsigned int m_VisibleLines;
+        unsigned int m_topLine;
+        unsigned int m_visibleLines;
 
         // Information about the selection
-        unsigned int m_SelChars;
-        unsigned int m_SelStart;
-        unsigned int m_SelEnd;
+        unsigned int m_selChars;
+        unsigned int m_selStart;
+        unsigned int m_selEnd;
 
         // Information about the selection pointer
-        sf::Vector2u m_SelectionPointPosition;
-        bool m_SelectionPointVisible;
+        sf::Vector2u m_selectionPointPosition;
+        bool m_selectionPointVisible;
 
         // The color of the flickering selection pointer
-        sf::Color m_SelectionPointColor;
+        sf::Color m_selectionPointColor;
 
         // The width in pixels of the flickering selection pointer
-        unsigned int m_SelectionPointWidth;
+        unsigned int m_selectionPointWidth;
 
         // Should the text be resplit into the five texts?
-        bool m_SelectionTextsNeedUpdate;
+        bool m_selectionTextsNeedUpdate;
 
         // The colors that are used by the text box
-        sf::Color m_BackgroundColor;
-        sf::Color m_SelectedTextBgrColor;
-        sf::Color m_BorderColor;
+        sf::Color m_backgroundColor;
+        sf::Color m_selectedTextBgrColor;
+        sf::Color m_borderColor;
 
         // The sfml Text widgets
-        sf::Text m_TextBeforeSelection;
-        sf::Text m_TextSelection1;
-        sf::Text m_TextSelection2;
-        sf::Text m_TextAfterSelection1;
-        sf::Text m_TextAfterSelection2;
+        sf::Text m_textBeforeSelection;
+        sf::Text m_textSelection1;
+        sf::Text m_textSelection2;
+        sf::Text m_textAfterSelection1;
+        sf::Text m_textAfterSelection2;
 
-        std::vector<float> m_MultilineSelectionRectWidth;
+        std::vector<float> m_multilineSelectionRectWidth;
 
         // The scrollbar
-        Scrollbar* m_Scroll;
+        Scrollbar* m_scroll;
 
         // Is there a possibility that the user is going to double click?
-        bool m_PossibleDoubleClick;
+        bool m_possibleDoubleClick;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

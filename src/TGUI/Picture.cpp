@@ -33,17 +33,17 @@ namespace tgui
 
     Picture::Picture()
     {
-        m_Callback.widgetType = Type_Picture;
+        m_callback.widgetType = Type_Picture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Picture::Picture(const Picture& copy) :
     ClickableWidget (copy),
-    m_LoadedFilename(copy.m_LoadedFilename)
+    m_loadedFilename(copy.m_loadedFilename)
     {
         // Copy the texture
-        TGUI_TextureManager.copyTexture(copy.m_Texture, m_Texture);
+        TGUI_TextureManager.copyTexture(copy.m_texture, m_texture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,8 @@ namespace tgui
     Picture::~Picture()
     {
         // Remove the texture (if we are the only one using it)
-        if (m_Texture.data != nullptr)
-            TGUI_TextureManager.removeTexture(m_Texture);
+        if (m_texture.data != nullptr)
+            TGUI_TextureManager.removeTexture(m_texture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,8 +65,8 @@ namespace tgui
             Picture temp(right);
             this->ClickableWidget::operator=(right);
 
-            std::swap(m_LoadedFilename, temp.m_LoadedFilename);
-            std::swap(m_Texture,        temp.m_Texture);
+            std::swap(m_loadedFilename, temp.m_loadedFilename);
+            std::swap(m_texture,        temp.m_texture);
         }
 
         return *this;
@@ -84,27 +84,27 @@ namespace tgui
     bool Picture::load(const std::string& filename)
     {
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
-        m_Size.x = 0;
-        m_Size.y = 0;
+        m_loaded = false;
+        m_size.x = 0;
+        m_size.y = 0;
 
         // Make sure that the filename isn't empty
         if (filename.empty())
             return false;
 
-        m_LoadedFilename = getResourcePath() + filename;
+        m_loadedFilename = getResourcePath() + filename;
 
         // If we have already loaded a texture then first delete it
-        if (m_Texture.data != nullptr)
-            TGUI_TextureManager.removeTexture(m_Texture);
+        if (m_texture.data != nullptr)
+            TGUI_TextureManager.removeTexture(m_texture);
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(m_LoadedFilename, m_Texture))
+        if (TGUI_TextureManager.getTexture(m_loadedFilename, m_texture))
         {
-            m_Loaded = true;
+            m_loaded = true;
 
             // Remember the size of the texture
-            setSize(static_cast<float>(m_Texture.getSize().x),static_cast<float>( m_Texture.getSize().y));
+            setSize(static_cast<float>(m_texture.getSize().x),static_cast<float>( m_texture.getSize().y));
 
             return true;
         }
@@ -116,7 +116,7 @@ namespace tgui
 
     const std::string& Picture::getLoadedFilename() const
     {
-        return m_LoadedFilename;
+        return m_loadedFilename;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,18 +125,18 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_Texture.sprite.setPosition(x, y);
+        m_texture.sprite.setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::setSize(float width, float height)
     {
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
-        if (m_Loaded)
-            m_Texture.sprite.setScale(m_Size.x / m_Texture.getSize().x, m_Size.y / m_Texture.getSize().y);
+        if (m_loaded)
+            m_texture.sprite.setScale(m_size.x / m_texture.getSize().x, m_size.y / m_texture.getSize().y);
         else
             TGUI_OUTPUT("TGUI warning: Picture::setSize called while Picture wasn't loaded yet.");
     }
@@ -145,8 +145,8 @@ namespace tgui
 
     void Picture::setSmooth(bool smooth)
     {
-        if (m_Loaded)
-            m_Texture.data->texture.setSmooth(smooth);
+        if (m_loaded)
+            m_texture.data->texture.setSmooth(smooth);
         else
             TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.");
     }
@@ -156,8 +156,8 @@ namespace tgui
 
     bool Picture::isSmooth() const
     {
-        if (m_Loaded)
-            return m_Texture.data->texture.isSmooth();
+        if (m_loaded)
+            return m_texture.data->texture.isSmooth();
         else
         {
             TGUI_OUTPUT("TGUI warning: Picture::isSmooth called while Picture wasn't loaded yet.");
@@ -171,7 +171,7 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_Texture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_texture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,25 +179,25 @@ namespace tgui
     bool Picture::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the image wasn't loaded
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return false;
 
         // Check if the mouse is on top of the picture
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
         {
             sf::Vector2f scaling;
-            scaling.x = m_Size.x / m_Texture.getSize().x;
-            scaling.y = m_Size.y / m_Texture.getSize().y;
+            scaling.x = m_size.x / m_texture.getSize().x;
+            scaling.y = m_size.y / m_texture.getSize().y;
 
             // Only return true when the pixel under the mouse isn't transparent
-            if (!m_Texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+            if (!m_texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
                 return true;
         }
 
-        if (m_MouseHover == true)
+        if (m_mouseHover == true)
             mouseLeftWidget();
 
-        m_MouseHover = false;
+        m_mouseHover = false;
         return false;
     }
 
@@ -258,7 +258,7 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(m_Texture, states);
+        target.draw(m_texture, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

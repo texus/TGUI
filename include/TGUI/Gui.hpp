@@ -263,7 +263,7 @@ namespace tgui
         template <class T>
         typename T::Ptr get(const sf::String& widgetName) const
         {
-            return m_Container.get<T>(widgetName);
+            return m_container.get<T>(widgetName);
         }
 
 
@@ -423,7 +423,7 @@ namespace tgui
         template <typename T>
         void bindGlobalCallback(void (T::*func)(const Callback&), const T* const classPtr)
         {
-            m_Container.bindGlobalCallback(func, classPtr);
+            m_container.bindGlobalCallback(func, classPtr);
         }
 
 
@@ -488,19 +488,19 @@ namespace tgui
       protected:
 
         // This will store all widget callbacks until you pop them with getCallback
-        std::queue<Callback> m_Callback;
+        std::queue<Callback> m_callback;
 
         // The internal clock which is used for animation of widgets
-        sf::Clock m_Clock;
+        sf::Clock m_clock;
 
         // The sfml window
-        sf::RenderWindow* m_Window;
+        sf::RenderWindow* m_window;
 
         // Is the window focused?
-        bool m_Focused;
+        bool m_focused;
 
         // Internal container to store all widgets
-        GuiContainer m_Container;
+        GuiContainer m_container;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

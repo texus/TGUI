@@ -69,8 +69,8 @@ namespace tgui
     bool TextureManager::getTexture(const std::string& filename, Texture& texture, const sf::IntRect& rect)
     {
         // Look if we already had this image
-        auto imageIt = m_ImageMap.find(filename);
-        if (imageIt != m_ImageMap.end())
+        auto imageIt = m_imageMap.find(filename);
+        if (imageIt != m_imageMap.end())
         {
             // Loop all our textures to find the one containing the image
             for (std::list<TextureData>::iterator it = imageIt->second.data.begin(); it != imageIt->second.data.end(); ++it)
@@ -93,7 +93,7 @@ namespace tgui
         }
         else // The image doesn't exist yet
         {
-            auto it = m_ImageMap.insert(std::make_pair(filename, ImageMapData()));
+            auto it = m_imageMap.insert(std::make_pair(filename, ImageMapData()));
             imageIt = it.first;
         }
 
@@ -126,7 +126,7 @@ namespace tgui
         }
 
         // The image couldn't be loaded
-        m_ImageMap.erase(imageIt);
+        m_imageMap.erase(imageIt);
         texture.data = nullptr;
         return false;
     }
@@ -143,7 +143,7 @@ namespace tgui
         }
 
         // Loop all our textures to check if we already have this one
-        for (auto imageIt = m_ImageMap.begin(); imageIt != m_ImageMap.end(); ++imageIt)
+        for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
         {
             for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
             {
@@ -167,7 +167,7 @@ namespace tgui
     void TextureManager::removeTexture(Texture& textureToRemove)
     {
         // Loop all our textures to check which one it is
-        for (auto imageIt = m_ImageMap.begin(); imageIt != m_ImageMap.end(); ++imageIt)
+        for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
         {
             for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
             {
@@ -180,7 +180,7 @@ namespace tgui
                         // Remove the texture from the list, or even the whole image if it isn't used anywhere else
                         int usage = std::count_if(imageIt->second.data.begin(), imageIt->second.data.end(), [dataIt](TextureData& data){ return data.image == dataIt->image; });
                         if (usage == 1)
-                            m_ImageMap.erase(imageIt);
+                            m_imageMap.erase(imageIt);
                         else
                             imageIt->second.data.erase(dataIt);
                     }

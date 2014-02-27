@@ -339,26 +339,26 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string  m_LoadedConfigFile;
+        std::string  m_loadedConfigFile;
 
-        unsigned int m_Minimum;
-        unsigned int m_Maximum;
-        unsigned int m_Value;
+        unsigned int m_minimum;
+        unsigned int m_maximum;
+        unsigned int m_value;
 
         // If this is true then the L, M and R images will be used.
         // If it is false then the button is just one big image that will be stored in the M image.
-        bool m_SplitImage;
+        bool m_splitImage;
 
-        Texture  m_TextureBack_L;
-        Texture  m_TextureBack_M;
-        Texture  m_TextureBack_R;
-        Texture  m_TextureFront_L;
-        Texture  m_TextureFront_M;
-        Texture  m_TextureFront_R;
+        Texture  m_textureBack_L;
+        Texture  m_textureBack_M;
+        Texture  m_textureBack_R;
+        Texture  m_textureFront_L;
+        Texture  m_textureFront_M;
+        Texture  m_textureFront_R;
 
         // The text that is (optionally) drawn on top of the loading bar
-        sf::Text     m_Text;
-        unsigned int m_TextSize;
+        sf::Text     m_text;
+        unsigned int m_textSize;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

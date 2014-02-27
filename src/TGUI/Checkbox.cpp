@@ -36,7 +36,7 @@ namespace tgui
 
     Checkbox::Checkbox()
     {
-        m_Callback.widgetType = Type_Checkbox;
+        m_callback.widgetType = Type_Checkbox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,22 +50,22 @@ namespace tgui
 
     bool Checkbox::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = getResourcePath() + configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        m_loaded = false;
 
         // If the checkbox was loaded before then remove the old textures
-        if (m_TextureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover);
-        if (m_TextureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused);
+        if (m_textureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
+        if (m_textureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
+        if (m_textureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(m_LoadedConfigFile))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -74,7 +74,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("Checkbox", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -83,9 +83,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -95,65 +95,65 @@ namespace tgui
 
             if (property == "textcolor")
             {
-                m_Text.setColor(configFile.readColor(value));
+                m_text.setColor(configFile.readColor(value));
             }
             else if (property == "checkedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureChecked))
+                if (!configFile.readTexture(value, configFileFolder, m_textureChecked))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section Checkbox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section Checkbox in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "uncheckedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureUnchecked))
+                if (!configFile.readTexture(value, configFileFolder, m_textureUnchecked))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section Checkbox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section Checkbox in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "hoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureHover))
+                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Checkbox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Checkbox in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "focusedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused))
+                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Checkbox in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Checkbox in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Checkbox in " + m_LoadedConfigFile + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Checkbox in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required texture was loaded
-        if ((m_TextureChecked.data != nullptr) && (m_TextureUnchecked.data != nullptr))
+        if ((m_textureChecked.data != nullptr) && (m_textureUnchecked.data != nullptr))
         {
-            m_Loaded = true;
-            setSize(static_cast<float>(m_TextureUnchecked.getSize().x), static_cast<float>(m_TextureUnchecked.getSize().y));
+            m_loaded = true;
+            setSize(static_cast<float>(m_textureUnchecked.getSize().x), static_cast<float>(m_textureUnchecked.getSize().y));
         }
         else
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_LoadedConfigFile + " complete?");
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?");
             return false;
         }
 
         // Check if optional textures were loaded
-        if (m_TextureFocused.data != nullptr)
+        if (m_textureFocused.data != nullptr)
         {
-            m_AllowFocus = true;
-            m_WidgetPhase |= WidgetPhase_Focused;
+            m_allowFocus = true;
+            m_widgetPhase |= WidgetPhase_Focused;
         }
-        if (m_TextureHover.data != nullptr)
+        if (m_textureHover.data != nullptr)
         {
-            m_WidgetPhase |= WidgetPhase_Hover;
+            m_widgetPhase |= WidgetPhase_Hover;
         }
 
         // When there is no error we will return true
@@ -164,15 +164,15 @@ namespace tgui
 
     void Checkbox::check()
     {
-        if (m_Checked == false)
+        if (m_checked == false)
         {
-            m_Checked = true;
+            m_checked = true;
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[Checked].empty() == false)
+            if (m_callbackFunctions[Checked].empty() == false)
             {
-                m_Callback.trigger = Checked;
-                m_Callback.checked = true;
+                m_callback.trigger = Checked;
+                m_callback.checked = true;
                 addCallback();
             }
         }
@@ -182,15 +182,15 @@ namespace tgui
 
     void Checkbox::uncheck()
     {
-        if (m_Checked)
+        if (m_checked)
         {
-            m_Checked = false;
+            m_checked = false;
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[Unchecked].empty() == false)
+            if (m_callbackFunctions[Unchecked].empty() == false)
             {
-                m_Callback.trigger = Unchecked;
-                m_Callback.checked = false;
+                m_callback.trigger = Unchecked;
+                m_callback.checked = false;
                 addCallback();
             }
         }
@@ -201,35 +201,35 @@ namespace tgui
     void Checkbox::leftMouseReleased(float x, float y)
     {
         // Add the callback (if the user requested it)
-        if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
+        if (m_callbackFunctions[LeftMouseReleased].empty() == false)
         {
-            m_Callback.trigger = LeftMouseReleased;
-            m_Callback.checked = m_Checked;
-            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+            m_callback.trigger = LeftMouseReleased;
+            m_callback.checked = m_checked;
+            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 
         // Check if we clicked on the checkbox (not just mouse release)
-        if (m_MouseDown == true)
+        if (m_mouseDown == true)
         {
             // Check or uncheck the checkbox
-            if (m_Checked)
+            if (m_checked)
                 uncheck();
             else
                 check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[LeftMouseClicked].empty() == false)
+            if (m_callbackFunctions[LeftMouseClicked].empty() == false)
             {
-                m_Callback.trigger = LeftMouseClicked;
-                m_Callback.checked = m_Checked;
-                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                m_callback.trigger = LeftMouseClicked;
+                m_callback.checked = m_checked;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 
-            m_MouseDown = false;
+            m_mouseDown = false;
         }
     }
 
@@ -241,32 +241,32 @@ namespace tgui
         if (key == sf::Keyboard::Space)
         {
             // Check or uncheck the checkbox
-            if (m_Checked)
+            if (m_checked)
                 uncheck();
             else
                 check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[SpaceKeyPressed].empty() == false)
+            if (m_callbackFunctions[SpaceKeyPressed].empty() == false)
             {
-                m_Callback.trigger = SpaceKeyPressed;
-                m_Callback.checked = m_Checked;
+                m_callback.trigger = SpaceKeyPressed;
+                m_callback.checked = m_checked;
                 addCallback();
             }
         }
         else if (key == sf::Keyboard::Return)
         {
             // Check or uncheck the checkbox
-            if (m_Checked)
+            if (m_checked)
                 uncheck();
             else
                 check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
+            if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                m_Callback.trigger = ReturnKeyPressed;
-                m_Callback.checked = m_Checked;
+                m_callback.trigger = ReturnKeyPressed;
+                m_callback.checked = m_checked;
                 addCallback();
             }
         }

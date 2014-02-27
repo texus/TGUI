@@ -115,7 +115,7 @@ namespace tgui
             std::list<TextureData> data;
         };
 
-        std::map<std::string, ImageMapData> m_ImageMap;
+        std::map<std::string, ImageMapData> m_imageMap;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

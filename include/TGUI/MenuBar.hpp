@@ -416,26 +416,26 @@ namespace tgui
             int selectedMenuItem;
         };
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        std::vector<Menu> m_Menus;
+        std::vector<Menu> m_menus;
 
-        int m_VisibleMenu;
+        int m_visibleMenu;
 
-        const sf::Font* m_TextFont;
+        const sf::Font* m_textFont;
 
-        sf::Vector2f m_Size;
+        sf::Vector2f m_size;
 
-        unsigned int m_TextSize;
+        unsigned int m_textSize;
 
-        unsigned int m_DistanceToSide;
+        unsigned int m_distanceToSide;
 
-        unsigned int m_MinimumSubMenuWidth;
+        unsigned int m_minimumSubMenuWidth;
 
-        sf::Color m_BackgroundColor;
-        sf::Color m_TextColor;
-        sf::Color m_SelectedBackgroundColor;
-        sf::Color m_SelectedTextColor;
+        sf::Color m_backgroundColor;
+        sf::Color m_textColor;
+        sf::Color m_selectedBackgroundColor;
+        sf::Color m_selectedTextColor;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -33,44 +33,44 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton() :
-    m_VerticalScroll      (true),
-    m_Minimum             (0),
-    m_Maximum             (10),
-    m_Value               (0),
-    m_SeparateHoverImage  (false),
-    m_MouseHoverOnTopArrow(false),
-    m_MouseDownOnTopArrow (false)
+    m_verticalScroll      (true),
+    m_minimum             (0),
+    m_maximum             (10),
+    m_value               (0),
+    m_separateHoverImage  (false),
+    m_mouseHoverOnTopArrow(false),
+    m_mouseDownOnTopArrow (false)
     {
-        m_Callback.widgetType = Type_SpinButton;
+        m_callback.widgetType = Type_SpinButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton(const SpinButton& copy) :
     ClickableWidget       (copy),
-    m_LoadedConfigFile    (copy.m_LoadedConfigFile),
-    m_VerticalScroll      (copy.m_VerticalScroll),
-    m_Minimum             (copy.m_Minimum),
-    m_Maximum             (copy.m_Maximum),
-    m_Value               (copy.m_Value),
-    m_SeparateHoverImage  (copy.m_SeparateHoverImage),
-    m_MouseHoverOnTopArrow(copy.m_MouseHoverOnTopArrow),
-    m_MouseDownOnTopArrow (copy.m_MouseDownOnTopArrow)
+    m_loadedConfigFile    (copy.m_loadedConfigFile),
+    m_verticalScroll      (copy.m_verticalScroll),
+    m_minimum             (copy.m_minimum),
+    m_maximum             (copy.m_maximum),
+    m_value               (copy.m_value),
+    m_separateHoverImage  (copy.m_separateHoverImage),
+    m_mouseHoverOnTopArrow(copy.m_mouseHoverOnTopArrow),
+    m_mouseDownOnTopArrow (copy.m_mouseDownOnTopArrow)
     {
-        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpNormal, m_TextureArrowUpNormal);
-        TGUI_TextureManager.copyTexture(copy.m_TextureArrowUpHover, m_TextureArrowUpHover);
-        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownNormal, m_TextureArrowDownNormal);
-        TGUI_TextureManager.copyTexture(copy.m_TextureArrowDownHover, m_TextureArrowDownHover);
+        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpNormal, m_textureArrowUpNormal);
+        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpHover, m_textureArrowUpHover);
+        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownNormal, m_textureArrowDownNormal);
+        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownHover, m_textureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::~SpinButton()
     {
-        if (m_TextureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_textureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
+        if (m_textureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
+        if (m_textureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
+        if (m_textureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,18 +83,18 @@ namespace tgui
             SpinButton temp(right);
             this->ClickableWidget::operator=(right);
 
-            std::swap(m_LoadedConfigFile,       temp.m_LoadedConfigFile);
-            std::swap(m_VerticalScroll,         temp.m_VerticalScroll);
-            std::swap(m_Minimum,                temp.m_Minimum);
-            std::swap(m_Maximum,                temp.m_Maximum);
-            std::swap(m_Value,                  temp.m_Value);
-            std::swap(m_SeparateHoverImage,     temp.m_SeparateHoverImage);
-            std::swap(m_MouseHoverOnTopArrow,   temp.m_MouseHoverOnTopArrow);
-            std::swap(m_MouseDownOnTopArrow,    temp.m_MouseDownOnTopArrow);
-            std::swap(m_TextureArrowUpNormal,   temp.m_TextureArrowUpNormal);
-            std::swap(m_TextureArrowUpHover,    temp.m_TextureArrowUpHover);
-            std::swap(m_TextureArrowDownNormal, temp.m_TextureArrowDownNormal);
-            std::swap(m_TextureArrowDownHover,  temp.m_TextureArrowDownHover);
+            std::swap(m_loadedConfigFile,       temp.m_loadedConfigFile);
+            std::swap(m_verticalScroll,         temp.m_verticalScroll);
+            std::swap(m_minimum,                temp.m_minimum);
+            std::swap(m_maximum,                temp.m_maximum);
+            std::swap(m_value,                  temp.m_value);
+            std::swap(m_separateHoverImage,     temp.m_separateHoverImage);
+            std::swap(m_mouseHoverOnTopArrow,   temp.m_mouseHoverOnTopArrow);
+            std::swap(m_mouseDownOnTopArrow,    temp.m_mouseDownOnTopArrow);
+            std::swap(m_textureArrowUpNormal,   temp.m_textureArrowUpNormal);
+            std::swap(m_textureArrowUpHover,    temp.m_textureArrowUpHover);
+            std::swap(m_textureArrowDownNormal, temp.m_textureArrowDownNormal);
+            std::swap(m_textureArrowDownHover,  temp.m_textureArrowDownHover);
         }
 
         return *this;
@@ -111,22 +111,22 @@ namespace tgui
 
     bool SpinButton::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = getResourcePath() + configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        m_loaded = false;
 
         // If the button was loaded before then remove the old textures first
-        if (m_TextureArrowUpNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureArrowUpNormal);
-        if (m_TextureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureArrowUpHover);
-        if (m_TextureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureArrowDownNormal);
-        if (m_TextureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureArrowDownHover);
+        if (m_textureArrowUpNormal.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
+        if (m_textureArrowUpHover.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
+        if (m_textureArrowDownNormal.data != nullptr) TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
+        if (m_textureArrowDownHover.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(m_LoadedConfigFile))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -135,7 +135,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("SpinButton", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -144,9 +144,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -156,70 +156,70 @@ namespace tgui
 
             if (property == "separatehoverimage")
             {
-                m_SeparateHoverImage = configFile.readBool(value, false);
+                m_separateHoverImage = configFile.readBool(value, false);
             }
             else if (property == "arrowupnormalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpNormal))
+                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpNormal))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section SpinButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section SpinButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowuphoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowUpHover))
+                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section SpinButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section SpinButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowdownnormalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownNormal))
+                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownNormal))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section SpinButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section SpinButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "arrowdownhoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureArrowDownHover))
+                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section SpinButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section SpinButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section SpinButton in " + m_LoadedConfigFile + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section SpinButton in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
-        if ((m_TextureArrowUpNormal.data != nullptr) && (m_TextureArrowDownNormal.data != nullptr))
+        if ((m_textureArrowUpNormal.data != nullptr) && (m_textureArrowDownNormal.data != nullptr))
         {
-            m_Size.x = static_cast<float>(m_TextureArrowUpNormal.getSize().x);
-            m_Size.y = static_cast<float>(m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y);
+            m_size.x = static_cast<float>(m_textureArrowUpNormal.getSize().x);
+            m_size.y = static_cast<float>(m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y);
         }
         else
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_LoadedConfigFile + " complete?");
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?");
             return false;
         }
 
         // Check if optional textures were loaded
-        if ((m_TextureArrowUpHover.data != nullptr) && (m_TextureArrowDownHover.data != nullptr))
+        if ((m_textureArrowUpHover.data != nullptr) && (m_textureArrowDownHover.data != nullptr))
         {
-            m_WidgetPhase |= WidgetPhase_Hover;
+            m_widgetPhase |= WidgetPhase_Hover;
         }
 
-        return m_Loaded = true;
+        return m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const std::string& SpinButton::getLoadedConfigFile() const
     {
-        return m_LoadedConfigFile;
+        return m_loadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,16 +227,16 @@ namespace tgui
     void SpinButton::setSize(float width, float height)
     {
         // Don't do anything when the spin button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Store the new size
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
         // A negative size is not allowed for this widget
-        if (m_Size.x < 0) m_Size.x = -m_Size.x;
-        if (m_Size.y < 0) m_Size.y = -m_Size.y;
+        if (m_size.x < 0) m_size.x = -m_size.x;
+        if (m_size.y < 0) m_size.y = -m_size.y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,30 +244,30 @@ namespace tgui
     void SpinButton::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
-        m_Minimum = minimum;
+        m_minimum = minimum;
 
         // The minimum can never be greater than the maximum
-        if (m_Minimum > m_Maximum)
-            m_Maximum = m_Minimum;
+        if (m_minimum > m_maximum)
+            m_maximum = m_minimum;
 
         // When the value is below the minimum then adjust it
-        if (m_Value < m_Minimum)
-            m_Value = m_Minimum;
+        if (m_value < m_minimum)
+            m_value = m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::setMaximum(unsigned int maximum)
     {
-        m_Maximum = maximum;
+        m_maximum = maximum;
 
         // The maximum can never be below the minimum
-        if (m_Maximum < m_Minimum)
-            m_Minimum = m_Maximum;
+        if (m_maximum < m_minimum)
+            m_minimum = m_maximum;
 
         // When the value is above the maximum then adjust it
-        if (m_Value > m_Maximum)
-            m_Value = m_Maximum;
+        if (m_value > m_maximum)
+            m_value = m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,48 +275,48 @@ namespace tgui
     void SpinButton::setValue(unsigned int value)
     {
         // Set the new value
-        m_Value = value;
+        m_value = value;
 
         // When the value is below the minimum or above the maximum then adjust it
-        if (m_Value < m_Minimum)
-            m_Value = m_Minimum;
-        else if (m_Value > m_Maximum)
-            m_Value = m_Maximum;
+        if (m_value < m_minimum)
+            m_value = m_minimum;
+        else if (m_value > m_maximum)
+            m_value = m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SpinButton::getMinimum() const
     {
-        return m_Minimum;
+        return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SpinButton::getMaximum() const
     {
-        return m_Maximum;
+        return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SpinButton::getValue() const
     {
-        return m_Value;
+        return m_value;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::setVerticalScroll(bool verticalScroll)
     {
-        m_VerticalScroll = verticalScroll;
+        m_verticalScroll = verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SpinButton::getVerticalScroll() const
     {
-        return m_VerticalScroll;
+        return m_verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,32 +325,32 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_TextureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_textureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::leftMousePressed(float x, float y)
     {
-        m_MouseDown = true;
+        m_mouseDown = true;
 
         // Check if the mouse is on top of the upper/right arrow
-        if (m_VerticalScroll)
+        if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y))
-                m_MouseDownOnTopArrow = true;
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y))
+                m_mouseDownOnTopArrow = true;
             else
-                m_MouseDownOnTopArrow = false;
+                m_mouseDownOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))
-                m_MouseDownOnTopArrow = false;
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))
+                m_mouseDownOnTopArrow = false;
             else
-                m_MouseDownOnTopArrow = true;
+                m_mouseDownOnTopArrow = true;
         }
     }
 
@@ -359,20 +359,20 @@ namespace tgui
     void SpinButton::leftMouseReleased(float x, float y)
     {
         // Check if the mouse went down on the spin button
-        if (m_MouseDown)
+        if (m_mouseDown)
         {
-            m_MouseDown = false;
+            m_mouseDown = false;
 
             // Check if the arrow went down on the top/right arrow
-            if (m_MouseDownOnTopArrow)
+            if (m_mouseDownOnTopArrow)
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_VerticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y)))
-                 || ((m_VerticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y) == false)))
+                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y)))
+                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y) == false)))
                 {
                     // Increment the value
-                    if (m_Value < m_Maximum)
-                        ++m_Value;
+                    if (m_value < m_maximum)
+                        ++m_value;
                     else
                         return;
                 }
@@ -382,12 +382,12 @@ namespace tgui
             else // The mouse went down on the bottom/left arrow
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_VerticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y) == false))
-                 || ((m_VerticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))))
+                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y) == false))
+                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))))
                 {
                     // Decrement the value
-                    if (m_Value > m_Minimum)
-                        --m_Value;
+                    if (m_value > m_minimum)
+                        --m_value;
                     else
                         return;
                 }
@@ -396,10 +396,10 @@ namespace tgui
             }
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[ValueChanged].empty() == false)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
             {
-                m_Callback.trigger = ValueChanged;
-                m_Callback.value   = static_cast<int>(m_Value);
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
                 addCallback();
             }
         }
@@ -410,25 +410,25 @@ namespace tgui
     void SpinButton::mouseMoved(float x, float y)
     {
         // Check if the mouse is on top of the upper/right arrow
-        if (m_VerticalScroll)
+        if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y / 2.f)).contains(x, y))
-                m_MouseHoverOnTopArrow = true;
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y))
+                m_mouseHoverOnTopArrow = true;
             else
-                m_MouseHoverOnTopArrow = false;
+                m_mouseHoverOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x / 2.f, m_Size.y)).contains(x, y))
-                m_MouseHoverOnTopArrow = false;
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))
+                m_mouseHoverOnTopArrow = false;
             else
-                m_MouseHoverOnTopArrow = true;
+                m_mouseHoverOnTopArrow = true;
         }
 
-        if (m_MouseHover == false)
+        if (m_mouseHover == false)
             mouseEnteredWidget();
 
-        m_MouseHover = true;
+        m_mouseHover = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,7 +505,7 @@ namespace tgui
         else if (property == "value")
             value = std::to_string(getValue());
         else if (property == "verticalscroll")
-            value = m_VerticalScroll ? "true" : "false";
+            value = m_verticalScroll ? "true" : "false";
         else if (property == "callback")
         {
             std::string tempValue;
@@ -513,7 +513,7 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+            if ((m_callbackFunctions.find(ValueChanged) != m_callbackFunctions.end()) && (m_callbackFunctions.at(ValueChanged).size() == 1) && (m_callbackFunctions.at(ValueChanged).front() == nullptr))
                 callbacks.push_back("ValueChanged");
 
             encodeList(callbacks, value);
@@ -548,118 +548,118 @@ namespace tgui
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw when the spin button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Adjust the transformation
         states.transform *= getTransform();
 
         // Check if the image is drawn in the same direction than it was loaded
-        if (m_VerticalScroll)
+        if (m_verticalScroll)
         {
-            states.transform.scale(m_Size.x / m_TextureArrowUpNormal.getSize().x, m_Size.y / (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y));
+            states.transform.scale(m_size.x / m_textureArrowUpNormal.getSize().x, m_size.y / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y));
 
             // Draw the first arrow
-            if (m_SeparateHoverImage)
+            if (m_separateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowUpHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowUpHover, states);
                 }
                 else
-                    target.draw(m_TextureArrowUpNormal, states);
+                    target.draw(m_textureArrowUpNormal, states);
             }
             else // The hover image should be drawn on top of the normal image
             {
-                target.draw(m_TextureArrowUpNormal, states);
+                target.draw(m_textureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowUpHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowUpHover, states);
                 }
             }
 
             // Set the second arrow on the correct position
-            states.transform.translate(0, static_cast<float>(m_TextureArrowUpNormal.getSize().y));
+            states.transform.translate(0, static_cast<float>(m_textureArrowUpNormal.getSize().y));
 
             // Draw the second arrow
-            if (m_SeparateHoverImage)
+            if (m_separateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowDownHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowDownHover, states);
                 }
                 else
-                    target.draw(m_TextureArrowDownNormal, states);
+                    target.draw(m_textureArrowDownNormal, states);
             }
             else // The hover image should be drawn on top of the normal image
             {
-                target.draw(m_TextureArrowDownNormal, states);
+                target.draw(m_textureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (!m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowDownHover, states);
+                    if (!m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowDownHover, states);
                 }
             }
         }
         else // The image is not drawn in the same direction than the loaded image
         {
-            states.transform.scale(m_Size.x / (m_TextureArrowUpNormal.getSize().y + m_TextureArrowDownNormal.getSize().y), m_Size.y / m_TextureArrowUpNormal.getSize().x);
+            states.transform.scale(m_size.x / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y), m_size.y / m_textureArrowUpNormal.getSize().x);
 
             // Rotate the arrow
-            states.transform.rotate(-90, static_cast<float>(m_TextureArrowUpNormal.getSize().x), static_cast<float>(m_TextureArrowUpNormal.getSize().y));
+            states.transform.rotate(-90, static_cast<float>(m_textureArrowUpNormal.getSize().x), static_cast<float>(m_textureArrowUpNormal.getSize().y));
 
             // Set the left arrow on the correct position
-            states.transform.translate(static_cast<float>(m_TextureArrowUpNormal.getSize().y), 0);
+            states.transform.translate(static_cast<float>(m_textureArrowUpNormal.getSize().y), 0);
 
             // Draw the first arrow
-            if (m_SeparateHoverImage)
+            if (m_separateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowUpHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowUpHover, states);
                 }
                 else
-                    target.draw(m_TextureArrowUpNormal, states);
+                    target.draw(m_textureArrowUpNormal, states);
             }
             else // The hover image should be drawn on top of the normal image
             {
-                target.draw(m_TextureArrowUpNormal, states);
+                target.draw(m_textureArrowUpNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (!m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowUpHover, states);
+                    if (!m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowUpHover, states);
                 }
             }
 
             // Set the right arrow on the correct position
-            states.transform.translate(0, static_cast<float>(m_TextureArrowUpNormal.getSize().y));
+            states.transform.translate(0, static_cast<float>(m_textureArrowUpNormal.getSize().y));
 
             // Draw the second arrow
-            if (m_SeparateHoverImage)
+            if (m_separateHoverImage)
             {
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowDownHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowDownHover, states);
                 }
                 else
-                    target.draw(m_TextureArrowDownNormal, states);
+                    target.draw(m_textureArrowDownNormal, states);
             }
             else // The hover image should be drawn on top of the normal image
             {
-                target.draw(m_TextureArrowDownNormal, states);
+                target.draw(m_textureArrowDownNormal, states);
 
-                if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
+                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
                 {
-                    if (m_MouseHoverOnTopArrow)
-                        target.draw(m_TextureArrowDownHover, states);
+                    if (m_mouseHoverOnTopArrow)
+                        target.draw(m_textureArrowDownHover, states);
                 }
             }
         }

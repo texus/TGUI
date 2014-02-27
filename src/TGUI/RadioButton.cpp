@@ -33,39 +33,39 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButton::RadioButton() :
-        m_Checked       (false),
-        m_AllowTextClick(true),
-        m_TextSize      (0)
+        m_checked       (false),
+        m_allowTextClick(true),
+        m_textSize      (0)
     {
-        m_Callback.widgetType = Type_RadioButton;
+        m_callback.widgetType = Type_RadioButton;
 
-        m_Text.setColor(sf::Color::Black);
+        m_text.setColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButton::RadioButton(const RadioButton& copy) :
     ClickableWidget   (copy),
-    m_LoadedConfigFile(copy.m_LoadedConfigFile),
-    m_Checked         (copy.m_Checked),
-    m_AllowTextClick  (copy.m_AllowTextClick),
-    m_Text            (copy.m_Text),
-    m_TextSize        (copy.m_TextSize)
+    m_loadedConfigFile(copy.m_loadedConfigFile),
+    m_checked         (copy.m_checked),
+    m_allowTextClick  (copy.m_allowTextClick),
+    m_text            (copy.m_text),
+    m_textSize        (copy.m_textSize)
     {
-        TGUI_TextureManager.copyTexture(copy.m_TextureUnchecked, m_TextureUnchecked);
-        TGUI_TextureManager.copyTexture(copy.m_TextureChecked, m_TextureChecked);
-        TGUI_TextureManager.copyTexture(copy.m_TextureHover, m_TextureHover);
-        TGUI_TextureManager.copyTexture(copy.m_TextureFocused, m_TextureFocused);
+        TGUI_TextureManager.copyTexture(copy.m_textureUnchecked, m_textureUnchecked);
+        TGUI_TextureManager.copyTexture(copy.m_textureChecked, m_textureChecked);
+        TGUI_TextureManager.copyTexture(copy.m_textureHover, m_textureHover);
+        TGUI_TextureManager.copyTexture(copy.m_textureFocused, m_textureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButton::~RadioButton()
     {
-        if (m_TextureUnchecked.data != nullptr)  TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureHover.data != nullptr)      TGUI_TextureManager.removeTexture(m_TextureHover);
-        if (m_TextureFocused.data != nullptr)    TGUI_TextureManager.removeTexture(m_TextureFocused);
+        if (m_textureUnchecked.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureUnchecked);
+        if (m_textureChecked.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureChecked);
+        if (m_textureHover.data != nullptr)      TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureFocused.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,15 +77,15 @@ namespace tgui
             RadioButton temp(right);
             this->ClickableWidget::operator=(right);
 
-            std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
-            std::swap(m_Checked,          temp.m_Checked);
-            std::swap(m_AllowTextClick,   temp.m_AllowTextClick);
-            std::swap(m_Text,             temp.m_Text);
-            std::swap(m_TextSize,         temp.m_TextSize);
-            std::swap(m_TextureUnchecked, temp.m_TextureUnchecked);
-            std::swap(m_TextureChecked,   temp.m_TextureChecked);
-            std::swap(m_TextureHover,     temp.m_TextureHover);
-            std::swap(m_TextureFocused,   temp.m_TextureFocused);
+            std::swap(m_loadedConfigFile, temp.m_loadedConfigFile);
+            std::swap(m_checked,          temp.m_checked);
+            std::swap(m_allowTextClick,   temp.m_allowTextClick);
+            std::swap(m_text,             temp.m_text);
+            std::swap(m_textSize,         temp.m_textSize);
+            std::swap(m_textureUnchecked, temp.m_textureUnchecked);
+            std::swap(m_textureChecked,   temp.m_textureChecked);
+            std::swap(m_textureHover,     temp.m_textureHover);
+            std::swap(m_textureFocused,   temp.m_textureFocused);
         }
 
         return *this;
@@ -102,22 +102,22 @@ namespace tgui
 
     bool RadioButton::load(const std::string& configFileFilename)
     {
-        m_LoadedConfigFile = getResourcePath() + configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        m_loaded = false;
 
          // If the radio button was loaded before then remove the old textures
-        if (m_TextureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_TextureUnchecked);
-        if (m_TextureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureChecked);
-        if (m_TextureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_TextureHover);
-        if (m_TextureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_TextureFocused);
+        if (m_textureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
+        if (m_textureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
+        if (m_textureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(m_LoadedConfigFile))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -126,7 +126,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("RadioButton", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -135,9 +135,9 @@ namespace tgui
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_LoadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_LoadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (unsigned int i = 0; i < properties.size(); ++i)
@@ -147,65 +147,65 @@ namespace tgui
 
             if (property == "textcolor")
             {
-                m_Text.setColor(configFile.readColor(value));
+                m_text.setColor(configFile.readColor(value));
             }
             else if (property == "checkedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureChecked))
+                if (!configFile.readTexture(value, configFileFolder, m_textureChecked))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section RadioButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section RadioButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "uncheckedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureUnchecked))
+                if (!configFile.readTexture(value, configFileFolder, m_textureUnchecked))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section RadioButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section RadioButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "hoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureHover))
+                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section RadioButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section RadioButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else if (property == "focusedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_TextureFocused))
+                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section RadioButton in " + m_LoadedConfigFile + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section RadioButton in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section RadioButton in " + m_LoadedConfigFile + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section RadioButton in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required texture was loaded
-        if ((m_TextureChecked.data != nullptr) && (m_TextureUnchecked.data != nullptr))
+        if ((m_textureChecked.data != nullptr) && (m_textureUnchecked.data != nullptr))
         {
-            m_Loaded = true;
-            m_Size = sf::Vector2f(m_TextureChecked.getSize());
+            m_loaded = true;
+            m_size = sf::Vector2f(m_textureChecked.getSize());
         }
         else
         {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_LoadedConfigFile + " complete?");
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_loadedConfigFile + " complete?");
             return false;
         }
 
         // Check if optional textures were loaded
-        if (m_TextureFocused.data != nullptr)
+        if (m_textureFocused.data != nullptr)
         {
-            m_AllowFocus = true;
-            m_WidgetPhase |= WidgetPhase_Focused;
+            m_allowFocus = true;
+            m_widgetPhase |= WidgetPhase_Focused;
         }
-        if (m_TextureHover.data != nullptr)
+        if (m_textureHover.data != nullptr)
         {
-            m_WidgetPhase |= WidgetPhase_Hover;
+            m_widgetPhase |= WidgetPhase_Hover;
         }
 
         return true;
@@ -215,7 +215,7 @@ namespace tgui
 
     const std::string& RadioButton::getLoadedConfigFile() const
     {
-        return m_LoadedConfigFile;
+        return m_loadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,14 +224,14 @@ namespace tgui
     {
         ClickableWidget::setPosition(x, y);
 
-        m_TextureUnchecked.sprite.setPosition(x, y);
-        m_TextureChecked.sprite.setPosition(x, y + m_TextureUnchecked.getSize().y - m_TextureChecked.getSize().y);
-        m_TextureFocused.sprite.setPosition(x, y);
-        m_TextureHover.sprite.setPosition(x, y);
+        m_textureUnchecked.sprite.setPosition(x, y);
+        m_textureChecked.sprite.setPosition(x, y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
+        m_textureFocused.sprite.setPosition(x, y);
+        m_textureHover.sprite.setPosition(x, y);
 
-        sf::FloatRect textBounds = m_Text.getLocalBounds();
-        m_Text.setPosition(x + std::floor(m_Size.x * 11.0f / 10.0f - textBounds.left),
-                           y + std::floor(((m_Size.y - textBounds.height) / 2.0f) - textBounds.top));
+        sf::FloatRect textBounds = m_text.getLocalBounds();
+        m_text.setPosition(x + std::floor(m_size.x * 11.0f / 10.0f - textBounds.left),
+                           y + std::floor(((m_size.y - textBounds.height) / 2.0f) - textBounds.top));
     }
 
 
@@ -240,7 +240,7 @@ namespace tgui
     void RadioButton::setSize(float width, float height)
     {
         // Don't do anything when the radio button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // A negative size is not allowed for this widget
@@ -248,18 +248,18 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Set the size of the radio button
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
         // If the text is auto sized then recalculate the size
-        if (m_TextSize == 0)
-            setText(m_Text.getString());
+        if (m_textSize == 0)
+            setText(m_text.getString());
 
-        sf::Vector2f scaling(m_Size.x / m_TextureUnchecked.getSize().x, m_Size.y / m_TextureUnchecked.getSize().y);
-        m_TextureChecked.sprite.setScale(scaling);
-        m_TextureUnchecked.sprite.setScale(scaling);
-        m_TextureFocused.sprite.setScale(scaling);
-        m_TextureHover.sprite.setScale(scaling);
+        sf::Vector2f scaling(m_size.x / m_textureUnchecked.getSize().x, m_size.y / m_textureUnchecked.getSize().y);
+        m_textureChecked.sprite.setScale(scaling);
+        m_textureUnchecked.sprite.setScale(scaling);
+        m_textureFocused.sprite.setScale(scaling);
+        m_textureHover.sprite.setScale(scaling);
 
         // Reposition the text
         setPosition(getPosition());
@@ -269,36 +269,36 @@ namespace tgui
 
     sf::Vector2f RadioButton::getSize() const
     {
-        return m_Size;
+        return m_size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f RadioButton::getFullSize() const
     {
-        if (m_Text.getString().isEmpty())
-            return m_Size;
+        if (m_text.getString().isEmpty())
+            return m_size;
         else
-            return sf::Vector2f(static_cast<float>((m_Size.x * 11.0 / 10.0) + m_Text.getLocalBounds().left + m_Text.getLocalBounds().width), m_Size.y);
+            return sf::Vector2f(static_cast<float>((m_size.x * 11.0 / 10.0) + m_text.getLocalBounds().left + m_text.getLocalBounds().width), m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::check()
     {
-        if (m_Checked == false)
+        if (m_checked == false)
         {
             // Tell our parent that all the radio buttons should be unchecked
-            m_Parent->uncheckRadioButtons();
+            m_parent->uncheckRadioButtons();
 
             // Check this radio button
-            m_Checked = true;
+            m_checked = true;
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[Checked].empty() == false)
+            if (m_callbackFunctions[Checked].empty() == false)
             {
-                m_Callback.trigger = Checked;
-                m_Callback.checked = true;
+                m_callback.trigger = Checked;
+                m_callback.checked = true;
                 addCallback();
             }
         }
@@ -308,15 +308,15 @@ namespace tgui
 
     void RadioButton::uncheck()
     {
-        if (m_Checked)
+        if (m_checked)
         {
-            m_Checked = false;
+            m_checked = false;
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[Unchecked].empty() == false)
+            if (m_callbackFunctions[Unchecked].empty() == false)
             {
-                m_Callback.trigger = Unchecked;
-                m_Callback.checked = false;
+                m_callback.trigger = Unchecked;
+                m_callback.checked = false;
                 addCallback();
             }
         }
@@ -326,7 +326,7 @@ namespace tgui
 
     bool RadioButton::isChecked() const
     {
-        return m_Checked;
+        return m_checked;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,23 +334,23 @@ namespace tgui
     void RadioButton::setText(const sf::String& text)
     {
         // Don't do anything when the radio button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Set the new text
-        m_Text.setString(text);
+        m_text.setString(text);
 
         // Check if the text is auto sized
-        if (m_TextSize == 0)
+        if (m_textSize == 0)
         {
             // Set the text size
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_Size.y));
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
+            m_text.setCharacterSize(static_cast<unsigned int>(m_size.y));
+            m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_Text.setCharacterSize(m_TextSize);
+            m_text.setCharacterSize(m_textSize);
         }
 
         // Reposition the text
@@ -361,35 +361,35 @@ namespace tgui
 
     sf::String RadioButton::getText() const
     {
-        return m_Text.getString();
+        return m_text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::setTextFont(const sf::Font& font)
     {
-        m_Text.setFont(font);
+        m_text.setFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font* RadioButton::getTextFont() const
     {
-        return m_Text.getFont();
+        return m_text.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::setTextColor(const sf::Color& Color)
     {
-        m_Text.setColor(Color);
+        m_text.setColor(Color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& RadioButton::getTextColor() const
     {
-        return m_Text.getColor();
+        return m_text.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,24 +397,24 @@ namespace tgui
     void RadioButton::setTextSize(unsigned int size)
     {
         // Change the text size
-        m_TextSize = size;
+        m_textSize = size;
 
         // Call setText to reposition the text
-        setText(m_Text.getString());
+        setText(m_text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int RadioButton::getTextSize() const
     {
-        return m_Text.getCharacterSize();
+        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::allowTextClick(bool acceptTextClick)
     {
-        m_AllowTextClick = acceptTextClick;
+        m_allowTextClick = acceptTextClick;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -423,10 +423,10 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_TextureChecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureHover.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_TextureFocused.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_textureChecked.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureUnchecked.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureFocused.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,28 +434,28 @@ namespace tgui
     bool RadioButton::mouseOnWidget(float x, float y)
     {
         // Don't do anything when the radio button wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return false;
 
         // Check if the mouse is on top of the image
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x, m_Size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
             return true;
         else
         {
             // Check if the mouse is on top of the text
-            if (m_AllowTextClick)
+            if (m_allowTextClick)
             {
-                sf::FloatRect bounds = m_Text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((m_Size.x * 11.0f / 10.0f))), y - getPosition().y - ((m_Size.y - bounds.height) / 2.0f) + bounds.top))
+                sf::FloatRect bounds = m_text.getLocalBounds();
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((m_size.x * 11.0f / 10.0f))), y - getPosition().y - ((m_size.y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }
 
-        if (m_MouseHover == true)
+        if (m_mouseHover == true)
             mouseLeftWidget();
 
         // The mouse is not on top of the radio button
-        m_MouseHover = false;
+        m_mouseHover = false;
         return false;
     }
 
@@ -464,32 +464,32 @@ namespace tgui
     void RadioButton::leftMouseReleased(float x, float y)
     {
         // Add the callback (if the user requested it)
-        if (m_CallbackFunctions[LeftMouseReleased].empty() == false)
+        if (m_callbackFunctions[LeftMouseReleased].empty() == false)
         {
-            m_Callback.trigger = LeftMouseReleased;
-            m_Callback.checked = m_Checked;
-            m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+            m_callback.trigger = LeftMouseReleased;
+            m_callback.checked = m_checked;
+            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
             addCallback();
         }
 
         // Check if we clicked on the radio button (not just mouse release)
-        if (m_MouseDown == true)
+        if (m_mouseDown == true)
         {
             // Check the radio button
             check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[LeftMouseClicked].empty() == false)
+            if (m_callbackFunctions[LeftMouseClicked].empty() == false)
             {
-                m_Callback.trigger = LeftMouseClicked;
-                m_Callback.checked = m_Checked;
-                m_Callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_Callback.mouse.y = static_cast<int>(y - getPosition().y);
+                m_callback.trigger = LeftMouseClicked;
+                m_callback.checked = m_checked;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                 addCallback();
             }
 
-            m_MouseDown = false;
+            m_mouseDown = false;
         }
     }
 
@@ -504,10 +504,10 @@ namespace tgui
             check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[SpaceKeyPressed].empty() == false)
+            if (m_callbackFunctions[SpaceKeyPressed].empty() == false)
             {
-                m_Callback.trigger = SpaceKeyPressed;
-                m_Callback.checked = m_Checked;
+                m_callback.trigger = SpaceKeyPressed;
+                m_callback.checked = m_checked;
                 addCallback();
             }
         }
@@ -517,10 +517,10 @@ namespace tgui
             check();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[ReturnKeyPressed].empty() == false)
+            if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
             {
-                m_Callback.trigger = ReturnKeyPressed;
-                m_Callback.checked = m_Checked;
+                m_callback.trigger = ReturnKeyPressed;
+                m_callback.checked = m_checked;
                 addCallback();
             }
         }
@@ -531,7 +531,7 @@ namespace tgui
     void RadioButton::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_WidgetPhase & WidgetPhase_Focused) == 0)
+        if ((m_widgetPhase & WidgetPhase_Focused) == 0)
             unfocus();
         else
             Widget::widgetFocused();
@@ -610,13 +610,13 @@ namespace tgui
         property = toLower(property);
 
         if (property == "width")
-            value = std::to_string(m_TextureUnchecked.sprite.getGlobalBounds().width);
+            value = std::to_string(m_textureUnchecked.sprite.getGlobalBounds().width);
         else if (property == "height")
-            value = std::to_string(m_TextureUnchecked.sprite.getGlobalBounds().height);
+            value = std::to_string(m_textureUnchecked.sprite.getGlobalBounds().height);
         else if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "checked")
-            value = m_Checked ? "true" : "false";
+            value = m_checked ? "true" : "false";
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
@@ -624,7 +624,7 @@ namespace tgui
         else if (property == "textsize")
             value = std::to_string(getTextSize());
         else if (property == "allowtextclick")
-            value = m_AllowTextClick ? "true" : "false";
+            value = m_allowTextClick ? "true" : "false";
         else if (property == "callback")
         {
             std::string tempValue;
@@ -632,13 +632,13 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(Checked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Checked).size() == 1) && (m_CallbackFunctions.at(Checked).front() == nullptr))
+            if ((m_callbackFunctions.find(Checked) != m_callbackFunctions.end()) && (m_callbackFunctions.at(Checked).size() == 1) && (m_callbackFunctions.at(Checked).front() == nullptr))
                 callbacks.push_back("Checked");
-            if ((m_CallbackFunctions.find(Unchecked) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(Unchecked).size() == 1) && (m_CallbackFunctions.at(Unchecked).front() == nullptr))
+            if ((m_callbackFunctions.find(Unchecked) != m_callbackFunctions.end()) && (m_callbackFunctions.at(Unchecked).size() == 1) && (m_callbackFunctions.at(Unchecked).front() == nullptr))
                 callbacks.push_back("Unchecked");
-            if ((m_CallbackFunctions.find(SpaceKeyPressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(SpaceKeyPressed).size() == 1) && (m_CallbackFunctions.at(SpaceKeyPressed).front() == nullptr))
+            if ((m_callbackFunctions.find(SpaceKeyPressed) != m_callbackFunctions.end()) && (m_callbackFunctions.at(SpaceKeyPressed).size() == 1) && (m_callbackFunctions.at(SpaceKeyPressed).front() == nullptr))
                 callbacks.push_back("SpaceKeyPressed");
-            if ((m_CallbackFunctions.find(ReturnKeyPressed) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ReturnKeyPressed).size() == 1) && (m_CallbackFunctions.at(ReturnKeyPressed).front() == nullptr))
+            if ((m_callbackFunctions.find(ReturnKeyPressed) != m_callbackFunctions.end()) && (m_callbackFunctions.at(ReturnKeyPressed).size() == 1) && (m_callbackFunctions.at(ReturnKeyPressed).front() == nullptr))
                 callbacks.push_back("ReturnKeyPressed");
 
             encodeList(callbacks, value);
@@ -673,29 +673,29 @@ namespace tgui
 
     void RadioButton::initialize(Container *const parent)
     {
-        m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        m_parent = parent;
+        m_text.setFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_Checked)
-            target.draw(m_TextureChecked, states);
+        if (m_checked)
+            target.draw(m_textureChecked, states);
         else
-            target.draw(m_TextureUnchecked, states);
+            target.draw(m_textureUnchecked, states);
 
         // When the radio button is focused then draw an extra image
-        if ((m_Focused) && (m_WidgetPhase & WidgetPhase_Focused))
-            target.draw(m_TextureFocused, states);
+        if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
+            target.draw(m_textureFocused, states);
 
         // When the mouse is on top of the radio button then draw an extra image
-        if ((m_MouseHover) && (m_WidgetPhase & WidgetPhase_Hover))
-            target.draw(m_TextureHover, states);
+        if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            target.draw(m_textureHover, states);
 
         // Draw the text
-        target.draw(m_Text, states);
+        target.draw(m_text, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -614,34 +614,34 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
         // This contains the different items in the list box
-        std::vector<sf::String> m_Items;
+        std::vector<sf::String> m_items;
 
         // What is the index of the selected item?
-        int m_SelectedItem;
+        int m_selectedItem;
 
         // The size must be stored
-        sf::Vector2u m_Size;
-        unsigned int m_ItemHeight;
-        unsigned int m_TextSize;
+        sf::Vector2u m_size;
+        unsigned int m_itemHeight;
+        unsigned int m_textSize;
 
         // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
-        unsigned int m_MaxItems;
+        unsigned int m_maxItems;
 
         // When there are too many items a scrollbar will be shown
-        Scrollbar* m_Scroll;
+        Scrollbar* m_scroll;
 
         // These colors are used to draw the list box
-        sf::Color m_BackgroundColor;
-        sf::Color m_TextColor;
-        sf::Color m_SelectedBackgroundColor;
-        sf::Color m_SelectedTextColor;
-        sf::Color m_BorderColor;
+        sf::Color m_backgroundColor;
+        sf::Color m_textColor;
+        sf::Color m_selectedBackgroundColor;
+        sf::Color m_selectedTextColor;
+        sf::Color m_borderColor;
 
         // The font used to draw the text
-        const sf::Font* m_TextFont;
+        const sf::Font* m_textFont;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend class ComboBox;

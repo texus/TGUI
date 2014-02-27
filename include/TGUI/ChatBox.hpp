@@ -521,22 +521,22 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
-        unsigned int m_LineSpacing;
-        unsigned int m_TextSize;
-        sf::Color m_TextColor;
-        sf::Color m_BorderColor;
+        unsigned int m_lineSpacing;
+        unsigned int m_textSize;
+        sf::Color m_textColor;
+        sf::Color m_borderColor;
 
-        unsigned int m_MaxLines;
+        unsigned int m_maxLines;
 
-        float m_FullTextHeight;
+        float m_fullTextHeight;
 
         // The panel containing the labels
-        Panel* m_Panel;
+        Panel* m_panel;
 
         // The scrollbar
-        Scrollbar* m_Scroll;
+        Scrollbar* m_scroll;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -383,7 +383,7 @@ namespace tgui
         template <typename T>
         void bindGlobalCallback(void (T::*func)(const Callback&), T* const classPtr)
         {
-            m_GlobalCallbackFunctions.push_back(std::bind(func, classPtr, std::placeholders::_1));
+            m_globalCallbackFunctions.push_back(std::bind(func, classPtr, std::placeholders::_1));
         }
 
 
@@ -537,19 +537,19 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::vector<Widget::Ptr> m_Widgets;
-        std::vector<sf::String>  m_ObjName;
+        std::vector<Widget::Ptr> m_widgets;
+        std::vector<sf::String>  m_objName;
 
         // The id of the focused widget
-        unsigned int m_FocusedWidget;
+        unsigned int m_focusedWidget;
 
-        sf::Font m_GlobalFont;
+        sf::Font m_globalFont;
 
         // Is the container focused? If so, then one of the widgets inside the container may be focused
-        bool m_ContainerFocused;
+        bool m_containerFocused;
 
         // A list that stores all functions that receive callbacks triggered by child widgets
-        std::list< std::function<void(const Callback&)> > m_GlobalCallbackFunctions;
+        std::list< std::function<void(const Callback&)> > m_globalCallbackFunctions;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -621,7 +621,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        sf::RenderWindow* m_Window;
+        sf::RenderWindow* m_window;
 
 
         friend class Gui;

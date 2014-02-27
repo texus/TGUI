@@ -37,12 +37,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Label::Label() :
-    m_AutoSize(true)
+    m_autoSize(true)
     {
-        m_Callback.widgetType = Type_Label;
-        m_Loaded = true;
+        m_callback.widgetType = Type_Label;
+        m_loaded = true;
 
-        m_Background.setFillColor(sf::Color::Transparent);
+        m_background.setFillColor(sf::Color::Transparent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,13 +66,13 @@ namespace tgui
         if (configFileFilename.empty())
             return true;
 
-        m_LoadedConfigFile = getResourcePath() + configFileFilename;
+        m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
         ConfigFile configFile;
-        if (!configFile.open(m_LoadedConfigFile))
+        if (!configFile.open(m_loadedConfigFile))
         {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -81,7 +81,7 @@ namespace tgui
         std::vector<std::string> values;
         if (!configFile.read("Label", properties, values))
         {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_LoadedConfigFile + ".");
+            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;
         }
 
@@ -99,7 +99,7 @@ namespace tgui
                 setTextColor(extractColor(value));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Label in " + m_LoadedConfigFile + ".");
+                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Label in " + m_loadedConfigFile + ".");
         }
 
         return false;
@@ -109,7 +109,7 @@ namespace tgui
 
     const std::string& Label::getLoadedConfigFile() const
     {
-        return m_LoadedConfigFile;
+        return m_loadedConfigFile;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,13 +121,13 @@ namespace tgui
         if (height < 0) height = -height;
 
         // Change the size of the label
-        m_Size.x = width;
-        m_Size.y = height;
+        m_size.x = width;
+        m_size.y = height;
 
-        m_Background.setSize(m_Size);
+        m_background.setSize(m_size);
 
         // You are no longer auto-sizing
-        m_AutoSize = false;
+        m_autoSize = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,23 +136,23 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_Text.setPosition(std::floor(x - m_Text.getLocalBounds().left + 0.5f), std::floor(y - m_Text.getLocalBounds().top + 0.5f));
-        m_Background.setPosition(x, y);
+        m_text.setPosition(std::floor(x - m_text.getLocalBounds().left + 0.5f), std::floor(y - m_text.getLocalBounds().top + 0.5f));
+        m_background.setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setText(const sf::String& string)
     {
-        m_Text.setString(string);
+        m_text.setString(string);
 
         setPosition(getPosition());
 
         // Change the size of the label if necessary
-        if (m_AutoSize)
+        if (m_autoSize)
         {
-            m_Size = sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height);
-            m_Background.setSize(m_Size);
+            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
+            m_background.setSize(m_size);
         }
     }
 
@@ -160,14 +160,14 @@ namespace tgui
 
     const sf::String& Label::getText() const
     {
-        return m_Text.getString();
+        return m_text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextFont(const sf::Font& font)
     {
-        m_Text.setFont(font);
+        m_text.setFont(font);
         setText(getText());
     }
 
@@ -175,36 +175,36 @@ namespace tgui
 
     const sf::Font* Label::getTextFont() const
     {
-        return m_Text.getFont();
+        return m_text.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextColor(const sf::Color& color)
     {
-        m_Text.setColor(color);
+        m_text.setColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Label::getTextColor() const
     {
-        return m_Text.getColor();
+        return m_text.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextSize(unsigned int size)
     {
-        m_Text.setCharacterSize(size);
+        m_text.setCharacterSize(size);
 
         setPosition(getPosition());
 
         // Change the size of the label if necessary
-        if (m_AutoSize)
+        if (m_autoSize)
         {
-            m_Size = sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height);
-            m_Background.setSize(m_Size);
+            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
+            m_background.setSize(m_size);
         }
     }
 
@@ -212,34 +212,34 @@ namespace tgui
 
     unsigned int Label::getTextSize() const
     {
-        return m_Text.getCharacterSize();
+        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        m_Background.setFillColor(backgroundColor);
+        m_background.setFillColor(backgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Color& Label::getBackgroundColor() const
     {
-        return m_Background.getFillColor();
+        return m_background.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setAutoSize(bool autoSize)
     {
-        m_AutoSize = autoSize;
+        m_autoSize = autoSize;
 
         // Change the size of the label if necessary
-        if (m_AutoSize)
+        if (m_autoSize)
         {
-            m_Size = sf::Vector2f(m_Text.getLocalBounds().width, m_Text.getLocalBounds().height);
-            m_Background.setSize(m_Size);
+            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
+            m_background.setSize(m_size);
         }
     }
 
@@ -247,7 +247,7 @@ namespace tgui
 
     bool Label::getAutoSize() const
     {
-        return m_AutoSize;
+        return m_autoSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,7 +311,7 @@ namespace tgui
         else if (property == "backgroundcolor")
             value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "autosize")
-            value = m_AutoSize ? "true" : "false";
+            value = m_autoSize ? "true" : "false";
         else // The property didn't match
             return ClickableWidget::getProperty(property, value);
 
@@ -338,8 +338,8 @@ namespace tgui
     void Label::initialize(Container *const parent)
     {
 
-        m_Parent = parent;
-        setTextFont(m_Parent->getGlobalFont());
+        m_parent = parent;
+        setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ namespace tgui
     void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // When there is no text then there is nothing to draw
-        if (m_Text.getString().isEmpty())
+        if (m_text.getString().isEmpty())
             return;
 
         // Calculate the scale factor of the view
@@ -356,7 +356,7 @@ namespace tgui
 
         // Get the global position
         sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_Size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];
@@ -378,11 +378,11 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the background
-        if (m_Background.getFillColor() != sf::Color::Transparent)
-            target.draw(m_Background, states);
+        if (m_background.getFillColor() != sf::Color::Transparent)
+            target.draw(m_background, states);
 
         // Draw the text
-        target.draw(m_Text, states);
+        target.draw(m_text, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

@@ -350,59 +350,59 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_LoadedConfigFile;
+        std::string m_loadedConfigFile;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
-        bool m_MouseDownOnThumb;
-        sf::Vector2f m_MouseDownOnThumbPos;
+        bool m_mouseDownOnThumb;
+        sf::Vector2f m_mouseDownOnThumbPos;
 
-        unsigned int m_Maximum;
-        unsigned int m_Value;
+        unsigned int m_maximum;
+        unsigned int m_value;
 
         // Maximum should be above this value before the scrollbar is needed
-        unsigned int m_LowValue;
+        unsigned int m_lowValue;
 
         // Is the scrollbar draw vertically?
-        bool m_VerticalScroll;
+        bool m_verticalScroll;
 
         // Does the image lie vertically?
-        bool m_VerticalImage;
+        bool m_verticalImage;
 
         // How far should the value change when pressing one of the arrows?
-        unsigned int m_ScrollAmount;
+        unsigned int m_scrollAmount;
 
         // When no scrollbar is needed, should the scrollbar be drawn or stay hidden?
-        bool m_AutoHide;
+        bool m_autoHide;
 
         // Did the mouse went down on one of the arrows?
-        bool m_MouseDownOnArrow;
+        bool m_mouseDownOnArrow;
 
         // If this is true then the L, M and R images will be used.
         // If it is false then the scrollbar is just one big image that will be stored in the M image.
-        bool m_SplitImage;
+        bool m_splitImage;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_SeparateHoverImage;
+        bool m_separateHoverImage;
 
         // The size of the scrollbar and its thumb
-        sf::Vector2f m_Size;
-        sf::Vector2f m_ThumbSize;
+        sf::Vector2f m_size;
+        sf::Vector2f m_thumbSize;
 
-        Texture m_TextureTrackNormal_L;
-        Texture m_TextureTrackHover_L;
-        Texture m_TextureTrackNormal_M;
-        Texture m_TextureTrackHover_M;
-        Texture m_TextureTrackNormal_R;
-        Texture m_TextureTrackHover_R;
+        Texture m_textureTrackNormal_L;
+        Texture m_textureTrackHover_L;
+        Texture m_textureTrackNormal_M;
+        Texture m_textureTrackHover_M;
+        Texture m_textureTrackNormal_R;
+        Texture m_textureTrackHover_R;
 
-        Texture m_TextureThumbNormal;
-        Texture m_TextureThumbHover;
+        Texture m_textureThumbNormal;
+        Texture m_textureThumbHover;
 
-        Texture m_TextureArrowUpNormal;
-        Texture m_TextureArrowUpHover;
+        Texture m_textureArrowUpNormal;
+        Texture m_textureArrowUpHover;
 
-        Texture m_TextureArrowDownNormal;
-        Texture m_TextureArrowDownHover;
+        Texture m_textureArrowDownNormal;
+        Texture m_textureArrowDownHover;
 
         // ListBox, ComboBox and TextBox can access the scrollbar directly
         friend class ListBox;

@@ -45,8 +45,8 @@ namespace tgui
         m_value(0),
         m_maximum(360)
     {
-        m_Callback.widgetType = Type_Knob;
-        m_DraggableWidget = true;
+        m_callback.widgetType = Type_Knob;
+        m_draggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ namespace tgui
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // When everything is loaded successfully, this will become true.
-        m_Loaded = false;
+        m_loaded = false;
 
         // If the knob was loaded before then remove the old textures first
         if (m_backgroundTexture.data != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
@@ -184,7 +184,7 @@ namespace tgui
             m_foregroundTexture.sprite.setOrigin(m_foregroundTexture.getSize().x / 2.0f, m_foregroundTexture.getSize().y / 2.0f);
             m_foregroundTexture.sprite.setRotation(m_startRotation - m_imageRotation);
 
-            m_Loaded = true;
+            m_loaded = true;
             setSize(static_cast<float>(m_backgroundTexture.getSize().x), static_cast<float>(m_backgroundTexture.getSize().y));
         }
         else
@@ -219,7 +219,7 @@ namespace tgui
     void Knob::setSize(float width, float height)
     {
         // Don't do anything when the knob wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
         // Set the new size of the knob
@@ -340,10 +340,10 @@ namespace tgui
             recalculateRotation();
 
             // Add the callback (if the user requested it)
-            if (m_CallbackFunctions[ValueChanged].empty() == false)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
             {
-                m_Callback.trigger = ValueChanged;
-                m_Callback.value   = static_cast<int>(m_value);
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
                 addCallback();
             }
         }
@@ -393,8 +393,8 @@ namespace tgui
     {
         Widget::setTransparency(transparency);
 
-        m_backgroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
-        m_foregroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_Opacity));
+        m_backgroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_foregroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,10 +413,10 @@ namespace tgui
                 return true;
         }
 
-        if (m_MouseHover)
+        if (m_mouseHover)
             mouseLeftWidget();
 
-        m_MouseHover = false;
+        m_mouseHover = false;
         return false;
     }
 
@@ -425,7 +425,7 @@ namespace tgui
     void Knob::leftMousePressed(float x, float y)
     {
         // Set the mouse down flag
-        m_MouseDown = true;
+        m_mouseDown = true;
 
         // Change the value of the knob depending on where you clicked
         mouseMoved(x, y);
@@ -435,7 +435,7 @@ namespace tgui
 
     void Knob::leftMouseReleased(float, float)
     {
-        m_MouseDown = false;
+        m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,19 +443,19 @@ namespace tgui
     void Knob::mouseMoved(float x, float y)
     {
         // Don't do anything when the knob wasn't loaded correctly
-        if (m_Loaded == false)
+        if (m_loaded == false)
             return;
 
-        if (m_MouseHover == false)
+        if (m_mouseHover == false)
             mouseEnteredWidget();
 
-        m_MouseHover = true;
+        m_mouseHover = true;
 
         // Get the current position
         sf::Vector2f centerPosition = getPosition() + sf::Vector2f(m_size.x / 2.0f, m_size.y / 2.0f);
 
         // Check if the mouse button is down
-        if (m_MouseDown)
+        if (m_mouseDown)
         {
             // Find out the direction that the knob should now point
             float angle;
@@ -662,7 +662,7 @@ namespace tgui
 
             std::vector<sf::String> callbacks;
 
-            if ((m_CallbackFunctions.find(ValueChanged) != m_CallbackFunctions.end()) && (m_CallbackFunctions.at(ValueChanged).size() == 1) && (m_CallbackFunctions.at(ValueChanged).front() == nullptr))
+            if ((m_callbackFunctions.find(ValueChanged) != m_callbackFunctions.end()) && (m_callbackFunctions.at(ValueChanged).size() == 1) && (m_callbackFunctions.at(ValueChanged).front() == nullptr))
                 callbacks.push_back("ValueChanged");
 
             encodeList(callbacks, value);

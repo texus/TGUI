@@ -319,13 +319,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::vector<Texture>  m_Textures;
-        std::vector<sf::Time> m_FrameDuration;
+        std::vector<Texture>  m_textures;
+        std::vector<sf::Time> m_frameDuration;
 
-        int m_CurrentFrame;
+        int m_currentFrame;
 
-        bool m_Playing;
-        bool m_Looping;
+        bool m_playing;
+        bool m_looping;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -288,7 +288,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called right after the elapsed time is changed.
-        // The elapsed time is only changed when the widget has set m_AnimatedWidget to true.
+        // The elapsed time is only changed when the widget has set m_animatedWidget to true.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void update();
 
@@ -420,43 +420,43 @@ namespace tgui
       protected:
 
         // When a widget is disabled, it will no longer receive events
-        bool m_Enabled;
+        bool m_enabled;
 
         // Is the widget visible? When it is invisible it will not receive events and it won't be drawn.
-        bool m_Visible;
+        bool m_visible;
 
         // This bool will be true from the moment that the load function is completed successfully.
-        bool m_Loaded;
+        bool m_loaded;
 
         // This will store the different phases that the widget can have
         // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down
-        unsigned char m_WidgetPhase;
+        unsigned char m_widgetPhase;
 
         // This will point to our parent widget. If there is no parent then this will be nullptr.
-        Container* m_Parent;
+        Container* m_parent;
 
         // How transparent is the widget
-        unsigned char m_Opacity;
+        unsigned char m_opacity;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
-        bool m_MouseHover;
-        bool m_MouseDown;
+        bool m_mouseHover;
+        bool m_mouseDown;
 
         // Are you focused on the widget?
-        bool m_Focused;
+        bool m_focused;
 
         // Can the widget be focused?
-        bool m_AllowFocus;
+        bool m_allowFocus;
 
         // Keep track of the elapsed time.
-        bool m_AnimatedWidget;
-        sf::Time m_AnimationTimeElapsed;
+        bool m_animatedWidget;
+        sf::Time m_animationTimeElapsed;
 
         // This is set to true for widgets that have something to be dragged around (e.g. sliders and scrollbars)
-        bool m_DraggableWidget;
+        bool m_draggableWidget;
 
         // This is set to true for widgets that store other widgets inside them
-        bool m_ContainerWidget;
+        bool m_containerWidget;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,10 +507,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        unsigned int m_LeftBorder;
-        unsigned int m_TopBorder;
-        unsigned int m_RightBorder;
-        unsigned int m_BottomBorder;
+        unsigned int m_leftBorder;
+        unsigned int m_topBorder;
+        unsigned int m_rightBorder;
+        unsigned int m_bottomBorder;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -38,8 +38,8 @@ namespace tgui
     ConfigFile::~ConfigFile()
     {
         // If a file is still open then close it
-        if (m_File.is_open())
-            m_File.close();
+        if (m_file.is_open())
+            m_file.close();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,14 +47,14 @@ namespace tgui
     bool ConfigFile::open(const std::string& filename)
     {
         // If a file is already open then close it
-        if (m_File.is_open())
-            m_File.close();
+        if (m_file.is_open())
+            m_file.close();
 
         // Open the file
-        m_File.open(filename.c_str(), std::ifstream::in);
+        m_file.open(filename.c_str(), std::ifstream::in);
 
         // Check if the file was opened
-        if (m_File.is_open())
+        if (m_file.is_open())
             return true;
         else
             return false;
@@ -69,11 +69,11 @@ namespace tgui
         unsigned int lineNumber = 0;
 
         // Stop reading when we reach the end of the file
-        while (!m_File.eof())
+        while (!m_file.eof())
         {
             // Get the next line
             std::string line;
-            std::getline(m_File, line);
+            std::getline(m_file, line);
             lineNumber++;
 
             std::string::const_iterator c = line.begin();
@@ -277,8 +277,8 @@ namespace tgui
     void ConfigFile::close()
     {
         // Close the file (if it is open)
-        if (m_File.is_open())
-            m_File.close();
+        if (m_file.is_open())
+            m_file.close();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
