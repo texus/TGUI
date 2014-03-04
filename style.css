@@ -140,8 +140,14 @@ p.SmallBottomMargin
 
 pre
 {
-    margin-top: 0em;
-    margin-bottom: 0em;
+    line-height: 1.4em;
+
+    margin: 0;
+
+    width: 99%;
+    overflow: auto;
+
+    background-color: #ffffbb;
 }
 
 div.Space
