@@ -147,7 +147,9 @@ pre
     width: 99%;
     overflow: auto;
 
-    background-color: #ffffbb;
+    background-color: #f8f8ff;
+
+    border: 1px solid #dedede;
 }
 
 div.Space
