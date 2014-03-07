@@ -146,13 +146,10 @@ img
     margin-bottom: 2em;
 
     max-width: 100%;
-
-    display: block;
 }
 
 img.ThumbnailBlackTheme, img.ThumbnailBabyBlueTheme, img.ThumbnailFormBuilder
 {
-    display: inline;
     float: left;
     margin: 10px;
 }
