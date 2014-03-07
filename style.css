@@ -12,6 +12,7 @@ p#SubTitle
 body
 {
     background-color: #e6e6e6;
+    background-image: url('/resources/Background.png');
 
     margin-left: 0em;
     margin-right: 0em;
