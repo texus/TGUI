@@ -1,11 +1,29 @@
-<div class="NavigationBar">
-    <ul class="NavigationBar">
-        <li class="NavigationBar"><a href="{{site.baseurl}}" class="NavigationBar">Home</a></li>
-        <li class="NavigationBar"><a href="{{site.baseurl}}download/" class="NavigationBar">Download</a></li>
-        <li class="NavigationBar"><a href="{{site.baseurl}}example-code/" class="NavigationBar">Example code</a></li>
-        <li class="NavigationBar"><a href="{{site.baseurl}}tutorials/" class="NavigationBar">Tutorials</a></li>
-        <li class="NavigationBar"><a href="{{site.baseurl}}documentation/" class="NavigationBar">Documentation</a></li>
-        <li class="NavigationBar"><a href="http://old.tgui.eu/blog/" class="NavigationBar">Blog</a></li>
-        <li class="NavigationBar"><a href="http://forum.tgui.eu/" class="NavigationBar">Forum</a></li>
+<div id="nav">
+    <ul>
+        <li><a href="{{site.baseurl}}">Home</a></li>
+        <li><a href="{{site.baseurl}}download/">Download</a></li>
+        <li>
+            <a href="{{site.baseurl}}example-code/">Example code</a>
+            <ul>
+                <li><a href="{{site.baseurl}}example-code/v06/">TGUI 0.6</a></li>
+                <li><a href="{{site.baseurl}}example-code/v05/">TGUI 0.5</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{site.baseurl}}tutorials/">Tutorials</a>
+            <ul>
+                <li><a href="{{site.baseurl}}tutorials/v06/">TGUI 0.6</a></li>
+                <li><a href="{{site.baseurl}}tutorials/v05/">TGUI 0.5</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{site.baseurl}}documentation/">Documentation</a>
+            <ul>
+                <li><a href="{{site.baseurl}}documentation/v0.6/">TGUI 0.6</a></li>
+                <li><a href="{{site.baseurl}}documentation/v0.5/">TGUI 0.5</a></li>
+            </ul>
+        </li>
+        <li><a href="http://old.tgui.eu/blog/">Blog</a></li>
+        <li><a href="http://forum.tgui.eu/">Forum</a></li>
     </ul>
 </div>

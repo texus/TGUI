@@ -11,7 +11,7 @@ p#SubTitle
 
 body
 {
-    background-color: #e6e6e6;
+    background-color: #e0e0e0;
     background-image: url('/resources/Background.png');
 
     margin-left: 0em;
@@ -35,61 +35,105 @@ div.SmallerMargin
     margin-bottom: 1.5em;
 }
 
-div#Background
+#Background
 {
     background-color: white;
-    
+
     border-style: ridge;
     border-width: 4px;
     border-color: black;
-    
+
     margin-left: auto;
     margin-right: auto;
     margin-top: 1em;
     margin-bottom: 1em;
-    
+
     padding-left: 2em;
     padding-right: 2em;
     padding-top: 0.25em;
     padding-bottom: 0.25em;
-    
+
     min-width: 60em;
     width: 80%;
 }
 
-div.NavigationBar
+
+#nav
 {
     margin-bottom: 10px;
 }
+    #nav ul {
+        padding: 0;
+        list-style: none;
+        position: relative;
+        display: inline-table;
+    
+        background: #f0f0f0;
+    }
 
-ul.NavigationBar
-{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-}
+    #nav ul:after {
+        content: "";
+        clear: both;
+        display: block;
+    }
 
-li.NavigationBar
-{
-    display: inline;
-    line-height: 2.5em;
-}
+        #nav ul li {
+            float: left;
+    
+            border-left: 1px solid #fafafa;
+            border-right: 1px solid #e0e0e0;
+        
+            min-width: 7em;
+            text-align: center;
+        }
 
-a.NavigationBar:link, a.NavigationBar:visited
-{
-    color: #777777;
-    background-color: #f0f0f0;
-    text-align: center;
-    padding: 0.5em;
-}
+        #nav ul li:hover {
+            background: #e0e0e0;
+        }
 
-a.NavigationBar:hover, a.NavigationBar:active
-{
-    color: black;
-    background-color: #e6e6e6;
-}
+            #nav ul li a {
+                display: block;
+                text-decoration: none;
+    
+                padding: 0.5em 1em;
+                color: #777777;
+            }
+
+            #nav ul li:hover a {
+                color: black;
+            }
+
+            #nav ul li:hover > ul {
+                display: block;
+            }
+
+        #nav ul ul {
+            display: none;
+            padding: 0;
+            position: absolute;
+            top: 100%;
+    
+            background: #f0f0f0;
+        }
+
+            #nav ul ul li {
+                float: none;
+                border-top: 1px solid #fafafa;
+                border-bottom: 1px solid #e0e0e0;
+                position: relative;
+            }
+                #nav ul ul li a {
+                    padding: 0.4em 1em;
+                    color: #fff;
+                }    
+                    #nav ul ul li a:hover {
+                        background: #e0e0e0;
+                    }
+            
+                    #nav ul ul ul {
+                        position: absolute; left: 100%; top:0;
+                    }
+
 
 .BehindFloat
 {
@@ -100,13 +144,13 @@ img
 {
     margin-top: 0em;
     margin-bottom: 2em;
-    
+
     max-width: 100%;
 
     display: block;
 }
 
-img.ThumbnailBlackTheme, img.ThumbnailBabyBlueTheme
+img.ThumbnailBlackTheme, img.ThumbnailBabyBlueTheme, img.ThumbnailFormBuilder
 {
     display: inline;
     float: left;
