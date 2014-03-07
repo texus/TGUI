@@ -1,9 +1,126 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <link rel="canonical" href="http://old.tgui.eu/tutorials/v06/visual-studio/"/>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://old.tgui.eu/tutorials/v06/visual-studio/"/>
+    {% include head.ext %}
+
+    <title>Visual Studio</title>
 </head>
 
 <body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Visual Studio</h2>
+    <div>
+        <p><span class="Red">TGUI requires a compiler that supports c++11. This means that you need at least the VC++10 compiler (Visual Studio 2010).</span></p>
+    </div>
+
+    <div>
+        <h3>CMake</h3>
+
+        <p>
+          <ul>
+            <li>You will need to use CMake in order to build TGUI. You can download the latest version here.</li>
+            <li>Also make sure that you already have sfml on your computer.
+                It would be even better to make sure you have sfml working before trying to use TGUI.
+                If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
+          </ul>
+        </p>
+
+        <p class="SmallBottomMargin">
+          <ol>
+            <li>Set the pathname to the TGUI folder that you downloaded.</li>
+            <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
+            <li>Press this button to start configuring.</li>
+          </ol>
+        </p>
+        <a href="{{site.baseurl}}resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="{{site.baseurl}}resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
+
+        <p class="SmallBottomMargin">
+            Next select your compiler. I am using the Visual Studio 2008 in this example.<br />
+            Just keep the “Use default native compilers” option checked and ignore the other three options.
+        </p>
+        <a href="{{site.baseurl}}resources/CMakeSelectCompilerWindowsVisualStudio.png"><img alt="CMake Select Compiler" src="{{site.baseurl}}resources/CMakeSelectCompilerWindowsVisualStudio.png" width="717" height="520" /></a>
+
+        <p>It is possible that CMake will not be able to find sfml and will give you an error.<br />
+           You will then have to tell CMake where it needs to search for sfml. Change the SFML_ROOT (not SFMLDIR like in older versions) to the correct path. This will be the root path of sfml, which contains the include and lib folders.
+        </p>
+
+        <p class="SmallBottomMargin">
+          When you compiled sfml yourself then you will have to watch out for three things:
+          <ul>
+            <li>You probably need to place the lib folder there yourself, with the libraries that you have build.</li>
+            <li>This folder must contain the libraries directly (not inside a Debug or Release folder).</li>
+            <li>If you use static linking then the folder must of course contain the static sfml libraries.</li>
+          </ul>
+        </p>
+        <a href="{{site.baseurl}}resources/CMakeSfmlNotFoundWindowsVisualStudio.png"><img alt="CMake SFML not found" src="{{site.baseurl}}resources/CMakeSfmlNotFoundWindowsVisualStudio.png" width="716" height="528" /></a>
+
+        <p>Now you can also change the other options. At the end of this CMake part, you can find the explanation of some of the options. Once you are done, you need to press Configure again.</p>
+
+        <p class="SmallBottomMargin">
+            After you pressed configure, you should have reached the message “Configuring done” at the bottom.<br />
+            All you have to do now is press Generate.
+        </p>
+        <a href="{{site.baseurl}}resources/CMakeGenerateWindowsVisualStudio.png"><img alt="CMake Generate" src="{{site.baseurl}}resources/CMakeGenerateWindowsVisualStudio.png" width="716" height="528" /></a>
+
+        <p>Some last notes about CMake:
+          <ul>
+            <li>The <span class="Red">TGUI_SHARED_LIBS</span> <span class="Blue">option has to match the one from sfml</span>.</li>
+            <li>If you use the static sfml libraries (the ones that have “-s” in their names) then you should uncheck this option.</li>
+            <li>The <span class="Red">CMAKE_BUILD_TYPE</span> can be <span class="Blue">Release</span> or <span class="Blue">Debug</span>. This option must match with the one you must select in Visual Studio later.</li>
+            <li><span class="Red">TGUI_USE_STATIC_STD_LIBS</span> must match the corresponding option in sfml and should thus be left <span class="Blue">FALSE</span> unless you know what you are doing.</li>
+          </ul>
+        </p>
+
+    </div>
+
+    <div>
+        <h3>Visual Studio</h3>
+
+        <p>You are not done yet.<br />
+           CMake made a Visual Studio project in the build directory that has to be build first.<br />
+           Simply open the tgui.sln file, set the configuration to Debug or Release and then hit “Build Solution”.
+        </p>
+
+        <p>When this is done you should find the tgui(-d).lib and tgui(-d).dll inside the lib folder.<br />
+           If you chose to build statically then you will of course only find a tgui-s(-d).lib file.
+        </p>
+
+        <p>To make it easier to use tgui in your project, you should copy the libraries to the same folder.<br />
+           I would advice to make a lib folder in the tgui root directory and place the libraries there.
+        </p>
+    </div>
+
+    <div>
+        <h3>Using TGUI</h3>
+
+        <p class="SmallBottomMargin">Open the Project Properties.</p>
+        <a href="{{site.baseurl}}resources/VS2010ProjectProperties.png"><img alt="Visual Studio Project Properties" src="{{site.baseurl}}resources/VS2010ProjectProperties.png" width="448" height="378" /></a>
+
+        <p class="SmallBottomMargin">In both debug and release mode, add the include and library directories.</p>
+        <a href="{{site.baseurl}}resources/VS2010AdditionalIncludeDirectories.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Include Directories" src="{{site.baseurl}}resources/VS2010AdditionalIncludeDirectories.png" width="853" height="605" /></a>
+        <a href="{{site.baseurl}}resources/VS2010AdditionalLibraryDirectories.png"><img alt="Visual Studio Additional Library Directories" src="{{site.baseurl}}resources/VS2010AdditionalLibraryDirectories.png" width="853" height="605" /></a>
+
+        <p class="SmallBottomMargin">
+            In both debug and release mode (this time seperately), you must add the library to link with.<br />
+            When linking statically it will of course become tgui-s.lib and tgui-s-d.lib.<br />
+            The order of linking is also important: first sfml, then tgui.
+        </p>
+        <a href="{{site.baseurl}}resources/VS2010AdditionalDependenciesRelease.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Dependencies" src="{{site.baseurl}}resources/VS2010AdditionalDependenciesRelease.png" width="852" height="607" /></a>
+        <a href="{{site.baseurl}}resources/VS2010AdditionalDependenciesDebug.png"><img alt="Visual Studio Additional Dependencies" src="{{site.baseurl}}resources/VS2010AdditionalDependenciesDebug.png" width="852" height="603" /></a>
+
+        <p>When linking dynamically, don’t forget to copy the needed dlls to the directory where your compiled executable is.</p>
+
+        <p>You should now be able to use TGUI.</p>
+
+    </div>
+
+    {% include footer.ext %}
+</div>
 </body>

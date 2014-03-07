@@ -138,6 +138,16 @@ p.SmallBottomMargin
     margin-bottom: 0.2em;
 }
 
+span.Red
+{
+    color: red;
+}
+
+span.Blue
+{
+    color: blue;
+}
+
 pre
 {
     line-height: 1.4em;

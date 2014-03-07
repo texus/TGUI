@@ -1,9 +1,214 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <link rel="canonical" href="http://old.tgui.eu/tutorials/v06/config-files/"/>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://old.tgui.eu/tutorials/v06/config-files/"/>
+    {% include head.ext %}
+
+    <title>Tutorials</title>
 </head>
 
 <body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Config files</h2>
+
+    <p>Config files are needed to load widgets. TGUI comes with the default Black theme which can be used until you have created your own theme.</p>
+
+    <p>The config files contain information about the widget that you want to load. Most of the information is just which image file needs to be loaded, but other important information can be put in there as well. In the Black style for example, the images from EditBox have rounded corners and the config file contains information about how many pixels the text should be from the side of the image.</p>
+
+    <p>The best way to write your own config files is to look at the ones that are provided with TGUI.<br />
+       However if you really need a list of all options that a widget can have then you can find it below.</p>
+
+    <p>When it says “SplitImage available” between brackets, it means that the xxx option can be replaced by xxx_L, xxx_M and xxx_R. If you don’t know what SplitImage is then take a look at an old <a href="http://tgui.weebly.com/v05---splitimage-explanation.html">tutorial about SplitImage</a> (outdated but it explains what it is).</p>
+
+<p>
+<b>Button</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>TextColor</li>
+  <li>NormalImage (SplitImage available)</li>
+  <li>HoverImage (SplitImage available)</li>
+  <li>DownImage (SplitImage available)</li>
+  <li>FocusedImage (SplitImage available)</li>
+</ul>
+
+<b>ChatBox</b>
+<ul>
+  <li>BackgroundColor</li>
+  <li>BorderColor</li>
+  <li>Borders</li>
+  <li>Scrollbar</li>
+</ul>
+
+<b>CheckBox</b>
+<ul>
+  <li>TextColor</li>
+  <li>CheckedImage</li>
+  <li>UncheckedImage</li>
+  <li>HoverImage</li>
+  <li>FocusedImage</li>
+</ul>
+
+<b>ChildWindow</b>
+<ul>
+  <li>BackgroundColor</li>
+  <li>TitleColor</li>
+  <li>BorderColor</li>
+  <li>TitleBarImage</li>
+  <li>CloseButtonSeparateHoverImage</li>
+  <li>CloseButtonNormalImage</li>
+  <li>CloseButtonHoverImage</li>
+  <li>CloseButtonDownImage</li>
+  <li>Borders</li>
+  <li>DistanceToSide</li>
+</ul>
+
+<b>ComboBox</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>BackgroundColor</li>
+  <li>TextColor</li>
+  <li>SelectedBackgroundColor</li>
+  <li>SelectedTextColor</li>
+  <li>BorderColor</li>
+  <li>Borders</li>
+  <li>ArrowUpNormalImage</li>
+  <li>ArrowUpHoverImage</li>
+  <li>ArrowDownNormalImage</li>
+  <li>ArrowDownHoverImage</li>
+  <li>Scrollbar</li>
+</ul>
+
+<b>EditBox</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>TextColor</li>
+  <li>SelectedTextColor</li>
+  <li>SelectedTextBackgroundColor</li>
+  <li>SelectionPointColor</li>
+  <li>SelectionPointWidth</li>
+  <li>Borders</li>
+  <li>NormalImage (SplitImage available)</li>
+  <li>HoverImage (SplitImage available)</li>
+  <li>FocusedImage (SplitImage available)</li>
+</ul>
+
+<b>Label</b>
+<ul>
+  <li>TextColor</li>
+</ul>
+
+<b>ListBox</b>
+<ul>
+  <li>BackgroundColor</li>
+  <li>TextColor</li>
+  <li>SelectedBackgroundColor</li>
+  <li>SelectedTextColor</li>
+  <li>BorderColor</li>
+  <li>Borders</li>
+  <li>Scrollbar</li>
+</ul>
+
+<b>LoadingBar</b>
+<ul>
+  <li>BackImage (SplitImage available)</li>
+  <li>FrontImage (SplitImage available)</li>
+</ul>
+
+<b>MenuBar</b>
+<ul>
+  <li>BackgroundColor</li>
+  <li>TextColor</li>
+  <li>SelectedBackgroundColor</li>
+  <li>SelectedTextColor</li>
+  <li>DistanceToSide</li>
+</ul>
+
+<b>MessageBox</b>
+<ul>
+  <li>TextColor</li>
+  <li>ChildWindow</li>
+  <li>Button</li>
+</ul>
+
+<b>RadioButton</b>
+<ul>
+  <li>TextColor</li>
+  <li>CheckedImage</li>
+  <li>UncheckedImage</li>
+  <li>HoverImage</li>
+  <li>FocusedImage</li>
+</ul>
+
+<b>Scrollbar</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>VerticalScroll</li>
+  <li>TrackNormalImage</li>
+  <li>TrackHoverImage</li>
+  <li>ThumbNormalImage</li>
+  <li>ThumbHoverImage</li>
+  <li>ArrowUpNormalImage</li>
+  <li>ArrowUpHoverImage</li>
+  <li>ArrowDownNormalImage</li>
+  <li>ArrowDownHoverImage</li>
+</ul>
+
+<b>Slider</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>VerticalScroll</li>
+  <li>TrackNormalImage (SplitImage available)</li>
+  <li>TrackHoverImage (SplitImage available)</li>
+  <li>ThumbNormalImage</li>
+  <li>ThumbHoverImage</li>
+</ul>
+
+<b>Slider2d</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>TrackNormalImage</li>
+  <li>TrackHoverImage</li>
+  <li>ThumbNormalImage</li>
+  <li>ThumbHoverImage</li>
+</ul>
+
+<b>SpinButton</b>
+<ul>
+  <li>SeparateHoverImage</li>
+  <li>ArrowUpNormalImage</li>
+  <li>ArrowUpHoverImage</li>
+  <li>ArrowDownNormalImage</li>
+  <li>ArrowDownHoverImage</li>
+</ul>
+
+<b>Tab</b>
+<ul>
+  <li>SeparateSelectedImage</li>
+  <li>TextColor</li>
+  <li>DistanceToSide</li>
+  <li>NormalImage (SplitImage available)</li>
+  <li>SelectedImage (SplitImage available)</li>
+</ul>
+
+<b>TextBox</b>
+<ul>
+  <li>BackgroundColor</li>
+  <li>TextColor</li>
+  <li>SelectedTextBackgroundColor</li>
+  <li>SelectedTextColor</li>
+  <li>SelectionPointColor</li>
+  <li>BorderColor</li>
+  <li>Borders</li>
+  <li>Scrollbar</li>
+</ul>
+</p>
+
+    {% include footer.ext %}
+</div>
 </body>

@@ -1,9 +1,92 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <link rel="canonical" href="http://old.tgui.eu/tutorials/v06/linux/"/>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://old.tgui.eu/tutorials/v06/linux/"/>
+    {% include head.ext %}
+
+    <title>Linux</title>
+
+    <link rel="stylesheet" type="text/css" href="{{site.baseurl}}highlight.css">
 </head>
 
 <body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Linux</h2>
+    <div>
+        <h3>Preparation</h3>
+        <p>
+          <ul>
+            <li>You will need to use CMake in order to build TGUI.<br />
+                Depenging on your distro, you can download it as easily as typing the following in the terminal:<br />
+                “sudo apt-get install cmake” (Ubuntu) or “sudo pacman -S cmake” (ArchLinux).<br />
+                Otherwise, you can download the latest version <a href="http://www.cmake.org/cmake/resources/software.html">here</a>.</li>
+            <li>Also make sure that you already have sfml on your computer.
+                It would be even better to make sure you have sfml working before trying to use TGUI.
+                If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
+          </ul>
+        </p>
+    </div>
+
+    <div>
+        <h3>Installing</h3>
+        <p class="SmallBottomMargin">Type the following in the terminal in order to install tgui. Of course you will have to be inside the downloaded tgui directory.</p>
+{% highlight bash %}
+cmake .
+sudo make install -j6
+{% endhighlight %}
+
+    </div>
+
+    <div>
+        <h3>Using TGUI (Terminal)</h3>
+
+        <p class="SmallBottomMargin">The two things to add is linking to tgui and tell the compiler that it uses c++11.</p>
+{% highlight bash %}
+g++ main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -std=c++11 -o program
+{% endhighlight %}
+    </div>
+
+    <div>
+        <h3>Using TGUI (CodeBlocks)</h3>
+
+        <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
+        <a href="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
+
+        <p class="SmallBottomMargin">
+            Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order of linking has to be correct: first tgui, then the libraries from sfml, namely graphics, windows and system. (you might also need to add -lGL to the list)
+        </p>
+        <a href="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
+
+        <p class="SmallBottomMargin">
+            You must also enable c++11.<br />
+            If you have an older compiler version and don’t have the “-std=c++11″ option, then use “-std=c++0x” instead.
+        </p>
+        <a href="{{site.baseurl}}resources/LinuxCodeBlocksProjectCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="{{site.baseurl}}resources/LinuxCodeBlocksProjectCompilerFlags.png" width="839" height="741" /></a>
+
+        <p>You should now be able to use TGUI.</p>
+    </div>
+
+    <div>
+        <h3>Possible error</h3>
+        <p>It is possible to get the following error when linking to TGUI:<br />
+           “/pathname/of/program: error while loading shared libraries: libtgui.so: cannot open shared object file: no such file or directory”
+        </p>
+
+        <p>If you get this then you did install tgui correctly, but it is not in the shared library cache.<br />
+           All you have to do is open the terminal, type “sudo ldconfig”, hit enter and type your password.
+        </p>
+
+        <p>If that doesn’t solve it then make sure the library was installed to a place where your distro searches for it.<br />
+           One of the things you could do is add “/usr/local/lib/” (without the quotes) to /etc/ld.so.conf and then run “sudo ldconfig” again.
+        c</p>
+    </div>
+
+    {% include footer.ext %}
+</div>
 </body>
