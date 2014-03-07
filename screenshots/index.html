@@ -1,9 +1,55 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <link rel="canonical" href="http://old.tgui.eu/screenshots/"/>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://old.tgui.eu/screenshots/"/>
+    {% include head.ext %}
+
+    <title>Sceenshots</title>
 </head>
 
 <body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Screenshots</h2>
+
+    <div>
+        <p class="SmallBottomMargin">The first released version (v0.3.0)</p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.3.0.jpg"><img alt="Screenshot v0.3.0" src="{{site.baseurl}}resources/Screenshot_v0.3.0.jpg" width="480" height="360" /></a>
+
+        <p class="SmallBottomMargin">
+            Of course the background color of the listbox didn’t fit with the Black style.<br />
+            By the time v0.3.4 was released, this was solved and a scrollbar and combo box were added.
+        </p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.3.4.png"><img alt="Screenshot v0.3.4" src="{{site.baseurl}}resources/Screenshot_v0.3.4.png" width="480" height="360" /></a>
+
+        <p class="SmallBottomMargin">TGUI v0.4 also adds a Label and TextBox to this. Other new objects like the Panel and SpriteSheet objects are however not in the screenshots. Also the blue color was changed to look better.</p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.4_Black.png"><img alt="Screenshot v0.4 Black" src="{{site.baseurl}}resources/Screenshot_v0.4_Black.png" width="480" height="360" /></a>
+
+        <p class="SmallBottomMargin">TGUI v0.4 also comes with the new BabyBlue style (which is copied from <a href="http://dribbble.com/shots/635698-UI-Kit-Baby-Blue">Michael Donovan’s UI Kit</a>)</p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.4_BabyBlue.png"><img alt="Screenshot v0.4 BabyBlue" src="{{site.baseurl}}resources/Screenshot_v0.4_BabyBlue.png" width="480" height="360" /></a>
+
+        <p class="SmallBottomMargin">
+            With TGUI v0.4 came the Form Builder, so you could easily arrange your objects.<br />
+            I was recording while making this login screen, so you can find it on <a href="http://youtu.be/am_RumRUzZQ">youtube</a>.
+        </p>
+        <a href="{{site.baseurl}}resources/Screenshot_FormBuilder_v0.2.png"><img alt="Screenshot Form Builder v0.2" src="{{site.baseurl}}resources/Screenshot_FormBuilder_v0.2.png" width="720" height="360" /></a>
+
+        <p class="SmallBottomMargin">One of the many new items included in v0.5 are the child windows.</p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.5_ChildWindows.png"><img class="SmallBottomMargin" alt="Screenshot v0.5 Child Windows" src="{{site.baseurl}}resources/Screenshot_v0.5_ChildWindows.png" width="480" height="360" /></a>
+        <a href="https://duckduckgo.com/about"><img alt="DuckDuckGo" src="{{site.baseurl}}resources/DuckDuckGo.png" width="421" height="19" /></a>
+
+        <p class="SmallBottomMargin">For v0.6 I rewrote a lot of stuff so I needed to test all objects again. For this I wrote a program that used all objects.</p>
+        <a href="{{site.baseurl}}resources/TGUI-v0.6-Full-Example.png"><img alt="Screenshot v0.6 Full Example" src="{{site.baseurl}}resources/TGUI-v0.6-Full-Example.png" width="480" height="360" /></a>
+
+        <p class="SmallBottomMargin">Objects can now be transparent!</p>
+        <a href="{{site.baseurl}}resources/Screenshot_v0.6_Transparency.jpg"><img alt="Screenshot v0.6 Transparency" src="{{site.baseurl}}resources/Screenshot_v0.6_Transparency.jpg" width="480" height="378" /></a>
+    </div>
+
+    {% include footer.ext %}
+</div>
 </body>
