@@ -318,7 +318,7 @@ namespace tgui
             {
                 m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
 
-                float width = m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_M.getSize().x + m_TextureTitleBar_R.getSize().x;
+                float width = static_cast<float>(m_TextureTitleBar_L.getSize().x + m_TextureTitleBar_M.getSize().x + m_TextureTitleBar_R.getSize().x);
 
                 m_Loaded = true;
                 setSize(width, width * 3.0f / 4.0f);
@@ -339,7 +339,7 @@ namespace tgui
                 m_TitleBarHeight = m_TextureTitleBar_M.getSize().y;
 
                 m_Loaded = true;
-                setSize(m_TextureTitleBar_M.getSize().x, m_TextureTitleBar_M.getSize().x * 3.0f / 4.0f);
+                setSize(static_cast<float>(m_TextureTitleBar_M.getSize().x), m_TextureTitleBar_M.getSize().x * 3.0f / 4.0f);
             }
             else
             {
