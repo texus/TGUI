@@ -134,29 +134,27 @@ div.SmallerMargin
                         position: absolute; left: 100%; top:0;
                     }
 
-
-.BehindFloat
+a.img
 {
-    clear: both;
+    display: inline-block;
+
+    margin-top: 0em;
+    margin-bottom: 2em;
+}
+
+a.img.Thumbnail
+{
+    margin: 0.4em;
+}
+
+a.SmallBottomMargin
+{
+    margin-bottom: 0.25em;
 }
 
 img
 {
-    margin-top: 0em;
-    margin-bottom: 2em;
-
     max-width: 100%;
-}
-
-img.ThumbnailBlackTheme, img.ThumbnailBabyBlueTheme, img.ThumbnailFormBuilder
-{
-    float: left;
-    margin: 10px;
-}
-
-img.SmallBottomMargin
-{
-    margin-bottom: 0.25em;
 }
 
 p
