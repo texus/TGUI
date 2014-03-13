@@ -1,0 +1,86 @@
+---
+---
+<!DOCTYPE html>
+
+<head>
+    {% include head.ext %}
+
+    <title>Panel</title>
+
+    <link rel="stylesheet" type="text/css" href="{{site.baseurl}}highlight.css">
+</head>
+
+<body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Panel</h2>
+
+    <div>
+        <h3>Introduction</h3>
+        <p>You can see a panel as a group of widgets.</p>
+
+        <p>There are a lot of similarities with the Gui, so you can make use of the add functions, you can set the global font of the panel, and you can call uncheckRadioButtons to uncheck all the radio buttons that are part of the panel.</p>
+
+        <p>The panel was actually created for the radio buttons. Only one radio button can be checked at a given time, but suppose you would want multiple groups of radio buttons. You will need a panel to accomplish that. Lower on this page you will find the example code on how to do it.</p>
+
+        <p>All widgets inside the panel will have relative coordinates. If you set the panel to position (200,50) and you add a picture in it with position (50,50) then the picture will (as expected) be drawn at position (250,100) on the screen.</p>
+
+        <p>Also be aware that even though your panel might have a transparent background, the widgets behind the panel will not be clickable.</p>
+    </div>
+
+    <div>
+        <h3>Radio button group</h3>
+        <p>Example code on how to create radio button groups:</p>
+{% highlight c++ %}
+tgui::Panel::Ptr panel1(gui, "first panel"); // Add a panel to the gui
+panel1->setSize(300, 150); // Make the panel of size 300x150
+
+// Add two radio buttons to the panel
+tgui::RadioButton::Ptr radioButton1(*panel1);
+tgui::RadioButton::Ptr radioButton2(*panel1);
+
+// ... Load the radio buttons, set them on the correct position ... //
+
+// You can create the second panel in the same way as you created the first one, but in this example
+// it should have the same size and the same widgets so I just make a copy of the first panel.
+tgui::Panel::Ptr panel2 = gui.copy(panel1, "second panel");
+
+// Set the second panel below the first panel
+panel2->setPosition(0, 150);
+{% endhighlight %}
+    </div>
+
+    <div>
+        <h3>Forms</h3>
+        <p>The panel can also be used to create multiple forms. You could just add all widgets to the gui and hide some of them when you don't need them, but isn't advisable if you have a lot of widgets.</p>
+
+        <p>Instead you could simply add the widgets to a panel and display one panel at a time.<br />
+           So all widgets are loaded in the beginning of the program, but only the current form will be visible.
+        </p>
+
+        <p>Example code on how to use forms:</p>
+{% highlight c++ %}
+// Create the two panels/forms
+tgui::Panel::Ptr form1(gui, "first form");
+tgui::Panel::Ptr form2(gui, "second form");
+
+// Set the panels to the same size as the window and use a transparent background
+form1->setSize(800, 600);
+form2->setSize(800, 600);
+form1->setBackgroundColor(sf::Color::Transparent);
+form2->setBackgroundColor(sf::Color::Transparent);
+
+// ... Load different widgets in the forms ...
+
+// Hide the second form so that only the first is visible
+form2->hide();
+{% endhighlight %}
+    </div>
+
+    {% include footer.ext %}
+</div>
+</body>
