@@ -37,8 +37,7 @@ scJsHost+
 "statcounter.com/counter/counter.js'></"+"script>");
 </script>
 <noscript><div class="statcounter"><a title="click tracking"
-href="http://statcounter.com/" target="_blank"><img
+href="http://statcounter.com/" target="_blank" rel="nofollow"><img
 class="statcounter"
-src="http://c.statcounter.com/9660579/0/e3bbd1b5/1/"
-alt="click tracking"></a></div></noscript>
+src="http://c.statcounter.com/9660579/0/e3bbd1b5/1/"></a></div></noscript>
 <!-- End of StatCounter Code for Default Guide -->
