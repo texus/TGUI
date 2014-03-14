@@ -38,7 +38,6 @@ var searchData=
   ['getparent',['getParent',['../classtgui_1_1Widget.html#a0cf4e57ff28230753afe8197e8945a3a',1,'tgui::Widget']]],
   ['getpasswordcharacter',['getPasswordCharacter',['../classtgui_1_1EditBox.html#a260a6d913c6d3059d396e691e64e9da0',1,'tgui::EditBox']]],
   ['getposition',['getPosition',['../classtgui_1_1Transformable.html#aedc24e5fd37da909d6b6f0f850d278dc',1,'tgui::Transformable']]],
-  ['getresourcepath',['getResourcePath',['../namespacetgui.html#a2efca1c075fdbd9f7fb9270a798ae664',1,'tgui']]],
   ['getrows',['getRows',['../classtgui_1_1SpriteSheet.html#a2b0173e8728a5bc4d2d1e857d022f85a',1,'tgui::SpriteSheet']]],
   ['getselected',['getSelected',['../classtgui_1_1Tab.html#afc201a2c0a1241a93b79795bc0fce713',1,'tgui::Tab']]],
   ['getselectedbackgroundcolor',['getSelectedBackgroundColor',['../classtgui_1_1ComboBox.html#ad929b822c0e86b9d9f21affab273568c',1,'tgui::ComboBox::getSelectedBackgroundColor()'],['../classtgui_1_1ListBox.html#abab763992caadb51b545e28a21417430',1,'tgui::ListBox::getSelectedBackgroundColor()'],['../classtgui_1_1MenuBar.html#ac78bd4f640bc027e68d855edac47b24d',1,'tgui::MenuBar::getSelectedBackgroundColor()']]],

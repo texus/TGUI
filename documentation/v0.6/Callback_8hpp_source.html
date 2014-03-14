@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.1</span>
+   &#160;<span id="projectnumber">v0.6.2</span>
    </div>
   </td>
  </tr>
@@ -68,7 +68,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -140,7 +140,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classtgui_1_1Widget.html">Widget</a>* widget;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="comment">// The type of the widget</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="namespacetgui.html#a6f721be5dfcacf4e5b73b8d3aef75b14">WidgetTypes</a> widgetType;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        WidgetTypes widgetType;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="comment">// When the mouse has something to do with the callback then this data will be filled</span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        sf::Vector2i mouse;</div>
@@ -216,7 +216,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#endif // TGUI_CALLBACK_HPP</span></div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="namespacetgui_html_a6f721be5dfcacf4e5b73b8d3aef75b14"><div class="ttname"><a href="namespacetgui.html#a6f721be5dfcacf4e5b73b8d3aef75b14">tgui::WidgetTypes</a></div><div class="ttdeci">WidgetTypes</div><div class="ttdoc">A list of all widget types. </div><div class="ttdef"><b>Definition:</b> Defines.hpp:79</div></div>
 <div class="ttc" id="classtgui_1_1CallbackManager_html_a7e84f9c368ba0979fe34a6ccc33fffee"><div class="ttname"><a href="classtgui_1_1CallbackManager.html#a7e84f9c368ba0979fe34a6ccc33fffee">tgui::CallbackManager::bindCallbackEx</a></div><div class="ttdeci">void bindCallbackEx(void(T::*func)(const Callback &amp;), T *const classPtr, unsigned int trigger)</div><div class="ttdoc">Bind a function to one or more specific callback trigger(s). </div><div class="ttdef"><b>Definition:</b> Callback.hpp:157</div></div>
 <div class="ttc" id="classtgui_1_1Widget_html"><div class="ttname"><a href="classtgui_1_1Widget.html">tgui::Widget</a></div><div class="ttdoc">The parent class for every widget. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:45</div></div>
 <div class="ttc" id="structtgui_1_1Callback_html"><div class="ttname"><a href="structtgui_1_1Callback.html">tgui::Callback</a></div><div class="ttdef"><b>Definition:</b> Callback.hpp:45</div></div>
@@ -226,7 +225,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 9 2014 14:57:02 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Mar 14 2014 22:53:22 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
