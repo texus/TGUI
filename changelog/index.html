@@ -1,9 +1,224 @@
+---
+---
 <!DOCTYPE html>
 
 <head>
-    <link rel="canonical" href="http://old.tgui.eu/changelog/"/>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://old.tgui.eu/changelog/"/>
+    {% include head.ext %}
+
+    <title>Changelog</title>
 </head>
 
 <body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Changelog</h2>
+
+    <div>
+        <h3>TGUI v0.6.1 <span class="Date">(9 February 2014)</span></h3>
+        <ul>
+            <li>Made several fixes to Scrollbar</li>
+            <li>Checkbox now inherits from RadioButton instead of the other way around</li>
+            <li>Text was also being selected in TextBox when clicking on the scrollbar</li>
+            <li>Some fonts didn’t display all lines in ChatBox</li>
+            <li>Allow setting a default text color in ChatBox and passing different parameters to addLine</li>
+            <li>Allow setting the line spacing in ChatBox</li>
+            <li>Added a resetView parameter to handleEvent and set the default value on true (for draw function as well)</li>
+            <li>Implemented getFullSize and thus changed behavior of getSize</li>
+            <li>The TabKeyUsageEnabled property should now be accessed through a function call</li>
+            <li>Implemented setResourcePath function to load everything from a relative path</li>
+            <li>Support clang on linux
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.6.0 <span class="Date">(16 January 2014)</span></h3>
+        <ul>
+            <li>Everything changed!</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.5.2 <span class="Date">(17 May 2013)</span></h3>
+        <ul>
+            <li>Added ChatBox class.</li>
+            <li>Fixed a bug in LoadingBar when minimum wasn’t 0.</li>
+            <li>Fixed a bug in slider when calling setVerticalScroll after setSize.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.5.1 <span class="Date">(8 February 2013)</span></h3>
+        <ul>
+            <li>Added support for changing the title alignment in ChildWindow.</li>
+            <li>Fixed a minor bug with unfocusing objects.</li>
+            <li>Fixed a small bug in the CMake script.</li>
+        </ul>
+
+    </div>
+
+    <div>
+        <h3>TGUI v0.5 <span class="Date">(23 December 2012)</span></h3>
+        <ul>
+            <li>New objects: ChildWindow, AnimatedPicture, SpinButton, Tab, Grid and more.</li>
+            <li>Changed the add, get and copy functions from Group. This allows creating custom objects.</li>
+            <li>Serious speed increase, especially with many objects or with ListBox, ComboBox and Label.</li>
+            <li>ComboBox::load now also takes the height as parameter.</li>
+            <li>EditBox and TextBox take the selection point color as extra parameter in changeColors.</li>
+            <li>Improved documentation and tutorials.</li>
+            <li>Panel can optionally load a background image.</li>
+            <li>Objects in panel can now be focused with the tab key.</li>
+            <li>You can now choose to only draw part of the label.</li>
+            <li>Label has an optional background color.</li>
+            <li>Double clicking in EditBox and TextBox now selects the text.</li>
+            <li>Panel and ChildWindow can also load their objects from the Object Files.</li>
+            <li>You can choose to disable the tab key usage.</li>
+            <li>An easy install script was added for linux users.</li>
+            <li>A LoadingBar can now have text on top of it.</li>
+            <li>Callback now contains a pointer to the object.</li>
+            <li>Unicode support through the use of sf::String.</li>
+            <li>Many bug fixes.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.4.2 <span class="Date">(16 July 2012)</span></h3>
+        <ul>
+            <li>Bug fix: ComboBox wasn’t responding correctly when scaled.</li>
+            <li>Bug fix: ComboBox wasn’t rendered correctly when using a scrollbar.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.4.1 <span class="Date">(15 July 2012)</span></h3>
+        <ul>
+            <li>Bug fix: Slider caused a runtime error on windows.</li>
+            <li>Bug fix: Objects didn’t behave correctly when the view was changed.</li>
+            <li>Bug fix: When all the objects were hidding, the first one was still drawn.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.4.0 <span class="Date">(13 July 2012)</span></h3>
+        <ul>
+            <li>New objects: Panel, TextBox and SpriteSheet.</li>
+            <li>Objects can be moved to the back or to the front.</li>
+            <li>Scrolling in listbox has been improved (you can now set the scrollbar between two items).</li>
+            <li>The images used in Checkbox can now have a different size.</li>
+            <li>Hover images no longer have to be semi-transparent.</li>
+            <li>Text width can now be limited in EditBox.</li>
+            <li>A maximum item limit was added in ComboBox.</li>
+            <li>You can now disable objects.</li>
+            <li>Many bug fixes.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.7 <span class="Date">(5 April 2012)</span></h3>
+        <ul>
+            <li>Mac OS X is now supported (no libraries yet, but the source code can be used)</li>
+            <li>Changing the global font no longer changes the font of already existing objects.</li>
+            <li>You can now change the global font directly, the setGlobalFont function was removed.</li>
+            <li>All objects now have a getSize and getScaledSize function.</li>
+            <li>Label now sends a callback on click.</li>
+            <li>You have an option too keep the scrollbar visible, even if you can’t scroll.</li>
+            <br/>
+            <li>Bug fix: The getText function of EditBox returned a sf::String instead of an std::string.</li>
+            <li>Bug fix: Arrow keys were not repeated in EditBox.</li>
+            <li>Bug fix: Texture rect was not updated when calling the load function again.</li>
+            <li>Bug fix: Callback from Picture didn’t work with scaling.</li>
+            <li>Bug fix: EditBox and ListBox hung when image was too small.</li>
+            <li>Bug fix: Alpha value in colors was sometimes wrong.</li>
+            <li>Bug fix: The displayed text in EditBox was wrong when calling setMaximumCharacters.</li>
+            <li>Bug fix: ComboBox caused a crash when image was too small.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.6 <span class="Date">(13 March 2012)</span></h3>
+        <ul>
+            <li>A new object: Label.</li>
+            <li>Bug fix: The draw function was overriding the one from sfml, it is now called drawGUI.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.5 <span class="Date">(12 March 2012)</span></h3>
+        <ul>
+            <li>The ‘m_’ prefix was dropped on public members.</li>
+            <li>Picture now has a click callback.</li>
+            <li>The background color of the selected text is now different when the EditBox is not focused.</li>
+            <li>EditBox now also sends a callback when the return key was pressed.</li>
+            <li>A new object: Panel.</li>
+            <br/>
+            <li>Bug fix: The text on the button was sometimes blurry with fixed text size.</li>
+            <li>Bug fix: The arrow of ComboBox kept pointing down when the list was shown.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.4 <span class="Date">(10 March 2012)</span></h3>
+        <ul>
+            <li>setSize function added to all gui objects. It is recommended over the SetScale function.</li>
+            <li>You can now change the font of EditBox, ListBox and ComboBox.</li>
+            <li>A setGlobalFont function was added to Panel (also to Window) to set the font of all the objects.</li>
+            <li>You can now add CallbackID to any object that is loaded from a file.</li>
+            <li>A horizontal scrollbar has been added.</li>
+            <br/>
+            <li>Bug fix: Objects behind a picture still received events.</li>
+            <li>Bug fix: Thumb position of Scrollbar was wrong while scaling.</li>
+            <li>Bug fix: The program crashed after calling removeAllObjects.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.3 <span class="Date">(6 March 2012)</span></h3>
+        <ul>
+            <li>Scrolling was added in EditBox, there is no more text width limit by default.</li>
+            <li>You can now get the colors that are used in EditBox, Listbox and ComboBox.</li>
+            <li>You can now select an item in ListBox with the new setSelectedItem function.</li>
+            <li>You can now use the scrollbar.</li>
+            <li>Panels can now be used, which means that you can create multiple groups of linked radio buttons.</li>
+            <li>You can now load all the objects (except Panel) from a file.</li>
+            <li>Except for the .lib and .so files, I have included .a files.</li>
+            <br/>
+            <li>Bug fix: You couldn’t call setBorders after setText in EditBox.</li>
+            <li>Bug fix: Changing the maximum items and the item height in ListBox didn’t work properly.</li>
+            <li>Bug fix: Scrollbar didn’t receive the mouse up event when releasing the mouse on ListBox.</li>
+            <li>Bug fix: Calling a load function with an empty string made the program crash.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.2 <span class="Date">(20 February 2012)</span></h3>
+        <ul>
+            <li>ComboBox was added</li>
+            <li>Bug fixes in EditBox, ListBox and Scrollbar</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.1 <span class="Date">(15 February 2012)</span></h3>
+        <ul>
+            <li>Namespace was changed to lowercase.</li>
+            <li>A setVerticalScroll function for changing m_VerticalScroll indirectly.</li>
+            <li>Changed the name from setTextColors to changeColors inside EditBox to conform with the ListBox.</li>
+            <li>Small bug fixes in EditBox and Listbox.</li>
+            <li>Fixed wrong behavior of scrollbar.</li>
+            <li>Colors of objects were changed to fit better with each other.</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>TGUI v0.3.0 <span class="Date">(12 February 2012)</span></h3>
+        <ul>
+            <li>First public release.</li>
+        </ul>
+    </div>
+
+    {% include footer.ext %}
+</div>
 </body>

@@ -188,6 +188,12 @@ span.Blue
     color: blue;
 }
 
+span.Date
+{
+    color: #9e9e9e;
+    font-size: 0.7em;
+}
+
 pre
 {
     line-height: 1.4em;
