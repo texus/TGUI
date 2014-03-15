@@ -23,7 +23,7 @@
                 <li><a href="{{site.baseurl}}documentation/v0.5/">TGUI 0.5</a></li>
             </ul>
         </li>
-        <li><a href="http://old.tgui.eu/blog/">Blog</a></li>
+        <li><a href="http://blog.tgui.eu/">Blog</a></li>
         <li><a href="http://forum.tgui.eu/">Forum</a></li>
     </ul>
 </div>
