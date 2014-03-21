@@ -22,8 +22,8 @@ project(tgui)
 
 # project version
 SET( MAJOR_VERSION 0 )
-SET( MINOR_VERSION 6 )
-SET( PATCH_VERSION 1 )
+SET( MINOR_VERSION 7 )
+SET( PATCH_VERSION 0 )
 
 # include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)

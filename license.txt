@@ -23,7 +23,3 @@ it freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any
    source distribution.
 
-
-
-The only external library used in TGUI is SFML which is also under the zlib/libpng license.
-
