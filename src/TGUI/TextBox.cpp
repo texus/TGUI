@@ -55,7 +55,8 @@ namespace tgui
     m_SelectionPointWidth     (2),
     m_SelectionTextsNeedUpdate(true),
     m_Scroll                  (nullptr),
-    m_PossibleDoubleClick     (false)
+    m_PossibleDoubleClick     (false),
+    m_readOnly                (false)
     {
         m_Callback.widgetType = Type_TextBox;
         m_AnimatedWidget = true;
@@ -99,7 +100,8 @@ namespace tgui
     m_TextAfterSelection1        (copy.m_TextAfterSelection1),
     m_TextAfterSelection2        (copy.m_TextAfterSelection2),
     m_MultilineSelectionRectWidth(copy.m_MultilineSelectionRectWidth),
-    m_PossibleDoubleClick        (copy.m_PossibleDoubleClick)
+    m_PossibleDoubleClick        (copy.m_PossibleDoubleClick),
+    m_readOnly                   (copy.m_readOnly)
     {
         // If there is a scrollbar then copy it
         if (copy.m_Scroll != nullptr)
@@ -162,6 +164,7 @@ namespace tgui
             std::swap(m_MultilineSelectionRectWidth, temp.m_MultilineSelectionRectWidth);
             std::swap(m_Scroll,                      temp.m_Scroll);
             std::swap(m_PossibleDoubleClick,         temp.m_PossibleDoubleClick);
+            std::swap(m_readOnly,                    temp.m_readOnly);
         }
 
         return *this;
@@ -755,6 +758,13 @@ namespace tgui
     unsigned int TextBox::getSelectionPointWidth() const
     {
         return m_SelectionPointWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::setReadOnly(bool readOnly)
+    {
+        m_readOnly = readOnly;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1353,6 +1363,9 @@ namespace tgui
         }
         else if (key == sf::Keyboard::BackSpace)
         {
+            if (m_readOnly)
+                return;
+
             // Make sure that we didn't select any characters
             if (m_SelChars == 0)
             {
@@ -1397,6 +1410,9 @@ namespace tgui
         }
         else if (key == sf::Keyboard::Delete)
         {
+            if (m_readOnly)
+                return;
+
             // Make sure that no text is selected
             if (m_SelChars == 0)
             {
@@ -1450,6 +1466,9 @@ namespace tgui
                 }
                 else if (key == sf::Keyboard::V)
                 {
+                    if (m_readOnly)
+                        return;
+
                     auto clipboardContents = TGUI_Clipboard.get();
 
                     // Only continue pasting if you actually have to do something
@@ -1478,6 +1497,10 @@ namespace tgui
                 else if (key == sf::Keyboard::X)
                 {
                     TGUI_Clipboard.set(m_TextSelection1.getString() + m_TextSelection2.getString());
+
+                    if (m_readOnly)
+                        return;
+
                     deleteSelectedCharacters();
                 }
             }
@@ -1490,6 +1513,9 @@ namespace tgui
     {
         // Don't do anything when the text box wasn't loaded correctly
         if (m_Loaded == false)
+            return;
+
+        if (m_readOnly)
             return;
 
         // If there were selected characters then delete them first
