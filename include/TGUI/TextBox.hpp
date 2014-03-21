@@ -426,6 +426,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Make the text box read-only or make it writable again
+        ///
+        /// \param readOnly  Should the text box be read-only?
+        ///
+        /// When the text box is read-only, you can no longer delete characters and type text.
+        /// Selecting text, copying text and even calling the setText function will still work.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setReadOnly(bool readOnly = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the transparency of the widget.
         ///
         /// \param transparency  The transparency of the widget.
@@ -642,6 +654,8 @@ namespace tgui
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick;
+
+        bool m_readOnly;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
