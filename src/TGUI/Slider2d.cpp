@@ -207,12 +207,6 @@ namespace tgui
             return false;
         }
 
-        // Check if optional textures were loaded
-        if ((m_textureTrackHover.getData() != nullptr) && (m_textureThumbHover.getData() != nullptr))
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
-        }
-
         return m_loaded = true;
     }
 
@@ -668,7 +662,7 @@ namespace tgui
         // Draw the track image
         if (m_separateHoverImage)
         {
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureTrackHover.getData())
                 target.draw(m_textureTrackHover, states);
             else
                 target.draw(m_textureTrackNormal, states);
@@ -677,7 +671,7 @@ namespace tgui
         {
             target.draw(m_textureTrackNormal, states);
 
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureTrackHover.getData())
                 target.draw(m_textureTrackHover, states);
         }
 
@@ -721,7 +715,7 @@ namespace tgui
         // Draw the thumb image
         if (m_separateHoverImage)
         {
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureThumbHover.getData())
                 target.draw(m_textureThumbHover, states);
             else
                 target.draw(m_textureThumbNormal, states);
@@ -730,7 +724,7 @@ namespace tgui
         {
             target.draw(m_textureThumbNormal, states);
 
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureThumbHover.getData())
                 target.draw(m_textureThumbHover, states);
         }
 

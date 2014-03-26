@@ -271,16 +271,6 @@ namespace tgui
             return false;
         }
 
-        // Check if optional textures were loaded
-        if (m_textureFocused.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Focused;
-        }
-        if (m_textureHover.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
-        }
-
         // Auto-size the text
         setTextSize(0);
 
@@ -1719,7 +1709,7 @@ namespace tgui
 
         if (m_separateHoverImage)
         {
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureHover.getData())
                 target.draw(m_textureHover, states);
             else
                 target.draw(m_textureNormal, states);
@@ -1729,12 +1719,12 @@ namespace tgui
             target.draw(m_textureNormal, states);
 
             // When the mouse is on top of the edit box then draw an extra image
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureHover.getData())
                 target.draw(m_textureHover, states);
         }
 
         // When the edit box is focused then draw an extra image
-        if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
+        if (m_focused && m_textureFocused.getData())
             target.draw(m_textureFocused, states);
 
         // Calculate the scaling

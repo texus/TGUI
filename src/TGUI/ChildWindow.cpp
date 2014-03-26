@@ -248,16 +248,6 @@ namespace tgui
         // Initialize the close button if it was loaded
         if (m_closeButton->m_textureNormal.getData() != nullptr)
         {
-            // Check if optional textures were loaded
-            if (m_closeButton->m_textureHover.getData() != nullptr)
-            {
-                m_closeButton->m_widgetPhase |= WidgetPhase_Hover;
-            }
-            if (m_closeButton->m_textureDown.getData() != nullptr)
-            {
-                m_closeButton->m_widgetPhase |= WidgetPhase_MouseDown;
-            }
-
             m_closeButton->m_loaded = true;
             m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize().x, m_closeButton->m_textureNormal.getImageSize().y);
         }

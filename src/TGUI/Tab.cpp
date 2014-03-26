@@ -241,12 +241,6 @@ namespace tgui
             return false;
         }
 
-        // Check if optional textures were loaded
-        if (m_textureSelected.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Selected;
-        }
-
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
             setTextSize(0);
@@ -880,7 +874,7 @@ namespace tgui
             // Draw the tab image
             if (m_separateSelectedImage)
             {
-                if ((m_selectedTab == static_cast<int>(i)) && (m_widgetPhase & WidgetPhase_Selected))
+                if ((m_selectedTab == static_cast<int>(i)) && textureSelectedIt->getData())
                     target.draw(*textureSelectedIt, states);
                 else
                     target.draw(*textureNormalIt, states);
@@ -889,7 +883,7 @@ namespace tgui
             {
                 target.draw(*textureNormalIt, states);
 
-                if ((m_selectedTab == static_cast<int>(i)) && (m_widgetPhase & WidgetPhase_Selected))
+                if ((m_selectedTab == static_cast<int>(i)) && textureSelectedIt->getData())
                     target.draw(*textureSelectedIt, states);
             }
 

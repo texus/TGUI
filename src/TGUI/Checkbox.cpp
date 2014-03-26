@@ -149,11 +149,6 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)
         {
             m_allowFocus = true;
-            m_widgetPhase |= WidgetPhase_Focused;
-        }
-        if (m_textureHover.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
         }
 
         // When there is no error we will return true

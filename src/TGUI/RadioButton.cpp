@@ -201,11 +201,6 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)
         {
             m_allowFocus = true;
-            m_widgetPhase |= WidgetPhase_Focused;
-        }
-        if (m_textureHover.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
         }
 
         return true;
@@ -526,10 +521,10 @@ namespace tgui
     void RadioButton::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_widgetPhase & WidgetPhase_Focused) == 0)
-            unfocus();
-        else
+        if (m_textureFocused.getData())
             Widget::widgetFocused();
+        else
+            unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -682,11 +677,11 @@ namespace tgui
             target.draw(m_textureUnchecked, states);
 
         // When the radio button is focused then draw an extra image
-        if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
+        if (m_focused && m_textureFocused.getData())
             target.draw(m_textureFocused, states);
 
         // When the mouse is on top of the radio button then draw an extra image
-        if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+        if (m_mouseHover && m_textureHover.getData())
             target.draw(m_textureHover, states);
 
         // Draw the text

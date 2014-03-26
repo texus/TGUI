@@ -206,12 +206,6 @@ namespace tgui
             return false;
         }
 
-        // Check if optional textures were loaded
-        if ((m_textureArrowUpHover.getData() != nullptr) && (m_textureArrowDownHover.getData() != nullptr))
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
-        }
-
         return m_loaded = true;
     }
 
@@ -562,11 +556,8 @@ namespace tgui
             // Draw the first arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowUpHover, states);
-                }
+                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+                    target.draw(m_textureArrowUpHover, states);
                 else
                     target.draw(m_textureArrowUpNormal, states);
             }
@@ -574,11 +565,8 @@ namespace tgui
             {
                 target.draw(m_textureArrowUpNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowUpHover, states);
-                }
+                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+                    target.draw(m_textureArrowUpHover, states);
             }
 
             // Set the second arrow on the correct position
@@ -587,11 +575,8 @@ namespace tgui
             // Draw the second arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowDownHover, states);
-                }
+                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+                    target.draw(m_textureArrowDownHover, states);
                 else
                     target.draw(m_textureArrowDownNormal, states);
             }
@@ -599,11 +584,8 @@ namespace tgui
             {
                 target.draw(m_textureArrowDownNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (!m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowDownHover, states);
-                }
+                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+                    target.draw(m_textureArrowDownHover, states);
             }
         }
         else // The image is not drawn in the same direction than the loaded image
@@ -619,11 +601,8 @@ namespace tgui
             // Draw the first arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowUpHover, states);
-                }
+                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+                    target.draw(m_textureArrowUpHover, states);
                 else
                     target.draw(m_textureArrowUpNormal, states);
             }
@@ -631,11 +610,8 @@ namespace tgui
             {
                 target.draw(m_textureArrowUpNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (!m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowUpHover, states);
-                }
+                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+                    target.draw(m_textureArrowUpHover, states);
             }
 
             // Set the right arrow on the correct position
@@ -644,11 +620,8 @@ namespace tgui
             // Draw the second arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowDownHover, states);
-                }
+                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+                    target.draw(m_textureArrowDownHover, states);
                 else
                     target.draw(m_textureArrowDownNormal, states);
             }
@@ -656,11 +629,8 @@ namespace tgui
             {
                 target.draw(m_textureArrowDownNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    if (m_mouseHoverOnTopArrow)
-                        target.draw(m_textureArrowDownHover, states);
-                }
+                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+                    target.draw(m_textureArrowDownHover, states);
             }
         }
     }

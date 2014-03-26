@@ -204,15 +204,6 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)
         {
             m_allowFocus = true;
-            m_widgetPhase |= WidgetPhase_Focused;
-        }
-        if (m_textureHover.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
-        }
-        if (m_textureDown.getData() != nullptr)
-        {
-            m_widgetPhase |= WidgetPhase_MouseDown;
         }
 
         return true;
@@ -404,10 +395,10 @@ namespace tgui
     void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if ((m_widgetPhase & WidgetPhase_Focused) == 0)
-            unfocus();
-        else
+        if (m_textureFocused.getData())
             Widget::widgetFocused();
+        else
+            unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,27 +511,27 @@ namespace tgui
     {
         if (m_separateHoverImage)
         {
-            if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
+            if (m_mouseDown && m_mouseHover && m_textureDown.getData())
                 target.draw(m_textureDown, states);
-            else if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            else if (m_mouseHover && m_textureHover.getData())
                 target.draw(m_textureHover, states);
             else
                 target.draw(m_textureNormal, states);
         }
         else // The hover image is drawn on top of the normal one
         {
-            if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
+            if (m_mouseDown && m_mouseHover && m_textureDown.getData())
                 target.draw(m_textureDown, states);
             else
                 target.draw(m_textureNormal, states);
 
             // When the mouse is on top of the button then draw an extra image
-            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+            if (m_mouseHover && m_textureHover.getData())
                 target.draw(m_textureHover, states);
         }
 
         // When the button is focused then draw an extra image
-        if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
+        if (m_focused && m_textureFocused.getData())
             target.draw(m_textureFocused, states);
 
         // If the button has a text then also draw the text

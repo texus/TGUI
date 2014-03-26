@@ -247,12 +247,6 @@ namespace tgui
             return false;
         }
 
-        // Check if optional textures were loaded
-        if ((m_textureArrowUpHover.getData() != nullptr) && (m_textureArrowDownHover.getData() != nullptr))
-        {
-            m_widgetPhase |= WidgetPhase_Hover;
-        }
-
         // Remove all items (in case this is the second time that the load function was called)
         m_listBox->removeAllItems();
 
@@ -995,7 +989,7 @@ namespace tgui
             // Draw the arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                if (m_mouseHover && m_textureArrowUpHover.getData())
                     target.draw(m_textureArrowUpHover, states);
                 else
                     target.draw(m_textureArrowUpNormal, states);
@@ -1004,7 +998,7 @@ namespace tgui
             {
                 target.draw(m_textureArrowUpNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                if (m_mouseHover && m_textureArrowUpHover.getData())
                     target.draw(m_textureArrowUpHover, states);
             }
         }
@@ -1017,7 +1011,7 @@ namespace tgui
             // Draw the arrow
             if (m_separateHoverImage)
             {
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                if (m_mouseHover && m_textureArrowDownHover.getData())
                     target.draw(m_textureArrowDownHover, states);
                 else
                     target.draw(m_textureArrowDownNormal, states);
@@ -1026,7 +1020,7 @@ namespace tgui
             {
                 target.draw(m_textureArrowDownNormal, states);
 
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                if (m_mouseHover && m_textureArrowDownHover.getData())
                     target.draw(m_textureArrowDownHover, states);
             }
         }
