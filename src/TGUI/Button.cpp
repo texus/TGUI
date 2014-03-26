@@ -35,7 +35,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button() :
-    m_splitImage        (false),
     m_separateHoverImage(false),
     m_textSize          (0)
     {
@@ -48,44 +47,24 @@ namespace tgui
     Button::Button(const Button& copy) :
     ClickableWidget     (copy),
     m_loadedConfigFile  (copy.m_loadedConfigFile),
-    m_splitImage        (copy.m_splitImage),
     m_separateHoverImage(copy.m_separateHoverImage),
     m_text              (copy.m_text),
     m_textSize          (copy.m_textSize)
     {
-        TGUI_TextureManager.copyTexture(copy.m_textureNormal_L, m_textureNormal_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureNormal_M, m_textureNormal_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureNormal_R, m_textureNormal_R);
-        TGUI_TextureManager.copyTexture(copy.m_textureHover_L, m_textureHover_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureHover_M, m_textureHover_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureHover_R, m_textureHover_R);
-        TGUI_TextureManager.copyTexture(copy.m_textureDown_L, m_textureDown_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureDown_M, m_textureDown_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureDown_R, m_textureDown_R);
-        TGUI_TextureManager.copyTexture(copy.m_textureFocused_L, m_textureFocused_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureFocused_M, m_textureFocused_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureFocused_R, m_textureFocused_R);
+        TGUI_TextureManager.copyTexture(copy.m_textureNormal, m_textureNormal);
+        TGUI_TextureManager.copyTexture(copy.m_textureHover, m_textureHover);
+        TGUI_TextureManager.copyTexture(copy.m_textureDown, m_textureDown);
+        TGUI_TextureManager.copyTexture(copy.m_textureFocused, m_textureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::~Button()
     {
-        if (m_textureNormal_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_L);
-        if (m_textureNormal_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_M);
-        if (m_textureNormal_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_R);
-
-        if (m_textureHover_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_L);
-        if (m_textureHover_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_M);
-        if (m_textureHover_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_R);
-
-        if (m_textureDown_L.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_L);
-        if (m_textureDown_M.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_M);
-        if (m_textureDown_R.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_R);
-
-        if (m_textureFocused_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_L);
-        if (m_textureFocused_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_M);
-        if (m_textureFocused_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_R);
+        if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
+        if (m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown);
+        if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,19 +78,10 @@ namespace tgui
             this->ClickableWidget::operator=(right);
 
             std::swap(m_loadedConfigFile,   temp.m_loadedConfigFile);
-            std::swap(m_textureNormal_L,    temp.m_textureNormal_L);
-            std::swap(m_textureNormal_M,    temp.m_textureNormal_M);
-            std::swap(m_textureNormal_R,    temp.m_textureNormal_R);
-            std::swap(m_textureHover_L,     temp.m_textureHover_L);
-            std::swap(m_textureHover_M,     temp.m_textureHover_M);
-            std::swap(m_textureHover_R,     temp.m_textureHover_R);
-            std::swap(m_textureDown_L,      temp.m_textureDown_L);
-            std::swap(m_textureDown_M,      temp.m_textureDown_M);
-            std::swap(m_textureDown_R,      temp.m_textureDown_R);
-            std::swap(m_textureFocused_L,   temp.m_textureFocused_L);
-            std::swap(m_textureFocused_M,   temp.m_textureFocused_M);
-            std::swap(m_textureFocused_R,   temp.m_textureFocused_R);
-            std::swap(m_splitImage,         temp.m_splitImage);
+            std::swap(m_textureNormal,      temp.m_textureNormal);
+            std::swap(m_textureHover,       temp.m_textureHover);
+            std::swap(m_textureDown,        temp.m_textureDown);
+            std::swap(m_textureFocused,     temp.m_textureFocused);
             std::swap(m_separateHoverImage, temp.m_separateHoverImage);
             std::swap(m_text,               temp.m_text);
             std::swap(m_textSize,           temp.m_textSize);
@@ -137,18 +107,10 @@ namespace tgui
         m_loaded = false;
 
         // If the button was loaded before then remove the old textures first
-        if (m_textureNormal_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_L);
-        if (m_textureNormal_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_M);
-        if (m_textureNormal_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal_R);
-        if (m_textureHover_L.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_L);
-        if (m_textureHover_M.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_M);
-        if (m_textureHover_R.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover_R);
-        if (m_textureDown_L.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_L);
-        if (m_textureDown_M.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_M);
-        if (m_textureDown_R.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown_R);
-        if (m_textureFocused_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_L);
-        if (m_textureFocused_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_M);
-        if (m_textureFocused_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused_R);
+        if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
+        if (m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown);
+        if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
         ConfigFile configFile;
@@ -192,17 +154,15 @@ namespace tgui
             }
             else if (property == "normalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureNormal))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
                 }
-
-                m_splitImage = false;
             }
             else if (property == "hoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
@@ -210,7 +170,7 @@ namespace tgui
             }
             else if (property == "downimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureDown_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureDown))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
@@ -218,107 +178,9 @@ namespace tgui
             }
             else if (property == "focusedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "normalimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_L in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "normalimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_M in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-
-                m_splitImage = true;
-            }
-            else if (property == "normalimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage_R in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "hoverimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_L in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "hoverimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_M in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "hoverimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage_R in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "downimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureDown_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_L in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "downimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureDown_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_M in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "downimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureDown_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage_R in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "focusedimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_L in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "focusedimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_M in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "focusedimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage_R in section Button in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
@@ -326,73 +188,31 @@ namespace tgui
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Button in " + m_loadedConfigFile + ".");
         }
 
-        // Check if the image is split
-        if (m_splitImage)
+        // Make sure the required texture was loaded
+        if (m_textureNormal.getData() != nullptr)
         {
-            // Make sure the required textures were loaded
-            if ((m_textureNormal_L.data != nullptr) && (m_textureNormal_M.data != nullptr) && (m_textureNormal_R.data != nullptr))
-            {
-                m_loaded = true;
-                setSize(static_cast<float>(m_textureNormal_L.getSize().x + m_textureNormal_M.getSize().x + m_textureNormal_R.getSize().x),
-                        static_cast<float>(m_textureNormal_M.getSize().y));
-
-                m_textureNormal_M.data->texture.setRepeated(true);
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the button. Is the Button section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
-
-            // Check if optional textures were loaded
-            if ((m_textureFocused_L.data != nullptr) && (m_textureFocused_M.data != nullptr) && (m_textureFocused_R.data != nullptr))
-            {
-                m_allowFocus = true;
-                m_widgetPhase |= WidgetPhase_Focused;
-
-                m_textureFocused_M.data->texture.setRepeated(true);
-            }
-            if ((m_textureHover_L.data != nullptr) && (m_textureHover_M.data != nullptr) && (m_textureHover_R.data != nullptr))
-            {
-                m_widgetPhase |= WidgetPhase_Hover;
-
-                m_textureHover_M.data->texture.setRepeated(true);
-            }
-            if ((m_textureDown_L.data != nullptr) && (m_textureDown_M.data != nullptr) && (m_textureDown_R.data != nullptr))
-            {
-                m_widgetPhase |= WidgetPhase_MouseDown;
-
-                m_textureDown_M.data->texture.setRepeated(true);
-            }
+            m_loaded = true;
+            setSize(m_textureNormal.getSize().x, m_textureNormal.getSize().y);
         }
-        else // The image isn't split
+        else
         {
-            // Make sure the required texture was loaded
-            if (m_textureNormal_M.data != nullptr)
-            {
-                m_loaded = true;
-                setSize(static_cast<float>(m_textureNormal_M.getSize().x), static_cast<float>(m_textureNormal_M.getSize().y));
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
+            TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
+            return false;
+        }
 
-            // Check if optional textures were loaded
-            if (m_textureFocused_M.data != nullptr)
-            {
-                m_allowFocus = true;
-                m_widgetPhase |= WidgetPhase_Focused;
-            }
-            if (m_textureHover_M.data != nullptr)
-            {
-                m_widgetPhase |= WidgetPhase_Hover;
-            }
-            if (m_textureDown_M.data != nullptr)
-            {
-                m_widgetPhase |= WidgetPhase_MouseDown;
-            }
+        // Check if optional textures were loaded
+        if (m_textureFocused.getData() != nullptr)
+        {
+            m_allowFocus = true;
+            m_widgetPhase |= WidgetPhase_Focused;
+        }
+        if (m_textureHover.getData() != nullptr)
+        {
+            m_widgetPhase |= WidgetPhase_Hover;
+        }
+        if (m_textureDown.getData() != nullptr)
+        {
+            m_widgetPhase |= WidgetPhase_MouseDown;
         }
 
         return true;
@@ -411,47 +231,14 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        if (m_splitImage)
-        {
-            m_textureDown_L.sprite.setPosition(x, y);
-            m_textureHover_L.sprite.setPosition(x, y);
-            m_textureNormal_L.sprite.setPosition(x, y);
-            m_textureFocused_L.sprite.setPosition(x, y);
-
-            // Check if the middle image may be drawn
-            if ((m_textureNormal_M.sprite.getScale().y * (m_textureNormal_L.getSize().x + m_textureNormal_R.getSize().x)) < m_size.x)
-            {
-                float scalingY = m_size.y / m_textureNormal_M.getSize().y;
-
-                m_textureDown_M.sprite.setPosition(x + (m_textureDown_L.getSize().x * m_textureDown_L.sprite.getScale().x), y);
-                m_textureHover_M.sprite.setPosition(x + (m_textureHover_L.getSize().x * m_textureHover_L.sprite.getScale().x), y);
-                m_textureNormal_M.sprite.setPosition(x + (m_textureNormal_L.getSize().x * m_textureNormal_L.sprite.getScale().x), y);
-                m_textureFocused_M.sprite.setPosition(x + (m_textureFocused_L.getSize().x * m_textureFocused_L.sprite.getScale().x), y);
-
-                m_textureDown_R.sprite.setPosition(m_textureDown_M.sprite.getPosition().x + (m_textureDown_M.sprite.getTextureRect().width * scalingY), y);
-                m_textureHover_R.sprite.setPosition(m_textureHover_M.sprite.getPosition().x + (m_textureHover_M.sprite.getTextureRect().width * scalingY), y);
-                m_textureNormal_R.sprite.setPosition(m_textureNormal_M.sprite.getPosition().x + (m_textureNormal_M.sprite.getTextureRect().width * scalingY), y);
-                m_textureFocused_R.sprite.setPosition(m_textureFocused_M.sprite.getPosition().x + (m_textureFocused_M.sprite.getTextureRect().width * scalingY), y);
-            }
-            else // The middle image isn't drawn
-            {
-                m_textureDown_R.sprite.setPosition(x + (m_textureDown_L.getSize().x * m_textureDown_L.sprite.getScale().x), y);
-                m_textureHover_R.sprite.setPosition(x + (m_textureHover_L.getSize().x * m_textureHover_L.sprite.getScale().x), y);
-                m_textureNormal_R.sprite.setPosition(x + (m_textureNormal_L.getSize().x * m_textureNormal_L.sprite.getScale().x), y);
-                m_textureFocused_R.sprite.setPosition(x + (m_textureFocused_L.getSize().x * m_textureFocused_L.sprite.getScale().x), y);
-            }
-        }
-        else // The images aren't split
-        {
-            m_textureDown_M.sprite.setPosition(x, y);
-            m_textureHover_M.sprite.setPosition(x, y);
-            m_textureNormal_M.sprite.setPosition(x, y);
-            m_textureFocused_M.sprite.setPosition(x, y);
-        }
+        m_textureDown.setPosition(x, y);
+        m_textureHover.setPosition(x, y);
+        m_textureNormal.setPosition(x, y);
+        m_textureFocused.setPosition(x, y);
 
         // Set the position of the text
-        m_text.setPosition(std::floor(x + (m_size.x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
-                           std::floor(y + (m_size.y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
+                           std::floor(y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,57 +249,24 @@ namespace tgui
         if (m_loaded == false)
             return;
 
-        // Set the new size of the button
-        m_size.x = width;
-        m_size.y = height;
-
-        // A negative size is not allowed for this widget
-        if (m_size.x < 0) m_size.x = -m_size.x;
-        if (m_size.y < 0) m_size.y = -m_size.y;
-
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
             setText(m_text.getString());
 
-        // Drawing the button image will be different when the image is split
-        if (m_splitImage)
-        {
-            float scalingY = m_size.y / m_textureNormal_M.getSize().y;
-            float minimumWidth = (m_textureNormal_L.getSize().x + m_textureNormal_R.getSize().x) * scalingY;
-
-            if (m_size.x < minimumWidth)
-                m_size.x = minimumWidth;
-
-            m_textureDown_L.sprite.setScale(scalingY, scalingY);
-            m_textureHover_L.sprite.setScale(scalingY, scalingY);
-            m_textureNormal_L.sprite.setScale(scalingY, scalingY);
-            m_textureFocused_L.sprite.setScale(scalingY, scalingY);
-
-            m_textureDown_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_size.x - minimumWidth) / scalingY), m_textureDown_M.getSize().y));
-            m_textureHover_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_size.x - minimumWidth) / scalingY), m_textureHover_M.getSize().y));
-            m_textureNormal_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_size.x - minimumWidth) / scalingY), m_textureNormal_M.getSize().y));
-            m_textureFocused_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>((m_size.x - minimumWidth) / scalingY), m_textureFocused_M.getSize().y));
-
-            m_textureDown_M.sprite.setScale(scalingY, scalingY);
-            m_textureHover_M.sprite.setScale(scalingY, scalingY);
-            m_textureNormal_M.sprite.setScale(scalingY, scalingY);
-            m_textureFocused_M.sprite.setScale(scalingY, scalingY);
-
-            m_textureDown_R.sprite.setScale(scalingY, scalingY);
-            m_textureHover_R.sprite.setScale(scalingY, scalingY);
-            m_textureNormal_R.sprite.setScale(scalingY, scalingY);
-            m_textureFocused_R.sprite.setScale(scalingY, scalingY);
-        }
-        else // The image is not split
-        {
-            m_textureDown_M.sprite.setScale(m_size.x / m_textureDown_M.getSize().x, m_size.y / m_textureDown_M.getSize().y);
-            m_textureHover_M.sprite.setScale(m_size.x / m_textureHover_M.getSize().x, m_size.y / m_textureHover_M.getSize().y);
-            m_textureNormal_M.sprite.setScale(m_size.x / m_textureNormal_M.getSize().x, m_size.y / m_textureNormal_M.getSize().y);
-            m_textureFocused_M.sprite.setScale(m_size.x / m_textureFocused_M.getSize().x, m_size.y / m_textureFocused_M.getSize().y);
-        }
+        m_textureDown.setSize(width, height);
+        m_textureHover.setSize(width, height);
+        m_textureNormal.setSize(width, height);
+        m_textureFocused.setSize(width, height);
 
         // Recalculate the position of the images
         setPosition(getPosition());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Button::getSize() const
+    {
+        return m_textureNormal.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,15 +285,15 @@ namespace tgui
         if (m_textSize == 0)
         {
             // Calculate a possible text size
-            float size = m_size.y * 0.85f;
+            float size = m_textureNormal.getSize().y * 0.85f;
             m_text.setCharacterSize(static_cast<unsigned int>(size));
             m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
 
             // Make sure that the text isn't too width
-            if (m_text.getGlobalBounds().width > (m_size.x * 0.8f))
+            if (m_text.getGlobalBounds().width > (m_textureNormal.getSize().x * 0.8f))
             {
                 // The text is too width, so make it smaller
-                m_text.setCharacterSize(static_cast<unsigned int>(size * m_size.x * 0.8f / m_text.getGlobalBounds().width));
+                m_text.setCharacterSize(static_cast<unsigned int>(size * m_textureNormal.getSize().x * 0.8f / m_text.getGlobalBounds().width));
                 m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
             }
         }
@@ -550,8 +304,8 @@ namespace tgui
         }
 
         // Set the position of the text
-        m_text.setPosition(std::floor(getPosition().x + (m_size.x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
-                           std::floor(getPosition().y + (m_size.y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(getPosition().x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
+                           std::floor(getPosition().y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -614,23 +368,10 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        if (m_splitImage)
-        {
-            m_textureNormal_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureHover_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureDown_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureFocused_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-
-            m_textureNormal_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureHover_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureDown_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textureFocused_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        }
-
-        m_textureNormal_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureHover_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureDown_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFocused_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureDown.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,102 +518,30 @@ namespace tgui
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_splitImage)
+        if (m_separateHoverImage)
         {
-            if (m_separateHoverImage)
-            {
-                if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
-                {
-                    target.draw(m_textureDown_L, states);
-                    target.draw(m_textureDown_M, states);
-                    target.draw(m_textureDown_R, states);
-                }
-                else if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    target.draw(m_textureHover_L, states);
-                    target.draw(m_textureHover_M, states);
-                    target.draw(m_textureHover_R, states);
-                }
-                else
-                {
-                    target.draw(m_textureNormal_L, states);
-                    target.draw(m_textureNormal_M, states);
-                    target.draw(m_textureNormal_R, states);
-                }
-            }
-            else // The hover image is drawn on top of the normal one
-            {
-                if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
-                {
-                    target.draw(m_textureDown_L, states);
-                    target.draw(m_textureDown_M, states);
-                    target.draw(m_textureDown_R, states);
-                }
-                else
-                {
-                    target.draw(m_textureNormal_L, states);
-                    target.draw(m_textureNormal_M, states);
-                    target.draw(m_textureNormal_R, states);
-                }
-
-                // When the mouse is on top of the button then draw an extra image
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    target.draw(m_textureHover_L, states);
-                    target.draw(m_textureHover_M, states);
-                    target.draw(m_textureHover_R, states);
-                }
-            }
-
-            // When the button is focused then draw an extra image
-            if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
-            {
-                target.draw(m_textureFocused_L, states);
-                target.draw(m_textureFocused_M, states);
-                target.draw(m_textureFocused_R, states);
-            }
+            if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
+                target.draw(m_textureDown, states);
+            else if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                target.draw(m_textureHover, states);
+            else
+                target.draw(m_textureNormal, states);
         }
-        else // The images aren't split
+        else // The hover image is drawn on top of the normal one
         {
-            if (m_separateHoverImage)
-            {
-                if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
-                {
-                    target.draw(m_textureDown_M, states);
-                }
-                else if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    target.draw(m_textureHover_M, states);
-                }
-                else
-                {
-                    target.draw(m_textureNormal_M, states);
-                }
-            }
-            else // The hover image is drawn on top of the normal one
-            {
-                if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
-                {
-                    target.draw(m_textureDown_M, states);
-                }
-                else
-                {
-                    target.draw(m_textureNormal_M, states);
-                }
+            if ((m_mouseDown) && (m_mouseHover) && (m_widgetPhase & WidgetPhase_MouseDown))
+                target.draw(m_textureDown, states);
+            else
+                target.draw(m_textureNormal, states);
 
-                // When the mouse is on top of the button then draw an extra image
-                if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
-                {
-                    target.draw(m_textureHover_M, states);
-                }
-            }
-
-            // When the button is focused then draw an extra image
-            if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
-            {
-                target.draw(m_textureFocused_M, states);
-            }
+            // When the mouse is on top of the button then draw an extra image
+            if ((m_mouseHover) && (m_widgetPhase & WidgetPhase_Hover))
+                target.draw(m_textureHover, states);
         }
+
+        // When the button is focused then draw an extra image
+        if ((m_focused) && (m_widgetPhase & WidgetPhase_Focused))
+            target.draw(m_textureFocused, states);
 
         // If the button has a text then also draw the text
         target.draw(m_text, states);

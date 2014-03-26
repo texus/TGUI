@@ -105,6 +105,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief This function currently does nothing.
         ///
         /// \param width   Currently ignored
@@ -316,7 +333,7 @@ namespace tgui
         /// By default, it is the height of the tab image that is loaded with the load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTabHeight(unsigned int height);
+        void setTabHeight(float height);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +342,7 @@ namespace tgui
         /// \return Tab height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTabHeight() const;
+        float getTabHeight() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,6 +437,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Recalculates the size of each tab image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void recalculateTabsWidth();
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,10 +475,8 @@ namespace tgui
 
         std::string   m_loadedConfigFile;
 
-        bool          m_splitImage;
         bool          m_separateSelectedImage;
 
-        unsigned int  m_tabHeight;
         unsigned int  m_textSize;
 
         sf::Color     m_textColor;
@@ -468,14 +490,11 @@ namespace tgui
         int  m_selectedTab;
 
         std::vector<sf::String> m_tabNames;
-        std::vector<float>      m_nameWidth;
 
-        Texture  m_textureNormal_L;
-        Texture  m_textureNormal_M;
-        Texture  m_textureNormal_R;
-        Texture  m_textureSelected_L;
-        Texture  m_textureSelected_M;
-        Texture  m_textureSelected_R;
+        Texture             m_textureNormal;
+        Texture             m_textureSelected;
+        std::list<Texture>  m_texturesNormal;
+        std::list<Texture>  m_texturesSelected;
 
         sf::Text m_text;
 

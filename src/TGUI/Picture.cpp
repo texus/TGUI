@@ -51,7 +51,7 @@ namespace tgui
     Picture::~Picture()
     {
         // Remove the texture (if we are the only one using it)
-        if (m_texture.data != nullptr)
+        if (m_texture.getData() != nullptr)
             TGUI_TextureManager.removeTexture(m_texture);
     }
 
@@ -95,11 +95,11 @@ namespace tgui
         m_loadedFilename = getResourcePath() + filename;
 
         // If we have already loaded a texture then first delete it
-        if (m_texture.data != nullptr)
+        if (m_texture.getData() != nullptr)
             TGUI_TextureManager.removeTexture(m_texture);
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(m_loadedFilename, m_texture))
+        if (TGUI_TextureManager.getTexture(m_texture, m_loadedFilename))
         {
             m_loaded = true;
 
@@ -125,7 +125,7 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_texture.sprite.setPosition(x, y);
+        m_texture.setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ namespace tgui
         m_size.y = height;
 
         if (m_loaded)
-            m_texture.sprite.setScale(m_size.x / m_texture.getSize().x, m_size.y / m_texture.getSize().y);
+            m_texture.setSize(width, height);
         else
             TGUI_OUTPUT("TGUI warning: Picture::setSize called while Picture wasn't loaded yet.");
     }
@@ -146,18 +146,17 @@ namespace tgui
     void Picture::setSmooth(bool smooth)
     {
         if (m_loaded)
-            m_texture.data->texture.setSmooth(smooth);
+            m_texture.getData()->texture.setSmooth(smooth);
         else
             TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.");
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Picture::isSmooth() const
     {
         if (m_loaded)
-            return m_texture.data->texture.isSmooth();
+            return m_texture.getData()->texture.isSmooth();
         else
         {
             TGUI_OUTPUT("TGUI warning: Picture::isSmooth called while Picture wasn't loaded yet.");
@@ -171,7 +170,7 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_texture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_texture.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

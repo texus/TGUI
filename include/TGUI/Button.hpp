@@ -135,6 +135,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the size of the widget.
+        ///
+        /// \return Size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the caption of the button.
         ///
         /// \param text  New text to draw on top of the button.
@@ -294,24 +303,10 @@ namespace tgui
 
         std::string m_loadedConfigFile;
 
-        Texture m_textureNormal_L;
-        Texture m_textureHover_L;
-        Texture m_textureDown_L;
-        Texture m_textureFocused_L;
-
-        Texture m_textureNormal_M;
-        Texture m_textureHover_M;
-        Texture m_textureDown_M;
-        Texture m_textureFocused_M;
-
-        Texture m_textureNormal_R;
-        Texture m_textureHover_R;
-        Texture m_textureDown_R;
-        Texture m_textureFocused_R;
-
-        // If this is true then the L, M and R images will be used.
-        // If it is false then the button is just one big image that will be stored in the M image.
-        bool m_splitImage;
+        Texture m_textureNormal;
+        Texture m_textureHover;
+        Texture m_textureDown;
+        Texture m_textureFocused;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
         bool m_separateHoverImage;

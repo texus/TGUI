@@ -69,10 +69,10 @@ namespace tgui
     Slider2d::~Slider2d()
     {
         // Remove all the textures
-        if (m_textureTrackNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
+        if (m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
+        if (m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
+        if (m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
+        if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,10 +118,10 @@ namespace tgui
         m_loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_textureTrackNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
+        if (m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
+        if (m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
+        if (m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
+        if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -196,7 +196,7 @@ namespace tgui
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureTrackNormal.data != nullptr) && (m_textureThumbNormal.data != nullptr))
+        if ((m_textureTrackNormal.getData() != nullptr) && (m_textureThumbNormal.getData() != nullptr))
         {
             // Set the size of the slider
             m_size = sf::Vector2f(m_textureTrackNormal.getSize());
@@ -208,7 +208,7 @@ namespace tgui
         }
 
         // Check if optional textures were loaded
-        if ((m_textureTrackHover.data != nullptr) && (m_textureThumbHover.data != nullptr))
+        if ((m_textureTrackHover.getData() != nullptr) && (m_textureThumbHover.getData() != nullptr))
         {
             m_widgetPhase |= WidgetPhase_Hover;
         }
@@ -354,10 +354,10 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureThumbNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureThumbHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTrackNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTrackHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureThumbNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureThumbHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureTrackNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureTrackHover.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

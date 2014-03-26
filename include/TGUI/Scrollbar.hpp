@@ -105,6 +105,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the scrollbar.
         ///
         /// \param width   The new width of the scrollbar
@@ -319,9 +336,9 @@ namespace tgui
       private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the position and size of the thumb
+        // Returns the size of the thumb image.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::FloatRect getThumbRect();
+        sf::Vector2f getThumbSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,23 +394,11 @@ namespace tgui
         // Did the mouse went down on one of the arrows?
         bool m_mouseDownOnArrow;
 
-        // If this is true then the L, M and R images will be used.
-        // If it is false then the scrollbar is just one big image that will be stored in the M image.
-        bool m_splitImage;
-
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
         bool m_separateHoverImage;
 
-        // The size of the scrollbar and its thumb
-        sf::Vector2f m_size;
-        sf::Vector2f m_thumbSize;
-
-        Texture m_textureTrackNormal_L;
-        Texture m_textureTrackHover_L;
-        Texture m_textureTrackNormal_M;
-        Texture m_textureTrackHover_M;
-        Texture m_textureTrackNormal_R;
-        Texture m_textureTrackHover_R;
+        Texture m_textureTrackNormal;
+        Texture m_textureTrackHover;
 
         Texture m_textureThumbNormal;
         Texture m_textureThumbHover;

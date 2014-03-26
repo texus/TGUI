@@ -297,6 +297,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the size of the thumb image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getThumbSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,23 +347,11 @@ namespace tgui
         // Does the image lie vertically?
         bool m_verticalImage;
 
-        // If this is true then the L, M and R images will be used.
-        // If it is false then the slider is just one big image that will be stored in the M image.
-        bool m_splitImage;
-
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
         bool m_separateHoverImage;
 
-        // The size of the slider and its thumb
-        sf::Vector2f m_size;
-        sf::Vector2f m_thumbSize;
-
-        Texture m_textureTrackNormal_L;
-        Texture m_textureTrackHover_L;
-        Texture m_textureTrackNormal_M;
-        Texture m_textureTrackHover_M;
-        Texture m_textureTrackNormal_R;
-        Texture m_textureTrackHover_R;
+        Texture m_textureTrackNormal;
+        Texture m_textureTrackHover;
         Texture m_textureThumbNormal;
         Texture m_textureThumbHover;
     };

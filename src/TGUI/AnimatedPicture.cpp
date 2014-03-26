@@ -113,7 +113,7 @@ namespace tgui
         Texture tempTexture;
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(getResourcePath() + filename, tempTexture))
+        if (TGUI_TextureManager.getTexture(tempTexture, getResourcePath() + filename))
         {
             // If this is the first frame then set it as the current displayed frame
             if (m_textures.empty())
@@ -125,7 +125,7 @@ namespace tgui
             }
 
             // Add the texture
-            tempTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+            tempTexture.setColor(sf::Color(255, 255, 255, m_opacity));
             m_textures.push_back(tempTexture);
 
             // Store the frame duration
@@ -310,7 +310,7 @@ namespace tgui
         ClickableWidget::setTransparency(transparency);
 
         for (unsigned int i = 0; i < m_textures.size(); ++i)
-            m_textures[i].sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+            m_textures[i].setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

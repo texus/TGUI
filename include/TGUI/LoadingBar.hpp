@@ -115,6 +115,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the size of the widget.
+        ///
+        /// \return Size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Sets a minimum value.
         ///
         /// \param minimum  The new minimum value
@@ -345,16 +354,8 @@ namespace tgui
         unsigned int m_maximum;
         unsigned int m_value;
 
-        // If this is true then the L, M and R images will be used.
-        // If it is false then the button is just one big image that will be stored in the M image.
-        bool m_splitImage;
-
-        Texture  m_textureBack_L;
-        Texture  m_textureBack_M;
-        Texture  m_textureBack_R;
-        Texture  m_textureFront_L;
-        Texture  m_textureFront_M;
-        Texture  m_textureFront_R;
+        Texture  m_textureBack;
+        Texture  m_textureFront;
 
         // The text that is (optionally) drawn on top of the loading bar
         sf::Text     m_text;

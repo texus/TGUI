@@ -38,12 +38,12 @@ namespace tgui
 
     Knob::Knob() :
         m_clockwiseTurning(true),
-        m_imageRotation(0),
-        m_startRotation(90),
-        m_endRotation(90),
-        m_minimum(0),
-        m_value(0),
-        m_maximum(360)
+        m_imageRotation   (  0),
+        m_startRotation   ( 90),
+        m_endRotation     ( 90),
+        m_minimum         (  0),
+        m_value           (  0),
+        m_maximum         (360)
     {
         m_callback.widgetType = Type_Knob;
         m_draggableWidget = true;
@@ -54,7 +54,6 @@ namespace tgui
     Knob::Knob(const Knob& copy) :
         Widget            (copy),
         m_loadedConfigFile(copy.m_loadedConfigFile),
-        m_size            (copy.m_size),
         m_clockwiseTurning(copy.m_clockwiseTurning),
         m_imageRotation   (copy.m_imageRotation),
         m_startRotation   (copy.m_startRotation),
@@ -71,8 +70,8 @@ namespace tgui
 
     Knob::~Knob()
     {
-        if (m_backgroundTexture.data != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
-        if (m_foregroundTexture.data != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
+        if (m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
+        if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +87,6 @@ namespace tgui
             std::swap(m_loadedConfigFile,  temp.m_loadedConfigFile);
             std::swap(m_backgroundTexture, temp.m_backgroundTexture);
             std::swap(m_foregroundTexture, temp.m_foregroundTexture);
-            std::swap(m_size,              temp.m_size);
             std::swap(m_clockwiseTurning,  temp.m_clockwiseTurning);
             std::swap(m_imageRotation,     temp.m_imageRotation);
             std::swap(m_startRotation,     temp.m_startRotation);
@@ -118,8 +116,8 @@ namespace tgui
         m_loaded = false;
 
         // If the knob was loaded before then remove the old textures first
-        if (m_backgroundTexture.data != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
-        if (m_foregroundTexture.data != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
+        if (m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
+        if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
 
         // Open the config file
         ConfigFile configFile;
@@ -178,14 +176,12 @@ namespace tgui
         }
 
         // Make sure the required textures was loaded
-        if ((m_backgroundTexture.data != nullptr) && (m_foregroundTexture.data != nullptr))
+        if ((m_backgroundTexture.getData() != nullptr) && (m_foregroundTexture.getData() != nullptr))
         {
-            // Rotate the image
-            m_foregroundTexture.sprite.setOrigin(m_foregroundTexture.getSize().x / 2.0f, m_foregroundTexture.getSize().y / 2.0f);
-            m_foregroundTexture.sprite.setRotation(m_startRotation - m_imageRotation);
+            m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
 
             m_loaded = true;
-            setSize(static_cast<float>(m_backgroundTexture.getSize().x), static_cast<float>(m_backgroundTexture.getSize().y));
+            setSize(m_backgroundTexture.getSize().x, m_backgroundTexture.getSize().y);
         }
         else
         {
@@ -209,9 +205,9 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        m_backgroundTexture.sprite.setPosition(x, y);
-        m_foregroundTexture.sprite.setPosition(x + (m_backgroundTexture.getSize().x / 2.0f),
-                                               y + (m_backgroundTexture.getSize().y / 2.0f));
+        m_backgroundTexture.setPosition(x, y);
+        m_foregroundTexture.setPosition(x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
+                                        y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,26 +218,19 @@ namespace tgui
         if (m_loaded == false)
             return;
 
-        // Set the new size of the knob
-        m_size.x = width;
-        m_size.y = height;
+        m_backgroundTexture.setSize(width, height);
+        m_foregroundTexture.setSize(m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * width,
+                                    m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * height);
 
-        // A negative size is not allowed for this widget
-        if (m_size.x < 0) m_size.x = -m_size.x;
-        if (m_size.y < 0) m_size.y = -m_size.y;
-
-        m_backgroundTexture.sprite.setScale(m_size.x / m_backgroundTexture.getSize().x, m_size.y / m_backgroundTexture.getSize().y);
-        m_foregroundTexture.sprite.setScale(m_size.x / m_backgroundTexture.getSize().x, m_size.y / m_backgroundTexture.getSize().y);
-
-        // Reposition the foreground image
-        m_foregroundTexture.sprite.setPosition(getPosition().x + (m_size.x / 2.0f), getPosition().y + (m_size.y / 2.0f));
+        // Recalculate the position of the images
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Knob::getSize() const
     {
-        return m_size;
+        return m_backgroundTexture.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,8 +382,8 @@ namespace tgui
     {
         Widget::setTransparency(transparency);
 
-        m_backgroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_foregroundTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_backgroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_foregroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,8 +394,8 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
             sf::Vector2f scaling;
-            scaling.x = m_size.x / m_backgroundTexture.getSize().x;
-            scaling.y = m_size.y / m_backgroundTexture.getSize().y;
+            scaling.x = m_backgroundTexture.getSize().x / m_backgroundTexture.getImageSize().x;
+            scaling.y = m_backgroundTexture.getSize().y / m_backgroundTexture.getImageSize().y;
 
             // Only return true when the pixel under the mouse isn't transparent
             if (!m_backgroundTexture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
@@ -451,8 +440,7 @@ namespace tgui
 
         m_mouseHover = true;
 
-        // Get the current position
-        sf::Vector2f centerPosition = getPosition() + sf::Vector2f(m_size.x / 2.0f, m_size.y / 2.0f);
+        sf::Vector2f centerPosition = m_backgroundTexture.getPosition() + (m_backgroundTexture.getSize() / 2.0f);
 
         // Check if the mouse button is down
         if (m_mouseDown)
@@ -521,9 +509,9 @@ namespace tgui
 
             // Give the image the correct rotation
             if (m_imageRotation > angle)
-                m_foregroundTexture.sprite.setRotation(m_imageRotation - angle);
+                m_foregroundTexture.setRotation(m_imageRotation - angle);
             else
-                m_foregroundTexture.sprite.setRotation(360 - angle + m_imageRotation);
+                m_foregroundTexture.setRotation(360 - angle + m_imageRotation);
 
             // Calculate the difference in degrees between the start and end rotation
             float allowedAngle = 0;
@@ -732,9 +720,9 @@ namespace tgui
 
         // Give the image the correct rotation
         if (m_imageRotation > angle)
-            m_foregroundTexture.sprite.setRotation(m_imageRotation - angle);
+            m_foregroundTexture.setRotation(m_imageRotation - angle);
         else
-            m_foregroundTexture.sprite.setRotation(360 - angle + m_imageRotation);
+            m_foregroundTexture.setRotation(360 - angle + m_imageRotation);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

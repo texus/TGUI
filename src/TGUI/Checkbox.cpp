@@ -56,10 +56,10 @@ namespace tgui
         m_loaded = false;
 
         // If the checkbox was loaded before then remove the old textures
-        if (m_textureUnchecked.data != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
-        if (m_textureChecked.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
-        if (m_textureHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureFocused.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
+        if (m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
+        if (m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
+        if (m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
+        if (m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
         ConfigFile configFile;
@@ -134,7 +134,7 @@ namespace tgui
         }
 
         // Make sure the required texture was loaded
-        if ((m_textureChecked.data != nullptr) && (m_textureUnchecked.data != nullptr))
+        if ((m_textureChecked.getData() != nullptr) && (m_textureUnchecked.getData() != nullptr))
         {
             m_loaded = true;
             setSize(static_cast<float>(m_textureUnchecked.getSize().x), static_cast<float>(m_textureUnchecked.getSize().y));
@@ -146,12 +146,12 @@ namespace tgui
         }
 
         // Check if optional textures were loaded
-        if (m_textureFocused.data != nullptr)
+        if (m_textureFocused.getData() != nullptr)
         {
             m_allowFocus = true;
             m_widgetPhase |= WidgetPhase_Focused;
         }
-        if (m_textureHover.data != nullptr)
+        if (m_textureHover.getData() != nullptr)
         {
             m_widgetPhase |= WidgetPhase_Hover;
         }

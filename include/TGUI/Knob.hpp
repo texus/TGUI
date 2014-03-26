@@ -365,8 +365,6 @@ namespace tgui
         Texture m_backgroundTexture;
         Texture m_foregroundTexture;
 
-        sf::Vector2f m_size;
-
         bool m_clockwiseTurning; // Does rotating clockwise increment the value?
         float m_imageRotation;
         float m_startRotation;

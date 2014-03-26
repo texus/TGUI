@@ -1,39 +1,39 @@
 
 set(TGUI_SRC
-    TGUI.cpp
-    Clipboard.cpp
-    Callback.cpp
-    Transformable.cpp
-    Widget.cpp
-    Label.cpp
-    Picture.cpp
-    Button.cpp
-    Checkbox.cpp
-    RadioButton.cpp
-    EditBox.cpp
-    Slider.cpp
-    Scrollbar.cpp
-    ListBox.cpp
-    LoadingBar.cpp
-    ComboBox.cpp
-    TextBox.cpp
-    SpriteSheet.cpp
     AnimatedPicture.cpp
-    SpinButton.cpp
-    Slider2d.cpp
-    Tab.cpp
-    ConfigFile.cpp
-    TextureManager.cpp
-    Container.cpp
-    Panel.cpp
+    Button.cpp
+    Callback.cpp
+    ChatBox.cpp
+    Checkbox.cpp
     ChildWindow.cpp
+    ClickableWidget.cpp
+    Clipboard.cpp
+    ConfigFile.cpp
+    ComboBox.cpp
+    EditBox.cpp
     Grid.cpp
     Gui.cpp
-    ClickableWidget.cpp
-    MenuBar.cpp
-    ChatBox.cpp
-    MessageBox.cpp
     Knob.cpp
+    Label.cpp
+    LoadingBar.cpp
+    ListBox.cpp
+    MenuBar.cpp
+    MessageBox.cpp
+    Panel.cpp
+    Picture.cpp
+    RadioButton.cpp
+    Scrollbar.cpp
+    Slider.cpp
+    Slider2d.cpp
+    SpinButton.cpp
+    SpriteSheet.cpp
+    Tab.cpp
+    TextBox.cpp
+    Texture.cpp
+    TextureManager.cpp
+    TGUI.cpp
+    Transformable.cpp
+    Widget.cpp
 )
 
 # add the sfml and tgui include directories

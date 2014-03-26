@@ -38,11 +38,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_size             (0, 0),
     m_backgroundTexture(nullptr),
     m_titleBarHeight   (0),
-    m_splitImage       (false),
-    m_draggingPosition (0, 0),
     m_distanceToSide   (5),
     m_titleAlignment   (TitleAlignmentCentered),
     m_borderColor      (0, 0, 0),
@@ -63,7 +60,6 @@ namespace tgui
     m_backgroundTexture(childWindowToCopy.m_backgroundTexture),
     m_titleText        (childWindowToCopy.m_titleText),
     m_titleBarHeight   (childWindowToCopy.m_titleBarHeight),
-    m_splitImage       (childWindowToCopy.m_splitImage),
     m_draggingPosition (childWindowToCopy.m_draggingPosition),
     m_distanceToSide   (childWindowToCopy.m_distanceToSide),
     m_titleAlignment   (childWindowToCopy.m_titleAlignment),
@@ -72,9 +68,7 @@ namespace tgui
     {
         // Copy the textures
         TGUI_TextureManager.copyTexture(childWindowToCopy.m_iconTexture, m_iconTexture);
-        TGUI_TextureManager.copyTexture(childWindowToCopy.m_textureTitleBar_L, m_textureTitleBar_L);
-        TGUI_TextureManager.copyTexture(childWindowToCopy.m_textureTitleBar_M, m_textureTitleBar_M);
-        TGUI_TextureManager.copyTexture(childWindowToCopy.m_textureTitleBar_R, m_textureTitleBar_R);
+        TGUI_TextureManager.copyTexture(childWindowToCopy.m_textureTitleBar, m_textureTitleBar);
 
         // Copy the button
         m_closeButton = new Button(*childWindowToCopy.m_closeButton);
@@ -92,15 +86,11 @@ namespace tgui
 
     ChildWindow::~ChildWindow()
     {
-        if (m_textureTitleBar_L.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureTitleBar_L);
-        if (m_textureTitleBar_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureTitleBar_M);
-        if (m_textureTitleBar_R.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureTitleBar_R);
-
-        if (m_iconTexture.data != nullptr)
+        if (m_iconTexture.getData() != nullptr)
             TGUI_TextureManager.removeTexture(m_iconTexture);
 
-        if (m_iconTexture.data != nullptr)
-            TGUI_TextureManager.removeTexture(m_iconTexture);
+        if (m_textureTitleBar.getData() != nullptr)
+            TGUI_TextureManager.removeTexture(m_textureTitleBar);
 
         delete m_closeButton;
     }
@@ -125,16 +115,13 @@ namespace tgui
             std::swap(m_backgroundTexture, temp.m_backgroundTexture);
             std::swap(m_backgroundSprite,  temp.m_backgroundSprite);
             std::swap(m_iconTexture,       temp.m_iconTexture);
+            std::swap(m_textureTitleBar,   temp.m_textureTitleBar);
             std::swap(m_titleText,         temp.m_titleText);
             std::swap(m_titleBarHeight,    temp.m_titleBarHeight);
-            std::swap(m_splitImage,        temp.m_splitImage);
             std::swap(m_draggingPosition,  temp.m_draggingPosition);
             std::swap(m_distanceToSide,    temp.m_distanceToSide);
             std::swap(m_titleAlignment,    temp.m_titleAlignment);
             std::swap(m_borderColor,       temp.m_borderColor);
-            std::swap(m_textureTitleBar_L, temp.m_textureTitleBar_L);
-            std::swap(m_textureTitleBar_M, temp.m_textureTitleBar_M);
-            std::swap(m_textureTitleBar_R, temp.m_textureTitleBar_R);
             std::swap(m_closeButton,       temp.m_closeButton);
             std::swap(m_keepInParent,      temp.m_keepInParent);
         }
@@ -159,12 +146,10 @@ namespace tgui
         m_loaded = false;
 
         // Remove the textures when they were loaded before
-        if (m_textureTitleBar_L.data != nullptr) TGUI_TextureManager.removeTexture(m_textureTitleBar_L);
-        if (m_textureTitleBar_M.data != nullptr) TGUI_TextureManager.removeTexture(m_textureTitleBar_M);
-        if (m_textureTitleBar_R.data != nullptr) TGUI_TextureManager.removeTexture(m_textureTitleBar_R);
-        if (m_closeButton->m_textureNormal_M.data != nullptr) TGUI_TextureManager.removeTexture(m_closeButton->m_textureNormal_M);
-        if (m_closeButton->m_textureHover_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_closeButton->m_textureHover_M);
-        if (m_closeButton->m_textureDown_M.data != nullptr)   TGUI_TextureManager.removeTexture(m_closeButton->m_textureDown_M);
+        if (m_textureTitleBar.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureTitleBar);
+        if (m_closeButton->m_textureNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_closeButton->m_textureNormal);
+        if (m_closeButton->m_textureHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_closeButton->m_textureHover);
+        if (m_closeButton->m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_closeButton->m_textureDown);
 
         // Open the config file
         ConfigFile configFile;
@@ -212,37 +197,9 @@ namespace tgui
             }
             else if (property == "titlebarimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-
-                m_splitImage = false;
-            }
-            else if (property == "titlebarimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_L in section ChildWindow in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "titlebarimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_M in section ChildWindow in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-
-                m_splitImage = true;
-            }
-            else if (property == "titlebarimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage_R in section ChildWindow in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
@@ -252,7 +209,7 @@ namespace tgui
             }
             else if (property == "closebuttonnormalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureNormal_M))
+                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureNormal))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonNormalImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
@@ -260,7 +217,7 @@ namespace tgui
             }
             else if (property == "closebuttonhoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureHover_M))
+                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureHover))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonHoverImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
@@ -268,7 +225,7 @@ namespace tgui
             }
             else if (property == "closebuttondownimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureDown_M))
+                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureDown))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonDownImage in section Button in " + m_loadedConfigFile + ".");
                     return false;
@@ -289,20 +246,20 @@ namespace tgui
         }
 
         // Initialize the close button if it was loaded
-        if (m_closeButton->m_textureNormal_M.data != nullptr)
+        if (m_closeButton->m_textureNormal.getData() != nullptr)
         {
             // Check if optional textures were loaded
-            if (m_closeButton->m_textureHover_M.data != nullptr)
+            if (m_closeButton->m_textureHover.getData() != nullptr)
             {
                 m_closeButton->m_widgetPhase |= WidgetPhase_Hover;
             }
-            if (m_closeButton->m_textureDown_M.data != nullptr)
+            if (m_closeButton->m_textureDown.getData() != nullptr)
             {
                 m_closeButton->m_widgetPhase |= WidgetPhase_MouseDown;
             }
 
-            m_closeButton->m_size = sf::Vector2f(m_closeButton->m_textureNormal_M.getSize());
             m_closeButton->m_loaded = true;
+            m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize().x, m_closeButton->m_textureNormal.getImageSize().y);
         }
         else // Close button wan't loaded
         {
@@ -310,42 +267,18 @@ namespace tgui
             return false;
         }
 
-        // Check if the image is split
-        if (m_splitImage)
+        // Make sure the required texture was loaded
+        if (m_textureTitleBar.getData() != nullptr)
         {
-            // Make sure the required textures was loaded
-            if ((m_textureTitleBar_L.data != nullptr) && (m_textureTitleBar_M.data != nullptr) && (m_textureTitleBar_R.data != nullptr))
-            {
-                m_titleBarHeight = m_textureTitleBar_M.getSize().y;
+            m_titleBarHeight = m_textureTitleBar.getImageSize().y;
 
-                float width = m_textureTitleBar_L.getSize().x + m_textureTitleBar_M.getSize().x + m_textureTitleBar_R.getSize().x;
-
-                m_loaded = true;
-                setSize(width, width * 3.0f / 4.0f);
-
-                m_textureTitleBar_M.data->texture.setRepeated(true);
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
+            m_loaded = true;
+            setSize(m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f);
         }
-        else // The image isn't split
+        else
         {
-            // Make sure the required texture was loaded
-            if (m_textureTitleBar_M.data != nullptr)
-            {
-                m_titleBarHeight = m_textureTitleBar_M.getSize().y;
-
-                m_loaded = true;
-                setSize(m_textureTitleBar_M.getSize().x, m_textureTitleBar_M.getSize().x * 3.0f / 4.0f);
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
+            return false;
         }
 
         // Set the size of the title text
@@ -364,6 +297,61 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setPosition(float x, float y)
+    {
+        if (m_keepInParent)
+        {
+            if (y < 0)
+                y = 0;
+            else if (y > m_parent->getSize().y - m_titleBarHeight)
+                y = m_parent->getSize().y - m_titleBarHeight;
+
+            if (x < 0)
+                x = 0;
+            else if (x > m_parent->getSize().x - getSize().x)
+                x = m_parent->getSize().x - getSize().x;
+        }
+
+        Transformable::setPosition(x, y);
+
+        m_textureTitleBar.setPosition(x, y);
+        m_iconTexture.setPosition(x + m_distanceToSide, y + ((m_titleBarHeight - m_iconTexture.getSize().y) / 2.0f));
+
+        if (m_titleAlignment == TitleAlignmentLeft)
+        {
+            if (m_iconTexture.getData())
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+            else
+                m_titleText.setPosition(x + m_distanceToSide - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+
+        }
+        else if (m_titleAlignment == TitleAlignmentCentered)
+        {
+            if (m_iconTexture.getData())
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((m_size.x + m_leftBorder + m_rightBorder) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+            else
+                m_titleText.setPosition(x + m_distanceToSide + (((m_size.x + m_leftBorder + m_rightBorder) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+        }
+        else // if (m_titleAlignment == TitleAlignmentRight)
+        {
+            if (m_iconTexture.getData())
+                m_titleText.setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+            else
+                m_titleText.setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+        }
+
+        m_closeButton->setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - m_distanceToSide - m_closeButton->getSize().x,
+                                   y + ((m_titleBarHeight - m_closeButton->getSize().y) / 2.0f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setSize(float width, float height)
     {
         // A negative size is not allowed for this widget
@@ -374,29 +362,21 @@ namespace tgui
         m_size.x = width;
         m_size.y = height;
 
-        if (m_splitImage)
-        {
-            float scalingY = static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y;
-            float minimumWidth = ((m_textureTitleBar_L.getSize().x + m_textureTitleBar_R.getSize().x) * scalingY);
-
-            if (m_size.x + m_leftBorder + m_rightBorder < minimumWidth)
-                m_size.x = minimumWidth - m_leftBorder - m_rightBorder;
-
-            m_textureTitleBar_L.sprite.setScale(scalingY, scalingY);
-            m_textureTitleBar_M.sprite.setScale(scalingY, scalingY);
-            m_textureTitleBar_R.sprite.setScale(scalingY, scalingY);
-
-            m_textureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_size.x + m_leftBorder + m_rightBorder) - minimumWidth) / scalingY), m_textureTitleBar_M.getSize().y));
-        }
-        else // The image is not split
-        {
-            m_textureTitleBar_M.sprite.setScale((m_size.x + m_leftBorder + m_rightBorder) / m_textureTitleBar_M.getSize().x,
-                                                static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y);
-        }
+        m_textureTitleBar.setSize((width + m_leftBorder + m_rightBorder), static_cast<float>(m_titleBarHeight));
 
         // If there is a background texture then resize it
         if (m_backgroundTexture)
             m_backgroundSprite.setScale(m_size.x / m_backgroundTexture->getSize().x, m_size.y / m_backgroundTexture->getSize().y);
+
+        // If there is an icon then give it the correct size
+        if (m_iconTexture.getData())
+        {
+            m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
+                                  m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
+        }
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,32 +428,16 @@ namespace tgui
         m_titleBarHeight = height;
 
         // Set the size of the close button
-        m_closeButton->setSize(static_cast<float>(height) / m_textureTitleBar_M.getSize().y * m_closeButton->m_textureNormal_M.getSize().x,
-                               static_cast<float>(height) / m_textureTitleBar_M.getSize().y * m_closeButton->m_textureNormal_M.getSize().y);
+        m_closeButton->setSize(height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().x,
+                               height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().y);
 
         // Set the size of the text in the title bar
         m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
 
-        // Recalculate the scale of the title bar images
-        if (m_splitImage)
-        {
-            float scalingY = static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y;
-            float minimumWidth = ((m_textureTitleBar_L.getSize().x + m_textureTitleBar_R.getSize().x) * scalingY);
+        m_textureTitleBar.setSize(m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight));
 
-            if (m_size.x + m_leftBorder + m_rightBorder < minimumWidth)
-                m_size.x = minimumWidth - m_leftBorder - m_rightBorder;
-
-            m_textureTitleBar_L.sprite.setScale(scalingY, scalingY);
-            m_textureTitleBar_M.sprite.setScale(scalingY, scalingY);
-            m_textureTitleBar_R.sprite.setScale(scalingY, scalingY);
-
-            m_textureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_size.x + m_leftBorder + m_rightBorder) - minimumWidth) / scalingY), m_textureTitleBar_M.getSize().y));
-        }
-        else // The image is not split
-        {
-            m_textureTitleBar_M.sprite.setScale((m_size.x + m_leftBorder + m_rightBorder) / m_textureTitleBar_M.getSize().x,
-                                                static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y);
-        }
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,12 +468,8 @@ namespace tgui
         Container::setTransparency(transparency);
 
         m_backgroundSprite.setColor(sf::Color(255, 255, 255, m_opacity));
-
-        m_iconTexture.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-
-        m_textureTitleBar_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTitleBar_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTitleBar_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_iconTexture.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureTitleBar.setColor(sf::Color(255, 255, 255, m_opacity));
 
         m_closeButton->setTransparency(m_opacity);
     }
@@ -519,6 +479,9 @@ namespace tgui
     void ChildWindow::setTitle(const sf::String& title)
     {
         m_titleText.setString(title);
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,22 +529,10 @@ namespace tgui
         m_rightBorder  = rightBorder;
         m_bottomBorder = bottomBorder;
 
-        // Recalculate the scale of the title bar images
-        if (m_splitImage)
-        {
-            float scalingY = static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y;
-            float minimumWidth = ((m_textureTitleBar_L.getSize().x + m_textureTitleBar_R.getSize().x) * scalingY);
+        m_textureTitleBar.setSize(m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight));
 
-            if (m_size.x + m_leftBorder + m_rightBorder < minimumWidth)
-                m_size.x = minimumWidth - m_leftBorder - m_rightBorder;
-
-            m_textureTitleBar_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(((m_size.x + m_leftBorder + m_rightBorder) - minimumWidth) / scalingY), m_textureTitleBar_M.getSize().y));
-        }
-        else // The image is not split
-        {
-            m_textureTitleBar_M.sprite.setScale((m_size.x + m_leftBorder + m_rightBorder) / m_textureTitleBar_M.getSize().x,
-                                                static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y);
-        }
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -589,6 +540,9 @@ namespace tgui
     void ChildWindow::setDistanceToSide(unsigned int distanceToSide)
     {
         m_distanceToSide = distanceToSide;
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -603,6 +557,9 @@ namespace tgui
     void ChildWindow::setTitleAlignment(TitleAlignment alignment)
     {
         m_titleAlignment = alignment;
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -617,25 +574,31 @@ namespace tgui
     void ChildWindow::setIcon(const std::string& filename)
     {
         // If a texture has already been loaded then remove it first
-        if (m_iconTexture.data)
+        if (m_iconTexture.getData())
             TGUI_TextureManager.removeTexture(m_iconTexture);
 
         // Load the icon image
-        if (TGUI_TextureManager.getTexture(filename, m_iconTexture))
+        if (TGUI_TextureManager.getTexture(m_iconTexture, filename))
         {
-            m_iconTexture.sprite.setScale(static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y,
-                                          static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y);
+            m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
+                                  m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
         }
         else // Loading failed
             TGUI_OUTPUT("Failed to load \"" + filename + "\" as icon for the ChildWindow");
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::removeIcon()
     {
-        if (m_iconTexture.data)
+        if (m_iconTexture.getData())
             TGUI_TextureManager.removeTexture(m_iconTexture);
+
+        // Reposition the images and text
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -657,30 +620,6 @@ namespace tgui
     bool ChildWindow::isKeptInParent()
     {
         return m_keepInParent;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setPosition(float x, float y)
-    {
-        if (m_keepInParent)
-        {
-            if (y < 0)
-                Transformable::setPosition(getPosition().x, 0);
-            else if (y > m_parent->getSize().y - m_titleBarHeight)
-                Transformable::setPosition(getPosition().x, m_parent->getSize().y - m_titleBarHeight);
-            else
-                Transformable::setPosition(getPosition().x, y);
-
-            if (x < 0)
-                Transformable::setPosition(0, getPosition().y);
-            else if (x > m_parent->getSize().x - getSize().x)
-                Transformable::setPosition(m_parent->getSize().x - getSize().x, getPosition().y);
-            else
-                Transformable::setPosition(x, getPosition().y);
-        }
-        else
-            Transformable::setPosition(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -742,12 +681,6 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
-            // Get the current position
-            sf::Vector2f position = getPosition();
-
-            // Temporary set the close button to the correct position
-            m_closeButton->setPosition(position.x + ((m_size.x + m_leftBorder + m_rightBorder - m_distanceToSide - m_closeButton->getSize().x)), position.y + ((m_titleBarHeight / 2.f) - (m_closeButton->getSize().x / 2.f)));
-
             // Send the mouse press event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
                 m_closeButton->leftMousePressed(x, y);
@@ -757,12 +690,10 @@ namespace tgui
                 m_mouseDown = true;
 
                 // Remember where we are dragging the title bar
-                m_draggingPosition.x = x - position.x;
-                m_draggingPosition.y = y - position.y;
+                m_draggingPosition.x = x - getPosition().x;
+                m_draggingPosition.y = y - getPosition().y;
             }
 
-            // Reset the position of the button
-            m_closeButton->setPosition(0, 0);
             return;
         }
         else // The mouse is not on top of the title bar
@@ -790,12 +721,6 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
-            // Get the current position
-            sf::Vector2f position = getPosition();
-
-            // Temporary set the close button to the correct position
-            m_closeButton->setPosition(position.x + ((m_size.x + m_leftBorder + m_rightBorder - m_distanceToSide - m_closeButton->getSize().x)), position.y + ((m_titleBarHeight / 2.f) - (m_closeButton->getSize().x / 2.f)));
-
             m_mouseDown = false;
 
             // Check if the close button was clicked
@@ -824,8 +749,6 @@ namespace tgui
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNoLongerDown();
 
-            // Reset the position of the button
-            m_closeButton->setPosition(0, 0);
             return;
         }
         else // The mouse is not on top of the title bar
@@ -879,18 +802,10 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
-            // Get the current position
-            sf::Vector2f position = getPosition();
-
-            // Temporary set the close button to the correct position
-            m_closeButton->setPosition(position.x + ((m_size.x + m_leftBorder + m_rightBorder - m_distanceToSide - m_closeButton->getSize().x)), position.y + ((m_titleBarHeight / 2.f) - (m_closeButton->getSize().x / 2.f)));
-
             // Send the hover event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
                 m_closeButton->mouseMoved(x, y);
 
-            // Reset the position of the button
-            m_closeButton->setPosition(0, 0);
             return;
         }
         else // The mouse is not on top of the title bar
@@ -1096,6 +1011,13 @@ namespace tgui
         if (m_loaded == false)
             return;
 
+        // Draw the title bar
+        target.draw(m_textureTitleBar, states);
+
+        // Draw a window icon if one was set
+        if (m_iconTexture.getData())
+            target.draw(m_iconTexture, states);
+
         // Get the current position
         sf::Vector2f position = getPosition();
 
@@ -1113,47 +1035,14 @@ namespace tgui
         sf::Vector2f topLeftTitleBarPosition;
         sf::Vector2f bottomRightTitleBarPosition;
 
-        if (m_iconTexture.data)
-            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_distanceToSide + (m_iconTexture.getSize().x * m_iconTexture.sprite.getScale().x) + viewPosition.x,
+        if (m_iconTexture.getData())
+            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_distanceToSide + m_iconTexture.getSize().x + viewPosition.x,
                                                                       position.y + viewPosition.y);
         else
             topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_distanceToSide + viewPosition.x, position.y + viewPosition.y);
 
         bottomRightTitleBarPosition = states.transform.transformPoint(position.x + m_size.x + m_leftBorder + m_rightBorder - (2*m_distanceToSide) - m_closeButton->getSize().x + viewPosition.x,
                                                                       position.y + m_titleBarHeight + viewPosition.y);
-
-        // Adjust the transformation
-        states.transform *= getTransform();
-
-        sf::Transform oldTransform = states.transform;
-
-        // Check if the title bar image is split
-        if (m_splitImage)
-        {
-            target.draw(m_textureTitleBar_L, states);
-
-            states.transform.translate(m_textureTitleBar_L.getSize().x * (static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y), 0);
-            target.draw(m_textureTitleBar_M, states);
-
-            states.transform.translate(m_size.x + m_leftBorder + m_rightBorder - ((m_textureTitleBar_R.getSize().x + m_textureTitleBar_L.getSize().x)
-                                                                                  * (static_cast<float>(m_titleBarHeight) / m_textureTitleBar_M.getSize().y)), 0);
-            target.draw(m_textureTitleBar_R, states);
-        }
-        else // The title bar image isn't split
-        {
-            // Draw the title bar
-            target.draw(m_textureTitleBar_M, states);
-        }
-
-        states.transform = oldTransform;
-
-        // Draw a window icon if one was set
-        if (m_iconTexture.data)
-        {
-            states.transform.translate(static_cast<float>(m_distanceToSide), (m_titleBarHeight - (m_iconTexture.getSize().y * m_iconTexture.sprite.getScale().y)) / 2.f);
-            target.draw(m_iconTexture, states);
-            states.transform.translate(m_iconTexture.getSize().x * m_iconTexture.sprite.getScale().x, (m_titleBarHeight - (m_iconTexture.getSize().y * m_iconTexture.sprite.getScale().y)) / -2.f);
-        }
 
         // Get the old clipping area
         GLint scissor[4];
@@ -1177,44 +1066,19 @@ namespace tgui
             // Set the clipping area
             glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-            // Draw the text, depending on the alignment
-            if (m_titleAlignment == TitleAlignmentLeft)
-            {
-                states.transform.translate(std::floor(static_cast<float>(m_distanceToSide) + 0.5f), 0);
-                target.draw(m_titleText, states);
-            }
-            else if (m_titleAlignment == TitleAlignmentCentered)
-            {
-                if (m_iconTexture.data)
-                    states.transform.translate(std::floor(m_distanceToSide + (((m_size.x + m_leftBorder + m_rightBorder) - 4*m_distanceToSide - (m_iconTexture.getSize().x * m_iconTexture.sprite.getScale().x) - m_closeButton->getSize().x - m_titleText.getGlobalBounds().width) / 2.0f) + 0.5f), 0);
-                else
-                    states.transform.translate(std::floor(m_distanceToSide + (((m_size.x + m_leftBorder + m_rightBorder) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getGlobalBounds().width) / 2.0f) + 0.5f), 0);
-
-                target.draw(m_titleText, states);
-            }
-            else // if (m_titleAlignment == TitleAlignmentRight)
-            {
-                if (m_iconTexture.data)
-                    states.transform.translate(std::floor((m_size.x + m_leftBorder + m_rightBorder) - (m_iconTexture.getSize().x * m_iconTexture.sprite.getScale().x) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getGlobalBounds().width + 0.5f), 0);
-                else
-                    states.transform.translate(std::floor((m_size.x + m_leftBorder + m_rightBorder) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getGlobalBounds().width + 0.5f), 0);
-
-                target.draw(m_titleText, states);
-            }
+            // Draw the text in the title bar
+            target.draw(m_titleText, states);
 
             // Reset the old clipping area
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         }
 
-        // Move the close button to the correct position
-        states.transform = oldTransform;
-        states.transform.translate((m_size.x + m_leftBorder + m_rightBorder) - m_distanceToSide - m_closeButton->getSize().x, (m_titleBarHeight - m_closeButton->getSize().y) / 2.f);
-
         // Draw the close button
         target.draw(*m_closeButton, states);
 
         // Set the correct transformation
-        states.transform = oldTransform.translate(0, static_cast<float>(m_titleBarHeight));
+        states.transform *= getTransform();
+        states.transform.translate(0, static_cast<float>(m_titleBarHeight));
 
         // Draw left border
         sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_leftBorder), m_size.y + m_topBorder));
@@ -1223,11 +1087,12 @@ namespace tgui
 
         // Draw top border
         border.setSize(sf::Vector2f(m_size.x + m_rightBorder, static_cast<float>(m_topBorder)));
+        border.setPosition(static_cast<float>(m_leftBorder), 0);
         target.draw(border, states);
 
         // Draw right border
         border.setSize(sf::Vector2f(static_cast<float>(m_rightBorder), m_size.y + m_bottomBorder));
-        border.setPosition(m_size.x + m_leftBorder, 0);
+        border.setPosition(m_size.x + m_leftBorder, static_cast<float>(m_topBorder));
         target.draw(border, states);
 
         // Draw bottom border

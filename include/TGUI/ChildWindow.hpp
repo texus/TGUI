@@ -123,6 +123,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// \param x X coordinate of the new position
+        /// \param y Y coordinate of the new position
+        ///
+        /// \see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPosition(float x, float y);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the child window.
         ///
         /// \param width   Sets the new width of the child window
@@ -395,23 +412,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
-        ///
-        /// This function completely overwrites the previous position.
-        /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable widget is (0, 0).
-        ///
-        /// \param x X coordinate of the new position
-        /// \param y Y coordinate of the new position
-        ///
-        /// \see move, getPosition
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(float x, float y);
-        using Transformable::setPosition;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y);
@@ -511,18 +511,14 @@ namespace tgui
         sf::Sprite     m_backgroundSprite;
 
         Texture        m_iconTexture;
+        Texture        m_textureTitleBar;
 
         sf::Text       m_titleText;
         unsigned int   m_titleBarHeight;
-        bool           m_splitImage;
         sf::Vector2f   m_draggingPosition;
         unsigned int   m_distanceToSide;
         TitleAlignment m_titleAlignment;
         sf::Color      m_borderColor;
-
-        Texture   m_textureTitleBar_L;
-        Texture   m_textureTitleBar_M;
-        Texture   m_textureTitleBar_R;
 
         Button* m_closeButton;
 

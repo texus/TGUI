@@ -80,10 +80,10 @@ namespace tgui
 
     ComboBox::~ComboBox()
     {
-        if (m_textureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
+        if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
+        if (m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
+        if (m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
+        if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,10 +126,10 @@ namespace tgui
         m_loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_textureArrowUpNormal.data != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.data != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.data != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
+        if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
+        if (m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
+        if (m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
+        if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
         ConfigFile configFile;
@@ -241,14 +241,14 @@ namespace tgui
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureArrowUpNormal.data == nullptr) || (m_textureArrowDownNormal.data == nullptr))
+        if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
         {
             TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?");
             return false;
         }
 
         // Check if optional textures were loaded
-        if ((m_textureArrowUpHover.data != nullptr) && (m_textureArrowDownHover.data != nullptr))
+        if ((m_textureArrowUpHover.getData() != nullptr) && (m_textureArrowDownHover.getData() != nullptr))
         {
             m_widgetPhase |= WidgetPhase_Hover;
         }
@@ -565,10 +565,10 @@ namespace tgui
 
         m_listBox->setTransparency(m_opacity);
 
-        m_textureArrowUpNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowDownNormal.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowUpHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowDownHover.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

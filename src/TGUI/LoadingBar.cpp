@@ -38,8 +38,7 @@ namespace tgui
     m_minimum       (  0),
     m_maximum       (100),
     m_value         (  0),
-    m_splitImage    (false),
-    m_textSize      (0)
+    m_textSize      (  0)
     {
         m_callback.widgetType = Type_LoadingBar;
     }
@@ -52,17 +51,12 @@ namespace tgui
     m_minimum         (copy.m_minimum),
     m_maximum         (copy.m_maximum),
     m_value           (copy.m_value),
-    m_splitImage      (copy.m_splitImage),
     m_text            (copy.m_text),
     m_textSize        (copy.m_textSize)
     {
         // Copy the textures
-        TGUI_TextureManager.copyTexture(copy.m_textureBack_L, m_textureBack_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureBack_M, m_textureBack_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureBack_R, m_textureBack_R);
-        TGUI_TextureManager.copyTexture(copy.m_textureFront_L, m_textureFront_L);
-        TGUI_TextureManager.copyTexture(copy.m_textureFront_M, m_textureFront_M);
-        TGUI_TextureManager.copyTexture(copy.m_textureFront_R, m_textureFront_R);
+        TGUI_TextureManager.copyTexture(copy.m_textureBack, m_textureBack);
+        TGUI_TextureManager.copyTexture(copy.m_textureFront, m_textureFront);
 
         recalculateSize();
     }
@@ -71,13 +65,8 @@ namespace tgui
 
     LoadingBar::~LoadingBar()
     {
-        if (m_textureBack_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_L);
-        if (m_textureBack_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_M);
-        if (m_textureBack_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_R);
-
-        if (m_textureFront_L.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_L);
-        if (m_textureFront_M.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_M);
-        if (m_textureFront_R.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_R);
+        if (m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack);
+        if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,13 +83,8 @@ namespace tgui
             std::swap(m_minimum,          temp.m_minimum);
             std::swap(m_maximum,          temp.m_maximum);
             std::swap(m_value,            temp.m_value);
-            std::swap(m_splitImage,       temp.m_splitImage);
-            std::swap(m_textureBack_L,    temp.m_textureBack_L);
-            std::swap(m_textureBack_M,    temp.m_textureBack_M);
-            std::swap(m_textureBack_R,    temp.m_textureBack_R);
-            std::swap(m_textureFront_L,   temp.m_textureFront_L);
-            std::swap(m_textureFront_M,   temp.m_textureFront_M);
-            std::swap(m_textureFront_R,   temp.m_textureFront_R);
+            std::swap(m_textureBack,      temp.m_textureBack);
+            std::swap(m_textureFront,     temp.m_textureFront);
             std::swap(m_text,             temp.m_text);
             std::swap(m_textSize,         temp.m_textSize);
         }
@@ -125,12 +109,8 @@ namespace tgui
         m_loaded = false;
 
         // Remove all textures if they were loaded before
-        if (m_textureBack_L.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_L);
-        if (m_textureBack_M.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_M);
-        if (m_textureBack_R.data != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack_R);
-        if (m_textureFront_L.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_L);
-        if (m_textureFront_M.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_M);
-        if (m_textureFront_R.data != nullptr) TGUI_TextureManager.removeTexture(m_textureFront_R);
+        if (m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack);
+        if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
 
         // Open the config file
         ConfigFile configFile;
@@ -166,69 +146,17 @@ namespace tgui
 
             if (property == "backimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureBack_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureBack))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage in section LoadingBar in " + m_loadedConfigFile + ".");
                     return false;
                 }
-
-                m_splitImage = false;
             }
             else if (property == "frontimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFront_M))
+                if (!configFile.readTexture(value, configFileFolder, m_textureFront))
                 {
                     TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "backimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureBack_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_L in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "backimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureBack_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_M in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-
-                m_splitImage = true;
-            }
-            else if (property == "backimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureBack_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage_R in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "frontimage_l")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFront_L))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_L in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "frontimage_m")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFront_M))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_M in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "frontimage_r")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFront_R))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage_R in section LoadingBar in " + m_loadedConfigFile + ".");
                     return false;
                 }
             }
@@ -244,40 +172,17 @@ namespace tgui
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + m_loadedConfigFile + ".");
         }
 
-        // Check if the image is split
-        if (m_splitImage)
+        // Make sure the required textures were loaded
+        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
         {
-            // Make sure the required textures were loaded
-            if ((m_textureBack_L.data != nullptr) && (m_textureBack_M.data != nullptr) && (m_textureBack_R.data != nullptr)
-             && (m_textureFront_L.data != nullptr) && (m_textureFront_M.data != nullptr) && (m_textureFront_R.data != nullptr))
-            {
-                m_size.x = static_cast<float>(m_textureBack_L.getSize().x + m_textureBack_M.getSize().x + m_textureBack_R.getSize().x);
-                m_size.y = static_cast<float>(m_textureBack_M.getSize().y);
-
-                m_textureBack_M.data->texture.setRepeated(true);
-                m_textureFront_M.data->texture.setRepeated(true);
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
+            m_loaded = true;
+            setSize(m_textureBack.getSize().x, m_textureBack.getSize().y);
         }
-        else // The image isn't split
+        else
         {
-            // Make sure the required textures were loaded
-            if ((m_textureBack_M.data != nullptr) && (m_textureFront_M.data != nullptr))
-            {
-                m_size = sf::Vector2f(m_textureBack_M.getSize());
-            }
-            else
-            {
-                TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
-                return false;
-            }
+            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
+            return false;
         }
-
-        m_loaded = true;
 
         // Calculate the size of the front image (the size of the part that will be drawn)
         recalculateSize();
@@ -305,22 +210,21 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Set the size of the loading bar
-        m_size.x = width;
-        m_size.y = height;
-
-        if (m_splitImage)
-        {
-            float minimumWidth = (m_textureBack_L.getSize().x + m_textureBack_R.getSize().x) * (m_size.y / m_textureBack_M.getSize().y);
-            if (m_size.x < minimumWidth)
-                m_size.x = minimumWidth;
-        }
+        m_textureBack.setSize(width, height);
+        m_textureFront.setSize(width, height);
 
         // Recalculate the size of the front image
         recalculateSize();
 
         // Recalculate the text size
         setText(m_text.getString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f LoadingBar::getSize() const
+    {
+        return m_textureBack.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,15 +355,15 @@ namespace tgui
         if (m_textSize == 0)
         {
             // Calculate a possible text size
-            float size = m_size.y * 0.85f;
+            float size = m_textureBack.getSize().y * 0.85f;
             m_text.setCharacterSize(static_cast<unsigned int>(size));
             m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
 
             // Make sure that the text isn't too width
-            if (m_text.getGlobalBounds().width > (m_size.x * 0.8f))
+            if (m_text.getGlobalBounds().width > (m_textureBack.getSize().x * 0.8f))
             {
                 // The text is too width, so make it smaller
-                m_text.setCharacterSize(static_cast<unsigned int>(size / (m_text.getGlobalBounds().width / (m_size.x * 0.8f))));
+                m_text.setCharacterSize(static_cast<unsigned int>(size / (m_text.getGlobalBounds().width / (m_textureBack.getSize().x * 0.8f))));
                 m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
             }
         }
@@ -529,12 +433,8 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureBack_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureBack_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureBack_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFront_L.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFront_M.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFront_R.sprite.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureBack.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textureFront.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -662,83 +562,8 @@ namespace tgui
         if (m_loaded == false)
             return;
 
-        // Check if the image is split
-        if (m_splitImage)
-        {
-            float totalWidth = m_size.x / (m_size.y / m_textureBack_M.getSize().y);
-
-            // Get the bounds of the sprites
-            sf::IntRect bounds_L = m_textureFront_L.sprite.getTextureRect();
-            sf::IntRect bounds_M = m_textureFront_M.sprite.getTextureRect();
-            sf::IntRect bounds_R = m_textureFront_R.sprite.getTextureRect();
-
-            // Calculate the size of the part to display
-            float frontSize;
-            if ((m_maximum - m_minimum) > 0)
-                frontSize = totalWidth * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum));
-            else
-                frontSize = totalWidth;
-
-            // Check if a part of the left piece should be visible
-            if (frontSize > 0)
-            {
-                // Check if a piece of the middle part should be drawn
-                if (frontSize > m_textureBack_L.getSize().x)
-                {
-                    // Check if a piece of the right part should be drawn
-                    if (frontSize > totalWidth - m_textureBack_R.getSize().x)
-                    {
-                        bounds_L.width = m_textureBack_L.getSize().x;
-                        bounds_M.width = static_cast<int>(totalWidth - m_textureBack_L.getSize().x - m_textureBack_R.getSize().x);
-
-                        // Check if the bar is not full
-                        if (frontSize < totalWidth)
-                            bounds_R.width = static_cast<int>(frontSize - (totalWidth - m_textureBack_R.getSize().x));
-                        else
-                            bounds_R.width = m_textureBack_R.getSize().x;
-                    }
-                    else // Only a part of the middle image should be drawn
-                    {
-                        bounds_L.width = m_textureBack_L.getSize().x;
-                        bounds_M.width = static_cast<int>(frontSize - (m_textureBack_L.getSize().x));
-                        bounds_R.width = 0;
-                    }
-                }
-                else // Only a part of the left piece should be drawn
-                {
-                    bounds_L.width = static_cast<int>(frontSize);
-                    bounds_M.width = 0;
-                    bounds_R.width = 0;
-                }
-            }
-            else // Nothing should be drawn
-            {
-                bounds_L.width = 0;
-                bounds_M.width = 0;
-                bounds_R.width = 0;
-            }
-
-            m_textureFront_L.sprite.setTextureRect(bounds_L);
-            m_textureFront_M.sprite.setTextureRect(bounds_M);
-            m_textureFront_R.sprite.setTextureRect(bounds_R);
-
-            // Make sure that the back image is displayed correctly
-            m_textureBack_M.sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(totalWidth - m_textureBack_L.getSize().x - m_textureBack_R.getSize().x), m_textureBack_M.getSize().y));
-        }
-        else // The image is not split
-        {
-            // Calculate the size of the front sprite
-            sf::IntRect frontBounds(m_textureFront_M.sprite.getTextureRect());
-
-            // Only change the width when not dividing by zero
-            if ((m_maximum - m_minimum) > 0)
-                frontBounds.width = static_cast<int>(m_textureBack_M.getSize().x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)));
-            else
-                frontBounds.width = static_cast<int>(m_textureBack_M.getSize().x);
-
-            // Set the size of the front image
-            m_textureFront_M.sprite.setTextureRect(frontBounds);
-        }
+        // Set the size of the front image
+        m_textureFront.setTextureRect(sf::FloatRect(0, 0, m_textureFront.getSize().x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), m_textureFront.getSize().y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -763,54 +588,9 @@ namespace tgui
         // Remember the current transformation
         sf::Transform oldTransform = states.transform;
 
-        // Check if the image is split
-        if (m_splitImage)
-        {
-            float scalingY = m_size.y / m_textureBack_M.getSize().y;
-
-            // Scale the image
-            states.transform.scale(scalingY, scalingY);
-
-            // Draw the left image of the loading bar
-            target.draw(m_textureBack_L, states);
-            target.draw(m_textureFront_L, states);
-
-            // Check if the middle image may be drawn
-            if ((scalingY * (m_textureBack_L.getSize().x + m_textureBack_R.getSize().x)) < m_size.x)
-            {
-                // Put the middle image on the correct position
-                states.transform.translate(static_cast<float>(m_textureBack_L.getSize().x), 0);
-
-                // Draw the middle image
-                target.draw(m_textureBack_M, states);
-                target.draw(m_textureFront_M, states);
-
-                // Put the right image on the correct position
-                states.transform.translate(m_textureBack_M.sprite.getGlobalBounds().width, 0);
-
-                // Draw the right image
-                target.draw(m_textureBack_R, states);
-                target.draw(m_textureFront_R, states);
-            }
-            else // The loading bar isn't width enough, we will draw it at minimum size
-            {
-                // Put the right image on the correct position
-                states.transform.translate(static_cast<float>(m_textureBack_L.getSize().x), 0);
-
-                // Draw the right image
-                target.draw(m_textureBack_R, states);
-                target.draw(m_textureFront_R, states);
-            }
-        }
-        else // The image is not split
-        {
-            // Scale the image
-            states.transform.scale(m_size.x / m_textureBack_M.getSize().x, m_size.y / m_textureBack_M.getSize().y);
-
-            // Draw the loading bar
-            target.draw(m_textureBack_M, states);
-            target.draw(m_textureFront_M, states);
-        }
+        // Draw the loading bar
+        target.draw(m_textureBack, states);
+        target.draw(m_textureFront, states);
 
         // Check if there is a text to draw
         if (m_text.getString().isEmpty() == false)
@@ -822,8 +602,8 @@ namespace tgui
             sf::FloatRect rect = m_text.getGlobalBounds();
 
             // Calculate the new position for the text
-            rect.left = (m_size.x - rect.width) * 0.5f - rect.left;
-            rect.top = (m_size.y - rect.height) * 0.5f - rect.top;
+            rect.left = (m_textureBack.getSize().x - rect.width) * 0.5f - rect.left;
+            rect.top = (m_textureBack.getSize().y - rect.height) * 0.5f - rect.top;
 
             // Set the new position
             states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));

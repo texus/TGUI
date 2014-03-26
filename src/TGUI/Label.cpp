@@ -120,11 +120,7 @@ namespace tgui
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
 
-        // Change the size of the label
-        m_size.x = width;
-        m_size.y = height;
-
-        m_background.setSize(m_size);
+        m_background.setSize(sf::Vector2f(width, height));
 
         // You are no longer auto-sizing
         m_autoSize = false;
@@ -150,10 +146,7 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-        {
-            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
-            m_background.setSize(m_size);
-        }
+            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,10 +195,7 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-        {
-            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
-            m_background.setSize(m_size);
-        }
+            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,10 +227,7 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-        {
-            m_size = sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height);
-            m_background.setSize(m_size);
-        }
+            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -356,7 +343,7 @@ namespace tgui
 
         // Get the global position
         sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
-        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_size - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition() + m_background.getSize() - target.getView().getCenter() + (target.getView().getSize() / 2.f));
 
         // Get the old clipping area
         GLint scissor[4];

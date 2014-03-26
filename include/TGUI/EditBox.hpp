@@ -151,6 +151,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the size of the widget.
+        ///
+        /// \return Size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the text of the editbox.
         ///
         /// \param text  The new text.
@@ -575,9 +584,6 @@ namespace tgui
         // Zero by default, meaning no limit.
         unsigned int  m_maxChars;
 
-        // If true then the image is split in three parts
-        bool          m_splitImage;
-
         // When the text width is not limited, you can scroll the edit box and only a part will be visible.
         unsigned int  m_textCropPosition;
 
@@ -593,17 +599,9 @@ namespace tgui
         sf::Text m_textAfterSelection;
         sf::Text m_textFull;
 
-        Texture  m_textureNormal_L;
-        Texture  m_textureNormal_M;
-        Texture  m_textureNormal_R;
-
-        Texture  m_textureHover_L;
-        Texture  m_textureHover_M;
-        Texture  m_textureHover_R;
-
-        Texture  m_textureFocused_L;
-        Texture  m_textureFocused_M;
-        Texture  m_textureFocused_R;
+        Texture  m_textureNormal;
+        Texture  m_textureHover;
+        Texture  m_textureFocused;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick;

@@ -260,16 +260,60 @@ namespace tgui
         if (!filenameFound)
             return false;
 
-        // There may be an optional parameter
-        sf::IntRect rect;
-        if (removeWhitespace(value, c))
+        // There may be optional parameters
+        sf::IntRect partRect;
+        sf::IntRect middleRect;
+        bool repeat = false;
+
+        while (removeWhitespace(value, c))
         {
-            if (!readIntRect(value.substr(c - value.begin(), value.length() - (c - value.begin())), rect))
-                return false;
+            std::string word;
+            auto openingBracketPos = value.find('(', c - value.begin());
+            if (openingBracketPos != std::string::npos)
+                word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
+            else
+                word = value.substr(c - value.begin(), value.length() - (c - value.begin()));
+
+            if ((word == "Stretch") || (word == "stretch"))
+            {
+                repeat = false;
+                std::advance(c, 7);
+            }
+            else if ((word == "Repeat") || (word == "repeat"))
+            {
+                repeat = true;
+                std::advance(c, 6);
+            }
+            else
+            {
+                sf::IntRect* rect = nullptr;
+
+                if ((word == "Part") || (word == "part"))
+                {
+                    rect = &partRect;
+                    std::advance(c, 4);
+                }
+                else if ((word == "Middle") || (word == "middle"))
+                {
+                    rect = &middleRect;
+                    std::advance(c, 6);
+                }
+
+                if (rect == nullptr)
+                    return false;
+
+                auto closeBracketPos = value.find(')', c - value.begin());
+                if (closeBracketPos != std::string::npos)
+                    readIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect);
+                else
+                    return false;
+
+                std::advance(c, closeBracketPos - (c - value.begin()) + 1);
+            }
         }
 
         // Load the texture
-        return TGUI_TextureManager.getTexture(rootPath + filename, texture, rect);
+        return TGUI_TextureManager.getTexture(texture, rootPath + filename, partRect, middleRect, repeat);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
