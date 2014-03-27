@@ -239,7 +239,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(std::stoul(value));
+                setDistanceToSide(tgui::stoul(value));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + m_loadedConfigFile + ".");
@@ -843,7 +843,7 @@ namespace tgui
         }
         else if (property == "titlebarheight")
         {
-            setTitleBarHeight(std::stoi(value));
+            setTitleBarHeight(tgui::stoi(value));
         }
         else if (property == "backgroundcolor")
         {
@@ -871,7 +871,7 @@ namespace tgui
         }
         else if (property == "distancetoside")
         {
-            setDistanceToSide(std::stoi(value));
+            setDistanceToSide(tgui::stoi(value));
         }
         else if (property == "titlealignment")
         {
@@ -917,19 +917,19 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "titlebarheight")
-            value = std::to_string(getTitleBarHeight());
+            value = tgui::to_string(getTitleBarHeight());
         else if (property == "backgroundcolor")
-            value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBackgroundColor().r)) + "," + tgui::to_string(int(getBackgroundColor().g)) + "," + tgui::to_string(int(getBackgroundColor().b)) + "," + tgui::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "title")
             value = getTitle().toAnsiString();
         else if (property == "titlecolor")
-            value = "(" + std::to_string(int(getTitleColor().r)) + "," + std::to_string(int(getTitleColor().g)) + "," + std::to_string(int(getTitleColor().b)) + "," + std::to_string(int(getTitleColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTitleColor().r)) + "," + tgui::to_string(int(getTitleColor().g)) + "," + tgui::to_string(int(getTitleColor().b)) + "," + tgui::to_string(int(getTitleColor().a)) + ")";
         else if (property == "bordercolor")
-            value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBorderColor().r)) + "," + tgui::to_string(int(getBorderColor().g)) + "," + tgui::to_string(int(getBorderColor().b)) + "," + tgui::to_string(int(getBorderColor().a)) + ")";
         else if (property == "borders")
-            value = "(" + std::to_string(getBorders().left) + "," + std::to_string(getBorders().top) + "," + std::to_string(getBorders().right) + "," + std::to_string(getBorders().bottom) + ")";
+            value = "(" + tgui::to_string(getBorders().left) + "," + tgui::to_string(getBorders().top) + "," + tgui::to_string(getBorders().right) + "," + tgui::to_string(getBorders().bottom) + ")";
         else if (property == "distancetoside")
-            value = std::to_string(getDistanceToSide());
+            value = tgui::to_string(getDistanceToSide());
         else if (property == "titlealignment")
         {
             if (m_titleAlignment == TitleAlignmentLeft)

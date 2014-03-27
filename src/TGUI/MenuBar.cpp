@@ -108,7 +108,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(std::stoul(value));
+                setDistanceToSide(tgui::stoul(value));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MenuBar in " + m_loadedConfigFile + ".");
@@ -667,15 +667,15 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(std::stoi(value));
+            setTextSize(tgui::stoi(value));
         }
         else if (property == "distancetoside")
         {
-            setDistanceToSide(std::stoi(value));
+            setDistanceToSide(tgui::stoi(value));
         }
         else if (property == "minimumsubmenuwidth")
         {
-            setMinimumSubMenuWidth(std::stoi(value));
+            setMinimumSubMenuWidth(tgui::stoi(value));
         }
         else if (property == "menus")
         {
@@ -732,21 +732,21 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "backgroundcolor")
-            value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBackgroundColor().r)) + "," + tgui::to_string(int(getBackgroundColor().g)) + "," + tgui::to_string(int(getBackgroundColor().b)) + "," + tgui::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "textcolor")
-            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTextColor().r)) + "," + tgui::to_string(int(getTextColor().g)) + "," + tgui::to_string(int(getTextColor().b)) + "," + tgui::to_string(int(getTextColor().a)) + ")";
         else if (property == "selectedbackgroundcolor")
-            value = "(" + std::to_string(int(getSelectedBackgroundColor().r)) + "," + std::to_string(int(getSelectedBackgroundColor().g))
-                    + "," + std::to_string(int(getSelectedBackgroundColor().b)) + "," + std::to_string(int(getSelectedBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getSelectedBackgroundColor().r)) + "," + tgui::to_string(int(getSelectedBackgroundColor().g))
+                    + "," + tgui::to_string(int(getSelectedBackgroundColor().b)) + "," + tgui::to_string(int(getSelectedBackgroundColor().a)) + ")";
         else if (property == "selectedtextcolor")
-            value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
-                    + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getSelectedTextColor().r)) + "," + tgui::to_string(int(getSelectedTextColor().g))
+                    + "," + tgui::to_string(int(getSelectedTextColor().b)) + "," + tgui::to_string(int(getSelectedTextColor().a)) + ")";
         else if (property == "textsize")
-            value = std::to_string(getTextSize());
+            value = tgui::to_string(getTextSize());
         else if (property == "distancetoside")
-            value = std::to_string(getDistanceToSide());
+            value = tgui::to_string(getDistanceToSide());
         else if (property == "minimumsubmenuwidth")
-            value = std::to_string(getMinimumSubMenuWidth());
+            value = tgui::to_string(getMinimumSubMenuWidth());
         else if (property == "menus")
         {
             std::vector<sf::String> menusList;

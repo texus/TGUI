@@ -74,6 +74,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int stoi(const std::string& value)
+    {
+        return std::atoi(value.c_str());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float stof(const std::string& value)
+    {
+        return static_cast<float>(std::atof(value.c_str()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned long stoul(const std::string& value)
+    {
+        return static_cast<unsigned long>(std::atoi(value.c_str()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Color extractColor(std::string string)
     {
         int red;
@@ -96,7 +117,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the red value and delete this part of the string
-                    red = std::stoi(string.substr(0, commaPos));
+                    red = tgui::stoi(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -104,7 +125,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the green value and delete this part of the string
-                        green = std::stoi(string.substr(0, commaPos));
+                        green = tgui::stoi(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma (optional)
@@ -112,16 +133,16 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the blue value and delete this part of the string
-                            blue = std::stoi(string.substr(0, commaPos));
+                            blue = tgui::stoi(string.substr(0, commaPos));
                             string.erase(0, commaPos+1);
 
                             // Get the alpha value
-                            alpha = std::stoi(string);
+                            alpha = tgui::stoi(string);
                         }
                         else // No alpha value was passed
                         {
                             // Get the blue value
-                            blue = std::stoi(string.substr(0, commaPos));
+                            blue = tgui::stoi(string.substr(0, commaPos));
                         }
 
                         // All values have to be unsigned chars
@@ -144,15 +165,15 @@ namespace tgui
     {
         // Return the color as a string
         if (color.a < 255)
-            return "(" + std::to_string((unsigned int)color.r)
-                 + "," + std::to_string((unsigned int)color.g)
-                 + "," + std::to_string((unsigned int)color.b)
-                 + "," + std::to_string((unsigned int)color.a)
+            return "(" + tgui::to_string((unsigned int)color.r)
+                 + "," + tgui::to_string((unsigned int)color.g)
+                 + "," + tgui::to_string((unsigned int)color.b)
+                 + "," + tgui::to_string((unsigned int)color.a)
                  + ")";
         else
-            return "(" + std::to_string((unsigned int)color.r)
-                 + "," + std::to_string((unsigned int)color.g)
-                 + "," + std::to_string((unsigned int)color.b)
+            return "(" + tgui::to_string((unsigned int)color.r)
+                 + "," + tgui::to_string((unsigned int)color.g)
+                 + "," + tgui::to_string((unsigned int)color.b)
                  + ")";
     }
 
@@ -175,11 +196,11 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the x value and delete this part of the string
-                    vector.x = std::stof(string.substr(0, commaPos));
+                    vector.x = tgui::stof(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Get the y value
-                    vector.y = std::stof(string);
+                    vector.y = tgui::stof(string);
 
                     return true;
                 }
@@ -209,11 +230,11 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the x value and delete this part of the string
-                    vector.x = std::stoul(string.substr(0, commaPos));
+                    vector.x = tgui::stoul(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Get the y value
-                    vector.y = std::stoul(string);
+                    vector.y = tgui::stoul(string);
 
                     return true;
                 }
@@ -243,7 +264,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the first value and delete this part of the string
-                    borders.left = std::stoi(string.substr(0, commaPos));
+                    borders.left = tgui::stoi(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -251,7 +272,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the second value and delete this part of the string
-                        borders.top = std::stoi(string.substr(0, commaPos));
+                        borders.top = tgui::stoi(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -259,11 +280,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the third value and delete this part of the string
-                            borders.right = std::stoi(string.substr(0, commaPos));
+                            borders.right = tgui::stoi(string.substr(0, commaPos));
                             string.erase(0, commaPos+1);
 
                             // Get the fourth value
-                            borders.bottom = std::stoi(string);
+                            borders.bottom = tgui::stoi(string);
 
                             return true;
                         }

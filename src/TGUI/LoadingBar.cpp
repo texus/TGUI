@@ -166,7 +166,7 @@ namespace tgui
             }
             else if (property == "textsize")
             {
-                setTextSize(std::stoi(value));
+                setTextSize(tgui::stoi(value));
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + m_loadedConfigFile + ".");
@@ -449,15 +449,15 @@ namespace tgui
         }
         else if (property == "minimum")
         {
-            setMinimum(std::stoi(value));
+            setMinimum(tgui::stoi(value));
         }
         else if (property == "maximum")
         {
-            setMaximum(std::stoi(value));
+            setMaximum(tgui::stoi(value));
         }
         else if (property == "value")
         {
-            setValue(std::stoi(value));
+            setValue(tgui::stoi(value));
         }
         else if (property == "text")
         {
@@ -469,7 +469,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(std::stoi(value));
+            setTextSize(tgui::stoi(value));
         }
         else if (property == "callback")
         {
@@ -502,17 +502,17 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = std::to_string(getMinimum());
+            value = tgui::to_string(getMinimum());
         else if (property == "maximum")
-            value = std::to_string(getMaximum());
+            value = tgui::to_string(getMaximum());
         else if (property == "value")
-            value = std::to_string(getValue());
+            value = tgui::to_string(getValue());
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
-            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTextColor().r)) + "," + tgui::to_string(int(getTextColor().g)) + "," + tgui::to_string(int(getTextColor().b)) + "," + tgui::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = std::to_string(getTextSize());
+            value = tgui::to_string(getTextSize());
         else if (property == "callback")
         {
             std::string tempValue;

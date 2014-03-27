@@ -395,19 +395,19 @@ namespace tgui
 
         if (property == "left")
         {
-            setPosition(std::stof(value), getPosition().y);
+            setPosition(tgui::stof(value), getPosition().y);
         }
         else if (property == "top")
         {
-            setPosition(getPosition().x, std::stof(value));
+            setPosition(getPosition().x, tgui::stof(value));
         }
         else if (property == "width")
         {
-            setSize(std::stof(value), getSize().y);
+            setSize(tgui::stof(value), getSize().y);
         }
         else if (property == "height")
         {
-            setSize(getSize().x, std::stof(value));
+            setSize(getSize().x, tgui::stof(value));
         }
         else if (property == "visible")
         {
@@ -429,11 +429,11 @@ namespace tgui
         }
         else if (property == "transparency")
         {
-            setTransparency(static_cast<char>(std::stoi(value)));
+            setTransparency(static_cast<char>(tgui::stoi(value)));
         }
         else if (property == "callbackid")
         {
-            m_callback.id = std::stoul(value);
+            m_callback.id = tgui::stoul(value);
         }
         else if (property == "callback")
         {
@@ -466,21 +466,21 @@ namespace tgui
         property = toLower(property);
 
         if (property == "left")
-            value = std::to_string(getPosition().x);
+            value = tgui::to_string(getPosition().x);
         else if (property == "top")
-            value = std::to_string(getPosition().y);
+            value = tgui::to_string(getPosition().y);
         else if (property == "width")
-            value = std::to_string(getSize().x);
+            value = tgui::to_string(getSize().x);
         else if (property == "height")
-            value = std::to_string(getSize().y);
+            value = tgui::to_string(getSize().y);
         else if (property == "visible")
             value = m_visible ? "true" : "false";
         else if (property == "enabled")
             value = m_enabled ? "true" : "false";
         else if (property == "transparency")
-            value = std::to_string(int(getTransparency()));
+            value = tgui::to_string(int(getTransparency()));
         else if (property == "callbackid")
-            value = std::to_string(m_callback.id);
+            value = tgui::to_string(m_callback.id);
         else if (property == "callback")
         {
             std::vector<sf::String> callbacks;

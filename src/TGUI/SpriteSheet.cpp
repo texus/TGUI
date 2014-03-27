@@ -220,11 +220,11 @@ namespace tgui
 
         if (property == "rows")
         {
-            setRows(std::stoi(value));
+            setRows(tgui::stoi(value));
         }
         else if (property == "columns")
         {
-            setColumns(std::stoi(value));
+            setColumns(tgui::stoi(value));
         }
         else // The property didn't match
             return Picture::setProperty(property, value);
@@ -240,9 +240,9 @@ namespace tgui
         property = toLower(property);
 
         if (property == "rows")
-            value = std::to_string(getRows());
+            value = tgui::to_string(getRows());
         else if (property == "columns")
-            value = std::to_string(getColumns());
+            value = tgui::to_string(getColumns());
         else // The property didn't match
             return Picture::getProperty(property, value);
 

@@ -1010,11 +1010,11 @@ namespace tgui
         }
         else if (property == "itemheight")
         {
-            setItemHeight(std::stoi(value));
+            setItemHeight(tgui::stoi(value));
         }
         else if (property == "maximumitems")
         {
-            setMaximumItems(std::stoi(value));
+            setMaximumItems(tgui::stoi(value));
         }
         else if (property == "borders")
         {
@@ -1036,7 +1036,7 @@ namespace tgui
         }
         else if (property == "selecteditem")
         {
-            setSelectedItem(std::stoi(value));
+            setSelectedItem(tgui::stoi(value));
         }
         else if (property == "callback")
         {
@@ -1067,27 +1067,27 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "backgroundcolor")
-            value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBackgroundColor().r)) + "," + tgui::to_string(int(getBackgroundColor().g)) + "," + tgui::to_string(int(getBackgroundColor().b)) + "," + tgui::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "textcolor")
-            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTextColor().r)) + "," + tgui::to_string(int(getTextColor().g)) + "," + tgui::to_string(int(getTextColor().b)) + "," + tgui::to_string(int(getTextColor().a)) + ")";
         else if (property == "selectedbackgroundcolor")
-            value = "(" + std::to_string(int(getSelectedBackgroundColor().r)) + "," + std::to_string(int(getSelectedBackgroundColor().g))
-                    + "," + std::to_string(int(getSelectedBackgroundColor().b)) + "," + std::to_string(int(getSelectedBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getSelectedBackgroundColor().r)) + "," + tgui::to_string(int(getSelectedBackgroundColor().g))
+                    + "," + tgui::to_string(int(getSelectedBackgroundColor().b)) + "," + tgui::to_string(int(getSelectedBackgroundColor().a)) + ")";
         else if (property == "selectedtextcolor")
-            value = "(" + std::to_string(int(getSelectedTextColor().r)) + "," + std::to_string(int(getSelectedTextColor().g))
-                    + "," + std::to_string(int(getSelectedTextColor().b)) + "," + std::to_string(int(getSelectedTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getSelectedTextColor().r)) + "," + tgui::to_string(int(getSelectedTextColor().g))
+                    + "," + tgui::to_string(int(getSelectedTextColor().b)) + "," + tgui::to_string(int(getSelectedTextColor().a)) + ")";
         else if (property == "bordercolor")
-            value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBorderColor().r)) + "," + tgui::to_string(int(getBorderColor().g)) + "," + tgui::to_string(int(getBorderColor().b)) + "," + tgui::to_string(int(getBorderColor().a)) + ")";
         else if (property == "itemheight")
-            value = std::to_string(getItemHeight());
+            value = tgui::to_string(getItemHeight());
         else if (property == "maximumitems")
-            value = std::to_string(getMaximumItems());
+            value = tgui::to_string(getMaximumItems());
         else if (property == "borders")
-            value = "(" + std::to_string(getBorders().left) + "," + std::to_string(getBorders().top) + "," + std::to_string(getBorders().right) + "," + std::to_string(getBorders().bottom) + ")";
+            value = "(" + tgui::to_string(getBorders().left) + "," + tgui::to_string(getBorders().top) + "," + tgui::to_string(getBorders().right) + "," + tgui::to_string(getBorders().bottom) + ")";
         else if (property == "items")
             encodeList(m_items, value);
         else if (property == "selecteditem")
-            value = std::to_string(getSelectedItemIndex());
+            value = tgui::to_string(getSelectedItemIndex());
         else if (property == "callback")
         {
             std::string tempValue;

@@ -421,7 +421,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(std::stoi(value));
+            setTextSize(tgui::stoi(value));
         }
         else if (property == "callback")
         {
@@ -456,9 +456,9 @@ namespace tgui
         else if (property == "text")
             value = getText().toAnsiString();
         else if (property == "textcolor")
-            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTextColor().r)) + "," + tgui::to_string(int(getTextColor().g)) + "," + tgui::to_string(int(getTextColor().b)) + "," + tgui::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = std::to_string(getTextSize());
+            value = tgui::to_string(getTextSize());
         else if (property == "callback")
         {
             std::string tempValue;

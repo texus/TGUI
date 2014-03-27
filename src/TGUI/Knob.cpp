@@ -169,7 +169,7 @@ namespace tgui
             }
             else if (property == "imagerotation")
             {
-                m_imageRotation = std::stof(value);
+                m_imageRotation = tgui::stof(value);
             }
             else
                 TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Knob in " + m_loadedConfigFile + ".");
@@ -576,23 +576,23 @@ namespace tgui
         }
         else if (property == "minimum")
         {
-            setMinimum(std::stoi(value));
+            setMinimum(tgui::stoi(value));
         }
         else if (property == "maximum")
         {
-            setMaximum(std::stoi(value));
+            setMaximum(tgui::stoi(value));
         }
         else if (property == "value")
         {
-            setValue(std::stoi(value));
+            setValue(tgui::stoi(value));
         }
         else if (property == "startrotation")
         {
-            m_startRotation = std::stof(value);
+            m_startRotation = tgui::stof(value);
         }
         else if (property == "endrotation")
         {
-            m_endRotation = std::stof(value);
+            m_endRotation = tgui::stof(value);
         }
         else if (property == "clockwiseturning")
         {
@@ -632,15 +632,15 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = std::to_string(getMinimum());
+            value = tgui::to_string(getMinimum());
         else if (property == "maximum")
-            value = std::to_string(getMaximum());
+            value = tgui::to_string(getMaximum());
         else if (property == "value")
-            value = std::to_string(getValue());
+            value = tgui::to_string(getValue());
         else if (property == "startrotation")
-            value = std::to_string(m_startRotation);
+            value = tgui::to_string(m_startRotation);
         else if (property == "endrotation")
-            value = std::to_string(m_endRotation);
+            value = tgui::to_string(m_endRotation);
         else if (property == "clockwiseturning")
             value = m_clockwiseTurning ? "true" : "false";
         else if (property == "callback")

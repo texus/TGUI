@@ -817,7 +817,7 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(std::stoi(value));
+            setTextSize(tgui::stoi(value));
         }
         else if (property == "borders")
         {
@@ -887,13 +887,13 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "textsize")
-            value = std::to_string(getTextSize());
+            value = tgui::to_string(getTextSize());
         else if (property == "borders")
-            value = "(" + std::to_string(getBorders().left) + "," + std::to_string(getBorders().top) + "," + std::to_string(getBorders().right) + "," + std::to_string(getBorders().bottom) + ")";
+            value = "(" + tgui::to_string(getBorders().left) + "," + tgui::to_string(getBorders().top) + "," + tgui::to_string(getBorders().right) + "," + tgui::to_string(getBorders().bottom) + ")";
         else if (property == "backgroundcolor")
-            value = "(" + std::to_string(int(getBackgroundColor().r)) + "," + std::to_string(int(getBackgroundColor().g)) + "," + std::to_string(int(getBackgroundColor().b)) + "," + std::to_string(int(getBackgroundColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBackgroundColor().r)) + "," + tgui::to_string(int(getBackgroundColor().g)) + "," + tgui::to_string(int(getBackgroundColor().b)) + "," + tgui::to_string(int(getBackgroundColor().a)) + ")";
         else if (property == "bordercolor")
-            value = "(" + std::to_string(int(getBorderColor().r)) + "," + std::to_string(int(getBorderColor().g)) + "," + std::to_string(int(getBorderColor().b)) + "," + std::to_string(int(getBorderColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getBorderColor().r)) + "," + tgui::to_string(int(getBorderColor().g)) + "," + tgui::to_string(int(getBorderColor().b)) + "," + tgui::to_string(int(getBorderColor().a)) + ")";
         else if (property == "lines")
         {
             std::vector<sf::String> lines;

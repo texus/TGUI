@@ -480,8 +480,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setMinimum(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                                std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setMinimum(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
+                                                tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Minimum' property.");
@@ -501,8 +501,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setMaximum(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                                std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setMaximum(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
+                                                tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Maximum' property.");
@@ -522,8 +522,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setValue(sf::Vector2f(std::stof(value.substr(1, commaPos-1)),
-                                              std::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setValue(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
+                                              tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
                     }
                     else
                         TGUI_OUTPUT("TGUI error: Failed to parse 'Value' property.");
@@ -583,11 +583,11 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = "(" + std::to_string(getMinimum().x) + "," + std::to_string(getMinimum().y) + ")";
+            value = "(" + tgui::to_string(getMinimum().x) + "," + tgui::to_string(getMinimum().y) + ")";
         else if (property == "maximum")
-            value = "(" + std::to_string(getMaximum().x) + "," + std::to_string(getMaximum().y) + ")";
+            value = "(" + tgui::to_string(getMaximum().x) + "," + tgui::to_string(getMaximum().y) + ")";
         else if (property == "value")
-            value = "(" + std::to_string(getValue().x) + "," + std::to_string(getValue().y) + ")";
+            value = "(" + tgui::to_string(getValue().x) + "," + tgui::to_string(getValue().y) + ")";
         else if (property == "fixedthumbsize")
             value = m_fixedThumbSize ? "true" : "false";
         else if (property == "enablethumbcenter")

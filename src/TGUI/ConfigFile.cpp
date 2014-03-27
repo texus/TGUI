@@ -112,7 +112,7 @@ namespace tgui
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
                     error = true;
                 }
 
@@ -121,13 +121,13 @@ namespace tgui
                     ++c;
                 else
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
                     error = true;
                 }
 
                 if (!removeWhitespace(line, c))
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + std::to_string(lineNumber) + ".");
+                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
                     error = true;
                 }
 
@@ -188,7 +188,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the left value and delete this part of the string
-                    rect.left = std::stoi(value.substr(0, commaPos));
+                    rect.left = tgui::stoi(value.substr(0, commaPos));
                     value.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -196,7 +196,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the top value and delete this part of the string
-                        rect.top = std::stoi(value.substr(0, commaPos));
+                        rect.top = tgui::stoi(value.substr(0, commaPos));
                         value.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -204,11 +204,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the width value and delete this part of the string
-                            rect.width = std::stoi(value.substr(0, commaPos));
+                            rect.width = tgui::stoi(value.substr(0, commaPos));
                             value.erase(0, commaPos+1);
 
                             // Get the height value
-                            rect.height = std::stoi(value);
+                            rect.height = tgui::stoi(value);
 
                             return true;
                         }

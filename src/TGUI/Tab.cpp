@@ -209,7 +209,7 @@ namespace tgui
             }
             else if (property == "distancetoside")
             {
-                setDistanceToSide(std::stoul(value));
+                setDistanceToSide(tgui::stoul(value));
             }
             else if (property == "normalimage")
             {
@@ -706,19 +706,19 @@ namespace tgui
         }
         else if (property == "textsize")
         {
-            setTextSize(std::stoi(value));
+            setTextSize(tgui::stoi(value));
         }
         else if (property == "tabheight")
         {
-            setTabHeight(std::stoi(value));
+            setTabHeight(tgui::stoi(value));
         }
         else if (property == "maximumtabwidth")
         {
-            setMaximumTabWidth(std::stoi(value));
+            setMaximumTabWidth(tgui::stoi(value));
         }
         else if (property == "distancetoside")
         {
-            setDistanceToSide(std::stoi(value));
+            setDistanceToSide(tgui::stoi(value));
         }
         else if (property == "tabs")
         {
@@ -732,7 +732,7 @@ namespace tgui
         }
         else if (property == "selectedtab")
         {
-            select(std::stoi(value));
+            select(tgui::stoi(value));
         }
         else if (property == "callback")
         {
@@ -763,19 +763,19 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "textcolor")
-            value = "(" + std::to_string(int(getTextColor().r)) + "," + std::to_string(int(getTextColor().g)) + "," + std::to_string(int(getTextColor().b)) + "," + std::to_string(int(getTextColor().a)) + ")";
+            value = "(" + tgui::to_string(int(getTextColor().r)) + "," + tgui::to_string(int(getTextColor().g)) + "," + tgui::to_string(int(getTextColor().b)) + "," + tgui::to_string(int(getTextColor().a)) + ")";
         else if (property == "textsize")
-            value = std::to_string(getTextSize());
+            value = tgui::to_string(getTextSize());
         else if (property == "tabheight")
-            value = std::to_string(getTabHeight());
+            value = tgui::to_string(getTabHeight());
         else if (property == "maximumtabwidth")
-            value = std::to_string(getMaximumTabWidth());
+            value = tgui::to_string(getMaximumTabWidth());
         else if (property == "distancetoside")
-            value = std::to_string(getDistanceToSide());
+            value = tgui::to_string(getDistanceToSide());
         else if (property == "tabs")
             encodeList(m_tabNames, value);
         else if (property == "selectedtab")
-            value = std::to_string(getSelectedIndex());
+            value = tgui::to_string(getSelectedIndex());
         else if (property == "callback")
         {
             std::string tempValue;

@@ -445,15 +445,15 @@ namespace tgui
         }
         else if (property == "minimum")
         {
-            setMinimum(std::stoi(value));
+            setMinimum(tgui::stoi(value));
         }
         else if (property == "maximum")
         {
-            setMaximum(std::stoi(value));
+            setMaximum(tgui::stoi(value));
         }
         else if (property == "value")
         {
-            setValue(std::stoi(value));
+            setValue(tgui::stoi(value));
         }
         else if (property == "verticalscroll")
         {
@@ -493,11 +493,11 @@ namespace tgui
         if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "minimum")
-            value = std::to_string(getMinimum());
+            value = tgui::to_string(getMinimum());
         else if (property == "maximum")
-            value = std::to_string(getMaximum());
+            value = tgui::to_string(getMaximum());
         else if (property == "value")
-            value = std::to_string(getValue());
+            value = tgui::to_string(getValue());
         else if (property == "verticalscroll")
             value = m_verticalScroll ? "true" : "false";
         else if (property == "callback")
