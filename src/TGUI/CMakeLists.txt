@@ -9,6 +9,7 @@ set(TGUI_SRC
     ClickableWidget.cpp
     Clipboard.cpp
     ConfigFile.cpp
+    Container.cpp
     ComboBox.cpp
     EditBox.cpp
     Grid.cpp
