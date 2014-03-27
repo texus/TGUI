@@ -181,7 +181,7 @@ namespace tgui
             m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
 
             m_loaded = true;
-            setSize(m_backgroundTexture.getSize().x, m_backgroundTexture.getSize().y);
+            setSize(m_backgroundTexture.getImageSize().x, m_backgroundTexture.getImageSize().y);
         }
         else
         {

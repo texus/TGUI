@@ -263,7 +263,7 @@ namespace tgui
          && (m_textureArrowUpNormal.getData() != nullptr) && (m_textureArrowDownNormal.getData() != nullptr))
         {
             m_loaded = true;
-            setSize(m_textureTrackNormal.getSize().x, m_textureTrackNormal.getSize().y);
+            setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
             setVerticalScroll(m_verticalScroll);
         }
         else

@@ -206,7 +206,7 @@ namespace tgui
         if ((m_textureTrackNormal.getData() != nullptr) && (m_textureThumbNormal.getData() != nullptr))
         {
             m_loaded = true;
-            setSize(m_textureTrackNormal.getSize().x, m_textureTrackNormal.getSize().y);
+            setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
         }
         else
         {

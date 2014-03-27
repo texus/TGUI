@@ -189,7 +189,7 @@ namespace tgui
         if ((m_textureChecked.getData() != nullptr) && (m_textureUnchecked.getData() != nullptr))
         {
             m_loaded = true;
-            setSize(m_textureUnchecked.getSize().x, m_textureUnchecked.getSize().y);
+            setSize(m_textureUnchecked.getImageSize().x, m_textureUnchecked.getImageSize().y);
         }
         else
         {

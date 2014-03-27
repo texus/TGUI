@@ -192,7 +192,7 @@ namespace tgui
         if (m_textureNormal.getData() != nullptr)
         {
             m_loaded = true;
-            setSize(m_textureNormal.getSize().x, m_textureNormal.getSize().y);
+            setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
         }
         else
         {

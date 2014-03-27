@@ -176,7 +176,7 @@ namespace tgui
         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
         {
             m_loaded = true;
-            setSize(m_textureBack.getSize().x, m_textureBack.getSize().y);
+            setSize(m_textureBack.getImageSize().x, m_textureBack.getImageSize().y);
         }
         else
         {
