@@ -698,7 +698,8 @@ namespace tgui
 
             if (m_mouseHover)
             {
-                target.draw(m_textureTrackHover, states);
+                if (m_textureTrackHover.getData())
+                    target.draw(m_textureTrackHover, states);
 
                 target.draw(m_textureThumbNormal, states);
                 if (m_textureThumbHover.getData())
