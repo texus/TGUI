@@ -509,6 +509,9 @@ namespace tgui
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        if (!m_loaded)
+            return;
+
         if (m_separateHoverImage)
         {
             if (m_mouseDown && m_mouseHover && m_textureDown.getData())
