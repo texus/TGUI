@@ -258,12 +258,32 @@ namespace tgui
         if (m_verticalImage == m_verticalScroll)
         {
             m_textureTrackNormal.setSize(width, height);
-            m_textureThumbNormal.setSize(width / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x, height / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+
+            if (m_verticalScroll)
+            {
+                m_textureThumbNormal.setSize(width / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                             width / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y);
+            }
+            else
+            {
+                m_textureThumbNormal.setSize(height / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                             height / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+            }
         }
         else
         {
             m_textureTrackNormal.setSize(height, width);
-            m_textureThumbNormal.setSize(height / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x, width / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+
+            if (m_verticalScroll)
+            {
+                m_textureThumbNormal.setSize(width / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                             width / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+            }
+            else
+            {
+                m_textureThumbNormal.setSize(height / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                             height / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y);
+            }
         }
 
         m_textureTrackHover.setSize(m_textureTrackNormal.getSize().x, m_textureTrackNormal.getSize().y);
