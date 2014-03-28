@@ -92,7 +92,7 @@ namespace tgui
 
     private:
         TextureData* m_data;
-        std::array<sf::Vertex, 22> m_vertices;
+        std::vector<sf::Vertex> m_vertices;
 
         sf::Vector2f  m_size;
         sf::IntRect   m_middleRect;
