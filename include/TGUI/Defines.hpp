@@ -89,6 +89,7 @@ namespace tgui
         Type_MenuBar,
         Type_ChatBox,
         Type_Knob,
+        Type_Canvas,
         Type_Panel,
         Type_ChildWindow,
         Type_Grid,

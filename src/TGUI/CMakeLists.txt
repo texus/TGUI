@@ -3,6 +3,7 @@ set(TGUI_SRC
     AnimatedPicture.cpp
     Button.cpp
     Callback.cpp
+    Canvas.cpp
     ChatBox.cpp
     Checkbox.cpp
     ChildWindow.cpp

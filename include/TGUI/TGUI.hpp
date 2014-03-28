@@ -51,6 +51,7 @@
 #include <TGUI/ChatBox.hpp>
 #include <TGUI/Knob.hpp>
 
+#include <TGUI/Canvas.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/ChildWindow.hpp>
