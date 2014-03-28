@@ -144,7 +144,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the start rotation, which is the place where the value should be minimal.
         ///
-        /// @param rotation  New start rotation.
+        /// @param startRotation  New start rotation.
         ///
         /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
         ///
@@ -155,7 +155,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the end rotation, which is the place where the value should be maximal.
         ///
-        /// @param rotation  New end rotation.
+        /// @param endRotation  New end rotation.
         ///
         /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
         ///
