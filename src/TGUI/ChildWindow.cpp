@@ -536,8 +536,23 @@ namespace tgui
         else
         {
             // Check if the mouse is on top of the window
-            return Panel::mouseOnObject(x, y - m_TitleBarHeight);
+            if (Panel::mouseOnObject(x, y - m_TitleBarHeight))
+                return true;
+            else
+            {
+                m_CloseButton->mouseNotOnObject();
+                return false;
+            }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseNotOnObject()
+    {
+        m_CloseButton->mouseNotOnObject();
+
+        Panel::mouseNotOnObject();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
