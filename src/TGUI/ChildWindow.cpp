@@ -320,23 +320,23 @@ namespace tgui
         else if (m_titleAlignment == TitleAlignmentCentered)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((m_size.x + m_leftBorder + m_rightBorder) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((m_size.x + m_borders.left + m_borders.right) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
             else
-                m_titleText.setPosition(x + m_distanceToSide + (((m_size.x + m_leftBorder + m_rightBorder) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + m_distanceToSide + (((m_size.x + m_borders.left + m_borders.right) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
         }
         else // if (m_titleAlignment == TitleAlignmentRight)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + (m_size.x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
             else
-                m_titleText.setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + (m_size.x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
         }
 
-        m_closeButton->setPosition(x + (m_size.x + m_leftBorder + m_rightBorder) - m_distanceToSide - m_closeButton->getSize().x,
+        m_closeButton->setPosition(x + (m_size.x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton->getSize().x,
                                    y + ((m_titleBarHeight - m_closeButton->getSize().y) / 2.0f));
     }
 
@@ -352,7 +352,7 @@ namespace tgui
         m_size.x = width;
         m_size.y = height;
 
-        m_textureTitleBar.setSize((width + m_leftBorder + m_rightBorder), static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize((width + m_borders.left + m_borders.right), static_cast<float>(m_titleBarHeight));
 
         // If there is a background texture then resize it
         if (m_backgroundTexture)
@@ -380,8 +380,8 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getFullSize() const
     {
-        return sf::Vector2f(m_size.x + m_leftBorder + m_rightBorder,
-                            m_size.y + m_topBorder + m_bottomBorder + m_titleBarHeight);
+        return sf::Vector2f(m_size.x + m_borders.left + m_borders.right,
+                            m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -424,7 +424,7 @@ namespace tgui
         // Set the size of the text in the title bar
         m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
 
-        m_textureTitleBar.setSize(m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize(m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight));
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -511,15 +511,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
+    void ChildWindow::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
     {
         // Set the new border size
-        m_leftBorder   = leftBorder;
-        m_topBorder    = topBorder;
-        m_rightBorder  = rightBorder;
-        m_bottomBorder = bottomBorder;
+        m_borders.left   = leftBorder;
+        m_borders.top    = topBorder;
+        m_borders.right  = rightBorder;
+        m_borders.bottom = bottomBorder;
 
-        m_textureTitleBar.setSize(m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize(m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight));
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -621,7 +621,7 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNotOnWidget();
@@ -631,7 +631,7 @@ namespace tgui
         else
         {
             // Check if the mouse is inside the child window
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, m_size.y + m_topBorder + m_bottomBorder)).contains(x, y - m_titleBarHeight))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom)).contains(x, y - m_titleBarHeight))
                 return true;
             else
             {
@@ -669,7 +669,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             // Send the mouse press event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
@@ -693,15 +693,15 @@ namespace tgui
                 m_closeButton->mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, m_size.y + m_topBorder + m_bottomBorder + m_titleBarHeight)).contains(x, y))
-            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_leftBorder), static_cast<float>(m_titleBarHeight + m_topBorder), m_size.x, m_size.y)).contains(x, y) == false))
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
+             && (getTransform().transformRect(sf::FloatRect(m_borders.left, static_cast<float>(m_titleBarHeight + m_borders.top), m_size.x, m_size.y)).contains(x, y) == false))
             {
                 // Don't send the event to the widgets
                 return;
             }
         }
 
-        Container::leftMousePressed(x - m_leftBorder, y - (m_titleBarHeight + m_topBorder));
+        Container::leftMousePressed(x - m_borders.left, y - (m_titleBarHeight + m_borders.top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,7 +709,7 @@ namespace tgui
     void ChildWindow::leftMouseReleased(float x , float y)
     {
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             m_mouseDown = false;
 
@@ -752,8 +752,8 @@ namespace tgui
             m_closeButton->mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, m_size.y + m_topBorder + m_bottomBorder + m_titleBarHeight)).contains(x, y))
-            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_leftBorder), static_cast<float>(m_titleBarHeight + m_topBorder), m_size.x, m_size.y)).contains(x, y) == false))
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
+             && (getTransform().transformRect(sf::FloatRect(m_borders.left, static_cast<float>(m_titleBarHeight + m_borders.top), m_size.x, m_size.y)).contains(x, y) == false))
             {
                 // Tell the widgets about that the mouse was released
                 for (unsigned int i = 0; i < m_widgets.size(); ++i)
@@ -764,7 +764,7 @@ namespace tgui
             }
         }
 
-        Container::leftMouseReleased(x - m_leftBorder, y - (m_titleBarHeight + m_topBorder));
+        Container::leftMouseReleased(x - m_borders.left, y - (m_titleBarHeight + m_borders.top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -790,7 +790,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, static_cast<float>(m_titleBarHeight))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             // Send the hover event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
@@ -805,22 +805,22 @@ namespace tgui
                 m_closeButton->mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_leftBorder + m_rightBorder, m_size.y + m_topBorder + m_bottomBorder + m_titleBarHeight)).contains(x, y))
-            &&  (getTransform().transformRect(sf::FloatRect(static_cast<float>(m_leftBorder), static_cast<float>(m_titleBarHeight + m_topBorder), m_size.x, m_size.y)).contains(x, y) == false))
+            if ((getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
+             && (getTransform().transformRect(sf::FloatRect(m_borders.left, static_cast<float>(m_titleBarHeight + m_borders.top), m_size.x, m_size.y)).contains(x, y) == false))
             {
                 // Don't send the event to the widgets
                 return;
             }
         }
 
-        Container::mouseMoved(x - m_leftBorder, y - (m_titleBarHeight + m_topBorder));
+        Container::mouseMoved(x - m_borders.left, y - (m_titleBarHeight + m_borders.top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::mouseWheelMoved(int delta, int x, int y)
     {
-        Container::mouseWheelMoved(delta, x - m_leftBorder, y - (m_titleBarHeight + m_topBorder));
+        Container::mouseWheelMoved(delta, x - m_borders.left, y - (m_titleBarHeight + m_borders.top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1018,10 +1018,10 @@ namespace tgui
         sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
 
         // Get the global position
-        sf::Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_leftBorder + viewPosition.x,
-                                                                            position.y + m_titleBarHeight + m_topBorder + viewPosition.y);
-        sf::Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_size.x + m_leftBorder + viewPosition.x,
-                                                                                position.y + m_titleBarHeight + m_size.y + m_topBorder + viewPosition.y);
+        sf::Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_borders.left + viewPosition.x,
+                                                                            position.y + m_titleBarHeight + m_borders.top + viewPosition.y);
+        sf::Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_size.x + m_borders.left + viewPosition.x,
+                                                                                position.y + m_titleBarHeight + m_size.y + m_borders.top + viewPosition.y);
         sf::Vector2f topLeftTitleBarPosition;
         sf::Vector2f bottomRightTitleBarPosition;
 
@@ -1031,7 +1031,7 @@ namespace tgui
         else
             topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_distanceToSide + viewPosition.x, position.y + viewPosition.y);
 
-        bottomRightTitleBarPosition = states.transform.transformPoint(position.x + m_size.x + m_leftBorder + m_rightBorder - (2*m_distanceToSide) - m_closeButton->getSize().x + viewPosition.x,
+        bottomRightTitleBarPosition = states.transform.transformPoint(position.x + m_size.x + m_borders.left + m_borders.right - (2*m_distanceToSide) - m_closeButton->getSize().x + viewPosition.x,
                                                                       position.y + m_titleBarHeight + viewPosition.y);
 
         // Get the old clipping area
@@ -1071,27 +1071,27 @@ namespace tgui
         states.transform.translate(0, static_cast<float>(m_titleBarHeight));
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_leftBorder), m_size.y + m_topBorder));
+        sf::RectangleShape border(sf::Vector2f(m_borders.left, m_size.y + m_borders.top));
         border.setFillColor(m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_size.x + m_rightBorder, static_cast<float>(m_topBorder)));
-        border.setPosition(static_cast<float>(m_leftBorder), 0);
+        border.setSize(sf::Vector2f(m_size.x + m_borders.right, m_borders.top));
+        border.setPosition(m_borders.left, 0);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(static_cast<float>(m_rightBorder), m_size.y + m_bottomBorder));
-        border.setPosition(m_size.x + m_leftBorder, static_cast<float>(m_topBorder));
+        border.setSize(sf::Vector2f(m_borders.right, m_size.y + m_borders.bottom));
+        border.setPosition(m_size.x + m_borders.left, m_borders.top);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_size.x + m_leftBorder, static_cast<float>(m_bottomBorder)));
-        border.setPosition(0, m_size.y + m_topBorder);
+        border.setSize(sf::Vector2f(m_size.x + m_borders.left, m_borders.bottom));
+        border.setPosition(0, m_size.y + m_borders.top);
         target.draw(border, states);
 
         // Make room for the borders
-        states.transform.translate(static_cast<float>(m_leftBorder), static_cast<float>(m_topBorder));
+        states.transform.translate(m_borders.left, m_borders.top);
 
         // Draw the background
         if (m_backgroundColor != sf::Color::Transparent)

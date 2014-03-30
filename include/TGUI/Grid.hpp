@@ -277,8 +277,8 @@ namespace tgui
         std::vector< std::vector<Borders> >         m_objBorders;
         std::vector< std::vector<Layout::Layouts> > m_objLayout;
 
-        std::vector<unsigned int> m_rowHeight;
-        std::vector<unsigned int> m_columnWidth;
+        std::vector<float> m_rowHeight;
+        std::vector<float> m_columnWidth;
 
         sf::Vector2f m_size; // Real (optimal) size of the grid
         sf::Vector2f m_intendedSize; // Intended size that the grid should have if it is possible

@@ -296,8 +296,8 @@ namespace tgui
 
     sf::Vector2f ComboBox::getFullSize() const
     {
-        return sf::Vector2f(getSize().x + m_leftBorder + m_rightBorder,
-                            getSize().y + m_topBorder + m_bottomBorder);
+        return sf::Vector2f(getSize().x + m_borders.left + m_borders.right,
+                            getSize().y + m_borders.top + m_borders.bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -412,14 +412,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
+    void ComboBox::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
     {
         // Set the new border size
-        m_leftBorder   = leftBorder;
-        m_topBorder    = topBorder;
-        m_rightBorder  = rightBorder;
-        m_bottomBorder = bottomBorder;
-        m_listBox->setBorders(m_leftBorder, m_bottomBorder, m_rightBorder, m_bottomBorder);
+        m_borders.left   = leftBorder;
+        m_borders.top    = topBorder;
+        m_borders.right  = rightBorder;
+        m_borders.bottom = bottomBorder;
+        m_listBox->setBorders(m_borders.left, m_borders.bottom, m_borders.right, m_borders.bottom);
 
         // Don't set the width and height when loading failed
         if (m_loaded == false)
@@ -577,8 +577,8 @@ namespace tgui
         sf::Vector2f position = getPosition();
 
         // Check if the mouse is on top of the combo box
-        if ((x > position.x - m_leftBorder) && (x < position.x + m_listBox->getSize().x + m_rightBorder)
-         && (y > position.y - m_topBorder) && (y < position.y + m_listBox->getItemHeight() + m_bottomBorder))
+        if ((x > position.x - m_borders.left) && (x < position.x + m_listBox->getSize().x + m_borders.right)
+         && (y > position.y - m_borders.top) && (y < position.y + m_listBox->getItemHeight() + m_borders.bottom))
         {
             return true;
         }
@@ -826,7 +826,7 @@ namespace tgui
         {
             m_listBox->show();
 
-            sf::Vector2f position(getPosition().x, getPosition().y + m_listBox->getItemHeight() + m_bottomBorder);
+            sf::Vector2f position(getPosition().x, getPosition().y + m_listBox->getItemHeight() + m_borders.bottom);
 
             Widget* container = this;
             while (container->getParent() != nullptr)
@@ -917,24 +917,24 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_leftBorder), static_cast<float>(m_listBox->getItemHeight() + m_topBorder)));
-        border.setPosition(-static_cast<float>(m_leftBorder), -static_cast<float>(m_topBorder));
+        sf::RectangleShape border(sf::Vector2f(m_borders.left, static_cast<float>(m_listBox->getItemHeight() + m_borders.top)));
+        border.setPosition(-m_borders.left, -m_borders.top);
         border.setFillColor(m_listBox->m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(static_cast<float>(m_listBox->getSize().x + m_rightBorder), static_cast<float>(m_topBorder)));
-        border.setPosition(0, -static_cast<float>(m_topBorder));
+        border.setSize(sf::Vector2f(static_cast<float>(m_listBox->getSize().x + m_borders.right), m_borders.top));
+        border.setPosition(0, -m_borders.top);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(static_cast<float>(m_rightBorder), static_cast<float>(m_listBox->getItemHeight() + m_bottomBorder)));
+        border.setSize(sf::Vector2f(m_borders.right, static_cast<float>(m_listBox->getItemHeight() + m_borders.bottom)));
         border.setPosition(static_cast<float>(m_listBox->getSize().x), 0);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_listBox->getSize().x + m_leftBorder, static_cast<float>(m_bottomBorder)));
-        border.setPosition(-static_cast<float>(m_leftBorder), static_cast<float>(m_listBox->getItemHeight()));
+        border.setSize(sf::Vector2f(m_listBox->getSize().x + m_borders.left, m_borders.bottom));
+        border.setPosition(-m_borders.left, static_cast<float>(m_listBox->getItemHeight()));
         target.draw(border, states);
 
         // Draw the combo box

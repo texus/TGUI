@@ -251,7 +251,7 @@ namespace tgui
     void Grid::updateWidgets()
     {
         // Reset the column widths
-        for (std::vector<unsigned int>::iterator it = m_columnWidth.begin(); it != m_columnWidth.end(); ++it)
+        for (auto it = m_columnWidth.begin(); it != m_columnWidth.end(); ++it)
             *it = 0;
 
         // Loop through all widgets
@@ -267,11 +267,11 @@ namespace tgui
 
                 // Remember the biggest column width
                 if (m_columnWidth[col] < m_gridWidgets[row][col]->getFullSize().x + m_objBorders[row][col].left + m_objBorders[row][col].right)
-                    m_columnWidth[col] = static_cast<unsigned int>(m_gridWidgets[row][col]->getFullSize().x + m_objBorders[row][col].left + m_objBorders[row][col].right);
+                    m_columnWidth[col] = m_gridWidgets[row][col]->getFullSize().x + m_objBorders[row][col].left + m_objBorders[row][col].right;
 
                 // Remember the biggest row height
                 if (m_rowHeight[row] < m_gridWidgets[row][col]->getFullSize().y + m_objBorders[row][col].top + m_objBorders[row][col].bottom)
-                    m_rowHeight[row] = static_cast<unsigned int>(m_gridWidgets[row][col]->getFullSize().y + m_objBorders[row][col].top + m_objBorders[row][col].bottom);
+                    m_rowHeight[row] = m_gridWidgets[row][col]->getFullSize().y + m_objBorders[row][col].top + m_objBorders[row][col].bottom;
             }
         }
 
@@ -331,27 +331,27 @@ namespace tgui
                         float left = 0;
                         float top = 0;
 
-                        for (unsigned int i=0; i < row; ++i)
-                            top += static_cast<float>(m_rowHeight[i]) + 2 * availSpaceOffset.y;
+                        for (unsigned int i = 0; i < row; ++i)
+                            top += m_rowHeight[i] + 2 * availSpaceOffset.y;
 
-                        for (unsigned int i=0; i < col; ++i)
-                            left += static_cast<float>(m_columnWidth[i]) + 2 * availSpaceOffset.x;
+                        for (unsigned int i = 0; i < col; ++i)
+                            left += m_columnWidth[i] + 2 * availSpaceOffset.x;
 
                         switch (m_objLayout[row][col])
                         {
                         case Layout::UpperLeft:
-                            left += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
-                            top += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                            left += m_objBorders[row][col].left + availSpaceOffset.x;
+                            top += m_objBorders[row][col].top + availSpaceOffset.y;
                             break;
 
                         case Layout::Up:
                             left += m_objBorders[row][col].left + (((m_columnWidth[col] - m_objBorders[row][col].left - m_objBorders[row][col].right) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                            top += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                            top += m_objBorders[row][col].top + availSpaceOffset.y;
                             break;
 
                         case Layout::UpperRight:
                             left += m_columnWidth[col] - m_objBorders[row][col].right - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                            top += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                            top += m_objBorders[row][col].top + availSpaceOffset.y;
                             break;
 
                         case Layout::Right:
@@ -370,12 +370,12 @@ namespace tgui
                             break;
 
                         case Layout::BottomLeft:
-                            left += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
+                            left += m_objBorders[row][col].left + availSpaceOffset.x;
                             top += m_rowHeight[row] - m_objBorders[row][col].bottom - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                             break;
 
                         case Layout::Left:
-                            left += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
+                            left += m_objBorders[row][col].left + availSpaceOffset.x;
                             top += m_objBorders[row][col].top + (((m_rowHeight[row] - m_objBorders[row][col].top - m_objBorders[row][col].bottom) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                             break;
 
@@ -401,11 +401,11 @@ namespace tgui
 
         // Loop through all rows to find the minimum height required by the grid
         for (auto it = m_rowHeight.cbegin(); it != m_rowHeight.cend(); ++it)
-            minSize.y += static_cast<float>(*it);
+            minSize.y += *it;
 
         // Loop through all columns to find the minimum width required by the grid
         for (auto it = m_columnWidth.cbegin(); it != m_columnWidth.cend(); ++it)
-            minSize.x += static_cast<float>(*it);
+            minSize.x += *it;
 
         return minSize;
     }
@@ -456,18 +456,18 @@ namespace tgui
                 switch (m_objLayout[row][col])
                 {
                 case Layout::UpperLeft:
-                    cellPosition.x += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
-                    cellPosition.y += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].left + availSpaceOffset.x;
+                    cellPosition.y += m_objBorders[row][col].top + availSpaceOffset.y;
                     break;
 
                 case Layout::Up:
                     cellPosition.x += m_objBorders[row][col].left + (((m_columnWidth[col] - m_objBorders[row][col].left - m_objBorders[row][col].right) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                    cellPosition.y += m_objBorders[row][col].top + availSpaceOffset.y;
                     break;
 
                 case Layout::UpperRight:
                     cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].right - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    cellPosition.y += static_cast<float>(m_objBorders[row][col].top) + availSpaceOffset.y;
+                    cellPosition.y += m_objBorders[row][col].top + availSpaceOffset.y;
                     break;
 
                 case Layout::Right:
@@ -486,12 +486,12 @@ namespace tgui
                     break;
 
                 case Layout::BottomLeft:
-                    cellPosition.x += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
+                    cellPosition.x += m_objBorders[row][col].left + availSpaceOffset.x;
                     cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].bottom - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
                     break;
 
                 case Layout::Left:
-                    cellPosition.x += static_cast<float>(m_objBorders[row][col].left) + availSpaceOffset.x;
+                    cellPosition.x += m_objBorders[row][col].left + availSpaceOffset.x;
                     cellPosition.y += m_objBorders[row][col].top + (((m_rowHeight[row] - m_objBorders[row][col].top - m_objBorders[row][col].bottom) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
                     break;
 

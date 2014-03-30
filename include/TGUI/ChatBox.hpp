@@ -320,10 +320,10 @@ namespace tgui
         /// \param bottomBorder  The height of the bottom border
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(unsigned int leftBorder   = 0,
-                                unsigned int topBorder    = 0,
-                                unsigned int rightBorder  = 0,
-                                unsigned int bottomBorder = 0);
+        virtual void setBorders(float leftBorder   = 0,
+                                float topBorder    = 0,
+                                float rightBorder  = 0,
+                                float bottomBorder = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

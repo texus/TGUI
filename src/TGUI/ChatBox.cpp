@@ -281,8 +281,8 @@ namespace tgui
 
     sf::Vector2f ChatBox::getFullSize() const
     {
-        return sf::Vector2f(getSize().x + m_leftBorder + m_rightBorder,
-                            getSize().y + m_topBorder + m_bottomBorder);
+        return sf::Vector2f(getSize().x + m_borders.left + m_borders.right,
+                            getSize().y + m_borders.top + m_borders.bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,12 +492,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
+    void ChatBox::setBorders(float leftBorder, float  topBorder, float rightBorder, float bottomBorder)
     {
-        m_leftBorder   = leftBorder;
-        m_topBorder    = topBorder;
-        m_rightBorder  = rightBorder;
-        m_bottomBorder = bottomBorder;
+        m_borders.left   = leftBorder;
+        m_borders.top    = topBorder;
+        m_borders.right  = rightBorder;
+        m_borders.bottom = bottomBorder;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -995,24 +995,24 @@ namespace tgui
         target.draw(*m_panel, states);
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_leftBorder), m_panel->getSize().y + m_topBorder));
-        border.setPosition(-static_cast<float>(m_leftBorder), -static_cast<float>(m_topBorder));
+        sf::RectangleShape border(sf::Vector2f(m_borders.left, m_panel->getSize().y + m_borders.top));
+        border.setPosition(-m_borders.left, -m_borders.top);
         border.setFillColor(m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_panel->getSize().x + m_rightBorder, static_cast<float>(m_topBorder)));
-        border.setPosition(0, -static_cast<float>(m_topBorder));
+        border.setSize(sf::Vector2f(m_panel->getSize().x + m_borders.right, m_borders.top));
+        border.setPosition(0, -m_borders.top);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(static_cast<float>(m_rightBorder), m_panel->getSize().y + m_bottomBorder));
+        border.setSize(sf::Vector2f(m_borders.right, m_panel->getSize().y + m_borders.bottom));
         border.setPosition(m_panel->getSize().x, 0);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_panel->getSize().x + m_leftBorder, static_cast<float>(m_bottomBorder)));
-        border.setPosition(-static_cast<float>(m_leftBorder), m_panel->getSize().y);
+        border.setSize(sf::Vector2f(m_panel->getSize().x + m_borders.left, m_borders.bottom));
+        border.setPosition(-m_borders.left, m_panel->getSize().y);
         target.draw(border, states);
 
         // Check if there is a scrollbar

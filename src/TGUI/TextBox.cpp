@@ -370,8 +370,8 @@ namespace tgui
 
     sf::Vector2f TextBox::getFullSize() const
     {
-        return sf::Vector2f(static_cast<float>(m_size.x + m_leftBorder + m_rightBorder),
-                            static_cast<float>(m_size.y + m_topBorder + m_bottomBorder));
+        return sf::Vector2f(static_cast<float>(m_size.x + m_borders.left + m_borders.right),
+                            static_cast<float>(m_size.y + m_borders.top + m_borders.bottom));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,12 +504,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setBorders(unsigned int leftBorder, unsigned int topBorder, unsigned int rightBorder, unsigned int bottomBorder)
+    void TextBox::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
     {
-        m_leftBorder   = leftBorder;
-        m_topBorder    = topBorder;
-        m_rightBorder  = rightBorder;
-        m_bottomBorder = bottomBorder;
+        m_borders.left   = leftBorder;
+        m_borders.top    = topBorder;
+        m_borders.right  = rightBorder;
+        m_borders.bottom = bottomBorder;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2393,24 +2393,24 @@ namespace tgui
         // Draw the borders
         {
             // Draw left border
-            sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_leftBorder), static_cast<float>(m_size.y + m_topBorder)));
-            border.setPosition(-static_cast<float>(m_leftBorder), -static_cast<float>(m_topBorder));
+            sf::RectangleShape border(sf::Vector2f(m_borders.left, static_cast<float>(m_size.y + m_borders.top)));
+            border.setPosition(-m_borders.left, -m_borders.top);
             border.setFillColor(m_borderColor);
             target.draw(border, states);
 
             // Draw top border
-            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_rightBorder), static_cast<float>(m_topBorder)));
-            border.setPosition(0, -static_cast<float>(m_topBorder));
+            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_borders.right), m_borders.top));
+            border.setPosition(0, -m_borders.top);
             target.draw(border, states);
 
             // Draw right border
-            border.setSize(sf::Vector2f(static_cast<float>(m_rightBorder), static_cast<float>(m_size.y + m_bottomBorder)));
+            border.setSize(sf::Vector2f(m_borders.right, static_cast<float>(m_size.y + m_borders.bottom)));
             border.setPosition(static_cast<float>(m_size.x), 0);
             target.draw(border, states);
 
             // Draw bottom border
-            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_leftBorder), static_cast<float>(m_bottomBorder)));
-            border.setPosition(-static_cast<float>(m_leftBorder), static_cast<float>(m_size.y));
+            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_borders.left), m_borders.bottom));
+            border.setPosition(-m_borders.left, static_cast<float>(m_size.y));
             target.draw(border, states);
         }
 

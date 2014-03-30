@@ -264,7 +264,7 @@ namespace tgui
                 if (commaPos != std::string::npos)
                 {
                     // Get the first value and delete this part of the string
-                    borders.left = tgui::stoi(string.substr(0, commaPos));
+                    borders.left = tgui::stof(string.substr(0, commaPos));
                     string.erase(0, commaPos+1);
 
                     // Search for the second comma
@@ -272,7 +272,7 @@ namespace tgui
                     if (commaPos != std::string::npos)
                     {
                         // Get the second value and delete this part of the string
-                        borders.top = tgui::stoi(string.substr(0, commaPos));
+                        borders.top = tgui::stof(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
                         // Search for the third comma
@@ -280,11 +280,11 @@ namespace tgui
                         if (commaPos != std::string::npos)
                         {
                             // Get the third value and delete this part of the string
-                            borders.right = tgui::stoi(string.substr(0, commaPos));
+                            borders.right = tgui::stof(string.substr(0, commaPos));
                             string.erase(0, commaPos+1);
 
                             // Get the fourth value
-                            borders.bottom = tgui::stoi(string);
+                            borders.bottom = tgui::stof(string);
 
                             return true;
                         }

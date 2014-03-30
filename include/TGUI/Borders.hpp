@@ -45,10 +45,10 @@ namespace tgui
         /// \param bottomBorderHeight Height of the bottom border
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders(unsigned int leftBorderWidth = 0,
-                unsigned int topBorderHeight = 0,
-                unsigned int rightBorderWidth = 0,
-                unsigned int bottomBorderHeight = 0) :
+        Borders(float leftBorderWidth = 0,
+                float topBorderHeight = 0,
+                float rightBorderWidth = 0,
+                float bottomBorderHeight = 0) :
             left  (leftBorderWidth),
             top   (topBorderHeight),
             right (rightBorderWidth),
@@ -57,16 +57,61 @@ namespace tgui
         }
 
         /// Width of the left border
-        unsigned int left;
+        float left;
 
         /// Height of the top border
-        unsigned int top;
+        float top;
 
         /// Width of the right border
-        unsigned int right;
+        float right;
 
         /// Height of the bottom border
-        unsigned int bottom;
+        float bottom;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief Parent class for every widget that has borders.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API WidgetBorders
+    {
+      public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the size of the borders.
+        ///
+        /// \param leftBorder    Size of the left border
+        /// \param topBorder     Size of the top border
+        /// \param rightBorder   Size of the right border
+        /// \param bottomBorder  Size of the bottom border
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setBorders(float leftBorder = 0,  float topBorder = 0,
+                                float rightBorder = 0, float bottomBorder = 0) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the size of the borders as a tgui::Borders.
+        ///
+        /// \return border sizes
+        ///
+        /// The first element will be the size of the left border, the seconds is the size of the top border,
+        /// the third is the size of the right border and the the last constains the size of the bottom border.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Borders getBorders() const
+        {
+            return m_borders;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      protected:
+
+        Borders m_borders;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
