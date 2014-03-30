@@ -297,13 +297,13 @@ namespace tgui
         /// \param textColor                    The color of the text
         /// \param selectedTextColor            The color of the text when it is selected
         /// \param selectedTextBackgroundColor  The color of the background of the text that is selected
-        /// \param selectionPointColor          The color of the flickering selection point
+        /// \param caretColor                   The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& textColor                   = sf::Color(  0,   0,   0),
                           const sf::Color& selectedTextColor           = sf::Color(255, 255, 255),
                           const sf::Color& selectedTextBackgroundColor = sf::Color( 10, 110, 255),
-                          const sf::Color& selectionPointColor         = sf::Color(110, 110, 255));
+                          const sf::Color& caretColor                  = sf::Color(110, 110, 255));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,12 +334,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the color that will be used inside the edit box for the flickering selection point.
+        /// \brief Set the color that will be used inside the edit box for the blinking caret.
         ///
-        /// \param selectionPointColor  The color of the flickering selection point
+        /// \param caretColor  The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectionPointColor(const sf::Color& selectionPointColor);
+        void setCaretColor(const sf::Color& caretColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,12 +370,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the color that is currently being used inside the edit box for the flickering selection point.
+        /// \brief Get the color that is currently being used inside the edit box for the blinking caret.
         ///
-        /// \return The color of the flickering selection point
+        /// \return The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectionPointColor() const;
+        const sf::Color& getCaretColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,32 +391,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the flickering selection point to after a specific character.
+        /// \brief Sets the blinking caret to after a specific character.
         ///
-        /// \param charactersBeforeSelectionPoint  The new position.
+        /// \param charactersBeforeCaret  The new position.
         ///
         /// Normally you will not need this function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint);
+        void setCaretPosition(unsigned int charactersBeforeCaret);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This will change the width of the selection point.
+        /// \brief This will change the width of the caret.
         ///
-        /// \param width  New width of the selection point
+        /// \param width  New width of the caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectionPointWidth(unsigned int width = 2);
+        void setCaretWidth(unsigned int width = 2);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the width of the selection point.
+        /// \brief Returns the width of the caret.
         ///
-        /// \return width  Width of the flickering selection point
+        /// \return width  Width of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getSelectionPointWidth() const;
+        unsigned int getCaretWidth() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,10 +497,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function will search where the selection point should be. It will not change the selection point.
-        // It will return after which character the selection point should be.
+        // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int findSelectionPointPosition(float PosX);
+        unsigned int findCaretPosition(float posX);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,8 +553,8 @@ namespace tgui
 
         std::string   m_loadedConfigFile;
 
-        // Is the selection point visible or not?
-        bool          m_selectionPointVisible;
+        // Is the caret visible or not?
+        bool          m_caretVisible;
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
@@ -590,8 +589,8 @@ namespace tgui
         // The rectangle behind the selected text
         sf::RectangleShape  m_selectedTextBackground;
 
-        // The flickering selection point
-        sf::RectangleShape  m_selectionPoint;
+        // The blinking caret
+        sf::RectangleShape  m_caret;
 
         // We need three SFML texts to draw our text, and one more for calculations.
         sf::Text m_textBeforeSelection;

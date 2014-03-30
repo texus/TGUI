@@ -38,28 +38,28 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     EditBox::EditBox() :
-    m_selectionPointVisible (true),
-    m_limitTextWidth        (false),
-    m_displayedText         (""),
-    m_text                  (""),
-    m_textSize              (0),
-    m_textAlignment         (Alignment::Left),
-    m_selChars              (0),
-    m_selStart              (0),
-    m_selEnd                (0),
-    m_passwordChar          ('\0'),
-    m_maxChars              (0),
-    m_textCropPosition      (0),
-    m_possibleDoubleClick   (false),
-    m_numbersOnly           (false),
-    m_separateHoverImage    (false)
+    m_caretVisible       (true),
+    m_limitTextWidth     (false),
+    m_displayedText      (""),
+    m_text               (""),
+    m_textSize           (0),
+    m_textAlignment      (Alignment::Left),
+    m_selChars           (0),
+    m_selStart           (0),
+    m_selEnd             (0),
+    m_passwordChar       ('\0'),
+    m_maxChars           (0),
+    m_textCropPosition   (0),
+    m_possibleDoubleClick(false),
+    m_numbersOnly        (false),
+    m_separateHoverImage (false)
     {
         m_callback.widgetType = Type_EditBox;
         m_animatedWidget = true;
         m_draggableWidget = true;
         m_allowFocus = true;
 
-        m_selectionPoint.setSize(sf::Vector2f(1, 0));
+        m_caret.setSize(sf::Vector2f(1, 0));
 
         changeColors();
     }
@@ -70,7 +70,7 @@ namespace tgui
     ClickableWidget         (copy),
     WidgetBorders           (copy),
     m_loadedConfigFile      (copy.m_loadedConfigFile),
-    m_selectionPointVisible (copy.m_selectionPointVisible),
+    m_caretVisible          (copy.m_caretVisible),
     m_limitTextWidth        (copy.m_limitTextWidth),
     m_displayedText         (copy.m_displayedText),
     m_text                  (copy.m_text),
@@ -83,7 +83,7 @@ namespace tgui
     m_maxChars              (copy.m_maxChars),
     m_textCropPosition      (copy.m_textCropPosition),
     m_selectedTextBackground(copy.m_selectedTextBackground),
-    m_selectionPoint        (copy.m_selectionPoint),
+    m_caret                 (copy.m_caret),
     m_textBeforeSelection   (copy.m_textBeforeSelection),
     m_textSelection         (copy.m_textSelection),
     m_textAfterSelection    (copy.m_textAfterSelection),
@@ -117,7 +117,7 @@ namespace tgui
             this->WidgetBorders::operator=(right);
 
             std::swap(m_loadedConfigFile,       temp.m_loadedConfigFile);
-            std::swap(m_selectionPointVisible,  temp.m_selectionPointVisible);
+            std::swap(m_caretVisible,           temp.m_caretVisible);
             std::swap(m_limitTextWidth,         temp.m_limitTextWidth);
             std::swap(m_displayedText,          temp.m_displayedText);
             std::swap(m_text,                   temp.m_text);
@@ -130,7 +130,7 @@ namespace tgui
             std::swap(m_maxChars,               temp.m_maxChars);
             std::swap(m_textCropPosition,       temp.m_textCropPosition);
             std::swap(m_selectedTextBackground, temp.m_selectedTextBackground);
-            std::swap(m_selectionPoint,         temp.m_selectionPoint);
+            std::swap(m_caret,                  temp.m_caret);
             std::swap(m_textBeforeSelection,    temp.m_textBeforeSelection);
             std::swap(m_textSelection,          temp.m_textSelection);
             std::swap(m_textAfterSelection,     temp.m_textAfterSelection);
@@ -217,13 +217,13 @@ namespace tgui
             {
                 m_selectedTextBackground.setFillColor(extractColor(value));
             }
-            else if (property == "selectionpointcolor")
+            else if (property == "caretcolor")
             {
-                m_selectionPoint.setFillColor(extractColor(value));
+                m_caret.setFillColor(extractColor(value));
             }
-            else if (property == "selectionpointwidth")
+            else if (property == "caretwidth")
             {
-                m_selectionPoint.setSize(sf::Vector2f(tgui::stof(value), m_selectionPoint.getSize().y));
+                m_caret.setSize(sf::Vector2f(tgui::stof(value), m_caret.getSize().y));
             }
             else if (property == "borders")
             {
@@ -314,9 +314,8 @@ namespace tgui
         m_textureNormal.setSize(width, height);
         m_textureFocused.setSize(width, height);
 
-        // Set the size of the selection point
-        m_selectionPoint.setSize(sf::Vector2f(static_cast<float>(m_selectionPoint.getSize().x),
-                                              m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
+        // Set the size of the caret
+        m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
 
         // Recalculate the position of the images and texts
         setPosition(getPosition());
@@ -425,8 +424,8 @@ namespace tgui
                 m_textCropPosition = 0;
         }
 
-        // Set the selection point behind the last character
-        setSelectionPointPosition(m_displayedText.getSize());
+        // Set the caret behind the last character
+        setCaretPosition(m_displayedText.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,8 +514,8 @@ namespace tgui
             m_textAfterSelection.setString("");
             m_textFull.setString(m_displayedText);
 
-            // Set the selection point behind the last character
-            setSelectionPointPosition(m_displayedText.getSize());
+            // Set the caret behind the last character
+            setCaretPosition(m_displayedText.getSize());
         }
     }
 
@@ -540,9 +539,8 @@ namespace tgui
         // Recalculate the text size
         setText(m_text);
 
-        // Set the size of the selection point
-        m_selectionPoint.setSize(sf::Vector2f(static_cast<float>(m_selectionPoint.getSize().x),
-                                              m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
+        // Set the size of the caret
+        m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,13 +548,13 @@ namespace tgui
     void EditBox::changeColors(const sf::Color& color,
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
-                               const sf::Color& selectionPointColor)
+                               const sf::Color& caretColor)
     {
         m_textBeforeSelection.setColor(color);
         m_textSelection.setColor(selectedColor);
         m_textAfterSelection.setColor(color);
 
-        m_selectionPoint.setFillColor(selectionPointColor);
+        m_caret.setFillColor(caretColor);
         m_selectedTextBackground.setFillColor(selectedBgrColor);
     }
 
@@ -584,9 +582,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSelectionPointColor(const sf::Color& selectionPointColor)
+    void EditBox::setCaretColor(const sf::Color& caretColor)
     {
-        m_selectionPoint.setFillColor(selectionPointColor);
+        m_caret.setFillColor(caretColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -612,9 +610,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& EditBox::getSelectionPointColor() const
+    const sf::Color& EditBox::getCaretColor() const
     {
-        return m_selectionPoint.getFillColor();
+        return m_caret.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,24 +642,24 @@ namespace tgui
             // There is no clipping
             m_textCropPosition = 0;
 
-            // If the selection point was behind the limit, then set it at the end
+            // If the caret was behind the limit, then set it at the end
             if (m_selEnd > m_displayedText.getSize())
-                setSelectionPointPosition(m_selEnd);
+                setCaretPosition(m_selEnd);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint)
+    void EditBox::setCaretPosition(unsigned int charactersBeforeCaret)
     {
-        // The selection point position has to stay inside the string
-        if (charactersBeforeSelectionPoint > m_text.getSize())
-            charactersBeforeSelectionPoint = m_text.getSize();
+        // The caret position has to stay inside the string
+        if (charactersBeforeCaret > m_text.getSize())
+            charactersBeforeCaret = m_text.getSize();
 
-        // Set the selection point to the correct position
+        // Set the caret to the correct position
         m_selChars = 0;
-        m_selStart = charactersBeforeSelectionPoint;
-        m_selEnd = charactersBeforeSelectionPoint;
+        m_selStart = charactersBeforeCaret;
+        m_selEnd = charactersBeforeCaret;
 
         // Change our texts
         m_textBeforeSelection.setString(m_displayedText);
@@ -675,19 +673,19 @@ namespace tgui
             // Calculate the space inside the edit box
             float width = std::max(0.f, m_textureNormal.getSize().x - ((m_leftBorder + m_rightBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
 
-            // Find out the position of the selection point
-            float selectionPointPosition = m_textFull.findCharacterPos(m_selEnd).x;
+            // Find out the position of the caret
+            float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
 
             if (m_selEnd == m_displayedText.getSize())
-                selectionPointPosition += m_textFull.getCharacterSize() / 10.f;
+                caretPosition += m_textFull.getCharacterSize() / 10.f;
 
-            // If the selection point is too far on the right then adjust the cropping
-            if (m_textCropPosition + width < selectionPointPosition)
-                m_textCropPosition = static_cast<unsigned int>(selectionPointPosition - width);
+            // If the caret is too far on the right then adjust the cropping
+            if (m_textCropPosition + width < caretPosition)
+                m_textCropPosition = static_cast<unsigned int>(caretPosition - width);
 
-            // If the selection point is too far on the left then adjust the cropping
-            if (m_textCropPosition > selectionPointPosition)
-                m_textCropPosition = static_cast<unsigned int>(selectionPointPosition);
+            // If the caret is too far on the left then adjust the cropping
+            if (m_textCropPosition > caretPosition)
+                m_textCropPosition = static_cast<unsigned int>(caretPosition);
         }
 
         recalculateTextPositions();
@@ -695,19 +693,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSelectionPointWidth(unsigned int width)
+    void EditBox::setCaretWidth(unsigned int width)
     {
-        m_selectionPoint.setPosition(m_selectionPoint.getPosition().x + ((m_selectionPoint.getSize().x - width) / 2.0f), m_selectionPoint.getPosition().y);
-        m_selectionPoint.setSize(sf::Vector2f(static_cast<float>(width),
-                                              m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
-
+        m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
+        m_caret.setSize(sf::Vector2f(static_cast<float>(width), m_textureNormal.getSize().y - ((m_bottomBorder + m_topBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::getSelectionPointWidth() const
+    unsigned int EditBox::getCaretWidth() const
     {
-        return static_cast<unsigned int>(m_selectionPoint.getSize().x);
+        return static_cast<unsigned int>(m_caret.getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -765,27 +761,27 @@ namespace tgui
         // Calculate the space inside the edit box
         float width = std::max(0.f, m_textureNormal.getSize().x - ((m_leftBorder + m_rightBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
 
-        // Find the selection point position
+        // Find the caret position
         float positionX = x - getPosition().x - (m_leftBorder * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y));
 
-        unsigned int selectionPointPosition = findSelectionPointPosition(positionX);
+        unsigned int caretPosition = findCaretPosition(positionX);
 
-        // When clicking on the left of the first character, move the pointer to the left
-        if ((positionX < 0) && (selectionPointPosition > 0))
-            --selectionPointPosition;
+        // When clicking on the left of the first character, move the caret to the left
+        if ((positionX < 0) && (caretPosition > 0))
+            --caretPosition;
 
-        // When clicking on the right of the right character, move the pointer to the right
-        else if ((positionX > width) && (selectionPointPosition < m_displayedText.getSize()))
-            ++selectionPointPosition;
+        // When clicking on the right of the right character, move the caret to the right
+        else if ((positionX > width) && (caretPosition < m_displayedText.getSize()))
+            ++caretPosition;
 
         // Check if this is a double click
-        if ((m_possibleDoubleClick) && (m_selChars == 0) && (selectionPointPosition == m_selEnd))
+        if ((m_possibleDoubleClick) && (m_selChars == 0) && (caretPosition == m_selEnd))
         {
             // The next click is going to be a normal one again
             m_possibleDoubleClick = false;
 
-            // Set the selection point at the end of the text
-            setSelectionPointPosition(m_displayedText.getSize());
+            // Set the caret at the end of the text
+            setCaretPosition(m_displayedText.getSize());
 
             // Select the whole text
             m_selStart = 0;
@@ -799,8 +795,8 @@ namespace tgui
         }
         else // No double clicking
         {
-            // Set the new selection point
-            setSelectionPointPosition(selectionPointPosition);
+            // Set the new caret
+            setCaretPosition(caretPosition);
 
             // If the next click comes soon enough then it will be a double click
             m_possibleDoubleClick = true;
@@ -820,8 +816,8 @@ namespace tgui
 
         recalculateTextPositions();
 
-        // The selection point should be visible
-        m_selectionPointVisible = true;
+        // The caret should be visible
+        m_caretVisible = true;
         m_animationTimeElapsed = sf::Time();
     }
 
@@ -845,7 +841,7 @@ namespace tgui
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findSelectionPointPosition(x - getPosition().x - (m_leftBorder * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+                m_selEnd = findCaretPosition(x - getPosition().x - (m_leftBorder * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
             }
             else // Scrolling is enabled
             {
@@ -892,7 +888,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findSelectionPointPosition(x - getPosition().x - (m_leftBorder * scalingX));
+                m_selEnd = findCaretPosition(x - getPosition().x - (m_leftBorder * scalingX));
             }
 
             // Check if we are selecting text from left to right
@@ -957,21 +953,21 @@ namespace tgui
             // Check if we have selected some text
             if (m_selChars > 0)
             {
-                // We will not move the selection point, but just undo the selection
+                // We will not move the caret, but just undo the selection
                 if (m_selStart < m_selEnd)
-                    setSelectionPointPosition(m_selStart);
+                    setCaretPosition(m_selStart);
                 else
-                    setSelectionPointPosition(m_selEnd);
+                    setCaretPosition(m_selEnd);
             }
             else // When we didn't select any text
             {
-                // Move the selection point to the left
+                // Move the caret to the left
                 if (m_selEnd > 0)
-                    setSelectionPointPosition(m_selEnd - 1);
+                    setCaretPosition(m_selEnd - 1);
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Right)
@@ -979,39 +975,39 @@ namespace tgui
             // Check if we have selected some text
             if (m_selChars > 0)
             {
-                // We will not move the selection point, but just undo the selection
+                // We will not move the caret, but just undo the selection
                 if (m_selStart < m_selEnd)
-                    setSelectionPointPosition(m_selEnd);
+                    setCaretPosition(m_selEnd);
                 else
-                    setSelectionPointPosition(m_selStart);
+                    setCaretPosition(m_selStart);
             }
             else // When we didn't select any text
             {
-                // Move the selection point to the right
+                // Move the caret to the right
                 if (m_selEnd < m_displayedText.getSize())
-                    setSelectionPointPosition(m_selEnd + 1);
+                    setCaretPosition(m_selEnd + 1);
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Home)
         {
-            // Set the selection point to the beginning of the text
-            setSelectionPointPosition(0);
+            // Set the caret to the beginning of the text
+            setCaretPosition(0);
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::End)
         {
-            // Set the selection point behind the text
-            setSelectionPointPosition(m_text.getSize());
+            // Set the caret behind the text
+            setCaretPosition(m_text.getSize());
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Return)
@@ -1037,8 +1033,8 @@ namespace tgui
                 m_text.erase(m_selEnd-1, 1);
                 m_displayedText.erase(m_selEnd-1, 1);
 
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(m_selEnd - 1);
+                // Set the caret back on the correct position
+                setCaretPosition(m_selEnd - 1);
 
                 // Calculate the space inside the edit box
                 float width = std::max(0.f, m_textureNormal.getSize().x - ((m_leftBorder + m_rightBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
@@ -1058,8 +1054,8 @@ namespace tgui
             else // When you did select some characters, delete them
                 deleteSelectedCharacters();
 
-            // The selection point should be visible again
-            m_selectionPointVisible = true;
+            // The caret should be visible again
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
@@ -1075,7 +1071,7 @@ namespace tgui
             // Make sure that no text is selected
             if (m_selChars == 0)
             {
-                // When the selection point is at the end of the line then you can't delete anything
+                // When the caret is at the end of the line then you can't delete anything
                 if (m_selEnd == m_text.getSize())
                     return;
 
@@ -1083,8 +1079,8 @@ namespace tgui
                 m_text.erase(m_selEnd, 1);
                 m_displayedText.erase(m_selEnd, 1);
 
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(m_selEnd);
+                // Set the caret back on the correct position
+                setCaretPosition(m_selEnd);
 
                 // Calculate the space inside the edit box
                 float width = std::max(0.f, m_textureNormal.getSize().x - ((m_leftBorder + m_rightBorder) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
@@ -1104,8 +1100,8 @@ namespace tgui
             else // You did select some characters, delete them
                 deleteSelectedCharacters();
 
-            // The selection point should be visible again
-            m_selectionPointVisible = true;
+            // The caret should be visible again
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
@@ -1141,7 +1137,7 @@ namespace tgui
                         else
                             setText(m_text + clipboardContents);
 
-                        setSelectionPointPosition(oldCaretPos + clipboardContents.getSize());
+                        setCaretPosition(oldCaretPos + clipboardContents.getSize());
 
                         // Add the callback (if the user requested it)
                         if (m_callbackFunctions[TextChanged].empty() == false)
@@ -1160,7 +1156,6 @@ namespace tgui
             }
         }
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1239,11 +1234,11 @@ namespace tgui
             }
         }
 
-        // Move our selection point forward
-        setSelectionPointPosition(m_selEnd + 1);
+        // Move our caret forward
+        setCaretPosition(m_selEnd + 1);
 
-        // The selection point should be visible again
-        m_selectionPointVisible = true;
+        // The caret should be visible again
+        m_caretVisible = true;
         m_animationTimeElapsed = sf::Time();
 
         // Add the callback (if the user requested it)
@@ -1261,7 +1256,7 @@ namespace tgui
     {
         // If there is a selection then undo it now
         if (m_selChars)
-            setSelectionPointPosition(m_selEnd);
+            setCaretPosition(m_selEnd);
 
         Widget::widgetUnfocused();
     }
@@ -1320,9 +1315,9 @@ namespace tgui
         {
             setSelectedTextBackgroundColor(extractColor(value));
         }
-        else if (property == "selectionpointcolor")
+        else if (property == "caretcolor")
         {
-            setSelectionPointColor(extractColor(value));
+            setCaretColor(extractColor(value));
         }
         else if (property == "limittextwidth")
         {
@@ -1333,9 +1328,9 @@ namespace tgui
             else
                 TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
         }
-        else if (property == "selectionpointwidth")
+        else if (property == "caretwidth")
         {
-            setSelectionPointWidth(tgui::stoi(value));
+            setCaretWidth(tgui::stoi(value));
         }
         else if (property == "numbersonly")
         {
@@ -1399,13 +1394,13 @@ namespace tgui
         else if (property == "selectedtextbackgroundcolor")
             value = "(" + tgui::to_string(int(getSelectedTextBackgroundColor().r)) + "," + tgui::to_string(int(getSelectedTextBackgroundColor().g))
                     + "," + tgui::to_string(int(getSelectedTextBackgroundColor().b)) + "," + tgui::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
-        else if (property == "selectionpointcolor")
-            value = "(" + tgui::to_string(int(getSelectionPointColor().r)) + "," + tgui::to_string(int(getSelectionPointColor().g))
-                    + "," + tgui::to_string(int(getSelectionPointColor().b)) + "," + tgui::to_string(int(getSelectionPointColor().a)) + ")";
+        else if (property == "caretcolor")
+            value = "(" + tgui::to_string(int(getCaretColor().r)) + "," + tgui::to_string(int(getCaretColor().g))
+                    + "," + tgui::to_string(int(getCaretColor().b)) + "," + tgui::to_string(int(getCaretColor().a)) + ")";
         else if (property == "limittextwidth")
             value = m_limitTextWidth ? "true" : "false";
-        else if (property == "selectionpointwidth")
-            value = tgui::to_string(getSelectionPointWidth());
+        else if (property == "caretwidth")
+            value = tgui::to_string(getCaretWidth());
         else if (property == "numbersonly")
             value = m_numbersOnly ? "true" : "false";
         else if (property == "callback")
@@ -1448,16 +1443,16 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
         list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
         list.push_back(std::pair<std::string, std::string>("SelectedTextBackgroundColor", "color"));
-        list.push_back(std::pair<std::string, std::string>("SelectionPointColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("CaretColor", "color"));
         list.push_back(std::pair<std::string, std::string>("LimitTextWidth", "bool"));
-        list.push_back(std::pair<std::string, std::string>("SelectionPointWidth", "uint"));
+        list.push_back(std::pair<std::string, std::string>("CaretWidth", "uint"));
         list.push_back(std::pair<std::string, std::string>("NumbersOnly", "bool"));
         return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::findSelectionPointPosition(float posX)
+    unsigned int EditBox::findCaretPosition(float posX)
     {
         // This code will crash when the editbox is empty. We need to avoid this.
         if (m_displayedText.isEmpty())
@@ -1467,7 +1462,7 @@ namespace tgui
         unsigned int firstVisibleChar;
         if (m_textCropPosition)
         {
-            // Start searching near the selection point to quickly find the character even in a very long string
+            // Start searching near the caret to quickly find the character even in a very long string
             firstVisibleChar = m_selEnd;
 
             // Go backwards to find the character
@@ -1504,7 +1499,7 @@ namespace tgui
             }
         }
 
-        // Find out what the last visible character is, starting from the selection point
+        // Find out what the last visible character is, starting from the caret
         lastVisibleChar = m_selEnd;
 
         // Go forward to find the character
@@ -1563,8 +1558,8 @@ namespace tgui
             m_text.erase(m_selStart, m_selChars);
             m_displayedText.erase(m_selStart, m_selChars);
 
-            // Set the selection point back on the correct position
-            setSelectionPointPosition(m_selStart);
+            // Set the caret back on the correct position
+            setCaretPosition(m_selStart);
         }
         else // When the text is selected from right to left
         {
@@ -1572,8 +1567,8 @@ namespace tgui
             m_text.erase(m_selEnd, m_selChars);
             m_displayedText.erase(m_selEnd, m_selChars);
 
-            // Set the selection point back on the correct position
-            setSelectionPointPosition(m_selEnd);
+            // Set the caret back on the correct position
+            setCaretPosition(m_selEnd);
         }
 
         // Calculate the space inside the edit box
@@ -1628,7 +1623,7 @@ namespace tgui
             }
         }
 
-        float selectionPointLeft = textX;
+        float caretLeft = textX;
 
         // Set the position of the text
         sf::Text tempText(m_textFull);
@@ -1664,9 +1659,9 @@ namespace tgui
             m_textAfterSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
         }
 
-        // Set the position of the selection point
-        selectionPointLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_selectionPoint.getSize().x * 0.5f);
-        m_selectionPoint.setPosition(std::floor(selectionPointLeft + 0.5f), std::floor((m_topBorder * scaling.y) + getPosition().y + 0.5f));
+        // Set the position of the caret
+        caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
+        m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor((m_topBorder * scaling.y) + getPosition().y + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1681,7 +1676,7 @@ namespace tgui
 
     void EditBox::update()
     {
-        // Only show/hide the selection point every half second
+        // Only show/hide the caret every half second
         if (m_animationTimeElapsed < sf::milliseconds(500))
             return;
 
@@ -1693,7 +1688,7 @@ namespace tgui
             return;
 
         // Switch the value of the visible flag
-        m_selectionPointVisible = !m_selectionPointVisible;
+        m_caretVisible = !m_caretVisible;
 
         // Too slow for double clicking
         m_possibleDoubleClick = false;
@@ -1774,9 +1769,9 @@ namespace tgui
             target.draw(m_textAfterSelection, states);
         }
 
-        // Draw the selection point
-        if ((m_focused) && (m_selectionPointVisible))
-            target.draw(m_selectionPoint, states);
+        // Draw the caret
+        if ((m_focused) && (m_caretVisible))
+            target.draw(m_caret, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

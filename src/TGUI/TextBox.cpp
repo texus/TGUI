@@ -49,10 +49,10 @@ namespace tgui
     m_selChars                (0),
     m_selStart                (0),
     m_selEnd                  (0),
-    m_selectionPointPosition  (0, 0),
-    m_selectionPointVisible   (true),
-    m_selectionPointColor     (110, 110, 255),
-    m_selectionPointWidth     (2),
+    m_caretPosition           (0, 0),
+    m_caretVisible            (true),
+    m_caretColor              (110, 110, 255),
+    m_caretWidth              (2),
     m_selectionTextsNeedUpdate(true),
     m_scroll                  (nullptr),
     m_possibleDoubleClick     (false),
@@ -86,10 +86,10 @@ namespace tgui
     m_selChars                   (copy.m_selChars),
     m_selStart                   (copy.m_selStart),
     m_selEnd                     (copy.m_selEnd),
-    m_selectionPointPosition     (copy.m_selectionPointPosition),
-    m_selectionPointVisible      (copy.m_selectionPointVisible),
-    m_selectionPointColor        (copy.m_selectionPointColor),
-    m_selectionPointWidth        (copy.m_selectionPointWidth),
+    m_caretPosition              (copy.m_caretPosition),
+    m_caretVisible               (copy.m_caretVisible),
+    m_caretColor                 (copy.m_caretColor),
+    m_caretWidth                 (copy.m_caretWidth),
     m_selectionTextsNeedUpdate   (copy.m_selectionTextsNeedUpdate),
     m_backgroundColor            (copy.m_backgroundColor),
     m_selectedTextBgrColor       (copy.m_selectedTextBgrColor),
@@ -148,10 +148,10 @@ namespace tgui
             std::swap(m_selChars,                    temp.m_selChars);
             std::swap(m_selStart,                    temp.m_selStart);
             std::swap(m_selEnd,                      temp.m_selEnd);
-            std::swap(m_selectionPointPosition,      temp.m_selectionPointPosition);
-            std::swap(m_selectionPointVisible,       temp.m_selectionPointVisible);
-            std::swap(m_selectionPointColor,         temp.m_selectionPointColor);
-            std::swap(m_selectionPointWidth,         temp.m_selectionPointWidth);
+            std::swap(m_caretPosition,               temp.m_caretPosition);
+            std::swap(m_caretVisible,                temp.m_caretVisible);
+            std::swap(m_caretColor,                  temp.m_caretColor);
+            std::swap(m_caretWidth,                  temp.m_caretWidth);
             std::swap(m_selectionTextsNeedUpdate,    temp.m_selectionTextsNeedUpdate);
             std::swap(m_backgroundColor,             temp.m_backgroundColor);
             std::swap(m_selectedTextBgrColor,        temp.m_selectedTextBgrColor);
@@ -238,9 +238,9 @@ namespace tgui
             {
                 setSelectedTextColor(configFile.readColor(value));
             }
-            else if (property == "selectionpointcolor")
+            else if (property == "caretcolor")
             {
-                setSelectionPointColor(configFile.readColor(value));
+                setCaretColor(configFile.readColor(value));
             }
             else if (property == "bordercolor")
             {
@@ -385,8 +385,8 @@ namespace tgui
         // Store the text
         m_text = text;
 
-        // Set the selection point behind the last character
-        setSelectionPointPosition(m_text.getSize());
+        // Set the caret behind the last character
+        setCaretPosition(m_text.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,8 +400,8 @@ namespace tgui
         // Add the text
         m_text += text;
 
-        // Set the selection point behind the last character
-        setSelectionPointPosition(m_text.getSize());
+        // Set the caret behind the last character
+        setCaretPosition(m_text.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,8 +490,8 @@ namespace tgui
             // Remove all the excess characters
             m_text.erase(m_maxChars, sf::String::InvalidPos);
 
-            // Set the selection point behind the last character
-            setSelectionPointPosition(m_text.getSize());
+            // Set the caret behind the last character
+            setCaretPosition(m_text.getSize());
         }
     }
 
@@ -519,7 +519,7 @@ namespace tgui
                                const sf::Color& selectedColor,
                                const sf::Color& selectedBgrColor,
                                const sf::Color& borderColor,
-                               const sf::Color& selectionPointColor)
+                               const sf::Color& caretColor)
     {
         m_textBeforeSelection.setColor(color);
         m_textSelection1.setColor(selectedColor);
@@ -527,10 +527,10 @@ namespace tgui
         m_textAfterSelection1.setColor(color);
         m_textAfterSelection2.setColor(color);
 
-        m_selectionPointColor           = selectionPointColor;
-        m_backgroundColor               = backgroundColor;
-        m_selectedTextBgrColor          = selectedBgrColor;
-        m_borderColor                   = borderColor;
+        m_caretColor           = caretColor;
+        m_backgroundColor      = backgroundColor;
+        m_selectedTextBgrColor = selectedBgrColor;
+        m_borderColor          = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -573,9 +573,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectionPointColor(const sf::Color& selectionPointColor)
+    void TextBox::setCaretColor(const sf::Color& caretColor)
     {
-        m_selectionPointColor = selectionPointColor;
+        m_caretColor = caretColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -615,27 +615,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& TextBox::getSelectionPointColor() const
+    const sf::Color& TextBox::getCaretColor() const
     {
-        return m_selectionPointColor;
+        return m_caretColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint)
+    void TextBox::setCaretPosition(unsigned int charactersBeforeCaret)
     {
-        // The selection point position has to stay inside the string
-        if (charactersBeforeSelectionPoint > m_text.getSize())
-            charactersBeforeSelectionPoint = m_text.getSize();
+        // The caret position has to stay inside the string
+        if (charactersBeforeCaret > m_text.getSize())
+            charactersBeforeCaret = m_text.getSize();
 
         // Don't continue when line height is 0
         if (m_lineHeight == 0)
             return;
 
-        // Set the selection point to the correct position
+        // Set the caret to the correct position
         m_selChars = 0;
-        m_selStart = charactersBeforeSelectionPoint;
-        m_selEnd = charactersBeforeSelectionPoint;
+        m_selStart = charactersBeforeCaret;
+        m_selEnd = charactersBeforeCaret;
 
         // Change our three texts
         m_textBeforeSelection.setString(m_displayedText);
@@ -680,14 +680,14 @@ namespace tgui
                 }
             }
 
-            // Check if the selection point is located above the view
+            // Check if the caret is located above the view
             if ((newlines < m_topLine - 1) || ((newlines < m_topLine) && (m_scroll->getValue() % m_lineHeight > 0)))
             {
                 m_scroll->setValue(newlines * m_lineHeight);
                 updateDisplayedText();
             }
 
-            // Check if the selection point is below the view
+            // Check if the caret is below the view
             else if (newlines > m_topLine + m_visibleLines - 2)
             {
                 m_scroll->setValue((newlines - m_visibleLines + 1) * m_lineHeight);
@@ -748,16 +748,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSelectionPointWidth(unsigned int width)
+    void TextBox::setCaretWidth(unsigned int width)
     {
-        m_selectionPointWidth = width;
+        m_caretWidth = width;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::getSelectionPointWidth() const
+    unsigned int TextBox::getCaretWidth() const
     {
-        return m_selectionPointWidth;
+        return m_caretWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -859,10 +859,10 @@ namespace tgui
             if (m_lineHeight == 0)
                 return;
 
-            unsigned int selectionPointPosition = findSelectionPointPosition(x - getPosition().x - 4, y - getPosition().y);
+            unsigned int caretPosition = findCaretPosition(x - getPosition().x - 4, y - getPosition().y);
 
             // Check if this is a double click
-            if ((m_possibleDoubleClick) && (m_selChars == 0) && (selectionPointPosition == m_selEnd))
+            if ((m_possibleDoubleClick) && (m_selChars == 0) && (caretPosition == m_selEnd))
             {
                 // The next click is going to be a normal one again
                 m_possibleDoubleClick = false;
@@ -909,14 +909,14 @@ namespace tgui
                         }
                     }
 
-                    // Check if the selection point is located above the view
+                    // Check if the caret is located above the view
                     if ((newlines < m_topLine - 1) || ((newlines < m_topLine) && (m_scroll->getValue() % m_lineHeight > 0)))
                     {
                         m_scroll->setValue(newlines * m_lineHeight);
                         updateDisplayedText();
                     }
 
-                    // Check if the selection point is below the view
+                    // Check if the caret is below the view
                     else if (newlines > m_topLine + m_visibleLines - 2)
                     {
                         m_scroll->setValue((newlines - m_visibleLines + 1) * m_lineHeight);
@@ -931,15 +931,15 @@ namespace tgui
             }
             else // No double clicking
             {
-                // Set the new selection point
-                setSelectionPointPosition(selectionPointPosition);
+                // Set the caret on the new position
+                setCaretPosition(caretPosition);
 
                 // If the next click comes soon enough then it will be a double click
                 m_possibleDoubleClick = true;
             }
 
-            // The selection point should be visible
-            m_selectionPointVisible = true;
+            // The caret should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
     }
@@ -1101,24 +1101,24 @@ namespace tgui
             // Check if we have selected some text
             if (m_selChars > 0)
             {
-                // We will not move the selection point, but just undo the selection
+                // We will not move the caret, but just undo the selection
                 if (m_selStart < m_selEnd)
-                    setSelectionPointPosition(m_selStart);
+                    setCaretPosition(m_selStart);
                 else
-                    setSelectionPointPosition(m_selEnd);
+                    setCaretPosition(m_selEnd);
             }
             else // When we didn't select any text
             {
-                // You don't have to do anything when the selection point is at the beginning of the text
+                // You don't have to do anything when the caret is at the beginning of the text
                 if (m_selEnd > 0)
                 {
-                    // Move the selection point to the left
-                    setSelectionPointPosition(m_selEnd - 1);
+                    // Move the caret to the left
+                    setCaretPosition(m_selEnd - 1);
                 }
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Right)
@@ -1126,24 +1126,24 @@ namespace tgui
             // Check if we have selected some text
             if (m_selChars > 0)
             {
-                // We will not move the selection point, but just undo the selection
+                // We will not move the caret, but just undo the selection
                 if (m_selStart < m_selEnd)
-                    setSelectionPointPosition(m_selEnd);
+                    setCaretPosition(m_selEnd);
                 else
-                    setSelectionPointPosition(m_selStart);
+                    setCaretPosition(m_selStart);
             }
             else // When we didn't select any text
             {
-                // You don't have to do anything when the selection point is at the end of the text
+                // You don't have to do anything when the caret is at the end of the text
                 if (m_selEnd < m_text.getSize())
                 {
-                    // Move the selection point to the left
-                    setSelectionPointPosition(m_selEnd + 1);
+                    // Move the caret to the right
+                    setCaretPosition(m_selEnd + 1);
                 }
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Up)
@@ -1162,7 +1162,7 @@ namespace tgui
             unsigned int previousdistanceX = m_size.x;
 
             // Loop through all characters
-            for (unsigned int i=0; i<m_selEnd; ++i)
+            for (unsigned int i = 0; i < m_selEnd; ++i)
             {
                 // Make sure there is no newline in the text
                 if (m_text[i] != '\n')
@@ -1179,11 +1179,11 @@ namespace tgui
                     newlineAdded = false;
             }
 
-            // Get the position of the character behind the selection point
+            // Get the position of the character behind the caret
             sf::Vector2u originalPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAdded));
 
-            // Try to find the line above the selection point
-            for (character=m_selEnd; character > 0; --character)
+            // Try to find the line above the caret
+            for (character = m_selEnd; character > 0; --character)
             {
                 // Get the top position of the character before it
                 newTopPosition = static_cast<unsigned int>(tempText.findCharacterPos(character + newlinesAdded - 1).y);
@@ -1193,11 +1193,11 @@ namespace tgui
                     break;
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
-            // Don't do anything when the selection point is on the first line
+            // Don't do anything when the caret is on the first line
             if (character > 0)
             {
                 // Try to find the closest character
@@ -1210,7 +1210,7 @@ namespace tgui
                     if (newPosition.y < newTopPosition)
                     {
                         // We have found the character that we were looking for
-                        setSelectionPointPosition(character + newlineAdded);
+                        setCaretPosition(character + newlineAdded);
                         return;
                     }
 
@@ -1221,7 +1221,7 @@ namespace tgui
                     if (static_cast<unsigned int>(abs(distanceX)) > previousdistanceX)
                     {
                         // We have found the character that we were looking for
-                        setSelectionPointPosition(character + newlineAdded);
+                        setCaretPosition(character + newlineAdded);
                         return;
                     }
 
@@ -1229,16 +1229,16 @@ namespace tgui
                     previousdistanceX = abs(distanceX);
                 }
 
-                // Check if the selection point should be behind the first character
+                // Check if the caret should be behind the first character
                 if (originalPosition.x > previousdistanceX)
                 {
                     // We have found the character that we were looking for
-                    setSelectionPointPosition(character + newlineAdded);
+                    setCaretPosition(character + newlineAdded);
                     return;
                 }
 
-                // If you pass here then the selection point should be at the beginning of the text
-                setSelectionPointPosition(0);
+                // If you pass here then the caret should be at the beginning of the text
+                setCaretPosition(0);
             }
         }
         else if (key == sf::Keyboard::Down)
@@ -1257,7 +1257,7 @@ namespace tgui
             int previousdistanceX = m_size.x;
 
             // Loop through all characters
-            for (unsigned int i=0; i<m_text.getSize(); ++i)
+            for (unsigned int i = 0; i < m_text.getSize(); ++i)
             {
                 // Make sure there is no newline in the text
                 if (m_text[i] != '\n')
@@ -1269,7 +1269,7 @@ namespace tgui
                         ++newlinesAdded;
                         newlineAdded = true;
 
-                        // Stop when the newline behind the selection point was found
+                        // Stop when the newline behind the caret was found
                         if (i > m_selEnd)
                             break;
                     }
@@ -1278,17 +1278,17 @@ namespace tgui
                 {
                     newlineAdded = false;
 
-                    // Stop when the newline behind the selection point was found
+                    // Stop when the newline behind the caret was found
                     if (i > m_selEnd)
                         break;
                 }
             }
 
-            // Get the position of the character behind the selection point
+            // Get the position of the character behind the caret
             sf::Vector2u originalPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAdded - newlineAdded));
 
-            // Try to find the line below the selection point
-            for (character=m_selEnd; character < m_text.getSize(); ++character)
+            // Try to find the line below the caret
+            for (character = m_selEnd; character < m_text.getSize(); ++character)
             {
                 // Get the top position of the character after it
                 newTopPosition = static_cast<unsigned int>(tempText.findCharacterPos(character + newlinesAdded - newlineAdded + 1).y);
@@ -1298,11 +1298,11 @@ namespace tgui
                     break;
             }
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
-            // Don't do anything when the selection point is on the last line
+            // Don't do anything when the caret is on the last line
             if (character < m_text.getSize())
             {
                 // Try to find the closest character
@@ -1315,7 +1315,7 @@ namespace tgui
                     if (newPosition.y > newTopPosition)
                     {
                         // We have found the character that we were looking for
-                        setSelectionPointPosition(character - newlineAdded);
+                        setCaretPosition(character - newlineAdded);
                         return;
                     }
 
@@ -1326,7 +1326,7 @@ namespace tgui
                     if (abs(distanceX) > previousdistanceX)
                     {
                         // We have found the character that we were looking for
-                        setSelectionPointPosition(character - newlineAdded);
+                        setCaretPosition(character - newlineAdded);
                         return;
                     }
 
@@ -1334,26 +1334,26 @@ namespace tgui
                     previousdistanceX = abs(distanceX);
                 }
 
-                // If you pass here then the selection point should be at the end of the text
-                setSelectionPointPosition(m_text.getSize());
+                // If you pass here then the caret should be at the end of the text
+                setCaretPosition(m_text.getSize());
             }
         }
         else if (key == sf::Keyboard::Home)
         {
-            // Set the selection point to the beginning of the text
-            setSelectionPointPosition(0);
+            // Set the caret to the beginning of the text
+            setCaretPosition(0);
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::End)
         {
-            // Set the selection point behind the text
-            setSelectionPointPosition(m_text.getSize());
+            // Set the caret behind the text
+            setCaretPosition(m_text.getSize());
 
-            // Our selection point has moved, it should be visible
-            m_selectionPointVisible = true;
+            // Our caret has moved, it should be visible
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
         else if (key == sf::Keyboard::Return)
@@ -1376,8 +1376,8 @@ namespace tgui
                 // Erase the character
                 m_text.erase(m_selEnd-1, 1);
 
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(m_selEnd - 1);
+                // Set the caret back on the correct position
+                setCaretPosition(m_selEnd - 1);
 
                 if (m_scroll != nullptr)
                 {
@@ -1396,8 +1396,8 @@ namespace tgui
             else // When you did select some characters then delete them
                 deleteSelectedCharacters();
 
-            // The selection point should be visible again
-            m_selectionPointVisible = true;
+            // The caret should be visible again
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
@@ -1416,15 +1416,15 @@ namespace tgui
             // Make sure that no text is selected
             if (m_selChars == 0)
             {
-                // When the selection point is at the end of the line then you can't delete anything
+                // When the caret is at the end of the line then you can't delete anything
                 if (m_selEnd == m_text.getSize())
                     return;
 
                 // Erase the character
                 m_text.erase(m_selEnd, 1);
 
-                // Set the selection point back on the correct position
-                setSelectionPointPosition(m_selEnd);
+                // Set the caret back on the correct position
+                setCaretPosition(m_selEnd);
 
                 if (m_scroll != nullptr)
                 {
@@ -1443,8 +1443,8 @@ namespace tgui
             else // You did select some characters, so remove them
                 deleteSelectedCharacters();
 
-            // The selection point should be visible again
-            m_selectionPointVisible = true;
+            // The caret should be visible again
+            m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
 
             // Add the callback (if the user requested it)
@@ -1483,7 +1483,7 @@ namespace tgui
                         else
                             setText(m_text + clipboardContents);
 
-                        setSelectionPointPosition(oldCaretPos + clipboardContents.getSize());
+                        setCaretPosition(oldCaretPos + clipboardContents.getSize());
 
                         // Add the callback (if the user requested it)
                         if (m_callbackFunctions[TextChanged].empty() == false)
@@ -1584,11 +1584,11 @@ namespace tgui
         // Insert our character
         m_text.insert(m_selEnd, key);
 
-        // Move our selection point forward
-        setSelectionPointPosition(m_selEnd + 1);
+        // Move our caret forward
+        setCaretPosition(m_selEnd + 1);
 
-        // The selection point should be visible again
-        m_selectionPointVisible = true;
+        // The caret should be visible again
+        m_caretVisible = true;
         m_animationTimeElapsed = sf::Time();
 
         // Add the callback (if the user requested it)
@@ -1635,7 +1635,7 @@ namespace tgui
     {
         // If there is a selection then undo it now
         if (m_selChars)
-            setSelectionPointPosition(m_selEnd);
+            setCaretPosition(m_selEnd);
 
         Widget::widgetUnfocused();
     }
@@ -1692,13 +1692,13 @@ namespace tgui
         {
             setBorderColor(extractColor(value));
         }
-        else if (property == "selectionpointcolor")
+        else if (property == "caretcolor")
         {
-            setSelectionPointColor(extractColor(value));
+            setCaretColor(extractColor(value));
         }
-        else if (property == "selectionpointwidth")
+        else if (property == "caretwidth")
         {
-            setSelectionPointWidth(tgui::stoi(value));
+            setCaretWidth(tgui::stoi(value));
         }
         else if (property == "callback")
         {
@@ -1748,10 +1748,10 @@ namespace tgui
                     + "," + tgui::to_string(int(getSelectedTextBackgroundColor().b)) + "," + tgui::to_string(int(getSelectedTextBackgroundColor().a)) + ")";
         else if (property == "bordercolor")
             value = "(" + tgui::to_string(int(getBorderColor().r)) + "," + tgui::to_string(int(getBorderColor().g)) + "," + tgui::to_string(int(getBorderColor().b)) + "," + tgui::to_string(int(getBorderColor().a)) + ")";
-        else if (property == "selectionpointcolor")
-            value = "(" + tgui::to_string(int(getSelectionPointColor().r)) + "," + tgui::to_string(int(getSelectionPointColor().g)) + "," + tgui::to_string(int(getSelectionPointColor().b)) + "," + tgui::to_string(int(getSelectionPointColor().a)) + ")";
-        else if (property == "selectionpointwidth")
-            value = tgui::to_string(getSelectionPointWidth());
+        else if (property == "caretcolor")
+            value = "(" + tgui::to_string(int(getCaretColor().r)) + "," + tgui::to_string(int(getCaretColor().g)) + "," + tgui::to_string(int(getCaretColor().b)) + "," + tgui::to_string(int(getCaretColor().a)) + ")";
+        else if (property == "caretwidth")
+            value = tgui::to_string(getCaretWidth());
         else if (property == "callback")
         {
             std::string tempValue;
@@ -1791,14 +1791,14 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
         list.push_back(std::pair<std::string, std::string>("SelectedTextBackgroundColor", "color"));
         list.push_back(std::pair<std::string, std::string>("BorderColor", "color"));
-        list.push_back(std::pair<std::string, std::string>("SelectionPointColor", "color"));
-        list.push_back(std::pair<std::string, std::string>("SelectionPointWidth", "uint"));
+        list.push_back(std::pair<std::string, std::string>("CaretColor", "color"));
+        list.push_back(std::pair<std::string, std::string>("CaretWidth", "uint"));
         return list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int TextBox::findSelectionPointPosition(float posX, float posY)
+    unsigned int TextBox::findCaretPosition(float posX, float posY)
     {
         // This code will crash when the text box is empty. We need to avoid this.
         if (m_text.isEmpty())
@@ -1814,7 +1814,7 @@ namespace tgui
         // Check if there is a scrollbar
         if (m_scroll == nullptr)
         {
-            // If the position is negative then set the selection point before the first character
+            // If the position is negative then set the caret before the first character
             if (posY < 0)
                 return 0;
             else
@@ -1822,7 +1822,7 @@ namespace tgui
         }
         else // There is no scrollbar
         {
-            // If the position is negative then set the selection point before the first character
+            // If the position is negative then set the caret before the first character
             if (posY + m_scroll->getValue() < 0)
                 return 0;
             else
@@ -1836,7 +1836,7 @@ namespace tgui
         // Check if you clicked behind all characters
         if ((line > m_lines) || ((line == m_lines) && (posX > fullText.findCharacterPos(m_displayedText.getSize()).x)))
         {
-            // The selection point should be behind the last character
+            // The caret should be behind the last character
             return m_text.getSize();
         }
         else // You clicked inside the text
@@ -1916,7 +1916,7 @@ namespace tgui
             // Store the single line that we found a while ago in the temporary text widget
             tempText.setString(tempString);
 
-            // If the line contains nothing but a newline character then put the selction point on that line
+            // If the line contains nothing but a newline character then put the caret on that line
             if (tempString.getSize() == 0)
             {
                 if (line > 1)
@@ -1962,7 +1962,7 @@ namespace tgui
             }
         }
 
-        // Something went wrong, don't move the selection point position
+        // Something went wrong, don't move the caret position
         return m_selEnd;
     }
 
@@ -1974,8 +1974,8 @@ namespace tgui
         if (m_lineHeight == 0)
             return;
 
-        // Find out where the selection point should be
-        m_selEnd = findSelectionPointPosition(posX - getPosition().x - 4, posY - getPosition().y);
+        // Find out where the caret should be
+        m_selEnd = findCaretPosition(posX - getPosition().x - 4, posY - getPosition().y);
 
         // Calculate how many character are being selected
         if (m_selEnd < m_selStart)
@@ -2020,14 +2020,14 @@ namespace tgui
                 }
             }
 
-            // Check if the selection point is located above the view
+            // Check if the caret is located above the view
             if ((newlines < m_topLine - 1) || ((newlines < m_topLine) && (m_scroll->getValue() % m_lineHeight > 0)))
             {
                 m_scroll->setValue(newlines * m_lineHeight);
                 updateDisplayedText();
             }
 
-            // Check if the selection point is below the view
+            // Check if the caret is below the view
             else if (newlines > m_topLine + m_visibleLines - 2)
             {
                 m_scroll->setValue((newlines - m_visibleLines + 1) * m_lineHeight);
@@ -2052,8 +2052,8 @@ namespace tgui
         // Erase the characters
         m_text.erase(TGUI_MINIMUM(m_selStart, m_selEnd), m_selChars);
 
-        // Set the selection point back on the correct position
-        setSelectionPointPosition(TGUI_MINIMUM(m_selStart, m_selEnd));
+        // Set the caret back on the correct position
+        setCaretPosition(TGUI_MINIMUM(m_selStart, m_selEnd));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2112,7 +2112,7 @@ namespace tgui
                 ++m_lines;
             }
 
-            // Find the position of the selection point
+            // Find the position of the caret
             if (m_selEnd == i - 1)
                 newlinesAddedBeforeSelection = newlinesAdded;
 
@@ -2134,7 +2134,7 @@ namespace tgui
             }
         }
 
-        // Find the position of the selection point
+        // Find the position of the caret
         if (m_selEnd == m_text.getSize())
             newlinesAddedBeforeSelection = newlinesAdded;
 
@@ -2165,15 +2165,15 @@ namespace tgui
         // Fill the temporary text widget with the whole text
         tempText.setString(m_displayedText);
 
-        // Set the position of the selection point
-        m_selectionPointPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAddedBeforeSelection));
+        // Set the position of the caret
+        m_caretPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAddedBeforeSelection));
 
-        // Only do the check when the selection point is not standing at the first character
+        // Only do the check when the caret is not standing at the first character
         if ((m_selEnd > 0) && (m_selEnd + newlinesAddedBeforeSelection > 0))
         {
-            // If you are at the end of the line then also set the selection point there, instead of at the beginning of the next line
+            // If you are at the end of the line then also set the caret there, instead of at the beginning of the next line
             if ((m_text[m_selEnd - 1] != '\n') && (m_displayedText[m_selEnd + newlinesAddedBeforeSelection - 1] == '\n'))
-                m_selectionPointPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAddedBeforeSelection - 1));
+                m_caretPosition = sf::Vector2u(tempText.findCharacterPos(m_selEnd + newlinesAddedBeforeSelection - 1));
         }
 
         // Check if the text has to be redivided in five pieces
@@ -2350,7 +2350,7 @@ namespace tgui
 
     void TextBox::update()
     {
-        // Only show/hide the selection point every half second
+        // Only show/hide the caret every half second
         if (m_animationTimeElapsed < sf::milliseconds(500))
             return;
 
@@ -2362,7 +2362,7 @@ namespace tgui
             return;
 
         // Switch the value of the visible flag
-        m_selectionPointVisible = !m_selectionPointVisible;
+        m_caretVisible = !m_caretVisible;
 
         // Too slow for double clicking
         m_possibleDoubleClick = false;
@@ -2552,22 +2552,22 @@ namespace tgui
             }
         }
 
-        // Only draw the selection point if it has a width
-        if (m_selectionPointWidth > 0)
+        // Only draw the caret if it has a width
+        if (m_caretWidth > 0)
         {
             // Only draw it when needed
-            if ((m_focused) && (m_selectionPointVisible))
+            if ((m_focused) && (m_caretVisible))
             {
                 // Reset the transformation
                 states.transform = oldTransform;
 
-                // Create the selection point rectangle
-                sf::RectangleShape selectionPoint(sf::Vector2f(static_cast<float>(m_selectionPointWidth), static_cast<float>(m_lineHeight)));
-                selectionPoint.setPosition(m_selectionPointPosition.x - (m_selectionPointWidth * 0.5f), static_cast<float>(m_selectionPointPosition.y));
-                selectionPoint.setFillColor(m_selectionPointColor);
+                // Create the caret rectangle
+                sf::RectangleShape caret(sf::Vector2f(static_cast<float>(m_caretWidth), static_cast<float>(m_lineHeight)));
+                caret.setPosition(m_caretPosition.x - (m_caretWidth * 0.5f), static_cast<float>(m_caretPosition.y));
+                caret.setFillColor(m_caretColor);
 
-                // Draw the selection point
-                target.draw(selectionPoint, states);
+                // Draw the caret
+                target.draw(caret, states);
             }
         }
 
