@@ -487,10 +487,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::keyPressed(sf::Keyboard::Key key)
+    void RadioButton::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Check if the space key or the return key was pressed
-        if (key == sf::Keyboard::Space)
+        if (event.code == sf::Keyboard::Space)
         {
             // Check the radio button
             check();
@@ -503,7 +503,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::Return)
+        else if (event.code == sf::Keyboard::Return)
         {
             // Check the radio button
             check();

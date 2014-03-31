@@ -887,14 +887,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::keyPressed(sf::Keyboard::Key key)
+    void Container::keyPressed(const sf::Event::KeyEvent& event)
     {
-        sf::Event event;
-        event.type = sf::Event::KeyPressed;
-        event.key.code = key;
+        sf::Event newEvent;
+        newEvent.type = sf::Event::KeyPressed;
+        newEvent.key.code = event.code;
 
         // Let the event manager handle the event
-        handleEvent(event);
+        handleEvent(newEvent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1086,7 +1086,7 @@ namespace tgui
                 if (m_focusedWidget)
                 {
                     // Tell the widget that the key was pressed
-                    m_widgets[m_focusedWidget-1]->keyPressed(event.key.code);
+                    m_widgets[m_focusedWidget-1]->keyPressed(event.key);
 
                     return true;
                 }

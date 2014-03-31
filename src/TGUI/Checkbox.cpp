@@ -230,10 +230,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::keyPressed(sf::Keyboard::Key key)
+    void Checkbox::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Check if the space key or the return key was pressed
-        if (key == sf::Keyboard::Space)
+        if (event.code == sf::Keyboard::Space)
         {
             // Check or uncheck the checkbox
             if (m_checked)
@@ -249,7 +249,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::Return)
+        else if (event.code == sf::Keyboard::Return)
         {
             // Check or uncheck the checkbox
             if (m_checked)

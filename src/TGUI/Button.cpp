@@ -367,10 +367,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::keyPressed(sf::Keyboard::Key key)
+    void Button::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Check if the space key or the return key was pressed
-        if (key == sf::Keyboard::Space)
+        if (event.code == sf::Keyboard::Space)
         {
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[SpaceKeyPressed].empty() == false)
@@ -379,7 +379,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::Return)
+        else if (event.code == sf::Keyboard::Return)
         {
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[ReturnKeyPressed].empty() == false)

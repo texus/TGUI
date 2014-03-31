@@ -1089,14 +1089,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::keyPressed(sf::Keyboard::Key key)
+    void TextBox::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_loaded == false)
             return;
 
         // Check if one of the correct keys was pressed
-        if (key == sf::Keyboard::Left)
+        if (event.code == sf::Keyboard::Left)
         {
             // Check if we have selected some text
             if (m_selChars > 0)
@@ -1121,7 +1121,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Right)
+        else if (event.code == sf::Keyboard::Right)
         {
             // Check if we have selected some text
             if (m_selChars > 0)
@@ -1146,7 +1146,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Up)
+        else if (event.code == sf::Keyboard::Up)
         {
             sf::Text tempText(m_textBeforeSelection);
             tempText.setString(m_displayedText);
@@ -1241,7 +1241,7 @@ namespace tgui
                 setCaretPosition(0);
             }
         }
-        else if (key == sf::Keyboard::Down)
+        else if (event.code == sf::Keyboard::Down)
         {
             sf::Text tempText(m_textBeforeSelection);
             tempText.setString(m_displayedText);
@@ -1338,7 +1338,7 @@ namespace tgui
                 setCaretPosition(m_text.getSize());
             }
         }
-        else if (key == sf::Keyboard::Home)
+        else if (event.code == sf::Keyboard::Home)
         {
             // Set the caret to the beginning of the text
             setCaretPosition(0);
@@ -1347,7 +1347,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::End)
+        else if (event.code == sf::Keyboard::End)
         {
             // Set the caret behind the text
             setCaretPosition(m_text.getSize());
@@ -1356,12 +1356,12 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Return)
+        else if (event.code == sf::Keyboard::Return)
         {
             // Add a newline
             textEntered('\n');
         }
-        else if (key == sf::Keyboard::BackSpace)
+        else if (event.code == sf::Keyboard::BackSpace)
         {
             if (m_readOnly)
                 return;
@@ -1408,7 +1408,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::Delete)
+        else if (event.code == sf::Keyboard::Delete)
         {
             if (m_readOnly)
                 return;
@@ -1458,13 +1458,13 @@ namespace tgui
         else
         {
             // Check if you are copying, pasting or cutting text
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+            if (event.control)
             {
-                if (key == sf::Keyboard::C)
+                if (event.code == sf::Keyboard::C)
                 {
                     TGUI_Clipboard.set(m_textSelection1.getString() + m_textSelection2.getString());
                 }
-                else if (key == sf::Keyboard::V)
+                else if (event.code == sf::Keyboard::V)
                 {
                     if (m_readOnly)
                         return;
@@ -1494,7 +1494,7 @@ namespace tgui
                         }
                     }
                 }
-                else if (key == sf::Keyboard::X)
+                else if (event.code == sf::Keyboard::X)
                 {
                     TGUI_Clipboard.set(m_textSelection1.getString() + m_textSelection2.getString());
 

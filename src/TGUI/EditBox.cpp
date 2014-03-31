@@ -941,14 +941,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::keyPressed(sf::Keyboard::Key key)
+    void EditBox::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Don't do anything when the edit box wasn't loaded correctly
         if (m_loaded == false)
             return;
 
         // Check if one of the correct keys was pressed
-        if (key == sf::Keyboard::Left)
+        if (event.code == sf::Keyboard::Left)
         {
             // Check if we have selected some text
             if (m_selChars > 0)
@@ -970,7 +970,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Right)
+        else if (event.code == sf::Keyboard::Right)
         {
             // Check if we have selected some text
             if (m_selChars > 0)
@@ -992,7 +992,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Home)
+        else if (event.code == sf::Keyboard::Home)
         {
             // Set the caret to the beginning of the text
             setCaretPosition(0);
@@ -1001,7 +1001,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::End)
+        else if (event.code == sf::Keyboard::End)
         {
             // Set the caret behind the text
             setCaretPosition(m_text.getSize());
@@ -1010,7 +1010,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = sf::Time();
         }
-        else if (key == sf::Keyboard::Return)
+        else if (event.code == sf::Keyboard::Return)
         {
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
@@ -1020,7 +1020,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::BackSpace)
+        else if (event.code == sf::Keyboard::BackSpace)
         {
             // Make sure that we didn't select any characters
             if (m_selChars == 0)
@@ -1066,7 +1066,7 @@ namespace tgui
                 addCallback();
             }
         }
-        else if (key == sf::Keyboard::Delete)
+        else if (event.code == sf::Keyboard::Delete)
         {
             // Make sure that no text is selected
             if (m_selChars == 0)
@@ -1115,13 +1115,13 @@ namespace tgui
         else
         {
             // Check if you are copying, pasting or cutting text
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+            if (event.control)
             {
-                if (key == sf::Keyboard::C)
+                if (event.code == sf::Keyboard::C)
                 {
                     TGUI_Clipboard.set(m_textSelection.getString());
                 }
-                else if (key == sf::Keyboard::V)
+                else if (event.code == sf::Keyboard::V)
                 {
                     auto clipboardContents = TGUI_Clipboard.get();
 
@@ -1148,7 +1148,7 @@ namespace tgui
                         }
                     }
                 }
-                else if (key == sf::Keyboard::X)
+                else if (event.code == sf::Keyboard::X)
                 {
                     TGUI_Clipboard.set(m_textSelection.getString());
                     deleteSelectedCharacters();
