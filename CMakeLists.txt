@@ -25,6 +25,10 @@ SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 7 )
 SET( PATCH_VERSION 0 )
 
+# Fill in the version in the config file
+configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in"
+                "${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp")
+
 # include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 
