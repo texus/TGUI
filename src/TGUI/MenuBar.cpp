@@ -822,13 +822,23 @@ namespace tgui
         background.setFillColor(m_BackgroundColor);
         target.draw(background, states);
 
+        if (m_Menus.empty())
+            return;
+
+        sf::Text tempText(m_Menus[0].text);
+        tempText.setString("kg");
+
+        sf::Vector2f textShift;
+        textShift.x = -tempText.getLocalBounds().left;
+        textShift.y = ((m_Size.y - tempText.getLocalBounds().height) / 2.0f) - tempText.getLocalBounds().top;
+
         // Draw the menus
         for (unsigned int i = 0; i < m_Menus.size(); ++i)
         {
             states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
-            states.transform.translate(-m_Menus[i].text.getLocalBounds().left, -m_Menus[i].text.getLocalBounds().top);
+            states.transform.translate(textShift.x, textShift.y);
             target.draw(m_Menus[i].text, states);
-            states.transform.translate(m_Menus[i].text.getLocalBounds().left, m_Menus[i].text.getLocalBounds().top);
+            states.transform.translate(-textShift.x, -textShift.y);
 
             // Is the menu open?
             if (m_VisibleMenu == static_cast<int>(i))
@@ -863,16 +873,17 @@ namespace tgui
                 }
 
                 states.transform.translate(2.0f * m_DistanceToSide, 0);
+                states.transform.translate(textShift.x, textShift.y);
 
                 // Draw the menu items
                 for (unsigned int j = 0; j < m_Menus[i].menuItems.size(); ++j)
                 {
-                    states.transform.translate(-m_Menus[i].menuItems[j].getLocalBounds().left, -m_Menus[i].menuItems[j].getLocalBounds().top);
                     target.draw(m_Menus[i].menuItems[j], states);
-                    states.transform.translate(m_Menus[i].menuItems[j].getLocalBounds().left, m_Menus[i].menuItems[j].getLocalBounds().top);
+
                     states.transform.translate(0, m_Size.y);
                 }
 
+                states.transform.translate(-textShift.x, -textShift.y);
                 states.transform.translate(m_Menus[i].text.getLocalBounds().width, -m_Size.y * (m_Menus[i].menuItems.size()+1));
             }
             else // The menu isn't open
