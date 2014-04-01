@@ -531,17 +531,12 @@ namespace tgui
         if (m_TextSize == 0)
         {
             // Calculate a possible text size
-            float size = m_Size.y * 0.85f;
+            float size = m_Size.y * 0.75f;
             m_Text.setCharacterSize(static_cast<unsigned int>(size));
-            m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
 
             // Make sure that the text isn't too width
             if (m_Text.getGlobalBounds().width > (m_Size.x * 0.8f))
-            {
-                // The text is too width, so make it smaller
                 m_Text.setCharacterSize(static_cast<unsigned int>(size * m_Size.x * 0.8f / m_Text.getGlobalBounds().width));
-                m_Text.setCharacterSize(static_cast<unsigned int>(m_Text.getCharacterSize() - m_Text.getLocalBounds().top));
-            }
         }
         else // When the text has a fixed size
         {

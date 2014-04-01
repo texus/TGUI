@@ -452,7 +452,7 @@ namespace tgui
                                static_cast<float>(height) / m_TextureTitleBar_M.getSize().y * m_CloseButton->m_TextureNormal_M.getSize().y);
 
         // Set the size of the text in the title bar
-        m_TitleText.setCharacterSize(m_TitleBarHeight * 8 / 10);
+        m_TitleText.setCharacterSize(static_cast<unsigned int>(m_TitleBarHeight * 0.75f));
 
         // Recalculate the scale of the title bar images
         if (m_SplitImage)

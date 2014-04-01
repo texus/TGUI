@@ -552,8 +552,7 @@ namespace tgui
         {
             // Calculate the text size
             m_TextFull.setString("kg");
-            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_Size.y - ((m_TopBorder + m_BottomBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))));
-            m_TextFull.setCharacterSize(static_cast<unsigned int>(m_TextFull.getCharacterSize() - m_TextFull.getLocalBounds().top));
+            m_TextFull.setCharacterSize(static_cast<unsigned int>((m_Size.y - ((m_TopBorder + m_BottomBorder) * (m_Size.y / m_TextureNormal_M.getSize().y))) * 0.75f));
             m_TextFull.setString(m_DisplayedText);
 
             // Also adjust the character size of the other texts
