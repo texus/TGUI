@@ -27,6 +27,7 @@
 #include <TGUI/RadioButton.hpp>
 
 #include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -361,6 +362,9 @@ namespace tgui
     void RadioButton::setTextFont(const sf::Font& font)
     {
         m_text.setFont(font);
+
+        // Recalculate the text position and size
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -665,8 +669,10 @@ namespace tgui
 
     void RadioButton::initialize(Container *const parent)
     {
-        m_parent = parent;
-        m_text.setFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

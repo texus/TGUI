@@ -23,14 +23,15 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-#include <algorithm>
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/ListBox.hpp>
+
+#include <cmath>
+#include <algorithm>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1135,8 +1136,10 @@ namespace tgui
 
     void ListBox::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

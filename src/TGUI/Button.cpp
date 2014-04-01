@@ -23,10 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/Button.hpp>
+
+#include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -240,14 +241,14 @@ namespace tgui
         if (m_loaded == false)
             return;
 
-        // Recalculate the text size when auto sizing
-        if (m_textSize == 0)
-            setText(m_text.getString());
-
         m_textureDown.setSize(width, height);
         m_textureHover.setSize(width, height);
         m_textureNormal.setSize(width, height);
         m_textureFocused.setSize(width, height);
+
+        // Recalculate the text size when auto sizing
+        if (m_textSize == 0)
+            setText(m_text.getString());
 
         // Recalculate the position of the images
         setPosition(getPosition());
@@ -311,6 +312,9 @@ namespace tgui
     void Button::setTextFont(const sf::Font& font)
     {
         m_text.setFont(font);
+
+        // Reposition the text
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,8 +505,10 @@ namespace tgui
 
     void Button::initialize(Container *const parent)
     {
-        m_parent = parent;
-        m_text.setFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

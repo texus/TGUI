@@ -524,6 +524,8 @@ namespace tgui
 
     void Widget::initialize(Container *const parent)
     {
+        assert(parent);
+
         m_parent = parent;
     }
 

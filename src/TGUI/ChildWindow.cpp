@@ -23,13 +23,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Button.hpp>
 #include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ChildWindow.hpp>
+
+#include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -382,6 +383,30 @@ namespace tgui
     {
         return sf::Vector2f(m_size.x + m_borders.left + m_borders.right,
                             m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::setGlobalFont(const std::string& filename)
+    {
+        if (Container::setGlobalFont(filename))
+        {
+            m_titleText.setFont(*getGlobalFont());
+            setTitle(getTitle());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setGlobalFont(const sf::Font& font)
+    {
+        Container::setGlobalFont(font);
+
+        m_titleText.setFont(*getGlobalFont());
+        setTitle(getTitle());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -988,9 +1013,10 @@ namespace tgui
 
     void ChildWindow::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setGlobalFont(m_parent->getGlobalFont());
-        m_titleText.setFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!m_fontPtr && m_parent->getGlobalFont())
+            setGlobalFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

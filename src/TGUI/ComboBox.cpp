@@ -23,8 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Scrollbar.hpp>
@@ -33,6 +31,9 @@
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ComboBox.hpp>
+
+#include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -814,8 +815,10 @@ namespace tgui
 
     void ComboBox::initialize(Container *const parent)
     {
-        m_parent = parent;
-        m_listBox->setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

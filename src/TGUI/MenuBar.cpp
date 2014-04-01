@@ -23,12 +23,13 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Container.hpp>
 #include <TGUI/MenuBar.hpp>
+
+#include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -812,8 +813,11 @@ namespace tgui
 
     void MenuBar::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
+
         m_size.x = m_parent->getSize().x;
     }
 

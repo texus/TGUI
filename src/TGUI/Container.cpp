@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/TGUI.hpp>
+
 #include <stack>
 #include <cmath>
 #include <cassert>
-
-#include <TGUI/TGUI.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +36,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container() :
-        m_focusedWidget(0)
+        m_focusedWidget(0),
+        m_fontPtr      (nullptr)
     {
         m_containerWidget = true;
         m_animatedWidget = true;
@@ -49,9 +50,13 @@ namespace tgui
         Widget                   (containerToCopy),
         m_focusedWidget          (0),
         m_globalFont             (containerToCopy.m_globalFont),
+        m_fontPtr                (containerToCopy.m_fontPtr),
         m_containerFocused       (false),
         m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions)
     {
+        if (m_fontPtr == &containerToCopy.m_globalFont)
+            m_fontPtr = &m_globalFont;
+
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_widgets.size(); ++i)
         {
@@ -84,6 +89,11 @@ namespace tgui
             m_containerFocused = false;
             m_globalCallbackFunctions = right.m_globalCallbackFunctions;
 
+            if (right.m_fontPtr == &right.m_globalFont)
+                m_fontPtr = &m_globalFont;
+            else
+                m_fontPtr = right.m_fontPtr;
+
             // Remove all the old widgets
             removeAllWidgets();
 
@@ -104,7 +114,16 @@ namespace tgui
 
     bool Container::setGlobalFont(const std::string& filename)
     {
-        return m_globalFont.loadFromFile(getResourcePath() + filename);
+        if (m_globalFont.loadFromFile(getResourcePath() + filename))
+        {
+            m_fontPtr = &m_globalFont;
+            return true;
+        }
+        else
+        {
+            m_fontPtr = nullptr;
+            return false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,13 +131,14 @@ namespace tgui
     void Container::setGlobalFont(const sf::Font& font)
     {
         m_globalFont = font;
+        m_fontPtr = &m_globalFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& Container::getGlobalFont() const
+    const sf::Font* Container::getGlobalFont() const
     {
-        return m_globalFont;
+        return m_fontPtr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -959,8 +979,10 @@ namespace tgui
 
     void Container::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setGlobalFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!m_fontPtr && m_parent->getGlobalFont())
+            setGlobalFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,8 @@
 #include <TGUI/TextBox.hpp>
 #include <TGUI/Clipboard.hpp>
 
+#include <cassert>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -420,6 +422,8 @@ namespace tgui
         m_textSelection2.setFont(font);
         m_textAfterSelection1.setFont(font);
         m_textAfterSelection2.setFont(font);
+
+        setTextSize(getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +452,8 @@ namespace tgui
         m_textAfterSelection2.setCharacterSize(m_textSize);
 
         // Calculate the height of one line
-        m_lineHeight = m_textBeforeSelection.getFont()->getLineSpacing(m_textSize);
+        if (getTextFont())
+            m_lineHeight = m_textBeforeSelection.getFont()->getLineSpacing(m_textSize);
 
         // Don't continue when line height is 0
         if (m_lineHeight == 0)
@@ -2342,8 +2347,10 @@ namespace tgui
 
     void TextBox::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

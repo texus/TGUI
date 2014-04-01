@@ -23,13 +23,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Container.hpp>
 #include <TGUI/EditBox.hpp>
 #include <TGUI/Clipboard.hpp>
+
+#include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -462,7 +463,8 @@ namespace tgui
         m_textAfterSelection.setFont(font);
         m_textFull.setFont(font);
 
-        recalculateTextPositions();
+        // Recalculate the text size and position
+        setText(m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1668,8 +1670,10 @@ namespace tgui
 
     void EditBox::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

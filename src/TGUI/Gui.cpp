@@ -221,7 +221,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font& Gui::getGlobalFont() const
+    const sf::Font* Gui::getGlobalFont() const
     {
         return m_container.getGlobalFont();
     }

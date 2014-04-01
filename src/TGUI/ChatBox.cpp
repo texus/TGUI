@@ -30,6 +30,7 @@
 #include <TGUI/ChatBox.hpp>
 
 #include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -445,16 +446,30 @@ namespace tgui
     {
         m_panel->setGlobalFont(font);
 
+        m_fullTextHeight = 0;
         auto& labels = m_panel->getWidgets();
-        for (auto it = labels.begin(); it != labels.end(); ++it)
-            Label::Ptr(*it)->setTextFont(font);
+        for (unsigned int i = 0; i < labels.size(); ++i)
+        {
+            Label::Ptr(labels[i])->setTextFont(font);
+            m_fullTextHeight += getLineSpacing(i);
+        }
+
+        if (m_scroll != nullptr)
+        {
+            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+
+            if (m_scroll->getMaximum() > m_scroll->getLowValue())
+                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+        }
+
+        updateDisplayedText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::Font* ChatBox::getTextFont() const
     {
-        return &m_panel->getGlobalFont();
+        return m_panel->getGlobalFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,7 +953,12 @@ namespace tgui
             return m_lineSpacing;
 
         auto line = tgui::Label::Ptr(m_panel->getWidgets()[lineNumber]);
-        unsigned int lineSpacing = m_panel->getGlobalFont().getLineSpacing(line->getTextSize());
+
+        unsigned int lineSpacing;
+        if (m_panel->getGlobalFont())
+            lineSpacing = m_panel->getGlobalFont()->getLineSpacing(line->getTextSize());
+        else
+            lineSpacing = 0;
 
         if (lineSpacing > line->getTextSize())
             return lineSpacing;
@@ -950,8 +970,10 @@ namespace tgui
 
     void ChatBox::initialize(Container *const parent)
     {
-        m_parent = parent;
-        setTextFont(m_parent->getGlobalFont());
+        Widget::initialize(parent);
+
+        if (!getTextFont() && m_parent->getGlobalFont())
+            setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
