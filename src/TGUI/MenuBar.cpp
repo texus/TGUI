@@ -136,7 +136,7 @@ namespace tgui
         if (m_size.y < 10)
             m_size.y = 10;
 
-        setTextSize(static_cast<unsigned int>(height * 0.85f));
+        setTextSize(static_cast<unsigned int>(height * 0.75f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,6 @@ namespace tgui
         menu.text.setString(text);
         menu.text.setColor(m_textColor);
         menu.text.setCharacterSize(m_textSize);
-        menu.text.setCharacterSize(static_cast<unsigned int>(menu.text.getCharacterSize() - menu.text.getLocalBounds().top));
 
         m_menus.push_back(menu);
     }
@@ -178,7 +177,6 @@ namespace tgui
                 menuItem.setString(text);
                 menuItem.setColor(m_textColor);
                 menuItem.setCharacterSize(m_textSize);
-                menuItem.setCharacterSize(static_cast<unsigned int>(menuItem.getCharacterSize() - menuItem.getLocalBounds().top));
 
                 m_menus[i].menuItems.push_back(menuItem);
                 return true;
@@ -383,13 +381,9 @@ namespace tgui
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-            {
                 m_menus[i].menuItems[j].setCharacterSize(m_textSize);
-                m_menus[i].menuItems[j].setCharacterSize(static_cast<unsigned int>(m_menus[i].menuItems[j].getCharacterSize() - m_menus[i].menuItems[j].getLocalBounds().top));
-            }
 
             m_menus[i].text.setCharacterSize(m_textSize);
-            m_menus[i].text.setCharacterSize(static_cast<unsigned int>(m_menus[i].text.getCharacterSize() - m_menus[i].text.getLocalBounds().top));
         }
     }
 
@@ -836,7 +830,9 @@ namespace tgui
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             states.transform.translate(static_cast<float>(m_distanceToSide), 0);
+            states.transform.translate(-m_menus[i].text.getLocalBounds().left, -m_menus[i].text.getLocalBounds().top);
             target.draw(m_menus[i].text, states);
+            states.transform.translate(m_menus[i].text.getLocalBounds().left, m_menus[i].text.getLocalBounds().top);
 
             // Is the menu open?
             if (m_visibleMenu == static_cast<int>(i))
@@ -875,7 +871,10 @@ namespace tgui
                 // Draw the menu items
                 for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                 {
+                    states.transform.translate(-m_menus[i].menuItems[j].getLocalBounds().left, -m_menus[i].menuItems[j].getLocalBounds().top);
                     target.draw(m_menus[i].menuItems[j], states);
+                    states.transform.translate(m_menus[i].menuItems[j].getLocalBounds().left, m_menus[i].menuItems[j].getLocalBounds().top);
+
                     states.transform.translate(0, m_size.y);
                 }
 

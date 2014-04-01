@@ -547,8 +547,7 @@ namespace tgui
         {
             // Calculate the text size
             m_text.setString("kg");
-            m_text.setCharacterSize(static_cast<unsigned int>(m_textureNormal.getSize().y * 0.85f));
-            m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
+            m_text.setCharacterSize(static_cast<unsigned int>(m_textureNormal.getSize().y * 0.75f));
         }
         else // When the text has a fixed size
         {

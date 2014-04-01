@@ -2454,8 +2454,14 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
+        sf::Text tempText(m_textBeforeSelection);
+        tempText.setString("kg");
+        sf::Vector2f textShift(tempText.getLocalBounds().left, tempText.getLocalBounds().top);
+
         // Draw the text
+        states.transform.translate(-textShift.x, -textShift.y);
         target.draw(m_textBeforeSelection, states);
+        states.transform.translate(0, textShift.y);
 
         // Check if there is a selection
         if (m_selChars > 0)
@@ -2480,7 +2486,9 @@ namespace tgui
             target.draw(selectionBackground1, states);
 
             // Draw the first part of the selected text
+            states.transform.translate(0, -textShift.y);
             target.draw(m_textSelection1, states);
+            states.transform.translate(0, textShift.y);
 
             // Check if there is a second part in the selection
             if (m_textSelection2.getString().getSize() > 0)
@@ -2505,7 +2513,9 @@ namespace tgui
                 }
 
                 // Draw the second part of the selection
+                states.transform.translate(0, -textShift.y);
                 target.draw(m_textSelection2, states);
+                states.transform.translate(0, textShift.y);
 
                 // Translate to the end of the selection
                 states.transform.translate(m_textSelection2.findCharacterPos(textSelection2Length));
@@ -2525,7 +2535,9 @@ namespace tgui
             }
 
             // Draw the first part of the text behind the selection
+            states.transform.translate(0, -textShift.y);
             target.draw(m_textAfterSelection1, states);
+            states.transform.translate(textShift.x, textShift.y);
 
             // Check if there is a second part in the selection
             if (m_textAfterSelection2.getString().getSize() > 0)
@@ -2555,7 +2567,9 @@ namespace tgui
                 }
 
                 // Draw the second part of the text after the selection
+                states.transform.translate(-textShift.x, -textShift.y);
                 target.draw(m_textAfterSelection2, states);
+                states.transform.translate(textShift.x, textShift.y);
             }
         }
 
@@ -2567,6 +2581,7 @@ namespace tgui
             {
                 // Reset the transformation
                 states.transform = oldTransform;
+                states.transform.translate(-textShift.x, 0);
 
                 // Create the caret rectangle
                 sf::RectangleShape caret(sf::Vector2f(static_cast<float>(m_caretWidth), static_cast<float>(m_lineHeight)));

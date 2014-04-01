@@ -948,8 +948,7 @@ namespace tgui
 
         // Create a text widget to draw it
         sf::Text tempText("kg", *m_listBox->getTextFont());
-        tempText.setCharacterSize(m_listBox->getItemHeight());
-        tempText.setCharacterSize(static_cast<unsigned int>(tempText.getCharacterSize() - tempText.getLocalBounds().top));
+        tempText.setCharacterSize(static_cast<unsigned int>(m_listBox->getItemHeight() * 0.8f));
         tempText.setColor(m_listBox->getTextColor());
 
         // Get the old clipping area

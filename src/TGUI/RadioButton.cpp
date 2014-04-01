@@ -333,18 +333,11 @@ namespace tgui
         // Set the new text
         m_text.setString(text);
 
-        // Check if the text is auto sized
+        // Set the text size
         if (m_textSize == 0)
-        {
-            // Set the text size
-            m_text.setCharacterSize(static_cast<unsigned int>(m_textureUnchecked.getSize().y));
-            m_text.setCharacterSize(static_cast<unsigned int>(m_text.getCharacterSize() - m_text.getLocalBounds().top));
-        }
-        else // When the text has a fixed size
-        {
-            // Set the text size
+            m_text.setCharacterSize(static_cast<unsigned int>(m_textureUnchecked.getSize().y * 0.75f));
+        else
             m_text.setCharacterSize(m_textSize);
-        }
 
         // Reposition the text
         setPosition(getPosition());

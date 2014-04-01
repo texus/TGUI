@@ -447,7 +447,7 @@ namespace tgui
                                height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().y);
 
         // Set the size of the text in the title bar
-        m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
+        m_titleText.setCharacterSize(static_cast<unsigned int>(m_titleBarHeight * 0.75f));
 
         m_textureTitleBar.setSize(m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight));
 
