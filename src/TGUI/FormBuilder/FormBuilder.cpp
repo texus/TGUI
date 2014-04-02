@@ -39,7 +39,7 @@ FormBuilder::FormBuilder() :
     propertyChanged (false)
 {
     gui.setGlobalFont(FONTS_FOLDER "/" DEFAULT_FONT);
-    panel->setGlobalFont(gui.getGlobalFont());
+    panel->setGlobalFont(*gui.getGlobalFont());
 
     initMenuBar();
     initWidgetsData();
