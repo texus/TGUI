@@ -218,7 +218,7 @@ namespace tgui
     template <typename U>
     bool SharedWidgetPtr<T>::operator ==(const SharedWidgetPtr<U>& right) const
     {
-        return m_WidgetPtr == right.m_WidgetPtr;
+        return m_WidgetPtr == right.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ namespace tgui
     template <typename U>
     bool SharedWidgetPtr<T>::operator !=(const SharedWidgetPtr<U>& right) const
     {
-        return m_WidgetPtr != right.m_WidgetPtr;
+        return m_WidgetPtr != right.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
