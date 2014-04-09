@@ -112,10 +112,6 @@ namespace tgui
 
     void SpriteSheet::setCells(unsigned int rows, unsigned int columns)
     {
-        // Make sure that the picture was already loaded
-        if (m_loaded == false)
-            return;
-
         // You can't have 0 rows
         if (rows == 0)
             rows = 1;
@@ -174,10 +170,6 @@ namespace tgui
 
     void SpriteSheet::setVisibleCell(unsigned int row, unsigned int column)
     {
-        // Make sure that the picture was already loaded
-        if (m_loaded == false)
-            return;
-
         // You can't make a row visible that doesn't exist
         if (row > m_rows)
             row = m_rows;
@@ -214,7 +206,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpriteSheet::setProperty(std::string property, const std::string& value)
+    void SpriteSheet::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -227,15 +219,12 @@ namespace tgui
             setColumns(tgui::stoi(value));
         }
         else // The property didn't match
-            return Picture::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Picture::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpriteSheet::getProperty(std::string property, std::string& value) const
+    void SpriteSheet::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -244,10 +233,7 @@ namespace tgui
         else if (property == "columns")
             value = tgui::to_string(getColumns());
         else // The property didn't match
-            return Picture::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Picture::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -165,17 +165,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns true when the widget is loaded successfully.
-        ///
-        /// \return Is the widget loaded?
-        ///
-        /// When a widget is not loaded correctly then it will not be drawn.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool isLoaded() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Focus the widget.
         ///
         /// The previously focused widget will be unfocused.
@@ -373,14 +362,14 @@ namespace tgui
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setProperty(std::string property, const std::string& value);
+        virtual void setProperty(std::string property, const std::string& value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool getProperty(std::string property, std::string& value) const;
+        virtual void getProperty(std::string property, std::string& value) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,9 +414,6 @@ namespace tgui
 
         // Is the widget visible? When it is invisible it will not receive events and it won't be drawn.
         bool m_visible;
-
-        // This bool will be true from the moment that the load function is completed successfully.
-        bool m_loaded;
 
         // This will store the different phases that the widget can have
         // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down

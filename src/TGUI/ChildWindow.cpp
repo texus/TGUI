@@ -30,7 +30,6 @@
 #include <TGUI/ChildWindow.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -139,38 +138,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::load(const std::string& configFileFilename)
+    void ChildWindow::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Until the loading succeeds, the child window will be marked as unloaded
-        m_loaded = false;
-
         // Remove the textures when they were loaded before
-        if (m_textureTitleBar.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureTitleBar);
+        if (m_textureTitleBar.getData() != nullptr)              TGUI_TextureManager.removeTexture(m_textureTitleBar);
         if (m_closeButton->m_textureNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_closeButton->m_textureNormal);
         if (m_closeButton->m_textureHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_closeButton->m_textureHover);
         if (m_closeButton->m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_closeButton->m_textureDown);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("ChildWindow", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "ChildWindow");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -179,104 +158,54 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundcolor")
-            {
-                setBackgroundColor(configFile.readColor(value));
-            }
-            else if (property == "titlecolor")
-            {
-                setTitleColor(configFile.readColor(value));
-            }
-            else if (property == "bordercolor")
-            {
-                setBorderColor(configFile.readColor(value));
-            }
-            else if (property == "titlebarimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTitleBar))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TitlebarImage in section ChildWindow in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "closebuttonseparatehoverimage")
-            {
-                m_closeButton->m_separateHoverImage = configFile.readBool(value, false);
-            }
-            else if (property == "closebuttonnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonNormalImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "closebuttonhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonHoverImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "closebuttondownimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_closeButton->m_textureDown))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CloseButtonDownImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "borders")
+            if (it->first == "backgroundcolor")
+                setBackgroundColor(configFile.readColor(it));
+            else if (it->first == "titlecolor")
+                setTitleColor(configFile.readColor(it));
+            else if (it->first == "bordercolor")
+                setBorderColor(configFile.readColor(it));
+            else if (it->first == "titlebarimage")
+                configFile.readTexture(it, configFileFolder, m_textureTitleBar);
+            else if (it->first == "closebuttonseparatehoverimage")
+                m_closeButton->m_separateHoverImage = configFile.readBool(it);
+            else if (it->first == "closebuttonnormalimage")
+                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureNormal);
+            else if (it->first == "closebuttonhoverimage")
+                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureHover);
+            else if (it->first == "closebuttondownimage")
+                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureDown);
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section ChildWindow in " + m_loadedConfigFile);
             }
-            else if (property == "distancetoside")
-            {
-                setDistanceToSide(tgui::stoul(value));
-            }
+            else if (it->first == "distancetoside")
+                setDistanceToSide(tgui::stoul(it->second));
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChildWindow in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section ChildWindow in " + m_loadedConfigFile + ".");
         }
 
-        // Initialize the close button if it was loaded
-        if (m_closeButton->m_textureNormal.getData() != nullptr)
-        {
-            m_closeButton->m_loaded = true;
-            m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize().x, m_closeButton->m_textureNormal.getImageSize().y);
-        }
-        else // Close button wan't loaded
-        {
-            TGUI_OUTPUT("TGUI error: Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + ".");
-            return false;
-        }
+        // Make sure the close button was loaded
+        if (m_closeButton->m_textureNormal.getData() == nullptr)
+            throw Exception("Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + ".");
+
+        m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize().x, m_closeButton->m_textureNormal.getImageSize().y);
 
         // Make sure the required texture was loaded
-        if (m_textureTitleBar.getData() != nullptr)
-        {
-            m_titleBarHeight = m_textureTitleBar.getImageSize().y;
+        if (m_textureTitleBar.getData() == nullptr)
+            throw Exception("Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
 
-            m_loaded = true;
-            setSize(m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        m_titleBarHeight = m_textureTitleBar.getImageSize().y;
+
+        setSize(m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f);
 
         // Set the size of the title text
         m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
-
-        // When there is no error we will return true
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,10 +364,6 @@ namespace tgui
 
     void ChildWindow::setTitleBarHeight(unsigned int height)
     {
-        // Don't continue when the child window has not been loaded yet
-        if (m_loaded == false)
-            return;
-
         // Remember the new title bar height
         m_titleBarHeight = height;
 
@@ -593,13 +518,10 @@ namespace tgui
             TGUI_TextureManager.removeTexture(m_iconTexture);
 
         // Load the icon image
-        if (TGUI_TextureManager.getTexture(m_iconTexture, filename))
-        {
-            m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
-                                  m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
-        }
-        else // Loading failed
-            TGUI_OUTPUT("Failed to load \"" + filename + "\" as icon for the ChildWindow");
+        TGUI_TextureManager.getTexture(m_iconTexture, filename);
+
+        m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
+                              m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -641,10 +563,6 @@ namespace tgui
 
     bool ChildWindow::mouseOnWidget(float x, float y)
     {
-        // Don't continue when the child window has not been loaded yet
-        if (m_loaded == false)
-            return false;
-
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
@@ -858,7 +776,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::setProperty(std::string property, const std::string& value)
+    void ChildWindow::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -892,7 +810,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "distancetoside")
         {
@@ -907,7 +825,7 @@ namespace tgui
             else if ((value == "right") || (value == "Right"))
                 setTitleAlignment(TitleAlignmentRight);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'TitleAlignment' property.");
+                throw Exception("Failed to parse 'TitleAlignment' property.");
         }
         else if (property == "callback")
         {
@@ -927,15 +845,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Container::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Container::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::getProperty(std::string property, std::string& value) const
+    void ChildWindow::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -986,10 +901,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Container::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Container::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1023,10 +935,6 @@ namespace tgui
 
     void ChildWindow::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the child window wasn't created
-        if (m_loaded == false)
-            return;
-
         // Draw the title bar
         target.draw(m_textureTitleBar, states);
 

@@ -525,7 +525,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::loadWidgetsFromFile(const std::string& filename)
+    void Container::loadWidgetsFromFile(const std::string& filename)
     {
         #define COMPARE_WIDGET(length, name, widgetName) \
             if (line.substr(0, length).compare(name) == 0) \
@@ -540,18 +540,20 @@ namespace tgui
         std::list<Widget*> widgetPtr;
 
         // Open the file
-        std::ifstream m_file(getResourcePath() + filename);
+        std::ifstream file(getResourcePath() + filename);
 
         // Check if the file was not opened
-        if (m_file.is_open() == false)
-            return false;
+        if (file.is_open() == false)
+            throw Exception("Failed to open " + filename + " to load the widgets from it.");
+
+        std::string line;
+        unsigned int lineNumber = 0;
 
         // Stop reading when we reach the end of the file or when something went wrong
-        bool failed = false;
-        while (!m_file.eof() && !failed)
+        while (!file.eof())
         {
-            std::string line;
-            std::getline(m_file, line);
+            std::getline(file, line);
+            lineNumber++;
 
             if (!line.empty())
             {
@@ -624,10 +626,7 @@ namespace tgui
                                 // Find the next quote
                                 quotePos2 = line.find('"', backslashPos + 1);
                                 if (quotePos2 == std::string::npos)
-                                {
-                                    failed = true;
-                                    break;
-                                }
+                                    throw Exception("Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
                             }
 
                             // Find the next backslash
@@ -636,7 +635,7 @@ namespace tgui
 
                         // There may never be more than two quotes
                         if (line.find('"', quotePos2 + 1) != std::string::npos)
-                            failed = true;
+                            throw Exception("Too many quote characters on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
 
                         // Convert the part behind the quote to lowercase
                         line = line.substr(0, quotePos2 + 1) + toLower(line.substr(quotePos2 + 1));
@@ -646,12 +645,12 @@ namespace tgui
                         line.erase(quotePos2 - 1, 1);
                     }
                     else // The second quote is missing
-                        failed = true;
+                        throw Exception("Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
                 }
             }
 
             // Only continue when the line hasn't become empty and nothing went wrong so far
-            if (!line.empty() && !failed)
+            if (!line.empty())
             {
                 // Check if this is the first line
                 if (progress.empty())
@@ -664,10 +663,7 @@ namespace tgui
                         continue;
                     }
                     else // The first line is wrong
-                    {
-                        failed = true;
-                        break;
-                    }
+                        throw Exception("Expected a 'window' section in " + filename + ".");
                 }
 
                 // Check for opening and closing brackets
@@ -680,19 +676,13 @@ namespace tgui
                         continue;
                     }
                     else
-                    {
-                        failed = true;
-                        break;
-                    }
+                        throw Exception("Failed to find the expected '{' on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
                 }
-                else
+                else if (line.compare("}") == 0)
                 {
-                    if (line.compare("}") == 0)
-                    {
-                        widgetPtr.pop_back();
-                        progress.pop();
-                        continue;
-                    }
+                    widgetPtr.pop_back();
+                    progress.pop();
+                    continue;
                 }
 
                 // The line doesn't contain a '}', so check if it contains another widget
@@ -727,30 +717,19 @@ namespace tgui
                 {
                     std::string::size_type equalSignPosition = line.find('=');
                     if (equalSignPosition == std::string::npos)
-                    {
-                        failed = true;
-                        break;
-                    }
+                        throw Exception("Failed to find the expected '=' on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
 
-                    if (!widgetPtr.back()->setProperty(line.substr(0, equalSignPosition), line.substr(equalSignPosition + 1)))
-                        failed = true;
+                    widgetPtr.back()->setProperty(line.substr(0, equalSignPosition), line.substr(equalSignPosition + 1));
                 }
             }
         }
-
-        m_file.close();
-
-        if (failed)
-            return false;
-
-        return true;
 
         #undef COMPARE_WIDGET
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::saveWidgetsToFile(const std::string& filename)
+    void Container::saveWidgetsToFile(const std::string& filename)
     {
         std::string tabs;
 
@@ -758,8 +737,8 @@ namespace tgui
         std::ofstream m_file(filename);
 
         // Check if the file was not opened
-        if (m_file.is_open() == false)
-            return false;
+        if (!m_file.is_open())
+            throw Exception("Failed to create " + filename + " to save the widgets to.");
 
         m_file << tabs << "Window:" << std::endl;
         m_file << tabs << "{" << std::endl;
@@ -804,13 +783,19 @@ namespace tgui
                 tabs += "\t";
 
                 std::string value;
-                if ((*widgetIt)->getProperty("Filename", value))
+                try
                 {
+                    (*widgetIt)->getProperty("Filename", value);
                     m_file << tabs << "Filename = \"" << value << "\"" << std::endl;
                 }
-                else if ((*widgetIt)->getProperty("ConfigFile", value))
+                catch (const Exception&)
                 {
-                    m_file << tabs << "ConfigFile = \"" << value << "\"" << std::endl;
+                    try
+                    {
+                        (*widgetIt)->getProperty("ConfigFile", value);
+                        m_file << tabs << "ConfigFile = \"" << value << "\"" << std::endl;
+                    }
+                    catch (const Exception&) {}
                 }
 
                 auto properties = (*widgetIt)->getPropertyList();
@@ -845,8 +830,6 @@ namespace tgui
 
         tabs.erase(tabs.length()-1);
         m_file << tabs << "}" << std::endl;
-
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

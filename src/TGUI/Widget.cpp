@@ -27,6 +27,8 @@
 #include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/Container.hpp>
 
+#include <cassert>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -36,7 +38,6 @@ namespace tgui
     Widget::Widget() :
     m_enabled        (true),
     m_visible        (true),
-    m_loaded         (false),
     m_widgetPhase    (0),
     m_parent         (nullptr),
     m_opacity        (255),
@@ -61,7 +62,6 @@ namespace tgui
     CallbackManager  (copy),
     m_enabled        (copy.m_enabled),
     m_visible        (copy.m_visible),
-    m_loaded         (copy.m_loaded),
     m_widgetPhase    (copy.m_widgetPhase),
     m_parent         (copy.m_parent),
     m_opacity        (copy.m_opacity),
@@ -95,7 +95,6 @@ namespace tgui
 
             m_enabled             = right.m_enabled;
             m_visible             = right.m_visible;
-            m_loaded              = right.m_loaded;
             m_widgetPhase         = right.m_widgetPhase;
             m_parent              = right.m_parent;
             m_opacity             = right.m_opacity;
@@ -172,13 +171,6 @@ namespace tgui
     bool Widget::isDisabled() const
     {
         return !m_enabled;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Widget::isLoaded() const
-    {
-        return m_loaded;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -389,7 +381,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::setProperty(std::string property, const std::string& value)
+    void Widget::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -416,7 +408,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_visible = false;
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Visible' property.");
+                throw Exception("Failed to parse 'Visible' property.");
         }
         else if (property == "enabled")
         {
@@ -425,7 +417,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_enabled = false;
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Enabled' property.");
+                throw Exception("Failed to parse 'Enabled' property.");
         }
         else if (property == "transparency")
         {
@@ -453,15 +445,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return false;
-
-        // You pass here when one of the properties matched
-        return true;
+            throw Exception("Failed to set unknown property '" + property + "'.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::getProperty(std::string property, std::string& value) const
+    void Widget::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -497,10 +486,7 @@ namespace tgui
             encodeList(callbacks, value);
         }
         else // The property didn't match
-            return false;
-
-        // You pass here when one of the properties matched
-        return true;
+            throw Exception("Failed to get unknown property '" + property + "'.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

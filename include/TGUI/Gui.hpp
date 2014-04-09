@@ -442,14 +442,12 @@ namespace tgui
         ///
         /// \param filename  Filename of the widget file that is to be loaded
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the file could not be opened
-        ///        - false when the file contains a mistake
-        ///        - false when one of the widgets couldn't be loaded
+        /// \throw Exception when the file could not be opened
+        /// \throw Exception when the file contains a mistake
+        /// \throw Exception when one of the widgets, described in the file, couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadWidgetsFromFile(const std::string& filename);
+        void loadWidgetsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -457,12 +455,10 @@ namespace tgui
         ///
         /// \param filename  Filename of the widget file that is to be created
         ///
-        /// \return
-        ///        - true on success
-        ///        - false when the file couldn't be created
+        /// \throw Exception when the file couldn't be created
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool saveWidgetsToFile(const std::string& filename);
+        void saveWidgetsToFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

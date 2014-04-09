@@ -26,10 +26,10 @@
 #ifndef TGUI_SHARED_WIDGET_PTR_INL
 #define TGUI_SHARED_WIDGET_PTR_INL
 
-#include <cassert>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/Gui.hpp>
+
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

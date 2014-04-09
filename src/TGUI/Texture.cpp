@@ -26,7 +26,6 @@
 #include <SFML/OpenGL.hpp>
 #include <TGUI/Texture.hpp>
 
-#include <cassert>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,8 +255,6 @@ namespace tgui
 
     void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        assert(getData() != nullptr);
-
         states.transform.translate(getOrigin());
         states.transform *= getTransform();
 

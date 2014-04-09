@@ -108,36 +108,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::load(const std::string& configFileFilename)
+    void Knob::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If the knob was loaded before then remove the old textures first
         if (m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
         if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Knob", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Knob");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -146,50 +126,25 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_backgroundTexture))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackgroundImage in section Knob in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "foregroundimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_foregroundTexture))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ForegroundImage in section Knob in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "imagerotation")
-            {
-                m_imageRotation = tgui::stof(value);
-            }
+            if (it->first == "backgroundimage")
+                configFile.readTexture(it, configFileFolder, m_backgroundTexture);
+            else if (it->first == "foregroundimage")
+                configFile.readTexture(it, configFileFolder, m_foregroundTexture);
+            else if (it->first == "imagerotation")
+                m_imageRotation = tgui::stof(it->second);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Knob in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Knob in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures was loaded
-        if ((m_backgroundTexture.getData() != nullptr) && (m_foregroundTexture.getData() != nullptr))
-        {
-            m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
+        if ((m_backgroundTexture.getData() == nullptr) || (m_foregroundTexture.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?");
 
-            m_loaded = true;
-            setSize(m_backgroundTexture.getImageSize().x, m_backgroundTexture.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
 
-        return true;
+        setSize(m_backgroundTexture.getImageSize().x, m_backgroundTexture.getImageSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,10 +169,6 @@ namespace tgui
 
     void Knob::setSize(float width, float height)
     {
-        // Don't do anything when the knob wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         m_backgroundTexture.setSize(width, height);
         m_foregroundTexture.setSize(m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * width,
                                     m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * height);
@@ -431,10 +382,6 @@ namespace tgui
 
     void Knob::mouseMoved(float x, float y)
     {
-        // Don't do anything when the knob wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_mouseHover == false)
             mouseEnteredWidget();
 
@@ -566,7 +513,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::setProperty(std::string property, const std::string& value)
+    void Knob::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -601,7 +548,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setClockwiseTurning(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'ClockwiseTurning' property.");
+                throw Exception("Failed to parse 'ClockwiseTurning' property.");
         }
         else if (property == "callback")
         {
@@ -617,15 +564,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::getProperty(std::string property, std::string& value) const
+    void Knob::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -661,10 +605,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

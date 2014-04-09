@@ -354,16 +354,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::loadWidgetsFromFile(const std::string& filename)
+    void Gui::loadWidgetsFromFile(const std::string& filename)
     {
-        return m_container.loadWidgetsFromFile(filename);
+        m_container.loadWidgetsFromFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::saveWidgetsToFile(const std::string& filename)
+    void Gui::saveWidgetsToFile(const std::string& filename)
     {
-        return m_container.saveWidgetsToFile(filename);
+        m_container.saveWidgetsToFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

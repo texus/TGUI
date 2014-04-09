@@ -66,8 +66,10 @@ namespace tgui
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
         ///
+        /// \throw Exception when image couldn't be loaded.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getTexture(Texture& texture,
+        void getTexture(Texture& texture,
                         const std::string& filename,
                         const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
                         const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),

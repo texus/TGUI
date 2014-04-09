@@ -81,17 +81,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::load(const std::string& filename)
+    void Picture::load(const std::string& filename)
     {
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
-        m_size.x = 0;
-        m_size.y = 0;
-
-        // Make sure that the filename isn't empty
-        if (filename.empty())
-            return false;
-
         m_loadedFilename = getResourcePath() + filename;
 
         // If we have already loaded a texture then first delete it
@@ -99,17 +90,10 @@ namespace tgui
             TGUI_TextureManager.removeTexture(m_texture);
 
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(m_texture, m_loadedFilename))
-        {
-            m_loaded = true;
+        TGUI_TextureManager.getTexture(m_texture, m_loadedFilename);
 
-            // Remember the size of the texture
-            setSize(m_texture.getImageSize().x, m_texture.getImageSize().y);
-
-            return true;
-        }
-        else // The texture was not loaded
-            return false;
+        // Remember the size of the texture
+        setSize(m_texture.getImageSize().x, m_texture.getImageSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,33 +119,25 @@ namespace tgui
         m_size.x = width;
         m_size.y = height;
 
-        if (m_loaded)
-            m_texture.setSize(width, height);
-        else
-            TGUI_OUTPUT("TGUI warning: Picture::setSize called while Picture wasn't loaded yet.");
+        m_texture.setSize(width, height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::setSmooth(bool smooth)
     {
-        if (m_loaded)
+        if (m_texture.getData())
             m_texture.getData()->texture.setSmooth(smooth);
-        else
-            TGUI_OUTPUT("TGUI warning: Picture::setSmooth called while Picture wasn't loaded yet.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Picture::isSmooth() const
     {
-        if (m_loaded)
+        if (m_texture.getData())
             return m_texture.getData()->texture.isSmooth();
         else
-        {
-            TGUI_OUTPUT("TGUI warning: Picture::isSmooth called while Picture wasn't loaded yet.");
             return false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,10 +153,6 @@ namespace tgui
 
     bool Picture::mouseOnWidget(float x, float y)
     {
-        // Don't do anything when the image wasn't loaded
-        if (m_loaded == false)
-            return false;
-
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
         {
@@ -202,7 +174,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::setProperty(std::string property, const std::string& value)
+    void Picture::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -217,18 +189,15 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setSmooth(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Smooth' property.");
+                throw Exception("Failed to parse 'Smooth' property.");
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::getProperty(std::string property, std::string& value) const
+    void Picture::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -237,10 +206,7 @@ namespace tgui
         else if (property == "smooth")
             value = isSmooth() ? "true" : "false";
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

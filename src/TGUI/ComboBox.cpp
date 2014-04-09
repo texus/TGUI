@@ -33,7 +33,6 @@
 #include <TGUI/ComboBox.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,12 +118,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::load(const std::string& configFileFilename)
+    void ComboBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // Remove all textures if they were loaded before
         if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
@@ -133,24 +129,7 @@ namespace tgui
         if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("ComboBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "ComboBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -159,99 +138,73 @@ namespace tgui
             configFileFolder = configFileFilename.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
+            if (it->first == "separatehoverimage")
             {
-                m_separateHoverImage = configFile.readBool(value, false);
+                m_separateHoverImage = configFile.readBool(it);
             }
-            else if (property == "backgroundcolor")
+            else if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(value));
+                setBackgroundColor(configFile.readColor(it));
             }
-            else if (property == "textcolor")
+            else if (it->first == "textcolor")
             {
-                setTextColor(configFile.readColor(value));
+                setTextColor(configFile.readColor(it));
             }
-            else if (property == "selectedbackgroundcolor")
+            else if (it->first == "selectedbackgroundcolor")
             {
-                setSelectedBackgroundColor(configFile.readColor(value));
+                setSelectedBackgroundColor(configFile.readColor(it));
             }
-            else if (property == "selectedtextcolor")
+            else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(configFile.readColor(value));
+                setSelectedTextColor(configFile.readColor(it));
             }
-            else if (property == "bordercolor")
+            else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(value));
+                setBorderColor(configFile.readColor(it));
             }
-            else if (property == "borders")
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section ComboBox in " + m_loadedConfigFile);
             }
-            else if (property == "arrowupnormalimage")
+            else if (it->first == "arrowupnormalimage")
             {
-                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_textureArrowUpNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section ComboBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowUpNormal);
             }
-            else if (property == "arrowuphoverimage")
+            else if (it->first == "arrowuphoverimage")
             {
-                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_textureArrowUpHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section ComboBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowUpHover);
             }
-            else if (property == "arrowdownnormalimage")
+            else if (it->first == "arrowdownnormalimage")
             {
-                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_textureArrowDownNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section ComboBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowDownNormal);
             }
-            else if (property == "arrowdownhoverimage")
+            else if (it->first == "arrowdownhoverimage")
             {
-                if (!configFile.readTexture(value, getResourcePath() + configFileFolder, m_textureArrowDownHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section ComboBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowDownHover);
             }
-            else if (property == "scrollbar")
+            else if (it->first == "scrollbar")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ComboBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for Scrollbar in section ComboBox in " + m_loadedConfigFile + ".");
 
-                if (!m_listBox->setScrollbar(configFileFolder + value.substr(1, value.length()-2)))
-                    return false;
+                m_listBox->setScrollbar(configFileFolder + it->second.substr(1, it->second.length()-2));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ComboBox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section ComboBox in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
         if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+            throw Exception("Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?");
 
         // Remove all items (in case this is the second time that the load function was called)
         m_listBox->removeAllItems();
-
-        return m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,10 +218,6 @@ namespace tgui
 
     void ComboBox::setSize(float width, float height)
     {
-        // Don't set the scale when loading failed
-        if (m_loaded == false)
-            return;
-
         // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
@@ -287,10 +236,7 @@ namespace tgui
 
     sf::Vector2f ComboBox::getSize() const
     {
-        if (m_loaded)
-            return sf::Vector2f(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight()));
-        else
-            return sf::Vector2f(0, 0);
+        return sf::Vector2f(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,10 +368,6 @@ namespace tgui
         m_borders.bottom = bottomBorder;
         m_listBox->setBorders(m_borders.left, m_borders.bottom, m_borders.right, m_borders.bottom);
 
-        // Don't set the width and height when loading failed
-        if (m_loaded == false)
-            return;
-
         // There is a minimum width
         if (m_listBox->getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
             m_listBox->setSize(50.0f + m_textureArrowDownNormal.getSize().x, m_listBox->getSize().y);
@@ -435,10 +377,6 @@ namespace tgui
 
     int ComboBox::addItem(const sf::String& item)
     {
-        // An item can only be added when the combo box was loaded correctly
-        if (m_loaded == false)
-            return false;
-
         // Make room to add another item, until there are enough items
         if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItems().size()))
             m_listBox->setSize(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItems().size() + 1)));
@@ -570,10 +508,6 @@ namespace tgui
 
     bool ComboBox::mouseOnWidget(float x, float y)
     {
-        // Don't do anything when the combo box wasn't loaded correctly
-        if (m_loaded == false)
-            return false;
-
         // Get the current position
         sf::Vector2f position = getPosition();
 
@@ -660,7 +594,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setProperty(std::string property, const std::string& value)
+    void ComboBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -698,7 +632,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "maximumitems")
         {
@@ -732,15 +666,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::getProperty(std::string property, std::string& value) const
+    void ComboBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -786,10 +717,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -898,10 +826,6 @@ namespace tgui
 
     void ComboBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw anything when the combo box was not loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;

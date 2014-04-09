@@ -29,7 +29,6 @@
 #include <TGUI/Label.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +40,6 @@ namespace tgui
     m_autoSize(true)
     {
         m_callback.widgetType = Type_Label;
-        m_loaded = true;
 
         m_background.setFillColor(sf::Color::Transparent);
     }
@@ -61,49 +59,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::load(const std::string& configFileFilename)
+    void Label::load(const std::string& configFileFilename)
     {
-        // Don't continue when the config file was empty
-        if (configFileFilename.empty())
-            return true;
-
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Label", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Label");
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
+            if (it->first == "textcolor")
+                setTextColor(extractColor(it->second));
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Label in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Label in " + m_loadedConfigFile + ".");
         }
-
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,7 +217,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::setProperty(std::string property, const std::string& value)
+    void Label::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -280,18 +250,15 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setAutoSize(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'AutoSize' property.");
+                throw Exception("Failed to parse 'AutoSize' property.");
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Label::getProperty(std::string property, std::string& value) const
+    void Label::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -308,10 +275,7 @@ namespace tgui
         else if (property == "autosize")
             value = m_autoSize ? "true" : "false";
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

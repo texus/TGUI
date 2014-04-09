@@ -48,12 +48,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Checkbox::load(const std::string& configFileFilename)
+    void Checkbox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If the checkbox was loaded before then remove the old textures
         if (m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
@@ -62,24 +59,7 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Checkbox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Checkbox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -88,71 +68,31 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "textcolor")
-            {
-                m_text.setColor(configFile.readColor(value));
-            }
-            else if (property == "checkedimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureChecked))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for CheckedImage in section Checkbox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "uncheckedimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureUnchecked))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for UncheckedImage in section Checkbox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "hoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Checkbox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "focusedimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Checkbox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            if (it->first == "textcolor")
+                m_text.setColor(configFile.readColor(it));
+            else if (it->first == "checkedimage")
+                configFile.readTexture(it, configFileFolder, m_textureChecked);
+            else if (it->first == "uncheckedimage")
+                configFile.readTexture(it, configFileFolder, m_textureUnchecked);
+            else if (it->first == "hoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureHover);
+            else if (it->first == "focusedimage")
+                configFile.readTexture(it, configFileFolder, m_textureFocused);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Checkbox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Checkbox in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required texture was loaded
-        if ((m_textureChecked.getData() != nullptr) && (m_textureUnchecked.getData() != nullptr))
-        {
-            m_loaded = true;
-            setSize(m_textureUnchecked.getImageSize().x, m_textureUnchecked.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?");
 
-        // Check if optional textures were loaded
+        setSize(m_textureUnchecked.getImageSize().x, m_textureUnchecked.getImageSize().y);
+
+        // The widget can only be focused when there is an image available for this phase
         if (m_textureFocused.getData() != nullptr)
-        {
             m_allowFocus = true;
-        }
-
-        // When there is no error we will return true
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

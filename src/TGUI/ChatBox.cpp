@@ -53,9 +53,6 @@ namespace tgui
         m_panel = new Panel();
         m_panel->setSize(360, 200);
         m_panel->setBackgroundColor(sf::Color::White);
-
-        // Load the chat box with default values
-        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,12 +127,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::load(const std::string& configFileFilename)
+    void ChatBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If there already was a scrollbar then delete it now
         if (m_scroll != nullptr)
@@ -145,24 +139,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("ChatBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "ChatBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -171,57 +148,50 @@ namespace tgui
             configFileFolder = configFileFilename.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundcolor")
+            if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(value));
+                setBackgroundColor(configFile.readColor(it));
             }
-            else if (property == "bordercolor")
+            else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(value));
+                setBorderColor(configFile.readColor(it));
             }
-            else if (property == "borders")
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section ChatBox in " + m_loadedConfigFile);
             }
-            else if (property == "scrollbar")
+            else if (it->first == "scrollbar")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for Scrollbar property in section ChatBox in " + m_loadedConfigFile + ".");
 
                 // load the scrollbar and check if it failed
                 m_scroll = new Scrollbar();
-                if (m_scroll->load(configFileFolder + value.substr(1, value.length()-2)) == false)
+                try {
+                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                }
+                catch (Exception& e)
                 {
-                    // The scrollbar couldn't be loaded so it must be deleted
                     delete m_scroll;
                     m_scroll = nullptr;
+                    throw e;
+                }
 
-                    return false;
-                }
-                else // The scrollbar was loaded successfully
-                {
-                    // Initialize the scrollbar
-                    m_scroll->setVerticalScroll(true);
-                    m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
-                    m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
-                    m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
-                }
+                // Initialize the scrollbar
+                m_scroll->setVerticalScroll(true);
+                m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
+                m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
+                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChatBox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section ChatBox in " + m_loadedConfigFile + ".");
         }
-
-        return m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,10 +205,6 @@ namespace tgui
 
     void ChatBox::setSize(float width, float height)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
@@ -554,36 +520,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
+    void ChatBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        // Do nothing when the string is empty
-        if (scrollbarConfigFileFilename.empty() == true)
-            return false;
-
         // If the scrollbar was already created then delete it first
         if (m_scroll != nullptr)
             delete m_scroll;
 
         // load the scrollbar and check if it failed
         m_scroll = new Scrollbar();
-        if(m_scroll->load(scrollbarConfigFileFilename) == false)
+        try {
+            m_scroll->load(scrollbarConfigFileFilename);
+        }
+        catch (Exception& e)
         {
-            // The scrollbar couldn't be loaded so it must be deleted
             delete m_scroll;
             m_scroll = nullptr;
-
-            return false;
+            throw e;
         }
-        else // The scrollbar was loaded successfully
-        {
-            // Initialize the scrollbar
-            m_scroll->setVerticalScroll(true);
-            m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
-            m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
-            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
 
-            return true;
-        }
+        // Initialize the scrollbar
+        m_scroll->setVerticalScroll(true);
+        m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
+        m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
+        m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,10 +603,6 @@ namespace tgui
 
     void ChatBox::leftMousePressed(float x, float y)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Set the mouse down flag to true
         m_mouseDown = true;
 
@@ -824,7 +779,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::setProperty(std::string property, const std::string& value)
+    void ChatBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -842,7 +797,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "backgroundcolor")
         {
@@ -872,32 +827,29 @@ namespace tgui
                     std::string::size_type closeBracketPos = line.rfind(')');
 
                     if ((openBracketPos == std::string::npos) || (closeBracketPos == std::string::npos) || (openBracketPos >= closeBracketPos))
-                        return false;
+                        throw Exception("Could not decode Lines property: failed to match brackets.");
 
                     sf::Color color = extractColor(line.substr(openBracketPos, closeBracketPos - openBracketPos + 1));
 
                     std::string::size_type commaPos = line.rfind(',', openBracketPos);
                     if (commaPos == std::string::npos)
-                        return false;
+                        throw Exception("Could not decode Lines property: failed to find comma.");
 
                     line.erase(commaPos);
 
                     addLine(line, color);
                 }
                 else
-                    return false;
+                    throw Exception("Could not decode Lines property: failed to match brackets.");
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::getProperty(std::string property, std::string& value) const
+    void ChatBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -922,10 +874,7 @@ namespace tgui
             encodeList(lines, value);
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

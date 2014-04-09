@@ -112,12 +112,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::load(const std::string& configFileFilename)
+    void Slider::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // Remove all textures if they were loaded before
         if (m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
@@ -126,24 +123,7 @@ namespace tgui
         if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Slider", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Slider");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -152,69 +132,32 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
+            if (it->first == "separatehoverimage")
+                m_separateHoverImage = configFile.readBool(it);
+            else if (it->first == "verticalimage")
             {
-                m_separateHoverImage = configFile.readBool(value, false);
-            }
-            else if (property == "verticalimage")
-            {
-                m_verticalImage = configFile.readBool(value, false);
+                m_verticalImage = configFile.readBool(it);
                 m_verticalScroll = m_verticalImage;
             }
-            else if (property == "tracknormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTrackNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage in section Slider in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "trackhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTrackHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage in section Slider in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "thumbnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureThumbNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbNormalImage in section Slider in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "thumbhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureThumbHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbHoverImage in section Slider in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            else if (it->first == "tracknormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureTrackNormal);
+            else if (it->first == "trackhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureTrackHover);
+            else if (it->first == "thumbnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureThumbNormal);
+            else if (it->first == "thumbhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureThumbHover);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Slider in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Slider in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureTrackNormal.getData() != nullptr) && (m_textureThumbNormal.getData() != nullptr))
-        {
-            m_loaded = true;
-            setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the slider. Is the Slider section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if ((m_textureTrackNormal.getData() == nullptr) && (m_textureThumbNormal.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the slider. Is the Slider section in " + m_loadedConfigFile + " complete?");
 
-        return true;
+        setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,10 +194,6 @@ namespace tgui
 
     void Slider::setSize(float width, float height)
     {
-        // Don't do anything when the slider wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_verticalImage == m_verticalScroll)
         {
             m_textureTrackNormal.setSize(width, height);
@@ -460,10 +399,6 @@ namespace tgui
 
     bool Slider::mouseOnWidget(float x, float y)
     {
-        // Don't do anything when the slider wasn't loaded correctly
-        if (m_loaded == false)
-            return false;
-
         // Check if the mouse is on top of the thumb
         if (sf::FloatRect(m_textureThumbNormal.getPosition().x, m_textureThumbNormal.getPosition().y, getThumbSize().x, getThumbSize().y).contains(x, y))
         {
@@ -508,10 +443,6 @@ namespace tgui
 
     void Slider::mouseMoved(float x, float y)
     {
-        // Don't do anything when the slider wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_mouseHover == false)
             mouseEnteredWidget();
 
@@ -576,7 +507,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::setProperty(std::string property, const std::string& value)
+    void Slider::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -603,7 +534,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setVerticalScroll(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+                throw Exception("Failed to parse 'VerticalScroll' property.");
         }
         else if (property == "callback")
         {
@@ -619,15 +550,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::getProperty(std::string property, std::string& value) const
+    void Slider::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -659,10 +587,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -692,10 +617,6 @@ namespace tgui
 
     void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the slider wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_separateHoverImage)
         {
             if (m_mouseHover)

@@ -30,7 +30,6 @@
 #include <TGUI/Clipboard.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,12 +155,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::load(const std::string& configFileFilename)
+    void EditBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // Remove the textures when they were loaded before
         if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
@@ -169,24 +165,7 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("EditBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "EditBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -195,88 +174,66 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
+            if (it->first == "separatehoverimage")
             {
-                m_separateHoverImage = configFile.readBool(value, false);
+                m_separateHoverImage = configFile.readBool(it);
             }
-            else if (property == "textcolor")
+            else if (it->first == "textcolor")
             {
-                sf::Color color = extractColor(value);
+                sf::Color color = extractColor(it->second);
                 m_textBeforeSelection.setColor(color);
                 m_textAfterSelection.setColor(color);
             }
-            else if (property == "selectedtextcolor")
+            else if (it->first == "selectedtextcolor")
             {
-                m_textSelection.setColor(extractColor(value));
+                m_textSelection.setColor(extractColor(it->second));
             }
-            else if (property == "selectedtextbackgroundcolor")
+            else if (it->first == "selectedtextbackgroundcolor")
             {
-                m_selectedTextBackground.setFillColor(extractColor(value));
+                m_selectedTextBackground.setFillColor(extractColor(it->second));
             }
-            else if (property == "caretcolor")
+            else if (it->first == "caretcolor")
             {
-                m_caret.setFillColor(extractColor(value));
+                m_caret.setFillColor(extractColor(it->second));
             }
-            else if (property == "caretwidth")
+            else if (it->first == "caretwidth")
             {
-                m_caret.setSize(sf::Vector2f(tgui::stof(value), m_caret.getSize().y));
+                m_caret.setSize(sf::Vector2f(tgui::stof(it->second), m_caret.getSize().y));
             }
-            else if (property == "borders")
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section EditBox in " + m_loadedConfigFile);
             }
-            else if (property == "normalimage")
+            else if (it->first == "normalimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section EditBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, configFileFolder, m_textureNormal);
             }
-            else if (property == "hoverimage")
+            else if (it->first == "hoverimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section EditBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, configFileFolder, m_textureHover);
             }
-            else if (property == "focusedimage")
+            else if (it->first == "focusedimage")
             {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section EditBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                configFile.readTexture(it, configFileFolder, m_textureFocused);
             }
             else
-                TGUI_OUTPUT("TGUI error: Unrecognized property '" + property + "' in section EditBox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section EditBox in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required texture was loaded
-        if (m_textureNormal.getData() != nullptr)
-        {
-            m_loaded = true;
-            setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if (m_textureNormal.getData() == nullptr)
+            throw Exception("NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?");
+
+        setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
 
         // Auto-size the text
         setTextSize(0);
-
-        // When there is no error we will return true
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,10 +260,6 @@ namespace tgui
 
     void EditBox::setSize(float width, float height)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Recalculate the text size when auto scaling
         if (m_textSize == 0)
             setText(m_text);
@@ -333,10 +286,6 @@ namespace tgui
 
     void EditBox::setText(const sf::String& text)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
@@ -477,10 +426,6 @@ namespace tgui
 
     void EditBox::setPasswordCharacter(char passwordChar)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Change the password character
         m_passwordChar = passwordChar;
 
@@ -944,10 +889,6 @@ namespace tgui
 
     void EditBox::keyPressed(const sf::Event::KeyEvent& event)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Check if one of the correct keys was pressed
         if (event.code == sf::Keyboard::Left)
         {
@@ -1162,10 +1103,6 @@ namespace tgui
 
     void EditBox::textEntered(sf::Uint32 key)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // If only numbers are supported then make sure the input is valid
         if (m_numbersOnly)
         {
@@ -1264,7 +1201,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::setProperty(std::string property, const std::string& value)
+    void EditBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -1287,7 +1224,7 @@ namespace tgui
                 if (value.length() == 1)
                     setPasswordCharacter(value[0]);
                 else
-                    TGUI_OUTPUT("TGUI error: Failed to parse 'PasswordCharacter' propery.");
+                    throw Exception("Failed to parse 'PasswordCharacter' propery.");
             }
             else
                 setPasswordCharacter('\0');
@@ -1302,7 +1239,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "textcolor")
         {
@@ -1327,7 +1264,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 limitTextWidth(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'LimitTextWidth' property.");
+                throw Exception("Failed to parse 'LimitTextWidth' property.");
         }
         else if (property == "caretwidth")
         {
@@ -1340,7 +1277,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setNumbersOnly(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'NumbersOnly' property.");
+                throw Exception("Failed to parse 'NumbersOnly' property.");
         }
         else if (property == "callback")
         {
@@ -1358,15 +1295,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::getProperty(std::string property, std::string& value) const
+    void EditBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -1424,10 +1358,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1701,10 +1632,6 @@ namespace tgui
 
     void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw anything when the edit box was not loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_separateHoverImage)
         {
             if (m_mouseHover && m_textureHover.getData())

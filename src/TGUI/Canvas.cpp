@@ -33,7 +33,6 @@ namespace tgui
 
     Canvas::Canvas()
     {
-        m_loaded = true;
         m_callback.widgetType = Type_Canvas;
 
         setSize(100, 100);

@@ -63,7 +63,7 @@ namespace tgui
     AnimatedPicture::~AnimatedPicture()
     {
         // Remove the textures (if we are the only one using it)
-        for (unsigned int i=0; i< m_textures.size(); ++i)
+        for (unsigned int i = 0; i < m_textures.size(); ++i)
             TGUI_TextureManager.removeTexture(m_textures[i]);
 
         // Clear the vectors
@@ -82,7 +82,7 @@ namespace tgui
             this->ClickableWidget::operator=(right);
 
             // If there already were frames then remove them now
-            for (unsigned int i=0; i< m_textures.size(); ++i)
+            for (unsigned int i = 0; i < m_textures.size(); ++i)
                 TGUI_TextureManager.removeTexture(m_textures[i]);
 
             std::swap(m_textures,        temp.m_textures);
@@ -104,38 +104,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
+    void AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
-        // Check if the filename is empty
-        if (filename.empty())
-            return false;
-
-        Texture tempTexture;
-
         // Try to load the texture from the file
-        if (TGUI_TextureManager.getTexture(tempTexture, getResourcePath() + filename))
+        Texture tempTexture;
+        TGUI_TextureManager.getTexture(tempTexture, getResourcePath() + filename);
+
+        // If this is the first frame then set it as the current displayed frame
+        if (m_textures.empty())
         {
-            // If this is the first frame then set it as the current displayed frame
-            if (m_textures.empty())
-            {
-                m_currentFrame = 0;
+            m_currentFrame = 0;
 
-                // Remember the size of this image
-                m_size = sf::Vector2f(tempTexture.getSize());
-            }
-
-            // Add the texture
-            tempTexture.setColor(sf::Color(255, 255, 255, m_opacity));
-            m_textures.push_back(tempTexture);
-
-            // Store the frame duration
-            m_frameDuration.push_back(frameDuration);
-
-            // Return true to indicate that nothing went wrong
-            return m_loaded = true;
+            // Remember the size of this image
+            m_size = sf::Vector2f(tempTexture.getSize());
         }
-        else // The texture was not loaded
-            return m_loaded = false;
+
+        // Add the texture and store its duration
+        tempTexture.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_textures.push_back(tempTexture);
+        m_frameDuration.push_back(frameDuration);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,10 +215,7 @@ namespace tgui
         if (!m_frameDuration.empty())
             return m_frameDuration[m_currentFrame];
         else
-        {
-            TGUI_OUTPUT("TGUI warning: Can't get duration of current frame: no frames available.");
             return sf::Time();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,10 +242,6 @@ namespace tgui
         if (m_currentFrame >= static_cast<int>(frame))
             --m_currentFrame;
 
-        // Check if you are removing the last frame
-        if (m_textures.size() == 1)
-            m_loaded = false;
-
         return true;
     }
 
@@ -270,7 +250,7 @@ namespace tgui
     void AnimatedPicture::removeAllFrames()
     {
         // Remove the textures (if we are the only one using it)
-        for (unsigned int i=0; i< m_textures.size(); ++i)
+        for (unsigned int i = 0; i< m_textures.size(); ++i)
             TGUI_TextureManager.removeTexture(m_textures[i]);
 
         // Clear the vectors
@@ -279,7 +259,6 @@ namespace tgui
 
         // Reset the animation
         stop();
-        m_loaded = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +294,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::setProperty(std::string property, const std::string& value)
+    void AnimatedPicture::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -326,7 +305,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_playing = false;
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Playing' property.");
+                throw Exception("Failed to parse 'Playing' property.");
         }
         else if (property == "looping")
         {
@@ -335,7 +314,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_looping = false;
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Looping' property.");
+                throw Exception("Failed to parse 'Looping' property.");
         }
         else if (property == "callback")
         {
@@ -351,15 +330,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::getProperty(std::string property, std::string& value) const
+    void AnimatedPicture::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -385,10 +361,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,7 +424,7 @@ namespace tgui
 
     void AnimatedPicture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_loaded)
+        if (!m_textures.empty())
         {
             states.transform *= getTransform();
             states.transform.scale(m_size.x / m_textures[m_currentFrame].getSize().x, m_size.y / m_textures[m_currentFrame].getSize().y);

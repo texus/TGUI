@@ -62,10 +62,12 @@ namespace tgui
         ///
         /// \param configFileFilename  Filename of the config file.
         ///
-        /// The config file must contain a Checkbox section with the needed information.
+        /// \throw Exception when the config file couldn't be opened.
+        /// \throw Exception when the config file didn't contain a "Checkbox" section with the needed information.
+        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& configFileFilename);
+        virtual void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

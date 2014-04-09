@@ -29,7 +29,6 @@
 #include <TGUI/Tab.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,12 +134,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::load(const std::string& configFileFilename)
+    void Tab::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If the button was loaded before then remove the old textures first
         if (m_textureNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureNormal);
@@ -165,24 +161,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Tab", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Tab");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -191,45 +170,22 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separateselectedimage")
-            {
-                m_separateSelectedImage = configFile.readBool(value, false);
-            }
-            else if (property == "textcolor")
-            {
-                m_textColor = configFile.readColor(value);
-            }
-            else if (property == "selectedtextcolor")
-            {
-                m_selectedTextColor = configFile.readColor(value);
-            }
-            else if (property == "distancetoside")
-            {
-                setDistanceToSide(tgui::stoul(value));
-            }
-            else if (property == "normalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Tab in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "selectedimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureSelected))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for SelectedImage in section Tab in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            if (it->first == "separateselectedimage")
+                m_separateSelectedImage = configFile.readBool(it);
+            else if (it->first == "textcolor")
+                m_textColor = configFile.readColor(it);
+            else if (it->first == "selectedtextcolor")
+                m_selectedTextColor = configFile.readColor(it);
+            else if (it->first == "distancetoside")
+                setDistanceToSide(tgui::stoul(it->second));
+            else if (it->first == "normalimage")
+                configFile.readTexture(it, configFileFolder, m_textureNormal);
+            else if (it->first == "selectedimage")
+                configFile.readTexture(it, configFileFolder, m_textureSelected);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Tab in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Tab in " + m_loadedConfigFile + ".");
         }
 
         // Clear the vectors
@@ -237,16 +193,11 @@ namespace tgui
 
         // Make sure the required texture was loaded
         if (m_textureNormal.getData() == nullptr)
-        {
-            TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Tab section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+            throw Exception("NormalImage wasn't loaded. Is the Tab section in " + m_loadedConfigFile + " complete?");
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
             setTextSize(0);
-
-        return m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,10 +234,6 @@ namespace tgui
 
     sf::Vector2f Tab::getSize() const
     {
-        // Make sure the tab has been loaded
-        if (m_loaded == false)
-            return sf::Vector2f(0, 0);
-
         // Add the width of all the tabs together
         float width = 0;
         for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
@@ -349,8 +296,6 @@ namespace tgui
                 return;
             }
         }
-
-        TGUI_OUTPUT("TGUI warning: Failed to select the tab. The name didn't match any tab.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,10 +304,7 @@ namespace tgui
     {
         // If the index is too big then do nothing
         if (index > m_tabNames.size() - 1)
-        {
-            TGUI_OUTPUT("TGUI warning: Failed to select the tab. The index was too high.");
             return;
-        }
 
         // Select the tab
         m_selectedTab = index;
@@ -410,8 +352,6 @@ namespace tgui
                 return;
             }
         }
-
-        TGUI_OUTPUT("TGUI warning: Failed to remove the tab. The name didn't match any tab.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,10 +360,7 @@ namespace tgui
     {
         // The index can't be too high
         if (index > m_tabNames.size() - 1)
-        {
-            TGUI_OUTPUT("TGUI warning: Failed to remove the tab. The index was too high.");
             return;
-        }
 
         // Remove the tab
         m_tabNames.erase(m_tabNames.begin() + index);
@@ -642,12 +579,8 @@ namespace tgui
 
     bool Tab::mouseOnWidget(float x, float y)
     {
-        // Check if the mouse is on top of the tab
-        if (m_loaded)
-        {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
-                return true;
-        }
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+            return true;
 
         if (m_mouseHover)
             mouseLeftWidget();
@@ -694,7 +627,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::setProperty(std::string property, const std::string& value)
+    void Tab::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -750,15 +683,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::getProperty(std::string property, std::string& value) const
+    void Tab::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -796,10 +726,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -857,9 +784,6 @@ namespace tgui
 
     void Tab::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_loaded == false)
-            return;
-
         GLint scissor[4];
         bool clippingRequired = false;
         sf::FloatRect realRect;

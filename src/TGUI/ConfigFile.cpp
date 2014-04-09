@@ -35,45 +35,25 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ConfigFile::~ConfigFile()
+    ConfigFile::ConfigFile(const std::string& filename, const std::string& section) :
+        m_filename(filename),
+        m_section (section)
     {
-        // If a file is still open then close it
-        if (m_file.is_open())
-            m_file.close();
-    }
+        std::ifstream file(filename.c_str());
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (!file.is_open())
+            throw Exception("Failed to open config file '" + filename + "'.");
 
-    bool ConfigFile::open(const std::string& filename)
-    {
-        // If a file is already open then close it
-        if (m_file.is_open())
-            m_file.close();
-
-        // Open the file
-        m_file.open(filename.c_str(), std::ifstream::in);
-
-        // Check if the file was opened
-        if (m_file.is_open())
-            return true;
-        else
-            return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ConfigFile::read(std::string section, std::vector<std::string>& properties, std::vector<std::string>& values)
-    {
-        bool error = false;
         bool sectionFound = false;
         unsigned int lineNumber = 0;
+        std::string lowercaseSection = toLower(section);
 
         // Stop reading when we reach the end of the file
-        while (!m_file.eof())
+        while (!file.eof())
         {
             // Get the next line
             std::string line;
-            std::getline(m_file, line);
+            std::getline(file, line);
             lineNumber++;
 
             std::string::const_iterator c = line.begin();
@@ -84,14 +64,10 @@ namespace tgui
             {
                 // If we already found our section then this would be the next section
                 if (sectionFound)
-                    return !error;
-
-                // Convert the section names to lowercase in order to compare them
-                section = toLower(section);
-                sectionName = toLower(sectionName);
+                    break;
 
                 // If this is the section we were looking for then start reading the properties
-                if ((section + ":") == sectionName)
+                if ((lowercaseSection + ":") == toLower(sectionName))
                     sectionFound = true;
             }
             else // This isn't a section
@@ -100,73 +76,177 @@ namespace tgui
                 if (!sectionFound)
                     continue;
 
-                std::string property;
-                std::string value;
-
                 if (!removeWhitespace(line, c))
                     continue; // empty line
 
                 // Read the property in lowercase
-                property = readWord(line, c);
-                property = toLower(property);
+                std::string property = toLower(readWord(line, c));
 
                 if (!removeWhitespace(line, c))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
-                    error = true;
-                }
+                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
 
                 // There has to be an assignment character
                 if (*c == '=')
                     ++c;
                 else
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
-                    error = true;
-                }
+                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
 
                 if (!removeWhitespace(line, c))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse line " + tgui::to_string(lineNumber) + ".");
-                    error = true;
-                }
+                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
 
                 int pos = c - line.begin();
-                value = line.substr(pos, line.length() - pos);
+                std::string value = line.substr(pos, line.length() - pos);
 
-                properties.push_back(property);
-                values.push_back(value);
+                m_properties.push_back(std::make_pair(property, value));
             }
         }
 
-        // Output an error when the section wasn't found
+        // Throw an exception when the section wasn't found
         if (!sectionFound)
-        {
-            TGUI_OUTPUT("TGUI error: Section '" + section + "' was not found in the config file.");
-            error = true;
-        }
-
-        // The end of the file was reached
-        return !error;
+            throw Exception("Section '" + section + "' was not found in " + filename + ".");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ConfigFile::readBool(const std::string& value, bool defaultValue) const
+    const std::vector<std::pair<std::string, std::string>>& ConfigFile::getProperties() const
     {
-        if ((value == "true") || (value == "True") || (value == "TRUE") || (value == "1"))
+        return m_properties;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ConfigFile::readBool(std::vector<std::pair<std::string, std::string>>::const_iterator it) const
+    {
+        if ((it->second == "true") || (it->second == "True") || (it->second == "TRUE") || (it->second == "1"))
             return true;
-        else if ((value == "false") || (value == "False") || (value == "FALSE") || (value == "0"))
+        else if ((it->second == "false") || (it->second == "False") || (it->second == "FALSE") || (it->second == "0"))
             return false;
         else
-            return defaultValue;
+            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + ".");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color ConfigFile::readColor(const std::string& value) const
+    sf::Color ConfigFile::readColor(std::vector<std::pair<std::string, std::string>>::const_iterator it) const
     {
-        return extractColor(value);
+        try
+        {
+            return extractColor(it->second);
+        }
+        catch (const Exception& e)
+        {
+            throw Exception("Failed to read the color value from property " + it->first + " in section " + m_section + " in file " + m_filename);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ConfigFile::readTexture(std::vector<std::pair<std::string, std::string>>::const_iterator it, const std::string& rootPath, Texture& texture) const
+    {
+        std::string::const_iterator c = it->second.begin();
+
+        // Remove all whitespaces (string should still contains something)
+        if (!removeWhitespace(it->second, c))
+            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + ". Value is empty.");
+
+        // There has to be a quote
+        if (*c == '"')
+            ++c;
+        else
+        {
+            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                            + ". Expected an opening quote for the filename.");
+        }
+
+        std::string filename;
+        char prev = '\0';
+
+        // Look for the end quote
+        bool filenameFound = false;
+        while (c != it->second.end())
+        {
+            if ((*c != '"') || (prev == '\\'))
+            {
+                prev = *c;
+                filename.push_back(*c);
+                ++c;
+            }
+            else
+            {
+                ++c;
+                filenameFound = true;
+                break;
+            }
+        }
+
+        if (!filenameFound)
+        {
+            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                            + ". Failed to find the closing quote of the filename.");
+        }
+
+        // There may be optional parameters
+        sf::IntRect partRect;
+        sf::IntRect middleRect;
+        bool repeat = false;
+
+        while (removeWhitespace(it->second, c))
+        {
+            std::string word;
+            auto openingBracketPos = it->second.find('(', c - it->second.begin());
+            if (openingBracketPos != std::string::npos)
+                word = it->second.substr(c - it->second.begin(), openingBracketPos - (c - it->second.begin()));
+            else
+                word = it->second.substr(c - it->second.begin(), it->second.length() - (c - it->second.begin()));
+
+            if ((word == "Stretch") || (word == "stretch"))
+            {
+                repeat = false;
+                std::advance(c, 7);
+            }
+            else if ((word == "Repeat") || (word == "repeat"))
+            {
+                repeat = true;
+                std::advance(c, 6);
+            }
+            else
+            {
+                sf::IntRect* rect = nullptr;
+
+                if ((word == "Part") || (word == "part"))
+                {
+                    rect = &partRect;
+                    std::advance(c, 4);
+                }
+                else if ((word == "Middle") || (word == "middle"))
+                {
+                    rect = &middleRect;
+                    std::advance(c, 6);
+                }
+                else
+                {
+                    throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                                    + ". Unexpected word '" + word + "' in front of opening bracket.");
+                }
+
+                auto closeBracketPos = it->second.find(')', c - it->second.begin());
+                if (closeBracketPos != std::string::npos)
+                {
+                    if (!readIntRect(it->second.substr(c - it->second.begin(), closeBracketPos - (c - it->second.begin()) + 1), *rect))
+                        throw Exception("Failed to parse " + word + " rectangle for property " + it->first + " in section " + m_section + " in file " + m_filename + ".");
+                }
+                else
+                {
+                    throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                                    + ". Failed to find closing bracket for " + word + " rectangle.");
+                }
+
+                std::advance(c, closeBracketPos - (c - it->second.begin()) + 1);
+            }
+        }
+
+        // Load the texture
+        TGUI_TextureManager.getTexture(texture, rootPath + filename, partRect, middleRect, repeat);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,111 +298,6 @@ namespace tgui
         }
 
         return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ConfigFile::readTexture(const std::string& value, const std::string& rootPath, Texture& texture) const
-    {
-        std::string::const_iterator c = value.begin();
-
-        // Remove all whitespaces (string should still contains something)
-        if (!removeWhitespace(value, c))
-            return false;
-
-        // There has to be a quote
-        if (*c == '"')
-            ++c;
-        else
-            return false;
-
-        std::string filename;
-        char prev = '\0';
-
-        // Look for the end quote
-        bool filenameFound = false;
-        while (c != value.end())
-        {
-            if ((*c != '"') || (prev == '\\'))
-            {
-                prev = *c;
-                filename.push_back(*c);
-                ++c;
-            }
-            else
-            {
-                ++c;
-                filenameFound = true;
-                break;
-            }
-        }
-
-        if (!filenameFound)
-            return false;
-
-        // There may be optional parameters
-        sf::IntRect partRect;
-        sf::IntRect middleRect;
-        bool repeat = false;
-
-        while (removeWhitespace(value, c))
-        {
-            std::string word;
-            auto openingBracketPos = value.find('(', c - value.begin());
-            if (openingBracketPos != std::string::npos)
-                word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
-            else
-                word = value.substr(c - value.begin(), value.length() - (c - value.begin()));
-
-            if ((word == "Stretch") || (word == "stretch"))
-            {
-                repeat = false;
-                std::advance(c, 7);
-            }
-            else if ((word == "Repeat") || (word == "repeat"))
-            {
-                repeat = true;
-                std::advance(c, 6);
-            }
-            else
-            {
-                sf::IntRect* rect = nullptr;
-
-                if ((word == "Part") || (word == "part"))
-                {
-                    rect = &partRect;
-                    std::advance(c, 4);
-                }
-                else if ((word == "Middle") || (word == "middle"))
-                {
-                    rect = &middleRect;
-                    std::advance(c, 6);
-                }
-
-                if (rect == nullptr)
-                    return false;
-
-                auto closeBracketPos = value.find(')', c - value.begin());
-                if (closeBracketPos != std::string::npos)
-                    readIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect);
-                else
-                    return false;
-
-                std::advance(c, closeBracketPos - (c - value.begin()) + 1);
-            }
-        }
-
-        // Load the texture
-        return TGUI_TextureManager.getTexture(texture, rootPath + filename, partRect, middleRect, repeat);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ConfigFile::close()
-    {
-        // Close the file (if it is open)
-        if (m_file.is_open())
-            m_file.close();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -35,14 +35,11 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Borders.hpp>
+#include <TGUI/Exception.hpp>
 
 #include <TGUI/TextureManager.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifndef TGUI_OUTPUT
-    #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
-#endif
 
 #define TGUI_MINIMUM(x, y)   (x < y) ? x : y
 

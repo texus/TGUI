@@ -29,7 +29,6 @@
 #include <TGUI/MenuBar.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,8 +47,6 @@ namespace tgui
 
         setSize(0, 20);
         changeColors();
-
-        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,61 +58,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::load(const std::string& configFileFilename)
+    void MenuBar::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("MenuBar", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "MenuBar");
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundcolor")
-            {
-                setBackgroundColor(extractColor(value));
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "selectedbackgroundcolor")
-            {
-                setSelectedBackgroundColor(extractColor(value));
-            }
-            else if (property == "selectedtextcolor")
-            {
-                setSelectedTextColor(extractColor(value));
-            }
-            else if (property == "distancetoside")
-            {
-                setDistanceToSide(tgui::stoul(value));
-            }
+            if (it->first == "backgroundcolor")
+                setBackgroundColor(extractColor(it->second));
+            else if (it->first == "textcolor")
+                setTextColor(extractColor(it->second));
+            else if (it->first == "selectedbackgroundcolor")
+                setSelectedBackgroundColor(extractColor(it->second));
+            else if (it->first == "selectedtextcolor")
+                setSelectedTextColor(extractColor(it->second));
+            else if (it->first == "distancetoside")
+                setDistanceToSide(tgui::stoul(it->second));
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MenuBar in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section MenuBar in " + m_loadedConfigFile + ".");
         }
-
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,37 +391,34 @@ namespace tgui
 
     bool MenuBar::mouseOnWidget(float x, float y)
     {
-        if (m_loaded)
+        // Check if the mouse is on top of the menu bar
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
+            return true;
+        else
         {
-            // Check if the mouse is on top of the menu bar
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
-                return true;
-            else
+            // Check if there is a menu open
+            if (m_visibleMenu != -1)
             {
-                // Check if there is a menu open
-                if (m_visibleMenu != -1)
+                // Search the left position of the open menu
+                float left = 0;
+                for (int i = 0; i < m_visibleMenu; ++i)
+                    left += m_menus[i].text.getLocalBounds().width + (2 * m_distanceToSide);
+
+                // Find out what the width of the menu should be
+                float width = 0;
+                for (unsigned int j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
                 {
-                    // Search the left position of the open menu
-                    float left = 0;
-                    for (int i = 0; i < m_visibleMenu; ++i)
-                        left += m_menus[i].text.getLocalBounds().width + (2 * m_distanceToSide);
-
-                    // Find out what the width of the menu should be
-                    float width = 0;
-                    for (unsigned int j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
-                    {
-                        if (width < m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide))
-                            width = m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide);
-                    }
-
-                    // There is a minimum width
-                    if (width < m_minimumSubMenuWidth)
-                        width = static_cast<float>(m_minimumSubMenuWidth);
-
-                    // Check if the mouse is on top of the open menu
-                    if (getTransform().transformRect(sf::FloatRect(left, m_size.y, width, m_size.y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
-                        return true;
+                    if (width < m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide))
+                        width = m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide);
                 }
+
+                // There is a minimum width
+                if (width < m_minimumSubMenuWidth)
+                    width = static_cast<float>(m_minimumSubMenuWidth);
+
+                // Check if the mouse is on top of the open menu
+                if (getTransform().transformRect(sf::FloatRect(left, m_size.y, width, m_size.y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
+                    return true;
             }
         }
 
@@ -636,7 +598,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::setProperty(std::string property, const std::string& value)
+    void MenuBar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -712,15 +674,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::getProperty(std::string property, std::string& value) const
+    void MenuBar::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -780,10 +739,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

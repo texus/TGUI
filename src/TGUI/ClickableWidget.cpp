@@ -154,7 +154,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::setProperty(std::string property, const std::string& value)
+    void ClickableWidget::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -176,15 +176,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::getProperty(std::string property, std::string& value) const
+    void ClickableWidget::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -210,10 +207,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

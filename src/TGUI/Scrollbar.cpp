@@ -132,12 +132,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::load(const std::string& configFileFilename)
+    void Scrollbar::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // Remove all textures if they were loaded before
         if (m_textureTrackNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureTrackNormal);
@@ -150,24 +147,7 @@ namespace tgui
         if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Scrollbar", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Scrollbar");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -176,103 +156,42 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
+            if (it->first == "separatehoverimage")
+                m_separateHoverImage = configFile.readBool(it);
+            else if (it->first == "verticalimage")
             {
-                m_separateHoverImage = configFile.readBool(value, false);
-            }
-            else if (property == "verticalimage")
-            {
-                m_verticalImage = configFile.readBool(value, false);
+                m_verticalImage = configFile.readBool(it);
                 m_verticalScroll = m_verticalImage;
             }
-            else if (property == "tracknormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTrackNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackNormalImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "trackhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureTrackHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for TrackHoverImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "thumbnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureThumbNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbNormalImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "thumbhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureThumbHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ThumbHoverImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowupnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowuphoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowdownnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowdownhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section Scrollbar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            else if (it->first == "tracknormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureTrackNormal);
+            else if (it->first == "trackhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureTrackHover);
+            else if (it->first == "thumbnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureThumbNormal);
+            else if (it->first == "thumbhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureThumbHover);
+            else if (it->first == "arrowupnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowUpNormal);
+            else if (it->first == "arrowuphoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowUpHover);
+            else if (it->first == "arrowdownnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowDownNormal);
+            else if (it->first == "arrowdownhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowDownHover);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Scrollbar in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Scrollbar in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureTrackNormal.getData() != nullptr) && (m_textureThumbNormal.getData() != nullptr)
-         && (m_textureArrowUpNormal.getData() != nullptr) && (m_textureArrowDownNormal.getData() != nullptr))
-        {
-            m_loaded = true;
-            setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
-            setVerticalScroll(m_verticalScroll);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the scrollbar. Is the Scrollbar section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if ((m_textureTrackNormal.getData() == nullptr) || (m_textureThumbNormal.getData() == nullptr)
+         || (m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the scrollbar. Is the Scrollbar section in " + m_loadedConfigFile + " complete?");
 
-        return true;
+        setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
+        setVerticalScroll(m_verticalScroll);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,10 +238,6 @@ namespace tgui
 
     void Scrollbar::setSize(float width, float height)
     {
-        // Don't do anything when the scrollbar wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_verticalImage == m_verticalScroll)
             m_textureTrackNormal.setSize(width, height);
         else
@@ -583,10 +498,6 @@ namespace tgui
 
     bool Scrollbar::mouseOnWidget(float x, float y)
     {
-        // Don't do anything when the scrollbar wasn't loaded correctly
-        if (m_loaded == false)
-            return false;
-
         // Don't make any calculations when no scrollbar is needed
         if ((m_maximum <= m_lowValue) && (m_autoHide == true))
             return false;
@@ -740,10 +651,6 @@ namespace tgui
 
     void Scrollbar::mouseMoved(float x, float y)
     {
-        // If the scrollbar wasn't loaded then do nothing
-        if (m_loaded == false)
-            return;
-
         if (m_mouseHover == false)
             mouseEnteredWidget();
 
@@ -900,7 +807,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::setProperty(std::string property, const std::string& value)
+    void Scrollbar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -927,7 +834,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setVerticalScroll(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+                throw Exception("Failed to parse 'VerticalScroll' property.");
         }
         else if (property == "callback")
         {
@@ -949,18 +856,15 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setAutoHide(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'AutoHide' property.");
+                throw Exception("Failed to parse 'AutoHide' property.");
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::getProperty(std::string property, std::string& value) const
+    void Scrollbar::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -994,10 +898,7 @@ namespace tgui
         else if (property == "autohide")
             value = m_autoHide ? "true" : "false";
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1028,10 +929,6 @@ namespace tgui
 
     void Scrollbar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // If the scrollbar wasn't loaded then don't draw it
-        if (m_loaded == false)
-            return;
-
         // Don't draw the scrollbar when it isn't needed
         if ((m_autoHide == true) && (m_maximum <= m_lowValue))
             return;

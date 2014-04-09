@@ -32,7 +32,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool repeated)
+    void TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool repeated)
     {
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);
@@ -53,7 +53,7 @@ namespace tgui
                     else
                         texture.setTexture(*it, sf::IntRect(0, 0, it->texture.getSize().x, it->texture.getSize().y));
 
-                    return true;
+                    return;
                 }
             }
         }
@@ -95,13 +95,13 @@ namespace tgui
                 else
                     texture.setTexture(imageIt->second.data.back(), sf::IntRect(0, 0, data.texture.getSize().x, data.texture.getSize().y));
 
-                return true;
+                return;
             }
         }
 
         // The image couldn't be loaded
         m_imageMap.erase(imageIt);
-        return false;
+        throw Exception("Failed to load image " + filename + ".");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,6 @@ namespace tgui
             }
         }
 
-        TGUI_OUTPUT("TGUI warning: Can't copy texture that wasn't loaded by TextureManager.");
         return false;
     }
 
@@ -164,9 +163,6 @@ namespace tgui
                 }
             }
         }
-
-        TGUI_OUTPUT("TGUI warning: Can't remove texture that wasn't loaded by TextureManager.");
-        return;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

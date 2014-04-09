@@ -27,7 +27,6 @@
 #include <TGUI/Button.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,12 +99,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::load(const std::string& configFileFilename)
+    void Button::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If the button was loaded before then remove the old textures first
         if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
@@ -114,24 +110,7 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("Button", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "Button");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -140,74 +119,33 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
-            {
-                m_separateHoverImage = configFile.readBool(value, false);
-            }
-            else if (property == "textcolor")
-            {
-                m_text.setColor(configFile.readColor(value));
-            }
-            else if (property == "normalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for NormalImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "hoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for HoverImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "downimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureDown))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for DownImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "focusedimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFocused))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FocusedImage in section Button in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            if (it->first == "separatehoverimage")
+                m_separateHoverImage = configFile.readBool(it);
+            else if (it->first == "textcolor")
+                m_text.setColor(configFile.readColor(it));
+            else if (it->first == "normalimage")
+                configFile.readTexture(it, configFileFolder, m_textureNormal);
+            else if (it->first == "hoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureHover);
+            else if (it->first == "downimage")
+                configFile.readTexture(it, configFileFolder, m_textureDown);
+            else if (it->first == "focusedimage")
+                configFile.readTexture(it, configFileFolder, m_textureFocused);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section Button in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section Button in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required texture was loaded
-        if (m_textureNormal.getData() != nullptr)
-        {
-            m_loaded = true;
-            setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if (m_textureNormal.getData() == nullptr)
+            throw Exception("NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
 
-        // Check if optional textures were loaded
+        setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
+
+        // The widget can only be focused when there is an image available for this phase
         if (m_textureFocused.getData() != nullptr)
-        {
             m_allowFocus = true;
-        }
-
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,10 +175,6 @@ namespace tgui
 
     void Button::setSize(float width, float height)
     {
-        // Don't do anything when the button wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         m_textureDown.setSize(width, height);
         m_textureHover.setSize(width, height);
         m_textureNormal.setSize(width, height);
@@ -265,10 +199,6 @@ namespace tgui
 
     void Button::setText(const sf::String& text)
     {
-        // Don't do anything when the button wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Set the new text
         m_text.setString(text);
         m_callback.text = text;
@@ -402,7 +332,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::setProperty(std::string property, const std::string& value)
+    void Button::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -438,15 +368,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Button::getProperty(std::string property, std::string& value) const
+    void Button::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -478,10 +405,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -510,9 +434,6 @@ namespace tgui
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (!m_loaded)
-            return;
-
         if (m_separateHoverImage)
         {
             if (m_mouseDown && m_mouseHover && m_textureDown.getData())

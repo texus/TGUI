@@ -31,7 +31,6 @@
 
 #include <cmath>
 #include <algorithm>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +49,6 @@ namespace tgui
     {
         m_callback.widgetType = Type_ListBox;
         m_draggableWidget = true;
-        m_loaded = true;
 
         changeColors();
     }
@@ -134,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::load(const std::string& configFileFilename)
+    void ListBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
@@ -146,24 +144,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("ListBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "ListBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -172,69 +153,65 @@ namespace tgui
             configFileFolder = configFileFilename.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundcolor")
+            if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(extractColor(value));
+                setBackgroundColor(extractColor(it->second));
             }
-            else if (property == "textcolor")
+            else if (it->first == "textcolor")
             {
-                setTextColor(extractColor(value));
+                setTextColor(extractColor(it->second));
             }
-            else if (property == "selectedbackgroundcolor")
+            else if (it->first == "selectedbackgroundcolor")
             {
-                setSelectedBackgroundColor(extractColor(value));
+                setSelectedBackgroundColor(extractColor(it->second));
             }
-            else if (property == "selectedtextcolor")
+            else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(extractColor(value));
+                setSelectedTextColor(extractColor(it->second));
             }
-            else if (property == "bordercolor")
+            else if (it->first == "bordercolor")
             {
-                setBorderColor(extractColor(value));
+                setBorderColor(extractColor(it->second));
             }
-            else if (property == "borders")
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section ListBox in " + m_loadedConfigFile);
             }
-            else if (property == "scrollbar")
+            else if (it->first == "scrollbar")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for Scrollbar in section ListBox in " + m_loadedConfigFile + ".");
 
-                // load the scrollbar and check if it failed
-                m_scroll = new Scrollbar();
-                if (m_scroll->load(configFileFolder + value.substr(1, value.length()-2)) == false)
+                try
+                {
+                    // load the scrollbar
+                    m_scroll = new Scrollbar();
+                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                }
+                catch (const Exception& e)
                 {
                     // The scrollbar couldn't be loaded so it must be deleted
                     delete m_scroll;
                     m_scroll = nullptr;
 
-                    return false;
+                    throw Exception("Failed to create the internal scrollbar in ListBox. " + std::string(e.what()));
                 }
-                else // The scrollbar was loaded successfully
-                {
-                    // Initialize the scrollbar
-                    m_scroll->setVerticalScroll(true);
-                    m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
-                    m_scroll->setLowValue(m_size.y);
-                    m_scroll->setMaximum(m_items.size() * m_itemHeight);
-                }
+
+                // Initialize the scrollbar
+                m_scroll->setVerticalScroll(true);
+                m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+                m_scroll->setLowValue(m_size.y);
+                m_scroll->setMaximum(m_items.size() * m_itemHeight);
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ListBox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section ListBox in " + m_loadedConfigFile + ".");
         }
-
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -423,7 +400,7 @@ namespace tgui
     bool ListBox::setSelectedItem(const sf::String& itemName)
     {
         // Loop through all items
-        for (unsigned int i=0; i<m_items.size(); ++i)
+        for (unsigned int i = 0; i < m_items.size(); ++i)
         {
             // Check if a match was found
             if (m_items[i] == itemName)
@@ -433,8 +410,6 @@ namespace tgui
                 return true;
             }
         }
-
-        TGUI_OUTPUT("TGUI warning: Failed to select the item in the list box. The name didn't match any item.");
 
         // No match was found
         m_selectedItem = -1;
@@ -452,9 +427,8 @@ namespace tgui
         }
 
         // If the index is too high then deselect the items
-        if (index > int(m_items.size()-1))
+        if (index > static_cast<int>(m_items.size())-1)
         {
-            TGUI_OUTPUT("TGUI warning: Failed to select the item in the list box. The index was too high.");
             m_selectedItem = -1;
             return false;
         }
@@ -477,10 +451,7 @@ namespace tgui
     {
         // The index can't be too high
         if (index > m_items.size()-1)
-        {
-            TGUI_OUTPUT("TGUI warning: Failed to remove the item from the list box. The index was too high.");
             return false;
-        }
 
         // Remove the item
         m_items.erase(m_items.begin() + index);
@@ -524,7 +495,6 @@ namespace tgui
             }
         }
 
-        TGUI_OUTPUT("TGUI warning: Failed to remove the item from the list box. The name didn't match any item.");
         return false;
     }
 
@@ -549,10 +519,7 @@ namespace tgui
     {
         // The index can't be too high
         if (index > m_items.size()-1)
-        {
-            TGUI_OUTPUT("TGUI warning: The index of the item was too high. Returning an empty string.");
             return "";
-        }
 
         // Return the item
         return m_items[index];
@@ -571,7 +538,6 @@ namespace tgui
         }
 
         // No match was found
-        TGUI_OUTPUT("TGUI warning: The name didn't match any item. Returning -1 as item index.");
         return -1;
     }
 
@@ -614,9 +580,13 @@ namespace tgui
         if (m_scroll != nullptr)
             delete m_scroll;
 
-        // load the scrollbar and check if it failed
-        m_scroll = new Scrollbar();
-        if(m_scroll->load(scrollbarConfigFileFilename) == false)
+        try
+        {
+            // load the scrollbar
+            m_scroll = new Scrollbar();
+            m_scroll->load(scrollbarConfigFileFilename);
+        }
+        catch (const Exception& e)
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_scroll;
@@ -624,16 +594,14 @@ namespace tgui
 
             return false;
         }
-        else // The scrollbar was loaded successfully
-        {
-            // Initialize the scrollbar
-            m_scroll->setVerticalScroll(true);
-            m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
-            m_scroll->setLowValue(m_size.y);
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
 
-            return true;
-        }
+        // Initialize the scrollbar
+        m_scroll->setVerticalScroll(true);
+        m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+        m_scroll->setLowValue(m_size.y);
+        m_scroll->setMaximum(m_items.size() * m_itemHeight);
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -981,7 +949,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setProperty(std::string property, const std::string& value)
+    void ListBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -1023,7 +991,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "items")
         {
@@ -1053,15 +1021,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::getProperty(std::string property, std::string& value) const
+    void ListBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -1107,10 +1072,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

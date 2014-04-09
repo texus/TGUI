@@ -35,9 +35,6 @@ namespace tgui
     Grid::Grid()
     {
         m_callback.widgetType = Type_Grid;
-
-        // There is nothing to load
-        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,10 +512,6 @@ namespace tgui
 
     bool Grid::mouseOnWidget(float x, float y)
     {
-        // Don't continue when the child window has not been loaded yet
-        if (m_loaded == false)
-            return false;
-
         // Get the current position
         sf::Vector2f position = getPosition();
 

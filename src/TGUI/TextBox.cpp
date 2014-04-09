@@ -30,8 +30,6 @@
 #include <TGUI/TextBox.hpp>
 #include <TGUI/Clipboard.hpp>
 
-#include <cassert>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -65,9 +63,6 @@ namespace tgui
         m_draggableWidget = true;
 
         changeColors();
-
-        // Load the text box with default values
-        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +176,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::load(const std::string& configFileFilename)
+    void TextBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
@@ -193,24 +188,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("TextBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "TextBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -219,72 +197,68 @@ namespace tgui
             configFileFolder = configFileFilename.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backgroundcolor")
+            if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(value));
+                setBackgroundColor(configFile.readColor(it));
             }
-            else if (property == "textcolor")
+            else if (it->first == "textcolor")
             {
-                setTextColor(configFile.readColor(value));
+                setTextColor(configFile.readColor(it));
             }
-            else if (property == "selectedtextbackgroundcolor")
+            else if (it->first == "selectedtextbackgroundcolor")
             {
-                setSelectedTextBackgroundColor(configFile.readColor(value));
+                setSelectedTextBackgroundColor(configFile.readColor(it));
             }
-            else if (property == "selectedtextcolor")
+            else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(configFile.readColor(value));
+                setSelectedTextColor(configFile.readColor(it));
             }
-            else if (property == "caretcolor")
+            else if (it->first == "caretcolor")
             {
-                setCaretColor(configFile.readColor(value));
+                setCaretColor(configFile.readColor(it));
             }
-            else if (property == "bordercolor")
+            else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(value));
+                setBorderColor(configFile.readColor(it));
             }
-            else if (property == "borders")
+            else if (it->first == "borders")
             {
                 Borders borders;
-                if (extractBorders(value, borders))
+                if (extractBorders(it->second, borders))
                     setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                else
+                    throw Exception("Failed to parse the 'Borders' property in section TextBox in " + m_loadedConfigFile);
             }
-            else if (property == "scrollbar")
+            else if (it->first == "scrollbar")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Scrollbar in section ChatBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for Scrollbar in section TextBox in " + m_loadedConfigFile + ".");
 
-                // load the scrollbar and check if it failed
-                m_scroll = new Scrollbar();
-                if (m_scroll->load(configFileFolder + value.substr(1, value.length()-2)) == false)
+                try
+                {
+                    // load the scrollbar
+                    m_scroll = new Scrollbar();
+                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                }
+                catch (const Exception& e)
                 {
                     // The scrollbar couldn't be loaded so it must be deleted
                     delete m_scroll;
                     m_scroll = nullptr;
 
-                    return false;
+                    throw Exception("Failed to create the internal scrollbar in TextBox. " + std::string(e.what()));
                 }
-                else // The scrollbar was loaded successfully
-                {
-                    // Initialize the scrollbar
-                    m_scroll->setVerticalScroll(true);
-                    m_scroll->setLowValue(m_size.y);
-                    m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
-                }
+
+                // Initialize the scrollbar
+                m_scroll->setVerticalScroll(true);
+                m_scroll->setLowValue(m_size.y);
+                m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
             }
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section ChatBox in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section TextBox in " + m_loadedConfigFile + ".");
         }
-
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,10 +272,6 @@ namespace tgui
 
     void TextBox::setSize(float width, float height)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Don't continue when line height is 0
         if (m_lineHeight == 0)
             return;
@@ -380,10 +350,6 @@ namespace tgui
 
     void TextBox::setText(const sf::String& text)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Store the text
         m_text = text;
 
@@ -395,10 +361,6 @@ namespace tgui
 
     void TextBox::addText(const sf::String& text)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Add the text
         m_text += text;
 
@@ -718,9 +680,13 @@ namespace tgui
         if (m_scroll != nullptr)
             delete m_scroll;
 
-        // load the scrollbar and check if it failed
-        m_scroll = new Scrollbar();
-        if(m_scroll->load(scrollbarConfigFileFilename) == false)
+        try
+        {
+            // load the scrollbar
+            m_scroll = new Scrollbar();
+            m_scroll->load(scrollbarConfigFileFilename);
+        }
+        catch (const Exception& e)
         {
             // The scrollbar couldn't be loaded so it must be deleted
             delete m_scroll;
@@ -728,16 +694,14 @@ namespace tgui
 
             return false;
         }
-        else // The scrollbar was loaded successfully
-        {
-            // Initialize the scrollbar
-            m_scroll->setVerticalScroll(true);
-            m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
-            m_scroll->setLowValue(m_size.y);
-            m_scroll->setMaximum(m_lines * m_lineHeight);
 
-            return true;
-        }
+        // Initialize the scrollbar
+        m_scroll->setVerticalScroll(true);
+        m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+        m_scroll->setLowValue(m_size.y);
+        m_scroll->setMaximum(m_lines * m_lineHeight);
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -786,10 +750,6 @@ namespace tgui
 
     bool TextBox::mouseOnWidget(float x, float y)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return false;
-
         // Get the current position
         sf::Vector2f position = getPosition();
 
@@ -823,10 +783,6 @@ namespace tgui
 
     void TextBox::leftMousePressed(float x, float y)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Set the mouse down flag
         m_mouseDown = true;
 
@@ -953,10 +909,6 @@ namespace tgui
 
     void TextBox::leftMouseReleased(float x, float y)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // If there is a scrollbar then pass it the event
         if (m_scroll != nullptr)
         {
@@ -1015,10 +967,6 @@ namespace tgui
 
     void TextBox::mouseMoved(float x, float y)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_mouseHover == false)
             mouseEnteredWidget();
 
@@ -1096,10 +1044,6 @@ namespace tgui
 
     void TextBox::keyPressed(const sf::Event::KeyEvent& event)
     {
-        // Don't do anything when the edit box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Check if one of the correct keys was pressed
         if (event.code == sf::Keyboard::Left)
         {
@@ -1516,10 +1460,6 @@ namespace tgui
 
     void TextBox::textEntered(sf::Uint32 key)
     {
-        // Don't do anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         if (m_readOnly)
             return;
 
@@ -1647,7 +1587,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::setProperty(std::string property, const std::string& value)
+    void TextBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -1675,7 +1615,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders.left, borders.top, borders.right, borders.bottom);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'Borders' property.");
+                throw Exception("Failed to parse 'Borders' property.");
         }
         else if (property == "backgroundcolor")
         {
@@ -1719,15 +1659,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Widget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::getProperty(std::string property, std::string& value) const
+    void TextBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -1775,10 +1712,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Widget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Widget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2065,10 +1999,6 @@ namespace tgui
 
     void TextBox::updateDisplayedText()
     {
-        // Don't continue when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Don't continue when line height is 0
         if (m_lineHeight == 0)
             return;
@@ -2379,10 +2309,6 @@ namespace tgui
 
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw anything when the text box wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;

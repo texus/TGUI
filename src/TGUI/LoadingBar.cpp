@@ -27,7 +27,6 @@
 #include <TGUI/LoadingBar.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,36 +101,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::load(const std::string& configFileFilename)
+    void LoadingBar::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // Remove all textures if they were loaded before
         if (m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack);
         if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("LoadingBar", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "LoadingBar");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -140,56 +119,28 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "backimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureBack))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for BackImage in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "frontimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureFront))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for FrontImage in section LoadingBar in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "textcolor")
-            {
-                setTextColor(extractColor(value));
-            }
-            else if (property == "textsize")
-            {
-                setTextSize(tgui::stoi(value));
-            }
+            if (it->first == "backimage")
+                configFile.readTexture(it, configFileFolder, m_textureBack);
+            else if (it->first == "frontimage")
+                configFile.readTexture(it, configFileFolder, m_textureFront);
+            else if (it->first == "textcolor")
+                setTextColor(extractColor(it->second));
+            else if (it->first == "textsize")
+                setTextSize(tgui::stoi(it->second));
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section LoadingBar in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section LoadingBar in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
-        {
-            m_loaded = true;
-            setSize(m_textureBack.getImageSize().x, m_textureBack.getImageSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if ((m_textureBack.getData() == nullptr) || (m_textureFront.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
+
+        setSize(m_textureBack.getImageSize().x, m_textureBack.getImageSize().y);
 
         // Calculate the size of the front image (the size of the part that will be drawn)
         recalculateSize();
-
-        // Loading has succeeded
-        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,10 +154,6 @@ namespace tgui
 
     void LoadingBar::setSize(float width, float height)
     {
-        // Don't do anything when the loading bar wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // A negative size is not allowed for this widget
         if (width  < 0) width  = -width;
         if (height < 0) height = -height;
@@ -345,10 +292,6 @@ namespace tgui
 
     void LoadingBar::setText(const sf::String& text)
     {
-        // Don't do anything when the loading bar wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Set the new text
         m_text.setString(text);
 
@@ -436,7 +379,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::setProperty(std::string property, const std::string& value)
+    void LoadingBar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -484,15 +427,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LoadingBar::getProperty(std::string property, std::string& value) const
+    void LoadingBar::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -530,10 +470,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,10 +492,6 @@ namespace tgui
 
     void LoadingBar::recalculateSize()
     {
-        // Don't calculate anything when the loading bar wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Set the size of the front image
         m_textureFront.setTextureRect(sf::FloatRect(0, 0, m_textureFront.getSize().x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), m_textureFront.getSize().y));
     }
@@ -577,10 +510,6 @@ namespace tgui
 
     void LoadingBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the loading bar wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Apply the transformation
         states.transform *= getTransform();
 

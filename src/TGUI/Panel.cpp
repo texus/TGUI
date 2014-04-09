@@ -40,7 +40,6 @@ namespace tgui
     m_texture                      (nullptr)
     {
         m_callback.widgetType = Type_Panel;
-        m_loaded = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,10 +163,6 @@ namespace tgui
 
     bool Panel::mouseOnWidget(float x, float y)
     {
-        // Don't continue when the panel has not been loaded yet
-        if (m_loaded == false)
-            return false;
-
         // Check if the mouse is inside the panel
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
             return true;
@@ -239,7 +234,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::setProperty(std::string property, const std::string& value)
+    void Panel::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -265,15 +260,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return Container::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Container::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::getProperty(std::string property, std::string& value) const
+    void Panel::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -301,10 +293,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return Container::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            Container::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,10 +309,6 @@ namespace tgui
 
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the texture wasn't created
-        if (m_loaded == false)
-            return;
-
         // Calculate the scale factor of the view
         float scaleViewX = target.getSize().x / target.getView().getSize().x;
         float scaleViewY = target.getSize().y / target.getView().getSize().y;

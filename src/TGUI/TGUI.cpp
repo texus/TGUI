@@ -155,8 +155,8 @@ namespace tgui
             }
         }
 
-        // If you pass here then something is wrong about the line, the color will be black
-        return sf::Color::Black;
+        // If you pass here then something is wrong about the line
+        throw Exception("Failed to parse color from string.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,8 +359,7 @@ namespace tgui
 
                 if (next == encodedString.cend())
                 {
-                    TGUI_OUTPUT("TGUI warning: Escape character at the end of the string. Ignoring character.");
-                    continue;
+                    throw Exception("Escape character at the end of the string.");
                 }
                 else if ((*next == '\\') || (*next == '\"'))
                 {
@@ -379,8 +378,7 @@ namespace tgui
                 }
                 else
                 {
-                    TGUI_OUTPUT(std::string("TGUI warning: Escape character in front of '") + *next + "'. Ignoring escape character.");
-                    continue;
+                    throw Exception(std::string("Escape character in front of '") + *next);
                 }
             }
             else // No escape character, just a normal character to be added to the string
@@ -461,8 +459,7 @@ namespace tgui
 
                 if (next == encodedString.cend())
                 {
-                    TGUI_OUTPUT("TGUI warning: Escape character at the end of the string. Ignoring character.");
-                    continue;
+                    throw Exception("Escape character at the end of the string.");
                 }
                 else if ((*next == '\\') || (*next == '\"') || (*next == ','))
                 {
@@ -481,7 +478,7 @@ namespace tgui
                 }
                 else
                 {
-                    TGUI_OUTPUT(std::string("TGUI warning: Escape character in front of '") + *next + "'. Ignoring escape character.");
+                    throw Exception(std::string("Escape character in front of '") + *next);
                     continue;
                 }
             }

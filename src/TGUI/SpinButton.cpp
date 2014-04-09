@@ -109,12 +109,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::load(const std::string& configFileFilename)
+    void SpinButton::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
 
         // If the button was loaded before then remove the old textures first
         if (m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
@@ -123,24 +120,7 @@ namespace tgui
         if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("SpinButton", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "SpinButton");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -149,64 +129,28 @@ namespace tgui
             configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "separatehoverimage")
-            {
-                m_separateHoverImage = configFile.readBool(value, false);
-            }
-            else if (property == "arrowupnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpNormalImage in section SpinButton in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowuphoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowUpHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowUpHoverImage in section SpinButton in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowdownnormalimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownNormal))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownNormalImage in section SpinButton in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
-            else if (property == "arrowdownhoverimage")
-            {
-                if (!configFile.readTexture(value, configFileFolder, m_textureArrowDownHover))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ArrowDownHoverImage in section SpinButton in " + m_loadedConfigFile + ".");
-                    return false;
-                }
-            }
+            if (it->first == "separatehoverimage")
+                m_separateHoverImage = configFile.readBool(it);
+            else if (it->first == "arrowupnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowUpNormal);
+            else if (it->first == "arrowuphoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowUpHover);
+            else if (it->first == "arrowdownnormalimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowDownNormal);
+            else if (it->first == "arrowdownhoverimage")
+                configFile.readTexture(it, configFileFolder, m_textureArrowDownHover);
             else
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section SpinButton in " + m_loadedConfigFile + ".");
+                throw Exception("Unrecognized property '" + it->first + "' in section SpinButton in " + m_loadedConfigFile + ".");
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureArrowUpNormal.getData() != nullptr) && (m_textureArrowDownNormal.getData() != nullptr))
-        {
-            m_size.x = static_cast<float>(m_textureArrowUpNormal.getSize().x);
-            m_size.y = static_cast<float>(m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y);
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?");
-            return false;
-        }
+        if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
+            throw Exception("Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?");
 
-        return m_loaded = true;
+        m_size.x = m_textureArrowUpNormal.getSize().x;
+        m_size.y = m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,10 +164,6 @@ namespace tgui
 
     void SpinButton::setSize(float width, float height)
     {
-        // Don't do anything when the spin button wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Store the new size
         m_size.x = width;
         m_size.y = height;
@@ -435,7 +375,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::setProperty(std::string property, const std::string& value)
+    void SpinButton::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -462,7 +402,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setVerticalScroll(false);
             else
-                TGUI_OUTPUT("TGUI error: Failed to parse 'VerticalScroll' property.");
+                throw Exception("Failed to parse 'VerticalScroll' property.");
         }
         else if (property == "callback")
         {
@@ -478,15 +418,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ClickableWidget::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SpinButton::getProperty(std::string property, std::string& value) const
+    void SpinButton::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -518,10 +455,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ClickableWidget::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ClickableWidget::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -541,10 +475,6 @@ namespace tgui
 
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Don't draw when the spin button wasn't loaded correctly
-        if (m_loaded == false)
-            return;
-
         // Adjust the transformation
         states.transform *= getTransform();
 

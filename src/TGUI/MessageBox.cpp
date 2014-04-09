@@ -95,32 +95,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::load(const std::string& configFileFilename)
+    void MessageBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // When everything is loaded successfully, this will become true.
-        m_loaded = false;
-
         // Open the config file
-        ConfigFile configFile;
-        if (!configFile.open(m_loadedConfigFile))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to open " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Read the properties and their values (as strings)
-        std::vector<std::string> properties;
-        std::vector<std::string> values;
-        if (!configFile.read("MessageBox", properties, values))
-        {
-            TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
-            return false;
-        }
-
-        // Close the config file
-        configFile.close();
+        ConfigFile configFile(m_loadedConfigFile, "MessageBox");
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -132,88 +112,60 @@ namespace tgui
         bool buttonPropertyFound = false;
 
         // Handle the read properties
-        for (unsigned int i = 0; i < properties.size(); ++i)
+        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
-            std::string property = properties[i];
-            std::string value = values[i];
-
-            if (property == "textcolor")
+            if (it->first == "textcolor")
             {
-                m_label->setTextColor(configFile.readColor(value));
+                m_label->setTextColor(configFile.readColor(it));
             }
-            else if (property == "childwindow")
+            else if (it->first == "childwindow")
             {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + ".");
-                    return false;
-                }
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + ".");
 
-                if (!ChildWindow::load(configFileFolder + value.substr(1, value.length()-2)))
+                try
                 {
-                    TGUI_OUTPUT("TGUI error: Failed to load the internal ChildWindow for MessageBox.");
-                }
-                else
+                    ChildWindow::load(configFileFolder + it->second.substr(1, it->second.length()-2));
                     childWindowPropertyFound = true;
-            }
-            else if (property == "button")
-            {
-                if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                {
-                    TGUI_OUTPUT("TGUI error: Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + ".");
-                    return false;
                 }
+                catch (const Exception& e)
+                {
+                    throw Exception("Failed to load the internal ChildWindow for MessageBox. " + std::string(e.what()));
+                }
+            }
+            else if (it->first == "button")
+            {
+                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                    throw Exception("Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + ".");
 
-                m_buttonConfigFileFilename = configFileFolder + value.substr(1, value.length()-2);
+                m_buttonConfigFileFilename = configFileFolder + it->second.substr(1, it->second.length()-2);
                 buttonPropertyFound = true;
             }
             else
-            {
-                TGUI_OUTPUT("TGUI warning: Unrecognized property '" + property + "' in section MessageBox in " + m_loadedConfigFile + ".");
-            }
+                throw Exception("Unrecognized property '" + it->first + "' in section MessageBox in " + m_loadedConfigFile + ".");
         }
 
         if (!childWindowPropertyFound)
-        {
-            TGUI_OUTPUT("TGUI error: Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + ".");
-            return false;
-        }
-        if (!buttonPropertyFound)
-        {
-            TGUI_OUTPUT("TGUI error: Missing a Button property in section MessageBox in " + m_loadedConfigFile + ".");
-            return false;
-        }
+            throw Exception("Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + ".");
 
-        return m_loaded = true;
+        if (!buttonPropertyFound)
+            throw Exception("Missing a Button property in section MessageBox in " + m_loadedConfigFile + ".");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::setText(const sf::String& text)
     {
-        if (m_loaded)
-        {
-            m_label->setText(text);
+        m_label->setText(text);
 
-            rearrange();
-        }
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Failed to set the text. MessageBox was not loaded completely.");
-        }
+        rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::String MessageBox::getText() const
     {
-        if (m_loaded)
-            return m_label->getText();
-        else
-        {
-            TGUI_OUTPUT("TGUI error: Failed to set the text. MessageBox was not loaded completely.");
-            return "";
-        }
+        return m_label->getText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,15 +202,12 @@ namespace tgui
     {
         m_textSize = size;
 
-        if (m_loaded)
-        {
-            m_label->setTextSize(size);
+        m_label->setTextSize(size);
 
-            for (unsigned int i = 0; i < m_buttons.size(); ++i)
-                m_buttons[i]->setTextSize(m_textSize);
+        for (unsigned int i = 0; i < m_buttons.size(); ++i)
+            m_buttons[i]->setTextSize(m_textSize);
 
-            rearrange();
-        }
+        rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,27 +221,20 @@ namespace tgui
 
     void MessageBox::addButton(const sf::String& caption)
     {
-        if (m_loaded)
-        {
-            Button::Ptr button(*this);
-            button->load(m_buttonConfigFileFilename);
-            button->setTextSize(m_textSize);
-            button->setText(caption);
-            button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
+        Button::Ptr button(*this);
+        button->load(m_buttonConfigFileFilename);
+        button->setTextSize(m_textSize);
+        button->setText(caption);
+        button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
 
-            m_buttons.push_back(button);
+        m_buttons.push_back(button);
 
-            rearrange();
-        }
-        else // MessageBox wasn't loaded
-        {
-            TGUI_OUTPUT("TGUI error: Could not add a button. MessageBox was not loaded completely.");
-        }
+        rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::setProperty(std::string property, const std::string& value)
+    void MessageBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
 
@@ -322,7 +264,7 @@ namespace tgui
         }
         else if (property == "callback")
         {
-            Widget::setProperty(property, value);
+            ChildWindow::setProperty(property, value);
 
             std::vector<sf::String> callbacks;
             decodeList(value, callbacks);
@@ -334,15 +276,12 @@ namespace tgui
             }
         }
         else // The property didn't match
-            return ChildWindow::setProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ChildWindow::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MessageBox::getProperty(std::string property, std::string& value) const
+    void MessageBox::getProperty(std::string property, std::string& value) const
     {
         property = toLower(property);
 
@@ -363,7 +302,7 @@ namespace tgui
         else if (property == "callback")
         {
             std::string tempValue;
-            Widget::getProperty(property, tempValue);
+            ChildWindow::getProperty(property, tempValue);
 
             std::vector<sf::String> callbacks;
 
@@ -378,10 +317,7 @@ namespace tgui
                 value += "," + tempValue;
         }
         else // The property didn't match
-            return ChildWindow::getProperty(property, value);
-
-        // You pass here when one of the properties matched
-        return true;
+            ChildWindow::getProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,9 +336,6 @@ namespace tgui
 
     void MessageBox::rearrange()
     {
-        if (!m_loaded)
-            return;
-
         // Calculate the button size
         float buttonWidth = 5.0f * m_textSize;
         float buttonHeight = m_textSize * 10.0f / 8.0f;

@@ -91,10 +91,10 @@ namespace tgui
         /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
         ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
         ///
-        /// \return True when the frame was loaded.
+        /// \throw Exception when the image couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addFrame(const std::string& filename, sf::Time frameDuration = sf::Time());
+        void addFrame(const std::string& filename, sf::Time frameDuration = sf::Time());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,14 +268,14 @@ namespace tgui
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setProperty(std::string property, const std::string& value);
+        virtual void setProperty(std::string property, const std::string& value);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool getProperty(std::string property, std::string& value) const;
+        virtual void getProperty(std::string property, std::string& value) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
