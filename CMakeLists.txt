@@ -36,16 +36,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF to build static libraries)" )
 
-if (SFML_OS_LINUX)
-    tgui_set_option( TGUI_FORM_BUILDER_USE_LOCAL_FILES FALSE BOOL "Use resources from current directory instead of from installed files." )
-endif()
-
-if (SFML_OS_WINDOWS)
-    tgui_set_option( TGUI_BUILD_FORM_BUILDER FALSE BOOL "Build the TGUI Form Builder" )
-else()
-    tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
-endif()
-
 # Set some useful compile flags.
 if( SFML_COMPILER_GCC )
 
