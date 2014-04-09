@@ -1891,14 +1891,11 @@ namespace tgui
 
             }
 
-            // Check if you clicked behind the last character on the line
-            if (tempText.findCharacterPos(tempString.getSize()).x - (((3.f * tempText.findCharacterPos(tempString.getSize()-1).x) + tempText.findCharacterPos(tempString.getSize()).x) / 2.f))
-            {
-                if (line > 1)
-                    return newlinePos + tempString.getSize() + 1 - newlinesAdded;
-                else
-                    return newlinePos + tempString.getSize();
-            }
+            // The mouse is on the second half of the last character on the line
+            if (line > 1)
+                return newlinePos + tempString.getSize() + 1 - newlinesAdded;
+            else
+                return newlinePos + tempString.getSize();
         }
 
         // Something went wrong, don't move the caret position
