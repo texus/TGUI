@@ -322,7 +322,7 @@ namespace tgui
         }
         else if (property == "callback")
         {
-            Widget::setProperty(property, value);
+            ChildWindow::setProperty(property, value);
 
             std::vector<sf::String> callbacks;
             decodeList(value, callbacks);
@@ -363,7 +363,7 @@ namespace tgui
         else if (property == "callback")
         {
             std::string tempValue;
-            Widget::getProperty(property, tempValue);
+            ChildWindow::getProperty(property, tempValue);
 
             std::vector<sf::String> callbacks;
 
