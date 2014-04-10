@@ -40,6 +40,7 @@ namespace tgui
     m_separateSelectedImage(true),
     m_textSize             (0),
     m_maximumTabWidth      (0),
+    m_width                (0),
     m_distanceToSide       (5),
     m_selectedTab          (0)
     {
@@ -56,6 +57,7 @@ namespace tgui
     m_textColor            (copy.m_textColor),
     m_selectedTextColor    (copy.m_selectedTextColor),
     m_maximumTabWidth      (copy.m_maximumTabWidth),
+    m_width                (copy.m_width),
     m_distanceToSide       (copy.m_distanceToSide),
     m_selectedTab          (copy.m_selectedTab),
     m_tabNames             (copy.m_tabNames),
@@ -112,6 +114,7 @@ namespace tgui
             std::swap(m_textColor,             temp.m_textColor);
             std::swap(m_selectedTextColor,     temp.m_selectedTextColor);
             std::swap(m_maximumTabWidth,       temp.m_maximumTabWidth);
+            std::swap(m_width,                 temp.m_width);
             std::swap(m_distanceToSide,        temp.m_distanceToSide);
             std::swap(m_selectedTab,           temp.m_selectedTab);
             std::swap(m_tabNames,              temp.m_tabNames);
@@ -234,12 +237,7 @@ namespace tgui
 
     sf::Vector2f Tab::getSize() const
     {
-        // Add the width of all the tabs together
-        float width = 0;
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-            width += it->getSize().x;
-
-        return sf::Vector2f(width, m_textureNormal.getSize().y);
+        return sf::Vector2f(m_width, m_textureNormal.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,6 +270,8 @@ namespace tgui
 
         m_texturesNormal.back().setPosition(position.x + currentSize.x, position.y);
         m_texturesSelected.back().setPosition(position.x + currentSize.x, position.y);
+
+        m_width += width;
 
         // If the tab has to be selected then do so
         if (selectTab)
@@ -329,6 +329,8 @@ namespace tgui
             // Check if you found the tab to remove
             if (m_tabNames[i] == name)
             {
+                m_width -= texturesNormalIt->getSize().x;
+
                 // Remove the tab
                 m_tabNames.erase(m_tabNames.begin() + i);
 
@@ -349,7 +351,7 @@ namespace tgui
 
                 // Recalculate the positions of the tabs
                 setPosition(getPosition());
-                return;
+                break;
             }
         }
     }
@@ -367,6 +369,7 @@ namespace tgui
 
         auto texturesNormalIt = m_texturesNormal.begin();
         std::advance(texturesNormalIt, index);
+        m_width -= texturesNormalIt->getSize().x;
         if (texturesNormalIt->getData() != nullptr)
             TGUI_TextureManager.removeTexture(*texturesNormalIt);
 
@@ -409,6 +412,8 @@ namespace tgui
 
         m_texturesNormal.clear();
         m_texturesSelected.clear();
+
+        m_width = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -749,6 +754,8 @@ namespace tgui
 
     void Tab::recalculateTabsWidth()
     {
+        m_width = 0;
+
         // Recalculate the name widths
         auto textureNormalIt = m_texturesNormal.begin();
         auto textureSelectedIt = m_texturesSelected.begin();
@@ -764,6 +771,8 @@ namespace tgui
 
             textureNormalIt->setSize(width, textureNormalIt->getSize().y);
             textureSelectedIt->setSize(width, textureSelectedIt->getSize().y);
+
+            m_width += width;
         }
 
         // Recalculate the positions of the tabs

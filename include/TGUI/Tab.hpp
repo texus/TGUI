@@ -486,6 +486,8 @@ namespace tgui
 
         unsigned int  m_maximumTabWidth;
 
+        float         m_width;
+
         // The distance between the side of the tab and the text that is drawn on top of the tab.
         unsigned int m_distanceToSide;
 
