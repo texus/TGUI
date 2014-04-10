@@ -27,7 +27,7 @@
 #define TGUI_WIDGETS_HPP
 
 
-#include <TGUI/Defines.hpp>
+#include <TGUI/Global.hpp>
 #include <TGUI/ConfigFile.hpp>
 #include <TGUI/Callback.hpp>
 #include <TGUI/Transformable.hpp>

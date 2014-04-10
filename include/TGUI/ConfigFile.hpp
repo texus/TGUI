@@ -27,7 +27,7 @@
 #define TGUI_CONFIG_FILE_HPP
 
 
-#include <TGUI/Defines.hpp>
+#include <TGUI/Global.hpp>
 
 #include <fstream>
 

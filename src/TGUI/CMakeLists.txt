@@ -1,6 +1,6 @@
 
 set(TGUI_SRC
-    TGUI.cpp
+    Global.cpp
     Canvas.cpp
     Clipboard.cpp
     Callback.cpp
