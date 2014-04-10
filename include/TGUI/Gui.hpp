@@ -155,6 +155,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the internal container of the Gui.
+        ///
+        /// This could be useful when having a function that should accept both the gui and e.g. a child window as parameter.
+        ///
+        /// \warning Not all functions in the Container class make sense for the Gui (which is the reason that the Gui does not
+        ///          inherit from Container). So calling some functions (e.g. setSize) will have no effect.
+        ///
+        /// \return Reference to the internal Container class
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Container& getContainer();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the global font.
         ///
         /// This font will be used by all widgets that are created after calling this function.
