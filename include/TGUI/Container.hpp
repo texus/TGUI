@@ -546,9 +546,6 @@ namespace tgui
         sf::Font m_globalFont;
         const sf::Font* m_fontPtr;
 
-        // Is the container focused? If so, then one of the widgets inside the container may be focused
-        bool m_containerFocused;
-
         // A list that stores all functions that receive callbacks triggered by child widgets
         std::list< std::function<void(const Callback&)> > m_globalCallbackFunctions;
 

@@ -51,7 +51,6 @@ namespace tgui
         m_focusedWidget          (0),
         m_globalFont             (containerToCopy.m_globalFont),
         m_fontPtr                (containerToCopy.m_fontPtr),
-        m_containerFocused       (false),
         m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions)
     {
         if (m_fontPtr == &containerToCopy.m_globalFont)
@@ -86,7 +85,6 @@ namespace tgui
             // Copy the font and the callback functions
             m_focusedWidget = 0;
             m_globalFont = right.m_globalFont;
-            m_containerFocused = false;
             m_globalCallbackFunctions = right.m_globalCallbackFunctions;
 
             if (right.m_fontPtr == &right.m_globalFont)

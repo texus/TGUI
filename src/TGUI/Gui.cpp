@@ -35,26 +35,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui() :
-    m_window (nullptr),
-    m_focused(true)
+    m_window (nullptr)
     {
         m_container.bindGlobalCallback(&Gui::addChildCallback, this);
 
-        // The main window is always focused
-        m_container.m_containerFocused = true;
+        m_container.m_focused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui(sf::RenderWindow& window) :
-    m_window (&window),
-    m_focused(true)
+    m_window (&window)
     {
         m_container.m_window = &window;
         m_container.bindGlobalCallback(&Gui::addChildCallback, this);
 
-        // The main window is always focused
-        m_container.m_containerFocused = true;
+        m_container.m_focused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,11 +113,11 @@ namespace tgui
         // Keep track of whether the window is focused or not
         else if (event.type == sf::Event::LostFocus)
         {
-            m_focused = false;
+            m_container.m_focused = false;
         }
         else if (event.type == sf::Event::GainedFocus)
         {
-            m_focused = true;
+            m_container.m_focused = true;
         }
 
         // Let the event manager handle the event
@@ -139,7 +135,7 @@ namespace tgui
             m_window->setView(m_window->getDefaultView());
 
         // Update the time
-        if (m_focused)
+        if (m_container.m_focused)
             updateTime(m_clock.restart());
         else
             m_clock.restart();
@@ -195,7 +191,7 @@ namespace tgui
 
     bool Gui::hasFocus()
     {
-        return m_focused;
+        return m_container.m_focused;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -492,9 +492,6 @@ namespace tgui
         // The sfml window
         sf::RenderWindow* m_window;
 
-        // Is the window focused?
-        bool m_focused;
-
         // Internal container to store all widgets
         GuiContainer m_container;
 
