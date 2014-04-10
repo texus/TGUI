@@ -156,12 +156,8 @@ namespace tgui
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
         {
-            sf::Vector2f scaling;
-            scaling.x = m_size.x / m_texture.getSize().x;
-            scaling.y = m_size.y / m_texture.getSize().y;
-
             // Only return true when the pixel under the mouse isn't transparent
-            if (!m_texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+            if (!m_texture.isTransparentPixel(x, y))
                 return true;
         }
 

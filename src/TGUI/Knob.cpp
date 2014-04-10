@@ -344,12 +344,8 @@ namespace tgui
         // Check if the mouse is on top of the widget
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
-            sf::Vector2f scaling;
-            scaling.x = m_backgroundTexture.getSize().x / m_backgroundTexture.getImageSize().x;
-            scaling.y = m_backgroundTexture.getSize().y / m_backgroundTexture.getImageSize().y;
-
             // Only return true when the pixel under the mouse isn't transparent
-            if (!m_backgroundTexture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+            if (!m_backgroundTexture.isTransparentPixel(x, y))
                 return true;
         }
 

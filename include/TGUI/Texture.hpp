@@ -76,7 +76,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool isTransparentPixel(unsigned int x, unsigned int y) const;
+        bool isTransparentPixel(float x, float y) const;
 
 
     private:

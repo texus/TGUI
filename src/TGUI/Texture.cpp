@@ -254,15 +254,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Texture::isTransparentPixel(unsigned int /*x*/, unsigned int /*y*/) const
+    bool Texture::isTransparentPixel(float x, float y) const
     {
-        return false;
-/**
-        if (data->image->getPixel(x + data->rect.left, y + data->rect.top).a == 0)
+        x -= getPosition().x;
+        y -= getPosition().y;
+
+        // Find out on which pixel the mouse is standing
+        sf::Vector2u pixel;
+        switch (m_scalingType)
+        {
+        case Normal:
+            pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
+            pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
+            break;
+
+        case Horizontal:
+        case Vertical:
+        case NineSliceScaling:
+            return false;
+        };
+
+        if (m_data->image->getPixel(pixel.x + m_data->rect.left, pixel.y + m_data->rect.top).a == 0)
             return true;
         else
             return false;
-*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
