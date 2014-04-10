@@ -272,6 +272,9 @@ namespace tgui
                 thumbWidth = width;
         }
 
+        if (realTrackSize < 0)
+            realTrackSize = 0;
+
         if (m_maximum > m_lowValue)
             m_textureThumbNormal.setSize(thumbWidth, realTrackSize * m_lowValue / m_maximum);
         else

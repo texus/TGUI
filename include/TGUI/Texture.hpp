@@ -88,6 +88,20 @@ namespace tgui
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private:
+
+        enum ScalingType
+        {
+            Normal,
+            Horizontal,
+            Vertical,
+            NineSliceScaling
+        };
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private:
@@ -97,6 +111,8 @@ namespace tgui
         sf::Vector2f  m_size;
         sf::IntRect   m_middleRect;
         sf::FloatRect m_textureRect;
+
+        ScalingType   m_scalingType;
 
         float m_rotation;
     };

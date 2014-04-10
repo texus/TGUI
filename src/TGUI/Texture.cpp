@@ -38,6 +38,7 @@ namespace tgui
         sf::Transformable(),
         sf::Drawable     (),
         m_data           (nullptr),
+        m_scalingType    (Normal),
         m_rotation       (0)
     {
     }
@@ -48,16 +49,6 @@ namespace tgui
     {
         m_data = &data;
         m_middleRect = middleRect;
-
-        m_vertices.clear();
-        if (m_middleRect == sf::IntRect(0, 0, m_data->texture.getSize().x, m_data->texture.getSize().y))
-            m_vertices.resize(4);
-        else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
-            m_vertices.resize(8);
-        else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
-            m_vertices.resize(8);
-        else
-            m_vertices.resize(22);
 
         setSize(m_data->texture.getSize().x, m_data->texture.getSize().y);
     }
@@ -81,32 +72,6 @@ namespace tgui
                 m_size.x = -m_size.x;
             if (m_size.y < 0)
                 m_size.y = -m_size.y;
-
-            Borders minimumBorders;
-            if (m_middleRect == sf::IntRect(0, 0, m_data->texture.getSize().x, m_data->texture.getSize().y))
-                minimumBorders = Borders(0, 0, 0, 0);
-            else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
-            {
-                minimumBorders.top = m_middleRect.top * (m_size.x / m_data->texture.getSize().x);
-                minimumBorders.bottom = (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x);
-            }
-            else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
-            {
-                minimumBorders.left = m_middleRect.left * (m_size.y / m_data->texture.getSize().y);
-                minimumBorders.right = (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y);
-            }
-            else
-            {
-                minimumBorders = Borders(m_middleRect.left,
-                                         m_middleRect.top,
-                                         m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width,
-                                         m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height);
-            }
-
-            if (m_size.x < minimumBorders.left + minimumBorders.right)
-                m_size.x = minimumBorders.left + minimumBorders.right;
-            if (m_size.y < minimumBorders.top + minimumBorders.bottom)
-                m_size.y =  minimumBorders.top + minimumBorders.bottom;
 
             setOrigin(m_size.x / 2.0f, m_size.x / 2.0f);
 
@@ -150,20 +115,82 @@ namespace tgui
 
     void Texture::updateVertices()
     {
+        // Figure out how the image is scaled best
         if (m_middleRect == sf::IntRect(0, 0, m_data->texture.getSize().x, m_data->texture.getSize().y))
         {
+            m_scalingType = Normal;
+        }
+        else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
+        {
+            if (m_size.x >= (m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
+                m_scalingType = Horizontal;
+            else
+                m_scalingType = Normal;
+        }
+        else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
+        {
+            if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
+                m_scalingType = Vertical;
+            else
+                m_scalingType = Normal;
+        }
+        else
+        {
+            if (m_size.x >= m_data->texture.getSize().x - m_middleRect.width)
+            {
+                if (m_size.y >= m_data->texture.getSize().y - m_middleRect.height)
+                    m_scalingType = NineSliceScaling;
+                else
+                {
+                    if (m_size.x >= (m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
+                        m_scalingType = Horizontal;
+                    else
+                        m_scalingType = Normal;
+                }
+            }
+            else
+            {
+                if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
+                    m_scalingType = Vertical;
+                else
+                    m_scalingType = Normal;
+            }
+        }
+
+        // Calculate the vertices based on the way we are scaling
+        switch (m_scalingType)
+        {
+        case Normal:
             ///////////
             // 0---1 //
             // |   | //
             // 2---3 //
             ///////////
+            m_vertices.resize(4);
             m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
             m_vertices[1] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
             m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
             m_vertices[3] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
-        }
-        else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
-        {
+            break;
+
+        case Horizontal:
+            ///////////////////////
+            // 0---2-------4---6 //
+            // |   |       |   | //
+            // 1---3-------5---7 //
+            ///////////////////////
+            m_vertices.resize(8);
+            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
+            m_vertices[1] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
+            m_vertices[2] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left, 0));
+            m_vertices[3] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left, m_data->texture.getSize().y));
+            m_vertices[4] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left + m_middleRect.width, 0));
+            m_vertices[5] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_data->texture.getSize().y));
+            m_vertices[6] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
+            m_vertices[7] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
+            break;
+
+        case Vertical:
             ///////////
             // 0---1 //
             // |   | //
@@ -175,6 +202,7 @@ namespace tgui
             // |   | //
             // 6---7-//
             ///////////
+            m_vertices.resize(8);
             m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
             m_vertices[1] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
             m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_middleRect.top * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(0, m_middleRect.top));
@@ -183,25 +211,9 @@ namespace tgui
             m_vertices[5] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top + m_middleRect.height));
             m_vertices[6] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
             m_vertices[7] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
-        }
-        else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
-        {
-            ///////////////////////
-            // 0---2-------4---6 //
-            // |   |       |   | //
-            // 1---3-------5---7 //
-            ///////////////////////
-            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-            m_vertices[1] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
-            m_vertices[2] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left, 0));
-            m_vertices[3] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left, m_data->texture.getSize().y));
-            m_vertices[4] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left + m_middleRect.width, 0));
-            m_vertices[5] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_data->texture.getSize().y));
-            m_vertices[6] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
-            m_vertices[7] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
-        }
-        else
-        {
+            break;
+
+        case NineSliceScaling:
             //////////////////////////////////
             // 0---1/13-----------14-----15 //
             // |    |              |     |  //
@@ -213,6 +225,7 @@ namespace tgui
             // |    |              |     |  //
             // 6----7-------------8/20---21 //
             //////////////////////////////////
+            m_vertices.resize(22);
             m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
             m_vertices[1] = sf::Vertex(sf::Vector2f(m_middleRect.left, 0), sf::Vector2f(m_middleRect.left, 0));
             m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_middleRect.top), sf::Vector2f(0, m_middleRect.top));
@@ -235,7 +248,8 @@ namespace tgui
             m_vertices[19] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height)), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top + m_middleRect.height));
             m_vertices[20] = m_vertices[8];
             m_vertices[21] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
-        }
+            break;
+        };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
