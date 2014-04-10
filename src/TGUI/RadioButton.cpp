@@ -185,10 +185,11 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text.getString());
 
-        m_textureChecked.setSize(width, height);
         m_textureUnchecked.setSize(width, height);
         m_textureFocused.setSize(width, height);
         m_textureHover.setSize(width, height);
+        m_textureChecked.setSize(width + ((m_textureChecked.getImageSize().x - m_textureUnchecked.getImageSize().x) * (width / m_textureUnchecked.getImageSize().x)),
+                                 height + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (height / m_textureUnchecked.getImageSize().y)));
 
         // Reposition the text
         setPosition(getPosition());
