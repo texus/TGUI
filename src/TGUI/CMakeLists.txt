@@ -13,6 +13,7 @@ set(TGUI_SRC
     Container.cpp
     ComboBox.cpp
     EditBox.cpp
+    Global.cpp
     Grid.cpp
     Gui.cpp
     Knob.cpp
@@ -33,7 +34,6 @@ set(TGUI_SRC
     TextBox.cpp
     Texture.cpp
     TextureManager.cpp
-    TGUI.cpp
     Transformable.cpp
     Widget.cpp
 )
