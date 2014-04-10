@@ -49,7 +49,6 @@ namespace tgui
         Widget                   (containerToCopy),
         m_FocusedWidget          (0),
         m_GlobalFont             (containerToCopy.m_GlobalFont),
-        m_ContainerFocused       (false),
         m_GlobalCallbackFunctions(containerToCopy.m_GlobalCallbackFunctions)
     {
         // Copy all the widgets
@@ -81,7 +80,6 @@ namespace tgui
             // Copy the font and the callback functions
             m_FocusedWidget = 0;
             m_GlobalFont = right.m_GlobalFont;
-            m_ContainerFocused = false;
             m_GlobalCallbackFunctions = right.m_GlobalCallbackFunctions;
 
             // Remove all the old widgets
