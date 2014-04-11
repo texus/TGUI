@@ -1108,25 +1108,29 @@ namespace tgui
 
     void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        const sf::View& view = target.getView();
+
         // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+        float scaleViewX = target.getSize().x / view.getSize().x;
+        float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
         sf::Vector2f topLeftPosition;
         sf::Vector2f bottomRightPosition;
 
-        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
-
         if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition().x + m_size.x - m_scroll->getSize().x + viewPosition.x, getPosition().y + m_size.y + viewPosition.y);
+            topLeftPosition = states.transform.transformPoint(((getPosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                              ((getPosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+            bottomRightPosition = states.transform.transformPoint((getPosition().x + m_size.x - m_scroll->getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                                  (getPosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
         }
         else
         {
-            topLeftPosition = states.transform.transformPoint(getPosition() + viewPosition);
-            bottomRightPosition = states.transform.transformPoint(getPosition() + sf::Vector2f(m_size) + viewPosition);
+            topLeftPosition = states.transform.transformPoint(((getPosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                              ((getPosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+            bottomRightPosition = states.transform.transformPoint((getPosition().x + m_size.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                                  (getPosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
         }
 
         // Adjust the transformation

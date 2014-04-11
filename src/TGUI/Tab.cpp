@@ -853,16 +853,19 @@ namespace tgui
                     // Get the old clipping area
                     glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
+                    const sf::View& view = target.getView();
+
                     // Calculate the scale factor of the view
-                    float scaleViewX = target.getSize().x / target.getView().getSize().x;
-                    float scaleViewY = target.getSize().y / target.getView().getSize().y;
+                    float scaleViewX = target.getSize().x / view.getSize().x;
+                    float scaleViewY = target.getSize().y / view.getSize().y;
 
                     // Get the global position
-                    sf::Vector2f topLeftPosition = states.transform.transformPoint(textureNormalIt->getPosition() + (target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    sf::Vector2f bottomRightPosition = states.transform.transformPoint(
-                                                           textureNormalIt->getPosition()
-                                                            + sf::Vector2f(textureNormalIt->getSize().x - (2.0f * m_distanceToSide),
-                                                                           (m_textureNormal.getSize().y + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    sf::Vector2f topLeftPosition
+                        = states.transform.transformPoint(((textureNormalIt->getPosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                          ((textureNormalIt->getPosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f bottomRightPosition
+                        = states.transform.transformPoint((textureNormalIt->getPosition().x + (textureNormalIt->getSize().x - (2.0f * m_distanceToSide)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                          (textureNormalIt->getPosition().y + ((m_textureNormal.getSize().y + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

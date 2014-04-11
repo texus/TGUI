@@ -1659,16 +1659,17 @@ namespace tgui
         float borderScale = scaling.y;
 
         // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
-        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        const sf::View& view = target.getView();
+        float scaleViewX = target.getSize().x / view.getSize().x;
+        float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = states.transform.transformPoint(getPosition().x + (m_borders.left * borderScale) + viewPosition.x,
-                                                                       getPosition().y + (m_borders.top * scaling.y) + viewPosition.y);
-        sf::Vector2f bottomRightPosition = states.transform.transformPoint(getPosition().x + (m_textureNormal.getSize().x - (m_borders.right * borderScale)) + viewPosition.x,
-                                                                           getPosition().y + (m_textureNormal.getSize().y - (m_borders.bottom * scaling.y)) + viewPosition.y);
+        sf::Vector2f topLeftPosition
+            = states.transform.transformPoint(((getPosition().x  + (m_borders.left * borderScale) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                              ((getPosition().y + (m_borders.top * scaling.y) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f bottomRightPosition
+            = states.transform.transformPoint((getPosition().x + (m_textureNormal.getSize().x - (m_borders.right * borderScale)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                              (getPosition().y + (m_textureNormal.getSize().y - (m_borders.bottom * scaling.y)) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
 
         // Get the old clipping area
         GLint scissor[4];
