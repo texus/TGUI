@@ -2,6 +2,7 @@ var searchData=
 [
   ['callback',['Callback',['../structtgui_1_1Callback.html',1,'tgui']]],
   ['callbackmanager',['CallbackManager',['../classtgui_1_1CallbackManager.html',1,'tgui']]],
+  ['canvas',['Canvas',['../classtgui_1_1Canvas.html',1,'tgui']]],
   ['chatbox',['ChatBox',['../classtgui_1_1ChatBox.html',1,'tgui']]],
   ['checkbox',['Checkbox',['../classtgui_1_1Checkbox.html',1,'tgui']]],
   ['childwindow',['ChildWindow',['../classtgui_1_1ChildWindow.html',1,'tgui']]],

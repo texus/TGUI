@@ -2,6 +2,7 @@ var searchData=
 [
   ['_7eanimatedpicture',['~AnimatedPicture',['../classtgui_1_1AnimatedPicture.html#a559fbd5173e1bc76a26206762c1e02e4',1,'tgui::AnimatedPicture']]],
   ['_7ebutton',['~Button',['../classtgui_1_1Button.html#af5e7ecc686e4d3a7fac5a52bb78a6cb3',1,'tgui::Button']]],
+  ['_7ecanvas',['~Canvas',['../classtgui_1_1Canvas.html#a48912b2f1e43ee001cf947c2ff75cc0f',1,'tgui::Canvas']]],
   ['_7echatbox',['~ChatBox',['../classtgui_1_1ChatBox.html#a12194b0251fd5f5af5d2286b25f11f9e',1,'tgui::ChatBox']]],
   ['_7echildwindow',['~ChildWindow',['../classtgui_1_1ChildWindow.html#a3d840bb8635a02638429bc9f03a532ee',1,'tgui::ChildWindow']]],
   ['_7eclickablewidget',['~ClickableWidget',['../classtgui_1_1ClickableWidget.html#afb8a0b8f915f21534f820e77404c3a7f',1,'tgui::ClickableWidget']]],
@@ -25,5 +26,6 @@ var searchData=
   ['_7etab',['~Tab',['../classtgui_1_1Tab.html#a3d28841ef6a25a5979d570a668d0e4da',1,'tgui::Tab']]],
   ['_7etextbox',['~TextBox',['../classtgui_1_1TextBox.html#a602090ac3428f63d50aeec1175154c38',1,'tgui::TextBox']]],
   ['_7etransformable',['~Transformable',['../classtgui_1_1Transformable.html#a98900d9b8ec4166e5127532bfbd5cc59',1,'tgui::Transformable']]],
-  ['_7ewidget',['~Widget',['../classtgui_1_1Widget.html#a9d8d5b9c71edae5a309dfd91009e04fb',1,'tgui::Widget']]]
+  ['_7ewidget',['~Widget',['../classtgui_1_1Widget.html#a9d8d5b9c71edae5a309dfd91009e04fb',1,'tgui::Widget']]],
+  ['_7ewidgetborders',['~WidgetBorders',['../classtgui_1_1WidgetBorders.html#ad3a4800cf4106b5723ab6613ccca8816',1,'tgui::WidgetBorders']]]
 ];

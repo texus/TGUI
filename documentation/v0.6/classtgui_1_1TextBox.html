@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.2</span>
+   &#160;<span id="projectnumber">v0.6.3</span>
    </div>
   </td>
  </tr>
@@ -239,6 +239,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4bb61ac58fd9c770acdab529153ecade"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a4bb61ac58fd9c770acdab529153ecade">getSelectionPointWidth</a> () const </td></tr>
 <tr class="memdesc:a4bb61ac58fd9c770acdab529153ecade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of the selection point.  <a href="#a4bb61ac58fd9c770acdab529153ecade">More...</a><br/></td></tr>
 <tr class="separator:a4bb61ac58fd9c770acdab529153ecade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5ed194b6403237a6bec0f358fd1ebdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#ac5ed194b6403237a6bec0f358fd1ebdf">setReadOnly</a> (bool readOnly=true)</td></tr>
+<tr class="memdesc:ac5ed194b6403237a6bec0f358fd1ebdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the text box read-only or make it writable again.  <a href="#ac5ed194b6403237a6bec0f358fd1ebdf">More...</a><br/></td></tr>
+<tr class="separator:ac5ed194b6403237a6bec0f358fd1ebdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a374c8715c9b4b6195a8bf5eee2a819f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1TextBox.html#a374c8715c9b4b6195a8bf5eee2a819f2">setTransparency</a> (unsigned char transparency)</td></tr>
 <tr class="memdesc:a374c8715c9b4b6195a8bf5eee2a819f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the transparency of the widget.  <a href="#a374c8715c9b4b6195a8bf5eee2a819f2">More...</a><br/></td></tr>
 <tr class="separator:a374c8715c9b4b6195a8bf5eee2a819f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -365,6 +368,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a174f90ff937c66119a64617198c3aedc inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetBorders.html#a174f90ff937c66119a64617198c3aedc">WidgetBorders</a> ()</td></tr>
 <tr class="memdesc:a174f90ff937c66119a64617198c3aedc inherit pub_methods_classtgui_1_1WidgetBorders"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a174f90ff937c66119a64617198c3aedc">More...</a><br/></td></tr>
 <tr class="separator:a174f90ff937c66119a64617198c3aedc inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3a4800cf4106b5723ab6613ccca8816 inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetBorders.html#ad3a4800cf4106b5723ab6613ccca8816">~WidgetBorders</a> ()</td></tr>
+<tr class="memdesc:ad3a4800cf4106b5723ab6613ccca8816 inherit pub_methods_classtgui_1_1WidgetBorders"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#ad3a4800cf4106b5723ab6613ccca8816">More...</a><br/></td></tr>
+<tr class="separator:ad3a4800cf4106b5723ab6613ccca8816 inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c42822ce84bce93ff85ef8c9e53bdac inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Borders.html">Borders</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetBorders.html#a6c42822ce84bce93ff85ef8c9e53bdac">getBorders</a> () const </td></tr>
 <tr class="memdesc:a6c42822ce84bce93ff85ef8c9e53bdac inherit pub_methods_classtgui_1_1WidgetBorders"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the borders as a <a class="el" href="classtgui_1_1Borders.html">tgui::Borders</a>.  <a href="#a6c42822ce84bce93ff85ef8c9e53bdac">More...</a><br/></td></tr>
 <tr class="separator:a6c42822ce84bce93ff85ef8c9e53bdac inherit pub_methods_classtgui_1_1WidgetBorders"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1022,6 +1028,31 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ac5ed194b6403237a6bec0f358fd1ebdf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::TextBox::setReadOnly </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>readOnly</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Make the text box read-only or make it writable again. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">readOnly</td><td>Should the text box be read-only?</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>When the text box is read-only, you can no longer delete characters and type text. Selecting text, copying text and even calling the setText function will still work. </p>
+
+</div>
+</div>
 <a class="anchor" id="a7e98226adae720b4efd1fd1f0e6ec2d9"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1356,7 +1387,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 14 2014 22:53:23 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 11 2014 19:07:01 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -13,6 +13,7 @@ var searchData=
   ['alignments',['Alignments',['../structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de',1,'tgui::EditBox::Alignment']]],
   ['allanimatedpicturecallbacks',['AllAnimatedPictureCallbacks',['../classtgui_1_1AnimatedPicture.html#a89db083b0282933a46b112250adfbd3aa9a2e9feb8304e7edb7b7f841c6280c39',1,'tgui::AnimatedPicture']]],
   ['allbuttoncallbacks',['AllButtonCallbacks',['../classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37aa3c0ee7ab8358239a11e03981ce673d5',1,'tgui::Button']]],
+  ['allcanvascallbacks',['AllCanvasCallbacks',['../classtgui_1_1Canvas.html#aee8d8e4679da11df9b1d404eacf22556a2c02d83cecb908a8ab6a80901e415e26',1,'tgui::Canvas']]],
   ['allchatboxcallbacks',['AllChatBoxCallbacks',['../classtgui_1_1ChatBox.html#a6662b91b8c7c0865e5a3097219018ffcaa292f6d8feff316f87520c427637ec2f',1,'tgui::ChatBox']]],
   ['allcheckboxcallbacks',['AllCheckboxCallbacks',['../classtgui_1_1Checkbox.html#a0c8e53a6d26f53b1210da471e0469f96adc56b5f5ff7c74e393ea96ea9465dae6',1,'tgui::Checkbox']]],
   ['allchildwindowcallbacks',['AllChildWindowCallbacks',['../classtgui_1_1ChildWindow.html#a1c7499ac6b4b1b0b1f6688efc871a131a32319167ce3dded6c62fdf59d4473c64',1,'tgui::ChildWindow']]],
@@ -37,8 +38,8 @@ var searchData=
   ['allspritesheetcallbacks',['AllSpriteSheetCallbacks',['../classtgui_1_1SpriteSheet.html#ab03c6f193f7c1d91c4c4fd89f212587aa6dd95c880c8a5831b4a0bd7875718042',1,'tgui::SpriteSheet']]],
   ['alltabcallbacks',['AllTabCallbacks',['../classtgui_1_1Tab.html#a3947dd79c09868aa5e1fc264404fc8faac6cb44b9215ef9d4a6a1bfb72275dc06',1,'tgui::Tab']]],
   ['alltextboxcallbacks',['AllTextBoxCallbacks',['../classtgui_1_1TextBox.html#a95da401a6b078134f427dedac8eca14ca40e07c632112c3ef5502a89ead54d0c4',1,'tgui::TextBox']]],
-  ['animatedpicture',['AnimatedPicture',['../classtgui_1_1AnimatedPicture.html',1,'tgui']]],
   ['animatedpicture',['AnimatedPicture',['../classtgui_1_1AnimatedPicture.html#a0fec9d18794bd0803f88463ace7031b6',1,'tgui::AnimatedPicture::AnimatedPicture()'],['../classtgui_1_1AnimatedPicture.html#a825120036258a1621023e773c56e3fbf',1,'tgui::AnimatedPicture::AnimatedPicture(const AnimatedPicture &amp;copy)']]],
+  ['animatedpicture',['AnimatedPicture',['../classtgui_1_1AnimatedPicture.html',1,'tgui']]],
   ['animatedpicturecallbacks',['AnimatedPictureCallbacks',['../classtgui_1_1AnimatedPicture.html#a89db083b0282933a46b112250adfbd3a',1,'tgui::AnimatedPicture']]],
   ['animationfinished',['AnimationFinished',['../classtgui_1_1AnimatedPicture.html#a89db083b0282933a46b112250adfbd3aaaac7d4f1031a12878dd4eeb7e3fa3824',1,'tgui::AnimatedPicture']]]
 ];

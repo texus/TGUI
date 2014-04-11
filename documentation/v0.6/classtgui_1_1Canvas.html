@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>TGUI: tgui::ClickableWidget Class Reference</title>
+<title>TGUI: tgui::Canvas Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -81,49 +81,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>tgui</b></li><li class="navelem"><a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a></li>  </ul>
+<li class="navelem"><b>tgui</b></li><li class="navelem"><a class="el" href="classtgui_1_1Canvas.html">Canvas</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classtgui_1_1ClickableWidget-members.html">List of all members</a>  </div>
+<a href="classtgui_1_1Canvas-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">tgui::ClickableWidget Class Reference</div>  </div>
+<div class="title">tgui::Canvas Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for tgui::ClickableWidget:</div>
+Inheritance diagram for tgui::Canvas:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classtgui_1_1ClickableWidget.png" usemap="#tgui::ClickableWidget_map" alt=""/>
-  <map id="tgui::ClickableWidget_map" name="tgui::ClickableWidget_map">
+  <img src="classtgui_1_1Canvas.png" usemap="#tgui::Canvas_map" alt=""/>
+  <map id="tgui::Canvas_map" name="tgui::Canvas_map">
+<area href="classtgui_1_1ClickableWidget.html" alt="tgui::ClickableWidget" shape="rect" coords="148,112,286,136"/>
 <area href="classtgui_1_1Widget.html" title="The parent class for every widget. " alt="tgui::Widget" shape="rect" coords="148,56,286,80"/>
 <area href="classtgui_1_1Transformable.html" alt="tgui::Transformable" shape="rect" coords="148,0,286,24"/>
 <area href="classtgui_1_1CallbackManager.html" alt="tgui::CallbackManager" shape="rect" coords="296,0,434,24"/>
-<area href="classtgui_1_1AnimatedPicture.html" title="Load multiple images and add then behind each other to create a simple animation or even a movie..." alt="tgui::AnimatedPicture" shape="rect" coords="296,168,434,192"/>
-<area href="classtgui_1_1Button.html" alt="tgui::Button" shape="rect" coords="296,224,434,248"/>
-<area href="classtgui_1_1Canvas.html" alt="tgui::Canvas" shape="rect" coords="296,280,434,304"/>
-<area href="classtgui_1_1EditBox.html" alt="tgui::EditBox" shape="rect" coords="296,336,434,360"/>
-<area href="classtgui_1_1Label.html" alt="tgui::Label" shape="rect" coords="296,392,434,416"/>
-<area href="classtgui_1_1LoadingBar.html" alt="tgui::LoadingBar" shape="rect" coords="296,448,434,472"/>
-<area href="classtgui_1_1Picture.html" alt="tgui::Picture" shape="rect" coords="296,504,434,528"/>
-<area href="classtgui_1_1RadioButton.html" alt="tgui::RadioButton" shape="rect" coords="296,560,434,584"/>
-<area href="classtgui_1_1Slider2d.html" alt="tgui::Slider2d" shape="rect" coords="296,616,434,640"/>
-<area href="classtgui_1_1SpinButton.html" alt="tgui::SpinButton" shape="rect" coords="296,672,434,696"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a53cd4caf7ba0379828cafb848777d8cd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cd">ClickableWidgetCallbacks</a> { <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cda0a20eee0370e882a15e3afcf275d2176">LeftMousePressed</a> = WidgetCallbacksCount * 1, 
+<tr class="memitem:aee8d8e4679da11df9b1d404eacf22556"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#aee8d8e4679da11df9b1d404eacf22556">CanvasCallbacks</a> { <a class="el" href="classtgui_1_1Canvas.html#aee8d8e4679da11df9b1d404eacf22556a2c02d83cecb908a8ab6a80901e415e26">AllCanvasCallbacks</a> = ClickableWidgetCallbacksCount - 1
+ }</td></tr>
+<tr class="memdesc:aee8d8e4679da11df9b1d404eacf22556"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines specific triggers to <a class="el" href="classtgui_1_1Canvas.html">Canvas</a>.  <a href="classtgui_1_1Canvas.html#aee8d8e4679da11df9b1d404eacf22556">More...</a><br/></td></tr>
+<tr class="separator:aee8d8e4679da11df9b1d404eacf22556"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classtgui_1_1ClickableWidget"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classtgui_1_1ClickableWidget')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td></tr>
+<tr class="memitem:a53cd4caf7ba0379828cafb848777d8cd inherit pub_types_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cd">ClickableWidgetCallbacks</a> { <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cda0a20eee0370e882a15e3afcf275d2176">LeftMousePressed</a> = WidgetCallbacksCount * 1, 
 <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cdabb4df4c10a5a3f4b3359554255e4fc58">LeftMouseReleased</a> = WidgetCallbacksCount * 2, 
 <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cdad4470f95882a08a3eb08808f90ea4227">LeftMouseClicked</a> = WidgetCallbacksCount * 4, 
 <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cda549dbee65d6b8368827b2ea3bd10092e">AllClickableWidgetCallbacks</a> = WidgetCallbacksCount * 8 - 1
  }</td></tr>
 <tr class="memdesc:a53cd4caf7ba0379828cafb848777d8cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines specific triggers to <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a>.  <a href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cd">More...</a><br/></td></tr>
-<tr class="separator:a53cd4caf7ba0379828cafb848777d8cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a53cd4caf7ba0379828cafb848777d8cd inherit pub_types_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a25dd8c95455abb649c5743e17af8f5d5 inherit pub_types_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a25dd8c95455abb649c5743e17af8f5d5">WidgetCallbacks</a> { <br/>
 &#160;&#160;<a class="el" href="classtgui_1_1Widget.html#a25dd8c95455abb649c5743e17af8f5d5a4530774e69a5208696242000e875141b">None</a> = 0, 
@@ -139,24 +135,52 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa24c0d5b57f4e61d46438fd1d659a676"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa24c0d5b57f4e61d46438fd1d659a676">ClickableWidget</a> ()</td></tr>
-<tr class="memdesc:aa24c0d5b57f4e61d46438fd1d659a676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#aa24c0d5b57f4e61d46438fd1d659a676">More...</a><br/></td></tr>
-<tr class="separator:aa24c0d5b57f4e61d46438fd1d659a676"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa338fa4709448b732011984bab01f23d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa338fa4709448b732011984bab01f23d">ClickableWidget</a> (const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;copy)</td></tr>
-<tr class="memdesc:aa338fa4709448b732011984bab01f23d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#aa338fa4709448b732011984bab01f23d">More...</a><br/></td></tr>
-<tr class="separator:aa338fa4709448b732011984bab01f23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb8a0b8f915f21534f820e77404c3a7f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#afb8a0b8f915f21534f820e77404c3a7f">~ClickableWidget</a> ()</td></tr>
-<tr class="memdesc:afb8a0b8f915f21534f820e77404c3a7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#afb8a0b8f915f21534f820e77404c3a7f">More...</a><br/></td></tr>
-<tr class="separator:afb8a0b8f915f21534f820e77404c3a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2149576ef8f6e001efb27458dad6b945"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a2149576ef8f6e001efb27458dad6b945">operator=</a> (const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;right)</td></tr>
-<tr class="memdesc:a2149576ef8f6e001efb27458dad6b945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a2149576ef8f6e001efb27458dad6b945">More...</a><br/></td></tr>
-<tr class="separator:a2149576ef8f6e001efb27458dad6b945"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a70bf0ea8995af8b201481e1e4778f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a3a70bf0ea8995af8b201481e1e4778f6">setSize</a> (float width, float height)</td></tr>
-<tr class="memdesc:a3a70bf0ea8995af8b201481e1e4778f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the widget.  <a href="#a3a70bf0ea8995af8b201481e1e4778f6">More...</a><br/></td></tr>
-<tr class="separator:a3a70bf0ea8995af8b201481e1e4778f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef9a7d2d1fe3facffd1d233747543819"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aef9a7d2d1fe3facffd1d233747543819">getSize</a> () const </td></tr>
-<tr class="memdesc:aef9a7d2d1fe3facffd1d233747543819"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="#aef9a7d2d1fe3facffd1d233747543819">More...</a><br/></td></tr>
-<tr class="separator:aef9a7d2d1fe3facffd1d233747543819"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2d04853bfbb935b65f55eddb8f36c52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#ad2d04853bfbb935b65f55eddb8f36c52">Canvas</a> ()</td></tr>
+<tr class="memdesc:ad2d04853bfbb935b65f55eddb8f36c52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#ad2d04853bfbb935b65f55eddb8f36c52">More...</a><br/></td></tr>
+<tr class="separator:ad2d04853bfbb935b65f55eddb8f36c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bb1c9f85b7b42083870f959c0f0239e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a8bb1c9f85b7b42083870f959c0f0239e">Canvas</a> (const <a class="el" href="classtgui_1_1Canvas.html">Canvas</a> &amp;copy)</td></tr>
+<tr class="memdesc:a8bb1c9f85b7b42083870f959c0f0239e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#a8bb1c9f85b7b42083870f959c0f0239e">More...</a><br/></td></tr>
+<tr class="separator:a8bb1c9f85b7b42083870f959c0f0239e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48912b2f1e43ee001cf947c2ff75cc0f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a48912b2f1e43ee001cf947c2ff75cc0f">~Canvas</a> ()</td></tr>
+<tr class="memdesc:a48912b2f1e43ee001cf947c2ff75cc0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a48912b2f1e43ee001cf947c2ff75cc0f">More...</a><br/></td></tr>
+<tr class="separator:a48912b2f1e43ee001cf947c2ff75cc0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dd8446ea954e0c9fc57fea329a8e939"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Canvas.html">Canvas</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a9dd8446ea954e0c9fc57fea329a8e939">operator=</a> (const <a class="el" href="classtgui_1_1Canvas.html">Canvas</a> &amp;right)</td></tr>
+<tr class="memdesc:a9dd8446ea954e0c9fc57fea329a8e939"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a9dd8446ea954e0c9fc57fea329a8e939">More...</a><br/></td></tr>
+<tr class="separator:a9dd8446ea954e0c9fc57fea329a8e939"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29027ed6e063d7522037e1eb20d01bbf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a29027ed6e063d7522037e1eb20d01bbf">setPosition</a> (float x, float y)</td></tr>
+<tr class="memdesc:a29027ed6e063d7522037e1eb20d01bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the position of the widget.  <a href="#a29027ed6e063d7522037e1eb20d01bbf">More...</a><br/></td></tr>
+<tr class="separator:a29027ed6e063d7522037e1eb20d01bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbbb6db9cb089974aaf4ff463f5f5667"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#adbbb6db9cb089974aaf4ff463f5f5667">setSize</a> (float width, float height)</td></tr>
+<tr class="memdesc:adbbb6db9cb089974aaf4ff463f5f5667"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the widget.  <a href="#adbbb6db9cb089974aaf4ff463f5f5667">More...</a><br/></td></tr>
+<tr class="separator:adbbb6db9cb089974aaf4ff463f5f5667"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40a6f6bcf5eb7d2c363cba2a30c5fa70"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a40a6f6bcf5eb7d2c363cba2a30c5fa70">getSize</a> () const </td></tr>
+<tr class="memdesc:a40a6f6bcf5eb7d2c363cba2a30c5fa70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="#a40a6f6bcf5eb7d2c363cba2a30c5fa70">More...</a><br/></td></tr>
+<tr class="separator:a40a6f6bcf5eb7d2c363cba2a30c5fa70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fbf18ca8b28b32363c8ed85412709f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a5fbf18ca8b28b32363c8ed85412709f0">clear</a> (const sf::Color &amp;color=sf::Color(0, 0, 0, 255))</td></tr>
+<tr class="memdesc:a5fbf18ca8b28b32363c8ed85412709f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the entire canvas with a single color.  <a href="#a5fbf18ca8b28b32363c8ed85412709f0">More...</a><br/></td></tr>
+<tr class="separator:a5fbf18ca8b28b32363c8ed85412709f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e78efa5c2467e3887709837dab3582"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a42e78efa5c2467e3887709837dab3582">draw</a> (const sf::Drawable &amp;drawable, const sf::RenderStates &amp;states=sf::RenderStates::Default)</td></tr>
+<tr class="memdesc:a42e78efa5c2467e3887709837dab3582"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a drawable object to the canvas.  <a href="#a42e78efa5c2467e3887709837dab3582">More...</a><br/></td></tr>
+<tr class="separator:a42e78efa5c2467e3887709837dab3582"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a08cd27cb25b389b05d87094bd59cd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a4a08cd27cb25b389b05d87094bd59cd2">draw</a> (const sf::Vertex *vertices, unsigned int vertexCount, sf::PrimitiveType type, const sf::RenderStates &amp;states=sf::RenderStates::Default)</td></tr>
+<tr class="memdesc:a4a08cd27cb25b389b05d87094bd59cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw primitives defined by an array of vertices.  <a href="#a4a08cd27cb25b389b05d87094bd59cd2">More...</a><br/></td></tr>
+<tr class="separator:a4a08cd27cb25b389b05d87094bd59cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a981f49f8ba69e74ce3862a03b5669817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Canvas.html#a981f49f8ba69e74ce3862a03b5669817">display</a> ()</td></tr>
+<tr class="memdesc:a981f49f8ba69e74ce3862a03b5669817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the contents of the canvas.  <a href="#a981f49f8ba69e74ce3862a03b5669817">More...</a><br/></td></tr>
+<tr class="separator:a981f49f8ba69e74ce3862a03b5669817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classtgui_1_1ClickableWidget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1ClickableWidget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td></tr>
+<tr class="memitem:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa24c0d5b57f4e61d46438fd1d659a676">ClickableWidget</a> ()</td></tr>
+<tr class="memdesc:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#aa24c0d5b57f4e61d46438fd1d659a676">More...</a><br/></td></tr>
+<tr class="separator:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa338fa4709448b732011984bab01f23d inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa338fa4709448b732011984bab01f23d">ClickableWidget</a> (const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;copy)</td></tr>
+<tr class="memdesc:aa338fa4709448b732011984bab01f23d inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#aa338fa4709448b732011984bab01f23d">More...</a><br/></td></tr>
+<tr class="separator:aa338fa4709448b732011984bab01f23d inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb8a0b8f915f21534f820e77404c3a7f inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#afb8a0b8f915f21534f820e77404c3a7f">~ClickableWidget</a> ()</td></tr>
+<tr class="memdesc:afb8a0b8f915f21534f820e77404c3a7f inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#afb8a0b8f915f21534f820e77404c3a7f">More...</a><br/></td></tr>
+<tr class="separator:afb8a0b8f915f21534f820e77404c3a7f inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2149576ef8f6e001efb27458dad6b945 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a2149576ef8f6e001efb27458dad6b945">operator=</a> (const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;right)</td></tr>
+<tr class="memdesc:a2149576ef8f6e001efb27458dad6b945 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a2149576ef8f6e001efb27458dad6b945">More...</a><br/></td></tr>
+<tr class="separator:a2149576ef8f6e001efb27458dad6b945 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a60c5722d15d0733f6743bf57c86d1c6a inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a> ()</td></tr>
 <tr class="memdesc:a60c5722d15d0733f6743bf57c86d1c6a inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a60c5722d15d0733f6743bf57c86d1c6a">More...</a><br/></td></tr>
@@ -234,9 +258,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a98900d9b8ec4166e5127532bfbd5cc59">~Transformable</a> ()</td></tr>
 <tr class="memdesc:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a98900d9b8ec4166e5127532bfbd5cc59">More...</a><br/></td></tr>
 <tr class="separator:a98900d9b8ec4166e5127532bfbd5cc59 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">setPosition</a> (float x, float y)</td></tr>
-<tr class="memdesc:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the position of the widget.  <a href="#a4847f802d66cdf386d09595fecfa3131">More...</a><br/></td></tr>
-<tr class="separator:a4847f802d66cdf386d09595fecfa3131 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ada03924f27c6779fe0514060b14a7401">setPosition</a> (const sf::Vector2f &amp;position)</td></tr>
 <tr class="memdesc:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the position of the widget  <a href="#ada03924f27c6779fe0514060b14a7401">More...</a><br/></td></tr>
 <tr class="separator:ada03924f27c6779fe0514060b14a7401 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -284,41 +305,32 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9792c85f15d8582f514306be48c57f23 inherit pub_methods_classtgui_1_1CallbackManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
-<a class="anchor" id="a53cd4caf7ba0379828cafb848777d8cd"></a>
+<a class="anchor" id="aee8d8e4679da11df9b1d404eacf22556"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="classtgui_1_1ClickableWidget.html#a53cd4caf7ba0379828cafb848777d8cd">tgui::ClickableWidget::ClickableWidgetCallbacks</a></td>
+          <td class="memname">enum <a class="el" href="classtgui_1_1Canvas.html#aee8d8e4679da11df9b1d404eacf22556">tgui::Canvas::CanvasCallbacks</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Defines specific triggers to <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a>. </p>
+<p>Defines specific triggers to <a class="el" href="classtgui_1_1Canvas.html">Canvas</a>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a53cd4caf7ba0379828cafb848777d8cda0a20eee0370e882a15e3afcf275d2176"></a>LeftMousePressed</em>&#160;</td><td class="fielddoc">
-<p>The left mouse button was pressed. </p>
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="a53cd4caf7ba0379828cafb848777d8cdabb4df4c10a5a3f4b3359554255e4fc58"></a>LeftMouseReleased</em>&#160;</td><td class="fielddoc">
-<p>The left mouse button was released. </p>
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="a53cd4caf7ba0379828cafb848777d8cdad4470f95882a08a3eb08808f90ea4227"></a>LeftMouseClicked</em>&#160;</td><td class="fielddoc">
-<p>The left mouse button was clicked. </p>
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="a53cd4caf7ba0379828cafb848777d8cda549dbee65d6b8368827b2ea3bd10092e"></a>AllClickableWidgetCallbacks</em>&#160;</td><td class="fielddoc">
-<p>All triggers defined in <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> and its base classes. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="aee8d8e4679da11df9b1d404eacf22556a2c02d83cecb908a8ab6a80901e415e26"></a>AllCanvasCallbacks</em>&#160;</td><td class="fielddoc">
+<p>All triggers defined in <a class="el" href="classtgui_1_1Canvas.html">Canvas</a> and its base classes. </p>
 </td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="aa24c0d5b57f4e61d46438fd1d659a676"></a>
+<a class="anchor" id="ad2d04853bfbb935b65f55eddb8f36c52"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">tgui::ClickableWidget::ClickableWidget </td>
+          <td class="memname">tgui::Canvas::Canvas </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -330,14 +342,14 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa338fa4709448b732011984bab01f23d"></a>
+<a class="anchor" id="a8bb1c9f85b7b42083870f959c0f0239e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">tgui::ClickableWidget::ClickableWidget </td>
+          <td class="memname">tgui::Canvas::Canvas </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Canvas.html">Canvas</a> &amp;&#160;</td>
           <td class="paramname"><em>copy</em></td><td>)</td>
           <td></td>
         </tr>
@@ -354,7 +366,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afb8a0b8f915f21534f820e77404c3a7f"></a>
+<a class="anchor" id="a48912b2f1e43ee001cf947c2ff75cc0f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -362,7 +374,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual tgui::ClickableWidget::~ClickableWidget </td>
+          <td class="memname">virtual tgui::Canvas::~Canvas </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -380,7 +392,134 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aef9a7d2d1fe3facffd1d233747543819"></a>
+<a class="anchor" id="a5fbf18ca8b28b32363c8ed85412709f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Canvas::clear </td>
+          <td>(</td>
+          <td class="paramtype">const sf::Color &amp;&#160;</td>
+          <td class="paramname"><em>color</em> = <code>sf::Color(0,&#160;0,&#160;0,&#160;255)</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear the entire canvas with a single color. </p>
+<p>This function is usually called once every frame, to clear the previous contents of the canvas.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>Fill color to use to clear the canvas </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a981f49f8ba69e74ce3862a03b5669817"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Canvas::display </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Update the contents of the canvas. </p>
+<p>This function updates the canvas with what has been drawn so far. Like for windows, calling this function is mandatory at the end of rendering. Not calling it may leave the texture in an undefined state. </p>
+
+</div>
+</div>
+<a class="anchor" id="a42e78efa5c2467e3887709837dab3582"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Canvas::draw </td>
+          <td>(</td>
+          <td class="paramtype">const sf::Drawable &amp;&#160;</td>
+          <td class="paramname"><em>drawable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::RenderStates &amp;&#160;</td>
+          <td class="paramname"><em>states</em> = <code>sf::RenderStates::Default</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw a drawable object to the canvas. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">drawable</td><td>Object to draw </td></tr>
+    <tr><td class="paramname">states</td><td>Render states to use for drawing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4a08cd27cb25b389b05d87094bd59cd2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Canvas::draw </td>
+          <td>(</td>
+          <td class="paramtype">const sf::Vertex *&#160;</td>
+          <td class="paramname"><em>vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>vertexCount</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::PrimitiveType&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::RenderStates &amp;&#160;</td>
+          <td class="paramname"><em>states</em> = <code>sf::RenderStates::Default</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw primitives defined by an array of vertices. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vertices</td><td>Pointer to the vertices </td></tr>
+    <tr><td class="paramname">vertexCount</td><td>Number of vertices in the array </td></tr>
+    <tr><td class="paramname">type</td><td>Type of primitives to draw </td></tr>
+    <tr><td class="paramname">states</td><td>Render states to use for drawing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a40a6f6bcf5eb7d2c363cba2a30c5fa70"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -388,7 +527,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual sf::Vector2f tgui::ClickableWidget::getSize </td>
+          <td class="memname">virtual sf::Vector2f tgui::Canvas::getSize </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -404,20 +543,18 @@ Public Member Functions</h2></td></tr>
 <p>Returns the size of the widget. </p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the widget </dd></dl>
 
-<p>Implements <a class="el" href="classtgui_1_1Transformable.html#ac7528dd61c9b68bb3ebbe4af302224d3">tgui::Transformable</a>.</p>
-
-<p>Reimplemented in <a class="el" href="classtgui_1_1RadioButton.html#a5ab0ad595894ea9a6efb08b973608ed5">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Canvas.html#a40a6f6bcf5eb7d2c363cba2a30c5fa70">tgui::Canvas</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a831d7c1520efc00ebd1228c05fad6497">tgui::AnimatedPicture</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a1dd2155546ab717c456cbf9214f41d46">tgui::SpriteSheet</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#aef9a7d2d1fe3facffd1d233747543819">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2149576ef8f6e001efb27458dad6b945"></a>
+<a class="anchor" id="a9dd8446ea954e0c9fc57fea329a8e939"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a>&amp; tgui::ClickableWidget::operator= </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Canvas.html">Canvas</a>&amp; tgui::Canvas::operator= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtgui_1_1ClickableWidget.html">ClickableWidget</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Canvas.html">Canvas</a> &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -435,7 +572,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3a70bf0ea8995af8b201481e1e4778f6"></a>
+<a class="anchor" id="a29027ed6e063d7522037e1eb20d01bbf"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -443,7 +580,54 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void tgui::ClickableWidget::setSize </td>
+          <td class="memname">virtual void tgui::Canvas::setPosition </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the position of the widget. </p>
+<p>This function completely overwrites the previous position. See the move function to apply an offset based on the previous position instead. The default position of a transformable widget is (0, 0).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>X coordinate of the new position </td></tr>
+    <tr><td class="paramname">y</td><td>Y coordinate of the new position</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classtgui_1_1Transformable.html#a9b2bed702aca5b2a0652e62967751503" title="Move the widget by a given offset. ">move</a>, <a class="el" href="classtgui_1_1Transformable.html#aedc24e5fd37da909d6b6f0f850d278dc" title="get the position of the widget ">getPosition</a> </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">tgui::Transformable</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adbbb6db9cb089974aaf4ff463f5f5667"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Canvas::setSize </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>width</em>, </td>
@@ -476,19 +660,17 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classtgui_1_1Transformable.html#a0bde1aa906ff8c526764787b3a7d8343">tgui::Transformable</a>.</p>
-
-<p>Reimplemented in <a class="el" href="classtgui_1_1EditBox.html#ab17ae25e2075263097608092c1d0837f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Button.html#a578dd504e70efae0ce734851f9fa72b5">tgui::Button</a>, <a class="el" href="classtgui_1_1Picture.html#ad5305fef2f6538edfb489a61006f9ccd">tgui::Picture</a>, <a class="el" href="classtgui_1_1RadioButton.html#abe0b926c30991ef515b2b69e4384aa23">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1LoadingBar.html#a07a41b1b2ad021958d7e6eb0529cdcbf">tgui::LoadingBar</a>, <a class="el" href="classtgui_1_1Slider2d.html#a2f696e0dae7548ca385e5a704fe0c552">tgui::Slider2d</a>, <a class="el" href="classtgui_1_1SpinButton.html#a644f2fd42792b9b681fb2a3e1df4d946">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Canvas.html#adbbb6db9cb089974aaf4ff463f5f5667">tgui::Canvas</a>, <a class="el" href="classtgui_1_1AnimatedPicture.html#a179d2ede5b0e5ba4a788d88fd0995aa0">tgui::AnimatedPicture</a>, <a class="el" href="classtgui_1_1Label.html#a8d1683b8a0a419194043ded4443aa55f">tgui::Label</a>, and <a class="el" href="classtgui_1_1SpriteSheet.html#a99fdf0ad8728fbf5a1ed33a3e7127d84">tgui::SpriteSheet</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a3a70bf0ea8995af8b201481e1e4778f6">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/TGUI/<a class="el" href="ClickableWidget_8hpp_source.html">ClickableWidget.hpp</a></li>
+<li>include/TGUI/<a class="el" href="Canvas_8hpp_source.html">Canvas.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 11 2014 19:07:01 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 11 2014 19:07:00 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
