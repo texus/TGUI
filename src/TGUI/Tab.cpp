@@ -1036,11 +1036,11 @@ namespace tgui
                 {
                     // Get the global position
                     sf::Vector2f topLeftPosition
-                        = states.transform.transformPoint((((view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                          (((view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                        = states.transform.transformPoint(((m_DistanceToSide - realRect.left + (view.getSize().x / 2.f) +  - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                          ((m_DistanceToSide - realRect.top + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
                     sf::Vector2f bottomRightPosition
-                        = states.transform.transformPoint((tabWidth - (2.0f * m_DistanceToSide) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                          ((m_TabHeight + defaultRect.height) / 2.f - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+                        = states.transform.transformPoint((tabWidth - realRect.left - m_DistanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                          ((m_TabHeight + defaultRect.height) / 2.f - realRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
