@@ -837,8 +837,9 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
+        const sf::View& view = target.getView();
+        float scaleViewX = target.getSize().x / view.getSize().x;
+        float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Apply the transformations
         states.transform *= getTransform();
@@ -1034,8 +1035,12 @@ namespace tgui
                 if (clippingRequired)
                 {
                     // Get the global position
-                    sf::Vector2f topLeftPosition = states.transform.transformPoint((target.getView().getSize() / 2.f) - target.getView().getCenter());
-                    sf::Vector2f bottomRightPosition = states.transform.transformPoint(sf::Vector2f(tabWidth - (2.0f * m_DistanceToSide), (m_TabHeight + defaultRect.height) / 2.f) - target.getView().getCenter() + (target.getView().getSize() / 2.f));
+                    sf::Vector2f topLeftPosition
+                        = states.transform.transformPoint((((view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                          (((view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f bottomRightPosition
+                        = states.transform.transformPoint((tabWidth - (2.0f * m_DistanceToSide) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                          ((m_TabHeight + defaultRect.height) / 2.f - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

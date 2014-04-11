@@ -1100,27 +1100,31 @@ namespace tgui
         sf::Vector2f position = getPosition();
 
         // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / target.getView().getSize().x;
-        float scaleViewY = target.getSize().y / target.getView().getSize().y;
-
-        sf::Vector2f viewPosition = (target.getView().getSize() / 2.f) - target.getView().getCenter();
+        const sf::View& view = target.getView();
+        float scaleViewX = target.getSize().x / view.getSize().x;
+        float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPanelPosition = states.transform.transformPoint(position.x + m_LeftBorder + viewPosition.x,
-                                                                            position.y + m_TitleBarHeight + m_TopBorder + viewPosition.y);
-        sf::Vector2f bottomRightPanelPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + viewPosition.x,
-                                                                                position.y + m_TitleBarHeight + m_Size.y + m_TopBorder + viewPosition.y);
+        sf::Vector2f topLeftPanelPosition
+            = states.transform.transformPoint(((position.x + m_LeftBorder - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                              ((position.y + m_TitleBarHeight + m_TopBorder - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f bottomRightPanelPosition
+            = states.transform.transformPoint((position.x + m_Size.x + m_LeftBorder - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                              (position.y + m_TitleBarHeight + m_Size.y + m_TopBorder - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+
         sf::Vector2f topLeftTitleBarPosition;
         sf::Vector2f bottomRightTitleBarPosition;
 
         if (m_IconTexture.data)
-            topLeftTitleBarPosition = states.transform.transformPoint(position.x + 2*m_DistanceToSide + (m_IconTexture.getSize().x * m_IconTexture.sprite.getScale().x) + viewPosition.x,
-                                                                      position.y + viewPosition.y);
+            topLeftTitleBarPosition = states.transform.transformPoint(((position.x + 2*m_DistanceToSide + m_IconTexture.getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                      ((position.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
         else
-            topLeftTitleBarPosition = states.transform.transformPoint(position.x + m_DistanceToSide + viewPosition.x, position.y + viewPosition.y);
+            topLeftTitleBarPosition = states.transform.transformPoint(((position.x + m_DistanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                      ((position.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
 
-        bottomRightTitleBarPosition = states.transform.transformPoint(position.x + m_Size.x + m_LeftBorder + m_RightBorder - (2*m_DistanceToSide) - m_CloseButton->getSize().x + viewPosition.x,
-                                                                      position.y + m_TitleBarHeight + viewPosition.y);
+        bottomRightTitleBarPosition = states.transform.transformPoint((position.x + m_Size.x + m_LeftBorder + m_RightBorder - (2*m_DistanceToSide) - m_CloseButton->getSize().x - view.getCenter().x + (view.getSize().x / 2.f))
+                                                                      * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                                      (position.y + m_TitleBarHeight - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
 
         // Adjust the transformation
         states.transform *= getTransform();
