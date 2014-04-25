@@ -988,11 +988,13 @@ namespace tgui
 
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Adjust the transformation
-        states.transform *= getTransform();
+        m_Panel->setPosition(getAbsolutePosition());
 
         // Draw the panel
-        target.draw(*m_Panel, states);
+        target.draw(*m_Panel);
+
+        // Adjust the transformation
+        states.transform *= getTransform();
 
         // Draw left border
         sf::RectangleShape border(sf::Vector2f(static_cast<float>(m_LeftBorder), m_Panel->getSize().y + m_TopBorder));

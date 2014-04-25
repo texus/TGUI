@@ -846,6 +846,7 @@ namespace tgui
 
         float scalingY = m_TabHeight / static_cast<float>(m_TextureNormal_M.getSize().y);
         bool clippingRequired = false;
+        unsigned int accumulatedTabWidth = 0;
         unsigned int tabWidth;
         sf::FloatRect realRect;
         sf::FloatRect defaultRect;
@@ -856,7 +857,7 @@ namespace tgui
         defaultRect = tempText.getLocalBounds();
 
         // Loop through all tabs
-        for (unsigned int i=0; i<m_TabNames.size(); ++i)
+        for (unsigned int i = 0; i < m_TabNames.size(); ++i)
         {
             // Find the tab height
             if (m_MaximumTabWidth)
@@ -1035,12 +1036,10 @@ namespace tgui
                 if (clippingRequired)
                 {
                     // Get the global position
-                    sf::Vector2f topLeftPosition
-                        = states.transform.transformPoint(((m_DistanceToSide - realRect.left + (view.getSize().x / 2.f) +  - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                          ((m_DistanceToSide - realRect.top + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-                    sf::Vector2f bottomRightPosition
-                        = states.transform.transformPoint((tabWidth - realRect.left - m_DistanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                          ((m_TabHeight + defaultRect.height) / 2.f - realRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + m_DistanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f bottomRightPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + tabWidth - m_DistanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                    ((getAbsolutePosition().y + ((m_TabHeight + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
@@ -1074,6 +1073,7 @@ namespace tgui
 
             // Set the next tab on the correct position
             states.transform.translate(static_cast<float>(tabWidth), 0);
+            accumulatedTabWidth += tabWidth;
         }
     }
 
