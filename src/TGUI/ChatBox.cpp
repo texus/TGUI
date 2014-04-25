@@ -933,17 +933,21 @@ namespace tgui
     {
         assert(lineNumber < m_Panel->getWidgets().size());
 
+        auto line = tgui::Label::Ptr(m_Panel->getWidgets()[lineNumber]);
+
+        // Count the amount of lines that the label is taking
+        std::string lineText = line->getText().toAnsiString();
+        int linesOfText = std::count(lineText.begin(), lineText.end(), '\n') + 1;
+
         // If a line spacing was manually set then just return that one
         if (m_LineSpacing > 0)
-            return m_LineSpacing;
+            return m_LineSpacing * linesOfText;
 
-        auto line = tgui::Label::Ptr(m_Panel->getWidgets()[lineNumber]);
         unsigned int lineSpacing = m_Panel->getGlobalFont().getLineSpacing(line->getTextSize());
-
         if (lineSpacing > line->getTextSize())
-            return lineSpacing;
+            return lineSpacing * linesOfText;
         else
-            return static_cast<unsigned int>(std::ceil(line->getSize().y * 13.5 / 10.0));
+            return static_cast<unsigned int>(std::ceil(line->getTextSize() * 13.5 / 10.0) * linesOfText);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
