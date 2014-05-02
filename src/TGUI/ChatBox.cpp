@@ -30,7 +30,6 @@
 #include <TGUI/ChatBox.hpp>
 
 #include <cmath>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -897,11 +896,15 @@ namespace tgui
     {
         assert(lineNumber < m_panel->getWidgets().size());
 
+        auto line = tgui::Label::Ptr(m_panel->getWidgets()[lineNumber]);
+
+        // Count the amount of lines that the label is taking
+        std::string lineText = line->getText().toAnsiString();
+        int linesOfText = std::count(lineText.begin(), lineText.end(), '\n') + 1;
+
         // If a line spacing was manually set then just return that one
         if (m_lineSpacing > 0)
-            return m_lineSpacing;
-
-        auto line = tgui::Label::Ptr(m_panel->getWidgets()[lineNumber]);
+            return m_lineSpacing * linesOfText;
 
         unsigned int lineSpacing;
         if (m_panel->getGlobalFont())
@@ -910,9 +913,9 @@ namespace tgui
             lineSpacing = 0;
 
         if (lineSpacing > line->getTextSize())
-            return lineSpacing;
+            return lineSpacing * linesOfText;
         else
-            return static_cast<unsigned int>(std::ceil(line->getSize().y * 13.5 / 10.0));
+            return static_cast<unsigned int>(std::ceil(line->getTextSize() * 13.5 / 10.0) * linesOfText);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -959,11 +962,13 @@ namespace tgui
 
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Adjust the transformation
-        states.transform *= getTransform();
+        m_panel->setPosition(getAbsolutePosition());
 
         // Draw the panel
-        target.draw(*m_panel, states);
+        target.draw(*m_panel);
+
+        // Adjust the transformation
+        states.transform *= getTransform();
 
         // Draw left border
         sf::RectangleShape border(sf::Vector2f(m_borders.left, m_panel->getSize().y + m_borders.top));

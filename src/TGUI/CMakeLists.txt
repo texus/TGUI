@@ -1,5 +1,6 @@
 
 set(TGUI_SRC
+<<<<<<< HEAD
     AnimatedPicture.cpp
     Button.cpp
     Callback.cpp

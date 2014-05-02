@@ -216,12 +216,12 @@ namespace tgui
     {
         Transformable::setPosition(x, y);
 
-        float positionX = x;
+        float positionX = 0;
         auto it2 = m_texturesSelected.begin();
         for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it, ++it2)
         {
-            it->setPosition(positionX, y);
-            it2->setPosition(positionX, y);
+            it->setPosition(positionX, 0);
+            it2->setPosition(positionX, 0);
 
             positionX += it->getSize().x;
         }
@@ -795,6 +795,7 @@ namespace tgui
     {
         GLint scissor[4];
         bool clippingRequired = false;
+        unsigned int accumulatedTabWidth = 0;
         sf::FloatRect realRect;
         sf::FloatRect defaultRect;
         sf::Text tempText(m_text);
@@ -802,6 +803,8 @@ namespace tgui
         // Calculate the height and top of all strings
         tempText.setString("kg");
         defaultRect = tempText.getLocalBounds();
+
+        states.transform *= getTransform();
 
         // Loop through all tabs
         auto textureNormalIt = m_texturesNormal.cbegin();
@@ -837,7 +840,7 @@ namespace tgui
                 realRect = tempText.getLocalBounds();
 
                 // Calculate the new position for the text
-                realRect.left = m_distanceToSide - realRect.left;
+                realRect.left = (m_distanceToSide - realRect.left) + ((textureNormalIt->getSize().x - (2*m_distanceToSide) - realRect.width) / 2.0f);
                 realRect.top = ((m_textureNormal.getSize().y - defaultRect.height) / 2.f) - defaultRect.top;
 
                 // Move the text to the correct position
@@ -860,12 +863,10 @@ namespace tgui
                     float scaleViewY = target.getSize().y / view.getSize().y;
 
                     // Get the global position
-                    sf::Vector2f topLeftPosition
-                        = states.transform.transformPoint(((textureNormalIt->getPosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                          ((textureNormalIt->getPosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-                    sf::Vector2f bottomRightPosition
-                        = states.transform.transformPoint((textureNormalIt->getPosition().x + (textureNormalIt->getSize().x - (2.0f * m_distanceToSide)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                          (textureNormalIt->getPosition().y + ((m_textureNormal.getSize().y + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f bottomRightPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + textureNormalIt->getSize().x - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                                    ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
@@ -897,6 +898,8 @@ namespace tgui
                     glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
                 }
             }
+
+            accumulatedTabWidth += textureNormalIt->getSize().x;
         }
     }
 

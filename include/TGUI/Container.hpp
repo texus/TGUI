@@ -426,6 +426,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the distance between the position of the container and a widget that would be drawn inside
+        ///        this container on relative position (0,0).
+        ///
+        /// \return Offset of the widgets in the container
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getWidgetsOffset() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         // This function is used internally by child widget to alert there parent about a callback.
         // If it reaches the gui, then the callback can be obtained by calling the pollCallback function of the gui.
