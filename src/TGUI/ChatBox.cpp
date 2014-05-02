@@ -276,6 +276,9 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font)
     {
+        if (m_panel->getGlobalFont() == nullptr && font == nullptr)
+            throw Exception("ChatBox::addLine called while no valid font was set.");
+
         auto& widgets = m_panel->getWidgets();
 
         // Remove the top line if you exceed the maximum
