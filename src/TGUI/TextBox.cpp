@@ -447,12 +447,11 @@ namespace tgui
         m_TextAfterSelection1.setCharacterSize(m_TextSize);
         m_TextAfterSelection2.setCharacterSize(m_TextSize);
 
+        if (!m_TextBeforeSelection.getFont())
+            return;
+
         // Calculate the height of one line
         m_LineHeight = m_TextBeforeSelection.getFont()->getLineSpacing(m_TextSize);
-
-        // Don't continue when line height is 0
-        if (m_LineHeight == 0)
-            return;
 
         // There is also a minimum height
         if (m_Size.y < m_LineHeight)
