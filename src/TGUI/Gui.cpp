@@ -44,7 +44,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui(sf::RenderWindow& window) :
+    Gui::Gui(sf::RenderTarget& window) :
         m_Window (&window)
     {
         m_Container.m_Window = &window;
@@ -55,7 +55,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setWindow(sf::RenderWindow& window)
+    void Gui::setWindow(sf::RenderTarget& window)
     {
         m_Window = &window;
         m_Container.m_Window = &window;
@@ -63,7 +63,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::RenderWindow* Gui::getWindow()
+    sf::RenderTarget* Gui::getWindow()
     {
         return m_Window;
     }
