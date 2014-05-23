@@ -44,8 +44,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui(sf::RenderWindow& window) :
-    m_window (&window)
+    Gui::Gui(sf::RenderTarget& window) :
+        m_window(&window)
     {
         m_container.m_window = &window;
         m_container.bindGlobalCallback(&Gui::addChildCallback, this);
@@ -55,7 +55,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setWindow(sf::RenderWindow& window)
+    void Gui::setWindow(sf::RenderTarget& window)
     {
         m_window = &window;
         m_container.m_window = &window;
@@ -63,7 +63,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::RenderWindow* Gui::getWindow()
+    sf::RenderTarget* Gui::getWindow()
     {
         return m_window;
     }
