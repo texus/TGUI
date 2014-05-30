@@ -387,7 +387,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ListBox::addItem(const sf::String& itemName)
+    int ListBox::addItem(const sf::String& itemName, int id)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_MaxItems == 0) || (m_Items.size() < m_MaxItems))
@@ -405,6 +405,7 @@ namespace tgui
 
             // Add the item to the list
             m_Items.push_back(itemName);
+            m_ItemIds.push_back(id);
 
             // If there is a scrollbar then tell it that another item was added
             if (m_Scroll != nullptr)
@@ -422,7 +423,7 @@ namespace tgui
     bool ListBox::setSelectedItem(const sf::String& itemName)
     {
         // Loop through all items
-        for (unsigned int i=0; i<m_Items.size(); ++i)
+        for (unsigned int i = 0; i < m_Items.size(); ++i)
         {
             // Check if a match was found
             if (m_Items[i] == itemName)
@@ -483,6 +484,7 @@ namespace tgui
 
         // Remove the item
         m_Items.erase(m_Items.begin() + index);
+        m_ItemIds.erase(m_ItemIds.begin() + index);
 
         // If there is a scrollbar then tell it that an item was removed
         if (m_Scroll != nullptr)
@@ -502,12 +504,13 @@ namespace tgui
     bool ListBox::removeItem(const sf::String& itemName)
     {
         // Loop through all items
-        for (unsigned int i=0; i<m_Items.size(); ++i)
+        for (unsigned int i = 0; i < m_Items.size(); ++i)
         {
             // When the name matches then delete the item
             if (m_Items[i] == itemName)
             {
                 m_Items.erase(m_Items.begin() + i);
+                m_ItemIds.erase(m_ItemIds.begin() + i);
 
                 // Check if the selected item should change
                 if (m_SelectedItem == static_cast<int>(i))
@@ -529,10 +532,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int ListBox::removeItemsById(int id)
+    {
+        unsigned int removedItems = 0;
+
+        for (unsigned int i = 0; i < m_Items.size();)
+        {
+            if (m_ItemIds[i] == id)
+            {
+                m_Items.erase(m_Items.begin() + i);
+                m_ItemIds.erase(m_ItemIds.begin() + i);
+
+                removedItems++;
+            }
+            else
+                ++i;
+        }
+
+        return removedItems;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::removeAllItems()
     {
         // Clear the list, remove all items
         m_Items.clear();
+        m_ItemIds.clear();
 
         // Unselect any selected item
         m_SelectedItem = -1;
@@ -562,7 +588,7 @@ namespace tgui
     int ListBox::getItemIndex(const sf::String& itemName) const
     {
         // Loop through all items
-        for (unsigned int i=0; i<m_Items.size(); ++i)
+        for (unsigned int i = 0; i < m_Items.size(); ++i)
         {
             // When the name matches then return the index
             if (m_Items[i] == itemName)
@@ -596,6 +622,16 @@ namespace tgui
     int ListBox::getSelectedItemIndex() const
     {
         return m_SelectedItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int ListBox::getSelectedItemId() const
+    {
+        if (m_SelectedItem == -1)
+            return 0;
+        else
+            return m_ItemIds[m_SelectedItem];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,6 +687,7 @@ namespace tgui
 
             // Remove the items that didn't fit inside the list box
             m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
+            m_ItemIds.erase(m_ItemIds.begin() + m_MaxItems, m_ItemIds.end());
         }
     }
 
@@ -677,6 +714,7 @@ namespace tgui
 
                 // Remove the items that didn't fit inside the list box
                 m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
+                m_ItemIds.erase(m_ItemIds.begin() + m_MaxItems, m_ItemIds.end());
             }
         }
         else // There is a scrollbar
@@ -705,6 +743,7 @@ namespace tgui
         {
             // Remove the items that passed the limitation
             m_Items.erase(m_Items.begin() + m_MaxItems, m_Items.end());
+            m_ItemIds.erase(m_ItemIds.begin() + m_MaxItems, m_ItemIds.end());
 
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_Scroll != nullptr)
@@ -840,7 +879,7 @@ namespace tgui
                 if (m_SelectedItem < 0)
                     m_Callback.text  = "";
                 else
-                    m_Callback.text  = m_Items[m_SelectedItem];
+                    m_Callback.text = m_Items[m_SelectedItem];
 
                 m_Callback.value   = m_SelectedItem;
                 m_Callback.trigger = ItemSelected;
@@ -1288,7 +1327,7 @@ namespace tgui
             // Store the current transformations
             sf::Transform storedTransform = states.transform;
 
-            for (unsigned int i=0; i<m_Items.size(); ++i)
+            for (unsigned int i = 0; i < m_Items.size(); ++i)
             {
                 // Restore the transformations
                 states.transform = storedTransform;
