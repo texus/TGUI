@@ -614,7 +614,7 @@ namespace tgui
         if (m_LimitTextWidth)
         {
             // Now check if the text fits into the EditBox
-            while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x > width)
+            while (m_TextBeforeSelection.findCharacterPos(m_TextBeforeSelection.getString().getSize()).x - m_TextBeforeSelection.getPosition().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_Text.erase(m_Text.getSize()-1);
@@ -855,7 +855,7 @@ namespace tgui
                 width = 0;
 
             // Now check if the text fits into the EditBox
-            while (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x - getPosition().x > width)
+            while (m_TextBeforeSelection.findCharacterPos(m_DisplayedText.getSize()).x - m_TextBeforeSelection.getPosition().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_Text.erase(m_Text.getSize()-1);
