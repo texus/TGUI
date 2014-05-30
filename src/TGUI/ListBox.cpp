@@ -503,7 +503,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ListBox::removeItemsById(int id)
+    unsigned int ListBox::removeItemsById(int id)
     {
         unsigned int removedItems = 0;
 

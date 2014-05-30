@@ -422,7 +422,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ComboBox::removeItemsById(int id)
+    unsigned int ComboBox::removeItemsById(int id)
     {
         return m_listBox->removeItemsById(id);
     }
