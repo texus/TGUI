@@ -345,7 +345,7 @@ namespace tgui
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
-            while (m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x > width)
+            while (m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_text.erase(m_text.getSize()-1);
@@ -574,7 +574,7 @@ namespace tgui
             float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
 
             // Now check if the text fits into the EditBox
-            while (m_textBeforeSelection.findCharacterPos(m_displayedText.getSize()).x - getPosition().x > width)
+            while (m_textBeforeSelection.findCharacterPos(m_displayedText.getSize()).x - m_textBeforeSelection.getPosition().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
                 m_text.erase(m_text.getSize()-1);
