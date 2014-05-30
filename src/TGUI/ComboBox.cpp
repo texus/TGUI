@@ -375,14 +375,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ComboBox::addItem(const sf::String& item)
+    int ComboBox::addItem(const sf::String& item, int id)
     {
         // Make room to add another item, until there are enough items
         if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItems().size()))
             m_listBox->setSize(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItems().size() + 1)));
 
         // Add the item
-        return m_listBox->addItem(item);
+        return m_listBox->addItem(item, id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,6 +418,13 @@ namespace tgui
     bool ComboBox::removeItem(const sf::String& itemName)
     {
         return m_listBox->removeItem(itemName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int ComboBox::removeItemsById(int id)
+    {
+        return m_listBox->removeItemsById(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -460,6 +467,13 @@ namespace tgui
     int ComboBox::getSelectedItemIndex() const
     {
         return m_listBox->getSelectedItemIndex();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int ComboBox::getSelectedItemId() const
+    {
+        return m_listBox->getSelectedItemId();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
