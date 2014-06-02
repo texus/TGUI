@@ -26,6 +26,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/SharedWidgetPtr.inl>
+#include <TGUI/Clipboard.hpp>
 #include <TGUI/Gui.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +36,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui() :
-        m_Window (nullptr)
+        m_Window        (nullptr),
+        m_accessToWindow(false)
     {
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
 
@@ -44,8 +46,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Gui::Gui(sf::RenderWindow& window) :
+        m_Window        (&window),
+        m_accessToWindow(true)
+    {
+        m_Container.m_Window = &window;
+        m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
+
+        m_Container.m_Focused = true;
+
+        TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Gui::Gui(sf::RenderTarget& window) :
-        m_Window (&window)
+        m_Window        (&window),
+        m_accessToWindow(false)
     {
         m_Container.m_Window = &window;
         m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
@@ -55,8 +72,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Gui::setWindow(sf::RenderWindow& window)
+    {
+        m_accessToWindow = true;
+
+        m_Window = &window;
+        m_Container.m_Window = &window;
+
+        TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Gui::setWindow(sf::RenderTarget& window)
     {
+        m_accessToWindow = false;
+
         m_Window = &window;
         m_Container.m_Window = &window;
     }
@@ -118,6 +149,9 @@ namespace tgui
         else if (event.type == sf::Event::GainedFocus)
         {
             m_Container.m_Focused = true;
+
+            if (m_accessToWindow)
+                TGUI_Clipboard.setWindowHandle(static_cast<sf::RenderWindow*>(m_Window)->getSystemHandle());
         }
 
         // Let the event manager handle the event
