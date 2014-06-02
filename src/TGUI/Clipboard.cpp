@@ -2,6 +2,7 @@
 //
 // TGUI - Texus's Graphical User Interface
 // Copyright (C) 2012-2014 Bruno Van de Velde (vdv_b@tgui.eu)
+//                         Koushtav Chakrabarty (koushtav@fleptic.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -23,7 +24,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <SFML/Config.hpp>
 #include <TGUI/Clipboard.hpp>
+
+#ifdef SFML_SYSTEM_WINDOWS
+    #include <windows.h>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -31,7 +37,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Clipboard::Clipboard()
+    Clipboard::Clipboard() :
+        m_windowHandle     (),
+        m_isWindowHandleSet(false)
     {
     }
 
@@ -45,6 +53,28 @@ namespace tgui
 
     sf::String Clipboard::get()
     {
+    #ifdef SFML_SYSTEM_WINDOWS
+        if (m_isWindowHandleSet)
+        {
+            if (IsClipboardFormatAvailable(CF_TEXT) && OpenClipboard(m_windowHandle))
+            {
+                HGLOBAL hGlobal = GetClipboardData(CF_TEXT);
+                if (hGlobal != NULL)
+                {
+                    const char* lpszData = static_cast<const char*>(GlobalLock(hGlobal));
+                    if (lpszData != NULL)
+                    {
+                        m_contents = lpszData;
+
+                        GlobalUnlock(hGlobal);
+                    }
+                }
+
+                CloseClipboard();
+            }
+        }
+    #endif
+
         return m_contents;
     }
 
@@ -53,6 +83,41 @@ namespace tgui
     void Clipboard::set(const sf::String& contents)
     {
         m_contents = contents;
+
+    #ifdef SFML_SYSTEM_WINDOWS
+        if (m_isWindowHandleSet)
+        {
+            if (OpenClipboard(m_windowHandle))
+            {
+                EmptyClipboard();
+
+                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, m_contents.getSize() + 1);
+                if (hGlobal != NULL)
+                {
+                    char* pchData = static_cast<char*>(GlobalLock(hGlobal));
+                    if (pchData != NULL)
+                    {
+                        strcpy(pchData, m_contents.toAnsiString().c_str());
+                        SetClipboardData(CF_TEXT, hGlobal);
+
+                        GlobalUnlock(hGlobal);
+                    }
+
+                    GlobalFree(hGlobal);
+                }
+
+                CloseClipboard();
+            }
+        }
+    #endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Clipboard::setWindowHandle(const sf::WindowHandle& windowHandle)
+    {
+        m_windowHandle = windowHandle;
+        m_isWindowHandleSet = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
