@@ -248,7 +248,6 @@ namespace tgui
         m_tabNames.push_back(name);
         m_text.setString(name);
 
-        sf::Vector2f position = getPosition();
         sf::Vector2f currentSize = getSize();
 
         // Calculate the width of the tab
@@ -268,8 +267,8 @@ namespace tgui
         m_texturesNormal.back().setSize(width, m_texturesNormal.back().getSize().y);
         m_texturesSelected.back().setSize(width, m_texturesSelected.back().getSize().y);
 
-        m_texturesNormal.back().setPosition(position.x + currentSize.x, position.y);
-        m_texturesSelected.back().setPosition(position.x + currentSize.x, position.y);
+        m_texturesNormal.back().setPosition(currentSize.x, 0);
+        m_texturesSelected.back().setPosition(currentSize.x, 0);
 
         m_width += width;
 
