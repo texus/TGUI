@@ -430,6 +430,16 @@ namespace tgui
             {
                 // Select the item
                 m_SelectedItem = static_cast<int>(i);
+
+                // Move the scrollbar if needed
+                if (m_Scroll)
+                {
+                    if (m_SelectedItem * getItemHeight() < m_Scroll->getValue())
+                        m_Scroll->setValue(m_SelectedItem * getItemHeight());
+                    else if ((m_SelectedItem + 1) * getItemHeight() > m_Scroll->getValue() + m_Scroll->getLowValue())
+                        m_Scroll->setValue((m_SelectedItem + 1) * getItemHeight() - m_Scroll->getLowValue());
+                }
+
                 return true;
             }
         }
@@ -461,6 +471,16 @@ namespace tgui
 
         // Select the item
         m_SelectedItem = index;
+
+        // Move the scrollbar if needed
+        if (m_Scroll)
+        {
+            if (m_SelectedItem * getItemHeight() < m_Scroll->getValue())
+                m_Scroll->setValue(m_SelectedItem * getItemHeight());
+            else if ((m_SelectedItem + 1) * getItemHeight() > m_Scroll->getValue() + m_Scroll->getLowValue())
+                m_Scroll->setValue((m_SelectedItem + 1) * getItemHeight() - m_Scroll->getLowValue());
+        }
+
         return true;
     }
 
