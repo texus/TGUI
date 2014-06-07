@@ -31,17 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::Scrollbar() :
-        m_mouseDownOnThumb  (false),
-        m_maximum           (10),
-        m_value             ( 0),
-        m_lowValue          ( 6),
-        m_verticalScroll    (true),
-        m_verticalImage     (true),
-        m_scrollAmount      ( 1),
-        m_autoHide          (true),
-        m_mouseDownOnArrow  (false),
-        m_separateHoverImage(false)
+    Scrollbar::Scrollbar()
     {
         m_callback.widgetType = Type_Scrollbar;
         m_draggableWidget = true;

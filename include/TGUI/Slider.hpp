@@ -314,21 +314,21 @@ namespace tgui
         std::string m_loadedConfigFile;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
-        bool m_mouseDownOnThumb;
+        bool m_mouseDownOnThumb = false;
         sf::Vector2f m_mouseDownOnThumbPos;
 
-        unsigned int m_minimum;
-        unsigned int m_maximum;
-        unsigned int m_value;
+        unsigned int m_minimum = 0;
+        unsigned int m_maximum = 10;
+        unsigned int m_value = 0;
 
         // Is the slider draw vertically?
-        bool m_verticalScroll;
+        bool m_verticalScroll = true;
 
         // Does the image lie vertically?
-        bool m_verticalImage;
+        bool m_verticalImage = true;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage;
+        bool m_separateHoverImage = false;
 
         Texture m_textureTrackNormal;
         Texture m_textureTrackHover;

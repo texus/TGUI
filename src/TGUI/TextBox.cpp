@@ -36,27 +36,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox::TextBox() :
-    m_size                    (360, 200),
-    m_text                    (""),
-    m_displayedText           (""),
-    m_textSize                (30),
-    m_lineHeight              (40),
-    m_lines                   (1),
-    m_maxChars                (0),
-    m_topLine                 (1),
-    m_visibleLines            (1),
-    m_selChars                (0),
-    m_selStart                (0),
-    m_selEnd                  (0),
-    m_caretPosition           (0, 0),
-    m_caretVisible            (true),
-    m_caretColor              (110, 110, 255),
-    m_caretWidth              (2),
-    m_selectionTextsNeedUpdate(true),
-    m_scroll                  (nullptr),
-    m_possibleDoubleClick     (false),
-    m_readOnly                (false)
+    TextBox::TextBox()
     {
         m_callback.widgetType = Type_TextBox;
         m_animatedWidget = true;
@@ -68,37 +48,37 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox(const TextBox& copy) :
-    Widget                       (copy),
-    WidgetBorders                (copy),
-    m_loadedConfigFile           (copy.m_loadedConfigFile),
-    m_size                       (copy.m_size),
-    m_text                       (copy.m_text),
-    m_displayedText              (copy.m_displayedText),
-    m_textSize                   (copy.m_textSize),
-    m_lineHeight                 (copy.m_lineHeight),
-    m_lines                      (copy.m_lines),
-    m_maxChars                   (copy.m_maxChars),
-    m_topLine                    (copy.m_topLine),
-    m_visibleLines               (copy.m_visibleLines),
-    m_selChars                   (copy.m_selChars),
-    m_selStart                   (copy.m_selStart),
-    m_selEnd                     (copy.m_selEnd),
-    m_caretPosition              (copy.m_caretPosition),
-    m_caretVisible               (copy.m_caretVisible),
-    m_caretColor                 (copy.m_caretColor),
-    m_caretWidth                 (copy.m_caretWidth),
-    m_selectionTextsNeedUpdate   (copy.m_selectionTextsNeedUpdate),
-    m_backgroundColor            (copy.m_backgroundColor),
-    m_selectedTextBgrColor       (copy.m_selectedTextBgrColor),
-    m_borderColor                (copy.m_borderColor),
-    m_textBeforeSelection        (copy.m_textBeforeSelection),
-    m_textSelection1             (copy.m_textSelection1),
-    m_textSelection2             (copy.m_textSelection2),
-    m_textAfterSelection1        (copy.m_textAfterSelection1),
-    m_textAfterSelection2        (copy.m_textAfterSelection2),
-    m_multilineSelectionRectWidth(copy.m_multilineSelectionRectWidth),
-    m_possibleDoubleClick        (copy.m_possibleDoubleClick),
-    m_readOnly                   (copy.m_readOnly)
+        Widget                       (copy),
+        WidgetBorders                (copy),
+        m_loadedConfigFile           (copy.m_loadedConfigFile),
+        m_size                       (copy.m_size),
+        m_text                       (copy.m_text),
+        m_displayedText              (copy.m_displayedText),
+        m_textSize                   (copy.m_textSize),
+        m_lineHeight                 (copy.m_lineHeight),
+        m_lines                      (copy.m_lines),
+        m_maxChars                   (copy.m_maxChars),
+        m_topLine                    (copy.m_topLine),
+        m_visibleLines               (copy.m_visibleLines),
+        m_selChars                   (copy.m_selChars),
+        m_selStart                   (copy.m_selStart),
+        m_selEnd                     (copy.m_selEnd),
+        m_caretPosition              (copy.m_caretPosition),
+        m_caretVisible               (copy.m_caretVisible),
+        m_caretColor                 (copy.m_caretColor),
+        m_caretWidth                 (copy.m_caretWidth),
+        m_selectionTextsNeedUpdate   (copy.m_selectionTextsNeedUpdate),
+        m_backgroundColor            (copy.m_backgroundColor),
+        m_selectedTextBgrColor       (copy.m_selectedTextBgrColor),
+        m_borderColor                (copy.m_borderColor),
+        m_textBeforeSelection        (copy.m_textBeforeSelection),
+        m_textSelection1             (copy.m_textSelection1),
+        m_textSelection2             (copy.m_textSelection2),
+        m_textAfterSelection1        (copy.m_textAfterSelection1),
+        m_textAfterSelection2        (copy.m_textAfterSelection2),
+        m_multilineSelectionRectWidth(copy.m_multilineSelectionRectWidth),
+        m_possibleDoubleClick        (copy.m_possibleDoubleClick),
+        m_readOnly                   (copy.m_readOnly)
     {
         // If there is a scrollbar then copy it
         if (copy.m_scroll != nullptr)

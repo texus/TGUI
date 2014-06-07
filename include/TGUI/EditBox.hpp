@@ -534,37 +534,37 @@ namespace tgui
         std::string   m_loadedConfigFile;
 
         // Is the caret visible or not?
-        bool          m_caretVisible;
+        bool          m_caretVisible = true;
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the limitTextWidth(bool) function.
-        bool          m_limitTextWidth;
+        bool          m_limitTextWidth = false;
 
         // The text inside the edit box
         sf::String    m_displayedText;
         sf::String    m_text;
 
         // This will store the size of the text ( 0 to auto size )
-        unsigned int  m_textSize;
+        unsigned int  m_textSize = 0;
 
         // The text alignment
-        Alignment::Alignments m_textAlignment;
+        Alignment::Alignments m_textAlignment = Alignment::Left;
 
         // The selection
-        unsigned int  m_selChars;
-        unsigned int  m_selStart;
-        unsigned int  m_selEnd;
+        unsigned int  m_selChars = 0;
+        unsigned int  m_selStart = 0;
+        unsigned int  m_selEnd = 0;
 
         // The password character
-        char          m_passwordChar;
+        char          m_passwordChar = '\0';
 
         // The maximum allowed characters.
         // Zero by default, meaning no limit.
-        unsigned int  m_maxChars;
+        unsigned int  m_maxChars = 0;
 
         // When the text width is not limited, you can scroll the edit box and only a part will be visible.
-        unsigned int  m_textCropPosition;
+        unsigned int  m_textCropPosition = 0;
 
         // The rectangle behind the selected text
         sf::RectangleShape  m_selectedTextBackground;
@@ -583,10 +583,10 @@ namespace tgui
         Texture  m_textureFocused;
 
         // Is there a possibility that the user is going to double click?
-        bool m_possibleDoubleClick;
+        bool m_possibleDoubleClick = false;
 
-        bool m_numbersOnly;
-        bool m_separateHoverImage;
+        bool m_numbersOnly = false;
+        bool m_separateHoverImage = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

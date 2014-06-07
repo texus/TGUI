@@ -427,17 +427,17 @@ namespace tgui
 
         std::vector<Menu> m_menus;
 
-        int m_visibleMenu;
+        int m_visibleMenu = -1;
 
-        const sf::Font* m_textFont;
+        const sf::Font* m_textFont = nullptr;
 
         sf::Vector2f m_size;
 
-        unsigned int m_textSize;
+        unsigned int m_textSize = 0;
 
-        unsigned int m_distanceToSide;
+        unsigned int m_distanceToSide = 4;
 
-        unsigned int m_minimumSubMenuWidth;
+        unsigned int m_minimumSubMenuWidth = 125;
 
         sf::Color m_backgroundColor;
         sf::Color m_textColor;

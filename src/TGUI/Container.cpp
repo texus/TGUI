@@ -35,9 +35,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container::Container() :
-        m_focusedWidget(0),
-        m_fontPtr      (nullptr)
+    Container::Container()
     {
         m_containerWidget = true;
         m_animatedWidget = true;

@@ -32,8 +32,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::MessageBox() :
-        m_textSize(16)
+    MessageBox::MessageBox()
     {
         m_callback.widgetType = Type_MessageBox;
 

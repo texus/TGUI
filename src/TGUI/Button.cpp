@@ -34,9 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Button() :
-    m_separateHoverImage(false),
-    m_textSize          (0)
+    Button::Button()
     {
         m_callback.widgetType = Type_Button;
         m_text.setColor(sf::Color::Black);

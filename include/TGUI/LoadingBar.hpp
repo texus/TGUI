@@ -330,16 +330,16 @@ namespace tgui
 
         std::string  m_loadedConfigFile;
 
-        unsigned int m_minimum;
-        unsigned int m_maximum;
-        unsigned int m_value;
+        unsigned int m_minimum = 0;
+        unsigned int m_maximum = 100;
+        unsigned int m_value = 0;
 
         Texture  m_textureBack;
         Texture  m_textureFront;
 
         // The text that is (optionally) drawn on top of the loading bar
         sf::Text     m_text;
-        unsigned int m_textSize;
+        unsigned int m_textSize = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

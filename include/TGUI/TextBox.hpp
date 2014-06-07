@@ -600,39 +600,39 @@ namespace tgui
         std::string m_loadedConfigFile;
 
         // The size of the text box
-        sf::Vector2u m_size;
+        sf::Vector2u m_size = sf::Vector2u(360, 200);
 
         // Some information about the text
         sf::String   m_text;
         sf::String   m_displayedText;
-        unsigned int m_textSize;
-        unsigned int m_lineHeight;
-        unsigned int m_lines;
+        unsigned int m_textSize = 30;
+        unsigned int m_lineHeight = 40;
+        unsigned int m_lines = 1;
 
         // The maximum characters (0 by default, which means no limit)
-        unsigned int m_maxChars;
+        unsigned int m_maxChars = 0;
 
         // What is known about the visible lines?
-        unsigned int m_topLine;
-        unsigned int m_visibleLines;
+        unsigned int m_topLine = 1;
+        unsigned int m_visibleLines = 1;
 
         // Information about the selection
-        unsigned int m_selChars;
-        unsigned int m_selStart;
-        unsigned int m_selEnd;
+        unsigned int m_selChars = 0;
+        unsigned int m_selStart = 0;
+        unsigned int m_selEnd = 0;
 
         // Information about the caret
         sf::Vector2u m_caretPosition;
-        bool m_caretVisible;
+        bool m_caretVisible = true;
 
         // The color of the blinking caret
         sf::Color m_caretColor;
 
         // The width in pixels of the blinking caret
-        unsigned int m_caretWidth;
+        unsigned int m_caretWidth = 2;
 
         // Should the text be resplit into the five texts?
-        bool m_selectionTextsNeedUpdate;
+        bool m_selectionTextsNeedUpdate = true;
 
         // The colors that are used by the text box
         sf::Color m_backgroundColor;
@@ -649,12 +649,12 @@ namespace tgui
         std::vector<float> m_multilineSelectionRectWidth;
 
         // The scrollbar
-        Scrollbar* m_scroll;
+        Scrollbar* m_scroll = nullptr;
 
         // Is there a possibility that the user is going to double click?
-        bool m_possibleDoubleClick;
+        bool m_possibleDoubleClick = false;
 
-        bool m_readOnly;
+        bool m_readOnly = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

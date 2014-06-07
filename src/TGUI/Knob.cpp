@@ -36,14 +36,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::Knob() :
-        m_clockwiseTurning(true),
-        m_imageRotation   (  0),
-        m_startRotation   ( 90),
-        m_endRotation     ( 90),
-        m_minimum         (  0),
-        m_value           (  0),
-        m_maximum         (360)
+    Knob::Knob()
     {
         m_callback.widgetType = Type_Knob;
         m_draggableWidget = true;

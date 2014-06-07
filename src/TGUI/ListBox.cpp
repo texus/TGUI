@@ -38,14 +38,7 @@ namespace tgui
 {
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox::ListBox() :
-        m_selectedItem(-1),
-        m_size        (50, 100),
-        m_itemHeight  (24),
-        m_textSize    (19),
-        m_maxItems    (0),
-        m_scroll      (nullptr),
-        m_textFont    (nullptr)
+    ListBox::ListBox()
     {
         m_callback.widgetType = Type_ListBox;
         m_draggableWidget = true;

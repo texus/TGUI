@@ -34,10 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel() :
-        m_size           (100, 100),
-        m_backgroundColor(220, 220, 220),
-        m_texture        (nullptr)
+    Panel::Panel()
     {
         m_callback.widgetType = Type_Panel;
     }

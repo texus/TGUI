@@ -34,11 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LoadingBar::LoadingBar() :
-        m_minimum (  0),
-        m_maximum (100),
-        m_value   (  0),
-        m_textSize(  0)
+    LoadingBar::LoadingBar()
     {
         m_callback.widgetType = Type_LoadingBar;
     }

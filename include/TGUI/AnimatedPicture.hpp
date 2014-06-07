@@ -300,10 +300,10 @@ namespace tgui
         std::vector<Texture>  m_textures;
         std::vector<sf::Time> m_frameDuration;
 
-        int m_currentFrame;
+        int m_currentFrame = -1;
 
-        bool m_playing;
-        bool m_looping;
+        bool m_playing = false;
+        bool m_looping = false;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

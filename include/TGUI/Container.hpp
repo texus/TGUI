@@ -549,10 +549,10 @@ namespace tgui
         std::vector<sf::String>  m_objName;
 
         // The id of the focused widget
-        unsigned int m_focusedWidget;
+        unsigned int m_focusedWidget = 0;
 
         sf::Font m_globalFont;
-        const sf::Font* m_fontPtr;
+        const sf::Font* m_fontPtr = nullptr;
 
         // A list that stores all functions that receive callbacks triggered by child widgets
         std::list< std::function<void(const Callback&)> > m_globalCallbackFunctions;
@@ -627,7 +627,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        sf::RenderTarget* m_window;
+        sf::RenderTarget* m_window = nullptr;
 
 
         friend class Gui;

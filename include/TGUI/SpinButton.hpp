@@ -267,18 +267,18 @@ namespace tgui
         std::string m_loadedConfigFile;
 
         // Is the spin button draw vertically (arrows on top of each other)?
-        bool m_verticalScroll;
+        bool m_verticalScroll = true;
 
-        unsigned int m_minimum;
-        unsigned int m_maximum;
-        unsigned int m_value;
+        unsigned int m_minimum = 0;
+        unsigned int m_maximum = 10;
+        unsigned int m_value = 0;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage;
+        bool m_separateHoverImage = false;
 
         // On which arrow is the mouse?
-        bool m_mouseHoverOnTopArrow;
-        bool m_mouseDownOnTopArrow;
+        bool m_mouseHoverOnTopArrow = false;
+        bool m_mouseDownOnTopArrow = false;
 
         Texture m_textureArrowUpNormal;
         Texture m_textureArrowUpHover;

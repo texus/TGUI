@@ -37,22 +37,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::EditBox() :
-    m_caretVisible       (true),
-    m_limitTextWidth     (false),
-    m_displayedText      (""),
-    m_text               (""),
-    m_textSize           (0),
-    m_textAlignment      (Alignment::Left),
-    m_selChars           (0),
-    m_selStart           (0),
-    m_selEnd             (0),
-    m_passwordChar       ('\0'),
-    m_maxChars           (0),
-    m_textCropPosition   (0),
-    m_possibleDoubleClick(false),
-    m_numbersOnly        (false),
-    m_separateHoverImage (false)
+    EditBox::EditBox()
     {
         m_callback.widgetType = Type_EditBox;
         m_animatedWidget = true;

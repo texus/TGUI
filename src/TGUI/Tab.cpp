@@ -36,13 +36,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tab::Tab() :
-        m_separateSelectedImage(true),
-        m_textSize             (0),
-        m_maximumTabWidth      (0),
-        m_width                (0),
-        m_distanceToSide       (5),
-        m_selectedTab          (0)
+    Tab::Tab()
     {
         m_callback.widgetType = Type_Tab;
     }

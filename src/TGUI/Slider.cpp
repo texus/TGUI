@@ -32,14 +32,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::Slider() :
-        m_mouseDownOnThumb    (false),
-        m_minimum             ( 0),
-        m_maximum             (10),
-        m_value               ( 0),
-        m_verticalScroll      (true),
-        m_verticalImage       (true),
-        m_separateHoverImage  (false)
+    Slider::Slider()
     {
         m_callback.widgetType = Type_Slider;
         m_draggableWidget = true;

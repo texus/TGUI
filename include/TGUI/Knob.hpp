@@ -345,14 +345,14 @@ namespace tgui
         Texture m_backgroundTexture;
         Texture m_foregroundTexture;
 
-        bool m_clockwiseTurning; // Does rotating clockwise increment the value?
-        float m_imageRotation;
-        float m_startRotation;
-        float m_endRotation;
+        bool m_clockwiseTurning = true; // Does rotating clockwise increment the value?
+        float m_imageRotation = 0;
+        float m_startRotation = 90;
+        float m_endRotation = 90;
 
-        int m_minimum;
-        int m_value;
-        int m_maximum;
+        int m_minimum = 0;
+        int m_value = 0;
+        int m_maximum = 360;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

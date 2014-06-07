@@ -31,10 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpriteSheet::SpriteSheet() :
-        m_rows       (1),
-        m_columns    (1),
-        m_visibleCell(1, 1)
+    SpriteSheet::SpriteSheet()
     {
         m_callback.widgetType = Type_SpriteSheet;
     }

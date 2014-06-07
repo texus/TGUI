@@ -32,14 +32,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinButton::SpinButton() :
-        m_verticalScroll      (true),
-        m_minimum             (0),
-        m_maximum             (10),
-        m_value               (0),
-        m_separateHoverImage  (false),
-        m_mouseHoverOnTopArrow(false),
-        m_mouseDownOnTopArrow (false)
+    SpinButton::SpinButton()
     {
         m_callback.widgetType = Type_SpinButton;
     }

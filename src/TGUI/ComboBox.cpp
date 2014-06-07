@@ -40,9 +40,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::ComboBox() :
-    m_separateHoverImage(false),
-    m_nrOfItemsToDisplay(0)
+    ComboBox::ComboBox()
     {
         m_callback.widgetType = Type_ComboBox;
         m_draggableWidget = true;
@@ -58,16 +56,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& copy) :
-    Widget                  (copy),
-    WidgetBorders           (copy),
-    m_loadedConfigFile      (copy.m_loadedConfigFile),
-    m_separateHoverImage    (copy.m_separateHoverImage),
-    m_nrOfItemsToDisplay    (copy.m_nrOfItemsToDisplay),
-    m_listBox               (copy.m_listBox.clone()),
-    m_textureArrowUpNormal  (copy.m_textureArrowUpNormal),
-    m_textureArrowUpHover   (copy.m_textureArrowUpHover),
-    m_textureArrowDownNormal(copy.m_textureArrowDownNormal),
-    m_textureArrowDownHover (copy.m_textureArrowDownHover)
+        Widget                  (copy),
+        WidgetBorders           (copy),
+        m_loadedConfigFile      (copy.m_loadedConfigFile),
+        m_separateHoverImage    (copy.m_separateHoverImage),
+        m_nrOfItemsToDisplay    (copy.m_nrOfItemsToDisplay),
+        m_listBox               (copy.m_listBox.clone()),
+        m_textureArrowUpNormal  (copy.m_textureArrowUpNormal),
+        m_textureArrowUpHover   (copy.m_textureArrowUpHover),
+        m_textureArrowDownNormal(copy.m_textureArrowDownNormal),
+        m_textureArrowDownHover (copy.m_textureArrowDownHover)
     {
         m_listBox->hide();
         m_listBox->unbindAllCallback();

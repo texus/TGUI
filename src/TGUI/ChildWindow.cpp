@@ -37,13 +37,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow() :
-        m_backgroundTexture(nullptr),
-        m_titleBarHeight   (0),
-        m_distanceToSide   (5),
-        m_titleAlignment   (TitleAlignmentCentered),
-        m_borderColor      (0, 0, 0),
-        m_keepInParent     (false)
+    ChildWindow::ChildWindow()
     {
         m_callback.widgetType = Type_ChildWindow;
         m_closeButton = new Button();

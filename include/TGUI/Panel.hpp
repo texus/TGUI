@@ -227,11 +227,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        sf::Vector2f m_size;
+        sf::Vector2f m_size = sf::Vector2f(100, 100);
 
-        sf::Color    m_backgroundColor;
+        sf::Color    m_backgroundColor = sf::Color(220, 220, 220);
 
-        sf::Texture* m_texture;
+        sf::Texture* m_texture = nullptr;
         sf::Sprite   m_sprite;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

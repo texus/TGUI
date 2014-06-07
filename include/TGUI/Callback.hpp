@@ -44,19 +44,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API Callback
     {
-        Callback() : widget(nullptr) {};
-
         // The callback id that was passed to the widget. It is used to identify from what widget the callback came from.
-        unsigned int id;
+        unsigned int id = 0;
 
         // How did the callbak occur?
-        unsigned int trigger;
+        unsigned int trigger = 0;
 
         // Pointer to the widget
-        Widget* widget;
+        Widget* widget = nullptr;
 
         // The type of the widget
-        WidgetTypes widgetType;
+        WidgetTypes widgetType = Type_Unknown;
 
         // When the mouse has something to do with the callback then this data will be filled
         sf::Vector2i mouse;
@@ -65,12 +63,12 @@ namespace tgui
         sf::String text;
 
         // Only one of these things can be filled at a given time
-        bool         checked;
-        int          value;
+        bool         checked = false;
+        int          value = 0;
+        unsigned int index = 0;
         sf::Vector2f value2d;
         sf::Vector2f position;
         sf::Vector2f size;
-        unsigned int index;
     };
 
 

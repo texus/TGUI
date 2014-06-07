@@ -34,10 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton::RadioButton() :
-        m_checked       (false),
-        m_allowTextClick(true),
-        m_textSize      (0)
+    RadioButton::RadioButton()
     {
         m_callback.widgetType = Type_RadioButton;
 

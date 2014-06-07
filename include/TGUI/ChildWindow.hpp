@@ -540,23 +540,23 @@ namespace tgui
 
         sf::Vector2f   m_size;
 
-        sf::Color      m_backgroundColor;
-        sf::Texture*   m_backgroundTexture;
+        sf::Color      m_backgroundColor = sf::Color::White;
+        sf::Texture*   m_backgroundTexture = nullptr;
         sf::Sprite     m_backgroundSprite;
 
         Texture        m_iconTexture;
         Texture        m_textureTitleBar;
 
         sf::Text       m_titleText;
-        unsigned int   m_titleBarHeight;
+        unsigned int   m_titleBarHeight =  0;
         sf::Vector2f   m_draggingPosition;
-        unsigned int   m_distanceToSide;
-        TitleAlignment m_titleAlignment;
-        sf::Color      m_borderColor;
+        unsigned int   m_distanceToSide = 5;
+        TitleAlignment m_titleAlignment = TitleAlignmentCentered;
+        sf::Color      m_borderColor = sf::Color::Black;
 
-        Button* m_closeButton;
+        Button* m_closeButton = nullptr;
 
-        bool m_keepInParent;
+        bool m_keepInParent = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

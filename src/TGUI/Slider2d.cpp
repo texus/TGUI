@@ -34,13 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider2d::Slider2d() :
-        m_minimum            (-1, -1),
-        m_maximum            (1, 1),
-        m_value              (0, 0),
-        m_returnThumbToCenter(false),
-        m_fixedThumbSize     (true),
-        m_separateHoverImage (false)
+    Slider2d::Slider2d()
     {
         m_callback.widgetType = Type_Slider2d;
         m_draggableWidget = true;

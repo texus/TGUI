@@ -34,17 +34,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture() :
-        sf::Transformable(),
-        sf::Drawable     (),
-        m_data           (nullptr),
-        m_scalingType    (Normal),
-        m_rotation       (0)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Texture::Texture(const Texture& copy) :
         sf::Transformable(copy),
         sf::Drawable     (copy),

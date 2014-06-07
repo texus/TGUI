@@ -350,32 +350,32 @@ namespace tgui
         std::string m_loadedConfigFile;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
-        bool m_mouseDownOnThumb;
+        bool m_mouseDownOnThumb = false;
         sf::Vector2f m_mouseDownOnThumbPos;
 
-        unsigned int m_maximum;
-        unsigned int m_value;
+        unsigned int m_maximum = 10;
+        unsigned int m_value = 0;
 
         // Maximum should be above this value before the scrollbar is needed
-        unsigned int m_lowValue;
+        unsigned int m_lowValue = 6;
 
         // Is the scrollbar draw vertically?
-        bool m_verticalScroll;
+        bool m_verticalScroll = true;
 
         // Does the image lie vertically?
-        bool m_verticalImage;
+        bool m_verticalImage = true;
 
         // How far should the value change when pressing one of the arrows?
-        unsigned int m_scrollAmount;
+        unsigned int m_scrollAmount = 1;
 
         // When no scrollbar is needed, should the scrollbar be drawn or stay hidden?
-        bool m_autoHide;
+        bool m_autoHide = true;
 
         // Did the mouse went down on one of the arrows?
-        bool m_mouseDownOnArrow;
+        bool m_mouseDownOnArrow = false;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage;
+        bool m_separateHoverImage = false;
 
         Texture m_textureTrackNormal;
         Texture m_textureTrackHover;

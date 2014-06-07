@@ -37,14 +37,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox::ChatBox() :
-        m_lineSpacing   (0),
-        m_textSize      (16),
-        m_textColor     (sf::Color::Black),
-        m_borderColor   (sf::Color::Black),
-        m_maxLines      (0),
-        m_fullTextHeight(0),
-        m_scroll        (nullptr)
+    ChatBox::ChatBox()
     {
         m_callback.widgetType = Type_ChatBox;
         m_draggableWidget = true;

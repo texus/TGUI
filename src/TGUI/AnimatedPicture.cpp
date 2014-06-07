@@ -31,12 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    AnimatedPicture::AnimatedPicture() :
-    m_textures       (),
-    m_frameDuration  (),
-    m_currentFrame   (-1),
-    m_playing        (false),
-    m_looping        (false)
+    AnimatedPicture::AnimatedPicture()
     {
         m_callback.widgetType = Type_AnimatedPicture;
         m_animatedWidget = true;

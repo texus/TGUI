@@ -455,21 +455,21 @@ namespace tgui
 
         std::string   m_loadedConfigFile;
 
-        bool          m_separateSelectedImage;
+        bool          m_separateSelectedImage = true;
 
-        unsigned int  m_textSize;
+        unsigned int  m_textSize = 0;
 
         sf::Color     m_textColor;
         sf::Color     m_selectedTextColor;
 
-        unsigned int  m_maximumTabWidth;
+        unsigned int  m_maximumTabWidth = 0;
 
-        float         m_width;
+        float         m_width = 0;
 
         // The distance between the side of the tab and the text that is drawn on top of the tab.
-        unsigned int m_distanceToSide;
+        unsigned int m_distanceToSide = 5;
 
-        int  m_selectedTab;
+        int  m_selectedTab = -1;
 
         std::vector<sf::String> m_tabNames;
 

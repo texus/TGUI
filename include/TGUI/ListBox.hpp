@@ -643,18 +643,18 @@ namespace tgui
         std::vector<int> m_itemIds;
 
         // What is the index of the selected item?
-        int m_selectedItem;
+        int m_selectedItem = -1;
 
         // The size must be stored
-        sf::Vector2u m_size;
-        unsigned int m_itemHeight;
-        unsigned int m_textSize;
+        sf::Vector2u m_size = sf::Vector2u(50, 100);
+        unsigned int m_itemHeight = 24;
+        unsigned int m_textSize = 19;
 
         // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
-        unsigned int m_maxItems;
+        unsigned int m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
-        Scrollbar* m_scroll;
+        Scrollbar* m_scroll = nullptr;
 
         // These colors are used to draw the list box
         sf::Color m_backgroundColor;
@@ -664,7 +664,7 @@ namespace tgui
         sf::Color m_borderColor;
 
         // The font used to draw the text
-        const sf::Font* m_textFont;
+        const sf::Font* m_textFont = nullptr;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend class ComboBox;

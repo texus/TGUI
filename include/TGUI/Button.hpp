@@ -289,13 +289,13 @@ namespace tgui
         Texture m_textureFocused;
 
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage;
+        bool m_separateHoverImage = false;
 
         // The SFML text
         sf::Text m_text;
 
         // This will store the size of the text ( 0 to auto size )
-        unsigned int m_textSize;
+        unsigned int m_textSize = 0;
 
 
         friend class ChildWindow;

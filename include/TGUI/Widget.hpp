@@ -53,7 +53,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget();
+        Widget() {};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,40 +417,36 @@ namespace tgui
       protected:
 
         // When a widget is disabled, it will no longer receive events
-        bool m_enabled;
+        bool m_enabled = true;
 
         // Is the widget visible? When it is invisible it will not receive events and it won't be drawn.
-        bool m_visible;
-
-        // This will store the different phases that the widget can have
-        // e.g. if there isn't a mouse down image then a button should not try to change its image on mouse down
-        unsigned char m_widgetPhase;
+        bool m_visible = true;
 
         // This will point to our parent widget. If there is no parent then this will be nullptr.
-        Container* m_parent;
+        Container* m_parent = nullptr;
 
         // How transparent is the widget
-        unsigned char m_opacity;
+        unsigned char m_opacity = 255;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
-        bool m_mouseHover;
-        bool m_mouseDown;
+        bool m_mouseHover = false;
+        bool m_mouseDown = false;
 
         // Are you focused on the widget?
-        bool m_focused;
+        bool m_focused = false;
 
         // Can the widget be focused?
-        bool m_allowFocus;
+        bool m_allowFocus = false;
 
         // Keep track of the elapsed time.
-        bool m_animatedWidget;
+        bool m_animatedWidget = false;
         sf::Time m_animationTimeElapsed;
 
         // This is set to true for widgets that have something to be dragged around (e.g. sliders and scrollbars)
-        bool m_draggableWidget;
+        bool m_draggableWidget = false;
 
         // This is set to true for widgets that store other widgets inside them
-        bool m_containerWidget;
+        bool m_containerWidget = false;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

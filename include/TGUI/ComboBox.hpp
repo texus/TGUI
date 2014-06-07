@@ -660,11 +660,11 @@ namespace tgui
 
         std::string m_loadedConfigFile;
 
-        bool m_separateHoverImage;
+        bool m_separateHoverImage = false;
 
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
-        unsigned int m_nrOfItemsToDisplay;
+        unsigned int m_nrOfItemsToDisplay = 0;
 
         // Internally a list box is used to store all items
         ListBox::Ptr m_listBox;
