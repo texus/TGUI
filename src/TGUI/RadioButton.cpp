@@ -62,16 +62,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton::~RadioButton()
-    {
-        if (m_textureUnchecked.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureUnchecked);
-        if (m_textureChecked.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureChecked);
-        if (m_textureHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureFocused.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureFocused);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     RadioButton& RadioButton::operator= (const RadioButton& right)
     {
         if (this != &right)

@@ -63,14 +63,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LoadingBar::~LoadingBar()
-    {
-        if (m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack);
-        if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     LoadingBar& LoadingBar::operator= (const LoadingBar& right)
     {
         // Make sure it is not the same widget

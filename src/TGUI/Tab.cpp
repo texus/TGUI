@@ -80,26 +80,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tab::~Tab()
-    {
-        if (m_textureNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureNormal);
-        if (m_textureSelected.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureSelected);
-
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-        {
-            if (it->getData() != nullptr)
-                TGUI_TextureManager.removeTexture(*it);
-        }
-
-        for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
-        {
-            if (it->getData() != nullptr)
-                TGUI_TextureManager.removeTexture(*it);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Tab& Tab::operator= (const Tab& right)
     {
         // Make sure it is not the same widget

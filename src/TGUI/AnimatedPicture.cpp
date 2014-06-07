@@ -60,19 +60,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    AnimatedPicture::~AnimatedPicture()
-    {
-        // Remove the textures (if we are the only one using it)
-        for (unsigned int i = 0; i < m_textures.size(); ++i)
-            TGUI_TextureManager.removeTexture(m_textures[i]);
-
-        // Clear the vectors
-        m_textures.clear();
-        m_frameDuration.clear();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     AnimatedPicture& AnimatedPicture::operator= (const AnimatedPicture& right)
     {
         // Make sure it is not the same widget

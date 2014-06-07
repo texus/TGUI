@@ -76,20 +76,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar::~Scrollbar()
-    {
-        if (m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
-        if (m_textureTrackNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(m_textureThumbHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Scrollbar& Scrollbar::operator= (const Scrollbar& right)
     {
         // Make sure it is not the same widget

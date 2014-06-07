@@ -67,16 +67,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::~Slider()
-    {
-        if (m_textureTrackNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Slider& Slider::operator= (const Slider& right)
     {
         // Make sure it is not the same widget

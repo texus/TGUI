@@ -78,16 +78,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::~ComboBox()
-    {
-        if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ComboBox& ComboBox::operator= (const ComboBox& right)
     {
         if (this != &right)

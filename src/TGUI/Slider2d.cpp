@@ -66,17 +66,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider2d::~Slider2d()
-    {
-        // Remove all the textures
-        if (m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Slider2d& Slider2d::operator= (const Slider2d& right)
     {
         // Make sure it is not the same widget

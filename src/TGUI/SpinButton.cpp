@@ -65,16 +65,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinButton::~SpinButton()
-    {
-        if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     SpinButton& SpinButton::operator= (const SpinButton& right)
     {
         // Make sure it is not the same widget

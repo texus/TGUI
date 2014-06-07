@@ -59,16 +59,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::~Button()
-    {
-        if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
-        if (m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown);
-        if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Button& Button::operator= (const Button& right)
     {
         // Make sure it is not the same widget

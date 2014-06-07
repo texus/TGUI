@@ -68,14 +68,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::~Knob()
-    {
-        if (m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
-        if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Knob& Knob::operator= (const Knob& right)
     {
         // Make sure it is not the same widget

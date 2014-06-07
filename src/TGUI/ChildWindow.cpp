@@ -84,17 +84,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/// TODO: Get rid of manual memory managment
+/**
     ChildWindow::~ChildWindow()
     {
-        if (m_iconTexture.getData() != nullptr)
-            TGUI_TextureManager.removeTexture(m_iconTexture);
-
-        if (m_textureTitleBar.getData() != nullptr)
-            TGUI_TextureManager.removeTexture(m_textureTitleBar);
-
         delete m_closeButton;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow& ChildWindow::operator= (const ChildWindow& right)

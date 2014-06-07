@@ -136,7 +136,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::removeTexture(Texture& textureToRemove)
+    void TextureManager::removeTexture(const Texture& textureToRemove)
     {
         // Loop all our textures to check which one it is
         for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
@@ -157,8 +157,6 @@ namespace tgui
                             imageIt->second.data.erase(dataIt);
                     }
 
-                    // The texture is now useless
-                    textureToRemove = Texture();
                     return;
                 }
             }
