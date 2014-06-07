@@ -32,39 +32,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpriteSheet::SpriteSheet() :
-    m_rows       (1),
-    m_columns    (1),
-    m_visibleCell(1, 1)
+        m_rows       (1),
+        m_columns    (1),
+        m_visibleCell(1, 1)
     {
         m_callback.widgetType = Type_SpriteSheet;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpriteSheet::SpriteSheet(const SpriteSheet& copy) :
-    Picture      (copy),
-    m_rows       (copy.m_rows),
-    m_columns    (copy.m_columns),
-    m_visibleCell(copy.m_visibleCell)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpriteSheet& SpriteSheet::operator= (const SpriteSheet& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            SpriteSheet temp(right);
-            this->Picture::operator=(right);
-
-            std::swap(m_rows,        temp.m_rows);
-            std::swap(m_columns,     temp.m_columns);
-            std::swap(m_visibleCell, temp.m_visibleCell);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

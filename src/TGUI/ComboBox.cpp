@@ -58,22 +58,21 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& copy) :
-    Widget              (copy),
-    WidgetBorders       (copy),
-    m_loadedConfigFile  (copy.m_loadedConfigFile),
-    m_separateHoverImage(copy.m_separateHoverImage),
-    m_nrOfItemsToDisplay(copy.m_nrOfItemsToDisplay),
-    m_listBox           (copy.m_listBox.clone())
+    Widget                  (copy),
+    WidgetBorders           (copy),
+    m_loadedConfigFile      (copy.m_loadedConfigFile),
+    m_separateHoverImage    (copy.m_separateHoverImage),
+    m_nrOfItemsToDisplay    (copy.m_nrOfItemsToDisplay),
+    m_listBox               (copy.m_listBox.clone()),
+    m_textureArrowUpNormal  (copy.m_textureArrowUpNormal),
+    m_textureArrowUpHover   (copy.m_textureArrowUpHover),
+    m_textureArrowDownNormal(copy.m_textureArrowDownNormal),
+    m_textureArrowDownHover (copy.m_textureArrowDownHover)
     {
         m_listBox->hide();
         m_listBox->unbindAllCallback();
         m_listBox->bindCallback(&ComboBox::newItemSelectedCallbackFunction, this, ListBox::ItemSelected);
         m_listBox->bindCallback(&ComboBox::listBoxUnfocusedCallbackFunction, this, ListBox::Unfocused);
-
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpNormal, m_textureArrowUpNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpHover, m_textureArrowUpHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownNormal, m_textureArrowDownNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownHover, m_textureArrowDownHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

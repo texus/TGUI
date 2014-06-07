@@ -38,33 +38,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const Picture& copy) :
-    ClickableWidget (copy),
-    m_loadedFilename(copy.m_loadedFilename)
-    {
-        // Copy the texture
-        TGUI_TextureManager.copyTexture(copy.m_texture, m_texture);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Picture& Picture::operator= (const Picture& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Picture temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedFilename, temp.m_loadedFilename);
-            std::swap(m_texture,        temp.m_texture);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Picture* Picture::clone()
     {
         return new Picture(*this);

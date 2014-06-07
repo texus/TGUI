@@ -51,48 +51,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::Knob(const Knob& copy) :
-        Widget            (copy),
-        m_loadedConfigFile(copy.m_loadedConfigFile),
-        m_clockwiseTurning(copy.m_clockwiseTurning),
-        m_imageRotation   (copy.m_imageRotation),
-        m_startRotation   (copy.m_startRotation),
-        m_endRotation     (copy.m_endRotation),
-        m_minimum         (copy.m_minimum),
-        m_value           (copy.m_value),
-        m_maximum         (copy.m_maximum)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_backgroundTexture, m_backgroundTexture);
-        TGUI_TextureManager.copyTexture(copy.m_foregroundTexture, m_foregroundTexture);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Knob& Knob::operator= (const Knob& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Knob temp(right);
-            this->Widget::operator=(right);
-
-            std::swap(m_loadedConfigFile,  temp.m_loadedConfigFile);
-            std::swap(m_backgroundTexture, temp.m_backgroundTexture);
-            std::swap(m_foregroundTexture, temp.m_foregroundTexture);
-            std::swap(m_clockwiseTurning,  temp.m_clockwiseTurning);
-            std::swap(m_imageRotation,     temp.m_imageRotation);
-            std::swap(m_startRotation,     temp.m_startRotation);
-            std::swap(m_endRotation,       temp.m_endRotation);
-            std::swap(m_minimum,           temp.m_minimum);
-            std::swap(m_value,             temp.m_value);
-            std::swap(m_maximum,           temp.m_maximum);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Knob* Knob::clone()
     {
         return new Knob(*this);

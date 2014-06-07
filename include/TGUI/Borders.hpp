@@ -37,8 +37,7 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor
-        ///
+        /// @brief Default constructor
         /// \param leftBorderWidth    Width of the left border
         /// \param topBorderHeight    Height of the top border
         /// \param rightBorderWidth   Width of the right border

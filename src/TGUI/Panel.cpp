@@ -35,9 +35,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel() :
-    m_size                         (100, 100),
-    m_backgroundColor              (220, 220, 220),
-    m_texture                      (nullptr)
+        m_size           (100, 100),
+        m_backgroundColor(220, 220, 220),
+        m_texture        (nullptr)
     {
         m_callback.widgetType = Type_Panel;
     }
@@ -45,10 +45,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
-    Container        (panelToCopy),
-    m_size           (panelToCopy.m_size),
-    m_backgroundColor(panelToCopy.m_backgroundColor),
-    m_texture        (panelToCopy.m_texture)
+        Container        (panelToCopy),
+        m_size           (panelToCopy.m_size),
+        m_backgroundColor(panelToCopy.m_backgroundColor),
+        m_texture        (panelToCopy.m_texture)
     {
         if (m_texture)
         {
@@ -68,10 +68,10 @@ namespace tgui
             Panel temp(right);
             this->Container::operator=(right);
 
-            std::swap(m_size,                          temp.m_size);
-            std::swap(m_backgroundColor,               temp.m_backgroundColor);
-            std::swap(m_texture,                       temp.m_texture);
-            std::swap(m_sprite,                        temp.m_sprite);
+            std::swap(m_size,            temp.m_size);
+            std::swap(m_backgroundColor, temp.m_backgroundColor);
+            std::swap(m_texture,         temp.m_texture);
+            std::swap(m_sprite,          temp.m_sprite);
         }
 
         return *this;

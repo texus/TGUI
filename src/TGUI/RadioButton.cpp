@@ -46,45 +46,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton::RadioButton(const RadioButton& copy) :
-    ClickableWidget   (copy),
-    m_loadedConfigFile(copy.m_loadedConfigFile),
-    m_checked         (copy.m_checked),
-    m_allowTextClick  (copy.m_allowTextClick),
-    m_text            (copy.m_text),
-    m_textSize        (copy.m_textSize)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureUnchecked, m_textureUnchecked);
-        TGUI_TextureManager.copyTexture(copy.m_textureChecked, m_textureChecked);
-        TGUI_TextureManager.copyTexture(copy.m_textureHover, m_textureHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureFocused, m_textureFocused);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    RadioButton& RadioButton::operator= (const RadioButton& right)
-    {
-        if (this != &right)
-        {
-            RadioButton temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedConfigFile, temp.m_loadedConfigFile);
-            std::swap(m_checked,          temp.m_checked);
-            std::swap(m_allowTextClick,   temp.m_allowTextClick);
-            std::swap(m_text,             temp.m_text);
-            std::swap(m_textSize,         temp.m_textSize);
-            std::swap(m_textureUnchecked, temp.m_textureUnchecked);
-            std::swap(m_textureChecked,   temp.m_textureChecked);
-            std::swap(m_textureHover,     temp.m_textureHover);
-            std::swap(m_textureFocused,   temp.m_textureFocused);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     RadioButton* RadioButton::clone()
     {
         return new RadioButton(*this);

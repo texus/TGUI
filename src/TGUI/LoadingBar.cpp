@@ -35,53 +35,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LoadingBar::LoadingBar() :
-    m_minimum       (  0),
-    m_maximum       (100),
-    m_value         (  0),
-    m_textSize      (  0)
+        m_minimum (  0),
+        m_maximum (100),
+        m_value   (  0),
+        m_textSize(  0)
     {
         m_callback.widgetType = Type_LoadingBar;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    LoadingBar::LoadingBar(const LoadingBar& copy) :
-    ClickableWidget   (copy),
-    m_loadedConfigFile(copy.m_loadedConfigFile),
-    m_minimum         (copy.m_minimum),
-    m_maximum         (copy.m_maximum),
-    m_value           (copy.m_value),
-    m_text            (copy.m_text),
-    m_textSize        (copy.m_textSize)
-    {
-        // Copy the textures
-        TGUI_TextureManager.copyTexture(copy.m_textureBack, m_textureBack);
-        TGUI_TextureManager.copyTexture(copy.m_textureFront, m_textureFront);
-
-        recalculateSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    LoadingBar& LoadingBar::operator= (const LoadingBar& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            LoadingBar temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedConfigFile, temp.m_loadedConfigFile);
-            std::swap(m_minimum,          temp.m_minimum);
-            std::swap(m_maximum,          temp.m_maximum);
-            std::swap(m_value,            temp.m_value);
-            std::swap(m_textureBack,      temp.m_textureBack);
-            std::swap(m_textureFront,     temp.m_textureFront);
-            std::swap(m_text,             temp.m_text);
-            std::swap(m_textSize,         temp.m_textSize);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,7 +443,6 @@ namespace tgui
 
     void LoadingBar::recalculateSize()
     {
-        // Set the size of the front image
         m_textureFront.setTextureRect(sf::FloatRect(0, 0, m_textureFront.getSize().x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), m_textureFront.getSize().y));
     }
 

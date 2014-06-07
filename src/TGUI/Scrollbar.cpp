@@ -32,81 +32,19 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar() :
-    m_mouseDownOnThumb  (false),
-    m_maximum           (10),
-    m_value             ( 0),
-    m_lowValue          ( 6),
-    m_verticalScroll    (true),
-    m_verticalImage     (true),
-    m_scrollAmount      ( 1),
-    m_autoHide          (true),
-    m_mouseDownOnArrow  (false),
-    m_separateHoverImage(false)
+        m_mouseDownOnThumb  (false),
+        m_maximum           (10),
+        m_value             ( 0),
+        m_lowValue          ( 6),
+        m_verticalScroll    (true),
+        m_verticalImage     (true),
+        m_scrollAmount      ( 1),
+        m_autoHide          (true),
+        m_mouseDownOnArrow  (false),
+        m_separateHoverImage(false)
     {
         m_callback.widgetType = Type_Scrollbar;
         m_draggableWidget = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Scrollbar::Scrollbar(const Scrollbar& copy) :
-    Widget               (copy),
-    m_loadedConfigFile   (copy.m_loadedConfigFile),
-    m_mouseDownOnThumb   (copy.m_mouseDownOnThumb),
-    m_mouseDownOnThumbPos(copy.m_mouseDownOnThumbPos),
-    m_maximum            (copy.m_maximum),
-    m_value              (copy.m_value),
-    m_lowValue           (copy.m_lowValue),
-    m_verticalScroll     (copy.m_verticalScroll),
-    m_verticalImage      (copy.m_verticalImage),
-    m_scrollAmount       (copy.m_scrollAmount),
-    m_autoHide           (copy.m_autoHide),
-    m_mouseDownOnArrow   (copy.m_mouseDownOnArrow),
-    m_separateHoverImage (copy.m_separateHoverImage)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureTrackNormal, m_textureTrackNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureTrackHover, m_textureTrackHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureThumbNormal, m_textureThumbNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureThumbHover, m_textureThumbHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpNormal, m_textureArrowUpNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpHover, m_textureArrowUpHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownNormal, m_textureArrowDownNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownHover, m_textureArrowDownHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Scrollbar& Scrollbar::operator= (const Scrollbar& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Scrollbar temp(right);
-            this->Widget::operator=(right);
-
-            std::swap(m_loadedConfigFile,       temp.m_loadedConfigFile);
-            std::swap(m_mouseDownOnThumb,       temp.m_mouseDownOnThumb);
-            std::swap(m_mouseDownOnThumbPos,    temp.m_mouseDownOnThumbPos);
-            std::swap(m_maximum,                temp.m_maximum);
-            std::swap(m_value,                  temp.m_value);
-            std::swap(m_lowValue,               temp.m_lowValue);
-            std::swap(m_verticalScroll,         temp.m_verticalScroll);
-            std::swap(m_verticalImage,          temp.m_verticalImage);
-            std::swap(m_scrollAmount,           temp.m_scrollAmount);
-            std::swap(m_autoHide,               temp.m_autoHide);
-            std::swap(m_mouseDownOnArrow,       temp.m_mouseDownOnArrow);
-            std::swap(m_separateHoverImage,     temp.m_separateHoverImage);
-            std::swap(m_textureTrackNormal,     temp.m_textureTrackNormal);
-            std::swap(m_textureTrackHover,      temp.m_textureTrackHover);
-            std::swap(m_textureThumbNormal,     temp.m_textureThumbNormal);
-            std::swap(m_textureThumbHover,      temp.m_textureThumbHover);
-            std::swap(m_textureArrowUpNormal,   temp.m_textureArrowUpNormal);
-            std::swap(m_textureArrowUpHover,    temp.m_textureArrowUpHover);
-            std::swap(m_textureArrowDownNormal, temp.m_textureArrowDownNormal);
-            std::swap(m_textureArrowDownHover,  temp.m_textureArrowDownHover);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -36,20 +36,19 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget() :
-    m_enabled        (true),
-    m_visible        (true),
-    m_widgetPhase    (0),
-    m_parent         (nullptr),
-    m_opacity        (255),
-    m_mouseHover     (false),
-    m_mouseDown      (false),
-    m_focused        (false),
-    m_allowFocus     (false),
-    m_animatedWidget (false),
-    m_draggableWidget(false),
-    m_containerWidget(false)
+        m_enabled        (true),
+        m_visible        (true),
+        m_widgetPhase    (0),
+        m_parent         (nullptr),
+        m_opacity        (255),
+        m_mouseHover     (false),
+        m_mouseDown      (false),
+        m_focused        (false),
+        m_allowFocus     (false),
+        m_animatedWidget (false),
+        m_draggableWidget(false),
+        m_containerWidget(false)
     {
-        m_callback.widget = nullptr;
         m_callback.widgetType = Type_Unknown;
         m_callback.id = 0;
     }
@@ -57,23 +56,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(const Widget& copy) :
-    sf::Drawable     (copy),
-    Transformable    (copy),
-    CallbackManager  (copy),
-    m_enabled        (copy.m_enabled),
-    m_visible        (copy.m_visible),
-    m_widgetPhase    (copy.m_widgetPhase),
-    m_parent         (copy.m_parent),
-    m_opacity        (copy.m_opacity),
-    m_mouseHover     (false),
-    m_mouseDown      (false),
-    m_focused        (false),
-    m_allowFocus     (copy.m_allowFocus),
-    m_animatedWidget (copy.m_animatedWidget),
-    m_draggableWidget(copy.m_draggableWidget),
-    m_containerWidget(copy.m_containerWidget)
+        sf::Drawable     (copy),
+        Transformable    (copy),
+        CallbackManager  (copy),
+        m_enabled        (copy.m_enabled),
+        m_visible        (copy.m_visible),
+        m_widgetPhase    (copy.m_widgetPhase),
+        m_parent         (copy.m_parent),
+        m_opacity        (copy.m_opacity),
+        m_mouseHover     (false),
+        m_mouseDown      (false),
+        m_focused        (false),
+        m_allowFocus     (copy.m_allowFocus),
+        m_animatedWidget (copy.m_animatedWidget),
+        m_draggableWidget(copy.m_draggableWidget),
+        m_containerWidget(copy.m_containerWidget)
     {
-        m_callback.widget = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +98,6 @@ namespace tgui
             m_draggableWidget     = right.m_draggableWidget;
             m_containerWidget     = right.m_containerWidget;
             m_callback            = Callback();
-            m_callback.widget     = nullptr;
             m_callback.widgetType = right.m_callback.widgetType;
             m_callback.id         = right.m_callback.id;
         }

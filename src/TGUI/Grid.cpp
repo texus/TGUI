@@ -40,9 +40,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Grid::Grid(const Grid& gridToCopy) :
-    Container     (gridToCopy),
-    m_size        (gridToCopy.m_size),
-    m_intendedSize(gridToCopy.m_intendedSize)
+        Container     (gridToCopy),
+        m_size        (gridToCopy.m_size),
+        m_intendedSize(gridToCopy.m_intendedSize)
     {
         const std::vector<Widget::Ptr>& widgets = gridToCopy.m_widgets;
 

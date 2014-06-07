@@ -33,61 +33,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton() :
-    m_verticalScroll      (true),
-    m_minimum             (0),
-    m_maximum             (10),
-    m_value               (0),
-    m_separateHoverImage  (false),
-    m_mouseHoverOnTopArrow(false),
-    m_mouseDownOnTopArrow (false)
+        m_verticalScroll      (true),
+        m_minimum             (0),
+        m_maximum             (10),
+        m_value               (0),
+        m_separateHoverImage  (false),
+        m_mouseHoverOnTopArrow(false),
+        m_mouseDownOnTopArrow (false)
     {
         m_callback.widgetType = Type_SpinButton;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpinButton::SpinButton(const SpinButton& copy) :
-    ClickableWidget       (copy),
-    m_loadedConfigFile    (copy.m_loadedConfigFile),
-    m_verticalScroll      (copy.m_verticalScroll),
-    m_minimum             (copy.m_minimum),
-    m_maximum             (copy.m_maximum),
-    m_value               (copy.m_value),
-    m_separateHoverImage  (copy.m_separateHoverImage),
-    m_mouseHoverOnTopArrow(copy.m_mouseHoverOnTopArrow),
-    m_mouseDownOnTopArrow (copy.m_mouseDownOnTopArrow)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpNormal, m_textureArrowUpNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowUpHover, m_textureArrowUpHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownNormal, m_textureArrowDownNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureArrowDownHover, m_textureArrowDownHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpinButton& SpinButton::operator= (const SpinButton& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            SpinButton temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedConfigFile,       temp.m_loadedConfigFile);
-            std::swap(m_verticalScroll,         temp.m_verticalScroll);
-            std::swap(m_minimum,                temp.m_minimum);
-            std::swap(m_maximum,                temp.m_maximum);
-            std::swap(m_value,                  temp.m_value);
-            std::swap(m_separateHoverImage,     temp.m_separateHoverImage);
-            std::swap(m_mouseHoverOnTopArrow,   temp.m_mouseHoverOnTopArrow);
-            std::swap(m_mouseDownOnTopArrow,    temp.m_mouseDownOnTopArrow);
-            std::swap(m_textureArrowUpNormal,   temp.m_textureArrowUpNormal);
-            std::swap(m_textureArrowUpHover,    temp.m_textureArrowUpHover);
-            std::swap(m_textureArrowDownNormal, temp.m_textureArrowDownNormal);
-            std::swap(m_textureArrowDownHover,  temp.m_textureArrowDownHover);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

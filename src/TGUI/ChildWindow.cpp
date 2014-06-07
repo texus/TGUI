@@ -38,12 +38,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_backgroundTexture(nullptr),
-    m_titleBarHeight   (0),
-    m_distanceToSide   (5),
-    m_titleAlignment   (TitleAlignmentCentered),
-    m_borderColor      (0, 0, 0),
-    m_keepInParent     (false)
+        m_backgroundTexture(nullptr),
+        m_titleBarHeight   (0),
+        m_distanceToSide   (5),
+        m_titleAlignment   (TitleAlignmentCentered),
+        m_borderColor      (0, 0, 0),
+        m_keepInParent     (false)
     {
         m_callback.widgetType = Type_ChildWindow;
         m_closeButton = new Button();
@@ -52,24 +52,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-    Container          (childWindowToCopy),
-    WidgetBorders      (childWindowToCopy),
-    m_loadedConfigFile (childWindowToCopy.m_loadedConfigFile),
-    m_size             (childWindowToCopy.m_size),
-    m_backgroundColor  (childWindowToCopy.m_backgroundColor),
-    m_backgroundTexture(childWindowToCopy.m_backgroundTexture),
-    m_titleText        (childWindowToCopy.m_titleText),
-    m_titleBarHeight   (childWindowToCopy.m_titleBarHeight),
-    m_draggingPosition (childWindowToCopy.m_draggingPosition),
-    m_distanceToSide   (childWindowToCopy.m_distanceToSide),
-    m_titleAlignment   (childWindowToCopy.m_titleAlignment),
-    m_borderColor      (childWindowToCopy.m_borderColor),
-    m_keepInParent     (childWindowToCopy.m_keepInParent)
+        Container          (childWindowToCopy),
+        WidgetBorders      (childWindowToCopy),
+        m_loadedConfigFile (childWindowToCopy.m_loadedConfigFile),
+        m_size             (childWindowToCopy.m_size),
+        m_backgroundColor  (childWindowToCopy.m_backgroundColor),
+        m_backgroundTexture(childWindowToCopy.m_backgroundTexture),
+        m_iconTexture      (childWindowToCopy.m_iconTexture),
+        m_textureTitleBar  (childWindowToCopy.m_textureTitleBar),
+        m_titleText        (childWindowToCopy.m_titleText),
+        m_titleBarHeight   (childWindowToCopy.m_titleBarHeight),
+        m_draggingPosition (childWindowToCopy.m_draggingPosition),
+        m_distanceToSide   (childWindowToCopy.m_distanceToSide),
+        m_titleAlignment   (childWindowToCopy.m_titleAlignment),
+        m_borderColor      (childWindowToCopy.m_borderColor),
+        m_keepInParent     (childWindowToCopy.m_keepInParent)
     {
-        // Copy the textures
-        TGUI_TextureManager.copyTexture(childWindowToCopy.m_iconTexture, m_iconTexture);
-        TGUI_TextureManager.copyTexture(childWindowToCopy.m_textureTitleBar, m_textureTitleBar);
-
         // Copy the button
         m_closeButton = new Button(*childWindowToCopy.m_closeButton);
 

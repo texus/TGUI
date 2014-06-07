@@ -33,7 +33,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox() :
-    m_textSize(16)
+        m_textSize(16)
     {
         m_callback.widgetType = Type_MessageBox;
 
@@ -44,10 +44,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
-    ChildWindow               (messageBoxToCopy),
-    m_loadedConfigFile        (messageBoxToCopy.m_loadedConfigFile),
-    m_buttonConfigFileFilename(messageBoxToCopy.m_buttonConfigFileFilename),
-    m_textSize                (messageBoxToCopy.m_textSize)
+        ChildWindow               (messageBoxToCopy),
+        m_loadedConfigFile        (messageBoxToCopy.m_loadedConfigFile),
+        m_buttonConfigFileFilename(messageBoxToCopy.m_buttonConfigFileFilename),
+        m_textSize                (messageBoxToCopy.m_textSize)
     {
         m_label = copy(messageBoxToCopy.m_label, "MessageBoxText");
 

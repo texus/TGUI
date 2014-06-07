@@ -34,9 +34,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Transformable::Transformable() :
-    m_position(0, 0),
-    m_transformNeedUpdate(true),
-    m_transform()
+        m_position(0, 0),
+        m_transformNeedUpdate(true),
+        m_transform()
     {
     }
 

@@ -37,11 +37,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBar::MenuBar() :
-    m_visibleMenu        (-1),
-    m_textFont           (nullptr),
-    m_textSize           (0),
-    m_distanceToSide     (4),
-    m_minimumSubMenuWidth(125)
+        m_visibleMenu        (-1),
+        m_textFont           (nullptr),
+        m_textSize           (0),
+        m_distanceToSide     (4),
+        m_minimumSubMenuWidth(125)
     {
         m_callback.widgetType = Type_MenuBar;
 

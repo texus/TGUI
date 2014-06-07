@@ -45,10 +45,49 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Texture::Texture(const Texture& copy) :
+        sf::Transformable(copy),
+        sf::Drawable     (copy),
+        m_data           (copy.m_data),
+        m_vertices       (copy.m_vertices),
+        m_size           (copy.m_size),
+        m_middleRect     (copy.m_middleRect),
+        m_textureRect    (copy.m_textureRect),
+        m_scalingType    (copy.m_scalingType),
+        m_rotation       (copy.m_rotation)
+    {
+        if (m_data != nullptr)
+            TGUI_TextureManager.copyTexture(copy);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Texture::~Texture()
     {
         if (getData() != nullptr)
             TGUI_TextureManager.removeTexture(*this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture& Texture::operator=(const Texture& right)
+    {
+        if (this != &right)
+        {
+            Texture temp(right);
+            sf::Transformable::operator=(right);
+            sf::Drawable::operator=(right);
+
+            std::swap(m_data,        temp.m_data);
+            std::swap(m_vertices,    temp.m_vertices);
+            std::swap(m_size,        temp.m_size);
+            std::swap(m_middleRect,  temp.m_middleRect);
+            std::swap(m_textureRect, temp.m_textureRect);
+            std::swap(m_scalingType, temp.m_scalingType);
+            std::swap(m_rotation,    temp.m_rotation);
+        }
+
+        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

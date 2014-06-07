@@ -44,44 +44,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Button(const Button& copy) :
-    ClickableWidget     (copy),
-    m_loadedConfigFile  (copy.m_loadedConfigFile),
-    m_separateHoverImage(copy.m_separateHoverImage),
-    m_text              (copy.m_text),
-    m_textSize          (copy.m_textSize)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureNormal, m_textureNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureHover, m_textureHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureDown, m_textureDown);
-        TGUI_TextureManager.copyTexture(copy.m_textureFocused, m_textureFocused);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Button& Button::operator= (const Button& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Button temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedConfigFile,   temp.m_loadedConfigFile);
-            std::swap(m_textureNormal,      temp.m_textureNormal);
-            std::swap(m_textureHover,       temp.m_textureHover);
-            std::swap(m_textureDown,        temp.m_textureDown);
-            std::swap(m_textureFocused,     temp.m_textureFocused);
-            std::swap(m_separateHoverImage, temp.m_separateHoverImage);
-            std::swap(m_text,               temp.m_text);
-            std::swap(m_textSize,           temp.m_textSize);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Button* Button::clone()
     {
         return new Button(*this);

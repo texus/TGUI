@@ -44,46 +44,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    AnimatedPicture::AnimatedPicture(const AnimatedPicture& copy) :
-    ClickableWidget(copy),
-    m_frameDuration(copy.m_frameDuration),
-    m_currentFrame (copy.m_currentFrame),
-    m_playing      (copy.m_playing),
-    m_looping      (copy.m_looping)
-    {
-        for (unsigned int i = 0; i < copy.m_textures.size(); ++i)
-        {
-            m_textures.push_back(Texture());
-            TGUI_TextureManager.copyTexture(copy.m_textures[i], m_textures.back());
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    AnimatedPicture& AnimatedPicture::operator= (const AnimatedPicture& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            AnimatedPicture temp(right);
-            this->ClickableWidget::operator=(right);
-
-            // If there already were frames then remove them now
-            for (unsigned int i = 0; i < m_textures.size(); ++i)
-                TGUI_TextureManager.removeTexture(m_textures[i]);
-
-            std::swap(m_textures,        temp.m_textures);
-            std::swap(m_frameDuration,   temp.m_frameDuration);
-            std::swap(m_currentFrame,    temp.m_currentFrame);
-            std::swap(m_playing,         temp.m_playing);
-            std::swap(m_looping,         temp.m_looping);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     AnimatedPicture* AnimatedPicture::clone()
     {
         return new AnimatedPicture(*this);

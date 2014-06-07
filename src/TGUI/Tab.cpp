@@ -37,75 +37,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tab::Tab() :
-    m_separateSelectedImage(true),
-    m_textSize             (0),
-    m_maximumTabWidth      (0),
-    m_width                (0),
-    m_distanceToSide       (5),
-    m_selectedTab          (0)
+        m_separateSelectedImage(true),
+        m_textSize             (0),
+        m_maximumTabWidth      (0),
+        m_width                (0),
+        m_distanceToSide       (5),
+        m_selectedTab          (0)
     {
         m_callback.widgetType = Type_Tab;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Tab::Tab(const Tab& copy) :
-    Widget                 (copy),
-    m_loadedConfigFile     (copy.m_loadedConfigFile),
-    m_separateSelectedImage(copy.m_separateSelectedImage),
-    m_textSize             (copy.m_textSize),
-    m_textColor            (copy.m_textColor),
-    m_selectedTextColor    (copy.m_selectedTextColor),
-    m_maximumTabWidth      (copy.m_maximumTabWidth),
-    m_width                (copy.m_width),
-    m_distanceToSide       (copy.m_distanceToSide),
-    m_selectedTab          (copy.m_selectedTab),
-    m_tabNames             (copy.m_tabNames),
-    m_text                 (copy.m_text)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureNormal, m_textureNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureSelected, m_textureSelected);
-
-        m_texturesNormal.resize(copy.m_texturesNormal.size());
-        m_texturesSelected.resize(copy.m_texturesSelected.size());
-
-        auto it = m_texturesNormal.begin();
-        for (auto copyIt = copy.m_texturesNormal.cbegin(); copyIt != copy.m_texturesNormal.cend(); ++copyIt, ++it)
-            TGUI_TextureManager.copyTexture(*copyIt, *it);
-
-        it = m_texturesSelected.begin();
-        for (auto copyIt = copy.m_texturesSelected.cbegin(); copyIt != copy.m_texturesSelected.cend(); ++copyIt, ++it)
-            TGUI_TextureManager.copyTexture(*copyIt, *it);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Tab& Tab::operator= (const Tab& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Tab temp(right);
-            this->Widget::operator=(right);
-
-            std::swap(m_loadedConfigFile,      temp.m_loadedConfigFile);
-            std::swap(m_separateSelectedImage, temp.m_separateSelectedImage);
-            std::swap(m_textSize,              temp.m_textSize);
-            std::swap(m_textColor,             temp.m_textColor);
-            std::swap(m_selectedTextColor,     temp.m_selectedTextColor);
-            std::swap(m_maximumTabWidth,       temp.m_maximumTabWidth);
-            std::swap(m_width,                 temp.m_width);
-            std::swap(m_distanceToSide,        temp.m_distanceToSide);
-            std::swap(m_selectedTab,           temp.m_selectedTab);
-            std::swap(m_tabNames,              temp.m_tabNames);
-            std::swap(m_textureNormal,         temp.m_textureNormal);
-            std::swap(m_textureSelected,       temp.m_textureSelected);
-            std::swap(m_texturesNormal,        temp.m_texturesNormal);
-            std::swap(m_texturesSelected,      temp.m_texturesSelected);
-            std::swap(m_text,                  temp.m_text);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,11 +177,8 @@ namespace tgui
             width += TGUI_MAXIMUM(m_text.getLocalBounds().width + (2 * m_distanceToSide), m_textureNormal.getSize().y);
 
         // Add the new tab sprite
-        m_texturesNormal.push_back(Texture());
-        m_texturesSelected.push_back(Texture());
-
-        TGUI_TextureManager.copyTexture(m_textureNormal, m_texturesNormal.back());
-        TGUI_TextureManager.copyTexture(m_textureSelected, m_texturesSelected.back());
+        m_texturesNormal.push_back(m_textureNormal);
+        m_texturesSelected.push_back(m_textureSelected);
 
         m_texturesNormal.back().setSize(width, m_texturesNormal.back().getSize().y);
         m_texturesSelected.back().setSize(width, m_texturesSelected.back().getSize().y);

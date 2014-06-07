@@ -106,15 +106,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::copyTexture(const Texture& textureToCopy, Texture& newTexture)
+    void TextureManager::copyTexture(const Texture& textureToCopy)
     {
-        // Ignore null pointers
-        if (textureToCopy.getData() == nullptr)
-        {
-            newTexture = Texture();
-            return true;
-        }
-
         // Loop all our textures to check if we already have this one
         for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
         {
@@ -125,13 +118,12 @@ namespace tgui
                 {
                     // The texture is now used at multiple places
                     ++(dataIt->users);
-                    newTexture = textureToCopy;
-                    return true;
+                    return;
                 }
             }
         }
 
-        return false;
+        throw Exception("Trying to copy a texture that was not loaded by the TextureManager.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +153,8 @@ namespace tgui
                 }
             }
         }
+
+        throw Exception("Trying to remove a texture that was not loaded by the TextureManager.");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

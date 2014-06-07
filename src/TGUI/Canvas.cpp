@@ -41,23 +41,20 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Canvas::Canvas(const Canvas& copy) :
-    ClickableWidget(copy)
+        ClickableWidget(copy)
     {
-        setSize(static_cast<float>(copy.m_renderTexture.getSize().x),
-                static_cast<float>(copy.m_renderTexture.getSize().y));
+        setSize(copy.getSize().x, copy.getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Canvas& Canvas::operator= (const Canvas& right)
     {
-        // Make sure it is not the same widget
         if (this != &right)
         {
             this->ClickableWidget::operator=(right);
 
-            setSize(static_cast<float>(right.m_renderTexture.getSize().x),
-                    static_cast<float>(right.m_renderTexture.getSize().y));
+            setSize(right.getSize().x, right.getSize().y);
         }
 
         return *this;

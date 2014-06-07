@@ -35,59 +35,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider2d::Slider2d() :
-    m_minimum            (-1, -1),
-    m_maximum            (1, 1),
-    m_value              (0, 0),
-    m_returnThumbToCenter(false),
-    m_fixedThumbSize     (true),
-    m_separateHoverImage (false)
+        m_minimum            (-1, -1),
+        m_maximum            (1, 1),
+        m_value              (0, 0),
+        m_returnThumbToCenter(false),
+        m_fixedThumbSize     (true),
+        m_separateHoverImage (false)
     {
         m_callback.widgetType = Type_Slider2d;
         m_draggableWidget = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Slider2d::Slider2d(const Slider2d& copy) :
-    ClickableWidget      (copy),
-    m_loadedConfigFile   (copy.m_loadedConfigFile),
-    m_minimum            (copy.m_minimum),
-    m_maximum            (copy.m_maximum),
-    m_value              (copy.m_value),
-    m_returnThumbToCenter(copy.m_returnThumbToCenter),
-    m_fixedThumbSize     (copy.m_fixedThumbSize),
-    m_separateHoverImage (copy.m_separateHoverImage)
-    {
-        TGUI_TextureManager.copyTexture(copy.m_textureTrackNormal, m_textureTrackNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureTrackHover, m_textureTrackHover);
-        TGUI_TextureManager.copyTexture(copy.m_textureThumbNormal, m_textureThumbNormal);
-        TGUI_TextureManager.copyTexture(copy.m_textureThumbHover, m_textureThumbHover);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Slider2d& Slider2d::operator= (const Slider2d& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Slider2d temp(right);
-            this->ClickableWidget::operator=(right);
-
-            std::swap(m_loadedConfigFile,    temp.m_loadedConfigFile);
-            std::swap(m_minimum,             temp.m_minimum);
-            std::swap(m_maximum,             temp.m_maximum);
-            std::swap(m_value,               temp.m_value);
-            std::swap(m_returnThumbToCenter, temp.m_returnThumbToCenter);
-            std::swap(m_fixedThumbSize,      temp.m_fixedThumbSize);
-            std::swap(m_textureTrackNormal,  temp.m_textureTrackNormal);
-            std::swap(m_textureTrackHover,   temp.m_textureTrackHover);
-            std::swap(m_textureThumbNormal,  temp.m_textureThumbNormal);
-            std::swap(m_textureThumbHover,   temp.m_textureThumbHover);
-            std::swap(m_separateHoverImage,  temp.m_separateHoverImage);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
