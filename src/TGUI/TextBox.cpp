@@ -151,13 +151,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox* TextBox::clone()
-    {
-        return new TextBox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -236,7 +229,7 @@ namespace tgui
                 // Initialize the scrollbar
                 m_scroll->setVerticalScroll(true);
                 m_scroll->setLowValue(m_size.y);
-                m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+                m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
             }
             else
                 throw Exception("Unrecognized property '" + it->first + "' in section TextBox in " + m_loadedConfigFile + ".");
@@ -245,28 +238,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& TextBox::getLoadedConfigFile() const
-    {
-        return m_loadedConfigFile;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setSize(float width, float height)
+    void TextBox::setSize(const sf::Vector2f& size)
     {
         // Don't continue when line height is 0
         if (m_lineHeight == 0)
             return;
 
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // There is a minimum width
         if (m_scroll == nullptr)
-            width = TGUI_MAXIMUM(50, width);
+            m_size = {static_cast<unsigned int>(TGUI_MAXIMUM(50, size.x)), static_cast<unsigned int>(size.y)};
         else
-            width = TGUI_MAXIMUM(50 + m_scroll->getSize().x, width);
+            m_size = {static_cast<unsigned int>(TGUI_MAXIMUM(50 + m_scroll->getSize().x, size.x)), static_cast<unsigned int>(size.y)};
 
         // There is also a minimum height
         if (m_scroll == nullptr)
@@ -291,33 +273,16 @@ namespace tgui
                 m_size.y = m_lineHeight;
         }
 
-        // There is also a minimum height
-        if (height < m_lineHeight)
-        {
-            height = static_cast<float>(m_lineHeight);
-        }
-
-        // Store the values
-        m_size.x = static_cast<unsigned int>(width);
-        m_size.y = static_cast<unsigned int>(height);
-
         // If there is a scrollbar then reinitialize it
         if (m_scroll != nullptr)
         {
             m_scroll->setLowValue(m_size.y);
-            m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+            m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
         }
 
         // The size of the textbox has changed, update the text
         m_selectionTextsNeedUpdate = true;
         updateDisplayedText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f TextBox::getSize() const
-    {
-        return sf::Vector2f(static_cast<float>(m_size.x), static_cast<float>(m_size.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,13 +317,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String TextBox::getText() const
-    {
-        return m_text;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::setTextFont(const sf::Font& font)
     {
         m_textBeforeSelection.setFont(font);
@@ -368,13 +326,6 @@ namespace tgui
         m_textAfterSelection2.setFont(font);
 
         setTextSize(getTextSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* TextBox::getTextFont() const
-    {
-        return m_textBeforeSelection.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,19 +362,12 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             m_scroll->setLowValue(m_size.y);
-            m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+            m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
         }
 
         // The size has changed, update the text
         m_selectionTextsNeedUpdate = true;
         updateDisplayedText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int TextBox::getTextSize() const
-    {
-        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -442,13 +386,6 @@ namespace tgui
             // Set the caret behind the last character
             setCaretPosition(m_text.getSize());
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int TextBox::getMaximumCharacters() const
-    {
-        return m_maxChars;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,13 +421,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setBackgroundColor(const sf::Color& backgroundColor)
-    {
-        m_backgroundColor = backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::setTextColor(const sf::Color& textColor)
     {
         m_textBeforeSelection.setColor(textColor);
@@ -504,69 +434,6 @@ namespace tgui
     {
         m_textSelection1.setColor(selectedTextColor);
         m_textSelection2.setColor(selectedTextColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
-    {
-        m_selectedTextBgrColor = selectedTextBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setBorderColor(const sf::Color& borderColor)
-    {
-        m_borderColor = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setCaretColor(const sf::Color& caretColor)
-    {
-        m_caretColor = caretColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getBackgroundColor() const
-    {
-        return m_backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getTextColor() const
-    {
-        return m_textBeforeSelection.getColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getSelectedTextColor() const
-    {
-        return m_textSelection1.getColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getSelectedTextBackgroundColor() const
-    {
-        return m_selectedTextBgrColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getBorderColor() const
-    {
-        return m_borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& TextBox::getCaretColor() const
-    {
-        return m_caretColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -679,7 +546,7 @@ namespace tgui
 
         // Initialize the scrollbar
         m_scroll->setVerticalScroll(true);
-        m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+        m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
         m_scroll->setLowValue(m_size.y);
         m_scroll->setMaximum(m_lines * m_lineHeight);
 
@@ -695,27 +562,6 @@ namespace tgui
         m_scroll = nullptr;
 
         m_topLine = 1;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setCaretWidth(unsigned int width)
-    {
-        m_caretWidth = width;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int TextBox::getCaretWidth() const
-    {
-        return m_caretWidth;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setReadOnly(bool readOnly)
-    {
-        m_readOnly = readOnly;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -739,13 +585,13 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(position.x + m_size.x - m_scroll->getSize().x, position.y);
+            m_scroll->setPosition({position.x + m_size.x - m_scroll->getSize().x, position.y});
 
             // Pass the event
             m_scroll->mouseOnWidget(x, y);
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
 
         // Check if the mouse is on top of the text box
@@ -778,7 +624,7 @@ namespace tgui
             unsigned int oldValue = m_scroll->getValue();
 
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y);
+            m_scroll->setPosition({getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y});
 
             // Pass the event
             if (m_scroll->mouseOnWidget(x, y))
@@ -788,7 +634,7 @@ namespace tgui
             }
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_scroll->getValue())
@@ -905,13 +751,13 @@ namespace tgui
                 unsigned int oldValue = m_scroll->getValue();
 
                 // Temporarily set the position of the scroll
-                m_scroll->setPosition(getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y);
+                m_scroll->setPosition({getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y});
 
                 // Pass the event
                 m_scroll->leftMouseReleased(x, y);
 
                 // Reset the position
-                m_scroll->setPosition(0, 0);
+                m_scroll->setPosition({0, 0});
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_scroll->getValue())
@@ -962,7 +808,7 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y);
+            m_scroll->setPosition({getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y});
 
             // Check if you are dragging the thumb of the scrollbar
             if (m_scroll->m_mouseDown)
@@ -989,7 +835,7 @@ namespace tgui
             }
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
         else // There is no scrollbar
         {

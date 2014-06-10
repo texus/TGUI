@@ -51,13 +51,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox* EditBox::clone()
-    {
-        return new EditBox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -133,7 +126,7 @@ namespace tgui
         if (m_textureNormal.getData() == nullptr)
             throw Exception("NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
+        setSize(m_textureNormal.getImageSize());
 
         // Auto-size the text
         setTextSize(0);
@@ -141,48 +134,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& EditBox::getLoadedConfigFile() const
+    void EditBox::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        Transformable::setPosition(position);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setPosition(float x, float y)
-    {
-        Transformable::setPosition(x, y);
-
-        m_textureHover.setPosition(x, y);
-        m_textureNormal.setPosition(x, y);
-        m_textureFocused.setPosition(x, y);
+        m_textureHover.setPosition(position);
+        m_textureNormal.setPosition(position);
+        m_textureFocused.setPosition(position);
 
         recalculateTextPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSize(float width, float height)
+    void EditBox::setSize(const sf::Vector2f& size)
     {
         // Recalculate the text size when auto scaling
         if (m_textSize == 0)
             setText(m_text);
 
-        m_textureHover.setSize(width, height);
-        m_textureNormal.setSize(width, height);
-        m_textureFocused.setSize(width, height);
+        m_textureHover.setSize(size);
+        m_textureNormal.setSize(size);
+        m_textureFocused.setSize(size);
 
         // Set the size of the caret
         m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
 
         // Recalculate the position of the images and texts
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f EditBox::getSize() const
-    {
-        return m_textureNormal.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,13 +261,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String EditBox::getText() const
-    {
-        return m_text;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::setTextSize(unsigned int size)
     {
         // Change the text size
@@ -296,13 +268,6 @@ namespace tgui
 
         // Call setText to reposition the text
         setText(m_text);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int EditBox::getTextSize() const
-    {
-        return m_textFull.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,13 +285,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* EditBox::getTextFont() const
-    {
-        return m_textFull.getFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::setPasswordCharacter(char passwordChar)
     {
         // Change the password character
@@ -334,13 +292,6 @@ namespace tgui
 
         // Recalculate the text position
         setText(m_text);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    char EditBox::getPasswordCharacter() const
-    {
-        return m_passwordChar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,13 +317,6 @@ namespace tgui
             // Set the caret behind the last character
             setCaretPosition(m_displayedText.getSize());
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int EditBox::getMaximumCharacters() const
-    {
-        return m_maxChars;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,55 +357,6 @@ namespace tgui
     {
         m_textBeforeSelection.setColor(textColor);
         m_textAfterSelection.setColor(textColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setSelectedTextColor(const sf::Color& selectedTextColor)
-    {
-        m_textSelection.setColor(selectedTextColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
-    {
-        m_selectedTextBackground.setFillColor(selectedTextBackgroundColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setCaretColor(const sf::Color& caretColor)
-    {
-        m_caret.setFillColor(caretColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& EditBox::getTextColor() const
-    {
-        return m_textBeforeSelection.getColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& EditBox::getSelectedTextColor() const
-    {
-        return m_textSelection.getColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& EditBox::getSelectedTextBackgroundColor() const
-    {
-        return m_selectedTextBackground.getFillColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& EditBox::getCaretColor() const
-    {
-        return m_caret.getFillColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,13 +441,6 @@ namespace tgui
     {
         m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
         m_caret.setSize(sf::Vector2f(static_cast<float>(width), m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int EditBox::getCaretWidth() const
-    {
-        return static_cast<unsigned int>(m_caret.getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

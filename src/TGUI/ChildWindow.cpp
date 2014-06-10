@@ -119,13 +119,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow* ChildWindow::clone()
-    {
-        return new ChildWindow(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -182,7 +175,7 @@ namespace tgui
         if (m_closeButton->m_textureNormal.getData() == nullptr)
             throw Exception("Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + ".");
 
-        m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize().x, m_closeButton->m_textureNormal.getImageSize().y);
+        m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize());
 
         // Make sure the required texture was loaded
         if (m_textureTitleBar.getData() == nullptr)
@@ -190,7 +183,7 @@ namespace tgui
 
         m_titleBarHeight = m_textureTitleBar.getImageSize().y;
 
-        setSize(m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f);
+        setSize({m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f});
 
         // Set the size of the title text
         m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
@@ -198,15 +191,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ChildWindow::getLoadedConfigFile() const
+    void ChildWindow::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        float x = position.x;
+        float y = position.y;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setPosition(float x, float y)
-    {
         if (m_keepInParent)
         {
             if (y < 0)
@@ -220,9 +209,9 @@ namespace tgui
                 x = m_parent->getSize().x - getSize().x;
         }
 
-        Transformable::setPosition(x, y);
+        Transformable::setPosition({x, y});
 
-        m_textureTitleBar.setPosition(x, y);
+        m_textureTitleBar.setPosition({x, y});
         m_iconTexture.setPosition(x + m_distanceToSide, y + ((m_titleBarHeight - m_iconTexture.getSize().y) / 2.0f));
 
         if (m_titleAlignment == TitleAlignmentLeft)
@@ -254,23 +243,19 @@ namespace tgui
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
         }
 
-        m_closeButton->setPosition(x + (m_size.x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton->getSize().x,
-                                   y + ((m_titleBarHeight - m_closeButton->getSize().y) / 2.0f));
+        m_closeButton->setPosition({x + (m_size.x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton->getSize().x,
+                                    y + ((m_titleBarHeight - m_closeButton->getSize().y) / 2.0f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setSize(float width, float height)
+    void ChildWindow::setSize(const sf::Vector2f& size)
     {
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // Set the size of the window
-        m_size.x = width;
-        m_size.y = height;
+        m_size.x = std::abs(size.x);
+        m_size.y = std::abs(size.y);
 
-        m_textureTitleBar.setSize((width + m_borders.left + m_borders.right), static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
         // If there is a background texture then resize it
         if (m_backgroundTexture)
@@ -279,27 +264,12 @@ namespace tgui
         // If there is an icon then give it the correct size
         if (m_iconTexture.getData())
         {
-            m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
-                                  m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
+            m_iconTexture.setSize({m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
+                                   m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y});
         }
 
         // Reposition the images and text
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ChildWindow::getSize() const
-    {
-        return sf::Vector2f(m_size.x, m_size.y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ChildWindow::getFullSize() const
-    {
-        return sf::Vector2f(m_size.x + m_borders.left + m_borders.right,
-                            m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,50 +313,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Texture* ChildWindow::getBackgroundTexture()
-    {
-        return m_backgroundTexture;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::setTitleBarHeight(unsigned int height)
     {
         // Remember the new title bar height
         m_titleBarHeight = height;
 
         // Set the size of the close button
-        m_closeButton->setSize(height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().x,
-                               height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().y);
+        m_closeButton->setSize({height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().x,
+                                height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().y});
 
         // Set the size of the text in the title bar
         m_titleText.setCharacterSize(static_cast<unsigned int>(m_titleBarHeight * 0.75f));
 
-        m_textureTitleBar.setSize(m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
         // Reposition the images and text
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ChildWindow::getTitleBarHeight() const
-    {
-        return m_titleBarHeight;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setBackgroundColor(const sf::Color& backgroundColor)
-    {
-        m_backgroundColor = backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChildWindow::getBackgroundColor() const
-    {
-        return m_backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,41 +356,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::String& ChildWindow::getTitle() const
-    {
-        return m_titleText.getString();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setTitleColor(const sf::Color& color)
-    {
-        m_titleText.setColor(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChildWindow::getTitleColor() const
-    {
-        return m_titleText.getColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setBorderColor(const sf::Color& borderColor)
-    {
-        m_borderColor = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChildWindow::getBorderColor() const
-    {
-        return m_borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
     {
         // Set the new border size
@@ -457,7 +364,7 @@ namespace tgui
         m_borders.right  = rightBorder;
         m_borders.bottom = bottomBorder;
 
-        m_textureTitleBar.setSize(m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight));
+        m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -475,26 +382,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ChildWindow::getDistanceToSide() const
-    {
-        return m_distanceToSide;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::setTitleAlignment(TitleAlignment alignment)
     {
         m_titleAlignment = alignment;
 
         // Reposition the images and text
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ChildWindow::TitleAlignment ChildWindow::getTitleAlignment() const
-    {
-        return m_titleAlignment;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,8 +401,8 @@ namespace tgui
         // Load the icon image
         TGUI_TextureManager.getTexture(m_iconTexture, filename);
 
-        m_iconTexture.setSize(m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
-                              m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y);
+        m_iconTexture.setSize({m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
+                               m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y});
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -545,13 +438,6 @@ namespace tgui
     bool ChildWindow::isKeptInParent() const
     {
         return m_keepInParent;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ChildWindow::getWidgetsOffset() const
-    {
-        return sf::Vector2f(m_borders.left, m_borders.top + getTitleBarHeight());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -715,8 +601,7 @@ namespace tgui
         if (m_mouseDown == true)
         {
             // Move the child window
-            sf::Vector2f position = getPosition();
-            setPosition(position.x + (x - position.x - m_draggingPosition.x), position.y + (y - position.y - m_draggingPosition.y));
+            setPosition(sf::Vector2f{x, y} - m_draggingPosition);
 
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[Moved].empty() == false)

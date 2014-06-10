@@ -40,13 +40,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider* Slider::clone()
-    {
-        return new Slider(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Slider::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -92,34 +85,27 @@ namespace tgui
         if ((m_textureTrackNormal.getData() == nullptr) && (m_textureThumbNormal.getData() == nullptr))
             throw Exception("Not all needed images were loaded for the slider. Is the Slider section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
+        setSize(m_textureTrackNormal.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Slider::getLoadedConfigFile() const
+    void Slider::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        Widget::setPosition(position);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Slider::setPosition(float x, float y)
-    {
-        Widget::setPosition(x, y);
-
-        m_textureTrackNormal.setPosition(x, y);
-        m_textureTrackHover.setPosition(x, y);
+        m_textureTrackNormal.setPosition(position);
+        m_textureTrackHover.setPosition(position);
 
         if (m_verticalScroll)
         {
-            m_textureThumbNormal.setPosition(x + ((getSize().x - getThumbSize().x) / 2.0f),
-                                             y - (getThumbSize().y / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum)));
+            m_textureThumbNormal.setPosition({position.x + ((getSize().x - getThumbSize().x) / 2.0f),
+                                              position.y - (getThumbSize().y / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum))});
         }
         else
         {
-            m_textureThumbNormal.setPosition(x - (getThumbSize().x / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)),
-                                             y + ((getSize().y - getThumbSize().y) / 2.0f));
+            m_textureThumbNormal.setPosition({position.x - (getThumbSize().x / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)),
+                                              position.y + ((getSize().y - getThumbSize().y) / 2.0f)});
         }
 
         m_textureThumbHover.setPosition(m_textureThumbNormal.getPosition());
@@ -127,41 +113,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setSize(float width, float height)
+    void Slider::setSize(const sf::Vector2f& size)
     {
         if (m_verticalImage == m_verticalScroll)
         {
-            m_textureTrackNormal.setSize(width, height);
+            m_textureTrackNormal.setSize(size);
 
             if (m_verticalScroll)
             {
-                m_textureThumbNormal.setSize(width / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
-                                             width / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y);
+                m_textureThumbNormal.setSize({size.x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                              size.x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
             }
             else
             {
-                m_textureThumbNormal.setSize(height / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
-                                             height / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+                m_textureThumbNormal.setSize({size.y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                              size.y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
             }
         }
         else
         {
-            m_textureTrackNormal.setSize(height, width);
+            m_textureTrackNormal.setSize(size);
 
             if (m_verticalScroll)
             {
-                m_textureThumbNormal.setSize(width / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
-                                             width / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y);
+                m_textureThumbNormal.setSize({size.x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                              size.x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
             }
             else
             {
-                m_textureThumbNormal.setSize(height / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
-                                             height / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y);
+                m_textureThumbNormal.setSize({size.y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                              size.y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
             }
         }
 
-        m_textureTrackHover.setSize(m_textureTrackNormal.getSize().x, m_textureTrackNormal.getSize().y);
-        m_textureThumbHover.setSize(m_textureThumbNormal.getSize().x, m_textureThumbNormal.getSize().y);
+        m_textureTrackHover.setSize(m_textureTrackNormal.getSize());
+        m_textureThumbHover.setSize(m_textureThumbNormal.getSize());
 
         // Recalculate the position of the images
         setPosition(getPosition());
@@ -276,46 +262,18 @@ namespace tgui
             if (m_verticalScroll)
             {
                 if (size.x > size.y)
-                    setSize(size.y, size.x);
+                    setSize({size.y, size.x});
                 else
-                    setSize(size.x, size.y);
+                    setSize(size);
             }
             else // The slider lies horizontal
             {
                 if (size.y > size.x)
-                    setSize(size.y, size.x);
+                    setSize({size.y, size.x});
                 else
-                    setSize(size.x, size.y);
+                    setSize(size);
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getMinimum() const
-    {
-        return m_minimum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getMaximum() const
-    {
-        return m_maximum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Slider::getValue() const
-    {
-        return m_value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Slider::getVerticalScroll() const
-    {
-        return m_verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

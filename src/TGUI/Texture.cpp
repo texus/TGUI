@@ -86,7 +86,7 @@ namespace tgui
         m_data = &data;
         m_middleRect = middleRect;
 
-        setSize(m_data->texture.getSize().x, m_data->texture.getSize().y);
+        setSize(sf::Vector2f{m_data->texture.getSize()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,11 +98,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setSize(float width, float height)
+    void Texture::setSize(const sf::Vector2f& size)
     {
         if (m_data != nullptr)
         {
-            m_size = sf::Vector2f(width, height);
+            m_size = size;
 
             if (m_size.x < 0)
                 m_size.x = -m_size.x;

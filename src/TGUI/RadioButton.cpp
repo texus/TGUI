@@ -43,13 +43,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RadioButton* RadioButton::clone()
-    {
-        return new RadioButton(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void RadioButton::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -90,7 +83,7 @@ namespace tgui
         if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
             throw Exception("Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureUnchecked.getImageSize().x, m_textureUnchecked.getImageSize().y);
+        setSize(m_textureUnchecked.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
         if (m_textureFocused.getData() != nullptr)
@@ -99,45 +92,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& RadioButton::getLoadedConfigFile() const
+    void RadioButton::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        ClickableWidget::setPosition(position);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::setPosition(float x, float y)
-    {
-        ClickableWidget::setPosition(x, y);
-
-        m_textureUnchecked.setPosition(x, y);
-        m_textureChecked.setPosition(x, y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
-        m_textureFocused.setPosition(x, y);
-        m_textureHover.setPosition(x, y);
+        m_textureUnchecked.setPosition(position);
+        m_textureChecked.setPosition(position.x, position.y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
+        m_textureFocused.setPosition(position);
+        m_textureHover.setPosition(position);
 
         sf::FloatRect textBounds = m_text.getLocalBounds();
-        m_text.setPosition(x + std::floor(m_textureUnchecked.getSize().x * 11.0f / 10.0f - textBounds.left),
-                           y + std::floor(((m_textureUnchecked.getSize().y - textBounds.height) / 2.0f) - textBounds.top));
+        m_text.setPosition(position.x + std::floor(m_textureUnchecked.getSize().x * 11.0f / 10.0f - textBounds.left),
+                           position.y + std::floor(((m_textureUnchecked.getSize().y - textBounds.height) / 2.0f) - textBounds.top));
     }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setSize(float width, float height)
+    void RadioButton::setSize(const sf::Vector2f& size)
     {
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
+        sf::Vector2f newSize = {std::abs(size.x), std::abs(size.y)};
 
         // If the text is auto sized then recalculate the size
         if (m_textSize == 0)
             setText(m_text.getString());
 
-        m_textureUnchecked.setSize(width, height);
-        m_textureFocused.setSize(width, height);
-        m_textureHover.setSize(width, height);
-        m_textureChecked.setSize(width + ((m_textureChecked.getImageSize().x - m_textureUnchecked.getImageSize().x) * (width / m_textureUnchecked.getImageSize().x)),
-                                 height + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (height / m_textureUnchecked.getImageSize().y)));
+        m_textureUnchecked.setSize(newSize);
+        m_textureFocused.setSize(newSize);
+        m_textureHover.setSize(newSize);
+        m_textureChecked.setSize({newSize.x + ((m_textureChecked.getImageSize().x - m_textureUnchecked.getImageSize().x) * (newSize.x / m_textureUnchecked.getImageSize().x)),
+                                  newSize.y + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (newSize.y / m_textureUnchecked.getImageSize().y))});
 
         // Reposition the text
         setPosition(getPosition());
@@ -145,19 +129,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RadioButton::getSize() const
-    {
-        return m_textureUnchecked.getSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::Vector2f RadioButton::getFullSize() const
     {
         if (m_text.getString().isEmpty())
-            return m_textureUnchecked.getSize();
+            return getSize();
         else
-            return sf::Vector2f((m_textureUnchecked.getSize().x * 11.0f / 10.0f) + m_text.getLocalBounds().left + m_text.getLocalBounds().width, m_textureUnchecked.getSize().y);
+            return sf::Vector2f((getSize().x * 11.0f / 10.0f) + m_text.getLocalBounds().left + m_text.getLocalBounds().width, getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,13 +179,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RadioButton::isChecked() const
-    {
-        return m_checked;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void RadioButton::setText(const sf::String& text)
     {
         // Set the new text
@@ -226,40 +196,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String RadioButton::getText() const
-    {
-        return m_text.getString();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void RadioButton::setTextFont(const sf::Font& font)
     {
         m_text.setFont(font);
 
         // Recalculate the text position and size
         setText(getText());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* RadioButton::getTextFont() const
-    {
-        return m_text.getFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::setTextColor(const sf::Color& Color)
-    {
-        m_text.setColor(Color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& RadioButton::getTextColor() const
-    {
-        return m_text.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,13 +213,6 @@ namespace tgui
 
         // Call setText to reposition the text
         setText(m_text.getString());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int RadioButton::getTextSize() const
-    {
-        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

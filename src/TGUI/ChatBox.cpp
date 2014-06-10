@@ -43,7 +43,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_panel = new Panel();
-        m_panel->setSize(360, 200);
+        m_panel->setSize({360, 200});
         m_panel->setBackgroundColor(sf::Color::White);
     }
 
@@ -114,13 +114,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox* ChatBox::clone()
-    {
-        return new ChatBox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -180,7 +173,7 @@ namespace tgui
                 // Initialize the scrollbar
                 m_scroll->setVerticalScroll(true);
                 m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
-                m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
+                m_scroll->setSize(m_scroll->getSize());
                 m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
             }
             else
@@ -190,36 +183,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ChatBox::getLoadedConfigFile() const
+    void ChatBox::setSize(const sf::Vector2f& size)
     {
-        return m_loadedConfigFile;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setSize(float width, float height)
-    {
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
-        // There is a minimum width
-        if (m_scroll == nullptr)
-            width = TGUI_MAXIMUM(50, width);
-        else
-            width = TGUI_MAXIMUM(50 + m_scroll->getSize().x, width);
-
         // Remember the old height
         float oldHeight = m_panel->getSize().y;
 
-        // Set the new size
-        m_panel->setSize(width, height);
+        // There is a minimum width
+        if (m_scroll == nullptr)
+            m_panel->setSize({TGUI_MAXIMUM(50.f, size.x), size.y});
+        else
+            m_panel->setSize({TGUI_MAXIMUM(50.f + m_scroll->getSize().x, size.x), size.y});
 
         // If there is a scrollbar then reinitialize it
         if (m_scroll != nullptr)
         {
             m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
-            m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
+            m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
         }
 
         // Find out how much the height has changed
@@ -228,22 +207,7 @@ namespace tgui
         // Reposition all labels in the chatbox
         auto& labels = m_panel->getWidgets();
         for (auto it = labels.begin(); it != labels.end(); ++it)
-            (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y + heightDiff);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ChatBox::getSize() const
-    {
-        return m_panel->getSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ChatBox::getFullSize() const
-    {
-        return sf::Vector2f(getSize().x + m_borders.left + m_borders.right,
-                            getSize().y + m_borders.top + m_borders.bottom);
+            (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y + heightDiff});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,13 +341,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ChatBox::getLineAmount()
-    {
-        return m_panel->getWidgets().size();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::setLineLimit(unsigned int maxLines)
     {
         m_maxLines = maxLines;
@@ -430,13 +387,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Font* ChatBox::getTextFont() const
-    {
-        return m_panel->getGlobalFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::setTextSize(unsigned int size)
     {
         // Store the new text size
@@ -449,61 +399,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ChatBox::getTextSize() const
-    {
-        return m_textSize;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setTextColor(const sf::Color& color)
-    {
-        m_textColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChatBox::getTextColor() const
-    {
-        return m_textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::setBorders(float leftBorder, float  topBorder, float rightBorder, float bottomBorder)
     {
         m_borders.left   = leftBorder;
         m_borders.top    = topBorder;
         m_borders.right  = rightBorder;
         m_borders.bottom = bottomBorder;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setBackgroundColor(const sf::Color& backgroundColor)
-    {
-        m_panel->setBackgroundColor(backgroundColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setBorderColor(const sf::Color& borderColor)
-    {
-        m_borderColor = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChatBox::getBackgroundColor() const
-    {
-        return m_panel->getBackgroundColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ChatBox::getBorderColor() const
-    {
-        return m_borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,7 +438,7 @@ namespace tgui
 
         // Initialize the scrollbar
         m_scroll->setVerticalScroll(true);
-        m_scroll->setSize(m_scroll->getSize().x, m_panel->getSize().y);
+        m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
         m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
         m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
     }
@@ -574,13 +475,13 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(position.x + m_panel->getSize().x - m_scroll->getSize().x, position.y);
+            m_scroll->setPosition({position.x + m_panel->getSize().x - m_scroll->getSize().x, position.y});
 
             // Pass the event
             m_scroll->mouseOnWidget(x, y);
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
 
         // Check if the mouse is on top of the list box
@@ -610,14 +511,14 @@ namespace tgui
             unsigned int oldValue = m_scroll->getValue();
 
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y);
+            m_scroll->setPosition({getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y});
 
             // Pass the event
             if (m_scroll->mouseOnWidget(x, y))
                 m_scroll->leftMousePressed(x, y);
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_scroll->getValue())
@@ -639,13 +540,13 @@ namespace tgui
                 unsigned int oldValue = m_scroll->getValue();
 
                 // Temporarily set the position of the scroll
-                m_scroll->setPosition(getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y);
+                m_scroll->setPosition({getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y});
 
                 // Pass the event
                 m_scroll->leftMouseReleased(x, y);
 
                 // Reset the position
-                m_scroll->setPosition(0, 0);
+                m_scroll->setPosition({0, 0});
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_scroll->getValue())
@@ -693,7 +594,7 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y);
+            m_scroll->setPosition({getPosition().x + m_panel->getSize().x - m_scroll->getSize().x, getPosition().y});
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_scroll->m_mouseDown) && (m_scroll->m_mouseDownOnThumb))
@@ -716,7 +617,7 @@ namespace tgui
             }
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
     }
 
@@ -938,7 +839,7 @@ namespace tgui
         for (unsigned int i = 0; i < labels.size(); ++i)
         {
             tgui::Label::Ptr label = labels[i];
-            label->setPosition(2.0f, position);
+            label->setPosition({2.0f, position});
 
             position += getLineSpacing(i);
         }
@@ -951,7 +852,7 @@ namespace tgui
             {
                 float diff = position - m_panel->getSize().y;
                 for (auto it = labels.begin(); it != labels.end(); ++it)
-                    (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y - diff);
+                    (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y - diff});
             }
         }
     }

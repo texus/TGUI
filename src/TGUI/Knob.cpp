@@ -36,17 +36,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob::Knob()
+    bool compareFloats(float x, float y)
     {
-        m_callback.widgetType = Type_Knob;
-        m_draggableWidget = true;
+        if (std::abs(x - y) < 0.00000001f)
+            return true;
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Knob* Knob::clone()
+    Knob::Knob()
     {
-        return new Knob(*this);
+        m_callback.widgetType = Type_Knob;
+        m_draggableWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,44 +90,30 @@ namespace tgui
 
         m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
 
-        setSize(m_backgroundTexture.getImageSize().x, m_backgroundTexture.getImageSize().y);
+        setSize(m_backgroundTexture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Knob::getLoadedConfigFile() const
+    void Knob::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
+        Transformable::setPosition(position);
+
+        m_backgroundTexture.setPosition(position);
+        m_foregroundTexture.setPosition(position.x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
+                                        position.y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setPosition(float x, float y)
+    void Knob::setSize(const sf::Vector2f& size)
     {
-        Transformable::setPosition(x, y);
-
-        m_backgroundTexture.setPosition(x, y);
-        m_foregroundTexture.setPosition(x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
-                                        y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Knob::setSize(float width, float height)
-    {
-        m_backgroundTexture.setSize(width, height);
-        m_foregroundTexture.setSize(m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * width,
-                                    m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * height);
+        m_backgroundTexture.setSize(size);
+        m_foregroundTexture.setSize({m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * size.x,
+                                     m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * size.y});
 
         // Recalculate the position of the images
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Knob::getSize() const
-    {
-        return m_backgroundTexture.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,40 +223,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Knob::getMinimum() const
-    {
-        return m_minimum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int Knob::getMaximum() const
-    {
-        return m_maximum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int Knob::getValue() const
-    {
-        return m_value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Knob::setClockwiseTurning(bool clockwise)
     {
         m_clockwiseTurning = clockwise;
 
         // The knob might have to point in a different direction even though it has the same value
         recalculateRotation();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Knob::getClockwiseTurning()
-    {
-        return m_clockwiseTurning;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +294,7 @@ namespace tgui
         {
             // Find out the direction that the knob should now point
             float angle;
-            if (x == centerPosition.x)
+            if (compareFloats(x, centerPosition.x))
             {
                 if (y > centerPosition.y)
                     angle = 270;
@@ -401,7 +362,7 @@ namespace tgui
 
             // Calculate the difference in degrees between the start and end rotation
             float allowedAngle = 0;
-            if (m_startRotation == m_endRotation)
+            if (compareFloats(m_startRotation, m_endRotation))
                 allowedAngle = 360;
             else
             {
@@ -424,7 +385,7 @@ namespace tgui
                     setValue(static_cast<int>(((m_startRotation - angle) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 else
                 {
-                    if (angle == m_startRotation)
+                    if (compareFloats(angle, m_startRotation))
                         setValue(m_minimum);
                     else
                         setValue(static_cast<int>((((360.0 - angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
@@ -568,7 +529,7 @@ namespace tgui
     {
         // Calculate the difference in degrees between the start and end rotation
         float allowedAngle = 0;
-        if (m_startRotation == m_endRotation)
+        if (compareFloats(m_startRotation, m_endRotation))
             allowedAngle = 360;
         else
         {

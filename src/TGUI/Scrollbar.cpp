@@ -39,13 +39,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Scrollbar* Scrollbar::clone()
-    {
-        return new Scrollbar(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Scrollbar::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -104,44 +97,37 @@ namespace tgui
          || (m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
             throw Exception("Not all needed images were loaded for the scrollbar. Is the Scrollbar section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureTrackNormal.getImageSize().x, m_textureTrackNormal.getImageSize().y);
+        setSize(m_textureTrackNormal.getImageSize());
         setVerticalScroll(m_verticalScroll);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Scrollbar::getLoadedConfigFile() const
+    void Scrollbar::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        Widget::setPosition(position);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_textureTrackNormal.setPosition(position);
+        m_textureTrackHover.setPosition(position);
 
-    void Scrollbar::setPosition(float x, float y)
-    {
-        Widget::setPosition(x, y);
-
-        m_textureTrackNormal.setPosition(x, y);
-        m_textureTrackHover.setPosition(x, y);
-
-        m_textureArrowUpNormal.setPosition(x, y);
-        m_textureArrowUpHover.setPosition(x, y);
+        m_textureArrowUpNormal.setPosition(position);
+        m_textureArrowUpHover.setPosition(position);
 
         if (m_verticalScroll)
         {
             float realTrackHeight = getSize().y;
             realTrackHeight -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
-            m_textureThumbNormal.setPosition(x, y + (realTrackHeight - getThumbSize().y) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y);
-            m_textureArrowDownNormal.setPosition(x, y + getSize().y - m_textureArrowUpNormal.getSize().y);
+            m_textureThumbNormal.setPosition(position.x, position.y + (realTrackHeight - getThumbSize().y) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y);
+            m_textureArrowDownNormal.setPosition(position.x, position.y + getSize().y - m_textureArrowUpNormal.getSize().y);
         }
         else
         {
             float realTrackWidth = getSize().x;
             realTrackWidth -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
-            m_textureThumbNormal.setPosition(x + (realTrackWidth - getThumbSize().x) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y, y);
-            m_textureArrowDownNormal.setPosition(x + getSize().x - m_textureArrowUpNormal.getSize().x, y);
+            m_textureThumbNormal.setPosition(position.x + (realTrackWidth - getThumbSize().x) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y, position.y);
+            m_textureArrowDownNormal.setPosition(position.x + getSize().x - m_textureArrowUpNormal.getSize().x, position.y);
         }
 
         m_textureThumbHover.setPosition(m_textureThumbNormal.getPosition());
@@ -150,54 +136,54 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setSize(float width, float height)
+    void Scrollbar::setSize(const sf::Vector2f& size)
     {
         if (m_verticalImage == m_verticalScroll)
-            m_textureTrackNormal.setSize(width, height);
+            m_textureTrackNormal.setSize(size);
         else
-            m_textureTrackNormal.setSize(height, width);
+            m_textureTrackNormal.setSize({size.y, size.x});
 
         float thumbWidth;
         float realTrackSize;
         if (m_verticalScroll)
         {
-            m_textureArrowUpNormal.setSize(width, width * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y);
-            m_textureArrowDownNormal.setSize(width, width * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y);
+            m_textureArrowUpNormal.setSize({size.x, size.x * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y});
+            m_textureArrowDownNormal.setSize({size.x, size.x * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y});
 
             realTrackSize = getSize().y;
             realTrackSize -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
             if (m_verticalImage)
-                thumbWidth = width;
+                thumbWidth = size.x;
             else
-                thumbWidth = height;
+                thumbWidth = size.y;
         }
         else
         {
-            m_textureArrowUpNormal.setSize(height * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y, height);
-            m_textureArrowDownNormal.setSize(height * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y, height);
+            m_textureArrowUpNormal.setSize({size.y * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y, size.y});
+            m_textureArrowDownNormal.setSize({size.y * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y, size.y});
 
             realTrackSize = getSize().x;
             realTrackSize -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
             if (m_verticalImage)
-                thumbWidth = height;
+                thumbWidth = size.y;
             else
-                thumbWidth = width;
+                thumbWidth = size.x;
         }
 
         if (realTrackSize < 0)
             realTrackSize = 0;
 
         if (m_maximum > m_lowValue)
-            m_textureThumbNormal.setSize(thumbWidth, realTrackSize * m_lowValue / m_maximum);
+            m_textureThumbNormal.setSize({thumbWidth, realTrackSize * m_lowValue / m_maximum});
         else
-            m_textureThumbNormal.setSize(thumbWidth, realTrackSize);
+            m_textureThumbNormal.setSize({thumbWidth, realTrackSize});
 
-        m_textureTrackHover.setSize(m_textureTrackNormal.getSize().x, m_textureTrackNormal.getSize().y);
-        m_textureThumbHover.setSize(m_textureThumbNormal.getSize().x, m_textureThumbNormal.getSize().y);
-        m_textureArrowUpHover.setSize(m_textureArrowUpNormal.getSize().x, m_textureArrowUpNormal.getSize().y);
-        m_textureArrowDownHover.setSize(m_textureArrowUpNormal.getSize().x, m_textureArrowUpNormal.getSize().y);
+        m_textureTrackHover.setSize(m_textureTrackNormal.getSize());
+        m_textureThumbHover.setSize(m_textureThumbNormal.getSize());
+        m_textureArrowUpHover.setSize(m_textureArrowUpNormal.getSize());
+        m_textureArrowDownHover.setSize(m_textureArrowUpNormal.getSize());
 
         // Recalculate the position of the images
         setPosition(getPosition());
@@ -233,7 +219,7 @@ namespace tgui
             setValue(m_maximum - m_lowValue);
 
         // Recalculate the size and position of the thumb image
-        setSize(getSize().x, getSize().y);
+        setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +246,7 @@ namespace tgui
             }
 
             // Recalculate the size and position of the thumb image
-            setSize(getSize().x, getSize().y);
+            setSize(getSize());
         }
     }
 
@@ -278,7 +264,7 @@ namespace tgui
             setValue(m_maximum - m_lowValue);
 
         // Recalculate the size and position of the thumb image
-        setSize(getSize().x, getSize().y);
+        setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,73 +309,17 @@ namespace tgui
         if (m_verticalScroll)
         {
             if (size.x > size.y)
-                setSize(size.y, size.x);
+                setSize({size.y, size.x});
             else
-                setSize(size.x, size.y);
+                setSize(size);
         }
         else // The slider lies horizontal
         {
             if (size.y > size.x)
-                setSize(size.y, size.x);
+                setSize({size.y, size.x});
             else
-                setSize(size.x, size.y);
+                setSize(size);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Scrollbar::getMaximum() const
-    {
-        return m_maximum;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Scrollbar::getValue() const
-    {
-        return m_value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Scrollbar::getLowValue() const
-    {
-        return m_lowValue;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Scrollbar::getVerticalScroll() const
-    {
-        return m_verticalScroll;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Scrollbar::setArrowScrollAmount(unsigned int scrollAmount)
-    {
-        m_scrollAmount = scrollAmount;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Scrollbar::getArrowScrollAmount()
-    {
-        return m_scrollAmount;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Scrollbar::setAutoHide(bool autoHide)
-    {
-        m_autoHide = autoHide;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Scrollbar::getAutoHide() const
-    {
-        return m_autoHide;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

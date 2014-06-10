@@ -38,26 +38,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpriteSheet* SpriteSheet::clone()
+    void SpriteSheet::setPosition(const sf::Vector2f& position)
     {
-        return new SpriteSheet(*this);
+        Transformable::setPosition(position);
+
+        m_texture.setPosition(position.x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
+                              position.y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpriteSheet::setPosition(float x, float y)
+    void SpriteSheet::setSize(const sf::Vector2f& size)
     {
-        Transformable::setPosition(x, y);
-
-        m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
-                              getPosition().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpriteSheet::setSize(float width, float height)
-    {
-        m_texture.setSize(width * m_columns, height * m_rows);
+        m_texture.setSize({size.x * m_columns, size.y * m_rows});
 
         // Make the correct part of the image visible
         m_texture.setTextureRect(sf::FloatRect((m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
@@ -68,13 +61,6 @@ namespace tgui
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
                               getPosition().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f SpriteSheet::getSize() const
-    {
-        return m_texture.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +76,7 @@ namespace tgui
             columns = 1;
 
         // Make sure the sprite has the correct size
-        m_texture.setSize(m_texture.getSize().x / m_columns * columns, m_texture.getSize().y / m_rows * rows);
+        m_texture.setSize({m_texture.getSize().x / m_columns * columns, m_texture.getSize().y / m_rows * rows});
 
         // Store the number of rows and columns
         m_rows = rows;
@@ -105,34 +91,6 @@ namespace tgui
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
                               getPosition().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpriteSheet::setRows(unsigned int rows)
-    {
-        setCells(rows, m_columns);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SpriteSheet::getRows() const
-    {
-        return m_rows;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpriteSheet::setColumns(unsigned int columns)
-    {
-        setCells(m_rows, columns);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int SpriteSheet::getColumns() const
-    {
-        return m_columns;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,13 +122,6 @@ namespace tgui
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
                               getPosition().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2u SpriteSheet::getVisibleCell() const
-    {
-        return m_visibleCell;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

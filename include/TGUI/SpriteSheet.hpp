@@ -59,7 +59,10 @@ namespace tgui
         // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual SpriteSheet* clone();
+        virtual SpriteSheet* clone() override
+        {
+            return new SpriteSheet(*this);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,24 +72,23 @@ namespace tgui
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param x X coordinate of the new position
-        /// \param y Y coordinate of the new position
+        /// \param position  New position
         ///
         /// \see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(float x, float y);
+        virtual void setPosition(const sf::Vector2f& position) override;
         using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the picture cell, so the piece that is shown.
         ///
-        /// \param width   The new width of the picture cell.
-        /// \param height  The new height of the picture cell.
+        /// \param size  The new size of the picture cell.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(float width, float height);
+        void setSize(const sf::Vector2f& size) override;
+        using Transformable::setSize;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +97,10 @@ namespace tgui
         /// \return Size of the cell
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const;
+        virtual sf::Vector2f getSize() const override
+        {
+            return m_texture.getSize();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +119,10 @@ namespace tgui
         /// \param rows  The amount of rows in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setRows(unsigned int rows);
+        void setRows(unsigned int rows)
+        {
+            setCells(rows, m_columns);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +131,10 @@ namespace tgui
         /// \return The amount of rows in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getRows() const;
+        unsigned int getRows() const
+        {
+            return m_rows;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +143,10 @@ namespace tgui
         /// \param columns  The amount of columns in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setColumns(unsigned int columns);
+        void setColumns(unsigned int columns)
+        {
+            setCells(m_rows, columns);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +155,10 @@ namespace tgui
         /// \return The amount of columns in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getColumns() const;
+        unsigned int getColumns() const
+        {
+            return m_columns;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +177,10 @@ namespace tgui
         /// \return A vector containing the row and column in which the visible cell is located
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2u getVisibleCell() const;
+        sf::Vector2u getVisibleCell() const
+        {
+            return m_visibleCell;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,14 +188,14 @@ namespace tgui
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value);
+        virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void getProperty(std::string property, std::string& value) const;
+        virtual void getProperty(std::string property, std::string& value) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +203,7 @@ namespace tgui
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::list< std::pair<std::string, std::string> > getPropertyList() const;
+        virtual std::list< std::pair<std::string, std::string> > getPropertyList() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

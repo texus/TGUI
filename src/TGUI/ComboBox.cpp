@@ -46,7 +46,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_listBox->hide();
-        m_listBox->setSize(50, 24);
+        m_listBox->setSize({50, 24});
         m_listBox->setItemHeight(24);
         m_listBox->changeColors();
         m_listBox->bindCallback(&ComboBox::newItemSelectedCallbackFunction, this, ListBox::ItemSelected);
@@ -94,13 +94,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ComboBox* ComboBox::clone()
-    {
-        return new ComboBox(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,42 +189,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ComboBox::getLoadedConfigFile() const
+    void ComboBox::setSize(const sf::Vector2f& size)
     {
-        return m_loadedConfigFile;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setSize(float width, float height)
-    {
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // Set the height of the combo box
-        m_listBox->setItemHeight(TGUI_MAXIMUM(10, static_cast<unsigned int>(height)));
+        m_listBox->setItemHeight(TGUI_MAXIMUM(10, static_cast<unsigned int>(std::abs(size.y))));
 
         // Set the size of the list box
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize(width, static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItems().size()))));
+            m_listBox->setSize({std::abs(size.x), static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItems().size())))});
         else
-            m_listBox->setSize(width, static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItems().size()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ComboBox::getSize() const
-    {
-        return sf::Vector2f(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ComboBox::getFullSize() const
-    {
-        return sf::Vector2f(getSize().x + m_borders.left + m_borders.right,
-                            getSize().y + m_borders.top + m_borders.bottom);
+            m_listBox->setSize({std::abs(size.x), static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItems().size())});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,14 +208,7 @@ namespace tgui
         m_nrOfItemsToDisplay = nrOfItemsInList;
 
         if (m_nrOfItemsToDisplay < m_listBox->m_items.size())
-            m_listBox->setSize(m_listBox->getSize().x, static_cast<float>(m_nrOfItemsToDisplay * m_listBox->getItemHeight()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ComboBox::getItemsToDisplay() const
-    {
-        return m_nrOfItemsToDisplay;
+            m_listBox->setSize({m_listBox->getSize().x, static_cast<float>(m_nrOfItemsToDisplay * m_listBox->getItemHeight())});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,90 +218,6 @@ namespace tgui
                                 const sf::Color& borderColor)
     {
         m_listBox->changeColors(backgroundColor, textColor, selectedBackgroundColor, selectedTextColor, borderColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setBackgroundColor(const sf::Color& backgroundColor)
-    {
-        m_listBox->setBackgroundColor(backgroundColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setTextColor(const sf::Color& textColor)
-    {
-        m_listBox->setTextColor(textColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
-    {
-        m_listBox->setSelectedBackgroundColor(selectedBackgroundColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setSelectedTextColor(const sf::Color& selectedTextColor)
-    {
-        m_listBox->setSelectedTextColor(selectedTextColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setBorderColor(const sf::Color& borderColor)
-    {
-        m_listBox->setBorderColor(borderColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ComboBox::getBackgroundColor() const
-    {
-        return m_listBox->getBackgroundColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ComboBox::getTextColor() const
-    {
-        return m_listBox->getTextColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ComboBox::getSelectedBackgroundColor() const
-    {
-        return m_listBox->getSelectedBackgroundColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ComboBox::getSelectedTextColor() const
-    {
-        return m_listBox->getSelectedTextColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ComboBox::getBorderColor() const
-    {
-        return m_listBox->getBorderColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::setTextFont(const sf::Font& font)
-    {
-        m_listBox->setTextFont(font);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* ComboBox::getTextFont() const
-    {
-        return m_listBox->getTextFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +233,7 @@ namespace tgui
 
         // There is a minimum width
         if (m_listBox->getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
-            m_listBox->setSize(50.0f + m_textureArrowDownNormal.getSize().x, m_listBox->getSize().y);
+            m_listBox->setSize({50.0f + m_textureArrowDownNormal.getSize().x, m_listBox->getSize().y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,24 +242,10 @@ namespace tgui
     {
         // Make room to add another item, until there are enough items
         if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItems().size()))
-            m_listBox->setSize(m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItems().size() + 1)));
+            m_listBox->setSize({m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItems().size() + 1))});
 
         // Add the item
         return m_listBox->addItem(item, id);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ComboBox::setSelectedItem(const sf::String& itemName)
-    {
-        return m_listBox->setSelectedItem(itemName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ComboBox::setSelectedItem(int index)
-    {
-        return m_listBox->setSelectedItem(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,48 +281,6 @@ namespace tgui
     void ComboBox::removeAllItems()
     {
         m_listBox->removeAllItems();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::String ComboBox::getItem(unsigned int index) const
-    {
-        return m_listBox->getItem(index);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ComboBox::getItemIndex(const sf::String& itemName) const
-    {
-        return m_listBox->getItemIndex(itemName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<sf::String>& ComboBox::getItems() const
-    {
-        return m_listBox->getItems();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::String ComboBox::getSelectedItem() const
-    {
-        return m_listBox->getSelectedItem();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ComboBox::getSelectedItemIndex() const
-    {
-        return m_listBox->getSelectedItemIndex();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ComboBox::getSelectedItemId() const
-    {
-        return m_listBox->getSelectedItemId();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

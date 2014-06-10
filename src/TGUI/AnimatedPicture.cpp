@@ -39,13 +39,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    AnimatedPicture* AnimatedPicture::clone()
-    {
-        return new AnimatedPicture(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
         // Try to load the texture from the file
@@ -65,24 +58,6 @@ namespace tgui
         tempTexture.setColor(sf::Color(255, 255, 255, m_opacity));
         m_textures.push_back(tempTexture);
         m_frameDuration.push_back(frameDuration);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void AnimatedPicture::setSize(float width, float height)
-    {
-        m_size.x = width;
-        m_size.y = height;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f AnimatedPicture::getSize() const
-    {
-        if (m_textures.empty() == false)
-            return sf::Vector2f(m_size.x, m_size.y);
-        else
-            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,30 +120,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int AnimatedPicture::getCurrentFrame() const
-    {
-        return m_currentFrame;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Time AnimatedPicture::getCurrentFrameDuration() const
-    {
-        if (!m_frameDuration.empty())
-            return m_frameDuration[m_currentFrame];
-        else
-            return sf::Time();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int AnimatedPicture::getFrames() const
-    {
-        return m_textures.size();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool AnimatedPicture::removeFrame(unsigned int frame)
     {
         // Make sure the number isn't too high
@@ -176,13 +127,15 @@ namespace tgui
             return false;
 
         // Remove the requested frame
-        TGUI_TextureManager.removeTexture(m_textures[frame]);
         m_textures.erase(m_textures.begin() + frame);
         m_frameDuration.erase(m_frameDuration.begin() + frame);
 
         // If the displayed frame was behind the deleted one, then it should be shifted
         if (m_currentFrame >= static_cast<int>(frame))
             --m_currentFrame;
+
+        if (m_textures.empty())
+            m_size = {0, 0};
 
         return true;
     }
@@ -191,9 +144,7 @@ namespace tgui
 
     void AnimatedPicture::removeAllFrames()
     {
-        // Remove the textures (if we are the only one using it)
-        for (unsigned int i = 0; i< m_textures.size(); ++i)
-            TGUI_TextureManager.removeTexture(m_textures[i]);
+        m_size = {0, 0};
 
         // Clear the vectors
         m_textures.clear();
@@ -201,27 +152,6 @@ namespace tgui
 
         // Reset the animation
         stop();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void AnimatedPicture::setLooping(bool loop)
-    {
-        m_looping = loop;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool AnimatedPicture::getLooping() const
-    {
-        return m_looping;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool AnimatedPicture::isPlaying() const
-    {
-        return m_playing;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

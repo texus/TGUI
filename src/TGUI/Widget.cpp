@@ -364,19 +364,19 @@ namespace tgui
 
         if (property == "left")
         {
-            setPosition(tgui::stof(value), getPosition().y);
+            setPosition({tgui::stof(value), getPosition().y});
         }
         else if (property == "top")
         {
-            setPosition(getPosition().x, tgui::stof(value));
+            setPosition({getPosition().x, tgui::stof(value)});
         }
         else if (property == "width")
         {
-            setSize(tgui::stof(value), getSize().y);
+            setSize({tgui::stof(value), getSize().y});
         }
         else if (property == "height")
         {
-            setSize(getSize().x, tgui::stof(value));
+            setSize({getSize().x, tgui::stof(value)});
         }
         else if (property == "visible")
         {

@@ -49,15 +49,19 @@
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \internal The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.
+    extern TGUI_API TextureManager TGUI_TextureManager;
 
-    template <typename T>
-    std::string to_string(T value)
-    {
-        std::ostringstream oss;
-        oss << value;
-        return oss.str();
-    }
+    /// \internal The internal clipboard that widgets use
+    class Clipboard;
+    extern TGUI_API Clipboard TGUI_Clipboard;
+
+    /// \internal When disabling the tab key usage, pressing tab will no longer focus another widget.
+    extern TGUI_API bool TGUI_TabKeyUsageEnabled;
+
+    /// \internal The resource path is added in front of every filename that is used to load a resource.
+    extern TGUI_API std::string TGUI_ResourcePath;
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief A list of all widget types.
@@ -92,12 +96,19 @@ namespace tgui
         Type_Grid,
         Type_MessageBox
     };
-}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
-{
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    template <typename T>
+    std::string to_string(T value)
+    {
+        std::ostringstream oss;
+        oss << value;
+        return oss.str();
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief While tab key usage is enabled (default), pressing tab will focus another widget.
     ///
@@ -132,27 +143,6 @@ namespace tgui
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_API const std::string& getResourcePath();
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace tgui
-{
-    /// \internal The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.
-    extern TGUI_API TextureManager TGUI_TextureManager;
-
-    /// \internal The internal clipboard that widgets use
-    class Clipboard;
-    extern TGUI_API Clipboard TGUI_Clipboard;
-
-    /// \internal When disabling the tab key usage, pressing tab will no longer focus another widget.
-    extern TGUI_API bool TGUI_TabKeyUsageEnabled;
-
-    /// \internal The resource path is added in front of every filename that is used to load a resource.
-    extern TGUI_API std::string TGUI_ResourcePath;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

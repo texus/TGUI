@@ -85,31 +85,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid* Grid::clone()
+    void Grid::setSize(const sf::Vector2f& size)
     {
-        return new Grid(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Grid::setSize(float width, float height)
-    {
-        // A negative size is not allowed for this object
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
-
         // Change the intended size of the grid
-        m_intendedSize.x = width;
-        m_intendedSize.y = height;
+        m_intendedSize.x = std::abs(size.x);
+        m_intendedSize.y = std::abs(size.y);
 
         updatePositionsOfAllWidgets();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Grid::getSize() const
-    {
-        return m_size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,7 +358,7 @@ namespace tgui
                             break;
                         }
 
-                        m_gridWidgets[row][col]->setPosition(left, top);
+                        m_gridWidgets[row][col]->setPosition({left, top});
                     }
                 }
             }

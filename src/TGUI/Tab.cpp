@@ -43,13 +43,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tab* Tab::clone()
-    {
-        return new Tab(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Tab::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -118,16 +111,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Tab::getLoadedConfigFile() const
+    void Tab::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::setPosition(float x, float y)
-    {
-        Transformable::setPosition(x, y);
+        Transformable::setPosition(position);
 
         float positionX = 0;
         auto it2 = m_texturesSelected.begin();
@@ -142,16 +128,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setSize(float, float)
+    void Tab::setSize(const sf::Vector2f&)
     {
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Tab::getSize() const
-    {
-        return sf::Vector2f(m_width, m_textureNormal.getSize().y);
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -174,11 +154,11 @@ namespace tgui
         m_texturesNormal.push_back(m_textureNormal);
         m_texturesSelected.push_back(m_textureSelected);
 
-        m_texturesNormal.back().setSize(width, m_texturesNormal.back().getSize().y);
-        m_texturesSelected.back().setSize(width, m_texturesSelected.back().getSize().y);
+        m_texturesNormal.back().setSize({width, m_texturesNormal.back().getSize().y});
+        m_texturesSelected.back().setSize({width, m_texturesSelected.back().getSize().y});
 
-        m_texturesNormal.back().setPosition(currentSize.x, 0);
-        m_texturesSelected.back().setPosition(currentSize.x, 0);
+        m_texturesNormal.back().setPosition({currentSize.x, 0});
+        m_texturesSelected.back().setPosition({currentSize.x, 0});
 
         m_width += width;
 
@@ -327,63 +307,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Tab::getSelected() const
-    {
-        if (m_selectedTab == -1)
-            return "";
-        else
-            return m_tabNames[m_selectedTab];
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int Tab::getSelectedIndex() const
-    {
-        return m_selectedTab;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Tab::setTextFont(const sf::Font& font)
     {
         m_text.setFont(font);
 
         setTextSize(m_textSize);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* Tab::getTextFont() const
-    {
-        return m_text.getFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::setTextColor(const sf::Color& color)
-    {
-        m_textColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& Tab::getTextColor() const
-    {
-        return m_textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::setSelectedTextColor(const sf::Color& color)
-    {
-        m_selectedTextColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& Tab::getSelectedTextColor() const
-    {
-        return m_selectedTextColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,34 +339,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Tab::getTextSize() const
-    {
-        return m_text.getCharacterSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Tab::setTabHeight(float height)
     {
-        m_textureNormal.setSize(m_textureNormal.getSize().x, height);
-        m_textureSelected.setSize(m_textureSelected.getSize().x, height);
+        m_textureNormal.setSize({m_textureNormal.getSize().x, height});
+        m_textureSelected.setSize({m_textureSelected.getSize().x, height});
 
         for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-            it->setSize(it->getSize().x, height);
+            it->setSize({it->getSize().x, height});
 
         for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
-            it->setSize(it->getSize().x, height);
+            it->setSize({it->getSize().x, height});
 
         // Recalculate the size when auto sizing
         if (m_textSize == 0)
             setTextSize(0);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float Tab::getTabHeight() const
-    {
-        return m_textureNormal.getSize().y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,25 +366,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Tab::getMaximumTabWidth() const
-    {
-        return m_maximumTabWidth;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Tab::setDistanceToSide(unsigned int distanceToSide)
     {
         m_distanceToSide = distanceToSide;
 
         recalculateTabsWidth();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Tab::getDistanceToSide() const
-    {
-        return m_distanceToSide;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -678,8 +578,8 @@ namespace tgui
             else
                 width = TGUI_MAXIMUM(m_text.getLocalBounds().width + (2 * m_distanceToSide), m_textureNormal.getSize().y);
 
-            textureNormalIt->setSize(width, textureNormalIt->getSize().y);
-            textureSelectedIt->setSize(width, textureSelectedIt->getSize().y);
+            textureNormalIt->setSize({width, textureNormalIt->getSize().y});
+            textureSelectedIt->setSize({width, textureSelectedIt->getSize().y});
 
             m_width += width;
         }

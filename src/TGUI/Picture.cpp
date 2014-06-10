@@ -38,13 +38,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture* Picture::clone()
-    {
-        return new Picture(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Picture::load(const std::string& filename)
     {
         m_loadedFilename = getResourcePath() + filename;
@@ -57,33 +50,25 @@ namespace tgui
         TGUI_TextureManager.getTexture(m_texture, m_loadedFilename);
 
         // Remember the size of the texture
-        setSize(m_texture.getImageSize().x, m_texture.getImageSize().y);
+        setSize(m_texture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Picture::getLoadedFilename() const
+    void Picture::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedFilename;
+        Transformable::setPosition(position);
+
+        m_texture.setPosition(position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setPosition(float x, float y)
+    void Picture::setSize(const sf::Vector2f& size)
     {
-        Transformable::setPosition(x, y);
+        m_size = size;
 
-        m_texture.setPosition(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Picture::setSize(float width, float height)
-    {
-        m_size.x = width;
-        m_size.y = height;
-
-        m_texture.setSize(width, height);
+        m_texture.setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,16 +77,6 @@ namespace tgui
     {
         if (m_texture.getData())
             m_texture.getData()->texture.setSmooth(smooth);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Picture::isSmooth() const
-    {
-        if (m_texture.getData())
-            return m_texture.getData()->texture.isSmooth();
-        else
-            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

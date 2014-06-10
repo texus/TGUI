@@ -35,7 +35,7 @@ namespace tgui
     {
         m_callback.widgetType = Type_Canvas;
 
-        setSize(100, 100);
+        setSize({100, 100});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace tgui
     Canvas::Canvas(const Canvas& copy) :
         ClickableWidget(copy)
     {
-        setSize(copy.getSize().x, copy.getSize().y);
+        setSize(copy.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ namespace tgui
         {
             this->ClickableWidget::operator=(right);
 
-            setSize(right.getSize().x, right.getSize().y);
+            setSize(right.getSize());
         }
 
         return *this;
@@ -62,36 +62,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas* Canvas::clone()
+    void Canvas::setPosition(const sf::Vector2f& position)
     {
-        return new Canvas(*this);
+        Transformable::setPosition(position);
+
+        m_sprite.setPosition(position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setPosition(float x, float y)
+    void Canvas::setSize(const sf::Vector2f& size)
     {
-        Transformable::setPosition(x, y);
-
-        m_sprite.setPosition(x, y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Canvas::setSize(float width, float height)
-    {
-        m_renderTexture.create(width, height);
+        m_renderTexture.create(static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y));
         m_sprite.setTexture(m_renderTexture.getTexture(), true);
 
         m_renderTexture.clear();
         m_renderTexture.display();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Canvas::getSize() const
-    {
-        return sf::Vector2f(m_renderTexture.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

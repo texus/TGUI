@@ -41,13 +41,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Checkbox* Checkbox::clone()
-    {
-        return new Checkbox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Checkbox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -88,7 +81,7 @@ namespace tgui
         if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
             throw Exception("Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureUnchecked.getImageSize().x, m_textureUnchecked.getImageSize().y);
+        setSize(m_textureUnchecked.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
         if (m_textureFocused.getData() != nullptr)

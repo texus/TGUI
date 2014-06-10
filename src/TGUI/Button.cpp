@@ -42,13 +42,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button* Button::clone()
-    {
-        return new Button(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -91,7 +84,7 @@ namespace tgui
         if (m_textureNormal.getData() == nullptr)
             throw Exception("NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
 
-        setSize(m_textureNormal.getImageSize().x, m_textureNormal.getImageSize().y);
+        setSize(m_textureNormal.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
         if (m_textureFocused.getData() != nullptr)
@@ -100,35 +93,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& Button::getLoadedConfigFile() const
+    void Button::setPosition(const sf::Vector2f& position)
     {
-        return m_loadedConfigFile;
-    }
+        Transformable::setPosition(position);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setPosition(float x, float y)
-    {
-        Transformable::setPosition(x, y);
-
-        m_textureDown.setPosition(x, y);
-        m_textureHover.setPosition(x, y);
-        m_textureNormal.setPosition(x, y);
-        m_textureFocused.setPosition(x, y);
+        m_textureDown.setPosition(position);
+        m_textureHover.setPosition(position);
+        m_textureNormal.setPosition(position);
+        m_textureFocused.setPosition(position);
 
         // Set the position of the text
-        m_text.setPosition(std::floor(x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
-                           std::floor(y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(position.x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
+                           std::floor(position.y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setSize(float width, float height)
+    void Button::setSize(const sf::Vector2f& size)
     {
-        m_textureDown.setSize(width, height);
-        m_textureHover.setSize(width, height);
-        m_textureNormal.setSize(width, height);
-        m_textureFocused.setSize(width, height);
+        m_textureDown.setSize(size);
+        m_textureHover.setSize(size);
+        m_textureNormal.setSize(size);
+        m_textureFocused.setSize(size);
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
@@ -136,13 +122,6 @@ namespace tgui
 
         // Recalculate the position of the images
         setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Button::getSize() const
-    {
-        return m_textureNormal.getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,40 +156,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Button::getText() const
-    {
-        return m_text.getString();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::setTextFont(const sf::Font& font)
     {
         m_text.setFont(font);
 
         // Reposition the text
         setText(getText());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* Button::getTextFont() const
-    {
-        return m_text.getFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setTextColor(const sf::Color& color)
-    {
-        m_text.setColor(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& Button::getTextColor() const
-    {
-        return m_text.getColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,14 +174,6 @@ namespace tgui
         // Call setText to reposition the text
         setText(m_text.getString());
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Button::getTextSize() const
-    {
-        return m_text.getCharacterSize();
-    }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -81,13 +81,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox* MessageBox::clone()
-    {
-        return new MessageBox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void MessageBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -156,41 +149,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String MessageBox::getText() const
-    {
-        return m_label->getText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MessageBox::setTextFont(const sf::Font& font)
-    {
-        m_label->setTextFont(font);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* MessageBox::getTextFont() const
-    {
-        return m_label->getTextFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MessageBox::setTextColor(const sf::Color& color)
-    {
-        m_label->setTextColor(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& MessageBox::getTextColor() const
-    {
-        return m_label->getTextColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void MessageBox::setTextSize(unsigned int size)
     {
         m_textSize = size;
@@ -201,13 +159,6 @@ namespace tgui
             m_buttons[i]->setTextSize(m_textSize);
 
         rearrange();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int MessageBox::getTextSize() const
-    {
-        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,31 +295,30 @@ namespace tgui
         float buttonsAreaWidth = distance;
         for (unsigned int i = 0; i < m_buttons.size(); ++i)
         {
-            m_buttons[i]->setSize(buttonWidth, buttonHeight);
+            m_buttons[i]->setSize({buttonWidth, buttonHeight});
             buttonsAreaWidth += m_buttons[i]->getSize().x + distance;
         }
 
         // Calculate the suggested size of the window
-        float width = 2*distance + m_label->getSize().x;
-        float height = 3*distance + m_label->getSize().y + buttonHeight;
+        sf::Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
-        if (buttonsAreaWidth > width)
-            width = buttonsAreaWidth;
+        if (buttonsAreaWidth > size.x)
+            size.x = buttonsAreaWidth;
 
         // Set the size of the window
-        setSize(width, height);
+        setSize(size);
 
         // Set the text on the correct position
-        m_label->setPosition(distance, distance);
+        m_label->setPosition({distance, distance});
 
         // Set the buttons on the correct position
         float leftPosition = 0;
         float topPosition = 2*distance + m_label->getSize().y;
         for (unsigned int i = 0; i < m_buttons.size(); ++i)
         {
-            leftPosition += distance + ((width - buttonsAreaWidth) / (m_buttons.size()+1));
-            m_buttons[i]->setPosition(leftPosition, topPosition);
+            leftPosition += distance + ((size.x - buttonsAreaWidth) / (m_buttons.size()+1));
+            m_buttons[i]->setPosition({leftPosition, topPosition});
             leftPosition += m_buttons[i]->getSize().x;
         }
     }

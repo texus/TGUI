@@ -120,13 +120,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox* ListBox::clone()
-    {
-        return new ListBox(*this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListBox::load(const std::string& configFileFilename)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
@@ -200,7 +193,7 @@ namespace tgui
 
                 // Initialize the scrollbar
                 m_scroll->setVerticalScroll(true);
-                m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+                m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
                 m_scroll->setLowValue(m_size.y);
                 m_scroll->setMaximum(m_items.size() * m_itemHeight);
             }
@@ -211,54 +204,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& ListBox::getLoadedConfigFile() const
+    void ListBox::setSize(const sf::Vector2f& size)
     {
-        return m_loadedConfigFile;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setSize(float width, float height)
-    {
-        // A negative size is not allowed for this widget
-        if (width  < 0) width  = -width;
-        if (height < 0) height = -height;
+        // Store the values
+        m_size.x = static_cast<unsigned int>(std::abs(size.x));
+        m_size.y = static_cast<unsigned int>(std::abs(size.y));
 
         // There is a minimum width
         if (m_scroll == nullptr)
-            width = TGUI_MAXIMUM(50.f, width);
+            m_size.x = TGUI_MAXIMUM(50, m_size.x);
         else
-            width = TGUI_MAXIMUM(50.f + m_scroll->getSize().x, width);
+            m_size.x = TGUI_MAXIMUM(50 + static_cast<unsigned int>(m_scroll->getSize().x), m_size.x);
 
         // There is also a minimum list box height
-        if (height < m_itemHeight)
-            height = static_cast<float>(m_itemHeight);
-
-        // Store the values
-        m_size.x = static_cast<unsigned int>(width);
-        m_size.y = static_cast<unsigned int>(height);
+        if (m_size.y < m_itemHeight)
+            m_size.y = m_itemHeight;
 
         // If there is a scrollbar then reinitialize it
         if (m_scroll != nullptr)
         {
-            m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+            m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
             m_scroll->setLowValue(m_size.y);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ListBox::getSize() const
-    {
-        return sf::Vector2f(static_cast<float>(m_size.x), static_cast<float>(m_size.y));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ListBox::getFullSize() const
-    {
-        return sf::Vector2f(getSize().x + m_borders.left + m_borders.right,
-                            getSize().y + m_borders.top + m_borders.bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,90 +239,6 @@ namespace tgui
         m_selectedBackgroundColor = selectedBackgroundColor;
         m_selectedTextColor       = selectedTextColor;
         m_borderColor             = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setBackgroundColor(const sf::Color& backgroundColor)
-    {
-        m_backgroundColor = backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setTextColor(const sf::Color& textColor)
-    {
-        m_textColor = textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
-    {
-        m_selectedBackgroundColor = selectedBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setSelectedTextColor(const sf::Color& selectedTextColor)
-    {
-        m_selectedTextColor = selectedTextColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setBorderColor(const sf::Color& borderColor)
-    {
-        m_borderColor = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ListBox::getBackgroundColor() const
-    {
-        return m_backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ListBox::getTextColor() const
-    {
-        return m_textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ListBox::getSelectedBackgroundColor() const
-    {
-        return m_selectedBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ListBox::getSelectedTextColor() const
-    {
-        return m_selectedTextColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ListBox::getBorderColor() const
-    {
-        return m_borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setTextFont(const sf::Font& font)
-    {
-        m_textFont = &font;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Font* ListBox::getTextFont() const
-    {
-        return m_textFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,40 +467,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String>& ListBox::getItems()
-    {
-        return m_items;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::String ListBox::getSelectedItem() const
-    {
-        if (m_selectedItem == -1)
-            return "";
-        else
-            return m_items[m_selectedItem];
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ListBox::getSelectedItemIndex() const
-    {
-        return m_selectedItem;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ListBox::getSelectedItemId() const
-    {
-        if (m_selectedItem == -1)
-            return 0;
-        else
-            return m_itemIds[m_selectedItem];
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool ListBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
         // Calling setScrollbar with an empty string does the same as removeScrollbar
@@ -648,7 +497,7 @@ namespace tgui
 
         // Initialize the scrollbar
         m_scroll->setVerticalScroll(true);
-        m_scroll->setSize(m_scroll->getSize().x, static_cast<float>(m_size.y));
+        m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
         m_scroll->setLowValue(m_size.y);
         m_scroll->setMaximum(m_items.size() * m_itemHeight);
 
@@ -710,13 +559,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::getItemHeight() const
-    {
-        return m_itemHeight;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListBox::setMaximumItems(unsigned int maximumItems)
     {
         // Set the new limit
@@ -733,13 +575,6 @@ namespace tgui
             if (m_scroll != nullptr)
                 m_scroll->setMaximum(m_items.size() * m_itemHeight);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ListBox::getMaximumItems() const
-    {
-        return m_maxItems;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -773,13 +608,13 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(position.x + m_size.x - m_scroll->getSize().x, position.y);
+            m_scroll->setPosition({position.x + m_size.x - m_scroll->getSize().x, position.y});
 
             // Pass the event
             m_scroll->mouseOnWidget(x, y);
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
 
         // Check if the mouse is on top of the list box
@@ -809,7 +644,7 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y);
+            m_scroll->setPosition({getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y});
 
             // Pass the event
             if (m_scroll->mouseOnWidget(x, y))
@@ -819,7 +654,7 @@ namespace tgui
             }
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
 
         // If the click occured on the list box
@@ -883,13 +718,13 @@ namespace tgui
             unsigned int oldValue = m_scroll->getValue();
 
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + (m_size.x - m_scroll->getSize().x), getPosition().y);
+            m_scroll->setPosition({getPosition().x + (m_size.x - m_scroll->getSize().x), getPosition().y});
 
             // Pass the event
             m_scroll->leftMouseReleased(x, y);
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
 
             // Check if the scrollbar value was incremented (you have pressed on the down arrow)
             if (m_scroll->getValue() == oldValue + 1)
@@ -929,7 +764,7 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition(getPosition().x + (m_size.x - m_scroll->getSize().x), getPosition().y);
+            m_scroll->setPosition({getPosition().x + (m_size.x - m_scroll->getSize().x), getPosition().y});
 
             // Check if you are dragging the thumb of the scrollbar
             if ((m_scroll->m_mouseDown) && (m_scroll->m_mouseDownOnThumb))
@@ -945,7 +780,7 @@ namespace tgui
             }
 
             // Reset the position
-            m_scroll->setPosition(0, 0);
+            m_scroll->setPosition({0, 0});
         }
     }
 
