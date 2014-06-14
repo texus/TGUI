@@ -340,16 +340,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the borders.
         ///
-        /// \param leftBorder    The width of the left border
-        /// \param topBorder     The height of the top border
-        /// \param rightBorder   The width of the right border
-        /// \param bottomBorder  The height of the bottom border
+        /// \param borders  The size of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(float leftBorder   = 0,
-                                float topBorder    = 0,
-                                float rightBorder  = 0,
-                                float bottomBorder = 0) override;
+        virtual void setBorders(const Borders& borders) override;
+        using WidgetBorders::setBorders;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

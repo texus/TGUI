@@ -148,7 +148,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section ComboBox in " + m_loadedConfigFile);
             }
@@ -222,14 +222,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
+    void ComboBox::setBorders(const Borders& borders)
     {
         // Set the new border size
-        m_borders.left   = leftBorder;
-        m_borders.top    = topBorder;
-        m_borders.right  = rightBorder;
-        m_borders.bottom = bottomBorder;
-        m_listBox->setBorders(m_borders.left, m_borders.bottom, m_borders.right, m_borders.bottom);
+        m_borders = borders;
+        m_listBox->setBorders(borders);
 
         // There is a minimum width
         if (m_listBox->getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
@@ -451,7 +448,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

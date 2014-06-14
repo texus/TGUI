@@ -167,7 +167,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section ListBox in " + m_loadedConfigFile);
             }
@@ -579,16 +579,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
-    {
-        m_borders.left   = leftBorder;
-        m_borders.top    = topBorder;
-        m_borders.right  = rightBorder;
-        m_borders.bottom = bottomBorder;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListBox::setTransparency(unsigned char transparency)
     {
         Widget::setTransparency(transparency);
@@ -878,7 +868,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

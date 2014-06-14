@@ -149,7 +149,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section ChatBox in " + m_loadedConfigFile);
             }
@@ -395,16 +395,6 @@ namespace tgui
         // There is a minimum text size
         if (m_textSize < 8)
             m_textSize = 8;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setBorders(float leftBorder, float  topBorder, float rightBorder, float bottomBorder)
-    {
-        m_borders.left   = leftBorder;
-        m_borders.top    = topBorder;
-        m_borders.right  = rightBorder;
-        m_borders.bottom = bottomBorder;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -693,7 +683,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

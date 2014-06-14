@@ -161,7 +161,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section ChildWindow in " + m_loadedConfigFile);
             }
@@ -356,15 +356,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
+    void ChildWindow::setBorders(const Borders& borders)
     {
-        // Set the new border size
-        m_borders.left   = leftBorder;
-        m_borders.top    = topBorder;
-        m_borders.right  = rightBorder;
-        m_borders.bottom = bottomBorder;
+        m_borders = borders;
 
-        m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
+        m_textureTitleBar.setSize({m_size.x + borders.left + borders.right, static_cast<float>(m_titleBarHeight)});
 
         // Reposition the images and text
         setPosition(getPosition());
@@ -688,7 +684,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

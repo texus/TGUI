@@ -70,7 +70,7 @@ namespace tgui
         /// \see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(float x, float y)
+        void setPosition(float x, float y)
         {
             setPosition({x, y});
         }
@@ -120,7 +120,7 @@ namespace tgui
         /// \param height  Height of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(float width, float height)
+        void setSize(float width, float height)
         {
             setSize({width, height});
         }

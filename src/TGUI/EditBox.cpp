@@ -102,7 +102,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section EditBox in " + m_loadedConfigFile);
             }
@@ -321,13 +321,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setBorders(float borderLeft, float borderTop, float borderRight, float borderBottom)
+    void EditBox::setBorders(const Borders& borders)
     {
-        // Set the new border size
-        m_borders.left   = borderLeft;
-        m_borders.top    = borderTop;
-        m_borders.right  = borderRight;
-        m_borders.bottom = borderBottom;
+        m_borders = borders;
 
         // Recalculate the text size
         setText(m_text);
@@ -1028,7 +1024,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

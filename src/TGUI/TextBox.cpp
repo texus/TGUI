@@ -202,7 +202,7 @@ namespace tgui
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                    setBorders(borders);
                 else
                     throw Exception("Failed to parse the 'Borders' property in section TextBox in " + m_loadedConfigFile);
             }
@@ -386,16 +386,6 @@ namespace tgui
             // Set the caret behind the last character
             setCaretPosition(m_text.getSize());
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::setBorders(float leftBorder, float topBorder, float rightBorder, float bottomBorder)
-    {
-        m_borders.left   = leftBorder;
-        m_borders.top    = topBorder;
-        m_borders.right  = rightBorder;
-        m_borders.bottom = bottomBorder;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1444,7 +1434,7 @@ namespace tgui
         {
             Borders borders;
             if (extractBorders(value, borders))
-                setBorders(borders.left, borders.top, borders.right, borders.bottom);
+                setBorders(borders);
             else
                 throw Exception("Failed to parse 'Borders' property.");
         }

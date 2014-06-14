@@ -86,14 +86,28 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the size of the borders.
         ///
+        /// \param borders  Size of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setBorders(const Borders& borders)
+        {
+            m_borders = borders;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Changes the size of the borders.
+        ///
         /// \param leftBorder    Size of the left border
         /// \param topBorder     Size of the top border
         /// \param rightBorder   Size of the right border
         /// \param bottomBorder  Size of the bottom border
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(float leftBorder = 0,  float topBorder = 0,
-                                float rightBorder = 0, float bottomBorder = 0) = 0;
+        void setBorders(float leftBorder = 0,  float topBorder = 0, float rightBorder = 0, float bottomBorder = 0)
+        {
+            setBorders({leftBorder, topBorder, rightBorder, bottomBorder});
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

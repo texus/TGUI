@@ -253,21 +253,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the border width and border height of the text box.
-        ///
-        /// \param leftBorder    The width of the left border
-        /// \param topBorder     The height of the top border
-        /// \param rightBorder   The width of the right border
-        /// \param bottomBorder  The height of the bottom border
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(float leftBorder   = 0,
-                                float topBorder    = 0,
-                                float rightBorder  = 0,
-                                float bottomBorder = 0) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the colors from the text box.
         ///
         /// \param backgroundColor                      The color of the background of the text box.
