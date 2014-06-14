@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Label" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Label" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the area of the text that will be drawn.
+        /// @brief Changes the area of the text that will be drawn.
         ///
-        /// \param size  Size of the part to draw
+        /// @param size  Size of the part to draw
         ///
         /// Only the part of the text that lies within the size will be drawn.
         ///
@@ -102,7 +102,7 @@ namespace tgui
         ///
         /// When this function is called, the label will no longer be auto-sizing.
         ///
-        /// \see setAutoSize
+        /// @see setAutoSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const sf::Vector2f& size) override;
@@ -110,9 +110,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the widget.
+        /// @brief Returns the size of the widget.
         ///
-        /// \return Size of the widget
+        /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -122,15 +122,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -138,22 +138,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the text.
+        /// @brief Changes the text.
         ///
-        /// \param text  The new text
+        /// @param text  The new text
         ///
         /// When the text is auto-sized (default), then the size of the label will be changed to fit the whole text.
         ///
-        /// \see setAutoSize
+        /// @see setAutoSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the text.
+        /// @brief Returns the text.
         ///
-        /// \return Text that is currently used
+        /// @return Text that is currently used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getText() const
@@ -163,21 +163,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the text.
+        /// @brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the text.
+        /// @brief Returns the font of the text.
         ///
-        /// \return  Pointer to the font that is currently being used.
+        /// @return  Pointer to the font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -187,9 +187,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the color of the text.
+        /// @brief Changes the color of the text.
         ///
-        /// \param color  New text color
+        /// @param color  New text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
@@ -199,9 +199,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the color of the text.
+        /// @brief Returns the color of the text.
         ///
-        /// \return The current text color
+        /// @return The current text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -211,18 +211,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param size  The new text size
+        /// @param size  The new text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The current text size.
+        /// @return The current text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -232,9 +232,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background color of the label.
+        /// @brief Changes the background color of the label.
         ///
-        /// \param backgroundColor  New background color
+        /// @param backgroundColor  New background color
         ///
         /// The background color is transparent by default.
         ///
@@ -249,11 +249,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background color of the label.
+        /// @brief Returns the background color of the label.
         ///
         /// The background color is transparent by default.
         ///
-        /// \return The current background color
+        /// @return The current background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -263,9 +263,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes whether the label is auto-sized or not.
+        /// @brief Changes whether the label is auto-sized or not.
         ///
-        /// \param autoSize  Should the size of the label be changed when the text changes?
+        /// @param autoSize  Should the size of the label be changed when the text changes?
         ///
         /// When the label is in auto-size mode, the width and height of the label will be changed to fit the text.
         /// Otherwise, only the part defined by the size will be visible.
@@ -277,9 +277,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the label is auto-sized or not.
+        /// @brief Returns whether the label is auto-sized or not.
         ///
-        /// \return Is the size of the label changed when the text changes?
+        /// @return Is the size of the label changed when the text changes?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool getAutoSize() const
@@ -289,14 +289,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +304,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

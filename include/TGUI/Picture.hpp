@@ -65,11 +65,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Load an image from a file.
+        /// @brief Load an image from a file.
         ///
-        /// \param filename  The absolute or relative filename of the image that should be loaded.
+        /// @param filename  The absolute or relative filename of the image that should be loaded.
         ///
-        /// \return
+        /// @return
         ///        - true on success
         ///        - false when the filename was empty
         ///        - false when the image couldn't be loaded (probably not found)
@@ -79,9 +79,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the image that was used to load the widget.
+        /// @brief Returns the filename of the image that was used to load the widget.
         ///
-        /// \return Filename of loaded image.
+        /// @return Filename of loaded image.
         ///         Empty string when no image was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,15 +92,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -108,9 +108,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the picture.
+        /// @brief Changes the size of the picture.
         ///
-        /// \param size  The new size of the picture
+        /// @param size  The new size of the picture
         ///
         /// The image will be scaled to fit this size.
         ///
@@ -120,26 +120,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Enable or disable the smooth filter.
+        /// @brief Enable or disable the smooth filter.
         ///
         /// When the filter is activated, the texture appears smoother so that pixels are less noticeable.
         /// However if you want the texture to look exactly the same as its source file, you should leave it disabled.
         /// The smooth filter is disabled by default.
         ///
-        /// \param smooth True to enable smoothing, false to disable it
+        /// @param smooth True to enable smoothing, false to disable it
         ///
-        /// \see isSmooth
+        /// @see isSmooth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSmooth(bool smooth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Tell whether the smooth filter is enabled or not.
+        /// @brief Tell whether the smooth filter is enabled or not.
         ///
-        /// \return True if smoothing is enabled, false if it is disabled
+        /// @return True if smoothing is enabled, false if it is disabled
         ///
-        /// \see setSmooth
+        /// @see setSmooth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isSmooth() const
@@ -149,9 +149,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -162,20 +162,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

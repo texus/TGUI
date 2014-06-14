@@ -51,9 +51,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         MessageBox(const MessageBox& copy);
@@ -66,11 +66,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         MessageBox& operator= (const MessageBox& right);
@@ -87,22 +87,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "MessageBox" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "MessageBox" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the text of the message box.
+        /// @brief Change the text of the message box.
         ///
-        /// \param text  The text displayed by the message box.
+        /// @param text  The text displayed by the message box.
         ///
         /// The text will be placed as one long string and the message box will get the size needed to display the whole string.
         /// So if you need to display multiple lines of text then add '\n' inside the text yourself.
@@ -112,9 +112,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Return the text of the message box.
+        /// @brief Return the text of the message box.
         ///
-        /// \return Text that is being displayed inside the message box.
+        /// @return Text that is being displayed inside the message box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
@@ -124,12 +124,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the text.
+        /// @brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font)
@@ -139,9 +139,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the text.
+        /// @brief Returns the font of the text.
         ///
-        /// \return  Pointer to the font that is currently being used.
+        /// @return  Pointer to the font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -151,9 +151,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the color of the text.
+        /// @brief Changes the color of the text.
         ///
-        /// \param color  New text color
+        /// @param color  New text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
@@ -163,9 +163,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the color of the text.
+        /// @brief Returns the color of the text.
         ///
-        /// \return The current text color
+        /// @return The current text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -175,9 +175,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param size  The new text size.
+        /// @param size  The new text size.
         ///
         /// By default, the text size is 16.
         ///
@@ -186,9 +186,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The current text size.
+        /// @return The current text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -198,9 +198,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a button to the message box.
+        /// @brief Add a button to the message box.
         ///
-        /// \param buttonCaption  The caption of the button.
+        /// @param buttonCaption  The caption of the button.
         ///
         /// When receiving a callback with the ButtonClicked trigger then callback.text will contain this caption to identify
         /// the clicked button.
@@ -210,14 +210,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

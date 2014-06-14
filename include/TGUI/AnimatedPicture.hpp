@@ -33,7 +33,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Load multiple images and add then behind each other to create a simple animation or even a movie.
+    /// @brief Load multiple images and add then behind each other to create a simple animation or even a movie.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API AnimatedPicture : public ClickableWidget
     {
@@ -55,7 +55,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,22 +66,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Load another image/frame from a file.
+        /// @brief Load another image/frame from a file.
         ///
-        /// \param filename       The filename of the image that you want to use as next frame.
-        /// \param frameDuration  The amount of time that the frame will be displayed on the screen.
+        /// @param filename       The filename of the image that you want to use as next frame.
+        /// @param frameDuration  The amount of time that the frame will be displayed on the screen.
         ///                       When the duration is 0 (default) then the animation will be blocked at that frame.
         ///
-        /// \throw Exception when the image couldn't be loaded.
+        /// @throw Exception when the image couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addFrame(const std::string& filename, sf::Time frameDuration = sf::Time());
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the displayed image.
+        /// @brief Changes the size of the displayed image.
         ///
-        /// \param size   The new size of the picture
+        /// @param size   The new size of the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override
@@ -92,9 +92,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the the displayed image.
+        /// @brief Returns the size of the the displayed image.
         ///
-        /// \return Size of the picture
+        /// @return Size of the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -104,47 +104,47 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Starts or resumes playing the animation.
+        /// @brief Starts or resumes playing the animation.
         ///
-        /// \see pause
-        /// \see stop
+        /// @see pause
+        /// @see stop
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void play();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Pauses the animation.
+        /// @brief Pauses the animation.
         ///
         /// You can continue the animation with the start() function.
         ///
-        /// \see play
-        /// \see stop
+        /// @see play
+        /// @see stop
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void pause();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Stops the animation.
+        /// @brief Stops the animation.
         ///
         /// When calling start() after calling this function, the animation will restart from the first frame.
         ///
-        /// \see play
-        /// \see pause
+        /// @see play
+        /// @see pause
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void stop();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the animation at a specific frame.
+        /// @brief Sets the animation at a specific frame.
         ///
-        /// \param frame  The frame that should be displayed
+        /// @param frame  The frame that should be displayed
         ///
         /// The number is the index of the frame, so the first frame is number 0.
         ///
-        /// \return True when the frame was selected.
+        /// @return True when the frame was selected.
         ///         False when the index was too high.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +152,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the current displayed frame.
+        /// @brief Returns the current displayed frame.
         ///
-        /// \return Number of the frame that is currently displayed.
+        /// @return Number of the frame that is currently displayed.
         ///
         /// The number is the index of the frame, so the first frame is number 0.
         /// If no frames were loaded then this function will return -1.
@@ -167,9 +167,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the duration of the currently displayed frame.
+        /// @brief Returns the duration of the currently displayed frame.
         ///
-        /// \return Duration of the frame that is currently displayed.
+        /// @return Duration of the frame that is currently displayed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Time getCurrentFrameDuration() const
@@ -179,9 +179,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the amount of frames in the animation.
+        /// @brief Returns the amount of frames in the animation.
         ///
-        /// \return Number of frames
+        /// @return Number of frames
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getFrames() const
@@ -191,36 +191,36 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a frame from the animation.
+        /// @brief Removes a frame from the animation.
         ///
-        /// \param frame  The number of the frame to remove
+        /// @param frame  The number of the frame to remove
         ///
         /// The number is the index of the frame, so the first frame is number 0.
         ///
-        /// \return True when the frame was removed.
+        /// @return True when the frame was removed.
         ///         False if the index was too high.
         ///
-        /// \see removeAllFrames
+        /// @see removeAllFrames
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeFrame(unsigned int frame);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Remove all frames from the animation.
+        /// @brief Remove all frames from the animation.
         ///
-        /// \see removeFrame
+        /// @see removeFrame
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllFrames();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Turn the looping of the animation on or off.
+        /// @brief Turn the looping of the animation on or off.
         ///
         /// By default, when this function isn't called, the animation will not loop.
         ///
-        /// \param loop  Should the animation start over from the beginning when it finishes?
+        /// @param loop  Should the animation start over from the beginning when it finishes?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLooping(bool loop = true)
@@ -230,11 +230,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the looping of the animation is on or off.
+        /// @brief Returns whether the looping of the animation is on or off.
         ///
         /// By default, the animation will not loop.
         ///
-        /// \return Will the animation start over from the beginning when it finishes?
+        /// @return Will the animation start over from the beginning when it finishes?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getLooping() const
@@ -244,9 +244,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the animation is still playing.
+        /// @brief Returns whether the animation is still playing.
         ///
-        /// \return Is the animation still playing?
+        /// @return Is the animation still playing?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isPlaying() const
@@ -256,9 +256,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -269,14 +269,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,14 +295,14 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // When the elapsed time changes then this function is called.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void update() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

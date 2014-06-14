@@ -34,7 +34,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief A static container of widgets. The background color can be solid or transparent.
+    /// @brief A static container of widgets. The background color can be solid or transparent.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Panel : public Container
     {
@@ -50,9 +50,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel(const Panel& copy);
@@ -65,11 +65,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Panel& operator= (const Panel& right);
@@ -86,9 +86,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the panel.
+        /// @brief Changes the size of the panel.
         ///
-        /// \param size  Sets the new size of the panel
+        /// @param size  Sets the new size of the panel
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -96,9 +96,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the panel.
+        /// @brief Returns the size of the panel.
         ///
-        /// \return Size of the panel
+        /// @return Size of the panel
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -108,11 +108,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background texture of the panel.
+        /// @brief Changes the background texture of the panel.
         ///
-        /// \param texture  Pointer to the texture that should be used as background of the panel
+        /// @param texture  Pointer to the texture that should be used as background of the panel
         ///
-        /// \warning You should make sure that the texture stays alive.
+        /// @warning You should make sure that the texture stays alive.
         ///
         /// If the texture has a different size than the panel then it will be scaled to fill the whole panel.
         /// Pass nullptr to this function to remove the background texture.
@@ -122,9 +122,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background texture of the panel.
+        /// @brief Returns the background texture of the panel.
         ///
-        /// \return Pointer to the texture that is being used as background of the panel.
+        /// @return Pointer to the texture that is being used as background of the panel.
         ///         This pointer is nullptr when no background texture was set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,9 +135,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background color of the panel.
+        /// @brief Changes the background color of the panel.
         ///
-        /// \param backgroundColor  New background color
+        /// @param backgroundColor  New background color
         ///
         /// The background is fully transparent by default.
         ///
@@ -149,11 +149,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background color of the panel.
+        /// @brief Returns the background color of the panel.
         ///
         /// The background is fully transparent by default.
         ///
-        /// \return The current background color
+        /// @return The current background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -163,9 +163,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -176,30 +176,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "MenuBar" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "MenuBar" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the menu bar.
+        /// @brief Changes the size of the menu bar.
         ///
-        /// \param size  The new size of the menu bar.
+        /// @param size  The new size of the menu bar.
         ///
         /// By default, the menu bar has the same width as the window and the height is 20 pixels.
         ///
@@ -103,9 +103,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the menu bar.
+        /// @brief Returns the size of the menu bar.
         ///
-        /// \return Size of the menu bar
+        /// @return Size of the menu bar
         ///
         /// By default, the menu bar has the same width as the window and the height is 20 pixels.
         ///
@@ -117,71 +117,71 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a new menu.
+        /// @brief Adds a new menu.
         ///
-        /// \param text  The text written on the menu
+        /// @param text  The text written on the menu
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addMenu(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a new menu item.
+        /// @brief Adds a new menu item.
         ///
-        /// \param menu  The name of the menu to which the menu item will be added
-        /// \param text  The text written on this menu item
+        /// @param menu  The name of the menu to which the menu item will be added
+        /// @param text  The text written on this menu item
         ///
-        /// \return True when the item was added, false when \a menu was not found.
+        /// @return True when the item was added, false when menu was not found.
         ///
-        /// \code
+        /// @code
         /// menuBar->addMenu("File");
         /// menuBar->addMenuItem("File", "Load");
         /// menuBar->addMenuItem("File", "Save");
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const sf::String& menu, const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a menu.
+        /// @brief Removes a menu.
         ///
         /// Any menu items that belong to this menu will be removed as well.
         ///
-        /// \param menu  The name of the menu to remove
+        /// @param menu  The name of the menu to remove
         ///
-        /// \return True when the menu was removed, false when \a menu was not found.
+        /// @return True when the menu was removed, false when menu was not found.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenu(const sf::String& menu);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all menus.
+        /// @brief Removes all menus.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllMenus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a menu item.
+        /// @brief Removes a menu item.
         ///
-        /// \param menu      The name of the menu in which the menu item is located
-        /// \param menuItem  The name of the menu item to remove
+        /// @param menu      The name of the menu in which the menu item is located
+        /// @param menuItem  The name of the menu item to remove
         ///
-        /// \return True when the item was removed, false when \a menu or \a menuItem was not found.
+        /// @return True when the item was removed, false when menu or menuItem was not found.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenuItem(const sf::String& menu, const sf::String& menuItem);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the colors used in the menu bar.
+        /// @brief Changes the colors used in the menu bar.
         ///
-        /// \param backgroundColor          The color of the background of the menu bar
-        /// \param textColor                The color of the text
-        /// \param selectedBackgroundColor  The color of the background of the selected item
-        /// \param selectedTextColor        The color of the text when it is selected
+        /// @param backgroundColor          The color of the background of the menu bar
+        /// @param textColor                The color of the text
+        /// @param selectedBackgroundColor  The color of the background of the selected item
+        /// @param selectedTextColor        The color of the text when it is selected
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
@@ -191,9 +191,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color that will be used inside the menu bar.
+        /// @brief Set the background color that will be used inside the menu bar.
         ///
-        /// \param backgroundColor  The color of the background of the menu bar
+        /// @param backgroundColor  The color of the background of the menu bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor)
@@ -203,18 +203,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used inside the menu bar.
+        /// @brief Set the text color that will be used inside the menu bar.
         ///
-        /// \param textColor  The color of the text
+        /// @param textColor  The color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the menu bar.
+        /// @brief Set the background color of the selected text that will be used inside the menu bar.
         ///
-        /// \param selectedBackgroundColor  The color of the background of the selected item
+        /// @param selectedBackgroundColor  The color of the background of the selected item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
@@ -224,18 +224,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color of the selected text that will be used inside the menu bar.
+        /// @brief Set the text color of the selected text that will be used inside the menu bar.
         ///
-        /// \param selectedTextColor  The color of the text when it is selected
+        /// @param selectedTextColor  The color of the text when it is selected
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const sf::Color& selectedTextColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color that is currently being used inside the menu bar.
+        /// @brief Get the background color that is currently being used inside the menu bar.
         ///
-        /// \return The color of the background of the menu bar
+        /// @return The color of the background of the menu bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -245,9 +245,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used inside the menu bar.
+        /// @brief Get the text color that is currently being used inside the menu bar.
         ///
-        /// \return The color of the text
+        /// @return The color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -257,9 +257,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected text that is currently being used inside the menu bar.
+        /// @brief Get the background color of the selected text that is currently being used inside the menu bar.
         ///
-        /// \return The color of the background of the selected item
+        /// @return The color of the background of the selected item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedBackgroundColor() const
@@ -269,9 +269,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color of the selected text that is currently being used inside the menu bar.
+        /// @brief Get the text color of the selected text that is currently being used inside the menu bar.
         ///
-        /// \return The color of the text when it is selected
+        /// @return The color of the text when it is selected
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextColor() const
@@ -281,21 +281,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font used in the menu bar.
+        /// @brief Changes the font used in the menu bar.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font that is used in the menu bar.
+        /// @brief Returns the font that is used in the menu bar.
         ///
-        /// \return  Pointer to the font that is currently being used.
+        /// @return  Pointer to the font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -305,9 +305,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param size  The new size of the text.
+        /// @param size  The new size of the text.
         ///              If the size is 0 (default) then the text will be scaled to fit in the menu bar.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,9 +315,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The text size.
+        /// @return The text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -327,9 +327,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the distance between the text and the side of the menu item.
+        /// @brief Changes the distance between the text and the side of the menu item.
         ///
-        /// \param distanceToSide  distance between the text and the side of the menu item
+        /// @param distanceToSide  distance between the text and the side of the menu item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDistanceToSide(unsigned int distanceToSide)
@@ -339,9 +339,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the distance between the text and the side of the menu item.
+        /// @brief Returns the distance between the text and the side of the menu item.
         ///
-        /// \return distance between the text and the side of the menu item
+        /// @return distance between the text and the side of the menu item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getDistanceToSide() const
@@ -351,12 +351,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the minimum width of the submenus.
+        /// @brief Changes the minimum width of the submenus.
         ///
         /// When a submenu is displayed, the width will be either this or the width of the longest text in the submenu.
         /// The default minimum width is 125 pixels.
         ///
-        /// \param minimumWidth  minimum width of the submenus
+        /// @param minimumWidth  minimum width of the submenus
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMinimumSubMenuWidth(unsigned int minimumWidth)
@@ -366,11 +366,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the distance between the text and the side of the menu item.
+        /// @brief Returns the distance between the text and the side of the menu item.
         ///
-        /// \return minimum width of the submenus
+        /// @return minimum width of the submenus
         ///
-        /// \see setMinimumSubMenuWidth
+        /// @see setMinimumSubMenuWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getMinimumSubMenuWidth() const
@@ -380,40 +380,40 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,7 +421,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -56,17 +56,17 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads a texture.
+        /// @brief Loads a texture.
         ///
-        /// \param filename   Filename of the image to load.
-        /// \param texture    The texture object to store the loaded image.
-        /// \param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// \param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// \param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @param filename   Filename of the image to load.
+        /// @param texture    The texture object to store the loaded image.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
         ///
-        /// \throw Exception when image couldn't be loaded.
+        /// @throw Exception when image couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void getTexture(Texture& texture,
@@ -77,18 +77,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Share the image with another texture.
+        /// @brief Share the image with another texture.
         ///
-        /// \param textureToCopy  The original texture that will now be reused.
+        /// @param textureToCopy  The original texture that will now be reused.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void copyTexture(const Texture& textureToCopy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the texture.
+        /// @brief Removes the texture.
         ///
-        /// \param textureToRemove  The texture that should be removed.
+        /// @param textureToRemove  The texture that should be removed.
         ///
         /// When no other texture is using the same image then the image will be removed from memory.
         ///

@@ -34,7 +34,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Load one big image and split it into smaller images so that you can display tiles or play an animation.
+    /// @brief Load one big image and split it into smaller images so that you can display tiles or play an animation.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SpriteSheet : public Picture
     {
@@ -66,15 +66,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -82,9 +82,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the picture cell, so the piece that is shown.
+        /// @brief Changes the size of the picture cell, so the piece that is shown.
         ///
-        /// \param size  The new size of the picture cell.
+        /// @param size  The new size of the picture cell.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -92,9 +92,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of a picture cell, so the piece that is shown.
+        /// @brief Returns the size of a picture cell, so the piece that is shown.
         ///
-        /// \return Size of the cell
+        /// @return Size of the cell
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -104,19 +104,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the number of rows and columns in the image.
+        /// @brief Change the number of rows and columns in the image.
         ///
-        /// \param rows     The amount of rows in the picture
-        /// \param columns  The amount of columns in the picture
+        /// @param rows     The amount of rows in the picture
+        /// @param columns  The amount of columns in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCells(unsigned int rows, unsigned int columns);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the number of rows in the image.
+        /// @brief Change the number of rows in the image.
         ///
-        /// \param rows  The amount of rows in the picture
+        /// @param rows  The amount of rows in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setRows(unsigned int rows)
@@ -126,9 +126,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the number of rows in the image.
+        /// @brief Returns the number of rows in the image.
         ///
-        /// \return The amount of rows in the picture
+        /// @return The amount of rows in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getRows() const
@@ -138,9 +138,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the number of columns in the image.
+        /// @brief Change the number of columns in the image.
         ///
-        /// \param columns  The amount of columns in the picture
+        /// @param columns  The amount of columns in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setColumns(unsigned int columns)
@@ -150,9 +150,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the number of columns in the image.
+        /// @brief Returns the number of columns in the image.
         ///
-        /// \return The amount of columns in the picture
+        /// @return The amount of columns in the picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getColumns() const
@@ -162,19 +162,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Choose which cell should be displayed.
+        /// @brief Choose which cell should be displayed.
         ///
-        /// \param row     The row in which the visible cell is located
-        /// \param column  The column in which the visible cell is located
+        /// @param row     The row in which the visible cell is located
+        /// @param column  The column in which the visible cell is located
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setVisibleCell(unsigned int row, unsigned int column);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns which cell is being displayed.
+        /// @brief Returns which cell is being displayed.
         ///
-        /// \return A vector containing the row and column in which the visible cell is located
+        /// @return A vector containing the row and column in which the visible cell is located
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Vector2u getVisibleCell() const
@@ -184,14 +184,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

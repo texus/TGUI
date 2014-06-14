@@ -80,36 +80,36 @@ namespace tgui
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to one or more specific callback trigger(s).
+        /// @brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func     Free function without parameters.
+        /// @param func     Free function without parameters.
         ///                 This can actually also take more advanced stuff like a functor or lambda function.
-        /// \param trigger  In which situation(s) do you want the callback function to be called?
+        /// @param trigger  In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// void function() {}
         /// widget->bindCallback(function, tgui::Widget::Focus);
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void bindCallback(std::function<void()> func, unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to one or more specific callback trigger(s).
+        /// @brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func      Member function without parameters.
-        /// \param classPtr  Pointer to the widget of the class.
-        /// \param trigger   In which situation(s) do you want the callback function to be called?
+        /// @param func      Member function without parameters.
+        /// @param classPtr  Pointer to the widget of the class.
+        /// @param trigger   In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// class myClass {
         ///     void function() {};
         /// } myObj;
         /// widget->bindCallback(&myClass::function, &myObj, tgui::Widget::Focus);
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
@@ -120,35 +120,35 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to one or more specific callback trigger(s).
+        /// @brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func     Free function with a constant reference to a Callback widget as parameter.
-        /// \param trigger  In which situation(s) do you want the callback function to be called?
+        /// @param func     Free function with a constant reference to a Callback widget as parameter.
+        /// @param trigger  In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// void function(const Callback& callback) {}
         /// widget->bindCallbackEx(function, tgui::Widget::Focus);
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void bindCallbackEx(std::function<void(const Callback&)> func, unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to one or more specific callback trigger(s).
+        /// @brief Bind a function to one or more specific callback trigger(s).
         ///
-        /// \param func      Member function with a constant reference to a Callback widget as parameter.
-        /// \param classPtr  Pointer to the widget of the class.
-        /// \param trigger   In which situation(s) do you want the callback function to be called?
+        /// @param func      Member function with a constant reference to a Callback widget as parameter.
+        /// @param classPtr  Pointer to the widget of the class.
+        /// @param trigger   In which situation(s) do you want the callback function to be called?
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// class myClass {
         ///     void function(const Callback& callback) {};
         /// } myObj;
         /// widget->bindCallbackEx(&myClass::function, &myObj, tgui::Widget::Focus);
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
@@ -159,33 +159,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind one or more specific callback trigger(s) to the parent widget.
+        /// @brief Bind one or more specific callback trigger(s) to the parent widget.
         ///
-        /// \param trigger  In which situation(s) do you want the widget to alert its parent about a callback?
+        /// @param trigger  In which situation(s) do you want the widget to alert its parent about a callback?
         ///
         /// The widget will tell its parent about the callback and you will receive the callback through the parent widget.
         /// If the callback reaches the window, then you will later have to poll the callbacks from this window.
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// widget->bindCallback(tgui::Widget::Focus);
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void bindCallback(unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unbind all callback function bound to the given trigger.
+        /// @brief Unbind all callback function bound to the given trigger.
         ///
-        /// \param trigger  In which situation(s) do you no longer want to retreive callback?
+        /// @param trigger  In which situation(s) do you no longer want to retreive callback?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unbindCallback(unsigned int trigger);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unbind all callback functions bound to any callback.
+        /// @brief Unbind all callback functions bound to any callback.
         ///
         /// After calling this function, the widget will no longer send any callback.
         ///

@@ -63,7 +63,7 @@ namespace tgui
     {
         if (this != &right)
         {
-            Texture temp(right);
+            Texture temp{right};
             sf::Transformable::operator=(right);
             sf::Drawable::operator=(right);
 

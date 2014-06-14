@@ -51,9 +51,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Construct the gui and set the window on which the gui should be drawn.
+        /// @brief Construct the gui and set the window on which the gui should be drawn.
         ///
-        /// \param window  The sfml window that will be used by the gui.
+        /// @param window  The sfml window that will be used by the gui.
         ///
         /// If you use this constructor then you will no longer have to call setWindow yourself.
         ///
@@ -62,9 +62,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Construct the gui and set the target on which the gui should be drawn.
+        /// @brief Construct the gui and set the target on which the gui should be drawn.
         ///
-        /// \param window  The render target that will be used by the gui.
+        /// @param window  The render target that will be used by the gui.
         ///
         /// If you use this constructor then you will no longer have to call setWindow yourself.
         ///
@@ -73,27 +73,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the window on which the gui should be drawn.
+        /// @brief Set the window on which the gui should be drawn.
         ///
-        /// \param window  The sfml window that will be used by the gui.
+        /// @param window  The sfml window that will be used by the gui.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setWindow(sf::RenderWindow& window);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the target on which the gui should be drawn.
+        /// @brief Set the target on which the gui should be drawn.
         ///
-        /// \param window  The render target that will be used by the gui.
+        /// @param window  The render target that will be used by the gui.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setWindow(sf::RenderTarget& window);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the window on which the gui is being drawn.
+        /// @brief Returns the window on which the gui is being drawn.
         ///
-        /// \return The sfml that is used by the gui.
+        /// @return The sfml that is used by the gui.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::RenderTarget* getWindow()
@@ -103,15 +103,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Passes the event to the widgets.
+        /// @brief Passes the event to the widgets.
         ///
-        /// \param event  The event that was polled from the gui
-        /// \param resetView  Reset the view of the window while calculation the mouse coordinates.
+        /// @param event  The event that was polled from the gui
+        /// @param resetView  Reset the view of the window while calculation the mouse coordinates.
         ///                   This parameter must be the same as the one passed to the draw function.
         ///                   If false, the current view will be used, otherwise the view will be reset.
         ///                   If false then make sure the same view is set when calling this function and when calling draw.
         ///
-        /// \return Has the event been consumed?
+        /// @return Has the event been consumed?
         ///         When this function returns false, then the event was ignored by all widgets.
         ///
         /// You should call this function in your event loop.
@@ -121,9 +121,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Draws all the widgets that were added to the gui.
+        /// @brief Draws all the widgets that were added to the gui.
         ///
-        /// \param resetView  Reset the view of the window while drawing the gui.
+        /// @param resetView  Reset the view of the window while drawing the gui.
         ///                   This parameter must be the same as the one passed to the handleEvent function.
         ///                   If false, the current view will be used, otherwise the view will be reset.
         ///                   If false then make sure the same view is set when calling this function and when calling handleEvent.
@@ -135,7 +135,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the next callback from the callback queue.
+        /// @brief Get the next callback from the callback queue.
         ///
         /// This function works just like the pollEvent function from sfml.
         ///
@@ -145,22 +145,22 @@ namespace tgui
         /// Note that more than one callbacks may be present in the queue, thus you should always call this
         /// function in a loop to make sure that you process every callback.
         ///
-        /// \param callback  An empty tgui::Callback widget that will be (partly) filled when there is a callback.
+        /// @param callback  An empty tgui::Callback widget that will be (partly) filled when there is a callback.
         ///
-        /// \return
-        ///        - true when there is another callback. The \a callback parameter will be filled with information.
-        ///        - false when there is no callback. The \a callback parameter remains uninitialized and may not be used.
+        /// @return
+        ///        - true when there is another callback. The callback parameter will be filled with information.
+        ///        - false when there is no callback. The callback parameter remains uninitialized and may not be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool pollCallback(Callback& callback);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Check if the window is focused.
+        /// @brief Check if the window is focused.
         ///
         /// When the window is unfocused, animations (e.g. flashing caret of an edit box) will be paused.
         ///
-        /// \return Is the window currently focused?
+        /// @return Is the window currently focused?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool hasFocus()
@@ -170,9 +170,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the container.
+        /// @brief Returns the size of the container.
         ///
-        /// \return Size of the container.
+        /// @return Size of the container.
         ///
         /// This size will equal the size of the window.
         ///
@@ -184,14 +184,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the internal container of the Gui.
+        /// @brief Returns the internal container of the Gui.
         ///
         /// This could be useful when having a function that should accept both the gui and e.g. a child window as parameter.
         ///
-        /// \warning Not all functions in the Container class make sense for the Gui (which is the reason that the Gui does not
+        /// @warning Not all functions in the Container class make sense for the Gui (which is the reason that the Gui does not
         ///          inherit from Container). So calling some functions (e.g. setSize) will have no effect.
         ///
-        /// \return Reference to the internal Container class
+        /// @return Reference to the internal Container class
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Container& getContainer()
@@ -201,13 +201,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the global font.
+        /// @brief Changes the global font.
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// \param filename  Path of the font file to load
+        /// @param filename  Path of the font file to load
         ///
-        /// \return True if loading succeeded, false if it failed
+        /// @return True if loading succeeded, false if it failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setGlobalFont(const std::string& filename)
@@ -217,11 +217,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the global font.
+        /// @brief Changes the global font.
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// \param font  Font to copy
+        /// @param font  Font to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setGlobalFont(const sf::Font& font)
@@ -231,11 +231,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the global font.
+        /// @brief Returns the global font.
         ///
         /// This is the font that is used for newly created widget by default.
         ///
-        /// \return global font
+        /// @return global font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getGlobalFont() const
@@ -245,9 +245,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a list of all the widgets.
+        /// @brief Returns a list of all the widgets.
         ///
-        /// \return Vector of all widget pointers
+        /// @return Vector of all widget pointers
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector< Widget::Ptr >& getWidgets()
@@ -257,9 +257,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a list of the names of all the widgets.
+        /// @brief Returns a list of the names of all the widgets.
         ///
-        /// \return Vector of all widget names
+        /// @return Vector of all widget names
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<sf::String>& getWidgetNames()
@@ -269,56 +269,56 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a widget to the container.
+        /// @brief Adds a widget to the container.
         ///
-        /// \param widgetPtr   Pointer to the widget you would like to add
-        /// \param widgetName  If you want to access the widget later then you must do this with this name
+        /// @param widgetPtr   Pointer to the widget you would like to add
+        /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(container); // Create a picture and add it to the container
         /// container.remove(pic);             // Remove the picture from the container
         /// container.add(pic);                // Add the picture to the container again
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a pointer to an earlier created widget.
+        /// @brief Returns a pointer to an earlier created widget.
         ///
-        /// \param widgetName The name that was given to the widget when it was added to the container.
+        /// @param widgetName The name that was given to the widget when it was added to the container.
         ///
-        /// \return Pointer to the earlier created widget
+        /// @return Pointer to the earlier created widget
         ///
-        /// \warning This function will return nullptr when an unknown widget name was passed.
+        /// @warning This function will return nullptr when an unknown widget name was passed.
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(container, "picName");
         /// tgui::Picture::Ptr pic2 = container.get("picName");
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr get(const sf::String& widgetName) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns a pointer to an earlier created widget.
+        /// @brief Returns a pointer to an earlier created widget.
         ///
-        /// \param widgetName The name that was given to the widget when it was added to the container.
+        /// @param widgetName The name that was given to the widget when it was added to the container.
         ///
-        /// \return Pointer to the earlier created widget.
+        /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type.
         ///
-        /// \warning This function will return nullptr when an unknown widget name was passed.
+        /// @warning This function will return nullptr when an unknown widget name was passed.
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(container, "picName");
         /// tgui::Picture::Ptr pic2 = container.get<tgui::Picture>("picName");
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
@@ -329,67 +329,67 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Makes a copy of any existing widget and returns the pointer to the new widget.
+        /// @brief Makes a copy of any existing widget and returns the pointer to the new widget.
         ///
-        /// \param oldWidget     A pointer to the old widget.
-        /// \param newWidgetName If you want to access the widget later then you must do this with this name
+        /// @param oldWidget     A pointer to the old widget.
+        /// @param newWidgetName If you want to access the widget later then you must do this with this name
         ///
-        /// \return Pointer to the new widget
+        /// @return Pointer to the new widget
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(container, "picName");
         /// tgui::Picture::Ptr pic2 = container.copy(pic, "picName_2");
         /// tgui::Picture::Ptr pic3 = container.copy(container.get("picName"), "picName_3");
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container.
         ///
-        /// \param widget  Pointer to the widget to remove
+        /// @param widget  Pointer to the widget to remove
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(container, "picName");
         /// tgui::Picture::Ptr pic2(container, "picName2");
         /// container.remove(pic);
         /// container.remove(container.get("picName2"));
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void remove(const Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the name of a widget.
+        /// @brief Changes the name of a widget.
         ///
-        /// \param widget  Widget of which the name should be changed
-        /// \param name    New name for the widget
+        /// @param widget  Widget of which the name should be changed
+        /// @param name    New name for the widget
         ///
-        /// \return True when the name was changed, false when the widget wasn't part of this container.
+        /// @return True when the name was changed, false when the widget wasn't part of this container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setWidgetName(const Widget::Ptr& widget, const std::string& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the name of a widget.
+        /// @brief Returns the name of a widget.
         ///
-        /// \param widget  Widget of which the name should be retrieved
-        /// \param name    Name for the widget
+        /// @param widget  Widget of which the name should be retrieved
+        /// @param name    Name for the widget
         ///
-        /// \return False is returned when the widget wasn't part of this container.
+        /// @return False is returned when the widget wasn't part of this container.
         ///         In this case the name parameter is left unchanged.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,18 +397,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses a widget.
+        /// @brief Focuses a widget.
         ///
         /// The previously focused widget will be unfocused.
         ///
-        /// \param widget  The widget that has to be focused.
+        /// @param widget  The widget that has to be focused.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void focusWidget(Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses the next widget.
+        /// @brief Focuses the next widget.
         ///
         /// The currently focused widget will be unfocused, even if it was the only widget.
         /// When no widget was focused, the first widget in the container will be focused.
@@ -418,7 +418,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Focuses the previous widget.
+        /// @brief Focuses the previous widget.
         ///
         /// The currently focused widget will be unfocused, even if it was the only widget.
         /// When no widget was focused, the last widget in the container will be focused.
@@ -428,57 +428,57 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unfocus all the widgets.
+        /// @brief Unfocus all the widgets.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unfocusWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Uncheck all the radio buttons.
+        /// @brief Uncheck all the radio buttons.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void uncheckRadioButtons();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places a widget before all other widgets.
+        /// @brief Places a widget before all other widgets.
         ///
-        /// \param widget  The widget that should be moved to the front
+        /// @param widget  The widget that should be moved to the front
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void moveWidgetToFront(Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places a widget behind all other widgets.
+        /// @brief Places a widget behind all other widgets.
         ///
-        /// \param widget  The widget that should be moved to the back
+        /// @param widget  The widget that should be moved to the back
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void moveWidgetToBack(Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to the callbacks of all child widgets.
+        /// @brief Bind a function to the callbacks of all child widgets.
         ///
         /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
         /// If no global callback function has been bound then the callback is passed to the parent of this widget.
         ///
-        /// \param func  Pointer to a free function with a reference to a Callback widget as parameter.
+        /// @param func  Pointer to a free function with a reference to a Callback widget as parameter.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void bindGlobalCallback(std::function<void(const Callback&)> func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Bind a function to the callbacks of all child widgets.
+        /// @brief Bind a function to the callbacks of all child widgets.
         ///
         /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
         /// If no global callback function has been bound then the callback is passed to the parent of this widget.
         ///
-        /// \param func      Pointer to a member function with a reference to a Callback widget as parameter.
-        /// \param classPtr  Pointer to the widget of the class.
+        /// @param func      Pointer to a member function with a reference to a Callback widget as parameter.
+        /// @param classPtr  Pointer to the widget of the class.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
@@ -489,34 +489,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Unbind the global callback function(s).
+        /// @brief Unbind the global callback function(s).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unbindGlobalCallback();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads a form from a file.
+        /// @brief Loads a form from a file.
         ///
         /// The widgets will be loaded and added to the container.
         /// Note that even when this function fails, some widgets might have been loaded already.
         ///
-        /// \param filename  Filename of the widget file that is to be loaded
+        /// @param filename  Filename of the widget file that is to be loaded
         ///
-        /// \throw Exception when the file could not be opened
-        /// \throw Exception when the file contains a mistake
-        /// \throw Exception when one of the widgets, described in the file, couldn't be loaded
+        /// @throw Exception when the file could not be opened
+        /// @throw Exception when the file contains a mistake
+        /// @throw Exception when one of the widgets, described in the file, couldn't be loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Save the widgets to a file.
+        /// @brief Save the widgets to a file.
         ///
-        /// \param filename  Filename of the widget file that is to be created
+        /// @param filename  Filename of the widget file that is to be created
         ///
-        /// \throw Exception when the file couldn't be created
+        /// @throw Exception when the file couldn't be created
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void saveWidgetsToFile(const std::string& filename);

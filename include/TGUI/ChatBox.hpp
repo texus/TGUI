@@ -51,9 +51,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChatBox(const ChatBox& copy);
@@ -66,18 +66,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChatBox& operator= (const ChatBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,22 +88,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "ChatBox" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "ChatBox" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,11 +114,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the chat box.
+        /// @brief Changes the size of the chat box.
         ///
         /// This size does not include the borders.
         ///
-        /// \param size   The new size of the chat box
+        /// @param size   The new size of the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -126,11 +126,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the chat box.
+        /// @brief Returns the size of the chat box.
         ///
         /// This size does not include the borders.
         ///
-        /// \return Size of the chat box
+        /// @return Size of the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -140,11 +140,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the full size of the chat box.
+        /// @brief Returns the full size of the chat box.
         ///
         /// This is the size including the borders.
         ///
-        /// \return Full size of the chat box
+        /// @return Full size of the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
@@ -154,71 +154,71 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new line of text to the chat box.
+        /// @brief Add a new line of text to the chat box.
         ///
-        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
         /// The default text color and character size will be used.
         ///
-        /// \param text  Text that will be added to the chat box
+        /// @param text  Text that will be added to the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new line of text to the chat box.
+        /// @brief Add a new line of text to the chat box.
         ///
-        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
         /// The default text color will be used.
         ///
-        /// \param text      Text that will be added to the chat box
-        /// \param textSize  Size of the text
+        /// @param text      Text that will be added to the chat box
+        /// @param textSize  Size of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text, unsigned int textSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new line of text to the chat box.
+        /// @brief Add a new line of text to the chat box.
         ///
-        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
         /// The default character size will be used.
         ///
-        /// \param text   Text that will be added to the chat box
-        /// \param color  Color of the text
+        /// @param text   Text that will be added to the chat box
+        /// @param color  Color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text, const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a new line of text to the chat box.
+        /// @brief Add a new line of text to the chat box.
         ///
-        /// The whole text passed to this function will be considered as one line for the \a getLine and \a removeLine functions,
+        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
-        /// \param text      Text that will be added to the chat box
-        /// \param color     Color of the text
-        /// \param textSize  Size of the text
-        /// \param font      Font of the text (nullptr to use default font)
+        /// @param text      Text that will be added to the chat box
+        /// @param color     Color of the text
+        /// @param textSize  Size of the text
+        /// @param font      Font of the text (nullptr to use default font)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font = nullptr);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the contents of the requested line.
+        /// @brief Returns the contents of the requested line.
         ///
-        /// \param lineIndex  The index of the line of which you request the contents.
+        /// @param lineIndex  The index of the line of which you request the contents.
         ///                   The first line has index 0.
         ///
-        /// \return The contents of the requested line.
+        /// @return The contents of the requested line.
         ///         An empty string will be returned when the index is too high.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,28 +226,28 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the requested line.
+        /// @brief Removes the requested line.
         ///
-        /// \param lineIndex  The index of the line that should be removed.
+        /// @param lineIndex  The index of the line that should be removed.
         ///                   The first line has index 0.
         ///
-        /// \return True if the line was removed, false if no such line existed (index too high).
+        /// @return True if the line was removed, false if no such line existed (index too high).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeLine(unsigned int lineIndex);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all lines from the chat box.
+        /// @brief Removes all lines from the chat box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllLines();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the amount of lines in the chat box.
+        /// @brief Returns the amount of lines in the chat box.
         ///
-        /// \return Number of lines in the chat box
+        /// @return Number of lines in the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getLineAmount()
@@ -257,33 +257,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set a maximum amount of lines in the chat box.
+        /// @brief Set a maximum amount of lines in the chat box.
         ///
-        /// Only the last \a maxLines lines will be kept. Lines above those will be removed.
+        /// Only the last maxLines lines will be kept. Lines above those will be removed.
         /// Set to 0 to disable the line limit (default).
         ///
-        /// \param maxLines  The maximum amount of lines that the chat box can contain.
+        /// @param maxLines  The maximum amount of lines that the chat box can contain.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLineLimit(unsigned int maxLines);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the default font of the text.
+        /// @brief Changes the default font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font
+        /// @param font  The new font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the default font of the text.
+        /// @brief Returns the default font of the text.
         ///
-        /// \return  Pointer to the font that is currently being used
+        /// @return  Pointer to the font that is currently being used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -293,9 +293,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the default character size of the text.
+        /// @brief Changes the default character size of the text.
         ///
-        /// \param size  The new default text size.
+        /// @param size  The new default text size.
         ///              The minimum text size is 8.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,9 +303,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the default character size of the text.
+        /// @brief Returns the default character size of the text.
         ///
-        /// \return The currently used default text size.
+        /// @return The currently used default text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -315,9 +315,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the default color of the text.
+        /// @brief Changes the default color of the text.
         ///
-        /// \param color  The new default text color.
+        /// @param color  The new default text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
@@ -327,9 +327,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the default color of the text.
+        /// @brief Returns the default color of the text.
         ///
-        /// \return The currently used default text color.
+        /// @return The currently used default text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -339,9 +339,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color that will be used inside the chat box.
+        /// @brief Set the background color that will be used inside the chat box.
         ///
-        /// \param backgroundColor  The new background color.
+        /// @param backgroundColor  The new background color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor)
@@ -351,9 +351,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the border color that will be used inside the chat box.
+        /// @brief Set the border color that will be used inside the chat box.
         ///
-        /// \param borderColor  The color of the borders
+        /// @param borderColor  The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorderColor(const sf::Color& borderColor)
@@ -363,9 +363,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color that is currently being used inside the chat box.
+        /// @brief Get the background color that is currently being used inside the chat box.
         ///
-        /// \return The color of the background of the chat box
+        /// @return The color of the background of the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -375,9 +375,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the border color that is currently being used inside the chat box.
+        /// @brief Get the border color that is currently being used inside the chat box.
         ///
-        /// \return The color of the borders
+        /// @return The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBorderColor() const
@@ -387,7 +387,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the line spacing of all lines.
+        /// @brief Changes the line spacing of all lines.
         ///
         /// By default, line spacing is chosen based on the font and character size. This also means that when mixing different
         /// text styles in ChatBox, lines can have different line spacings.
@@ -395,28 +395,28 @@ namespace tgui
         ///
         /// The line spacing should be equal or greater than the text size to avoid overlapping lines.
         ///
-        /// \param lineSpacing  New line spacing for all lines
+        /// @param lineSpacing  New line spacing for all lines
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLineSpacing(unsigned int lineSpacing);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the scrollbar of the chat box.
+        /// @brief Changes the scrollbar of the chat box.
         ///
-        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        /// @param scrollbarConfigFileFilename  Filename of the config file.
         ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the scrollbar from the chat box (if there is one).
+        /// @brief Removes the scrollbar from the chat box (if there is one).
         ///
         /// When there are too many lines to fit in the chat box then some lines will be removed.
         ///
@@ -425,9 +425,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -438,50 +438,50 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseWheelMoved(int delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNotOnWidget() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +489,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,21 +509,21 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(Container *const parent) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Update the position of the labels.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateDisplayedText();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

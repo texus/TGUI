@@ -43,7 +43,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief The layout of the widget.
+        /// @brief The layout of the widget.
         ///
         /// Where in the cell is the widget located?
         /// The widget is centered by default.
@@ -51,7 +51,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Layout
         {
-            /// \brief The layout of the widget.
+            /// @brief The layout of the widget.
             enum Layouts
             {
                 UpperLeft,   ///< Draw the widget in the upper left corner of the cell
@@ -74,9 +74,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Grid(const Grid& copy);
@@ -89,11 +89,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Grid& operator= (const Grid& right);
@@ -110,9 +110,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the grid.
+        /// @brief Changes the size of the grid.
         ///
-        /// \param size   New size of the grid
+        /// @param size   New size of the grid
         ///
         /// Widgets in the grid will be repositionned to fill in the best way the available space of the grid.
         /// If the size is too small to have all Widgets correctly placed, the size will be ignored and the grid auto-sized until
@@ -124,9 +124,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the grid.
+        /// @brief Returns the size of the grid.
         ///
-        /// \return Size of the grid
+        /// @return Size of the grid
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -136,53 +136,53 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container.
         ///
-        /// \param widget  Pointer to the widget to remove
+        /// @param widget  Pointer to the widget to remove
         ///
-        /// \see remove(sf::String)
+        /// @see remove(sf::String)
         ///
         /// Usage example:
-        /// \code
+        /// @code
         /// tgui::Picture::Ptr pic(grid, "picName");
         /// tgui::Picture::Ptr pic2(grid, "picName2");
         /// grid.remove(pic);
         /// grid.remove(grid.get("picName2"));
-        /// \endcode
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void remove(const Widget::Ptr& widget) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container.
         ///
-        /// \param widget  Pointer to the widget to remove
+        /// @param widget  Pointer to the widget to remove
         ///
         /// This function is provided for internal use.
         /// The other remove function will probably be easier to use, but in the end they do exactly the same.
         ///
-        /// \see remove(Widget::Ptr)
+        /// @see remove(Widget::Ptr)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void remove(Widget* widget) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllWidgets() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Add a widget to the grid.
+        /// @brief Add a widget to the grid.
         ///
-        /// \param widget  Pointer to a fully created widget that will be added to the grid
-        /// \param row     The row in which the widget should be placed
-        /// \param column  The column in which the widget should be placed
-        /// \param borders  Distance from the grid square to the widget (left, top, right, bottom)
-        /// \param layout   Where the widget is located in the square
+        /// @param widget  Pointer to a fully created widget that will be added to the grid
+        /// @param row     The row in which the widget should be placed
+        /// @param column  The column in which the widget should be placed
+        /// @param borders  Distance from the grid square to the widget (left, top, right, bottom)
+        /// @param layout   Where the widget is located in the square
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addWidget(const Widget::Ptr& widget,
@@ -193,19 +193,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the widget in a specific square of the grid.
+        /// @brief Returns the widget in a specific square of the grid.
         ///
-        /// \param row     The row that the widget is in
-        /// \param column  The column that the widget is in
+        /// @param row     The row that the widget is in
+        /// @param column  The column that the widget is in
         ///
-        /// \return The widget inside the given square, or nullptr when the square doesn't contain a widget
+        /// @return The widget inside the given square, or nullptr when the square doesn't contain a widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr getWidget(unsigned int row, unsigned int column);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Updates the position and size of the widget.
+        /// @brief Updates the position and size of the widget.
         ///
         /// Once a widget has been added to the grid, you will have to call this function every time you change the size of the widget.
         ///
@@ -214,27 +214,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes borders of a given widget.
+        /// @brief Changes borders of a given widget.
         ///
-        /// \param widget  The widget to which borders should be added
-        /// \param borders The new borders around the widget
+        /// @param widget  The widget to which borders should be added
+        /// @param borders The new borders around the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeWidgetBorders(const Widget::Ptr& widget, const Borders& borders = Borders(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the layout of a given widget.
+        /// @brief Changes the layout of a given widget.
         ///
-        /// \param widget  The widget for which the layout should be changed
-        /// \param layout  The new layout
+        /// @param widget  The widget for which the layout should be changed
+        /// @param layout  The new layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout = Layout::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 

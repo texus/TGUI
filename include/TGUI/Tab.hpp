@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Tab" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Tab" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,15 +91,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -107,15 +107,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This function currently does nothing.
+        /// @brief This function currently does nothing.
         ///
-        /// \param size  Currently ignored
+        /// @param size  Currently ignored
         ///
         /// It is not yet possible to change the size directly.
         ///
-        /// \see setTabHeight
-        /// \see setDistanceToSide
-        /// \see setMaximumTabWidth
+        /// @see setTabHeight
+        /// @see setDistanceToSide
+        /// @see setMaximumTabWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const sf::Vector2f& size) override;
@@ -123,9 +123,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the tabs.
+        /// @brief Returns the size of the tabs.
         ///
-        /// \return Size of the tabs
+        /// @return Size of the tabs
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -135,90 +135,90 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds a new tab.
+        /// @brief Adds a new tab.
         ///
-        /// \param name    The name of the tab (this is the text that will be drawn on top of the tab).
-        /// \param select  Do you want the new tab to be selected immediately?
+        /// @param name    The name of the tab (this is the text that will be drawn on top of the tab).
+        /// @param select  Do you want the new tab to be selected immediately?
         ///
-        /// \return  The index of the tab in the list.
+        /// @return  The index of the tab in the list.
         ///
-        /// \warning The index returned by this function may no longer be correct when a tab is removed.
+        /// @warning The index returned by this function may no longer be correct when a tab is removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int add(const sf::String& name, bool select = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects the tab with a given name.
+        /// @brief Selects the tab with a given name.
         ///
-        /// \param name  The name of the tab to select.
+        /// @param name  The name of the tab to select.
         ///
         /// When the name doen't match any tab then nothing will be changed.
         /// If there are multiple tabs with the same name then the first one will be selected.
         ///
-        /// \see select(int)
+        /// @see select(int)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void select(const sf::String& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects the tab with a given index.
+        /// @brief Selects the tab with a given index.
         ///
-        /// \param index  The index of the tab to select.
+        /// @param index  The index of the tab to select.
         ///
         /// When the index is too high then nothing will happen.
         ///
-        /// \see select(sf::String)
+        /// @see select(sf::String)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void select(unsigned int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Deselects the selected tab.
+        /// @brief Deselects the selected tab.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void deselect();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a tab with a given name.
+        /// @brief Removes a tab with a given name.
         ///
-        /// \param name  The name of the tab to remove.
+        /// @param name  The name of the tab to remove.
         ///
         /// When multiple tabs have the same name, only the first will be removed.
         ///
-        /// \see remove(unsigned int)
+        /// @see remove(unsigned int)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void remove(const sf::String& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes a tab with a given index.
+        /// @brief Removes a tab with a given index.
         ///
-        /// \param index  The index of the tab to remove.
+        /// @param index  The index of the tab to remove.
         ///
         /// When the index is too high then nothing will happen.
         ///
-        /// \see remove(sf::String)
+        /// @see remove(sf::String)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void remove(unsigned int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all tabs.
+        /// @brief Removes all tabs.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAll();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the name of the currently selected tab.
+        /// @brief Get the name of the currently selected tab.
         ///
-        /// \return The name of the tab.
+        /// @return The name of the tab.
         ///         When no tab is selected then this function returns an empty string.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,12 +229,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the index of the currently selected tab.
+        /// @brief Get the index of the currently selected tab.
         ///
-        /// \return The index of the tab.
+        /// @return The index of the tab.
         ///         When no tab is selected then this function returns -1.
         ///
-        /// \warning The index returned by this function may no longer be correct when a tab is removed.
+        /// @warning The index returned by this function may no longer be correct when a tab is removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getSelectedIndex() const
@@ -244,21 +244,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the tabs.
+        /// @brief Changes the font of the tabs.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the tabs.
+        /// @brief Returns the font of the tabs.
         ///
-        /// \return  Pointer to the font that is currently being used.
+        /// @return  Pointer to the font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -268,9 +268,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used inside the tabs.
+        /// @brief Set the text color that will be used inside the tabs.
         ///
-        /// \param color  The new text color.
+        /// @param color  The new text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
@@ -280,9 +280,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used inside the tabs.
+        /// @brief Get the text color that is currently being used inside the tabs.
         ///
-        /// \return The text color that is currently being used.
+        /// @return The text color that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -292,9 +292,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used for the selected tab.
+        /// @brief Set the text color that will be used for the selected tab.
         ///
-        /// \param color  The new text color.
+        /// @param color  The new text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const sf::Color& color)
@@ -304,9 +304,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used for the selected tab.
+        /// @brief Get the text color that is currently being used for the selected tab.
         ///
-        /// \return The text color that is currently being used.
+        /// @return The text color that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextColor() const
@@ -316,9 +316,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param size  The new size of the text.
+        /// @param size  The new size of the text.
         ///              If the size is 0 (default) then the text will be scaled to fit in the tab.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,9 +326,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The text size.
+        /// @return The text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -338,9 +338,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the height of the tabs.
+        /// @brief Changes the height of the tabs.
         ///
-        /// \param height  Height of the tabs
+        /// @param height  Height of the tabs
         ///
         /// By default, it is the height of the tab image that is loaded with the load function.
         ///
@@ -349,9 +349,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the height of the tabs.
+        /// @brief Returns the height of the tabs.
         ///
-        /// \return Tab height
+        /// @return Tab height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getTabHeight() const
@@ -361,9 +361,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the maximum tab width of the tabs.
+        /// @brief Changes the maximum tab width of the tabs.
         ///
-        /// \param maximumWidth  Maximum width of a single tab
+        /// @param maximumWidth  Maximum width of a single tab
         ///
         /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
         /// By default, the maximum width is 0 which means that there is no limitation.
@@ -373,9 +373,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum tab width of the tabs.
+        /// @brief Returns the maximum tab width of the tabs.
         ///
-        /// \return Maximum tab width
+        /// @return Maximum tab width
         ///
         /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
         /// By default, the maximum width is 0 which means that there is no limitation.
@@ -388,18 +388,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the distance between the text and the side of the tab.
+        /// @brief Changes the distance between the text and the side of the tab.
         ///
-        /// \param distanceToSide  distance between the text and the side of the tab
+        /// @param distanceToSide  distance between the text and the side of the tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDistanceToSide(unsigned int distanceToSide);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the distance between the text and the side of the tab.
+        /// @brief Returns the distance between the text and the side of the tab.
         ///
-        /// \return distance between the text and the side of the tab
+        /// @return distance between the text and the side of the tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getDistanceToSide() const
@@ -409,9 +409,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -422,25 +422,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +448,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

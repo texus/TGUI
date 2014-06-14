@@ -36,7 +36,7 @@ namespace tgui
     class Button;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief Movable Panel with title bar.
+    /// @brief Movable Panel with title bar.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ChildWindow : public Container, public WidgetBorders
     {
@@ -66,9 +66,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChildWindow(const ChildWindow& copy);
@@ -81,18 +81,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChildWindow& operator= (const ChildWindow& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,22 +103,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "ChildWindow" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "ChildWindow" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,16 +129,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param x X coordinate of the new position
-        /// \param y Y coordinate of the new position
+        /// @param x X coordinate of the new position
+        /// @param y Y coordinate of the new position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPosition(const sf::Vector2f& position) override;
@@ -146,10 +146,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the child window.
+        /// @brief Changes the size of the child window.
         ///
-        /// \param size   Sets the new size of the child window
-        /// \param height  Sets the new height of the child window
+        /// @param size   Sets the new size of the child window
+        /// @param height  Sets the new height of the child window
         ///
         /// This is the size of the child window, without the title bar nor the borders.
         ///
@@ -159,9 +159,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the drawable area of the child window.
+        /// @brief Returns the size of the drawable area of the child window.
         ///
-        /// \return Size of the child window
+        /// @return Size of the child window
         ///
         /// The size returned by this function is the size of the child window, without the title bar nor the borders.
         ///
@@ -173,9 +173,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the full child window.
+        /// @brief Returns the size of the full child window.
         ///
-        /// \return Size of the child window
+        /// @return Size of the child window
         ///
         /// The size returned by this function is the size of the child window, including the title bar and the borders.
         ///
@@ -187,35 +187,35 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the global font.
+        /// @brief Changes the global font.
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// \param filename  Path of the font file to load
+        /// @param filename  Path of the font file to load
         ///
-        /// \return True if loading succeeded, false if it failed
+        /// @return True if loading succeeded, false if it failed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool setGlobalFont(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the global font.
+        /// @brief Changes the global font.
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// \param font  Font to copy
+        /// @param font  Font to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setGlobalFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background texture of the child window.
+        /// @brief Changes the background texture of the child window.
         ///
-        /// \param texture  Pointer to the texture that should be used as background of the child window
+        /// @param texture  Pointer to the texture that should be used as background of the child window
         ///
-        /// \warning You should make sure that the texture stays alive.
+        /// @warning You should make sure that the texture stays alive.
         ///
         /// If the texture has a different size than the child window then it will be scaled to fill the whole window.
         /// Pass nullptr to this function to remove the background texture.
@@ -225,9 +225,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background texture of the child window.
+        /// @brief Returns the background texture of the child window.
         ///
-        /// \return Pointer to the texture that is being used as background of the child window.
+        /// @return Pointer to the texture that is being used as background of the child window.
         ///         This pointer is nullptr when no background texture was set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,9 +238,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the height of the title bar.
+        /// @brief Change the height of the title bar.
         ///
-        /// \param height  New height of the title bar
+        /// @param height  New height of the title bar
         ///
         /// The default height is the height of the title bar image that is loaded with the load function.
         ///
@@ -249,9 +249,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the height of the title bar.
+        /// @brief Returns the height of the title bar.
         ///
-        /// \return Height of the title bar
+        /// @return Height of the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTitleBarHeight() const
@@ -261,9 +261,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the background color of the child window.
+        /// @brief Changes the background color of the child window.
         ///
-        /// \param backgroundColor  New background color
+        /// @param backgroundColor  New background color
         ///
         /// The background is fully transparent by default.
         ///
@@ -275,11 +275,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background color of the panel.
+        /// @brief Returns the background color of the panel.
         ///
         /// The background is fully transparent by default.
         ///
-        /// \return The current background color
+        /// @return The current background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -289,9 +289,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -302,18 +302,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the title that is displayed in the title bar of the child window.
+        /// @brief Changes the title that is displayed in the title bar of the child window.
         ///
-        /// \param title  New title for the child window
+        /// @param title  New title for the child window
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitle(const sf::String& title);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the title that is displayed in the title bar of the child window.
+        /// @brief Returns the title that is displayed in the title bar of the child window.
         ///
-        /// \return Title of the child window
+        /// @return Title of the child window
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getTitle() const
@@ -323,9 +323,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the color of the title that is displayed in the title bar of the child window.
+        /// @brief Changes the color of the title that is displayed in the title bar of the child window.
         ///
-        /// \param color  New title color for the child window
+        /// @param color  New title color for the child window
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleColor(const sf::Color& color)
@@ -335,9 +335,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the color of the title that is displayed in the title bar of the child window.
+        /// @brief Returns the color of the title that is displayed in the title bar of the child window.
         ///
-        /// \return Title color of the child window
+        /// @return Title color of the child window
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTitleColor() const
@@ -347,9 +347,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the border color.
+        /// @brief Set the border color.
         ///
-        /// \param borderColor  The color of the borders
+        /// @param borderColor  The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorderColor(const sf::Color& borderColor)
@@ -359,9 +359,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the borde color.
+        /// @brief Returns the borde color.
         ///
-        /// \return The color of the borders
+        /// @return The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBorderColor() const
@@ -371,9 +371,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the borders.
+        /// @brief Changes the size of the borders.
         ///
-        /// \param borders  The size of the borders
+        /// @param borders  The size of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBorders(const Borders& borders) override;
@@ -381,18 +381,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the distance between the title and the side of the title bar.
+        /// @brief Changes the distance between the title and the side of the title bar.
         ///
-        /// \param distanceToSide  distance between the title and the side of the title bar
+        /// @param distanceToSide  distance between the title and the side of the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDistanceToSide(unsigned int distanceToSide);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the distance between the title and the side of the title bar.
+        /// @brief Returns the distance between the title and the side of the title bar.
         ///
-        /// \return distance between the title and the side of the title bar
+        /// @return distance between the title and the side of the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getDistanceToSide() const
@@ -402,18 +402,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the title alignment.
+        /// @brief Changes the title alignment.
         ///
-        /// \param alignment  How should the title be aligned in the title bar?
+        /// @param alignment  How should the title be aligned in the title bar?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleAlignment(TitleAlignment alignment);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the title alignment.
+        /// @brief Returns the title alignment.
         ///
-        /// \return How the title is aligned in the title bar
+        /// @return How the title is aligned in the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TitleAlignment getTitleAlignment() const
@@ -423,9 +423,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the icon in the top left corner of the child window.
+        /// @brief Changes the icon in the top left corner of the child window.
         ///
-        /// \param filename  Filename of the icon image
+        /// @param filename  Filename of the icon image
         ///
         /// There is no icon by default.
         ///
@@ -434,14 +434,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the icon in the top left corner of the child window.
+        /// @brief Removes the icon in the top left corner of the child window.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeIcon();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Destroys the window.
+        /// @brief Destroys the window.
         ///
         /// When no callback is requested when closing the window, this function will be called automatically.
         ///
@@ -453,9 +453,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the child window to be kept inside its parent.
+        /// @brief Set the child window to be kept inside its parent.
         ///
-        /// \param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
+        /// @param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
         ///                 It will be fully kept on left, right and top.
         ///                 At the bottom of the parent only the title bar will be kept inside.
         ///                 It's set to false by default.
@@ -465,9 +465,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Tells whether the child window is kept inside its parent.
+        /// @brief Tells whether the child window is kept inside its parent.
         ///
-        /// \return  When it's set to true, the child window will always be kept automatically inside its parent.
+        /// @return  When it's set to true, the child window will always be kept automatically inside its parent.
         ///          It will be fully kept on left, right and top.
         ///          At the bottom of the parent only the title bar will be kept inside.
         ///          It's set to false by default.
@@ -477,10 +477,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the distance between the position of the container and a widget that would be drawn inside
+        /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
         ///        this container on relative position (0,0).
         ///
-        /// \return Offset of the widgets in the container
+        /// @return Offset of the widgets in the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getWidgetsOffset() const override
@@ -490,45 +490,45 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseWheelMoved(int delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -536,7 +536,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,14 +547,14 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(Container *const container) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

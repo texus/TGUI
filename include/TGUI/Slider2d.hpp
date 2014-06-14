@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Slider2d" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Slider2d" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the slider.
+        /// @brief Changes the size of the slider.
         ///
-        /// \param width  The new size of the slider
+        /// @param width  The new size of the slider
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -101,9 +101,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a minimum value.
+        /// @brief Sets a minimum value.
         ///
-        /// \param minimum  The new minimum value
+        /// @param minimum  The new minimum value
         ///
         /// When the value is too small then it will be changed to this minimum.
         /// The default minimum value is (-1, -1).
@@ -113,9 +113,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a maximum value.
+        /// @brief Sets a maximum value.
         ///
-        /// \param maximum  The new maximum value
+        /// @param maximum  The new maximum value
         ///
         /// When the value is too big then it will be changed to this maximum.
         /// The default maximum value is (1, 1).
@@ -125,9 +125,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the current value.
+        /// @brief Changes the current value.
         ///
-        /// \param value  The new value
+        /// @param value  The new value
         ///
         /// The value can't be smaller than the minimum or bigger than the maximum.
         ///
@@ -136,9 +136,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the minimum value.
+        /// @brief Returns the minimum value.
         ///
-        /// \return The current minimum value
+        /// @return The current minimum value
         ///
         /// The default minimum value (-1, -1).
         ///
@@ -150,9 +150,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum value.
+        /// @brief Returns the maximum value.
         ///
-        /// \return The current maximum value
+        /// @return The current maximum value
         ///
         /// The default maximum value (1, 1).
         ///
@@ -164,9 +164,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the current value.
+        /// @brief Returns the current value.
         ///
-        /// \return The current value
+        /// @return The current value
         ///
         /// The default value is (0, 0).
         ///
@@ -178,13 +178,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change whether the thumb size changes when you change the size of the slider.
+        /// @brief Change whether the thumb size changes when you change the size of the slider.
         ///
-        /// \param fixedSize  If true then the size of the thumb doesn't change when calling setSize
+        /// @param fixedSize  If true then the size of the thumb doesn't change when calling setSize
         ///
-        /// When \a fixedSize is set to false then the thumb will change size together with the slider.
+        /// When fixedSize is set to false then the thumb will change size together with the slider.
         /// So if the slider is two times bigger than the loaded image, the thumb will also be two times bigger as its image.
-        /// When \a fixedSize is set to true then the size of the thumb will always stay the same as the loaded image.
+        /// When fixedSize is set to true then the size of the thumb will always stay the same as the loaded image.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setFixedThumbSize(bool fixedSize)
@@ -194,11 +194,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the thumb size changes when you change the size of the slider.
+        /// @brief Returns whether the thumb size changes when you change the size of the slider.
         ///
-        /// \return whether the thumb size changes when you change the size of the slider
+        /// @return whether the thumb size changes when you change the size of the slider
         ///
-        /// \see setFixedThumbSize
+        /// @see setFixedThumbSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getFixedThumbSize() const
@@ -208,9 +208,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Decide whether or not the thumb will jump back to the center when the mouse is released.
+        /// @brief Decide whether or not the thumb will jump back to the center when the mouse is released.
         ///
-        /// \param autoCenterThumb  Place the thumb in the center on mouse release?
+        /// @param autoCenterThumb  Place the thumb in the center on mouse release?
         ///
         /// This behavior is disabled by default.
         ///
@@ -219,7 +219,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Places the thumb back in the center.
+        /// @brief Places the thumb back in the center.
         ///
         /// When enableThumbCenter(true) was called then this will happen automatically when the mouse is released.
         ///
@@ -228,9 +228,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -241,40 +241,40 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetFocused() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

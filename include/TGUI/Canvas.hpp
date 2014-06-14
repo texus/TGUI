@@ -49,9 +49,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Canvas(const Canvas& copy);
@@ -64,11 +64,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Canvas& operator= (const Canvas& right);
@@ -85,15 +85,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -101,9 +101,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the widget.
+        /// @brief Changes the size of the widget.
         ///
-        /// \param size  The new size of the widget
+        /// @param size  The new size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const sf::Vector2f& size) override;
@@ -111,9 +111,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the widget.
+        /// @brief Returns the size of the widget.
         ///
-        /// \return Size of the widget
+        /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -123,33 +123,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Clear the entire canvas with a single color
+        /// @brief Clear the entire canvas with a single color
         ///
         /// This function is usually called once every frame, to clear the previous contents of the canvas.
         ///
-        /// \param color Fill color to use to clear the canvas
+        /// @param color Fill color to use to clear the canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void clear(const sf::Color& color = sf::Color(0, 0, 0, 255));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Draw a drawable object to the canvas
+        /// @brief Draw a drawable object to the canvas
         ///
-        /// \param drawable Object to draw
-        /// \param states   Render states to use for drawing
+        /// @param drawable Object to draw
+        /// @param states   Render states to use for drawing
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Draw primitives defined by an array of vertices
+        /// @brief Draw primitives defined by an array of vertices
         ///
-        /// \param vertices    Pointer to the vertices
-        /// \param vertexCount Number of vertices in the array
-        /// \param type        Type of primitives to draw
-        /// \param states      Render states to use for drawing
+        /// @param vertices    Pointer to the vertices
+        /// @param vertexCount Number of vertices in the array
+        /// @param type        Type of primitives to draw
+        /// @param states      Render states to use for drawing
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(const sf::Vertex* vertices, unsigned int vertexCount,
@@ -157,7 +157,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Update the contents of the canvas
+        /// @brief Update the contents of the canvas
         ///
         /// This function updates the canvas with what has been drawn so far. Like for windows, calling this
         /// function is mandatory at the end of rendering. Not calling

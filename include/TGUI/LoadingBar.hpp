@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Loadingbar" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Loadingbar" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the loading bar.
+        /// @brief Changes the size of the loading bar.
         ///
-        /// \param size  The new size of the loading bar
+        /// @param size  The new size of the loading bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -101,9 +101,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the widget.
+        /// @brief Returns the size of the widget.
         ///
-        /// \return Size of the widget
+        /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -113,9 +113,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a minimum value.
+        /// @brief Sets a minimum value.
         ///
-        /// \param minimum  The new minimum value
+        /// @param minimum  The new minimum value
         ///
         /// When the value is too small then it will be changed to this minimum.
         ///
@@ -124,9 +124,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a maximum value.
+        /// @brief Sets a maximum value.
         ///
-        /// \param maximum  The new maximum value
+        /// @param maximum  The new maximum value
         ///
         /// When the value is too big then it will be changed to this maximum.
         ///
@@ -135,9 +135,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the current value.
+        /// @brief Changes the current value.
         ///
-        /// \param value  The new value
+        /// @param value  The new value
         ///
         /// The value can't be smaller than the minimum or bigger than the maximum.
         ///
@@ -146,9 +146,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the minimum value.
+        /// @brief Returns the minimum value.
         ///
-        /// \return The current minimum value
+        /// @return The current minimum value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getMinimum() const
@@ -158,9 +158,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum value.
+        /// @brief Returns the maximum value.
         ///
-        /// \return The current maximum value
+        /// @return The current maximum value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getMaximum() const
@@ -170,9 +170,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the current value.
+        /// @brief Returns the current value.
         ///
-        /// \return The current value
+        /// @return The current value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getValue() const
@@ -182,9 +182,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Increment the value.
+        /// @brief Increment the value.
         ///
-        /// \return the new value
+        /// @return the new value
         ///
         /// The value can never exceed the maximum.
         ///
@@ -193,9 +193,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the caption of the loading bar.
+        /// @brief Changes the caption of the loading bar.
         ///
-        /// \param text  New text to draw on top of the loading bar
+        /// @param text  New text to draw on top of the loading bar
         ///
         /// This text will be centered in the loading bar. It could e.g. contain the progress.
         ///
@@ -204,9 +204,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the caption of the loading bar.
+        /// @brief Returns the caption of the loading bar.
         ///
-        /// \return Text that is drawn on top of the loading bar
+        /// @return Text that is drawn on top of the loading bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
@@ -216,21 +216,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the text.
+        /// @brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font
+        /// @param font  The new font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the text.
+        /// @brief Returns the font of the text.
         ///
-        /// \return  Pointer to the font that is currently being used
+        /// @return  Pointer to the font that is currently being used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -240,9 +240,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the color of the text.
+        /// @brief Changes the color of the text.
         ///
-        /// \param color  New text color
+        /// @param color  New text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
@@ -252,9 +252,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the color of the text.
+        /// @brief Returns the color of the text.
         ///
-        /// \return The current text color
+        /// @return The current text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -264,9 +264,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param size  The new text size.
+        /// @param size  The new text size.
         ///              If the size is set to 0 then the text will be auto-sized to fit inside the loading bar.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,9 +274,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The current text size.
+        /// @return The current text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -286,9 +286,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -299,14 +299,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +314,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

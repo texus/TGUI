@@ -49,9 +49,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Copy constructor
+        /// @brief Copy constructor
         ///
-        /// \param copy  Instance to copy
+        /// @param copy  Instance to copy
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox(const ComboBox& copy);
@@ -64,18 +64,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Overload of assignment operator
+        /// @brief Overload of assignment operator
         ///
-        /// \param right  Instance to assign
+        /// @param right  Instance to assign
         ///
-        /// \return Reference to itself
+        /// @return Reference to itself
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ComboBox& operator= (const ComboBox& right);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Makes a copy of the widget by calling the copy constructor.
         // This function calls new and if you use this function then you are responsible for calling delete.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,22 +86,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "ComboBox" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "ComboBox" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,11 +112,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the combo box.
+        /// @brief Changes the size of the combo box.
         ///
         /// This size does not include the borders.
         ///
-        /// \param size   The new size of the combo box
+        /// @param size   The new size of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -124,11 +124,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the combo box.
+        /// @brief Returns the size of the combo box.
         ///
         /// The size returned by this function does not include the borders.
         ///
-        /// \return The size of the combo box
+        /// @return The size of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -138,11 +138,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the full size of the combo box.
+        /// @brief Returns the full size of the combo box.
         ///
         /// The size returned by this function includes the borders.
         ///
-        /// \return The full size of the combo box
+        /// @return The full size of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
@@ -152,9 +152,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the number of items that are displayed in the list.
+        /// @brief Changes the number of items that are displayed in the list.
         ///
-        /// \param nrOfItemsInListToDisplay  The maximum number of items to display when the list of items is shown.
+        /// @param nrOfItemsInListToDisplay  The maximum number of items to display when the list of items is shown.
         ///
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
@@ -166,9 +166,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the number of items that are displayed in the list.
+        /// @brief Returns the number of items that are displayed in the list.
         ///
-        /// \return The maximum number of items to display when the list of items is shown.
+        /// @return The maximum number of items to display when the list of items is shown.
         ///
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
@@ -183,13 +183,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the colors that are used in the combo box.
+        /// @brief Changes the colors that are used in the combo box.
         ///
-        /// \param backgroundColor          The color of the background of the combo box
-        /// \param textColor                The color of the text
-        /// \param selectedBackgroundColor  The color of the background of the selected item in the list
-        /// \param selectedTextColor        The color of the text when it is selected in the list
-        /// \param borderColor              The color of the borders
+        /// @param backgroundColor          The color of the background of the combo box
+        /// @param textColor                The color of the text
+        /// @param selectedBackgroundColor  The color of the background of the selected item in the list
+        /// @param selectedTextColor        The color of the text when it is selected in the list
+        /// @param borderColor              The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
@@ -199,9 +199,9 @@ namespace tgui
                           const sf::Color& borderColor             = sf::Color::Black);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color that will be used inside the combo box.
+        /// @brief Set the background color that will be used inside the combo box.
         ///
-        /// \param backgroundColor  The color of the background of the combo box
+        /// @param backgroundColor  The color of the background of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor)
@@ -210,9 +210,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used inside the combo box.
+        /// @brief Set the text color that will be used inside the combo box.
         ///
-        /// \param textColor  The color of the text
+        /// @param textColor  The color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& textColor)
@@ -221,9 +221,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the combo box.
+        /// @brief Set the background color of the selected text that will be used inside the combo box.
         ///
-        /// \param selectedBackgroundColor  The color of the background of the selected item in the list
+        /// @param selectedBackgroundColor  The color of the background of the selected item in the list
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
@@ -232,9 +232,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color of the selected text that will be used inside the combo box.
+        /// @brief Set the text color of the selected text that will be used inside the combo box.
         ///
-        /// \param selectedTextColor  The color of the text when it is selected in the list
+        /// @param selectedTextColor  The color of the text when it is selected in the list
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const sf::Color& selectedTextColor)
@@ -243,9 +243,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the border color text that will be used inside the combo box.
+        /// @brief Set the border color text that will be used inside the combo box.
         ///
-        /// \param borderColor  The color of the borders
+        /// @param borderColor  The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorderColor(const sf::Color& borderColor)
@@ -255,9 +255,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color that is currently being used inside the combo box.
+        /// @brief Get the background color that is currently being used inside the combo box.
         ///
-        /// \return The color of the background of the combo box
+        /// @return The color of the background of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBackgroundColor() const
@@ -266,9 +266,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used inside the combo box.
+        /// @brief Get the text color that is currently being used inside the combo box.
         ///
-        /// \return The color of the text
+        /// @return The color of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -277,9 +277,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected text that is currently being used inside the combo box.
+        /// @brief Get the background color of the selected text that is currently being used inside the combo box.
         ///
-        /// \return  The color of the background of the selected item in the list
+        /// @return  The color of the background of the selected item in the list
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedBackgroundColor() const
@@ -288,9 +288,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color of the selected text that is currently being used inside the combo box.
+        /// @brief Get the text color of the selected text that is currently being used inside the combo box.
         ///
-        /// \return The color of the text when it is selected in the list
+        /// @return The color of the text when it is selected in the list
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextColor() const
@@ -299,9 +299,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the border color that is currently being used inside the combo box.
+        /// @brief Get the border color that is currently being used inside the combo box.
         ///
-        /// \return The color of the borders
+        /// @return The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getBorderColor() const
@@ -311,12 +311,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the text font.
+        /// @brief Changes the text font.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font)
@@ -326,9 +326,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the text font.
+        /// @brief Returns the text font.
         ///
-        /// \return  Pointer to the font that is currently being used.
+        /// @return  Pointer to the font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -338,9 +338,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the borders.
+        /// @brief Changes the size of the borders.
         ///
-        /// \param borders  The size of the borders
+        /// @param borders  The size of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBorders(const Borders& borders) override;
@@ -348,41 +348,41 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Adds an item to the list, so that it can be selected later.
+        /// @brief Adds an item to the list, so that it can be selected later.
         ///
-        /// \param itemName  The name of the item you want to add (this is the text that will be displayed inside the combo box)
-        /// \param id        Optional id given to this item for the purpose to later identifying this item.
+        /// @param itemName  The name of the item you want to add (this is the text that will be displayed inside the combo box)
+        /// @param id        Optional id given to this item for the purpose to later identifying this item.
         ///
-        /// \return
+        /// @return
         ///         -  The index of the item when it was successfully added.
         ///         -  -1 when the combo box wasn't loaded correctly
         ///         -  -1 when the list is full (you have set a maximum item limit and you are trying to add more items)
         ///         -  -1 when there is no scrollbar and you try to have more items than the number of items to display
         ///
-        /// \warning The index returned by this function may no longer correct when an item is removed.
+        /// @warning The index returned by this function may no longer correct when an item is removed.
         ///
-        /// \see setMaximumItems
-        /// \see setItemsToDisplay
+        /// @see setMaximumItems
+        /// @see setItemsToDisplay
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int addItem(const sf::String& itemName, int id = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects an item from the list.
+        /// @brief Selects an item from the list.
         ///
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
         /// then you can use this function to select an item.
         /// The first item that matches the name will be selected.
         ///
-        /// \param itemName  The item you want to select
+        /// @param itemName  The item you want to select
         ///
-        /// \return
+        /// @return
         ///         - true on success
         ///         - false when none of the items matches the name
         ///
-        /// \see setSelectedItem(unsigned int)
+        /// @see setSelectedItem(unsigned int)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItem(const sf::String& itemName)
@@ -391,20 +391,20 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Selects an item from the list.
+        /// @brief Selects an item from the list.
         ///
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
         /// then you can use this function to select an item.
-        /// If the index is -1 then the \a deselectItem function will be called.
+        /// If the index is -1 then the deselectItem function will be called.
         ///
-        /// \param index  The index of the item
+        /// @param index  The index of the item
         ///
-        /// \return
+        /// @return
         ///         - true on success
         ///         - false when the index was too high
         ///
-        /// \see setSelectedItem(sf::String)
+        /// @see setSelectedItem(sf::String)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItem(int index)
@@ -414,7 +414,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Deselects the selected item.
+        /// @brief Deselects the selected item.
         ///
         /// The combo box will be empty after this function is called.
         ///
@@ -423,11 +423,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes an item from the list with a given index.
+        /// @brief Removes an item from the list with a given index.
         ///
-        /// \param index  The index of the item to remove
+        /// @param index  The index of the item to remove
         ///
-        /// \return
+        /// @return
         ///        - true when the item was removed
         ///        - false when the index was too high
         ///
@@ -436,11 +436,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the first item from the list with a given name.
+        /// @brief Removes the first item from the list with a given name.
         ///
-        /// \param itemName  The item to remove
+        /// @param itemName  The item to remove
         ///
-        /// \return
+        /// @return
         ///        - true when the item was removed
         ///        - false when the name didn't match any item
         ///
@@ -449,32 +449,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all items that were added with the given id.
+        /// @brief Removes all items that were added with the given id.
         ///
-        /// \param id  Id that was given to the addItem function.
+        /// @param id  Id that was given to the addItem function.
         ///
-        /// \return Amount of items that were removed.
+        /// @return Amount of items that were removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int removeItemsById(int id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes all items from the list.
+        /// @brief Removes all items from the list.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllItems();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the item name of the item with the given index.
+        /// @brief Returns the item name of the item with the given index.
         ///
-        /// \param index  The index of the item
+        /// @param index  The index of the item
         ///
-        /// \return The requested item.
+        /// @return The requested item.
         ///         The string will be empty when the index was too high.
         ///
-        /// \see getItemIndex
+        /// @see getItemIndex
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getItem(unsigned int index) const
@@ -484,16 +484,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the index of the first item with the given name.
+        /// @brief Returns the index of the first item with the given name.
         ///
-        /// \param itemName  The name of the item
+        /// @param itemName  The name of the item
         ///
-        /// \return The index of the item that matches the name.
+        /// @return The index of the item that matches the name.
         ///         If none of the items matches then the returned index will be -1.
         ///
-        /// \warning This index may become wrong when an item is removed from the list.
+        /// @warning This index may become wrong when an item is removed from the list.
         ///
-        /// \see getItem
+        /// @see getItem
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getItemIndex(const sf::String& itemName) const
@@ -503,9 +503,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the list that contains all the items.
+        /// @brief Returns the list that contains all the items.
         ///
-        /// \return The vector of strings
+        /// @return The vector of strings
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<sf::String>& getItems() const
@@ -515,12 +515,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the currently selected item.
+        /// @brief Returns the currently selected item.
         ///
-        /// \return The selected item.
+        /// @return The selected item.
         ///         When no item was selected then this function will return an empty string.
         ///
-        /// \see getSelectedItemIndex
+        /// @see getSelectedItemIndex
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelectedItem() const
@@ -530,14 +530,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the index of the selected item.
+        /// @brief Get the index of the selected item.
         ///
-        /// \return The index of the selected item.
+        /// @return The index of the selected item.
         ///         When no item was selected then this function returns -1.
         ///
-        /// \warning This index may become wrong when an item is removed from the list.
+        /// @warning This index may become wrong when an item is removed from the list.
         ///
-        /// \see getSelectedItem
+        /// @see getSelectedItem
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getSelectedItemIndex() const
@@ -547,9 +547,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the id of the selected item.
+        /// @brief Get the id of the selected item.
         ///
-        /// \return The id of the selected item, which was the optional id passed to the addItem function.
+        /// @return The id of the selected item, which was the optional id passed to the addItem function.
         ///         When no item was selected then this function returns 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -560,12 +560,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the scrollbar that is displayed next to the list.
+        /// @brief Changes the scrollbar that is displayed next to the list.
         ///
-        /// \param scrollbarConfigFileFilename  Filename of the config file.
+        /// @param scrollbarConfigFileFilename  Filename of the config file.
         ///                                     The config file must contain a Scrollbar section with the needed information.
         ///
-        /// \return
+        /// @return
         ///        - true when the scrollbar was successfully loaded
         ///        - false when the loading of the scrollbar failed
         ///
@@ -574,7 +574,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Removes the scrollbar.
+        /// @brief Removes the scrollbar.
         ///
         /// When there are too many items to fit in the list then the items will be removed.
         ///
@@ -583,9 +583,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the maximum items that the combo box can contain.
+        /// @brief Changes the maximum items that the combo box can contain.
         ///
-        /// \param maximumItems  The maximum items inside the combo box.
+        /// @param maximumItems  The maximum items inside the combo box.
         ///                      When the maximum is set to 0 then the limit will be disabled.
         ///
         /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
@@ -595,9 +595,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum items that the combo box can contain.
+        /// @brief Returns the maximum items that the combo box can contain.
         ///
-        /// \return The maximum items inside the list.
+        /// @return The maximum items inside the list.
         ///         If the function returns 0 then there is no limit.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -605,9 +605,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -618,40 +618,40 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseWheelMoved(int delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -659,7 +659,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,42 +670,42 @@ namespace tgui
       protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(Container *const container) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Shows the list of items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void showListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Hides the list of items.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void hideListBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Called by the internal ListBox when a different item is selected.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void newItemSelectedCallbackFunction();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Called by the internal ListBox when it gets unfocused.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void listBoxUnfocusedCallbackFunction();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

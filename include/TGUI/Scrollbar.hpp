@@ -65,22 +65,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,15 +91,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -107,9 +107,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the scrollbar.
+        /// @brief Changes the size of the scrollbar.
         ///
-        /// \param size  The new size of the scrollbar
+        /// @param size  The new size of the scrollbar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -117,18 +117,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the scrollbar.
+        /// @brief Returns the size of the scrollbar.
         ///
-        /// \return Size of the scrollbar
+        /// @return Size of the scrollbar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a maximum value.
+        /// @brief Sets a maximum value.
         ///
-        /// \param maximum  The new maximum value
+        /// @param maximum  The new maximum value
         ///
         /// When the value is bigger than (maximum - low value), the value is set to maximum - low value.
         /// The default maximum value is 10.
@@ -138,9 +138,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the current value.
+        /// @brief Changes the current value.
         ///
-        /// \param value  The new value
+        /// @param value  The new value
         ///
         /// The value has to be smaller than maximum - low value.
         ///
@@ -149,9 +149,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the 'low value'.
+        /// @brief Changes the 'low value'.
         ///
-        /// \param lowValue  The new low value.
+        /// @param lowValue  The new low value.
         ///                  In e.g. a list box, this value is the amount of items that fit inside the list box.
         ///
         /// Until the maximum is bigger than this value, no scrollbar will be drawn.
@@ -163,18 +163,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes whether the scrollbar lies vertical or horizontal.
+        /// @brief Changes whether the scrollbar lies vertical or horizontal.
         ///
-        /// \param verticallScroll  Does the scrollbar lie vertically?
+        /// @param verticallScroll  Does the scrollbar lie vertically?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setVerticalScroll(bool verticallScroll);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the maximum value.
+        /// @brief Returns the maximum value.
         ///
-        /// \return The current maximum value
+        /// @return The current maximum value
         ///
         /// The default maximum value is 10.
         ///
@@ -186,9 +186,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the current value.
+        /// @brief Returns the current value.
         ///
-        /// \return The current value
+        /// @return The current value
         ///
         /// The default value is 0.
         ///
@@ -200,9 +200,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the low value.
+        /// @brief Returns the low value.
         ///
-        /// \see setLowValue
+        /// @see setLowValue
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getLowValue() const
@@ -212,9 +212,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the scrollbar lies vertical or horizontal.
+        /// @brief Returns whether the scrollbar lies vertical or horizontal.
         ///
-        /// \return Does the scrollbar lie vertically?
+        /// @return Does the scrollbar lie vertically?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getVerticalScroll() const
@@ -224,9 +224,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes how much the value changes when pressing one of the arrows of the scrollbar
+        /// @brief Changes how much the value changes when pressing one of the arrows of the scrollbar
         ///
-        /// \param scrollAmount  How far should the scrollbar scroll when an arrow is clicked?
+        /// @param scrollAmount  How far should the scrollbar scroll when an arrow is clicked?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setArrowScrollAmount(unsigned int scrollAmount)
@@ -236,9 +236,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns how much the value changes when pressing one of the arrows of the scrollbar
+        /// @brief Returns how much the value changes when pressing one of the arrows of the scrollbar
         ///
-        /// \return How far should the scrollbar scroll when an arrow is clicked?
+        /// @return How far should the scrollbar scroll when an arrow is clicked?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getArrowScrollAmount()
@@ -248,11 +248,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes whether the scrollbar should hide automatically or not.
+        /// @brief Changes whether the scrollbar should hide automatically or not.
         ///
         /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
         ///
-        /// \param autoHide  Should the scrollbar be invisible when you can't scroll?
+        /// @param autoHide  Should the scrollbar be invisible when you can't scroll?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setAutoHide(bool autoHide)
@@ -262,7 +262,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns whether the scrollbar is hiding automatically or not.
+        /// @brief Returns whether the scrollbar is hiding automatically or not.
         ///
         /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
         /// So when you can't scroll, the scrollbar won't be drawn.
@@ -275,9 +275,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -288,45 +288,45 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMouseReleased(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseWheelMoved(int delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetFocused() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,7 +334,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

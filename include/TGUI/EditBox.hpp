@@ -42,11 +42,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief The text alignment
+        /// @brief The text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Alignment
         {
-            /// \brief The text alignment
+            /// @brief The text alignment
             enum Alignments
             {
                 /// Put the text on the left side (default)
@@ -84,22 +84,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Loads the widget.
+        /// @brief Loads the widget.
         ///
-        /// \param configFileFilename  Filename of the config file.
+        /// @param configFileFilename  Filename of the config file.
         ///
-        /// \throw Exception when the config file couldn't be opened.
-        /// \throw Exception when the config file didn't contain a "EditBox" section with the needed information.
-        /// \throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file couldn't be opened.
+        /// @throw Exception when the config file didn't contain a "EditBox" section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& configFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the filename of the config file that was used to load the widget.
         ///
-        /// \return Filename of loaded config file.
+        /// @return Filename of loaded config file.
         ///         Empty string when no config file was loaded yet.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,15 +110,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the position of the widget
+        /// @brief Set the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// \param position  New position
+        /// @param position  New position
         ///
-        /// \see move, getPosition
+        /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPosition(const sf::Vector2f& position) override;
@@ -126,9 +126,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the size of the edit box.
+        /// @brief Changes the size of the edit box.
         ///
-        /// \param size  The new size of the edit box
+        /// @param size  The new size of the edit box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const sf::Vector2f& size) override;
@@ -136,9 +136,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the size of the widget.
+        /// @brief Returns the size of the widget.
         ///
-        /// \return Size of the widget
+        /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
@@ -148,25 +148,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the text of the editbox.
+        /// @brief Changes the text of the editbox.
         ///
-        /// \param text  The new text.
+        /// @param text  The new text.
         ///
         /// The last characters of the text might be removed in the following situations:
         /// - You have set a character limit and this text contains too much characters.
         /// - You have limited the text width and the text does not fit inside the EditBox.
         ///
-        /// \see setMaximumCharacters
-        /// \see limitTextWidth
+        /// @see setMaximumCharacters
+        /// @see limitTextWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the text inside the edit box. This text is not affected by the password character.
+        /// @brief Returns the text inside the edit box. This text is not affected by the password character.
         ///
-        /// \return The text of the edit box.
+        /// @return The text of the edit box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
@@ -176,9 +176,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the character size of the text.
+        /// @brief Changes the character size of the text.
         ///
-        /// \param textSize  The new size of the text.
+        /// @param textSize  The new size of the text.
         ///                  If the size is 0 (default) then the text will be scaled to fit in the edit box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,9 +186,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character size of the text.
+        /// @brief Returns the character size of the text.
         ///
-        /// \return The text size.
+        /// @return The text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -198,21 +198,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the font of the text.
+        /// @brief Changes the font of the text.
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// \param font  The new font.
+        /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(const sf::Font& font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the font of the text.
+        /// @brief Returns the font of the text.
         ///
-        /// \return  The font that is currently being used.
+        /// @return  The font that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
@@ -222,24 +222,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets a password character.
+        /// @brief Sets a password character.
         ///
-        /// \param passwordChar  The new password character.
+        /// @param passwordChar  The new password character.
         ///                      If set to 0 then there is no password character.
         ///
         /// When the text width is limited then this function might remove the last characters in the text if they no
         /// longer fit in the EditBox. You can avoid this by setting LimitTextWidth to false (which is the default).
         ///
-        /// \see limitTextWidth
+        /// @see limitTextWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPasswordCharacter(char passwordChar = '\0');
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the password character.
+        /// @brief Returns the password character.
         ///
-        /// \return  The password character that is currently being used.
+        /// @return  The password character that is currently being used.
         ///          When no password character is used then this function returns 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,9 +250,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Change the character limit.
+        /// @brief Change the character limit.
         ///
-        /// \param maxChars  The new character limit. Set it to 0 to disable the limit.
+        /// @param maxChars  The new character limit. Set it to 0 to disable the limit.
         ///
         /// This character limit is disabled by default.
         ///
@@ -261,9 +261,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the character limit.
+        /// @brief Returns the character limit.
         ///
-        /// \return The character limit.
+        /// @return The character limit.
         ///         The function will return 0 when there is no limit.
         ///
         /// There is no character limit by default.
@@ -276,13 +276,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the border width and border height of the edit box.
+        /// @brief Changes the border width and border height of the edit box.
         ///
         /// When the text is auto-scaled then it will be drawn within these borders. The borders themselves are invisible.
         /// The borders are also used to define the clipping area.
         /// Note that these borders are scaled together with the image!
         ///
-        /// \param borders  The size of the borders
+        /// @param borders  The size of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setBorders(const Borders& borders) override;
@@ -290,12 +290,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the colors from the edit box.
+        /// @brief Changes the colors from the edit box.
         ///
-        /// \param textColor                    The color of the text
-        /// \param selectedTextColor            The color of the text when it is selected
-        /// \param selectedTextBackgroundColor  The color of the background of the text that is selected
-        /// \param caretColor                   The color of the blinking caret
+        /// @param textColor                    The color of the text
+        /// @param selectedTextColor            The color of the text when it is selected
+        /// @param selectedTextBackgroundColor  The color of the background of the text that is selected
+        /// @param caretColor                   The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void changeColors(const sf::Color& textColor                   = sf::Color(  0,   0,   0),
@@ -305,18 +305,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color that will be used inside the edit box.
+        /// @brief Set the text color that will be used inside the edit box.
         ///
-        /// \param textColor  The new text color.
+        /// @param textColor  The new text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the text color of the selected text that will be used inside the edit box.
+        /// @brief Set the text color of the selected text that will be used inside the edit box.
         ///
-        /// \param selectedTextColor  The new text color.
+        /// @param selectedTextColor  The new text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const sf::Color& selectedTextColor)
@@ -326,9 +326,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the background color of the selected text that will be used inside the edit box.
+        /// @brief Set the background color of the selected text that will be used inside the edit box.
         ///
-        /// \param selectedTextBackgroundColor  The new background color.
+        /// @param selectedTextBackgroundColor  The new background color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
@@ -338,9 +338,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Set the color that will be used inside the edit box for the blinking caret.
+        /// @brief Set the color that will be used inside the edit box for the blinking caret.
         ///
-        /// \param caretColor  The color of the blinking caret
+        /// @param caretColor  The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCaretColor(const sf::Color& caretColor)
@@ -350,9 +350,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color that is currently being used inside the edit box.
+        /// @brief Get the text color that is currently being used inside the edit box.
         ///
-        /// \return The text color that is currently being used.
+        /// @return The text color that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -362,9 +362,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the text color of the selected text that is currently being used inside the edit box.
+        /// @brief Get the text color of the selected text that is currently being used inside the edit box.
         ///
-        /// \return The selected text color that is currently being used.
+        /// @return The selected text color that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextColor() const
@@ -374,9 +374,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the background color of the selected text that is currently being used inside the edit box.
+        /// @brief Get the background color of the selected text that is currently being used inside the edit box.
         ///
-        /// \return The background color of the selected text that is currently being used.
+        /// @return The background color of the selected text that is currently being used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getSelectedTextBackgroundColor() const
@@ -386,9 +386,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Get the color that is currently being used inside the edit box for the blinking caret.
+        /// @brief Get the color that is currently being used inside the edit box for the blinking caret.
         ///
-        /// \return The color of the blinking caret
+        /// @return The color of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getCaretColor() const
@@ -398,9 +398,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Should the text width be limited or should you be able to type even if the edit box is full?
+        /// @brief Should the text width be limited or should you be able to type even if the edit box is full?
         ///
-        /// \param limitWidth  Should there be a text width limit or not.
+        /// @param limitWidth  Should there be a text width limit or not.
         ///
         /// When set to true, you will no longer be able to add text when the edit box is full.
         /// The default value is false.
@@ -410,9 +410,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the blinking caret to after a specific character.
+        /// @brief Sets the blinking caret to after a specific character.
         ///
-        /// \param charactersBeforeCaret  The new position.
+        /// @param charactersBeforeCaret  The new position.
         ///
         /// Normally you will not need this function.
         ///
@@ -421,18 +421,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This will change the width of the caret.
+        /// @brief This will change the width of the caret.
         ///
-        /// \param width  New width of the caret
+        /// @param width  New width of the caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCaretWidth(unsigned int width = 2);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the width of the caret.
+        /// @brief Returns the width of the caret.
         ///
-        /// \return width  Width of the blinking caret
+        /// @return width  Width of the blinking caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getCaretWidth() const
@@ -442,9 +442,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes whether the edit box accepts all characters or only numeric input.
+        /// @brief Changes whether the edit box accepts all characters or only numeric input.
         ///
-        /// \param numbersOnly  Should the edit box only accept numbers?
+        /// @param numbersOnly  Should the edit box only accept numbers?
         ///
         /// By default the edit box accepts all text characters.
         ///
@@ -453,9 +453,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Changes the transparency of the widget.
+        /// @brief Changes the transparency of the widget.
         ///
-        /// \param transparency  The transparency of the widget.
+        /// @param transparency  The transparency of the widget.
         ///                      0 is completely transparent, while 255 (default) means fully opaque.
         ///
         /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
@@ -466,40 +466,40 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void leftMousePressed(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseMoved(float x, float y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void keyPressed(const sf::Event::KeyEvent& event) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void textEntered(sf::Uint32 Key) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetUnfocused() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to set properties on the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // This function is a (slow) way to get properties of the widget, no matter what type it is.
         // When the requested property doesn't exist in the widget then the functions will return false.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,7 +507,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \internal
+        /// @internal
         // Returns a list of all properties that can be used in setProperty and getProperty.
         // The second value in the pair is the type of the property (e.g. int, uint, string, ...).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
