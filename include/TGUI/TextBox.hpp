@@ -660,7 +660,7 @@ namespace tgui
         std::string m_loadedConfigFile;
 
         // The size of the text box
-        sf::Vector2u m_size = sf::Vector2u(360, 200);
+        sf::Vector2u m_size = sf::Vector2u{360, 200};
 
         // Some information about the text
         sf::String   m_text;

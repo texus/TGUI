@@ -70,7 +70,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Tab");
+        ConfigFile configFile{m_loadedConfigFile, "Tab"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

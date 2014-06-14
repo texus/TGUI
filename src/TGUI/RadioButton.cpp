@@ -54,7 +54,7 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "RadioButton");
+        ConfigFile configFile{m_loadedConfigFile, "RadioButton"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

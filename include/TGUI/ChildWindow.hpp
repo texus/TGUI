@@ -182,7 +182,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
         {
-            return m_size + sf::Vector2f{m_borders.left + m_borders.right, m_borders.top + m_borders.bottom + m_titleBarHeight};
+            return {m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight};
         }
 
 
@@ -490,7 +490,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getWidgetsOffset() const override
         {
-            return sf::Vector2f(m_borders.left, m_borders.top + getTitleBarHeight());
+            return {m_borders.left, m_borders.top + getTitleBarHeight()};
         }
 
 

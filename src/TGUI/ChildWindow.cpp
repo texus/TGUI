@@ -46,24 +46,24 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-        Container          (childWindowToCopy),
-        WidgetBorders      (childWindowToCopy),
-        m_loadedConfigFile (childWindowToCopy.m_loadedConfigFile),
-        m_size             (childWindowToCopy.m_size),
-        m_backgroundColor  (childWindowToCopy.m_backgroundColor),
-        m_backgroundTexture(childWindowToCopy.m_backgroundTexture),
-        m_iconTexture      (childWindowToCopy.m_iconTexture),
-        m_textureTitleBar  (childWindowToCopy.m_textureTitleBar),
-        m_titleText        (childWindowToCopy.m_titleText),
-        m_titleBarHeight   (childWindowToCopy.m_titleBarHeight),
-        m_draggingPosition (childWindowToCopy.m_draggingPosition),
-        m_distanceToSide   (childWindowToCopy.m_distanceToSide),
-        m_titleAlignment   (childWindowToCopy.m_titleAlignment),
-        m_borderColor      (childWindowToCopy.m_borderColor),
-        m_keepInParent     (childWindowToCopy.m_keepInParent)
+        Container          {childWindowToCopy},
+        WidgetBorders      {childWindowToCopy},
+        m_loadedConfigFile {childWindowToCopy.m_loadedConfigFile},
+        m_size             {childWindowToCopy.m_size},
+        m_backgroundColor  {childWindowToCopy.m_backgroundColor},
+        m_backgroundTexture{childWindowToCopy.m_backgroundTexture},
+        m_iconTexture      {childWindowToCopy.m_iconTexture},
+        m_textureTitleBar  {childWindowToCopy.m_textureTitleBar},
+        m_titleText        {childWindowToCopy.m_titleText},
+        m_titleBarHeight   {childWindowToCopy.m_titleBarHeight},
+        m_draggingPosition {childWindowToCopy.m_draggingPosition},
+        m_distanceToSide   {childWindowToCopy.m_distanceToSide},
+        m_titleAlignment   {childWindowToCopy.m_titleAlignment},
+        m_borderColor      {childWindowToCopy.m_borderColor},
+        m_keepInParent     {childWindowToCopy.m_keepInParent}
     {
         // Copy the button
-        m_closeButton = new Button(*childWindowToCopy.m_closeButton);
+        m_closeButton = new Button{*childWindowToCopy.m_closeButton};
 
         // Set the bakground sprite, if there is a background texture
         if (childWindowToCopy.m_backgroundTexture)
@@ -90,9 +90,9 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            ChildWindow temp(right);
-            this->Container::operator=(right);
-            this->WidgetBorders::operator=(right);
+            ChildWindow temp{right};
+            Container::operator=(right);
+            WidgetBorders::operator=(right);
 
             // Delete the old close button
             delete m_closeButton;
@@ -130,7 +130,7 @@ namespace tgui
         if (m_closeButton->m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_closeButton->m_textureDown);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "ChildWindow");
+        ConfigFile configFile{m_loadedConfigFile, "ChildWindow"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -884,22 +884,22 @@ namespace tgui
         states.transform.translate(0, static_cast<float>(m_titleBarHeight));
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(m_borders.left, m_size.y + m_borders.top));
+        sf::RectangleShape border({m_borders.left, m_size.y + m_borders.top});
         border.setFillColor(m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_size.x + m_borders.right, m_borders.top));
+        border.setSize({m_size.x + m_borders.right, m_borders.top});
         border.setPosition(m_borders.left, 0);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(m_borders.right, m_size.y + m_borders.bottom));
+        border.setSize({m_borders.right, m_size.y + m_borders.bottom});
         border.setPosition(m_size.x + m_borders.left, m_borders.top);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_size.x + m_borders.left, m_borders.bottom));
+        border.setSize({m_size.x + m_borders.left, m_borders.bottom});
         border.setPosition(0, m_size.y + m_borders.top);
         target.draw(border, states);
 
@@ -909,7 +909,7 @@ namespace tgui
         // Draw the background
         if (m_backgroundColor != sf::Color::Transparent)
         {
-            sf::RectangleShape background(sf::Vector2f(m_size.x, m_size.y));
+            sf::RectangleShape background({m_size.x, m_size.y});
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }

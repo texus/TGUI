@@ -43,10 +43,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
-        ChildWindow               (messageBoxToCopy),
-        m_loadedConfigFile        (messageBoxToCopy.m_loadedConfigFile),
-        m_buttonConfigFileFilename(messageBoxToCopy.m_buttonConfigFileFilename),
-        m_textSize                (messageBoxToCopy.m_textSize)
+        ChildWindow               {messageBoxToCopy},
+        m_loadedConfigFile        {messageBoxToCopy.m_loadedConfigFile},
+        m_buttonConfigFileFilename{messageBoxToCopy.m_buttonConfigFileFilename},
+        m_textSize                {messageBoxToCopy.m_textSize}
     {
         m_label = copy(messageBoxToCopy.m_label, "MessageBoxText");
 
@@ -67,7 +67,7 @@ namespace tgui
         if (this != &right)
         {
             MessageBox temp(right);
-            this->ChildWindow::operator=(right);
+            ChildWindow::operator=(right);
 
             std::swap(m_loadedConfigFile,         temp.m_loadedConfigFile);
             std::swap(m_buttonConfigFileFilename, temp.m_buttonConfigFileFilename);
@@ -86,7 +86,7 @@ namespace tgui
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "MessageBox");
+        ConfigFile configFile{m_loadedConfigFile, "MessageBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

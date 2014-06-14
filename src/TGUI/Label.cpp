@@ -50,7 +50,7 @@ namespace tgui
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Label");
+        ConfigFile configFile{m_loadedConfigFile, "Label"};
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)

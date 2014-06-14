@@ -133,7 +133,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
         {
-            return sf::Vector2f{m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight())};
+            return {m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight())};
         }
 
 
@@ -147,7 +147,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
         {
-            return getSize() + sf::Vector2f{m_borders.left + m_borders.right, m_borders.top + m_borders.bottom};
+            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
         }
 
 

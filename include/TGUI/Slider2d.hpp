@@ -318,9 +318,9 @@ namespace tgui
 
         std::string m_loadedConfigFile;
 
-        sf::Vector2f m_minimum = sf::Vector2f(-1, -1);
-        sf::Vector2f m_maximum = sf::Vector2f(1, 1);
-        sf::Vector2f m_value = sf::Vector2f(0, 0);
+        sf::Vector2f m_minimum = sf::Vector2f{-1, -1};
+        sf::Vector2f m_maximum = sf::Vector2f{1, 1};
+        sf::Vector2f m_value = sf::Vector2f{0, 0};
 
         bool m_returnThumbToCenter = false;
         bool m_fixedThumbSize = true;

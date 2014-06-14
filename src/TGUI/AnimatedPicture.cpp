@@ -51,11 +51,11 @@ namespace tgui
             m_currentFrame = 0;
 
             // Remember the size of this image
-            m_size = sf::Vector2f(tempTexture.getSize());
+            m_size = sf::Vector2f{tempTexture.getSize()};
         }
 
         // Add the texture and store its duration
-        tempTexture.setColor(sf::Color(255, 255, 255, m_opacity));
+        tempTexture.setColor({255, 255, 255, m_opacity});
         m_textures.push_back(tempTexture);
         m_frameDuration.push_back(frameDuration);
     }

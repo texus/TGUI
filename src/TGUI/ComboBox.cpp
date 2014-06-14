@@ -56,16 +56,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& copy) :
-        Widget                  (copy),
-        WidgetBorders           (copy),
-        m_loadedConfigFile      (copy.m_loadedConfigFile),
-        m_separateHoverImage    (copy.m_separateHoverImage),
-        m_nrOfItemsToDisplay    (copy.m_nrOfItemsToDisplay),
-        m_listBox               (copy.m_listBox.clone()),
-        m_textureArrowUpNormal  (copy.m_textureArrowUpNormal),
-        m_textureArrowUpHover   (copy.m_textureArrowUpHover),
-        m_textureArrowDownNormal(copy.m_textureArrowDownNormal),
-        m_textureArrowDownHover (copy.m_textureArrowDownHover)
+        Widget                  {copy},
+        WidgetBorders           {copy},
+        m_loadedConfigFile      {copy.m_loadedConfigFile},
+        m_separateHoverImage    {copy.m_separateHoverImage},
+        m_nrOfItemsToDisplay    {copy.m_nrOfItemsToDisplay},
+        m_listBox               {copy.m_listBox.clone()},
+        m_textureArrowUpNormal  {copy.m_textureArrowUpNormal},
+        m_textureArrowUpHover   {copy.m_textureArrowUpHover},
+        m_textureArrowDownNormal{copy.m_textureArrowDownNormal},
+        m_textureArrowDownHover {copy.m_textureArrowDownHover}
     {
         m_listBox->hide();
         m_listBox->unbindAllCallback();
@@ -79,9 +79,9 @@ namespace tgui
     {
         if (this != &right)
         {
-            ComboBox temp(right);
-            this->Widget::operator=(right);
-            this->WidgetBorders::operator=(right);
+            ComboBox temp{right};
+            Widget::operator=(right);
+            WidgetBorders::operator=(right);
 
             std::swap(m_loadedConfigFile,       temp.m_loadedConfigFile);
             std::swap(m_separateHoverImage,     temp.m_separateHoverImage);
@@ -109,7 +109,7 @@ namespace tgui
         if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "ComboBox");
+        ConfigFile configFile{m_loadedConfigFile, "ComboBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

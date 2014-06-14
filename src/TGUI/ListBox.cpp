@@ -49,25 +49,25 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox(const ListBox& copy) :
-        Widget                   (copy),
-        WidgetBorders            (copy),
-        m_loadedConfigFile       (copy.m_loadedConfigFile),
-        m_items                  (copy.m_items),
-        m_selectedItem           (copy.m_selectedItem),
-        m_size                   (copy.m_size),
-        m_itemHeight             (copy.m_itemHeight),
-        m_textSize               (copy.m_textSize),
-        m_maxItems               (copy.m_maxItems),
-        m_backgroundColor        (copy.m_backgroundColor),
-        m_textColor              (copy.m_textColor),
-        m_selectedBackgroundColor(copy.m_selectedBackgroundColor),
-        m_selectedTextColor      (copy.m_selectedTextColor),
-        m_borderColor            (copy.m_borderColor),
-        m_textFont               (copy.m_textFont)
+        Widget                   {copy},
+        WidgetBorders            {copy},
+        m_loadedConfigFile       {copy.m_loadedConfigFile},
+        m_items                  {copy.m_items},
+        m_selectedItem           {copy.m_selectedItem},
+        m_size                   {copy.m_size},
+        m_itemHeight             {copy.m_itemHeight},
+        m_textSize               {copy.m_textSize},
+        m_maxItems               {copy.m_maxItems},
+        m_backgroundColor        {copy.m_backgroundColor},
+        m_textColor              {copy.m_textColor},
+        m_selectedBackgroundColor{copy.m_selectedBackgroundColor},
+        m_selectedTextColor      {copy.m_selectedTextColor},
+        m_borderColor            {copy.m_borderColor},
+        m_textFont               {copy.m_textFont}
     {
         // If there is a scrollbar then copy it
         if (copy.m_scroll != nullptr)
-            m_scroll = new Scrollbar(*copy.m_scroll);
+            m_scroll = new Scrollbar{*copy.m_scroll};
         else
             m_scroll = nullptr;
     }
@@ -89,8 +89,8 @@ namespace tgui
         if (this != &right)
         {
             ListBox temp(right);
-            this->Widget::operator=(right);
-            this->WidgetBorders::operator=(right);
+            Widget::operator=(right);
+            WidgetBorders::operator=(right);
 
             // If there already was a scrollbar then delete it now
             if (m_scroll != nullptr)
@@ -132,7 +132,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "ListBox");
+        ConfigFile configFile{m_loadedConfigFile, "ListBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

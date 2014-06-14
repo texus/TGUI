@@ -63,7 +63,7 @@ namespace tgui
         if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Knob");
+        ConfigFile configFile{m_loadedConfigFile, "Knob"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

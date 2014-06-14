@@ -45,11 +45,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container(const Container& containerToCopy) :
-        Widget                   (containerToCopy),
-        m_focusedWidget          (0),
-        m_globalFont             (containerToCopy.m_globalFont),
-        m_fontPtr                (containerToCopy.m_fontPtr),
-        m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions)
+        Widget                   {containerToCopy},
+        m_focusedWidget          {0},
+        m_globalFont             {containerToCopy.m_globalFont},
+        m_fontPtr                {containerToCopy.m_fontPtr},
+        m_globalCallbackFunctions{containerToCopy.m_globalCallbackFunctions}
     {
         if (m_fontPtr == &containerToCopy.m_globalFont)
             m_fontPtr = &m_globalFont;

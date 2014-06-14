@@ -54,7 +54,7 @@ namespace tgui
         if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Scrollbar");
+        ConfigFile configFile{m_loadedConfigFile, "Scrollbar"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

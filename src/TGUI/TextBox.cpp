@@ -48,41 +48,41 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox(const TextBox& copy) :
-        Widget                       (copy),
-        WidgetBorders                (copy),
-        m_loadedConfigFile           (copy.m_loadedConfigFile),
-        m_size                       (copy.m_size),
-        m_text                       (copy.m_text),
-        m_displayedText              (copy.m_displayedText),
-        m_textSize                   (copy.m_textSize),
-        m_lineHeight                 (copy.m_lineHeight),
-        m_lines                      (copy.m_lines),
-        m_maxChars                   (copy.m_maxChars),
-        m_topLine                    (copy.m_topLine),
-        m_visibleLines               (copy.m_visibleLines),
-        m_selChars                   (copy.m_selChars),
-        m_selStart                   (copy.m_selStart),
-        m_selEnd                     (copy.m_selEnd),
-        m_caretPosition              (copy.m_caretPosition),
-        m_caretVisible               (copy.m_caretVisible),
-        m_caretColor                 (copy.m_caretColor),
-        m_caretWidth                 (copy.m_caretWidth),
-        m_selectionTextsNeedUpdate   (copy.m_selectionTextsNeedUpdate),
-        m_backgroundColor            (copy.m_backgroundColor),
-        m_selectedTextBgrColor       (copy.m_selectedTextBgrColor),
-        m_borderColor                (copy.m_borderColor),
-        m_textBeforeSelection        (copy.m_textBeforeSelection),
-        m_textSelection1             (copy.m_textSelection1),
-        m_textSelection2             (copy.m_textSelection2),
-        m_textAfterSelection1        (copy.m_textAfterSelection1),
-        m_textAfterSelection2        (copy.m_textAfterSelection2),
-        m_multilineSelectionRectWidth(copy.m_multilineSelectionRectWidth),
-        m_possibleDoubleClick        (copy.m_possibleDoubleClick),
-        m_readOnly                   (copy.m_readOnly)
+        Widget                       {copy},
+        WidgetBorders                {copy},
+        m_loadedConfigFile           {copy.m_loadedConfigFile},
+        m_size                       {copy.m_size},
+        m_text                       {copy.m_text},
+        m_displayedText              {copy.m_displayedText},
+        m_textSize                   {copy.m_textSize},
+        m_lineHeight                 {copy.m_lineHeight},
+        m_lines                      {copy.m_lines},
+        m_maxChars                   {copy.m_maxChars},
+        m_topLine                    {copy.m_topLine},
+        m_visibleLines               {copy.m_visibleLines},
+        m_selChars                   {copy.m_selChars},
+        m_selStart                   {copy.m_selStart},
+        m_selEnd                     {copy.m_selEnd},
+        m_caretPosition              {copy.m_caretPosition},
+        m_caretVisible               {copy.m_caretVisible},
+        m_caretColor                 {copy.m_caretColor},
+        m_caretWidth                 {copy.m_caretWidth},
+        m_selectionTextsNeedUpdate   {copy.m_selectionTextsNeedUpdate},
+        m_backgroundColor            {copy.m_backgroundColor},
+        m_selectedTextBgrColor       {copy.m_selectedTextBgrColor},
+        m_borderColor                {copy.m_borderColor},
+        m_textBeforeSelection        {copy.m_textBeforeSelection},
+        m_textSelection1             {copy.m_textSelection1},
+        m_textSelection2             {copy.m_textSelection2},
+        m_textAfterSelection1        {copy.m_textAfterSelection1},
+        m_textAfterSelection2        {copy.m_textAfterSelection2},
+        m_multilineSelectionRectWidth{copy.m_multilineSelectionRectWidth},
+        m_possibleDoubleClick        {copy.m_possibleDoubleClick},
+        m_readOnly                   {copy.m_readOnly}
     {
         // If there is a scrollbar then copy it
         if (copy.m_scroll != nullptr)
-            m_scroll = new Scrollbar(*copy.m_scroll);
+            m_scroll = new Scrollbar{*copy.m_scroll};
         else
             m_scroll = nullptr;
     }
@@ -111,8 +111,8 @@ namespace tgui
             }
 
             TextBox temp(right);
-            this->Widget::operator=(right);
-            this->WidgetBorders::operator=(right);
+            Widget::operator=(right);
+            WidgetBorders::operator=(right);
 
             std::swap(m_loadedConfigFile,            temp.m_loadedConfigFile);
             std::swap(m_size,                        temp.m_size);
@@ -163,7 +163,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "TextBox");
+        ConfigFile configFile{m_loadedConfigFile, "TextBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

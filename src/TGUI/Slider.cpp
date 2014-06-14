@@ -51,7 +51,7 @@ namespace tgui
         if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Slider");
+        ConfigFile configFile{m_loadedConfigFile, "Slider"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

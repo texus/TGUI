@@ -51,7 +51,7 @@ namespace tgui
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "MenuBar");
+        ConfigFile configFile{m_loadedConfigFile, "MenuBar"};
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)

@@ -179,7 +179,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Vector2f getSize() const
         {
-            return sf::Vector2f(m_window->getSize());
+            return sf::Vector2f{m_window->getSize()};
         }
 
 

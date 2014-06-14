@@ -50,7 +50,7 @@ namespace tgui
         if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "LoadingBar");
+        ConfigFile configFile{m_loadedConfigFile, "LoadingBar"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

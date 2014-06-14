@@ -42,10 +42,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Panel& panelToCopy) :
-        Container        (panelToCopy),
-        m_size           (panelToCopy.m_size),
-        m_backgroundColor(panelToCopy.m_backgroundColor),
-        m_texture        (panelToCopy.m_texture)
+        Container        {panelToCopy},
+        m_size           {panelToCopy.m_size},
+        m_backgroundColor{panelToCopy.m_backgroundColor},
+        m_texture        {panelToCopy.m_texture}
     {
         if (m_texture)
         {
@@ -63,7 +63,7 @@ namespace tgui
         if (this != &right)
         {
             Panel temp(right);
-            this->Container::operator=(right);
+            Container::operator=(right);
 
             std::swap(m_size,            temp.m_size);
             std::swap(m_backgroundColor, temp.m_backgroundColor);

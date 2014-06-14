@@ -225,7 +225,7 @@ namespace tgui
         unsigned int m_rows = 1;
         unsigned int m_columns = 1;
 
-        sf::Vector2u m_visibleCell = sf::Vector2u(1, 1);
+        sf::Vector2u m_visibleCell = sf::Vector2u{1, 1};
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

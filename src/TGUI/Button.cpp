@@ -53,7 +53,7 @@ namespace tgui
         if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "Button");
+        ConfigFile configFile{m_loadedConfigFile, "Button"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";

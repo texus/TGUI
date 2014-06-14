@@ -36,20 +36,20 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(const Widget& copy) :
-        sf::Drawable     (copy),
-        Transformable    (copy),
-        CallbackManager  (copy),
-        m_enabled        (copy.m_enabled),
-        m_visible        (copy.m_visible),
-        m_parent         (copy.m_parent),
-        m_opacity        (copy.m_opacity),
-        m_mouseHover     (false),
-        m_mouseDown      (false),
-        m_focused        (false),
-        m_allowFocus     (copy.m_allowFocus),
-        m_animatedWidget (copy.m_animatedWidget),
-        m_draggableWidget(copy.m_draggableWidget),
-        m_containerWidget(copy.m_containerWidget)
+        sf::Drawable     {copy},
+        Transformable    {copy},
+        CallbackManager  {copy},
+        m_enabled        {copy.m_enabled},
+        m_visible        {copy.m_visible},
+        m_parent         {copy.m_parent},
+        m_opacity        {copy.m_opacity},
+        m_mouseHover     {false},
+        m_mouseDown      {false},
+        m_focused        {false},
+        m_allowFocus     {copy.m_allowFocus},
+        m_animatedWidget {copy.m_animatedWidget},
+        m_draggableWidget{copy.m_draggableWidget},
+        m_containerWidget{copy.m_containerWidget}
     {
     }
 
@@ -60,9 +60,9 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            this->sf::Drawable::operator=(right);
-            this->Transformable::operator=(right);
-            this->CallbackManager::operator=(right);
+            sf::Drawable::operator=(right);
+            Transformable::operator=(right);
+            CallbackManager::operator=(right);
 
             m_enabled             = right.m_enabled;
             m_visible             = right.m_visible;

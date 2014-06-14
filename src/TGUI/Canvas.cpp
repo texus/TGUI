@@ -41,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Canvas::Canvas(const Canvas& copy) :
-        ClickableWidget(copy)
+        ClickableWidget{copy}
     {
         setSize(copy.getSize());
     }
@@ -52,7 +52,7 @@ namespace tgui
     {
         if (this != &right)
         {
-            this->ClickableWidget::operator=(right);
+            ClickableWidget::operator=(right);
 
             setSize(right.getSize());
         }

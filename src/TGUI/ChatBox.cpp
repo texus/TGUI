@@ -50,15 +50,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& copy) :
-        Widget            (copy),
-        WidgetBorders     (copy),
-        m_loadedConfigFile(copy.m_loadedConfigFile),
-        m_lineSpacing     (copy.m_lineSpacing),
-        m_textSize        (copy.m_textSize),
-        m_textColor       (copy.m_textColor),
-        m_borderColor     (copy.m_borderColor),
-        m_maxLines        (copy.m_maxLines),
-        m_fullTextHeight  (copy.m_fullTextHeight)
+        Widget            {copy},
+        WidgetBorders     {copy},
+        m_loadedConfigFile{copy.m_loadedConfigFile},
+        m_lineSpacing     {copy.m_lineSpacing},
+        m_textSize        {copy.m_textSize},
+        m_textColor       {copy.m_textColor},
+        m_borderColor     {copy.m_borderColor},
+        m_maxLines        {copy.m_maxLines},
+        m_fullTextHeight  {copy.m_fullTextHeight}
     {
         m_panel = new Panel(*copy.m_panel);
 
@@ -94,9 +94,9 @@ namespace tgui
                 m_scroll = nullptr;
             }
 
-            ChatBox temp(right);
-            this->Widget::operator=(right);
-            this->WidgetBorders::operator=(right);
+            ChatBox temp{right};
+            Widget::operator=(right);
+            WidgetBorders::operator=(right);
 
             std::swap(m_loadedConfigFile, temp.m_loadedConfigFile);
             std::swap(m_lineSpacing,      temp.m_lineSpacing);
@@ -126,7 +126,7 @@ namespace tgui
         }
 
         // Open the config file
-        ConfigFile configFile(m_loadedConfigFile, "ChatBox");
+        ConfigFile configFile{m_loadedConfigFile, "ChatBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -870,23 +870,23 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(m_borders.left, m_panel->getSize().y + m_borders.top));
+        sf::RectangleShape border({m_borders.left, m_panel->getSize().y + m_borders.top});
         border.setPosition(-m_borders.left, -m_borders.top);
         border.setFillColor(m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(m_panel->getSize().x + m_borders.right, m_borders.top));
+        border.setSize({m_panel->getSize().x + m_borders.right, m_borders.top});
         border.setPosition(0, -m_borders.top);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(m_borders.right, m_panel->getSize().y + m_borders.bottom));
+        border.setSize({m_borders.right, m_panel->getSize().y + m_borders.bottom});
         border.setPosition(m_panel->getSize().x, 0);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_panel->getSize().x + m_borders.left, m_borders.bottom));
+        border.setSize({m_panel->getSize().x + m_borders.left, m_borders.bottom});
         border.setPosition(-m_borders.left, m_panel->getSize().y);
         target.draw(border, states);
 

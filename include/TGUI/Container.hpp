@@ -606,7 +606,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
         {
-            return sf::Vector2f(m_window->getSize());
+            return sf::Vector2f{m_window->getSize()};
         }
 
 

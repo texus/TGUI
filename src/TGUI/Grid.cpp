@@ -40,9 +40,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Grid::Grid(const Grid& gridToCopy) :
-        Container     (gridToCopy),
-        m_size        (gridToCopy.m_size),
-        m_intendedSize(gridToCopy.m_intendedSize)
+        Container     {gridToCopy},
+        m_size        {gridToCopy.m_size},
+        m_intendedSize{gridToCopy.m_intendedSize}
     {
         const std::vector<Widget::Ptr>& widgets = gridToCopy.m_widgets;
 
@@ -68,8 +68,8 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            Grid temp(right);
-            this->Container::operator=(right);
+            Grid temp{right};
+            Container::operator=(right);
 
             std::swap(m_gridWidgets,  temp.m_gridWidgets);
             std::swap(m_objBorders,   temp.m_objBorders);

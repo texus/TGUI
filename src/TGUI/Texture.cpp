@@ -35,15 +35,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& copy) :
-        sf::Transformable(copy),
-        sf::Drawable     (copy),
-        m_data           (copy.m_data),
-        m_vertices       (copy.m_vertices),
-        m_size           (copy.m_size),
-        m_middleRect     (copy.m_middleRect),
-        m_textureRect    (copy.m_textureRect),
-        m_scalingType    (copy.m_scalingType),
-        m_rotation       (copy.m_rotation)
+        sf::Transformable{copy},
+        sf::Drawable     {copy},
+        m_data           {copy.m_data},
+        m_vertices       {copy.m_vertices},
+        m_size           {copy.m_size},
+        m_middleRect     {copy.m_middleRect},
+        m_textureRect    {copy.m_textureRect},
+        m_scalingType    {copy.m_scalingType},
+        m_rotation       {copy.m_rotation}
     {
         if (m_data != nullptr)
             TGUI_TextureManager.copyTexture(copy);
