@@ -18,6 +18,18 @@
     <h2>Changelog</h2>
 
     <div>
+        <h3>TGUI v0.6.3 <span class="Date">(11 April 2014)</span></h3>
+        <ul>
+            <li>Added canvas widget to render sfml inbetween tgui widgets</li>
+            <li>Add a function to TextBox to make it read-only</li>
+            <li>Clipboard calculations didn't take viewport into account</li>
+            <li>Fixed Tab text being wrongly clipped when tab width is too small</li>
+            <li>BabyBlue theme didn't use correct EditBox images</li>
+            <li>SharedWidgetPtr class was lacking a working == and != operator</li>
+        </ul>
+    </div>
+
+    <div>
         <h3>TGUI v0.6.2 <span class="Date">(14 March 2014)</span></h3>
         <ul>
             <li>Fixed potential bug in setMaximum and setMinimum in Slider and Knob</li>
@@ -32,7 +44,7 @@
             <li>Made several fixes to Scrollbar</li>
             <li>Checkbox now inherits from RadioButton instead of the other way around</li>
             <li>Text was also being selected in TextBox when clicking on the scrollbar</li>
-            <li>Some fonts didn’t display all lines in ChatBox</li>
+            <li>Some fonts didn't display all lines in ChatBox</li>
             <li>Allow setting a default text color in ChatBox and passing different parameters to addLine</li>
             <li>Allow setting the line spacing in ChatBox</li>
             <li>Added a resetView parameter to handleEvent and set the default value on true (for draw function as well)</li>
@@ -54,7 +66,7 @@
         <h3>TGUI v0.5.2 <span class="Date">(17 May 2013)</span></h3>
         <ul>
             <li>Added ChatBox class.</li>
-            <li>Fixed a bug in LoadingBar when minimum wasn’t 0.</li>
+            <li>Fixed a bug in LoadingBar when minimum wasn't 0.</li>
             <li>Fixed a bug in slider when calling setVerticalScroll after setSize.</li>
         </ul>
     </div>
@@ -96,8 +108,8 @@
     <div>
         <h3>TGUI v0.4.2 <span class="Date">(16 July 2012)</span></h3>
         <ul>
-            <li>Bug fix: ComboBox wasn’t responding correctly when scaled.</li>
-            <li>Bug fix: ComboBox wasn’t rendered correctly when using a scrollbar.</li>
+            <li>Bug fix: ComboBox wasn't responding correctly when scaled.</li>
+            <li>Bug fix: ComboBox wasn't rendered correctly when using a scrollbar.</li>
         </ul>
     </div>
 
@@ -105,7 +117,7 @@
         <h3>TGUI v0.4.1 <span class="Date">(15 July 2012)</span></h3>
         <ul>
             <li>Bug fix: Slider caused a runtime error on windows.</li>
-            <li>Bug fix: Objects didn’t behave correctly when the view was changed.</li>
+            <li>Bug fix: Objects didn't behave correctly when the view was changed.</li>
             <li>Bug fix: When all the objects were hidding, the first one was still drawn.</li>
         </ul>
     </div>
@@ -133,12 +145,12 @@
             <li>You can now change the global font directly, the setGlobalFont function was removed.</li>
             <li>All objects now have a getSize and getScaledSize function.</li>
             <li>Label now sends a callback on click.</li>
-            <li>You have an option too keep the scrollbar visible, even if you can’t scroll.</li>
+            <li>You have an option too keep the scrollbar visible, even if you can't scroll.</li>
             <br/>
             <li>Bug fix: The getText function of EditBox returned a sf::String instead of an std::string.</li>
             <li>Bug fix: Arrow keys were not repeated in EditBox.</li>
             <li>Bug fix: Texture rect was not updated when calling the load function again.</li>
-            <li>Bug fix: Callback from Picture didn’t work with scaling.</li>
+            <li>Bug fix: Callback from Picture didn't work with scaling.</li>
             <li>Bug fix: EditBox and ListBox hung when image was too small.</li>
             <li>Bug fix: Alpha value in colors was sometimes wrong.</li>
             <li>Bug fix: The displayed text in EditBox was wrong when calling setMaximumCharacters.</li>
@@ -157,7 +169,7 @@
     <div>
         <h3>TGUI v0.3.5 <span class="Date">(12 March 2012)</span></h3>
         <ul>
-            <li>The ‘m_’ prefix was dropped on public members.</li>
+            <li>The ‘m_' prefix was dropped on public members.</li>
             <li>Picture now has a click callback.</li>
             <li>The background color of the selected text is now different when the EditBox is not focused.</li>
             <li>EditBox now also sends a callback when the return key was pressed.</li>
@@ -194,9 +206,9 @@
             <li>You can now load all the objects (except Panel) from a file.</li>
             <li>Except for the .lib and .so files, I have included .a files.</li>
             <br/>
-            <li>Bug fix: You couldn’t call setBorders after setText in EditBox.</li>
-            <li>Bug fix: Changing the maximum items and the item height in ListBox didn’t work properly.</li>
-            <li>Bug fix: Scrollbar didn’t receive the mouse up event when releasing the mouse on ListBox.</li>
+            <li>Bug fix: You couldn't call setBorders after setText in EditBox.</li>
+            <li>Bug fix: Changing the maximum items and the item height in ListBox didn't work properly.</li>
+            <li>Bug fix: Scrollbar didn't receive the mouse up event when releasing the mouse on ListBox.</li>
             <li>Bug fix: Calling a load function with an empty string made the program crash.</li>
         </ul>
     </div>
