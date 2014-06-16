@@ -261,6 +261,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::String EditBox::getSelectedText() const
+    {
+        if (m_selStart < m_selEnd)
+            return m_text.substring(m_selStart, m_selChars);
+        else if (m_selStart > m_selEnd)
+            return m_text.substring(m_selEnd, m_selChars);
+        else
+            return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setTextSize(unsigned int size)
     {
         // Change the text size
