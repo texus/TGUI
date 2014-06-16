@@ -76,6 +76,13 @@ namespace tgui
             std::getline(m_File, line);
             lineNumber++;
 
+            if (line.empty())
+                continue;
+
+            // If the lines contains a '\r' at the end then remove it
+            if (line[line.size()-1] == '\r')
+                line.erase(line.size()-1);
+
             std::string::const_iterator c = line.begin();
 
             // Check if we are reading a section
