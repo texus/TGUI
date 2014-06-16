@@ -132,7 +132,7 @@ namespace tgui
         }
         else
         {
-            m_textureTrackNormal.setSize(size);
+            m_textureTrackNormal.setSize({size.y, size.x});
 
             if (m_verticalScroll)
             {
