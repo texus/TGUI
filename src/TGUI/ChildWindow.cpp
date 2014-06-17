@@ -1182,6 +1182,9 @@ namespace tgui
             // Set the clipping area
             glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
+            // Center the text vertically
+            states.transform.translate(0, std::floor(((m_TitleBarHeight - m_TitleText.getLocalBounds().height) / 2.0f) - m_TitleText.getLocalBounds().top));
+
             // Draw the text, depending on the alignment
             if (m_TitleAlignment == TitleAlignmentLeft)
             {
