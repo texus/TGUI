@@ -88,6 +88,33 @@ namespace tgui
 
         void setTextureRect(const sf::FloatRect& textureRect);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enable or disable the smooth filter.
+        ///
+        /// When the filter is activated, the texture appears smoother so that pixels are less noticeable.
+        /// However if you want the texture to look exactly the same as its source file, you should leave it disabled.
+        /// The smooth filter is disabled by default.
+        ///
+        /// @param smooth True to enable smoothing, false to disable it
+        ///
+        /// @see isSmooth
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSmooth(bool smooth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Tell whether the smooth filter is enabled or not.
+        ///
+        /// @return True if smoothing is enabled, false if it is disabled
+        ///
+        /// @see setSmooth
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isSmooth() const;
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         bool isTransparentPixel(float x, float y) const;

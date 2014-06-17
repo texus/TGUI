@@ -149,6 +149,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Texture::setSmooth(bool smooth)
+    {
+        if (m_data) {
+            m_data->texture.setSmooth(smooth);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::isSmooth() const
+    {
+        if (m_data) {
+            return m_data->texture.isSmooth();
+        }
+        else {
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::isTransparentPixel(float x, float y) const
+    {
+        x -= getPosition().x;
+        y -= getPosition().y;
+
+        // Find out on which pixel the mouse is standing
+        sf::Vector2u pixel;
+        switch (m_scalingType)
+        {
+        case Normal:
+            pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
+            pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
+            break;
+
+        case Horizontal:
+        case Vertical:
+        case NineSliceScaling:
+            return false;
+        };
+
+        if (m_data->image->getPixel(pixel.x + m_data->rect.left, pixel.y + m_data->rect.top).a == 0)
+            return true;
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::updateVertices()
     {
         // Figure out how the image is scaled best
@@ -286,34 +335,6 @@ namespace tgui
             m_vertices[21] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
             break;
         };
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Texture::isTransparentPixel(float x, float y) const
-    {
-        x -= getPosition().x;
-        y -= getPosition().y;
-
-        // Find out on which pixel the mouse is standing
-        sf::Vector2u pixel;
-        switch (m_scalingType)
-        {
-        case Normal:
-            pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
-            pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
-            break;
-
-        case Horizontal:
-        case Vertical:
-        case NineSliceScaling:
-            return false;
-        };
-
-        if (m_data->image->getPixel(pixel.x + m_data->rect.left, pixel.y + m_data->rect.top).a == 0)
-            return true;
-        else
-            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
