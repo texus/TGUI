@@ -60,6 +60,12 @@ namespace tgui
         Transformable::setPosition(position);
 
         m_texture.setPosition(position);
+
+        if (m_callbackFunctions[Widget::PositionChanged].empty() == false)
+        {
+            m_callback.trigger = Widget::PositionChanged;
+            addCallback();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

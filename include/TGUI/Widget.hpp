@@ -31,7 +31,6 @@
 #include <TGUI/ConfigFile.hpp>
 #include <TGUI/Callback.hpp>
 #include <TGUI/Transformable.hpp>
-#include <TGUI/SharedWidgetPtr.hpp>
 #include <TGUI/Texture.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,12 +403,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum WidgetCallbacks
         {
-            None = 0,                 ///< No trigger
-            Focused = 1,              ///< Widget gained focus.
-            Unfocused = 2,            ///< Widget lost focus.
-            MouseEntered = 4,         ///< Mouse cursor entered in the Widget area.
-            MouseLeft = 8,            ///< Mouse cursor left the Widget area.
-            WidgetCallbacksCount = 16
+            None = 0,                  ///< No trigger
+            PositionChanged = 1,       ///< Position of the widget has changed
+            SizeChanged = 2,           ///< Size of the widget has changed
+            Focused = 4,               ///< Widget gained focus.
+            Unfocused = 8,             ///< Widget lost focus.
+            MouseEntered = 16,         ///< Mouse cursor entered in the Widget area.
+            MouseLeft = 32,            ///< Mouse cursor left the Widget area.
+            WidgetCallbacksCount = 64
         };
 
 
