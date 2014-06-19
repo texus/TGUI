@@ -211,33 +211,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background texture of the child window.
-        ///
-        /// @param texture  Pointer to the texture that should be used as background of the child window
-        ///
-        /// @warning You should make sure that the texture stays alive.
-        ///
-        /// If the texture has a different size than the child window then it will be scaled to fill the whole window.
-        /// Pass nullptr to this function to remove the background texture.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundTexture(sf::Texture *const texture = nullptr);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background texture of the child window.
-        ///
-        /// @return Pointer to the texture that is being used as background of the child window.
-        ///         This pointer is nullptr when no background texture was set.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Texture* getBackgroundTexture()
-        {
-            return m_backgroundTexture;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the height of the title bar.
         ///
         /// @param height  New height of the title bar
@@ -585,8 +558,6 @@ namespace tgui
         sf::Vector2f   m_size;
 
         sf::Color      m_backgroundColor = sf::Color::White;
-        sf::Texture*   m_backgroundTexture = nullptr;
-        sf::Sprite     m_backgroundSprite;
 
         Texture        m_iconTexture;
         Texture        m_textureTitleBar;

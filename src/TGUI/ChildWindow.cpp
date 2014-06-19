@@ -51,7 +51,6 @@ namespace tgui
         m_loadedConfigFile {childWindowToCopy.m_loadedConfigFile},
         m_size             {childWindowToCopy.m_size},
         m_backgroundColor  {childWindowToCopy.m_backgroundColor},
-        m_backgroundTexture{childWindowToCopy.m_backgroundTexture},
         m_iconTexture      {childWindowToCopy.m_iconTexture},
         m_textureTitleBar  {childWindowToCopy.m_textureTitleBar},
         m_titleText        {childWindowToCopy.m_titleText},
@@ -64,14 +63,6 @@ namespace tgui
     {
         // Copy the button
         m_closeButton = new Button{*childWindowToCopy.m_closeButton};
-
-        // Set the bakground sprite, if there is a background texture
-        if (childWindowToCopy.m_backgroundTexture)
-        {
-            m_backgroundSprite.setTexture(*m_backgroundTexture, true);
-            m_backgroundSprite.setScale(m_size.x / m_backgroundTexture->getSize().x, m_size.y / m_backgroundTexture->getSize().y);
-            m_backgroundSprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,8 +91,6 @@ namespace tgui
             std::swap(m_loadedConfigFile,  temp.m_loadedConfigFile);
             std::swap(m_size,              temp.m_size);
             std::swap(m_backgroundColor,   temp.m_backgroundColor);
-            std::swap(m_backgroundTexture, temp.m_backgroundTexture);
-            std::swap(m_backgroundSprite,  temp.m_backgroundSprite);
             std::swap(m_iconTexture,       temp.m_iconTexture);
             std::swap(m_textureTitleBar,   temp.m_textureTitleBar);
             std::swap(m_titleText,         temp.m_titleText);
@@ -257,10 +246,6 @@ namespace tgui
 
         m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
-        // If there is a background texture then resize it
-        if (m_backgroundTexture)
-            m_backgroundSprite.setScale(m_size.x / m_backgroundTexture->getSize().x, m_size.y / m_backgroundTexture->getSize().y);
-
         // If there is an icon then give it the correct size
         if (m_iconTexture.getData())
         {
@@ -298,21 +283,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setBackgroundTexture(sf::Texture *const texture)
-    {
-        // Store the texture
-        m_backgroundTexture = texture;
-
-        // Set the texture for the sprite
-        if (m_backgroundTexture)
-        {
-            m_backgroundSprite.setTexture(*m_backgroundTexture, true);
-            m_backgroundSprite.setScale(m_size.x / m_backgroundTexture->getSize().x, m_size.y / m_backgroundTexture->getSize().y);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::setTitleBarHeight(unsigned int height)
     {
         // Remember the new title bar height
@@ -337,7 +307,6 @@ namespace tgui
     {
         Container::setTransparency(transparency);
 
-        m_backgroundSprite.setColor(sf::Color(255, 255, 255, m_opacity));
         m_iconTexture.setColor(sf::Color(255, 255, 255, m_opacity));
         m_textureTitleBar.setColor(sf::Color(255, 255, 255, m_opacity));
 
@@ -909,10 +878,6 @@ namespace tgui
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
-
-        // Draw the background image if there is one
-        if (m_backgroundTexture != nullptr)
-            target.draw(m_backgroundSprite, states);
 
         // Calculate the clipping area
         GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPanelPosition.x * scaleViewX), scissor[0]);

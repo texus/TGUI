@@ -41,64 +41,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel(const Panel& panelToCopy) :
-        Container        {panelToCopy},
-        m_size           {panelToCopy.m_size},
-        m_backgroundColor{panelToCopy.m_backgroundColor},
-        m_texture        {panelToCopy.m_texture}
-    {
-        if (m_texture)
-        {
-            m_sprite.setTexture(*m_texture);
-            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
-            m_sprite.setColor(sf::Color(255, 255, 255, m_opacity));
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Panel& Panel::operator= (const Panel& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            Panel temp(right);
-            Container::operator=(right);
-
-            std::swap(m_size,            temp.m_size);
-            std::swap(m_backgroundColor, temp.m_backgroundColor);
-            std::swap(m_texture,         temp.m_texture);
-            std::swap(m_sprite,          temp.m_sprite);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Panel::setSize(const sf::Vector2f& size)
     {
         m_size.x = std::abs(size.x);
         m_size.y = std::abs(size.y);
-
-        // If there is a background texture then resize it
-        if (m_texture)
-            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::setBackgroundTexture(sf::Texture *const texture)
-    {
-        // Store the texture
-        m_texture = texture;
-
-        // Set the texture for the sprite
-        if (m_texture)
-        {
-            m_sprite.setTexture(*m_texture, true);
-            m_sprite.setScale(m_size.x / m_texture->getSize().x, m_size.y / m_texture->getSize().y);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,8 +52,6 @@ namespace tgui
     void Panel::setTransparency(unsigned char transparency)
     {
         Container::setTransparency(transparency);
-
-        m_sprite.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,10 +245,6 @@ namespace tgui
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
-
-        // Draw the background texture if there is one
-        if (m_texture)
-            target.draw(m_sprite, states);
 
         // Draw the widgets
         drawWidgetContainer(&target, states);
