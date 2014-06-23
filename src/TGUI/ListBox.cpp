@@ -454,6 +454,53 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListBox::changeItem(unsigned int index, const sf::String& newValue)
+    {
+        if (index >= m_items.size()) {
+            return false;
+        }
+
+        m_items[index] = newValue;
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListBox::changeItems(const sf::String& originalValue, const sf::String& newValue)
+    {
+        unsigned int amountChanged = 0;
+        for (auto it = m_items.begin(); it != m_items.end(); ++it)
+        {
+            if (*it == originalValue)
+            {
+                *it = newValue;
+                amountChanged++;
+            }
+        }
+
+        return amountChanged;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListBox::changeItemsById(int id, const sf::String& newValue)
+    {
+        unsigned int amountChanged = 0;
+        auto idIt = m_itemIds.begin();
+        for (auto it = m_items.begin(); it != m_items.end(); ++it, ++idIt)
+        {
+            if (*idIt == id)
+            {
+                *it = newValue;
+                amountChanged++;
+            }
+        }
+
+        return amountChanged;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
         // Calling setScrollbar with an empty string does the same as removeScrollbar

@@ -546,6 +546,42 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the value of the item at the given index
+        ///
+        /// @param index    The index of the value that should be changed
+        /// @param newValue The new name for that item
+        ///
+        /// @return True when the name was changed, false when the id was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItem(unsigned int index, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes all items with originalValue to newValue.
+        ///
+        /// @param originalValue The name of the items which will change
+        /// @param newValue      The new name for these items
+        ///
+        /// @return The amount of items that were changed
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int changeItems(const sf::String& originalValue, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes all items with the given id to newValue.
+        ///
+        /// @param id       The id of the items which will change
+        /// @param newValue The new name for these items
+        ///
+        /// @return The amount of items that were changed
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int changeItemsById(int id, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the scrollbar that is displayed next to the list.
         ///
         /// @param scrollbarConfigFileFilename  Filename of the config file.
