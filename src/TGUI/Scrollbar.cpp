@@ -630,10 +630,10 @@ namespace tgui
 
     void Scrollbar::mouseWheelMoved(int delta, int, int)
     {
-        if (static_cast<int>(m_value) - delta < 0)
+        if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);
         else
-            setValue(static_cast<unsigned int>(m_value - delta));
+            setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
