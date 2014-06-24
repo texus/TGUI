@@ -54,7 +54,8 @@ namespace tgui
         {
             tgui::Button::Ptr button = copy(*it);
             button->unbindAllCallback();
-            button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
+            button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
+                                   std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
 
             m_buttons.push_back(button);
         }
@@ -169,7 +170,8 @@ namespace tgui
         button->load(m_buttonConfigFileFilename);
         button->setTextSize(m_textSize);
         button->setText(caption);
-        button->bindCallbackEx(&MessageBox::ButtonClickedCallbackFunction, this, Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed);
+        button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
+                               std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
 
         m_buttons.push_back(button);
 
@@ -325,7 +327,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::ButtonClickedCallbackFunction(const Callback& callback)
+    void MessageBox::buttonClickedCallbackFunction(const Callback& callback)
     {
         if (m_callbackFunctions[ButtonClicked].empty() == false)
         {

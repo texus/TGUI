@@ -217,38 +217,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setCallbackId(unsigned int callbackId)
-    {
-        m_callback.id = callbackId;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int Widget::getCallbackId()
-    {
-        return m_callback.id;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::update()
     {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::addCallback()
-    {
-        // Loop through all callback functions
-        auto& functions = m_callbackFunctions[m_callback.trigger];
-        for (auto func = functions.cbegin(); func != functions.cend(); ++func)
-        {
-            // Pass the callback to the correct place
-            if (*func != nullptr)
-                (*func)();
-            else
-                m_parent->addChildCallback(m_callback);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +460,22 @@ namespace tgui
         assert(parent);
 
         m_parent = parent;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::addCallback()
+    {
+        // Loop through all callback functions
+        auto& functions = m_callbackFunctions[m_callback.trigger];
+        for (auto func = functions.cbegin(); func != functions.cend(); ++func)
+        {
+            // Pass the callback to the correct place
+            if (*func != nullptr)
+                (*func)();
+            else
+                m_parent->addChildCallback(m_callback);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

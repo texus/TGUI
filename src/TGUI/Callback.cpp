@@ -31,23 +31,23 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CallbackManager::bindCallback(std::function<void()> func, unsigned int trigger)
+    void CallbackManager::bindCallback(unsigned int trigger, std::function<void()> func)
     {
-        mapCallback(func, trigger);
+        mapCallback(trigger, func);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CallbackManager::bindCallbackEx(std::function<void(const Callback&)> func, unsigned int trigger)
+    void CallbackManager::bindCallbackEx(unsigned int trigger, std::function<void(const Callback&)> func)
     {
-        mapCallback(std::bind(func, std::ref(m_callback)), trigger);
+        mapCallback(trigger, std::bind(func, std::ref(m_callback)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void CallbackManager::bindCallback(unsigned int trigger)
     {
-        mapCallback(nullptr, trigger);
+        mapCallback(trigger, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CallbackManager::mapCallback(const std::function<void()>& function, unsigned int trigger)
+    void CallbackManager::mapCallback(unsigned int trigger, const std::function<void()>& function)
     {
         unsigned int counter = 1;
         while (counter * 2 <= trigger)
