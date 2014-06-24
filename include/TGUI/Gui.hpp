@@ -165,7 +165,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool hasFocus()
         {
-            return m_container.m_focused;
+            return m_container->m_focused;
         }
 
 
@@ -194,7 +194,7 @@ namespace tgui
         /// @return Reference to the internal Container class
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Container& getContainer()
+        GuiContainer::Ptr getContainer()
         {
             return m_container;
         }
@@ -212,7 +212,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setGlobalFont(const std::string& filename)
         {
-            return m_container.setGlobalFont(filename);
+            return m_container->setGlobalFont(filename);
         }
 
 
@@ -226,7 +226,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setGlobalFont(const sf::Font& font)
         {
-            m_container.setGlobalFont(font);
+            m_container->setGlobalFont(font);
         }
 
 
@@ -240,7 +240,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getGlobalFont() const
         {
-            return m_container.getGlobalFont();
+            return m_container->getGlobalFont();
         }
 
 
@@ -252,7 +252,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector< Widget::Ptr >& getWidgets()
         {
-            return m_container.getWidgets();
+            return m_container->getWidgets();
         }
 
 
@@ -264,7 +264,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<sf::String>& getWidgetNames()
         {
-            return m_container.getWidgetNames();
+            return m_container->getWidgetNames();
         }
 
 
@@ -324,7 +324,7 @@ namespace tgui
         template <class T>
         typename T::Ptr get(const sf::String& widgetName) const
         {
-            return m_container.get<T>(widgetName);
+            return m_container->get<T>(widgetName);
         }
 
 
@@ -484,7 +484,7 @@ namespace tgui
         template <typename T>
         void bindGlobalCallback(void (T::*func)(const Callback&), const T* const classPtr)
         {
-            m_container.bindGlobalCallback(func, classPtr);
+            m_container->bindGlobalCallback(func, classPtr);
         }
 
 
@@ -557,7 +557,7 @@ namespace tgui
         bool m_accessToWindow;
 
         // Internal container to store all widgets
-        GuiContainer m_container;
+        GuiContainer::Ptr m_container;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

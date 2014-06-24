@@ -39,9 +39,9 @@ namespace tgui
         m_window        (nullptr),
         m_accessToWindow(false)
     {
-        m_container.bindGlobalCallback(&Gui::addChildCallback, this);
+        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
-        m_container.m_focused = true;
+        m_container->m_focused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,10 +50,10 @@ namespace tgui
         m_window        (&window),
         m_accessToWindow(true)
     {
-        m_container.m_window = &window;
-        m_container.bindGlobalCallback(&Gui::addChildCallback, this);
+        m_container->m_window = &window;
+        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
-        m_container.m_focused = true;
+        m_container->m_focused = true;
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
     }
@@ -64,10 +64,10 @@ namespace tgui
         m_window        (&window),
         m_accessToWindow(false)
     {
-        m_container.m_window = &window;
-        m_container.bindGlobalCallback(&Gui::addChildCallback, this);
+        m_container->m_window = &window;
+        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
-        m_container.m_focused = true;
+        m_container->m_focused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace tgui
         m_accessToWindow = true;
 
         m_window = &window;
-        m_container.m_window = &window;
+        m_container->m_window = &window;
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
     }
@@ -89,7 +89,7 @@ namespace tgui
         m_accessToWindow = false;
 
         m_window = &window;
-        m_container.m_window = &window;
+        m_container->m_window = &window;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,18 +137,18 @@ namespace tgui
         // Keep track of whether the window is focused or not
         else if (event.type == sf::Event::LostFocus)
         {
-            m_container.m_focused = false;
+            m_container->m_focused = false;
         }
         else if (event.type == sf::Event::GainedFocus)
         {
-            m_container.m_focused = true;
+            m_container->m_focused = true;
 
             if (m_accessToWindow)
                 TGUI_Clipboard.setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
         }
 
         // Let the event manager handle the event
-        return m_container.handleEvent(event);
+        return m_container->handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ namespace tgui
             m_window->setView(m_window->getDefaultView());
 
         // Update the time
-        if (m_container.m_focused)
+        if (m_container->m_focused)
             updateTime(m_clock.restart());
         else
             m_clock.restart();
@@ -184,7 +184,7 @@ namespace tgui
         }
 
         // Draw the window with all widgets inside it
-        m_container.drawWidgetContainer(m_window, sf::RenderStates::Default);
+        m_container->drawWidgetContainer(m_window, sf::RenderStates::Default);
 
         // Reset clipping to its original state
         if (clippingEnabled)
@@ -218,134 +218,134 @@ namespace tgui
 
     void Gui::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
-        m_container.add(widgetPtr, widgetName);
+        m_container->add(widgetPtr, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Ptr Gui::get(const sf::String& widgetName) const
     {
-        return m_container.get(widgetName);
+        return m_container->get(widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Ptr Gui::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
     {
-        return m_container.copy(oldWidget, newWidgetName);
+        return m_container->copy(oldWidget, newWidgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::remove(const Widget::Ptr& widget)
     {
-        m_container.remove(widget);
+        m_container->remove(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::removeAllWidgets()
     {
-        m_container.removeAllWidgets();
+        m_container->removeAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Gui::setWidgetName(const Widget::Ptr& widget, const std::string& name)
     {
-        return m_container.setWidgetName(widget, name);
+        return m_container->setWidgetName(widget, name);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Gui::getWidgetName(const Widget::Ptr& widget, std::string& name) const
     {
-        return m_container.getWidgetName(widget, name);
+        return m_container->getWidgetName(widget, name);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::focusWidget(Widget::Ptr& widget)
     {
-        m_container.focusWidget(&*widget);
+        m_container->focusWidget(&*widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::focusNextWidget()
     {
-        m_container.focusNextWidget();
+        m_container->focusNextWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::focusPreviousWidget()
     {
-        m_container.focusPreviousWidget();
+        m_container->focusPreviousWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::unfocusWidgets()
     {
-        m_container.unfocusWidgets();
+        m_container->unfocusWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::uncheckRadioButtons()
     {
-        m_container.uncheckRadioButtons();
+        m_container->uncheckRadioButtons();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::moveWidgetToFront(Widget::Ptr& widget)
     {
-        m_container.moveWidgetToFront(&*widget);
+        m_container->moveWidgetToFront(&*widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::moveWidgetToBack(Widget::Ptr& widget)
     {
-        m_container.moveWidgetToBack(&*widget);
+        m_container->moveWidgetToBack(&*widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::bindGlobalCallback(std::function<void(const Callback&)> func)
     {
-        m_container.bindGlobalCallback(func);
+        m_container->bindGlobalCallback(func);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::unbindGlobalCallback()
     {
-        m_container.unbindGlobalCallback();
+        m_container->unbindGlobalCallback();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::loadWidgetsFromFile(const std::string& filename)
     {
-        m_container.loadWidgetsFromFile(filename);
+        m_container->loadWidgetsFromFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::saveWidgetsToFile(const std::string& filename)
     {
-        m_container.saveWidgetsToFile(filename);
+        m_container->saveWidgetsToFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
-        m_container.m_animationTimeElapsed = elapsedTime;
-        m_container.update();
+        m_container->m_animationTimeElapsed = elapsedTime;
+        m_container->update();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
