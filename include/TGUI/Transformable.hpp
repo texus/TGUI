@@ -54,8 +54,20 @@ namespace tgui
         ///
         /// @see move, getPosition
         ///
+        /// Usage examples:
+        /// @code
+        /// // Place the widget on an exact position
+        /// widget->setPosition({40, 30});
+        ///
+        /// // Place the widget 50 pixels below another widget
+        /// widget->setPosition(otherWidget->getPosition() + sf::Vector2f{0, otherWidget->getSize().y + 50});
+        ///
+        /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
+        /// widget->setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});
+        /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const sf::Vector2f& position);
+        virtual void setPosition(const Layout& position);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,8 +82,20 @@ namespace tgui
         ///
         /// @see move, getPosition
         ///
+        /// Usage examples:
+        /// @code
+        /// // Place the widget on an exact position
+        /// widget->setPosition(40, 30);
+        ///
+        /// // Place the widget 50 pixels below another widget
+        /// widget->setPosition(otherWidget->getPosition().x, otherWidget->getPosition().y + otherWidget->getSize().y + 50);
+        ///
+        /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
+        /// widget->setPosition(tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50);
+        /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(float x, float y)
+        void setPosition(Layout1d x, Layout1d y)
         {
             setPosition({x, y});
         }
@@ -85,7 +109,7 @@ namespace tgui
         /// @see setPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Vector2f& getPosition() const;
+        sf::Vector2f getPosition() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +126,7 @@ namespace tgui
         /// @see setPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void move(const sf::Vector2f& offset);
+        void move(const Layout& offset);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,8 +199,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       private:
 
-        sf::Vector2f m_position; /// TODO: Remove when done with Layout
-///        Layout m_Position;
+        Layout m_position;
 
         mutable bool          m_transformNeedUpdate = true;
         mutable sf::Transform m_transform;

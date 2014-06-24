@@ -38,12 +38,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpriteSheet::setPosition(const sf::Vector2f& position)
+    void SpriteSheet::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
-        m_texture.setPosition(position.x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
-                              position.y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
+        m_texture.setPosition(position.getValue().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
+                              position.getValue().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

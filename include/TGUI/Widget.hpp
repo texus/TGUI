@@ -88,6 +88,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position New position
+        ///
+        /// @see move, getPosition
+        ///
+        /// Usage examples:
+        /// @code
+        /// // Place the widget on an exact position
+        /// widget->setPosition({40, 30});
+        ///
+        /// // Place the widget 50 pixels below another widget
+        /// widget->setPosition(otherWidget->getPosition() + sf::Vector2f{0, otherWidget->getSize().y + 50});
+        ///
+        /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
+        /// widget->setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position);
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the absolute position of the widget on the screen
         ///
         /// @return Position of the widget

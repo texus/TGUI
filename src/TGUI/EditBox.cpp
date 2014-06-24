@@ -134,13 +134,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPosition(const sf::Vector2f& position)
+    void EditBox::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
-        m_textureHover.setPosition(position);
-        m_textureNormal.setPosition(position);
-        m_textureFocused.setPosition(position);
+        m_textureHover.setPosition(position.getValue());
+        m_textureNormal.setPosition(position.getValue());
+        m_textureFocused.setPosition(position.getValue());
 
         recalculateTextPositions();
     }

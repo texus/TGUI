@@ -64,23 +64,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        m_background.setPosition(position.getValue());
+        m_text.setPosition(std::floor(position.getValue().x - m_text.getLocalBounds().left + 0.5f),
+                           std::floor(position.getValue().y - m_text.getLocalBounds().top + 0.5f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::setSize(const sf::Vector2f& size)
     {
         m_background.setSize({std::abs(size.x), std::abs(size.y)});
 
         // You are no longer auto-sizing
         m_autoSize = false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setPosition(const sf::Vector2f& position)
-    {
-        Transformable::setPosition(position);
-
-         m_background.setPosition(position);
-        m_text.setPosition(std::floor(position.x - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(position.y - m_text.getLocalBounds().top + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

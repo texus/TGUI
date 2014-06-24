@@ -49,6 +49,7 @@ namespace tgui
         /// The widget is centered by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// TODO: Make enum class and change name
         struct Layout
         {
             /// @brief The layout of the widget.

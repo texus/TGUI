@@ -103,31 +103,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setPosition(const sf::Vector2f& position)
+    void Scrollbar::setPosition(const Layout& position)
     {
         Widget::setPosition(position);
 
-        m_textureTrackNormal.setPosition(position);
-        m_textureTrackHover.setPosition(position);
+        m_textureTrackNormal.setPosition(position.getValue());
+        m_textureTrackHover.setPosition(position.getValue());
 
-        m_textureArrowUpNormal.setPosition(position);
-        m_textureArrowUpHover.setPosition(position);
+        m_textureArrowUpNormal.setPosition(position.getValue());
+        m_textureArrowUpHover.setPosition(position.getValue());
 
         if (m_verticalScroll)
         {
             float realTrackHeight = getSize().y;
             realTrackHeight -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
-            m_textureThumbNormal.setPosition(position.x, position.y + (realTrackHeight - getThumbSize().y) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y);
-            m_textureArrowDownNormal.setPosition(position.x, position.y + getSize().y - m_textureArrowUpNormal.getSize().y);
+            m_textureThumbNormal.setPosition(position.getValue().x, position.getValue().y + (realTrackHeight - getThumbSize().y) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y);
+            m_textureArrowDownNormal.setPosition(position.getValue().x, position.getValue().y + getSize().y - m_textureArrowUpNormal.getSize().y);
         }
         else
         {
             float realTrackWidth = getSize().x;
             realTrackWidth -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
-            m_textureThumbNormal.setPosition(position.x + (realTrackWidth - getThumbSize().x) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y, position.y);
-            m_textureArrowDownNormal.setPosition(position.x + getSize().x - m_textureArrowUpNormal.getSize().x, position.y);
+            m_textureThumbNormal.setPosition(position.getValue().x + (realTrackWidth - getThumbSize().x) * m_value / (m_maximum - m_lowValue) + m_textureArrowUpNormal.getSize().y, position.getValue().y);
+            m_textureArrowDownNormal.setPosition(position.getValue().x + getSize().x - m_textureArrowUpNormal.getSize().x, position.getValue().y);
         }
 
         m_textureThumbHover.setPosition(m_textureThumbNormal.getPosition());

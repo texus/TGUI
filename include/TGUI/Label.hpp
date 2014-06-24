@@ -91,6 +91,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the area of the text that will be drawn.
         ///
         /// @param size  Size of the part to draw
@@ -119,22 +135,6 @@ namespace tgui
         {
             return m_background.getSize();
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
-        ///
-        /// This function completely overwrites the previous position.
-        /// See the move function to apply an offset based on the previous position instead.
-        /// The default position of a transformable widget is (0, 0).
-        ///
-        /// @param position  New position
-        ///
-        /// @see move, getPosition
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const sf::Vector2f& position) override;
-        using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

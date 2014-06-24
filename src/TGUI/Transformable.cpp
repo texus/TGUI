@@ -33,7 +33,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::setPosition(const sf::Vector2f& position)
+    void Transformable::setPosition(const Layout& position)
     {
         m_position = position;
 
@@ -42,14 +42,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Vector2f& Transformable::getPosition() const
+    sf::Vector2f Transformable::getPosition() const
     {
-        return m_position;
+        return m_position.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::move(const sf::Vector2f& offset)
+    void Transformable::move(const Layout& offset)
     {
         setPosition(m_position + offset);
     }
@@ -74,8 +74,8 @@ namespace tgui
     {
         if (m_transformNeedUpdate)
         {
-            m_transform = sf::Transform( 1, 0, m_position.x,
-                                         0, 1, m_position.y,
+            m_transform = sf::Transform( 1, 0, m_position.getValue().x,
+                                         0, 1, m_position.getValue().y,
                                          0.f, 0.f, 1.f);
 
             m_transformNeedUpdate = false;

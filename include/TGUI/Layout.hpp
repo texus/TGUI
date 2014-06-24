@@ -38,6 +38,7 @@
 namespace tgui
 {
     class Widget;
+    class Layout;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +75,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Layout
+    class TGUI_API Layout1d
     {
     public:
 
@@ -86,14 +87,22 @@ namespace tgui
             Divide
         };
 
-        Layout(float value) : m_value{value} {}
+        Layout1d(float value = 0) : m_value{value} {}
 
-        explicit Layout(const std::shared_ptr<LayoutBind>& layout, LayoutBind::Trigger trigger);
+        explicit Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutBind::Trigger trigger);
 
-        friend Layout operator+(const Layout& left, const Layout& right);
-        friend Layout operator-(const Layout& left, const Layout& right);
-        friend Layout operator*(const Layout& left, const Layout& right);
-        friend Layout operator/(const Layout& left, const Layout& right);
+        float getValue() const
+        {
+            return m_value;
+        }
+
+        friend Layout1d operator+(const Layout1d& left, const Layout1d& right);
+        friend Layout1d operator-(const Layout1d& left, const Layout1d& right);
+        friend Layout1d operator*(const Layout1d& left, const Layout1d& right);
+        friend Layout1d operator/(const Layout1d& left, const Layout1d& right);
+
+        friend Layout operator*(const Layout& left, const Layout1d& right);
+        friend Layout operator/(const Layout& left, const Layout1d& right);
 
     private:
 
@@ -107,50 +116,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Layout2d
+    class TGUI_API Layout
     {
     public:
 
-        Layout2d(const sf::Vector2f& value) : x(value.x), y(value.y) {}
+        Layout(const sf::Vector2f& value = {0,0}) : x(value.x), y(value.y) {}
 
-        Layout2d(const Layout& valueX, const Layout& valueY) : x(valueX), y(valueY) {}
+        Layout(const Layout1d& valueX, const Layout1d& valueY) : x(valueX), y(valueY) {}
 
+        sf::Vector2f getValue() const
+        {
+            return {x.getValue(), y.getValue()};
+        }
 
-        Layout x;
-        Layout y;
+        friend Layout operator+(const Layout& left, const Layout& right);
+        friend Layout operator-(const Layout& left, const Layout& right);
+
+        friend Layout operator*(const Layout& left, const Layout1d& right);
+        friend Layout operator/(const Layout& left, const Layout1d& right);
+
+    private:
+        Layout1d x;
+        Layout1d y;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout bindLeft(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d operator+(const Layout1d& left, const Layout1d& right);
+    TGUI_API Layout1d operator-(const Layout1d& left, const Layout1d& right);
+    TGUI_API Layout1d operator*(const Layout1d& left, const Layout1d& right);
+    TGUI_API Layout1d operator/(const Layout1d& left, const Layout1d& right);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API Layout operator+(const Layout& left, const Layout& right);
+    TGUI_API Layout operator-(const Layout& left, const Layout& right);
 
-    Layout bindTop(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
+    TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API Layout1d bindLeft(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindTop(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindRight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindBottom(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindWidth(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindHeight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
 
-    Layout bindRight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout bindBottom(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout bindWidth(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout bindHeight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout2d bindPosition(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout2d bindSize(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+    TGUI_API Layout bindPosition(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+    TGUI_API Layout bindSize(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

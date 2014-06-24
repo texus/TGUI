@@ -95,13 +95,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setPosition(const sf::Vector2f& position)
+    void Knob::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
-        m_backgroundTexture.setPosition(position);
-        m_foregroundTexture.setPosition(position.x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
-                                        position.y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
+        m_backgroundTexture.setPosition(position.getValue());
+        m_foregroundTexture.setPosition(position.getValue().x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
+                                        position.getValue().y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

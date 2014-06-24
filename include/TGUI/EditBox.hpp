@@ -121,7 +121,7 @@ namespace tgui
         /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const sf::Vector2f& position) override;
+        virtual void setPosition(const Layout& position) override;
         using Transformable::setPosition;
 
 

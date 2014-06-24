@@ -55,17 +55,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setPosition(const sf::Vector2f& position)
+    void Picture::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
-        m_texture.setPosition(position);
-
-        if (m_callbackFunctions[Widget::PositionChanged].empty() == false)
-        {
-            m_callback.trigger = Widget::PositionChanged;
-            addCallback();
-        }
+        m_texture.setPosition(position.getValue());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

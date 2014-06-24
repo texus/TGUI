@@ -83,6 +83,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setPosition(const Layout& position)
+    {
+        Transformable::setPosition(position);
+
+        if (m_callbackFunctions[Widget::PositionChanged].empty() == false)
+        {
+            m_callback.trigger  = Widget::PositionChanged;
+            m_callback.position = position.getValue();
+            addCallback();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Widget::getAbsolutePosition() const
     {
         if (m_parent)

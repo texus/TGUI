@@ -92,18 +92,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setPosition(const sf::Vector2f& position)
+    void RadioButton::setPosition(const Layout& position)
     {
         ClickableWidget::setPosition(position);
 
-        m_textureUnchecked.setPosition(position);
-        m_textureChecked.setPosition(position.x, position.y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
-        m_textureFocused.setPosition(position);
-        m_textureHover.setPosition(position);
+        m_textureUnchecked.setPosition(position.getValue());
+        m_textureChecked.setPosition(position.getValue().x, position.getValue().y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
+        m_textureFocused.setPosition(position.getValue());
+        m_textureHover.setPosition(position.getValue());
 
         sf::FloatRect textBounds = m_text.getLocalBounds();
-        m_text.setPosition(position.x + std::floor(m_textureUnchecked.getSize().x * 11.0f / 10.0f - textBounds.left),
-                           position.y + std::floor(((m_textureUnchecked.getSize().y - textBounds.height) / 2.0f) - textBounds.top));
+        m_text.setPosition(position.getValue().x + std::floor(m_textureUnchecked.getSize().x * 11.0f / 10.0f - textBounds.left),
+                           position.getValue().y + std::floor(((m_textureUnchecked.getSize().y - textBounds.height) / 2.0f) - textBounds.top));
     }
 
 

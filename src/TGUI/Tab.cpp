@@ -111,9 +111,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setPosition(const sf::Vector2f& position)
+    void Tab::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
         float positionX = 0;
         auto it2 = m_texturesSelected.begin();

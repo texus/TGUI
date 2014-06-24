@@ -93,18 +93,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setPosition(const sf::Vector2f& position)
+    void Button::setPosition(const Layout& position)
     {
-        Transformable::setPosition(position);
+        Widget::setPosition(position);
 
-        m_textureDown.setPosition(position);
-        m_textureHover.setPosition(position);
-        m_textureNormal.setPosition(position);
-        m_textureFocused.setPosition(position);
+        m_textureDown.setPosition(position.getValue());
+        m_textureHover.setPosition(position.getValue());
+        m_textureNormal.setPosition(position.getValue());
+        m_textureFocused.setPosition(position.getValue());
 
         // Set the position of the text
-        m_text.setPosition(std::floor(position.x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
-                           std::floor(position.y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(position.getValue().x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
+                           std::floor(position.getValue().y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

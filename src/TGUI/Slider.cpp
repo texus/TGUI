@@ -90,22 +90,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setPosition(const sf::Vector2f& position)
+    void Slider::setPosition(const Layout& position)
     {
         Widget::setPosition(position);
 
-        m_textureTrackNormal.setPosition(position);
-        m_textureTrackHover.setPosition(position);
+        m_textureTrackNormal.setPosition(position.getValue());
+        m_textureTrackHover.setPosition(position.getValue());
 
         if (m_verticalScroll)
         {
-            m_textureThumbNormal.setPosition({position.x + ((getSize().x - getThumbSize().x) / 2.0f),
-                                              position.y - (getThumbSize().y / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum))});
+            m_textureThumbNormal.setPosition({position.getValue().x + ((getSize().x - getThumbSize().x) / 2.0f),
+                                              position.getValue().y - (getThumbSize().y / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum))});
         }
         else
         {
-            m_textureThumbNormal.setPosition({position.x - (getThumbSize().x / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)),
-                                              position.y + ((getSize().y - getThumbSize().y) / 2.0f)});
+            m_textureThumbNormal.setPosition({position.getValue().x - (getThumbSize().x / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)),
+                                              position.getValue().y + ((getSize().y - getThumbSize().y) / 2.0f)});
         }
 
         m_textureThumbHover.setPosition(m_textureThumbNormal.getPosition());

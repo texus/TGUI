@@ -180,10 +180,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setPosition(const sf::Vector2f& position)
+    void ChildWindow::setPosition(const Layout& position)
     {
-        float x = position.x;
-        float y = position.y;
+        float x = position.getValue().x;
+        float y = position.getValue().y;
 
         if (m_keepInParent)
         {
@@ -198,7 +198,7 @@ namespace tgui
                 x = m_parent->getSize().x - getSize().x;
         }
 
-        Transformable::setPosition({x, y});
+        Widget::setPosition({x, y});
 
         m_textureTitleBar.setPosition({x, y});
         m_iconTexture.setPosition(x + m_distanceToSide, y + ((m_titleBarHeight - m_iconTexture.getSize().y) / 2.0f));
