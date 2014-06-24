@@ -36,6 +36,7 @@ namespace tgui
     void Transformable::setPosition(const Layout& position)
     {
         m_position = position;
+        m_position.setCallbackFunction(std::bind(&Transformable::updatePosition, this));
 
         m_transformNeedUpdate = true;
     }
@@ -82,6 +83,25 @@ namespace tgui
         }
 
         return m_transform;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Transformable::updatePosition()
+    {
+        m_position.recalculateValue();
+        setPosition(m_position);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Transformable::updateSize()
+    {
+        /// TODO: Uncomment
+        /**
+        m_size.recalculateValue();
+        setSize(m_size);
+        */
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

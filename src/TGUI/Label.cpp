@@ -89,7 +89,7 @@ namespace tgui
     {
         m_text.setString(string);
 
-        setPosition(getPosition());
+        updatePosition();
 
         // Change the size of the label if necessary
         if (m_autoSize)
@@ -110,7 +110,7 @@ namespace tgui
     {
         m_text.setCharacterSize(size);
 
-        setPosition(getPosition());
+        updatePosition();
 
         // Change the size of the label if necessary
         if (m_autoSize)

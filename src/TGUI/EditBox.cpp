@@ -161,7 +161,7 @@ namespace tgui
         m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
 
         // Recalculate the position of the images and texts
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

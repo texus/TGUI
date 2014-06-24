@@ -42,7 +42,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API LayoutBind
+    enum class LayoutChangeTrigger
+    {
+        Position,
+        Size
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TGUI_API LayoutCallbackManager final
+    {
+    public:
+        void bindCallback(const SharedWidgetPtr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout, const std::function<void()>& function);
+        void unbindCallback(const SharedWidgetPtr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout);
+
+    private:
+        void positionChanged(SharedWidgetPtr<Widget> widget);
+        void sizeChanged(SharedWidgetPtr<Widget> widget);
+
+    private:
+        /// Use std::shared_ptr<Widget> when the changes have been made
+        std::map<Widget*, std::map<LayoutChangeTrigger, std::map<const Layout*, std::function<void()>>>> m_callbacks;
+    };
+
+    extern TGUI_API LayoutCallbackManager TGUI_LayoutCallbackManager;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TGUI_API LayoutBind final
     {
     public:
 
@@ -52,30 +79,30 @@ namespace tgui
             Y
         };
 
-        enum class Trigger
-        {
-            PositionChanged,
-            SizeChanged
-        };
-
         LayoutBind(const SharedWidgetPtr<Widget>& widget, Param param, float fraction = 1);
 
-        void bind(Trigger trigger);
-
         float getValue() const;
+
+        void setTrigger(LayoutChangeTrigger trigger);
+
+        void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
+
+        void unbindCallback(const Layout* layout);
 
     protected:
         SharedWidgetPtr<Widget> m_widget;
         float m_fraction;
 
-        std::function<sf::Vector2f()> m_getter;
+        LayoutChangeTrigger m_trigger;
         Param m_param;
+
+        static LayoutCallbackManager m_layoutCallbackManager;
     };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Layout1d
+    class TGUI_API Layout1d final
     {
     public:
 
@@ -89,7 +116,7 @@ namespace tgui
 
         Layout1d(float value = 0) : m_value{value} {}
 
-        explicit Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutBind::Trigger trigger);
+        explicit Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutChangeTrigger trigger);
 
         float getValue() const
         {
@@ -105,18 +132,21 @@ namespace tgui
         friend Layout operator/(const Layout& left, const Layout1d& right);
 
     private:
-
-        void recalculateResult();
+        void recalculateValue();
+        void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
+        void unbindCallback(const Layout* layout);
 
     private:
         std::list<std::shared_ptr<LayoutBind>> m_bindings;
         std::list<Operator> m_operators;
         float m_value;
+
+        friend class Layout;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Layout
+    class TGUI_API Layout final
     {
     public:
 
@@ -124,10 +154,15 @@ namespace tgui
 
         Layout(const Layout1d& valueX, const Layout1d& valueY) : x(valueX), y(valueY) {}
 
+        ~Layout();
+
         sf::Vector2f getValue() const
         {
             return {x.getValue(), y.getValue()};
         }
+
+        void recalculateValue();
+        void setCallbackFunction(const std::function<void()>& callback) const;
 
         friend Layout operator+(const Layout& left, const Layout& right);
         friend Layout operator-(const Layout& left, const Layout& right);

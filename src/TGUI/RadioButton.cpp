@@ -124,7 +124,7 @@ namespace tgui
                                   newSize.y + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (newSize.y / m_textureUnchecked.getImageSize().y))});
 
         // Reposition the text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace tgui
             m_text.setCharacterSize(m_textSize);
 
         // Reposition the text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

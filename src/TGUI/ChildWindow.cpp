@@ -254,7 +254,7 @@ namespace tgui
         }
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ namespace tgui
         m_textureTitleBar.setSize({m_size.x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,7 +320,7 @@ namespace tgui
         m_titleText.setString(title);
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,7 +332,7 @@ namespace tgui
         m_textureTitleBar.setSize({m_size.x + borders.left + borders.right, static_cast<float>(m_titleBarHeight)});
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +342,7 @@ namespace tgui
         m_distanceToSide = distanceToSide;
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,7 +352,7 @@ namespace tgui
         m_titleAlignment = alignment;
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,7 +370,7 @@ namespace tgui
                                m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y});
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +381,7 @@ namespace tgui
             TGUI_TextureManager.removeTexture(m_iconTexture);
 
         // Reposition the images and text
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

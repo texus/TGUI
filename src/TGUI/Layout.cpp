@@ -31,9 +31,51 @@
 
 namespace tgui
 {
+    LayoutCallbackManager LayoutBind::m_layoutCallbackManager;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LayoutBind::LayoutBind(const SharedWidgetPtr<Widget>& widget, Param param, float fraction) :
+    void LayoutCallbackManager::bindCallback(const Widget::Ptr& widget, LayoutChangeTrigger trigger, const Layout* layout, const std::function<void()>& function)
+    {
+        // The first time we get this trigger for this widget, we have to bind the callback
+        if (m_callbacks[widget.get()][trigger].empty())
+        {
+            if (trigger == LayoutChangeTrigger::Position)
+                widget->bindCallback(Widget::PositionChanged, std::bind(&LayoutCallbackManager::positionChanged, this, widget));
+            else
+                widget->bindCallback(Widget::SizeChanged, std::bind(&LayoutCallbackManager::sizeChanged, this, widget));
+        }
+
+        m_callbacks[widget.get()][trigger][layout] = function;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LayoutCallbackManager::unbindCallback(const Widget::Ptr& widget, LayoutChangeTrigger trigger, const Layout* layout)
+    {
+        m_callbacks[widget.get()][trigger].erase(layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LayoutCallbackManager::positionChanged(Widget::Ptr widget)
+    {
+        for (auto& callback : m_callbacks[widget.get()][LayoutChangeTrigger::Position])
+            callback.second();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LayoutCallbackManager::sizeChanged(Widget::Ptr widget)
+    {
+        for (auto& callback : m_callbacks[widget.get()][LayoutChangeTrigger::Size])
+            callback.second();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LayoutBind::LayoutBind(const Widget::Ptr& widget, Param param, float fraction) :
         m_widget(widget),
         m_fraction(fraction),
         m_param(param)
@@ -42,56 +84,76 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LayoutBind::bind(Trigger trigger)
-    {
-        assert(m_widget != nullptr);
-        assert(trigger == Trigger::PositionChanged || trigger == Trigger::SizeChanged);
-
-        if (trigger == Trigger::PositionChanged)
-            m_getter = std::bind(&Widget::getPosition, m_widget.get());
-        else
-            m_getter = std::bind(&Widget::getSize, m_widget.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     float LayoutBind::getValue() const
     {
-        assert(m_param == Param::X || m_param == Param::Y);
-
         if (m_widget != nullptr)
         {
-            if (m_param == Param::X)
-                return m_getter().x * m_fraction;
+            if (m_trigger == LayoutChangeTrigger::Position)
+            {
+                if (m_param == Param::X)
+                    return m_widget->getPosition().x * m_fraction;
+                else
+                    return m_widget->getPosition().y * m_fraction;
+            }
             else
-                return m_getter().y * m_fraction;
+            {
+                if (m_param == Param::X)
+                    return m_widget->getSize().x * m_fraction;
+                else
+                    return m_widget->getSize().y * m_fraction;
+            }
         }
         else
             return m_fraction;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d::Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutBind::Trigger trigger)
+    void LayoutBind::setTrigger(LayoutChangeTrigger trigger)
     {
-        layout->bind(trigger);
-
-        m_bindings.push_back(layout);
-        recalculateResult();
+        m_trigger = trigger;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Layout1d::recalculateResult()
+    void LayoutBind::setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const
     {
+        m_layoutCallbackManager.bindCallback(m_widget, m_trigger, layout, callback);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LayoutBind::unbindCallback(const Layout* layout)
+    {
+        m_layoutCallbackManager.unbindCallback(m_widget, m_trigger, layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d::Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutChangeTrigger trigger)
+    {
+        layout->setTrigger(trigger);
+        m_value = layout->getValue();
+
+        m_bindings.push_back(layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout1d::recalculateValue()
+    {
+        // Constants don't need to be updated
+        if (m_bindings.empty())
+            return;
+
         assert(m_bindings.size() == m_operators.size() + 1);
 
         auto bindingsIt = m_bindings.cbegin();
-
         m_value = (*bindingsIt)->getValue();
         bindingsIt++;
 
+        // Apply the math operations between the bindings
         for (auto operatorsIt = m_operators.cbegin(); operatorsIt != m_operators.cend(); ++operatorsIt, ++bindingsIt)
         {
             switch (*operatorsIt)
@@ -115,6 +177,48 @@ namespace tgui
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout1d::setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const
+    {
+        for (auto& binding : m_bindings)
+            binding->setCallbackFunction(callback, layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout1d::unbindCallback(const Layout* layout)
+    {
+        for (auto& binding : m_bindings)
+            binding->unbindCallback(layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::~Layout()
+    {
+        x.unbindCallback(this);
+        y.unbindCallback(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::recalculateValue()
+    {
+        x.recalculateValue();
+        y.recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::setCallbackFunction(const std::function<void()>& callback) const
+    {
+        x.setCallbackFunction(callback, this);
+        y.setCallbackFunction(callback, this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d operator+(float left, const Layout1d& right)
@@ -233,58 +337,58 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindLeft(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindLeft(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutBind::Trigger::PositionChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutChangeTrigger::Position};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindTop(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindTop(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutBind::Trigger::PositionChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutChangeTrigger::Position};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindRight(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindRight(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutBind::Trigger::PositionChanged}
-             + Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutBind::Trigger::SizeChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutChangeTrigger::Position}
+             + Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutChangeTrigger::Size};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindBottom(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindBottom(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutBind::Trigger::PositionChanged}
-             + Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutBind::Trigger::SizeChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutChangeTrigger::Position}
+             + Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutChangeTrigger::Size};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindWidth(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindWidth(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutBind::Trigger::SizeChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::X, fraction}}, LayoutChangeTrigger::Size};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d bindHeight(const SharedWidgetPtr<Widget>& widget, float fraction)
+    Layout1d bindHeight(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutBind::Trigger::SizeChanged};
+        return Layout1d{std::shared_ptr<LayoutBind>{new LayoutBind{widget, LayoutBind::Param::Y, fraction}}, LayoutChangeTrigger::Size};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout bindPosition(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction)
+    Layout bindPosition(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
         return {bindLeft(widget, fraction.x), bindTop(widget, fraction.y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout bindSize(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction)
+    Layout bindSize(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
         return {bindWidth(widget, fraction.x), bindHeight(widget, fraction.y)};
     }

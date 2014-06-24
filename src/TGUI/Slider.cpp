@@ -150,7 +150,7 @@ namespace tgui
         m_textureThumbHover.setSize(m_textureThumbNormal.getSize());
 
         // Recalculate the position of the images
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ namespace tgui
             setValue(m_minimum);
 
         // Recalculate the position of the thumb image
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ namespace tgui
             setValue(m_maximum);
 
         // Recalculate the position of the thumb image
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ namespace tgui
             }
 
             // Recalculate the position of the thumb image
-            setPosition(getPosition());
+            updatePosition();
         }
     }
 

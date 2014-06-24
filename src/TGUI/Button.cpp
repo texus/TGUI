@@ -121,7 +121,7 @@ namespace tgui
             setText(m_text.getString());
 
         // Recalculate the position of the images
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

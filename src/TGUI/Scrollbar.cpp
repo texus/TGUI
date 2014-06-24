@@ -186,7 +186,7 @@ namespace tgui
         m_textureArrowDownHover.setSize(m_textureArrowUpNormal.getSize());
 
         // Recalculate the position of the images
-        setPosition(getPosition());
+        updatePosition();
 
         // Make sure the transparency isn't lost
         setTransparency(m_opacity);

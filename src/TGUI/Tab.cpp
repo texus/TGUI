@@ -239,7 +239,7 @@ namespace tgui
                     --m_selectedTab;
 
                 // Recalculate the positions of the tabs
-                setPosition(getPosition());
+                updatePosition();
                 break;
             }
         }
@@ -277,7 +277,7 @@ namespace tgui
             --m_selectedTab;
 
         // Recalculate the positions of the tabs
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,7 +585,7 @@ namespace tgui
         }
 
         // Recalculate the positions of the tabs
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

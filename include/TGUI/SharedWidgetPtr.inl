@@ -60,7 +60,7 @@ namespace tgui
     m_widgetPtr(nullptr)
     {
         init();
-        gui.m_container.add(*this, widgetName);
+        gui.m_container->add(*this, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

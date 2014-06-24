@@ -113,7 +113,7 @@ namespace tgui
                                      m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * size.y});
 
         // Recalculate the position of the images
-        setPosition(getPosition());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
