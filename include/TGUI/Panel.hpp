@@ -92,8 +92,6 @@ namespace tgui
         ///
         /// @param backgroundColor  New background color
         ///
-        /// The background is fully transparent by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor)
         {
@@ -103,8 +101,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the background color of the panel.
-        ///
-        /// The background is fully transparent by default.
         ///
         /// @return The current background color
         ///
