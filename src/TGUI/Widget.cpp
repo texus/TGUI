@@ -64,18 +64,18 @@ namespace tgui
             Transformable::operator=(right);
             CallbackManager::operator=(right);
 
-            m_enabled             = right.m_enabled;
-            m_visible             = right.m_visible;
-            m_parent              = right.m_parent;
-            m_opacity             = right.m_opacity;
-            m_mouseHover          = false;
-            m_mouseDown           = false;
-            m_focused             = false;
-            m_allowFocus          = right.m_allowFocus;
-            m_animatedWidget      = right.m_animatedWidget;
-            m_draggableWidget     = right.m_draggableWidget;
-            m_containerWidget     = right.m_containerWidget;
-            m_callback            = Callback();
+            m_enabled         = right.m_enabled;
+            m_visible         = right.m_visible;
+            m_parent          = right.m_parent;
+            m_opacity         = right.m_opacity;
+            m_mouseHover      = false;
+            m_mouseDown       = false;
+            m_focused         = false;
+            m_allowFocus      = right.m_allowFocus;
+            m_animatedWidget  = right.m_animatedWidget;
+            m_draggableWidget = right.m_draggableWidget;
+            m_containerWidget = right.m_containerWidget;
+            m_callback        = Callback();
         }
 
         return *this;
@@ -110,13 +110,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::isVisible() const
-    {
-        return m_visible;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::enable()
     {
         m_enabled = true;
@@ -138,20 +131,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Widget::isEnabled() const
-    {
-        return m_enabled;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Widget::isDisabled() const
-    {
-        return !m_enabled;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::focus()
     {
         if (m_parent)
@@ -164,41 +143,6 @@ namespace tgui
     {
         if (m_focused)
             m_parent->unfocusWidgets();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Widget::isFocused() const
-    {
-        return m_focused;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    WidgetTypes Widget::getWidgetType() const
-    {
-        return m_callback.widgetType;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Container* Widget::getParent() const
-    {
-        return m_parent;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::setTransparency(unsigned char transparency)
-    {
-        m_opacity = transparency;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned char Widget::getTransparency() const
-    {
-        return m_opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
