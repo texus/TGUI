@@ -175,6 +175,8 @@ namespace tgui
                 break;
             }
         }
+
+        m_value += m_constant;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +234,7 @@ namespace tgui
     {
         Layout1d layout = left;
         layout.m_value += right.m_value;
+        layout.m_constant += right.m_constant;
 
         layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
 
@@ -254,6 +257,7 @@ namespace tgui
     {
         Layout1d layout = left;
         layout.m_value -= right.m_value;
+        layout.m_constant -= right.m_constant;
 
         layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
 
@@ -276,6 +280,7 @@ namespace tgui
     {
         Layout1d layout = left;
         layout.m_value *= right.m_value;
+        layout.m_constant *= right.m_constant;
 
         layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
 
@@ -298,6 +303,7 @@ namespace tgui
     {
         Layout1d layout = left;
         layout.m_value /= right.m_value;
+        layout.m_constant /= right.m_constant;
 
         layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
 

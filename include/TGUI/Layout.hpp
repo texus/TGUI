@@ -61,7 +61,7 @@ namespace tgui
         void sizeChanged(SharedWidgetPtr<Widget> widget);
 
     private:
-        /// Use std::shared_ptr<Widget> when the changes have been made
+        /// Use std::shared_ptr<Widget> when the changes have been made?
         std::map<Widget*, std::map<LayoutChangeTrigger, std::map<const Layout*, std::function<void()>>>> m_callbacks;
     };
 
@@ -114,7 +114,7 @@ namespace tgui
             Divide
         };
 
-        Layout1d(float value = 0) : m_value{value} {}
+        Layout1d(float value = 0) : m_value{value}, m_constant{value} {}
 
         explicit Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutChangeTrigger trigger);
 
@@ -139,7 +139,8 @@ namespace tgui
     private:
         std::list<std::shared_ptr<LayoutBind>> m_bindings;
         std::list<Operator> m_operators;
-        float m_value;
+        float m_value = 0;
+        float m_constant = 0;
 
         friend class Layout;
     };
