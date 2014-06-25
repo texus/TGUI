@@ -697,7 +697,7 @@ namespace tgui
         int m_selectedItem = -1;
 
         // The size must be stored
-        sf::Vector2u m_size = sf::Vector2u{50, 100};
+        sf::Vector2f m_size = {50, 100};
         unsigned int m_itemHeight = 24;
         unsigned int m_textSize = 19;
 

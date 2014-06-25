@@ -228,8 +228,8 @@ namespace tgui
 
                 // Initialize the scrollbar
                 m_scroll->setVerticalScroll(true);
-                m_scroll->setLowValue(m_size.y);
-                m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
+                m_scroll->setLowValue(static_cast<unsigned int>(m_size.y));
+                m_scroll->setSize({m_scroll->getSize().x, m_size.y});
             }
             else
                 throw Exception("Unrecognized property '" + it->first + "' in section TextBox in " + m_loadedConfigFile + ".");
@@ -246,9 +246,9 @@ namespace tgui
 
         // There is a minimum width
         if (m_scroll == nullptr)
-            m_size = {static_cast<unsigned int>(TGUI_MAXIMUM(50, size.x)), static_cast<unsigned int>(size.y)};
+            m_size = {TGUI_MAXIMUM(50, size.x), size.y};
         else
-            m_size = {static_cast<unsigned int>(TGUI_MAXIMUM(50 + m_scroll->getSize().x, size.x)), static_cast<unsigned int>(size.y)};
+            m_size = {TGUI_MAXIMUM(50 + m_scroll->getSize().x, size.x), size.y};
 
         // There is also a minimum height
         if (m_scroll == nullptr)
@@ -276,8 +276,8 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_scroll != nullptr)
         {
-            m_scroll->setLowValue(m_size.y);
-            m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
+            m_scroll->setLowValue(static_cast<unsigned int>(m_size.y));
+            m_scroll->setSize({m_scroll->getSize().x, m_size.y});
         }
 
         // The size of the textbox has changed, update the text
@@ -287,17 +287,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f TextBox::getFullSize() const
-    {
-        return sf::Vector2f(static_cast<float>(m_size.x + m_borders.left + m_borders.right),
-                            static_cast<float>(m_size.y + m_borders.top + m_borders.bottom));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::setText(const sf::String& text)
     {
-        // Store the text
         m_text = text;
 
         // Set the caret behind the last character
@@ -308,7 +299,6 @@ namespace tgui
 
     void TextBox::addText(const sf::String& text)
     {
-        // Add the text
         m_text += text;
 
         // Set the caret behind the last character
@@ -361,8 +351,8 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (m_scroll != nullptr)
         {
-            m_scroll->setLowValue(m_size.y);
-            m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
+            m_scroll->setLowValue(static_cast<unsigned int>(m_size.y));
+            m_scroll->setSize({m_scroll->getSize().x, m_size.y});
         }
 
         // The size has changed, update the text
@@ -536,8 +526,8 @@ namespace tgui
 
         // Initialize the scrollbar
         m_scroll->setVerticalScroll(true);
-        m_scroll->setSize({m_scroll->getSize().x, static_cast<float>(m_size.y)});
-        m_scroll->setLowValue(m_size.y);
+        m_scroll->setSize({m_scroll->getSize().x, m_size.y});
+        m_scroll->setLowValue(static_cast<unsigned int>(m_size.y));
         m_scroll->setMaximum(m_lines * m_lineHeight);
 
         return true;
@@ -568,14 +558,11 @@ namespace tgui
 
     bool TextBox::mouseOnWidget(float x, float y)
     {
-        // Get the current position
-        sf::Vector2f position = getPosition();
-
         // Pass the event to the scrollbar (if there is one)
         if (m_scroll != nullptr)
         {
             // Temporarily set the position of the scroll
-            m_scroll->setPosition({position.x + m_size.x - m_scroll->getSize().x, position.y});
+            m_scroll->setPosition({getPosition().x + m_size.x - m_scroll->getSize().x, getPosition().y});
 
             // Pass the event
             m_scroll->mouseOnWidget(x, y);
@@ -585,7 +572,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the text box
-        if (getTransform().transformRect(sf::FloatRect(0, 0, static_cast<float>(m_size.x), static_cast<float>(m_size.y))).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
             return true;
         else // The mouse is not on top of the text box
         {
@@ -926,7 +913,7 @@ namespace tgui
             sf::Vector2u newPosition(0, 0);
 
             int distanceX;
-            unsigned int previousdistanceX = m_size.x;
+            unsigned int previousdistanceX = static_cast<unsigned int>(m_size.x);
 
             // Loop through all characters
             for (unsigned int i = 0; i < m_selEnd; ++i)
@@ -1021,7 +1008,7 @@ namespace tgui
             sf::Vector2u newPosition(0, 0);
 
             int distanceX;
-            int previousdistanceX = m_size.x;
+            int previousdistanceX = static_cast<int>(m_size.x);
 
             // Loop through all characters
             for (unsigned int i = 0; i < m_text.getSize(); ++i)
@@ -1339,7 +1326,7 @@ namespace tgui
                 }
 
                 // Check if you passed this limit
-                if (lines > m_size.y / m_lineHeight)
+                if (lines > static_cast<unsigned int>(m_size.y) / m_lineHeight)
                 {
                     // The character can't be added
                     return;
@@ -1873,7 +1860,7 @@ namespace tgui
             if (m_scroll == nullptr)
             {
                 // Check if you passed this limit
-                if (m_lines > m_size.y / m_lineHeight)
+                if (m_lines > static_cast<unsigned int>(m_size.y) / m_lineHeight)
                 {
                     // Remove all exceeding lines
                     m_displayedText.erase(i + newlinesAdded - 1, sf::String::InvalidPos);
@@ -1902,9 +1889,9 @@ namespace tgui
 
             // Calculate the number of visible lines
             if ((m_scroll->getValue() % m_lineHeight) == 0)
-                m_visibleLines = TGUI_MINIMUM(m_size.y / m_lineHeight, m_lines);
+                m_visibleLines = TGUI_MINIMUM(static_cast<unsigned int>(m_size.y) / m_lineHeight, m_lines);
             else
-                m_visibleLines = TGUI_MINIMUM((m_size.y / m_lineHeight) + 1, m_lines);
+                m_visibleLines = TGUI_MINIMUM((static_cast<unsigned int>(m_size.y) / m_lineHeight) + 1, m_lines);
         }
         else // There is no scrollbar
         {
@@ -1912,7 +1899,7 @@ namespace tgui
             m_topLine = 1;
 
             // Calculate the number of visible lines
-            m_visibleLines = TGUI_MINIMUM(m_size.y / m_lineHeight, m_lines);
+            m_visibleLines = TGUI_MINIMUM(static_cast<unsigned int>(m_size.y) / m_lineHeight, m_lines);
         }
 
         // Fill the temporary text widget with the whole text
@@ -2134,10 +2121,10 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + m_size.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + m_size.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -2148,29 +2135,29 @@ namespace tgui
         // Draw the borders
         {
             // Draw left border
-            sf::RectangleShape border(sf::Vector2f(m_borders.left, static_cast<float>(m_size.y + m_borders.top)));
+            sf::RectangleShape border({m_borders.left, m_size.y + m_borders.top});
             border.setPosition(-m_borders.left, -m_borders.top);
             border.setFillColor(m_borderColor);
             target.draw(border, states);
 
             // Draw top border
-            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_borders.right), m_borders.top));
+            border.setSize({m_size.x + m_borders.right, m_borders.top});
             border.setPosition(0, -m_borders.top);
             target.draw(border, states);
 
             // Draw right border
-            border.setSize(sf::Vector2f(m_borders.right, static_cast<float>(m_size.y + m_borders.bottom)));
-            border.setPosition(static_cast<float>(m_size.x), 0);
+            border.setSize({m_borders.right, m_size.y + m_borders.bottom});
+            border.setPosition(m_size.x, 0);
             target.draw(border, states);
 
             // Draw bottom border
-            border.setSize(sf::Vector2f(static_cast<float>(m_size.x + m_borders.left), m_borders.bottom));
-            border.setPosition(-m_borders.left, static_cast<float>(m_size.y));
+            border.setSize({m_size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(-m_borders.left, m_size.y);
             target.draw(border, states);
         }
 
         // Draw the background
-        sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_size.x), static_cast<float>(m_size.y)));
+        sf::RectangleShape front(m_size);
         front.setFillColor(m_backgroundColor);
         target.draw(front, states);
 
@@ -2204,7 +2191,7 @@ namespace tgui
 
         sf::Text tempText(m_textBeforeSelection);
         tempText.setString("kg");
-        sf::Vector2f textShift(tempText.getLocalBounds().left, tempText.getLocalBounds().top);
+        sf::Vector2f textShift = {tempText.getLocalBounds().left, tempText.getLocalBounds().top};
 
         // Draw the text
         states.transform.translate(-textShift.x, -textShift.y);
@@ -2227,7 +2214,7 @@ namespace tgui
                 states.transform.translate(static_cast<float>(m_textBeforeSelection.getFont()->getKerning(m_displayedText[textBeforeSelectionLength-2], m_displayedText[textBeforeSelectionLength-1], m_textSize)), 0);
 
             // Create the selection background
-            sf::RectangleShape selectionBackground1(sf::Vector2f(m_textSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_lineHeight)));
+            sf::RectangleShape selectionBackground1({m_textSelection1.findCharacterPos(textSelection1Length).x, static_cast<float>(m_lineHeight)});
             selectionBackground1.setFillColor(m_selectedTextBgrColor);
 
             // Draw the selection background
@@ -2255,7 +2242,7 @@ namespace tgui
                 // Draw the background rectangles of the selected text
                 for (unsigned int i=0; i<m_multilineSelectionRectWidth.size(); ++i)
                 {
-                    selectionBackground2.setSize(sf::Vector2f(m_multilineSelectionRectWidth[i], static_cast<float>(m_lineHeight)));
+                    selectionBackground2.setSize({m_multilineSelectionRectWidth[i], static_cast<float>(m_lineHeight)});
                     target.draw(selectionBackground2, states);
                     selectionBackground2.move(0, static_cast<float>(m_lineHeight));
                 }
@@ -2332,7 +2319,7 @@ namespace tgui
                 states.transform.translate(-textShift.x, 0);
 
                 // Create the caret rectangle
-                sf::RectangleShape caret(sf::Vector2f(static_cast<float>(m_caretWidth), static_cast<float>(m_lineHeight)));
+                sf::RectangleShape caret({static_cast<float>(m_caretWidth), static_cast<float>(m_lineHeight)});
                 caret.setPosition(m_caretPosition.x - (m_caretWidth * 0.5f), static_cast<float>(m_caretPosition.y));
                 caret.setFillColor(m_caretColor);
 
