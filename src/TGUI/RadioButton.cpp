@@ -76,12 +76,12 @@ namespace tgui
             else if (it->first == "focusedimage")
                 configFile.readTexture(it, configFileFolder, m_textureFocused);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section RadioButton in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section RadioButton in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
         if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureUnchecked.getImageSize());
 
@@ -355,7 +355,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 uncheck();
             else
-                throw Exception("Failed to parse 'Checked' property.");
+                throw Exception{"Failed to parse 'Checked' property."};
         }
         else if (property == "text")
         {
@@ -376,7 +376,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 allowTextClick(false);
             else
-                throw Exception("Failed to parse 'AllowTextClick' property.");
+                throw Exception{"Failed to parse 'AllowTextClick' property."};
         }
         else if (property == "callback")
         {

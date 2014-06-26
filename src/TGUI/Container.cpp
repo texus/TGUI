@@ -512,7 +512,7 @@ namespace tgui
 
         // Check if the file was not opened
         if (file.is_open() == false)
-            throw Exception("Failed to open " + filename + " to load the widgets from it.");
+            throw Exception{"Failed to open " + filename + " to load the widgets from it."};
 
         std::string line;
         unsigned int lineNumber = 0;
@@ -594,7 +594,7 @@ namespace tgui
                                 // Find the next quote
                                 quotePos2 = line.find('"', backslashPos + 1);
                                 if (quotePos2 == std::string::npos)
-                                    throw Exception("Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
+                                    throw Exception{"Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + "."};
                             }
 
                             // Find the next backslash
@@ -603,7 +603,7 @@ namespace tgui
 
                         // There may never be more than two quotes
                         if (line.find('"', quotePos2 + 1) != std::string::npos)
-                            throw Exception("Too many quote characters on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
+                            throw Exception{"Too many quote characters on line " + tgui::to_string(lineNumber) + " in file " + filename + "."};
 
                         // Convert the part behind the quote to lowercase
                         line = line.substr(0, quotePos2 + 1) + toLower(line.substr(quotePos2 + 1));
@@ -613,7 +613,7 @@ namespace tgui
                         line.erase(quotePos2 - 1, 1);
                     }
                     else // The second quote is missing
-                        throw Exception("Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
+                        throw Exception{"Failed to find the closing quote on line " + tgui::to_string(lineNumber) + " in file " + filename + "."};
                 }
             }
 
@@ -631,7 +631,7 @@ namespace tgui
                         continue;
                     }
                     else // The first line is wrong
-                        throw Exception("Expected a 'window' section in " + filename + ".");
+                        throw Exception{"Expected a 'window' section in " + filename + "."};
                 }
 
                 // Check for opening and closing brackets
@@ -644,7 +644,7 @@ namespace tgui
                         continue;
                     }
                     else
-                        throw Exception("Failed to find the expected '{' on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
+                        throw Exception{"Failed to find the expected '{' on line " + tgui::to_string(lineNumber) + " in file " + filename + "."};
                 }
                 else if (line.compare("}") == 0)
                 {
@@ -685,7 +685,7 @@ namespace tgui
                 {
                     std::string::size_type equalSignPosition = line.find('=');
                     if (equalSignPosition == std::string::npos)
-                        throw Exception("Failed to find the expected '=' on line " + tgui::to_string(lineNumber) + " in file " + filename + ".");
+                        throw Exception{"Failed to find the expected '=' on line " + tgui::to_string(lineNumber) + " in file " + filename + "."};
 
                     widgetPtr.back()->setProperty(line.substr(0, equalSignPosition), line.substr(equalSignPosition + 1));
                 }
@@ -706,7 +706,7 @@ namespace tgui
 
         // Check if the file was not opened
         if (!m_file.is_open())
-            throw Exception("Failed to create " + filename + " to save the widgets to.");
+            throw Exception{"Failed to create " + filename + " to save the widgets to."};
 
         m_file << tabs << "Window:" << std::endl;
         m_file << tabs << "{" << std::endl;

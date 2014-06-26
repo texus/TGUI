@@ -151,12 +151,12 @@ namespace tgui
                 if (extractBorders(it->second, borders))
                     setBorders(borders);
                 else
-                    throw Exception("Failed to parse the 'Borders' property in section ChatBox in " + m_loadedConfigFile);
+                    throw Exception{"Failed to parse the 'Borders' property in section ChatBox in " + m_loadedConfigFile};
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception("Failed to parse value for Scrollbar property in section ChatBox in " + m_loadedConfigFile + ".");
+                    throw Exception{"Failed to parse value for Scrollbar property in section ChatBox in " + m_loadedConfigFile + "."};
 
                 // load the scrollbar and check if it failed
                 m_scroll = new Scrollbar();
@@ -177,7 +177,7 @@ namespace tgui
                 m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
             }
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section ChatBox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section ChatBox in " + m_loadedConfigFile + "."};
         }
     }
 
@@ -234,7 +234,7 @@ namespace tgui
     void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font)
     {
         if (m_panel->getGlobalFont() == nullptr && font == nullptr)
-            throw Exception("ChatBox::addLine called while no valid font was set.");
+            throw Exception{"ChatBox::addLine called while no valid font was set."};
 
         auto& widgets = m_panel->getWidgets();
 
@@ -680,7 +680,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders);
             else
-                throw Exception("Failed to parse 'Borders' property.");
+                throw Exception{"Failed to parse 'Borders' property."};
         }
         else if (property == "backgroundcolor")
         {
@@ -710,20 +710,20 @@ namespace tgui
                     std::string::size_type closeBracketPos = line.rfind(')');
 
                     if ((openBracketPos == std::string::npos) || (closeBracketPos == std::string::npos) || (openBracketPos >= closeBracketPos))
-                        throw Exception("Could not decode Lines property: failed to match brackets.");
+                        throw Exception{"Could not decode Lines property: failed to match brackets."};
 
                     sf::Color color = extractColor(line.substr(openBracketPos, closeBracketPos - openBracketPos + 1));
 
                     std::string::size_type commaPos = line.rfind(',', openBracketPos);
                     if (commaPos == std::string::npos)
-                        throw Exception("Could not decode Lines property: failed to find comma.");
+                        throw Exception{"Could not decode Lines property: failed to find comma."};
 
                     line.erase(commaPos);
 
                     addLine(line, color);
                 }
                 else
-                    throw Exception("Could not decode Lines property: failed to match brackets.");
+                    throw Exception{"Could not decode Lines property: failed to match brackets."};
             }
         }
         else // The property didn't match

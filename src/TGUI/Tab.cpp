@@ -94,7 +94,7 @@ namespace tgui
             else if (it->first == "selectedimage")
                 configFile.readTexture(it, configFileFolder, m_textureSelected);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Tab in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Tab in " + m_loadedConfigFile + "."};
         }
 
         // Clear the vectors
@@ -102,7 +102,7 @@ namespace tgui
 
         // Make sure the required texture was loaded
         if (m_textureNormal.getData() == nullptr)
-            throw Exception("NormalImage wasn't loaded. Is the Tab section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"NormalImage wasn't loaded. Is the Tab section in " + m_loadedConfigFile + " complete?"};
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)

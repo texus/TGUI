@@ -168,12 +168,12 @@ namespace tgui
                 if (extractBorders(it->second, borders))
                     setBorders(borders);
                 else
-                    throw Exception("Failed to parse the 'Borders' property in section ListBox in " + m_loadedConfigFile);
+                    throw Exception{"Failed to parse the 'Borders' property in section ListBox in " + m_loadedConfigFile};
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception("Failed to parse value for Scrollbar in section ListBox in " + m_loadedConfigFile + ".");
+                    throw Exception{"Failed to parse value for Scrollbar in section ListBox in " + m_loadedConfigFile + "."};
 
                 try
                 {
@@ -187,7 +187,7 @@ namespace tgui
                     delete m_scroll;
                     m_scroll = nullptr;
 
-                    throw Exception("Failed to create the internal scrollbar in ListBox. " + std::string(e.what()));
+                    throw Exception{"Failed to create the internal scrollbar in ListBox. " + std::string{e.what()}};
                 }
 
                 // Initialize the scrollbar
@@ -197,7 +197,7 @@ namespace tgui
                 m_scroll->setMaximum(m_items.size() * m_itemHeight);
             }
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section ListBox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section ListBox in " + m_loadedConfigFile + "."};
         }
     }
 
@@ -854,7 +854,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders);
             else
-                throw Exception("Failed to parse 'Borders' property.");
+                throw Exception{"Failed to parse 'Borders' property."};
         }
         else if (property == "items")
         {

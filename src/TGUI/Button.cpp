@@ -77,12 +77,12 @@ namespace tgui
             else if (it->first == "focusedimage")
                 configFile.readTexture(it, configFileFolder, m_textureFocused);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Button in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Button in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
         if (m_textureNormal.getData() == nullptr)
-            throw Exception("NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureNormal.getImageSize());
 

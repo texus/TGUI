@@ -75,12 +75,12 @@ namespace tgui
             else if (it->first == "thumbhoverimage")
                 configFile.readTexture(it, configFileFolder, m_textureThumbHover);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Slider2d in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Slider2d in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
         if ((m_textureTrackNormal.getData() == nullptr) || (m_textureThumbNormal.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the slider. Is the Slider2d section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the slider. Is the Slider2d section in " + m_loadedConfigFile + " complete?"};
 
         // Set the size of the slider
         setSize(m_textureTrackNormal.getSize());
@@ -294,13 +294,13 @@ namespace tgui
                                     tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
-                        throw Exception("Failed to parse 'Minimum' property.");
+                        throw Exception{"Failed to parse 'Minimum' property."};
                 }
                 else
-                    throw Exception("Failed to parse 'Minimum' property.");
+                    throw Exception{"Failed to parse 'Minimum' property."};
             }
             else
-                throw Exception("Failed to parse 'Minimum' property.");
+                throw Exception{"Failed to parse 'Minimum' property."};
         }
         else if (property == "maximum")
         {
@@ -315,13 +315,13 @@ namespace tgui
                                     tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
-                        throw Exception("Failed to parse 'Maximum' property.");
+                        throw Exception{"Failed to parse 'Maximum' property."};
                 }
                 else
-                    throw Exception("Failed to parse 'Maximum' property.");
+                    throw Exception{"Failed to parse 'Maximum' property."};
             }
             else
-                throw Exception("Failed to parse 'Maximum' property.");
+                throw Exception{"Failed to parse 'Maximum' property."};
         }
         else if (property == "value")
         {
@@ -336,13 +336,13 @@ namespace tgui
                                   tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
-                        throw Exception("Failed to parse 'Value' property.");
+                        throw Exception{"Failed to parse 'Value' property."};
                 }
                 else
-                    throw Exception("Failed to parse 'Value' property.");
+                    throw Exception{"Failed to parse 'Value' property."};
             }
             else
-                throw Exception("Failed to parse 'Value' property.");
+                throw Exception{"Failed to parse 'Value' property."};
         }
         else if (property == "fixedthumbsize")
         {
@@ -351,7 +351,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setFixedThumbSize(false);
             else
-                throw Exception("Failed to parse 'FixedThumbSize' property.");
+                throw Exception{"Failed to parse 'FixedThumbSize' property."};
         }
         else if (property == "enablethumbcenter")
         {
@@ -360,7 +360,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 enableThumbCenter(false);
             else
-                throw Exception("Failed to parse 'EnableThumbCenter' property.");
+                throw Exception{"Failed to parse 'EnableThumbCenter' property."};
         }
         else if (property == "callback")
         {

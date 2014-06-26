@@ -116,7 +116,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setSmooth(false);
             else
-                throw Exception("Failed to parse 'Smooth' property.");
+                throw Exception{"Failed to parse 'Smooth' property."};
         }
         else // The property didn't match
             ClickableWidget::setProperty(property, value);

@@ -158,7 +158,7 @@ namespace tgui
         }
 
         // If you pass here then something is wrong about the line
-        throw Exception("Failed to parse color from string.");
+        throw Exception{"Failed to parse color from string."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,7 +293,7 @@ namespace tgui
 
                 if (next == encodedString.cend())
                 {
-                    throw Exception("Escape character at the end of the string.");
+                    throw Exception{"Escape character at the end of the string."};
                 }
                 else if ((*next == '\\') || (*next == '\"'))
                 {
@@ -312,7 +312,7 @@ namespace tgui
                 }
                 else
                 {
-                    throw Exception(std::string("Escape character in front of '") + *next);
+                    throw Exception{std::string{"Escape character in front of '"} + *next};
                 }
             }
             else // No escape character, just a normal character to be added to the string
@@ -393,7 +393,7 @@ namespace tgui
 
                 if (next == encodedString.cend())
                 {
-                    throw Exception("Escape character at the end of the string.");
+                    throw Exception{"Escape character at the end of the string."};
                 }
                 else if ((*next == '\\') || (*next == '\"') || (*next == ','))
                 {
@@ -412,7 +412,7 @@ namespace tgui
                 }
                 else
                 {
-                    throw Exception(std::string("Escape character in front of '") + *next);
+                    throw Exception{std::string{"Escape character in front of '"} + *next};
                     continue;
                 }
             }

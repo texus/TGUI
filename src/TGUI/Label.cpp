@@ -58,7 +58,7 @@ namespace tgui
             if (it->first == "textcolor")
                 setTextColor(extractColor(it->second));
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Label in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Label in " + m_loadedConfigFile + "."};
         }
     }
 
@@ -174,7 +174,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setAutoSize(false);
             else
-                throw Exception("Failed to parse 'AutoSize' property.");
+                throw Exception{"Failed to parse 'AutoSize' property."};
         }
         else // The property didn't match
             ClickableWidget::setProperty(property, value);

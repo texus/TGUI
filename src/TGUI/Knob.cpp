@@ -81,12 +81,12 @@ namespace tgui
             else if (it->first == "imagerotation")
                 m_imageRotation = tgui::stof(it->second);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Knob in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Knob in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures was loaded
         if ((m_backgroundTexture.getData() == nullptr) || (m_foregroundTexture.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?"};
 
         m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
 
@@ -450,7 +450,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setClockwiseTurning(false);
             else
-                throw Exception("Failed to parse 'ClockwiseTurning' property.");
+                throw Exception{"Failed to parse 'ClockwiseTurning' property."};
         }
         else if (property == "callback")
         {

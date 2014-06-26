@@ -78,12 +78,12 @@ namespace tgui
             else if (it->first == "thumbhoverimage")
                 configFile.readTexture(it, configFileFolder, m_textureThumbHover);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Slider in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Slider in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
         if ((m_textureTrackNormal.getData() == nullptr) && (m_textureThumbNormal.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the slider. Is the Slider section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the slider. Is the Slider section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureTrackNormal.getImageSize());
     }
@@ -419,7 +419,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setVerticalScroll(false);
             else
-                throw Exception("Failed to parse 'VerticalScroll' property.");
+                throw Exception{"Failed to parse 'VerticalScroll' property."};
         }
         else if (property == "callback")
         {

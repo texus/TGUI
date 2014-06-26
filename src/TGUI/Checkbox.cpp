@@ -74,12 +74,12 @@ namespace tgui
             else if (it->first == "focusedimage")
                 configFile.readTexture(it, configFileFolder, m_textureFocused);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section Checkbox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section Checkbox in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
         if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureUnchecked.getImageSize());
 

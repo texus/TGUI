@@ -108,7 +108,7 @@ namespace tgui
             else if (it->first == "childwindow")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception("Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + ".");
+                    throw Exception{"Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + "."};
 
                 try
                 {
@@ -117,26 +117,26 @@ namespace tgui
                 }
                 catch (const Exception& e)
                 {
-                    throw Exception("Failed to load the internal ChildWindow for MessageBox. " + std::string(e.what()));
+                    throw Exception{"Failed to load the internal ChildWindow for MessageBox. " + std::string{e.what()}};
                 }
             }
             else if (it->first == "button")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception("Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + ".");
+                    throw Exception{"Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + "."};
 
                 m_buttonConfigFileFilename = configFileFolder + it->second.substr(1, it->second.length()-2);
                 buttonPropertyFound = true;
             }
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section MessageBox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section MessageBox in " + m_loadedConfigFile + "."};
         }
 
         if (!childWindowPropertyFound)
-            throw Exception("Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + ".");
+            throw Exception{"Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + "."};
 
         if (!buttonPropertyFound)
-            throw Exception("Missing a Button property in section MessageBox in " + m_loadedConfigFile + ".");
+            throw Exception{"Missing a Button property in section MessageBox in " + m_loadedConfigFile + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

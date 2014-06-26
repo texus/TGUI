@@ -67,7 +67,7 @@ namespace tgui
             else if (it->first == "distancetoside")
                 setDistanceToSide(tgui::stoul(it->second));
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section MenuBar in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section MenuBar in " + m_loadedConfigFile + "."};
         }
     }
 

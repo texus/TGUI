@@ -327,7 +327,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_visible = false;
             else
-                throw Exception("Failed to parse 'Visible' property.");
+                throw Exception{"Failed to parse 'Visible' property."};
         }
         else if (property == "enabled")
         {
@@ -336,7 +336,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_enabled = false;
             else
-                throw Exception("Failed to parse 'Enabled' property.");
+                throw Exception{"Failed to parse 'Enabled' property."};
         }
         else if (property == "transparency")
         {
@@ -364,7 +364,7 @@ namespace tgui
             }
         }
         else // The property didn't match
-            throw Exception("Failed to set unknown property '" + property + "'.");
+            throw Exception{"Failed to set unknown property '" + property + "'."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +405,7 @@ namespace tgui
             encodeList(callbacks, value);
         }
         else // The property didn't match
-            throw Exception("Failed to get unknown property '" + property + "'.");
+            throw Exception{"Failed to get unknown property '" + property + "'."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

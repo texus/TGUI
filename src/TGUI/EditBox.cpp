@@ -104,7 +104,7 @@ namespace tgui
                 if (extractBorders(it->second, borders))
                     setBorders(borders);
                 else
-                    throw Exception("Failed to parse the 'Borders' property in section EditBox in " + m_loadedConfigFile);
+                    throw Exception{"Failed to parse the 'Borders' property in section EditBox in " + m_loadedConfigFile};
             }
             else if (it->first == "normalimage")
             {
@@ -119,12 +119,12 @@ namespace tgui
                 configFile.readTexture(it, configFileFolder, m_textureFocused);
             }
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section EditBox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section EditBox in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
         if (m_textureNormal.getData() == nullptr)
-            throw Exception("NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureNormal.getImageSize());
 
@@ -1025,7 +1025,7 @@ namespace tgui
                 if (value.length() == 1)
                     setPasswordCharacter(value[0]);
                 else
-                    throw Exception("Failed to parse 'PasswordCharacter' propery.");
+                    throw Exception{"Failed to parse 'PasswordCharacter' propery."};
             }
             else
                 setPasswordCharacter('\0');
@@ -1040,7 +1040,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders);
             else
-                throw Exception("Failed to parse 'Borders' property.");
+                throw Exception{"Failed to parse 'Borders' property."};
         }
         else if (property == "textcolor")
         {
@@ -1065,7 +1065,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 limitTextWidth(false);
             else
-                throw Exception("Failed to parse 'LimitTextWidth' property.");
+                throw Exception{"Failed to parse 'LimitTextWidth' property."};
         }
         else if (property == "caretwidth")
         {
@@ -1078,7 +1078,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setNumbersOnly(false);
             else
-                throw Exception("Failed to parse 'NumbersOnly' property.");
+                throw Exception{"Failed to parse 'NumbersOnly' property."};
         }
         else if (property == "callback")
         {

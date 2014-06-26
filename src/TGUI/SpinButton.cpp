@@ -72,12 +72,12 @@ namespace tgui
             else if (it->first == "arrowdownhoverimage")
                 configFile.readTexture(it, configFileFolder, m_textureArrowDownHover);
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section SpinButton in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section SpinButton in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
         if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?"};
 
         setSize({m_textureArrowUpNormal.getSize().x, m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y});
     }
@@ -276,7 +276,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 setVerticalScroll(false);
             else
-                throw Exception("Failed to parse 'VerticalScroll' property.");
+                throw Exception{"Failed to parse 'VerticalScroll' property."};
         }
         else if (property == "callback")
         {

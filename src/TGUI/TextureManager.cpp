@@ -101,7 +101,7 @@ namespace tgui
 
         // The image couldn't be loaded
         m_imageMap.erase(imageIt);
-        throw Exception("Failed to load image " + filename + ".");
+        throw Exception{"Failed to load image " + filename + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ namespace tgui
             }
         }
 
-        throw Exception("Trying to copy a texture that was not loaded by the TextureManager.");
+        throw Exception{"Trying to copy a texture that was not loaded by the TextureManager."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ namespace tgui
             }
         }
 
-        throw Exception("Trying to remove a texture that was not loaded by the TextureManager.");
+        throw Exception{"Trying to remove a texture that was not loaded by the TextureManager."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

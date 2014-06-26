@@ -150,7 +150,7 @@ namespace tgui
                 if (extractBorders(it->second, borders))
                     setBorders(borders);
                 else
-                    throw Exception("Failed to parse the 'Borders' property in section ComboBox in " + m_loadedConfigFile);
+                    throw Exception{"Failed to parse the 'Borders' property in section ComboBox in " + m_loadedConfigFile};
             }
             else if (it->first == "arrowupnormalimage")
             {
@@ -171,17 +171,17 @@ namespace tgui
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception("Failed to parse value for Scrollbar in section ComboBox in " + m_loadedConfigFile + ".");
+                    throw Exception{"Failed to parse value for Scrollbar in section ComboBox in " + m_loadedConfigFile + "."};
 
                 m_listBox->setScrollbar(configFileFolder + it->second.substr(1, it->second.length()-2));
             }
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section ComboBox in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section ComboBox in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
         if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?"};
 
         // Remove all items (in case this is the second time that the load function was called)
         m_listBox->removeAllItems();
@@ -447,7 +447,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders);
             else
-                throw Exception("Failed to parse 'Borders' property.");
+                throw Exception{"Failed to parse 'Borders' property."};
         }
         else if (property == "maximumitems")
         {

@@ -150,23 +150,23 @@ namespace tgui
                 if (extractBorders(it->second, borders))
                     setBorders(borders);
                 else
-                    throw Exception("Failed to parse the 'Borders' property in section ChildWindow in " + m_loadedConfigFile);
+                    throw Exception{"Failed to parse the 'Borders' property in section ChildWindow in " + m_loadedConfigFile};
             }
             else if (it->first == "distancetoside")
                 setDistanceToSide(tgui::stoul(it->second));
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section ChildWindow in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section ChildWindow in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the close button was loaded
         if (m_closeButton->m_textureNormal.getData() == nullptr)
-            throw Exception("Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + ".");
+            throw Exception{"Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + "."};
 
         m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize());
 
         // Make sure the required texture was loaded
         if (m_textureTitleBar.getData() == nullptr)
-            throw Exception("Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?"};
 
         m_titleBarHeight = m_textureTitleBar.getImageSize().y;
 
@@ -651,7 +651,7 @@ namespace tgui
             if (extractBorders(value, borders))
                 setBorders(borders);
             else
-                throw Exception("Failed to parse 'Borders' property.");
+                throw Exception{"Failed to parse 'Borders' property."};
         }
         else if (property == "distancetoside")
         {
@@ -666,7 +666,7 @@ namespace tgui
             else if ((value == "right") || (value == "Right"))
                 setTitleAlignment(TitleAlignmentRight);
             else
-                throw Exception("Failed to parse 'TitleAlignment' property.");
+                throw Exception{"Failed to parse 'TitleAlignment' property."};
         }
         else if (property == "callback")
         {

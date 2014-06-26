@@ -177,7 +177,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_playing = false;
             else
-                throw Exception("Failed to parse 'Playing' property.");
+                throw Exception{"Failed to parse 'Playing' property."};
         }
         else if (property == "looping")
         {
@@ -186,7 +186,7 @@ namespace tgui
             else if ((value == "false") || (value == "False"))
                 m_looping = false;
             else
-                throw Exception("Failed to parse 'Looping' property.");
+                throw Exception{"Failed to parse 'Looping' property."};
         }
         else if (property == "callback")
         {

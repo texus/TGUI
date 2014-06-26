@@ -70,12 +70,12 @@ namespace tgui
             else if (it->first == "textsize")
                 setTextSize(tgui::stoi(it->second));
             else
-                throw Exception("Unrecognized property '" + it->first + "' in section LoadingBar in " + m_loadedConfigFile + ".");
+                throw Exception{"Unrecognized property '" + it->first + "' in section LoadingBar in " + m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
         if ((m_textureBack.getData() == nullptr) || (m_textureFront.getData() == nullptr))
-            throw Exception("Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?");
+            throw Exception{"Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?"};
 
         setSize(m_textureBack.getImageSize());
 
