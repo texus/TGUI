@@ -48,10 +48,10 @@ namespace tgui
                     ++(it->users);
 
                     // Set the texture in the sprite
-                    if (middleRect != sf::IntRect(0, 0, 0, 0))
+                    if (middleRect != sf::IntRect{})
                         texture.setTexture(*it, middleRect);
                     else
-                        texture.setTexture(*it, sf::IntRect(0, 0, it->texture.getSize().x, it->texture.getSize().y));
+                        texture.setTexture(*it, {0, 0, static_cast<int>(it->texture.getSize().x), static_cast<int>(it->texture.getSize().y)});
 
                     return;
                 }
@@ -59,7 +59,7 @@ namespace tgui
         }
         else // The image doesn't exist yet
         {
-            auto it = m_imageMap.insert(std::make_pair(filename, ImageMapData()));
+            auto it = m_imageMap.emplace(filename, ImageMapData());
             imageIt = it.first;
         }
 
@@ -73,7 +73,7 @@ namespace tgui
         {
             // Create a texture from the image
             bool success;
-            if (partRect == sf::IntRect(0, 0, 0, 0))
+            if (partRect == sf::IntRect{})
                 success = data.texture.loadFromImage(*data.image);
             else
                 success = data.texture.loadFromImage(*data.image, partRect);
@@ -90,10 +90,10 @@ namespace tgui
                 // Set the texture in the sprite
                 imageIt->second.data.push_back(std::move(data));
 
-                if (middleRect != sf::IntRect(0, 0, 0, 0))
+                if (middleRect != sf::IntRect{})
                     texture.setTexture(imageIt->second.data.back(), middleRect);
                 else
-                    texture.setTexture(imageIt->second.data.back(), sf::IntRect(0, 0, data.texture.getSize().x, data.texture.getSize().y));
+                    texture.setTexture(imageIt->second.data.back(), {0, 0, static_cast<int>(data.texture.getSize().x), static_cast<int>(data.texture.getSize().y)});
 
                 return;
             }

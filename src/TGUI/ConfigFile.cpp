@@ -39,10 +39,10 @@ namespace tgui
         m_filename(filename),
         m_section (section)
     {
-        std::ifstream file(filename.c_str());
+        std::ifstream file{filename};
 
         if (!file.is_open())
-            throw Exception("Failed to open config file '" + filename + "'.");
+            throw Exception{"Failed to open config file '" + filename + "'."};
 
         bool sectionFound = false;
         unsigned int lineNumber = 0;
@@ -83,16 +83,16 @@ namespace tgui
                 std::string property = toLower(readWord(line, c));
 
                 if (!removeWhitespace(line, c))
-                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
+                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
                 // There has to be an assignment character
                 if (*c == '=')
                     ++c;
                 else
-                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
+                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
                 if (!removeWhitespace(line, c))
-                    throw Exception("Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + ".");
+                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
                 int pos = c - line.begin();
                 std::string value = line.substr(pos, line.length() - pos);
@@ -103,7 +103,7 @@ namespace tgui
 
         // Throw an exception when the section wasn't found
         if (!sectionFound)
-            throw Exception("Section '" + section + "' was not found in " + filename + ".");
+            throw Exception{"Section '" + section + "' was not found in " + filename + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ namespace tgui
         else if ((it->second == "false") || (it->second == "False") || (it->second == "FALSE") || (it->second == "0"))
             return false;
         else
-            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + ".");
+            throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ namespace tgui
         }
         catch (const Exception& e)
         {
-            throw Exception("Failed to read the color value from property " + it->first + " in section " + m_section + " in file " + m_filename);
+            throw Exception{"Failed to read the color value from property " + it->first + " in section " + m_section + " in file " + m_filename};
         }
     }
 
@@ -147,15 +147,15 @@ namespace tgui
 
         // Remove all whitespaces (string should still contains something)
         if (!removeWhitespace(it->second, c))
-            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + ". Value is empty.");
+            throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename + ". Value is empty."};
 
         // There has to be a quote
         if (*c == '"')
             ++c;
         else
         {
-            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
-                            + ". Expected an opening quote for the filename.");
+            throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                            + ". Expected an opening quote for the filename."};
         }
 
         std::string filename;
@@ -181,8 +181,8 @@ namespace tgui
 
         if (!filenameFound)
         {
-            throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
-                            + ". Failed to find the closing quote of the filename.");
+            throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                            + ". Failed to find the closing quote of the filename."};
         }
 
         // There may be optional parameters
@@ -225,20 +225,20 @@ namespace tgui
                 }
                 else
                 {
-                    throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
-                                    + ". Unexpected word '" + word + "' in front of opening bracket.");
+                    throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                                    + ". Unexpected word '" + word + "' in front of opening bracket."};
                 }
 
                 auto closeBracketPos = it->second.find(')', c - it->second.begin());
                 if (closeBracketPos != std::string::npos)
                 {
                     if (!readIntRect(it->second.substr(c - it->second.begin(), closeBracketPos - (c - it->second.begin()) + 1), *rect))
-                        throw Exception("Failed to parse " + word + " rectangle for property " + it->first + " in section " + m_section + " in file " + m_filename + ".");
+                        throw Exception{"Failed to parse " + word + " rectangle for property " + it->first + " in section " + m_section + " in file " + m_filename + "."};
                 }
                 else
                 {
-                    throw Exception("Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
-                                    + ". Failed to find closing bracket for " + word + " rectangle.");
+                    throw Exception{"Failed to parse property " + it->first + " in section " + m_section + " in file " + m_filename
+                                    + ". Failed to find closing bracket for " + word + " rectangle."};
                 }
 
                 std::advance(c, closeBracketPos - (c - it->second.begin()) + 1);
