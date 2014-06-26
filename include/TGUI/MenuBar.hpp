@@ -98,22 +98,8 @@ namespace tgui
         /// By default, the menu bar has the same width as the window and the height is 20 pixels.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) override;
+        virtual void setSize(const Layout& size) override;
         using Transformable::setSize;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the menu bar.
-        ///
-        /// @return Size of the menu bar
-        ///
-        /// By default, the menu bar has the same width as the window and the height is 20 pixels.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return m_size;
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,8 +460,6 @@ namespace tgui
         int m_visibleMenu = -1;
 
         const sf::Font* m_textFont = nullptr;
-
-        sf::Vector2f m_size;
 
         unsigned int m_textSize = 0;
 

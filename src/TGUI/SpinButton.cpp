@@ -79,16 +79,7 @@ namespace tgui
         if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
             throw Exception("Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?");
 
-        m_size.x = m_textureArrowUpNormal.getSize().x;
-        m_size.y = m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpinButton::setSize(const sf::Vector2f& size)
-    {
-        m_size.x = std::abs(size.x);
-        m_size.y = std::abs(size.y);
+        setSize({m_textureArrowUpNormal.getSize().x, m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,14 +148,14 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y))
                 m_mouseDownOnTopArrow = true;
             else
                 m_mouseDownOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y))
                 m_mouseDownOnTopArrow = false;
             else
                 m_mouseDownOnTopArrow = true;
@@ -184,8 +175,8 @@ namespace tgui
             if (m_mouseDownOnTopArrow)
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y)))
-                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y) == false)))
+                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y)))
+                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y) == false)))
                 {
                     // Increment the value
                     if (m_value < m_maximum)
@@ -199,8 +190,8 @@ namespace tgui
             else // The mouse went down on the bottom/left arrow
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y) == false))
-                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))))
+                if (((m_verticalScroll == true)  && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y) == false))
+                 || ((m_verticalScroll == false) && (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y))))
                 {
                     // Decrement the value
                     if (m_value > m_minimum)
@@ -229,14 +220,14 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y / 2.f)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y))
                 m_mouseHoverOnTopArrow = true;
             else
                 m_mouseHoverOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x / 2.f, m_size.y)).contains(x, y))
+            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y))
                 m_mouseHoverOnTopArrow = false;
             else
                 m_mouseHoverOnTopArrow = true;
@@ -364,7 +355,7 @@ namespace tgui
         // Check if the image is drawn in the same direction than it was loaded
         if (m_verticalScroll)
         {
-            states.transform.scale(m_size.x / m_textureArrowUpNormal.getSize().x, m_size.y / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y));
+            states.transform.scale(getSize().x / m_textureArrowUpNormal.getSize().x, getSize().y / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y));
 
             // Draw the first arrow
             if (m_separateHoverImage)
@@ -403,7 +394,7 @@ namespace tgui
         }
         else // The image is not drawn in the same direction than the loaded image
         {
-            states.transform.scale(m_size.x / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y), m_size.y / m_textureArrowUpNormal.getSize().x);
+            states.transform.scale(getSize().x / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y), getSize().y / m_textureArrowUpNormal.getSize().x);
 
             // Rotate the arrow
             states.transform.rotate(-90, static_cast<float>(m_textureArrowUpNormal.getSize().x), static_cast<float>(m_textureArrowUpNormal.getSize().y));

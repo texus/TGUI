@@ -128,7 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setSize(const sf::Vector2f&)
+    void Tab::setSize(const Layout&)
     {
     }
 
@@ -672,10 +672,10 @@ namespace tgui
                     float scaleViewY = target.getSize().y / view.getSize().y;
 
                     // Get the global position
-                    sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                                ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-                    sf::Vector2f bottomRightPosition = sf::Vector2f(((getAbsolutePosition().x + accumulatedTabWidth + textureNormalIt->getSize().x - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                                    ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+                    sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                    ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+                    sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + accumulatedTabWidth + textureNormalIt->getSize().x - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                        ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + defaultRect.height) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);

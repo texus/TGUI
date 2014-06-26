@@ -71,9 +71,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setSize(const sf::Vector2f& size)
+    void Canvas::setSize(const Layout& size)
     {
-        m_renderTexture.create(static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y));
+        Widget::setSize(size);
+
+        m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
         m_sprite.setTexture(m_renderTexture.getTexture(), true);
 
         m_renderTexture.clear();

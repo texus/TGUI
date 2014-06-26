@@ -85,10 +85,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setSize(const sf::Vector2f& size)
+    void LoadingBar::setSize(const Layout& size)
     {
-        m_textureBack.setSize({std::abs(size.x), std::abs(size.y)});
-        m_textureFront.setSize({std::abs(size.x), std::abs(size.y)});
+        Widget::setSize(size);
+
+        m_textureBack.setSize(getSize());
+        m_textureFront.setSize(getSize());
 
         // Recalculate the size of the front image
         recalculateSize();
@@ -200,12 +202,12 @@ namespace tgui
         if (m_textSize == 0)
         {
             // Calculate a possible text size
-            float size = m_textureBack.getSize().y * 0.75f;
+            float size = getSize().y * 0.75f;
             m_text.setCharacterSize(static_cast<unsigned int>(size));
 
             // Make the text smaller when it is too width
-            if (m_text.getGlobalBounds().width > (m_textureBack.getSize().x * 0.8f))
-                m_text.setCharacterSize(static_cast<unsigned int>(size / (m_text.getGlobalBounds().width / (m_textureBack.getSize().x * 0.8f))));
+            if (m_text.getGlobalBounds().width > (getSize().x * 0.8f))
+                m_text.setCharacterSize(static_cast<unsigned int>(size / (m_text.getGlobalBounds().width / (getSize().x * 0.8f))));
         }
         else // When the text has a fixed size
         {
@@ -395,8 +397,8 @@ namespace tgui
             sf::FloatRect rect = m_text.getGlobalBounds();
 
             // Calculate the new position for the text
-            rect.left = (m_textureBack.getSize().x - rect.width) * 0.5f - rect.left;
-            rect.top = (m_textureBack.getSize().y - rect.height) * 0.5f - rect.top;
+            rect.left = (getSize().x - rect.width) * 0.5f - rect.left;
+            rect.top = (getSize().y - rect.height) * 0.5f - rect.top;
 
             // Set the new position
             states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));

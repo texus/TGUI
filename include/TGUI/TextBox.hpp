@@ -120,22 +120,8 @@ namespace tgui
         /// @param size  The new size of the text box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) override;
+        virtual void setSize(const Layout& size) override;
         using Transformable::setSize;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the text box.
-        ///
-        /// This size does not include the borders.
-        ///
-        /// @return Size of the text box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return m_size;
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +134,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
         {
-            return {m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom};
+            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
         }
 
 
@@ -646,9 +632,6 @@ namespace tgui
       protected:
 
         std::string m_loadedConfigFile;
-
-        // The size of the text box
-        sf::Vector2f m_size = {360, 200};
 
         // Some information about the text
         sf::String   m_text;

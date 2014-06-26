@@ -111,8 +111,30 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout& position);
+        virtual void setPosition(const Layout& position) override;
         using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the widget.
+        ///
+        /// @param size  Size of the widget
+        ///
+        /// Usage examples:
+        /// @code
+        /// // Give the widget an exact size
+        /// widget->setSize({40, 30});
+        ///
+        /// // Make the widget 50 pixels higher than some other widget
+        /// widget->setSize(otherWidget->getSize() + sf::Vector2f{0, 50});
+        ///
+        /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
+        /// widget->setSize(tgui::bindSize(otherWidget) + sf::Vector2f{0, 50});
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSize(const Layout& size) override;
+        using Transformable::setSize;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

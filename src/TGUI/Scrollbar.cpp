@@ -136,40 +136,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setSize(const sf::Vector2f& size)
+    void Scrollbar::setSize(const Layout& size)
     {
+        Widget::setSize(size);
+
         if (m_verticalImage == m_verticalScroll)
-            m_textureTrackNormal.setSize(size);
+            m_textureTrackNormal.setSize(getSize());
         else
-            m_textureTrackNormal.setSize({size.y, size.x});
+            m_textureTrackNormal.setSize({getSize().y, getSize().x});
 
         float thumbWidth;
         float realTrackSize;
         if (m_verticalScroll)
         {
-            m_textureArrowUpNormal.setSize({size.x, size.x * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y});
-            m_textureArrowDownNormal.setSize({size.x, size.x * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y});
+            m_textureArrowUpNormal.setSize({getSize().x, getSize().x * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y});
+            m_textureArrowDownNormal.setSize({getSize().x, getSize().x * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y});
 
             realTrackSize = getSize().y;
             realTrackSize -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
             if (m_verticalImage)
-                thumbWidth = size.x;
+                thumbWidth = getSize().x;
             else
-                thumbWidth = size.y;
+                thumbWidth = getSize().y;
         }
         else
         {
-            m_textureArrowUpNormal.setSize({size.y * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y, size.y});
-            m_textureArrowDownNormal.setSize({size.y * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y, size.y});
+            m_textureArrowUpNormal.setSize({getSize().y * m_textureArrowUpNormal.getImageSize().x / m_textureArrowUpNormal.getImageSize().y, getSize().y});
+            m_textureArrowDownNormal.setSize({getSize().y * m_textureArrowDownNormal.getImageSize().x / m_textureArrowDownNormal.getImageSize().y, getSize().y});
 
             realTrackSize = getSize().x;
             realTrackSize -= m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y;
 
             if (m_verticalImage)
-                thumbWidth = size.y;
+                thumbWidth = getSize().y;
             else
-                thumbWidth = size.x;
+                thumbWidth = getSize().x;
         }
 
         if (realTrackSize < 0)
@@ -190,16 +192,6 @@ namespace tgui
 
         // Make sure the transparency isn't lost
         setTransparency(m_opacity);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Scrollbar::getSize() const
-    {
-        if (m_verticalImage == m_verticalScroll)
-            return m_textureTrackNormal.getSize();
-        else
-            return sf::Vector2f(m_textureTrackNormal.getSize().y, m_textureTrackNormal.getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -769,7 +761,7 @@ namespace tgui
         if (m_verticalImage == m_verticalScroll)
             return m_textureThumbNormal.getSize();
         else
-            return sf::Vector2f(m_textureThumbNormal.getSize().y, m_textureThumbNormal.getSize().x);
+            return {m_textureThumbNormal.getSize().y, m_textureThumbNormal.getSize().x};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

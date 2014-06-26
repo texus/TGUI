@@ -171,7 +171,7 @@ namespace tgui
         friend Layout operator*(const Layout& left, const Layout1d& right);
         friend Layout operator/(const Layout& left, const Layout1d& right);
 
-    private:
+    public:
         Layout1d x;
         Layout1d y;
     };

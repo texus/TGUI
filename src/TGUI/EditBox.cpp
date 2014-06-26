@@ -44,7 +44,7 @@ namespace tgui
         m_draggableWidget = true;
         m_allowFocus = true;
 
-        m_caret.setSize(sf::Vector2f(1, 0));
+        m_caret.setSize({1, 0});
 
         changeColors();
     }
@@ -96,7 +96,7 @@ namespace tgui
             }
             else if (it->first == "caretwidth")
             {
-                m_caret.setSize(sf::Vector2f(tgui::stof(it->second), m_caret.getSize().y));
+                m_caret.setSize({tgui::stof(it->second), m_caret.getSize().y});
             }
             else if (it->first == "borders")
             {
@@ -147,18 +147,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSize(const sf::Vector2f& size)
+    void EditBox::setSize(const Layout& size)
     {
+        Widget::setSize(size);
+
         // Recalculate the text size when auto scaling
         if (m_textSize == 0)
             setText(m_text);
 
-        m_textureHover.setSize(size);
-        m_textureNormal.setSize(size);
-        m_textureFocused.setSize(size);
+        m_textureHover.setSize(getSize());
+        m_textureNormal.setSize(getSize());
+        m_textureFocused.setSize(getSize());
 
         // Set the size of the caret
-        m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
+        m_caret.setSize({m_caret.getSize().x, getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
 
         // Recalculate the position of the images and texts
         updatePosition();
@@ -173,7 +175,7 @@ namespace tgui
         {
             // Calculate the text size
             m_textFull.setString("kg");
-            m_textFull.setCharacterSize(static_cast<unsigned int>((m_textureNormal.getSize().y - ((m_borders.top + m_borders.bottom) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))) * 0.75f));
+            m_textFull.setCharacterSize(static_cast<unsigned int>((getSize().y - ((m_borders.top + m_borders.bottom) * (getSize().y / m_textureNormal.getImageSize().y))) * 0.75f));
             m_textFull.setString(m_displayedText);
 
             // Also adjust the character size of the other texts
@@ -221,7 +223,7 @@ namespace tgui
         m_textFull.setString(m_displayedText);
 
         // Calculate the space inside the edit box
-        float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
         // Check if there is a text width limit
         if (m_limitTextWidth)
@@ -341,7 +343,7 @@ namespace tgui
         setText(m_text);
 
         // Set the size of the caret
-        m_caret.setSize(sf::Vector2f(m_caret.getSize().x, m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
+        m_caret.setSize({m_caret.getSize().x, getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,7 +379,7 @@ namespace tgui
         if (m_limitTextWidth == true)
         {
             // Calculate the space inside the edit box
-            float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+            float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
             // Now check if the text fits into the EditBox
             while (m_textBeforeSelection.findCharacterPos(m_displayedText.getSize()).x - m_textBeforeSelection.getPosition().x > width)
@@ -423,7 +425,7 @@ namespace tgui
         if (m_limitTextWidth == false)
         {
             // Calculate the space inside the edit box
-            float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+            float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
             // Find out the position of the caret
             float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
@@ -448,7 +450,7 @@ namespace tgui
     void EditBox::setCaretWidth(unsigned int width)
     {
         m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
-        m_caret.setSize(sf::Vector2f(static_cast<float>(width), m_textureNormal.getSize().y - ((m_borders.bottom + m_borders.top) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y))));
+        m_caret.setSize({static_cast<float>(width), getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,10 +506,10 @@ namespace tgui
     void EditBox::leftMousePressed(float x, float y)
     {
         // Calculate the space inside the edit box
-        float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
         // Find the caret position
-        float positionX = x - getPosition().x - (m_borders.left * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y));
+        float positionX = x - getPosition().x - (m_borders.left * (getSize().y / m_textureNormal.getImageSize().y));
 
         unsigned int caretPosition = findCaretPosition(positionX);
 
@@ -586,12 +588,12 @@ namespace tgui
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - (m_borders.left * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+                m_selEnd = findCaretPosition(x - getPosition().x - (m_borders.left * (getSize().y / m_textureNormal.getImageSize().y)));
             }
             else // Scrolling is enabled
             {
-                float scalingX = m_textureNormal.getSize().y / m_textureNormal.getImageSize().y;
-                float width = m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * scalingX);
+                float scalingX = getSize().y / m_textureNormal.getImageSize().y;
+                float width = getSize().x - ((m_borders.left + m_borders.right) * scalingX);
 
                 // If the width is negative then the edit box is too small to be displayed
                 if (width < 0)
@@ -778,7 +780,7 @@ namespace tgui
                 setCaretPosition(m_selEnd - 1);
 
                 // Calculate the space inside the edit box
-                float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+                float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
                 // Calculate the text width
                 float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
@@ -824,7 +826,7 @@ namespace tgui
                 setCaretPosition(m_selEnd);
 
                 // Calculate the space inside the edit box
-                float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+                float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
                 // Calculate the text width
                 float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
@@ -956,7 +958,7 @@ namespace tgui
         m_textFull.setString(m_displayedText);
 
         // Calculate the space inside the edit box
-        float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
         // When there is a text width limit then reverse what we just did
         if (m_limitTextWidth)
@@ -1210,7 +1212,7 @@ namespace tgui
         unsigned int lastVisibleChar;
 
         // Calculate the space inside the edit box
-        float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
         // Find out how many pixels the text is moved
         float pixelsToMove = 0;
@@ -1303,7 +1305,7 @@ namespace tgui
         }
 
         // Calculate the space inside the edit box
-        float width = std::max(0.f, m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * (m_textureNormal.getSize().y / m_textureNormal.getImageSize().y)));
+        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
 
         // Calculate the text width
         float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
@@ -1326,7 +1328,7 @@ namespace tgui
         float textY = getPosition().y;
 
         // Calculate the scaling
-        sf::Vector2f scaling(m_textureNormal.getSize().x / m_textureNormal.getImageSize().x, m_textureNormal.getSize().y / m_textureNormal.getImageSize().y);
+        sf::Vector2f scaling = {getSize().x / m_textureNormal.getImageSize().x, getSize().y / m_textureNormal.getImageSize().y};
 
         // Calculate the scale of the left and right border
         float borderScale = scaling.y;
@@ -1338,7 +1340,7 @@ namespace tgui
         if (m_textAlignment != Alignment::Left)
         {
             // Calculate the space inside the edit box
-            float width = m_textureNormal.getSize().x - ((m_borders.left + m_borders.right) * borderScale);
+            float width = getSize().x - ((m_borders.left + m_borders.right) * borderScale);
 
             // Calculate the text width
             float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
@@ -1359,7 +1361,7 @@ namespace tgui
         // Set the position of the text
         sf::Text tempText(m_textFull);
         tempText.setString("kg");
-        textY += (((m_textureNormal.getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
+        textY += (((getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
 
         // Set the text before the selection on the correct position
         m_textBeforeSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
@@ -1374,8 +1376,8 @@ namespace tgui
             textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
-            m_selectedTextBackground.setSize(sf::Vector2f(m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
-                                                          (m_textureNormal.getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y))));
+            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
+                                              (getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y))});
             m_selectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(getPosition().y + (m_borders.top * scaling.y) + 0.5f));
 
             // Set the text selected text on the correct position
@@ -1452,7 +1454,7 @@ namespace tgui
             target.draw(m_textureFocused, states);
 
         // Calculate the scaling
-        sf::Vector2f scaling(m_textureNormal.getSize().x / m_textureNormal.getImageSize().x, m_textureNormal.getSize().y / m_textureNormal.getImageSize().y);
+        sf::Vector2f scaling = {getSize().x / m_textureNormal.getImageSize().x, getSize().y / m_textureNormal.getImageSize().y};
 
         // Calculate the scale of the left and right border
         float borderScale = scaling.y;
@@ -1463,10 +1465,10 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x + (m_borders.left * borderScale) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y + (m_borders.top * scaling.y) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + (m_textureNormal.getSize().x - (m_borders.right * borderScale)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + (m_textureNormal.getSize().y - (m_borders.bottom * scaling.y)) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + (m_borders.left * borderScale) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                    ((getAbsolutePosition().y + (m_borders.top * scaling.y) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + (getSize().x - (m_borders.right * borderScale)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                        (getAbsolutePosition().y + (getSize().y - (m_borders.bottom * scaling.y)) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Get the old clipping area
         GLint scissor[4];

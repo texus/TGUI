@@ -46,7 +46,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_listBox->hide();
-        m_listBox->setSize({50, 24});
+        m_listBox->setSize({50, 24}); /// TODO !!!
         m_listBox->setItemHeight(24);
         m_listBox->changeColors();
         m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
@@ -189,16 +189,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setSize(const sf::Vector2f& size)
+    void ComboBox::setSize(const Layout& size)
     {
-        // Set the height of the combo box
-        m_listBox->setItemHeight(TGUI_MAXIMUM(10, static_cast<unsigned int>(std::abs(size.y))));
+        Widget::setSize(size);
 
-        // Set the size of the list box
+        m_listBox->setItemHeight(static_cast<unsigned int>(getSize().y));
+
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize({std::abs(size.x), static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItems().size())))});
+            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItems().size())))});
         else
-            m_listBox->setSize({std::abs(size.x), static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItems().size())});
+            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItems().size())});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +229,7 @@ namespace tgui
         m_listBox->setBorders(borders);
 
         // There is a minimum width
-        if (m_listBox->getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
+        if (getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
             m_listBox->setSize({50.0f + m_textureArrowDownNormal.getSize().x, m_listBox->getSize().y});
     }
 
@@ -326,12 +326,9 @@ namespace tgui
 
     bool ComboBox::mouseOnWidget(float x, float y)
     {
-        // Get the current position
-        sf::Vector2f position = getPosition();
-
         // Check if the mouse is on top of the combo box
-        if ((x > position.x - m_borders.left) && (x < position.x + m_listBox->getSize().x + m_borders.right)
-         && (y > position.y - m_borders.top) && (y < position.y + m_listBox->getItemHeight() + m_borders.bottom))
+        if ((x > getPosition().x - m_borders.left) && (x < getPosition().x + getSize().x + m_borders.right)
+         && (y > getPosition().y - m_borders.top) && (y < getPosition().y + getSize().y + m_borders.bottom))
         {
             return true;
         }
@@ -575,7 +572,7 @@ namespace tgui
         {
             m_listBox->show();
 
-            sf::Vector2f position(getPosition().x, getPosition().y + m_listBox->getItemHeight() + m_borders.bottom);
+            sf::Vector2f position = {getPosition().x, getPosition().y + getSize().y + m_borders.bottom};
 
             Widget* container = this;
             while (container->getParent() != nullptr)
@@ -651,11 +648,11 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + (m_listBox->getSize().x - (m_textureArrowDownNormal.getSize().x * (static_cast<float>(m_listBox->getItemHeight()) / m_textureArrowDownNormal.getSize().y)))
-                                                         - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + m_listBox->getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + (getSize().x - (m_textureArrowDownNormal.getSize().x * (getSize().y / m_textureArrowDownNormal.getSize().y)))
+                                             - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + m_listBox->getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Adjust the transformation
         states.transform *= getTransform();
@@ -664,35 +661,34 @@ namespace tgui
         sf::Transform oldTransform = states.transform;
 
         // Draw left border
-        sf::RectangleShape border(sf::Vector2f(m_borders.left, static_cast<float>(m_listBox->getItemHeight() + m_borders.top)));
+        sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
         border.setPosition(-m_borders.left, -m_borders.top);
         border.setFillColor(m_listBox->m_borderColor);
         target.draw(border, states);
 
         // Draw top border
-        border.setSize(sf::Vector2f(static_cast<float>(m_listBox->getSize().x + m_borders.right), m_borders.top));
+        border.setSize({getSize().x + m_borders.right, m_borders.top});
         border.setPosition(0, -m_borders.top);
         target.draw(border, states);
 
         // Draw right border
-        border.setSize(sf::Vector2f(m_borders.right, static_cast<float>(m_listBox->getItemHeight() + m_borders.bottom)));
-        border.setPosition(static_cast<float>(m_listBox->getSize().x), 0);
+        border.setSize({m_borders.right, getSize().y + m_borders.bottom});
+        border.setPosition(getSize().x, 0);
         target.draw(border, states);
 
         // Draw bottom border
-        border.setSize(sf::Vector2f(m_listBox->getSize().x + m_borders.left, m_borders.bottom));
-        border.setPosition(-m_borders.left, static_cast<float>(m_listBox->getItemHeight()));
+        border.setSize({getSize().x + m_borders.left, m_borders.bottom});
+        border.setPosition(-m_borders.left, getSize().y);
         target.draw(border, states);
 
         // Draw the combo box
-        sf::RectangleShape front(sf::Vector2f(static_cast<float>(m_listBox->getSize().x),
-                                              static_cast<float>(m_listBox->getItemHeight())));
+        sf::RectangleShape front(getSize());
         front.setFillColor(m_listBox->getBackgroundColor());
         target.draw(front, states);
 
         // Create a text widget to draw it
         sf::Text tempText("kg", *m_listBox->getTextFont());
-        tempText.setCharacterSize(static_cast<unsigned int>(m_listBox->getItemHeight() * 0.8f));
+        tempText.setCharacterSize(static_cast<unsigned int>(getSize().y * 0.8f));
         tempText.setColor(m_listBox->getTextColor());
 
         // Get the old clipping area
@@ -715,7 +711,7 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the selected item
-        states.transform.translate(2, std::floor((static_cast<int>(m_listBox->getItemHeight()) - tempText.getLocalBounds().height) / 2.0f -  tempText.getLocalBounds().top));
+        states.transform.translate(2, std::floor((getSize().y - tempText.getLocalBounds().height) / 2.0f -  tempText.getLocalBounds().top));
         tempText.setString(m_listBox->getSelectedItem());
         target.draw(tempText, states);
 
@@ -728,8 +724,8 @@ namespace tgui
         // Set the arrow like it should (down when list box is invisible, up when it is visible)
         if (m_listBox->isVisible())
         {
-            float scaleFactor =  static_cast<float>(m_listBox->getItemHeight()) / m_textureArrowUpNormal.getSize().y;
-            states.transform.translate(m_listBox->getSize().x - (m_textureArrowUpNormal.getSize().x * scaleFactor), 0);
+            float scaleFactor =  getSize().y / m_textureArrowUpNormal.getSize().y;
+            states.transform.translate(getSize().x - (m_textureArrowUpNormal.getSize().x * scaleFactor), 0);
             states.transform.scale(scaleFactor, scaleFactor);
 
             // Draw the arrow
@@ -750,8 +746,8 @@ namespace tgui
         }
         else
         {
-            float scaleFactor =  static_cast<float>(m_listBox->getItemHeight()) / m_textureArrowDownNormal.getSize().y;
-            states.transform.translate(m_listBox->getSize().x - (m_textureArrowDownNormal.getSize().x * scaleFactor), 0);
+            float scaleFactor =  getSize().y / m_textureArrowDownNormal.getSize().y;
+            states.transform.translate(getSize().x - (m_textureArrowDownNormal.getSize().x * scaleFactor), 0);
             states.transform.scale(scaleFactor, scaleFactor);
 
             // Draw the arrow

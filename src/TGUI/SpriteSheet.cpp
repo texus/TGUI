@@ -42,21 +42,23 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_texture.setPosition(position.getValue().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
-                              position.getValue().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
+        m_texture.setPosition({position.getValue().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
+                               position.getValue().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpriteSheet::setSize(const sf::Vector2f& size)
+    void SpriteSheet::setSize(const Layout& size)
     {
-        m_texture.setSize({size.x * m_columns, size.y * m_rows});
+        Widget::setSize(size);
+
+        m_texture.setSize({getSize().x * m_columns, getSize().y * m_rows});
 
         // Make the correct part of the image visible
-        m_texture.setTextureRect(sf::FloatRect((m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
-                                               (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
-                                               static_cast<int>(m_texture.getSize().x / m_columns),
-                                               static_cast<int>(m_texture.getSize().y / m_rows)));
+        m_texture.setTextureRect({(m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
+                                  (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
+                                  m_texture.getSize().x / m_columns,
+                                  m_texture.getSize().y / m_rows});
 
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
@@ -83,10 +85,10 @@ namespace tgui
         m_columns = columns;
 
         // Make the correct part of the image visible
-        m_texture.setTextureRect(sf::FloatRect((m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
-                                               (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
-                                               static_cast<int>(m_texture.getSize().x / m_columns),
-                                               static_cast<int>(m_texture.getSize().y / m_rows)));
+        m_texture.setTextureRect({(m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
+                                  (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
+                                  m_texture.getSize().x / m_columns,
+                                  m_texture.getSize().y / m_rows});
 
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
@@ -114,10 +116,10 @@ namespace tgui
         m_visibleCell.y = row;
 
         // Make the correct part of the image visible
-        m_texture.setTextureRect(sf::FloatRect((m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
-                                               (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
-                                               static_cast<int>(m_texture.getSize().x / m_columns),
-                                               static_cast<int>(m_texture.getSize().y / m_rows)));
+        m_texture.setTextureRect({(m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
+                                  (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
+                                  m_texture.getSize().x / m_columns,
+                                  m_texture.getSize().y / m_rows});
 
         // Make sure the image is displayed at the correct position
         m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),

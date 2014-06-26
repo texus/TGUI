@@ -51,6 +51,7 @@ namespace tgui
         m_accessToWindow(true)
     {
         m_container->m_window = &window;
+        m_container->m_size = sf::Vector2f{window.getSize()};
         m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
         m_container->m_focused = true;
@@ -65,6 +66,7 @@ namespace tgui
         m_accessToWindow(false)
     {
         m_container->m_window = &window;
+        m_container->m_size = sf::Vector2f{window.getSize()};
         m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
         m_container->m_focused = true;
@@ -78,6 +80,7 @@ namespace tgui
 
         m_window = &window;
         m_container->m_window = &window;
+        m_container->m_size = sf::Vector2f{window.getSize()};
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
     }
@@ -90,6 +93,7 @@ namespace tgui
 
         m_window = &window;
         m_container->m_window = &window;
+        m_container->m_size = sf::Vector2f{window.getSize()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,9 +105,9 @@ namespace tgui
         {
             sf::Vector2f mouseCoords;
             if (resetView)
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_window->getDefaultView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_window->getDefaultView());
             else
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), m_window->getView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_window->getView());
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -113,9 +117,9 @@ namespace tgui
         {
             sf::Vector2f mouseCoords;
             if (resetView)
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_window->getDefaultView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_window->getDefaultView());
             else
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), m_window->getView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_window->getView());
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -125,9 +129,9 @@ namespace tgui
         {
             sf::Vector2f mouseCoords;
             if (resetView)
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_window->getDefaultView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_window->getDefaultView());
             else
-                mouseCoords = m_window->mapPixelToCoords(sf::Vector2i(event.mouseWheel.x, event.mouseWheel.y), m_window->getView());
+                mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_window->getView());
 
             // Adjust the mouse position of the event
             event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -145,6 +149,12 @@ namespace tgui
 
             if (m_accessToWindow)
                 TGUI_Clipboard.setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
+        }
+
+        // Make sure the internal container has the same size as the window
+        else if (event.type == sf::Event::Resized)
+        {
+            m_container->m_size = {static_cast<float>(event.size.width), static_cast<float>(event.size.height)};
         }
 
         // Let the event manager handle the event

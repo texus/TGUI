@@ -113,36 +113,38 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setSize(const sf::Vector2f& size)
+    void Slider::setSize(const Layout& size)
     {
+        Widget::setSize(size);
+
         if (m_verticalImage == m_verticalScroll)
         {
-            m_textureTrackNormal.setSize(size);
+            m_textureTrackNormal.setSize(getSize());
 
             if (m_verticalScroll)
             {
-                m_textureThumbNormal.setSize({size.x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
-                                              size.x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
+                m_textureThumbNormal.setSize({getSize().x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                              getSize().x / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
             }
             else
             {
-                m_textureThumbNormal.setSize({size.y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
-                                              size.y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
+                m_textureThumbNormal.setSize({getSize().y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                              getSize().y / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
             }
         }
         else
         {
-            m_textureTrackNormal.setSize({size.y, size.x});
+            m_textureTrackNormal.setSize({getSize().y, getSize().x});
 
             if (m_verticalScroll)
             {
-                m_textureThumbNormal.setSize({size.x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
-                                              size.x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
+                m_textureThumbNormal.setSize({getSize().x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().x,
+                                              getSize().x / m_textureTrackNormal.getImageSize().y * m_textureThumbNormal.getImageSize().y});
             }
             else
             {
-                m_textureThumbNormal.setSize({size.y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
-                                              size.y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
+                m_textureThumbNormal.setSize({getSize().y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().x,
+                                              getSize().y / m_textureTrackNormal.getImageSize().x * m_textureThumbNormal.getImageSize().y});
             }
         }
 
@@ -151,16 +153,6 @@ namespace tgui
 
         // Recalculate the position of the images
         updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Slider::getSize() const
-    {
-        if (m_verticalImage == m_verticalScroll)
-            return m_textureTrackNormal.getSize();
-        else
-            return sf::Vector2f(m_textureTrackNormal.getSize().y, m_textureTrackNormal.getSize().x);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +495,7 @@ namespace tgui
         if (m_verticalImage == m_verticalScroll)
             return m_textureThumbNormal.getSize();
         else
-            return sf::Vector2f(m_textureThumbNormal.getSize().y, m_textureThumbNormal.getSize().x);
+            return {m_textureThumbNormal.getSize().y, m_textureThumbNormal.getSize().x};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

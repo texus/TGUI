@@ -115,7 +115,7 @@ namespace tgui
         /// The image will be scaled to fit this size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) override;
+        virtual void setSize(const Layout& size) override;
         using Transformable::setSize;
 
 

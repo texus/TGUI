@@ -97,6 +97,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setSize(const Layout& size)
+    {
+        Transformable::setSize(size);
+
+        if (m_callbackFunctions[Widget::SizeChanged].empty() == false)
+        {
+            m_callback.trigger = Widget::PositionChanged;
+            m_callback.size    = size.getValue();
+            addCallback();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Widget::getAbsolutePosition() const
     {
         if (m_parent)

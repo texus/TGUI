@@ -83,15 +83,7 @@ namespace tgui
             throw Exception("Not all needed images were loaded for the slider. Is the Slider2d section in " + m_loadedConfigFile + " complete?");
 
         // Set the size of the slider
-        m_size = sf::Vector2f(m_textureTrackNormal.getSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Slider2d::setSize(const sf::Vector2f& size)
-    {
-        m_size.x = std::abs(size.x);
-        m_size.y = std::abs(size.y);
+        setSize(m_textureTrackNormal.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +156,7 @@ namespace tgui
 
     void Slider2d::centerThumb()
     {
-        setValue(sf::Vector2f((m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f));
+        setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +189,7 @@ namespace tgui
 
         if (m_returnThumbToCenter)
         {
-            setValue(sf::Vector2f((m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f));
+            setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
 
             if (m_callbackFunctions[ThumbReturnedToCenter].empty() == false)
             {
@@ -218,9 +210,6 @@ namespace tgui
 
         m_mouseHover = true;
 
-        // Get the current position
-        sf::Vector2f position = getPosition();
-
         // Remember the old value
         sf::Vector2f oldValue = m_value;
 
@@ -228,14 +217,14 @@ namespace tgui
         if (m_mouseDown)
         {
             // If the position is positive then calculate the correct value
-            if ((y - position.y) > 0)
-                m_value.y = ((y - position.y) / m_size.y) * (m_maximum.y - m_minimum.y) + m_minimum.y;
+            if ((y - getPosition().y) > 0)
+                m_value.y = ((y - getPosition().y) / getSize().y) * (m_maximum.y - m_minimum.y) + m_minimum.y;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_value.y = m_minimum.y;
 
             // If the position is positive then calculate the correct value
-            if ((x - position.x) > 0)
-                m_value.x = ((x - position.x) / m_size.x) * (m_maximum.x - m_minimum.x) + m_minimum.x;
+            if ((x - getPosition().x) > 0)
+                m_value.x = ((x - getPosition().x) / getSize().x) * (m_maximum.x - m_minimum.x) + m_minimum.x;
             else // The position is negative, the calculation can't be done (but is not needed)
                 m_value.x = m_minimum.x;
 
@@ -268,9 +257,9 @@ namespace tgui
 
 		if (m_returnThumbToCenter)
 		{
-		    if (m_value != sf::Vector2f((m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f))
+		    if (m_value != sf::Vector2f{(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f})
 		    {
-		        setValue(sf::Vector2f((m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f));
+		        setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
 
                 if (m_callbackFunctions[ThumbReturnedToCenter].empty() == false)
                 {
@@ -301,8 +290,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setMinimum(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
-                                                tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setMinimum({tgui::stof(value.substr(1, commaPos-1)),
+                                    tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
                         throw Exception("Failed to parse 'Minimum' property.");
@@ -322,8 +311,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setMaximum(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
-                                                tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setMaximum({tgui::stof(value.substr(1, commaPos-1)),
+                                    tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
                         throw Exception("Failed to parse 'Maximum' property.");
@@ -343,8 +332,8 @@ namespace tgui
                     std::string::size_type commaPos = value.find(',');
                     if ((commaPos != std::string::npos) && (value.find(',', commaPos + 1) == std::string::npos))
                     {
-                        setValue(sf::Vector2f(tgui::stof(value.substr(1, commaPos-1)),
-                                              tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))));
+                        setValue({tgui::stof(value.substr(1, commaPos-1)),
+                                  tgui::stof(value.substr(commaPos+1, value.length()-commaPos-2))});
                     }
                     else
                         throw Exception("Failed to parse 'Value' property.");
@@ -458,18 +447,18 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + m_size.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Adjust the transformation
         states.transform *= getTransform();
 
         // Calculate the scale of the slider
         sf::Vector2f scaling;
-        scaling.x = m_size.x / m_textureTrackNormal.getSize().x;
-        scaling.y = m_size.y / m_textureTrackNormal.getSize().y;
+        scaling.x = getSize().x / m_textureTrackNormal.getSize().x;
+        scaling.y = getSize().y / m_textureTrackNormal.getSize().y;
 
         // Set the scale of the slider
         states.transform.scale(scaling);

@@ -118,7 +118,7 @@ namespace tgui
         /// @see setMaximumTabWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) override;
+        virtual void setSize(const Layout& size) override;
         using Transformable::setSize;
 
 

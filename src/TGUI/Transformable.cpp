@@ -43,13 +43,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Transformable::getPosition() const
-    {
-        return m_position.getValue();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Transformable::move(const Layout& offset)
     {
         setPosition(m_position + offset);
@@ -57,16 +50,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Transformable::getFullSize() const
+    void Transformable::setSize(const Layout& size)
     {
-        return getSize();
+        m_size = size;
+
+        if (m_size.getValue().x < 0)
+        {
+            m_size.x = m_size.x * -1;
+            m_size.recalculateValue();
+        }
+
+        if (m_size.getValue().y < 0)
+        {
+            m_size.y = m_size.x * -1;
+            m_size.recalculateValue();
+        }
+
+        m_size.setCallbackFunction(std::bind(&Transformable::updateSize, this));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::scale(const sf::Vector2f& factors)
+    void Transformable::scale(const Layout& factors)
     {
-        setSize({getSize().x * factors.x, getSize().y * factors.y});
+        setSize({m_size.x * factors.x, m_size.y * factors.y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,11 +104,8 @@ namespace tgui
 
     void Transformable::updateSize()
     {
-        /// TODO: Uncomment
-        /**
         m_size.recalculateValue();
         setSize(m_size);
-        */
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

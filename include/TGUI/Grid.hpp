@@ -37,34 +37,29 @@ namespace tgui
 
     class TGUI_API Grid : public Container
     {
-      public:
+    public:
 
         typedef SharedWidgetPtr<Grid> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief The layout of the widget.
+        /// @brief The alignment of the widget in its cell.
         ///
         /// Where in the cell is the widget located?
         /// The widget is centered by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// TODO: Make enum class and change name
-        struct Layout
+        enum class Alignment
         {
-            /// @brief The layout of the widget.
-            enum Layouts
-            {
-                UpperLeft,   ///< Draw the widget in the upper left corner of the cell
-                Up,          ///< Draw the widget at the upper side of the cell (horizontally centered)
-                UpperRight,  ///< Draw the widget in the upper right corner of the cell
-                Right,       ///< Draw the widget at the right side of the cell (vertically centered)
-                BottomRight, ///< Draw the widget in the bottom right corner of the cell
-                Bottom,      ///< Draw the widget at the bottom of the cell (horizontally centered)
-                BottomLeft,  ///< Draw the widget in the bottom left corner of the cell
-                Left,        ///< Draw the widget at the left side of the cell (vertically centered)
-                Center       ///< Center the widget in the cell
-            };
+            UpperLeft,   ///< Draw the widget in the upper left corner of the cell
+            Up,          ///< Draw the widget at the upper side of the cell (horizontally centered)
+            UpperRight,  ///< Draw the widget in the upper right corner of the cell
+            Right,       ///< Draw the widget at the right side of the cell (vertically centered)
+            BottomRight, ///< Draw the widget in the bottom right corner of the cell
+            Bottom,      ///< Draw the widget at the bottom of the cell (horizontally centered)
+            BottomLeft,  ///< Draw the widget in the bottom left corner of the cell
+            Left,        ///< Draw the widget at the left side of the cell (vertically centered)
+            Center       ///< Center the widget in the cell
         };
 
 
@@ -120,7 +115,7 @@ namespace tgui
         /// some Widgets are removed of the grid and the size was become valid again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) override;
+        virtual void setSize(const Layout& size) override;
         using Transformable::setSize;
 
 
@@ -132,7 +127,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
         {
-            return m_size;
+            return m_realSize;
         }
 
 
@@ -179,18 +174,18 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Add a widget to the grid.
         ///
-        /// @param widget  Pointer to a fully created widget that will be added to the grid
-        /// @param row     The row in which the widget should be placed
-        /// @param column  The column in which the widget should be placed
-        /// @param borders  Distance from the grid square to the widget (left, top, right, bottom)
-        /// @param layout   Where the widget is located in the square
+        /// @param widget    Pointer to a fully created widget that will be added to the grid
+        /// @param row       The row in which the widget should be placed
+        /// @param column    The column in which the widget should be placed
+        /// @param borders   Distance from the grid square to the widget (left, top, right, bottom)
+        /// @param alignment Where the widget is located in the square
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addWidget(const Widget::Ptr& widget,
                        unsigned int       row,
                        unsigned int       column,
                        const Borders&     borders = Borders(0, 0, 0, 0),
-                       Layout::Layouts    layout  = Layout::Center);
+                       Alignment          alignment  = Alignment::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,13 +220,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the layout of a given widget.
+        /// @brief Changes the alignment of a given widget in its cell.
         ///
-        /// @param widget  The widget for which the layout should be changed
-        /// @param layout  The new layout
+        /// @param widget    The widget for which the alignment should be changed
+        /// @param alignment The new alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeWidgetLayout(const Widget::Ptr& widget, Layout::Layouts layout = Layout::Center);
+        void changeWidgetAlignment(const Widget::Ptr& widget, Alignment aignment = Alignment::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +236,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    protected:
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,7 +258,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      public:
+    public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// Defines specific triggers to Grid.
@@ -276,18 +271,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    protected:
 
-        std::vector< std::vector<Widget::Ptr> >     m_gridWidgets;
-        std::vector< std::vector<Borders> >         m_objBorders;
-        std::vector< std::vector<Layout::Layouts> > m_objLayout;
+        std::vector<std::vector<Widget::Ptr>> m_gridWidgets;
+        std::vector<std::vector<Borders>>     m_objBorders;
+        std::vector<std::vector<Alignment>>   m_objAlignment;
 
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
 
-        sf::Vector2f m_size; // Real (optimal) size of the grid
-        sf::Vector2f m_intendedSize; // Intended size that the grid should have if it is possible
-
+        sf::Vector2f m_realSize; // Actual size of the grid, while m_size contains the intended size
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

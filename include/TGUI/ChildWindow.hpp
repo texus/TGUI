@@ -154,22 +154,8 @@ namespace tgui
         /// This is the size of the child window, without the title bar nor the borders.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const sf::Vector2f& size) override;
+        void setSize(const Layout& size) override;
         using Transformable::setSize;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the drawable area of the child window.
-        ///
-        /// @return Size of the child window
-        ///
-        /// The size returned by this function is the size of the child window, without the title bar nor the borders.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return m_size;
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,7 +168,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override
         {
-            return {m_size.x + m_borders.left + m_borders.right, m_size.y + m_borders.top + m_borders.bottom + m_titleBarHeight};
+            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom + m_titleBarHeight};
         }
 
 
@@ -554,8 +540,6 @@ namespace tgui
       protected:
 
         std::string    m_loadedConfigFile;
-
-        sf::Vector2f   m_size;
 
         sf::Color      m_backgroundColor = sf::Color::White;
 

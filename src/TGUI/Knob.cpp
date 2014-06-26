@@ -100,17 +100,19 @@ namespace tgui
         Widget::setPosition(position);
 
         m_backgroundTexture.setPosition(position.getValue());
-        m_foregroundTexture.setPosition(position.getValue().x + ((m_backgroundTexture.getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
-                                        position.getValue().y + ((m_backgroundTexture.getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
+        m_foregroundTexture.setPosition(position.getValue().x + ((getSize().x - m_foregroundTexture.getSize().x) / 2.0f),
+                                        position.getValue().y + ((getSize().y - m_foregroundTexture.getSize().x) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setSize(const sf::Vector2f& size)
+    void Knob::setSize(const Layout& size)
     {
-        m_backgroundTexture.setSize(size);
-        m_foregroundTexture.setSize({m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * size.x,
-                                     m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * size.y});
+        Widget::setSize(size);
+
+        m_backgroundTexture.setSize(getSize());
+        m_foregroundTexture.setSize({m_foregroundTexture.getImageSize().x / m_backgroundTexture.getImageSize().x * getSize().x,
+                                     m_foregroundTexture.getImageSize().y / m_backgroundTexture.getImageSize().y * getSize().y});
 
         // Recalculate the position of the images
         updatePosition();
@@ -287,7 +289,7 @@ namespace tgui
 
         m_mouseHover = true;
 
-        sf::Vector2f centerPosition = m_backgroundTexture.getPosition() + (m_backgroundTexture.getSize() / 2.0f);
+        sf::Vector2f centerPosition = m_backgroundTexture.getPosition() + (getSize() / 2.0f);
 
         // Check if the mouse button is down
         if (m_mouseDown)

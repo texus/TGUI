@@ -103,18 +103,20 @@ namespace tgui
         m_textureFocused.setPosition(position.getValue());
 
         // Set the position of the text
-        m_text.setPosition(std::floor(position.getValue().x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
-                           std::floor(position.getValue().y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(position.getValue().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
+                           std::floor(position.getValue().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setSize(const sf::Vector2f& size)
+    void Button::setSize(const Layout& size)
     {
-        m_textureDown.setSize(size);
-        m_textureHover.setSize(size);
-        m_textureNormal.setSize(size);
-        m_textureFocused.setSize(size);
+        Widget::setSize(size);
+
+        m_textureDown.setSize(getSize());
+        m_textureHover.setSize(getSize());
+        m_textureNormal.setSize(getSize());
+        m_textureFocused.setSize(getSize());
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
@@ -136,12 +138,12 @@ namespace tgui
         if (m_textSize == 0)
         {
             // Calculate a possible text size
-            float size = m_textureNormal.getSize().y * 0.75f;
+            float size = getSize().y * 0.75f;
             m_text.setCharacterSize(static_cast<unsigned int>(size));
 
             // Make the text smaller when it's too width
-            if (m_text.getGlobalBounds().width > (m_textureNormal.getSize().x * 0.8f))
-                m_text.setCharacterSize(static_cast<unsigned int>(size * m_textureNormal.getSize().x * 0.8f / m_text.getGlobalBounds().width));
+            if (m_text.getGlobalBounds().width > (getSize().x * 0.8f))
+                m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getGlobalBounds().width));
         }
         else // When the text has a fixed size
         {
@@ -150,8 +152,8 @@ namespace tgui
         }
 
         // Set the position of the text
-        m_text.setPosition(std::floor(getPosition().x + (m_textureNormal.getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
-                           std::floor(getPosition().y + (m_textureNormal.getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
+        m_text.setPosition(std::floor(getPosition().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
+                           std::floor(getPosition().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -95,7 +95,7 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(Layout1d x, Layout1d y)
+        void setPosition(const Layout1d& x, const Layout1d& y)
         {
             setPosition({x, y});
         }
@@ -109,7 +109,10 @@ namespace tgui
         /// @see setPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getPosition() const;
+        sf::Vector2f getPosition() const
+        {
+            return m_position.getValue();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +137,20 @@ namespace tgui
         ///
         /// @param size  Size of the widget
         ///
+        /// Usage examples:
+        /// @code
+        /// // Give the widget an exact size
+        /// widget->setSize({40, 30});
+        ///
+        /// // Make the widget 50 pixels higher than some other widget
+        /// widget->setSize(otherWidget->getSize() + sf::Vector2f{0, 50});
+        ///
+        /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
+        /// widget->setSize(tgui::bindSize(otherWidget) + sf::Vector2f{0, 50});
+        /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const sf::Vector2f& size) = 0;
+        virtual void setSize(const Layout& size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,8 +159,20 @@ namespace tgui
         /// @param width   Width of the widget
         /// @param height  Height of the widget
         ///
+        /// Usage examples:
+        /// @code
+        /// // Give the widget an exact size
+        /// widget->setSize(40, 30);
+        ///
+        /// // Make the widget 50 pixels higher than some other widget
+        /// widget->setSize(otherWidget->getSize().x, otherWidget->getSize().y + 50);
+        ///
+        /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
+        /// widget->setSize(tgui::bindWidth(otherWidget), tgui::bindHeight(otherWidget) + 50);
+        /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(float width, float height)
+        void setSize(const Layout1d& width, const Layout1d& height)
         {
             setSize({width, height});
         }
@@ -157,7 +184,10 @@ namespace tgui
         /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const = 0; /// TODO: Make final and implement here by returning the layout m_size
+        virtual sf::Vector2f getSize() const
+        {
+            return m_size.getValue();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +199,10 @@ namespace tgui
         /// @return Full size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getFullSize() const; /// TODO: What to do here? Same as getSize?
+        virtual sf::Vector2f getFullSize() const
+        {
+            return getSize();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +217,7 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scale(const sf::Vector2f& factors);
+        void scale(const Layout& factors);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,10 +242,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         Layout m_position;
-        /// TODO: Add m_size
+        Layout m_size;
 
         mutable bool          m_transformNeedUpdate = true;
         mutable sf::Transform m_transform;

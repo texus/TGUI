@@ -37,14 +37,8 @@ namespace tgui
     Panel::Panel()
     {
         m_callback.widgetType = Type_Panel;
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Panel::setSize(const sf::Vector2f& size)
-    {
-        m_size.x = std::abs(size.x);
-        m_size.y = std::abs(size.y);
+        setSize({100, 100});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +53,7 @@ namespace tgui
     bool Panel::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is inside the panel
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
 
         if (m_mouseHover)
@@ -211,10 +205,10 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + m_size.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + m_size.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Get the old clipping area
         GLint scissor[4];
@@ -241,7 +235,7 @@ namespace tgui
         // Draw the background
         if (m_backgroundColor != sf::Color::Transparent)
         {
-            sf::RectangleShape background(m_size);
+            sf::RectangleShape background(getSize());
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }

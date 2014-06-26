@@ -73,15 +73,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setSize(const sf::Vector2f& size)
+    void MenuBar::setSize(const Layout& size)
     {
-        m_size = size;
+        Widget::setSize(size);
 
-        // There is a minimum height
-        if (m_size.y < 10)
-            m_size.y = 10;
-
-        setTextSize(static_cast<unsigned int>(m_size.y * 0.75f));
+        setTextSize(static_cast<unsigned int>(getSize().y * 0.75f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +277,7 @@ namespace tgui
     bool MenuBar::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the menu bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
         else
         {
@@ -306,7 +302,7 @@ namespace tgui
                     width = static_cast<float>(m_minimumSubMenuWidth);
 
                 // Check if the mouse is on top of the open menu
-                if (getTransform().transformRect(sf::FloatRect(left, m_size.y, width, m_size.y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
+                if (getTransform().transformRect(sf::FloatRect(left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
                     return true;
             }
         }
@@ -323,7 +319,7 @@ namespace tgui
     void MenuBar::leftMousePressed(float x, float y)
     {
         // Check if a menu should be opened or closed
-        if (y <= m_size.y + getPosition().y)
+        if (y <= getSize().y + getPosition().y)
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
@@ -363,9 +359,9 @@ namespace tgui
         if (m_mouseDown)
         {
             // Check if the mouse is on top of one of the menus
-            if (y > m_size.y + getPosition().y)
+            if (y > getSize().y + getPosition().y)
             {
-                unsigned int selectedMenuItem = static_cast<unsigned int>((y - m_size.y - getPosition().y) / m_size.y);
+                unsigned int selectedMenuItem = static_cast<unsigned int>((y - getSize().y - getPosition().y) / getSize().y);
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
@@ -402,7 +398,7 @@ namespace tgui
         m_mouseHover = true;
 
         // Check if the mouse is on top of the menu bar (not on an open menus)
-        if (y <= m_size.y + getPosition().y)
+        if (y <= getSize().y + getPosition().y)
         {
             // Don't open a menu without having clicked first
             if (m_visibleMenu != -1)
@@ -451,7 +447,7 @@ namespace tgui
         else // The mouse is on top of one of the menus
         {
             // Calculate on what menu item the mouse is located
-            int selectedMenuItem = static_cast<int>((y - m_size.y - getPosition().y) / m_size.y);
+            int selectedMenuItem = static_cast<int>((y - getSize().y - getPosition().y) / getSize().y);
 
             // Check if the mouse is on a different item than before
             if (selectedMenuItem != m_menus[m_visibleMenu].selectedMenuItem)
@@ -657,7 +653,7 @@ namespace tgui
         if (!getTextFont() && m_parent->getGlobalFont())
             setTextFont(*m_parent->getGlobalFont());
 
-        m_size.x = m_parent->getSize().x;
+        setSize(m_parent->getSize().x, m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -667,7 +663,7 @@ namespace tgui
         states.transform *= getTransform();
 
         // Draw the background
-        sf::RectangleShape background(m_size);
+        sf::RectangleShape background(getSize());
         background.setFillColor(m_backgroundColor);
         target.draw(background, states);
 
@@ -679,7 +675,7 @@ namespace tgui
 
         sf::Vector2f textShift;
         textShift.x = -tempText.getLocalBounds().left;
-        textShift.y = ((m_size.y - tempText.getLocalBounds().height) / 2.0f) - tempText.getLocalBounds().top;
+        textShift.y = ((getSize().y - tempText.getLocalBounds().height) / 2.0f) - tempText.getLocalBounds().top;
 
         // Draw the menus
         for (unsigned int i = 0; i < m_menus.size(); ++i)
@@ -692,7 +688,7 @@ namespace tgui
             // Is the menu open?
             if (m_visibleMenu == static_cast<int>(i))
             {
-                states.transform.translate(-static_cast<float>(m_distanceToSide), m_size.y);
+                states.transform.translate(-static_cast<float>(m_distanceToSide), getSize().y);
 
                 // Find out what the width of the menu should be
                 float menuWidth = 0;
@@ -707,18 +703,18 @@ namespace tgui
                     menuWidth = static_cast<float>(m_minimumSubMenuWidth);
 
                 // Draw the background of the menu
-                background = sf::RectangleShape(sf::Vector2f(menuWidth, m_size.y * m_menus[i].menuItems.size()));
+                background = sf::RectangleShape({menuWidth, getSize().y * m_menus[i].menuItems.size()});
                 background.setFillColor(m_backgroundColor);
                 target.draw(background, states);
 
                 // If there is a selected menu item then draw its background
                 if (m_menus[i].selectedMenuItem != -1)
                 {
-                    states.transform.translate(0, m_menus[i].selectedMenuItem * m_size.y);
-                    background = sf::RectangleShape(sf::Vector2f(menuWidth, m_size.y));
+                    states.transform.translate(0, m_menus[i].selectedMenuItem * getSize().y);
+                    background = sf::RectangleShape({menuWidth, getSize().y});
                     background.setFillColor(m_selectedBackgroundColor);
                     target.draw(background, states);
-                    states.transform.translate(0, m_menus[i].selectedMenuItem * -m_size.y);
+                    states.transform.translate(0, m_menus[i].selectedMenuItem * -getSize().y);
                 }
 
                 states.transform.translate(2.0f * m_distanceToSide, 0);
@@ -729,11 +725,11 @@ namespace tgui
                 {
                     target.draw(m_menus[i].menuItems[j], states);
 
-                    states.transform.translate(0, m_size.y);
+                    states.transform.translate(0, getSize().y);
                 }
 
                 states.transform.translate(-textShift.x, -textShift.y);
-                states.transform.translate(m_menus[i].text.getLocalBounds().width, -m_size.y * (m_menus[i].menuItems.size()+1));
+                states.transform.translate(m_menus[i].text.getLocalBounds().width, -getSize().y * (m_menus[i].menuItems.size()+1));
             }
             else // The menu isn't open
             {

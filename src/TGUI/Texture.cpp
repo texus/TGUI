@@ -27,6 +27,7 @@
 #include <TGUI/Texture.hpp>
 
 #include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,36 +101,16 @@ namespace tgui
 
     void Texture::setSize(const sf::Vector2f& size)
     {
+        assert(m_size.x >= 0 && m_size.y >= 0);
+
         if (m_data != nullptr)
         {
             m_size = size;
-
-            if (m_size.x < 0)
-                m_size.x = -m_size.x;
-            if (m_size.y < 0)
-                m_size.y = -m_size.y;
 
             setOrigin(m_size.x / 2.0f, m_size.x / 2.0f);
 
             updateVertices();
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Texture::getSize() const
-    {
-        return m_size;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Texture::getImageSize() const
-    {
-        if (m_data)
-            return sf::Vector2f(m_data->texture.getSize());
-        else
-            return sf::Vector2f(0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,30 +123,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setTextureRect(const sf::FloatRect& textureRect)
-    {
-        m_textureRect = textureRect;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Texture::setSmooth(bool smooth)
     {
-        if (m_data) {
+        if (m_data)
             m_data->texture.setSmooth(smooth);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Texture::isSmooth() const
-    {
-        if (m_data) {
-            return m_data->texture.isSmooth();
-        }
-        else {
-            return false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,6 +203,9 @@ namespace tgui
             }
         }
 
+        sf::Vector2f textureSize{m_data->texture.getSize()};
+        sf::FloatRect middleRect{m_middleRect};
+
         // Calculate the vertices based on the way we are scaling
         switch (m_scalingType)
         {
@@ -252,10 +216,10 @@ namespace tgui
             // 2---3 //
             ///////////
             m_vertices.resize(4);
-            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-            m_vertices[1] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
-            m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
-            m_vertices[3] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
+            m_vertices[0] = {{0, 0}, {0, 0}};
+            m_vertices[1] = {{m_size.x, 0}, {textureSize.x, 0}};
+            m_vertices[2] = {{0, m_size.y}, {0, textureSize.y}};
+            m_vertices[3] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
         case Horizontal:
@@ -265,14 +229,14 @@ namespace tgui
             // 1---3-------5---7 //
             ///////////////////////
             m_vertices.resize(8);
-            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-            m_vertices[1] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
-            m_vertices[2] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left, 0));
-            m_vertices[3] = sf::Vertex(sf::Vector2f(m_middleRect.left * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left, m_data->texture.getSize().y));
-            m_vertices[4] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), 0), sf::Vector2f(m_middleRect.left + m_middleRect.width, 0));
-            m_vertices[5] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y), m_size.y), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_data->texture.getSize().y));
-            m_vertices[6] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
-            m_vertices[7] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
+            m_vertices[0] = {{0, 0}, {0, 0}};
+            m_vertices[1] = {{0, m_size.y}, {0, textureSize.y}};
+            m_vertices[2] = {{middleRect.left * (m_size.y / textureSize.y), 0}, {middleRect.left, 0}};
+            m_vertices[3] = {{middleRect.left * (m_size.y / textureSize.y), m_size.y}, {middleRect.left, textureSize.y}};
+            m_vertices[4] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), 0}, {middleRect.left + middleRect.width, 0}};
+            m_vertices[5] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), m_size.y}, {middleRect.left + middleRect.width, textureSize.y}};
+            m_vertices[6] = {{m_size.x, 0}, {textureSize.x, 0}};
+            m_vertices[7] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
         case Vertical:
@@ -288,14 +252,14 @@ namespace tgui
             // 6---7-//
             ///////////
             m_vertices.resize(8);
-            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-            m_vertices[1] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
-            m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_middleRect.top * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(0, m_middleRect.top));
-            m_vertices[3] = sf::Vertex(sf::Vector2f(m_size.x, m_middleRect.top * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top));
-            m_vertices[4] = sf::Vertex(sf::Vector2f(0, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(0, m_middleRect.top + m_middleRect.height));
-            m_vertices[5] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top + m_middleRect.height));
-            m_vertices[6] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
-            m_vertices[7] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
+            m_vertices[0] = {{0, 0}, {0, 0}};
+            m_vertices[1] = {{m_size.x, 0}, {textureSize.x, 0}};
+            m_vertices[2] = {{0, middleRect.top * (m_size.x / textureSize.x)}, {0, middleRect.top}};
+            m_vertices[3] = {{m_size.x, middleRect.top * (m_size.x / textureSize.x)}, {textureSize.x, middleRect.top}};
+            m_vertices[4] = {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, {0, middleRect.top + middleRect.height}};
+            m_vertices[5] = {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, {textureSize.x, middleRect.top + middleRect.height}};
+            m_vertices[6] = {{0, m_size.y}, {0, textureSize.y}};
+            m_vertices[7] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
         case NineSliceScaling:
@@ -311,28 +275,28 @@ namespace tgui
             // 6----7-------------8/20---21 //
             //////////////////////////////////
             m_vertices.resize(22);
-            m_vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-            m_vertices[1] = sf::Vertex(sf::Vector2f(m_middleRect.left, 0), sf::Vector2f(m_middleRect.left, 0));
-            m_vertices[2] = sf::Vertex(sf::Vector2f(0, m_middleRect.top), sf::Vector2f(0, m_middleRect.top));
-            m_vertices[3] = sf::Vertex(sf::Vector2f(m_middleRect.left, m_middleRect.top), sf::Vector2f(m_middleRect.left, m_middleRect.top));
-            m_vertices[4] = sf::Vertex(sf::Vector2f(0, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height)), sf::Vector2f(0, m_middleRect.top + m_middleRect.height));
-            m_vertices[5] = sf::Vertex(sf::Vector2f(m_middleRect.left, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height)), sf::Vector2f(m_middleRect.left, m_middleRect.top + m_middleRect.height));
-            m_vertices[6] = sf::Vertex(sf::Vector2f(0, m_size.y), sf::Vector2f(0, m_data->texture.getSize().y));
-            m_vertices[7] = sf::Vertex(sf::Vector2f(m_middleRect.left, m_size.y), sf::Vector2f(m_middleRect.left, m_data->texture.getSize().y));
-            m_vertices[8] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width), m_size.y), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_data->texture.getSize().y));
+            m_vertices[0] = {{0, 0}, {0, 0}};
+            m_vertices[1] = {{middleRect.left, 0}, {middleRect.left, 0}};
+            m_vertices[2] = {{0, middleRect.top}, {0, middleRect.top}};
+            m_vertices[3] = {{middleRect.left, middleRect.top}, {middleRect.left, middleRect.top}};
+            m_vertices[4] = {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, {0, middleRect.top + middleRect.height}};
+            m_vertices[5] = {{middleRect.left, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, {middleRect.left, middleRect.top + middleRect.height}};
+            m_vertices[6] = {{0, m_size.y}, {0, textureSize.y}};
+            m_vertices[7] = {{middleRect.left, m_size.y}, {middleRect.left, textureSize.y}};
+            m_vertices[8] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y}, {middleRect.left + middleRect.width, textureSize.y}};
             m_vertices[9] = m_vertices[5];
-            m_vertices[10] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width), m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height)), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_middleRect.top + m_middleRect.height));
+            m_vertices[10] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, {middleRect.left + middleRect.width, middleRect.top + middleRect.height}};
             m_vertices[11] = m_vertices[3];
-            m_vertices[12] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width), m_middleRect.top), sf::Vector2f(m_middleRect.left + m_middleRect.width, m_middleRect.top));
+            m_vertices[12] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), middleRect.top}, {middleRect.left + middleRect.width, middleRect.top}};
             m_vertices[13] = m_vertices[1];
-            m_vertices[14] = sf::Vertex(sf::Vector2f(m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width), 0), sf::Vector2f(m_middleRect.left + m_middleRect.width, 0));
-            m_vertices[15] = sf::Vertex(sf::Vector2f(m_size.x, 0), sf::Vector2f(m_data->texture.getSize().x, 0));
+            m_vertices[14] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), 0}, {middleRect.left + middleRect.width, 0}};
+            m_vertices[15] = {{m_size.x, 0}, {textureSize.x, 0}};
             m_vertices[16] = m_vertices[12];
-            m_vertices[17] = sf::Vertex(sf::Vector2f(m_size.x, m_middleRect.top), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top));
+            m_vertices[17] = {{m_size.x, middleRect.top}, {textureSize.x, middleRect.top}};
             m_vertices[18] = m_vertices[10];
-            m_vertices[19] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height)), sf::Vector2f(m_data->texture.getSize().x, m_middleRect.top + m_middleRect.height));
+            m_vertices[19] = {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, {textureSize.x, middleRect.top + middleRect.height}};
             m_vertices[20] = m_vertices[8];
-            m_vertices[21] = sf::Vertex(sf::Vector2f(m_size.x, m_size.y), sf::Vector2f(m_data->texture.getSize().x, m_data->texture.getSize().y));
+            m_vertices[21] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
         };
     }

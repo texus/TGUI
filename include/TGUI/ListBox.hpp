@@ -118,22 +118,8 @@ namespace tgui
         /// @param size  The new size of the list box
         ///
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const sf::Vector2f& size) override;
+        void setSize(const Layout& size) override;
         using Transformable::setSize;
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the list box
-        ///
-        /// The size returned by this function does not include the borders.
-        ///
-        /// @return Size of the list box
-        ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return sf::Vector2f(m_size);
-        }
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -697,7 +683,6 @@ namespace tgui
         int m_selectedItem = -1;
 
         // The size must be stored
-        sf::Vector2f m_size = {50, 100};
         unsigned int m_itemHeight = 24;
         unsigned int m_textSize = 19;
 

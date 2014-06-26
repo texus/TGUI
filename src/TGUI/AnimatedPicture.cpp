@@ -51,7 +51,7 @@ namespace tgui
             m_currentFrame = 0;
 
             // Remember the size of this image
-            m_size = sf::Vector2f{tempTexture.getSize()};
+            setSize(tempTexture.getSize());
         }
 
         // Add the texture and store its duration
@@ -135,7 +135,7 @@ namespace tgui
             --m_currentFrame;
 
         if (m_textures.empty())
-            m_size = {0, 0};
+            setSize({0, 0});
 
         return true;
     }
@@ -144,7 +144,7 @@ namespace tgui
 
     void AnimatedPicture::removeAllFrames()
     {
-        m_size = {0, 0};
+        setSize({0, 0});
 
         // Clear the vectors
         m_textures.clear();
@@ -299,7 +299,7 @@ namespace tgui
         if (!m_textures.empty())
         {
             states.transform *= getTransform();
-            states.transform.scale(m_size.x / m_textures[m_currentFrame].getSize().x, m_size.y / m_textures[m_currentFrame].getSize().y);
+            states.transform.scale(getSize().x / m_textures[m_currentFrame].getSize().x, getSize().y / m_textures[m_currentFrame].getSize().y);
             target.draw(m_textures[m_currentFrame], states);
         }
     }

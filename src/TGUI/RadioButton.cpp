@@ -97,31 +97,31 @@ namespace tgui
         ClickableWidget::setPosition(position);
 
         m_textureUnchecked.setPosition(position.getValue());
-        m_textureChecked.setPosition(position.getValue().x, position.getValue().y + m_textureUnchecked.getSize().y - m_textureChecked.getSize().y);
+        m_textureChecked.setPosition(position.getValue().x, position.getValue().y + getSize().y - m_textureChecked.getSize().y);
         m_textureFocused.setPosition(position.getValue());
         m_textureHover.setPosition(position.getValue());
 
         sf::FloatRect textBounds = m_text.getLocalBounds();
-        m_text.setPosition(position.getValue().x + std::floor(m_textureUnchecked.getSize().x * 11.0f / 10.0f - textBounds.left),
-                           position.getValue().y + std::floor(((m_textureUnchecked.getSize().y - textBounds.height) / 2.0f) - textBounds.top));
+        m_text.setPosition(position.getValue().x + std::floor(getSize().x * 11.0f / 10.0f - textBounds.left),
+                           position.getValue().y + std::floor(((getSize().y - textBounds.height) / 2.0f) - textBounds.top));
     }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setSize(const sf::Vector2f& size)
+    void RadioButton::setSize(const Layout& size)
     {
-        sf::Vector2f newSize = {std::abs(size.x), std::abs(size.y)};
+        Widget::setSize(size);
 
         // If the text is auto sized then recalculate the size
         if (m_textSize == 0)
             setText(m_text.getString());
 
-        m_textureUnchecked.setSize(newSize);
-        m_textureFocused.setSize(newSize);
-        m_textureHover.setSize(newSize);
-        m_textureChecked.setSize({newSize.x + ((m_textureChecked.getImageSize().x - m_textureUnchecked.getImageSize().x) * (newSize.x / m_textureUnchecked.getImageSize().x)),
-                                  newSize.y + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (newSize.y / m_textureUnchecked.getImageSize().y))});
+        m_textureUnchecked.setSize(getSize());
+        m_textureFocused.setSize(getSize());
+        m_textureHover.setSize(getSize());
+        m_textureChecked.setSize({getSize().x + ((m_textureChecked.getImageSize().x - m_textureUnchecked.getImageSize().x) * (getSize().x / m_textureUnchecked.getImageSize().x)),
+                                  getSize().y + ((m_textureChecked.getImageSize().y - m_textureUnchecked.getImageSize().y) * (getSize().y / m_textureUnchecked.getImageSize().y))});
 
         // Reposition the text
         updatePosition();
@@ -134,7 +134,7 @@ namespace tgui
         if (m_text.getString().isEmpty())
             return getSize();
         else
-            return sf::Vector2f((getSize().x * 11.0f / 10.0f) + m_text.getLocalBounds().left + m_text.getLocalBounds().width, getSize().y);
+            return {(getSize().x * 11.0f / 10.0f) + m_text.getLocalBounds().left + m_text.getLocalBounds().width, getSize().y};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setCharacterSize(static_cast<unsigned int>(m_textureUnchecked.getSize().y * 0.75f));
+            m_text.setCharacterSize(static_cast<unsigned int>(getSize().y * 0.75f));
         else
             m_text.setCharacterSize(m_textSize);
 
@@ -239,7 +239,7 @@ namespace tgui
     bool RadioButton::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the image
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_textureUnchecked.getSize().x, m_textureUnchecked.getSize().y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
             return true;
         else
         {
@@ -247,7 +247,7 @@ namespace tgui
             if (m_allowTextClick)
             {
                 sf::FloatRect bounds = m_text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((m_textureUnchecked.getSize().x * 11.0f / 10.0f))), y - getPosition().y - ((m_textureUnchecked.getSize().y - bounds.height) / 2.0f) + bounds.top))
+                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((getSize().x * 11.0f / 10.0f))), y - getPosition().y - ((getSize().y - bounds.height) / 2.0f) + bounds.top))
                     return true;
             }
         }
@@ -408,9 +408,9 @@ namespace tgui
         property = toLower(property);
 
         if (property == "width")
-            value = tgui::to_string(m_textureUnchecked.getSize().x);
+            value = tgui::to_string(getSize().x);
         else if (property == "height")
-            value = tgui::to_string(m_textureUnchecked.getSize().y);
+            value = tgui::to_string(getSize().y);
         else if (property == "configfile")
             value = getLoadedConfigFile();
         else if (property == "checked")

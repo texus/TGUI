@@ -75,9 +75,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setSize(const sf::Vector2f& size)
+    void Label::setSize(const Layout& size)
     {
-        m_background.setSize({std::abs(size.x), std::abs(size.y)});
+        Widget::setSize(size);
+
+        m_background.setSize(getSize());
 
         // You are no longer auto-sizing
         m_autoSize = false;
@@ -93,7 +95,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
+        {
+            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
+            m_autoSize = true;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +119,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
+        {
+            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
+            m_autoSize = true;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +133,10 @@ namespace tgui
 
         // Change the size of the label if necessary
         if (m_autoSize)
-            m_background.setSize(sf::Vector2f(m_text.getLocalBounds().width, m_text.getLocalBounds().height));
+        {
+            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
+            m_autoSize = true;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,10 +241,10 @@ namespace tgui
         float scaleViewY = target.getSize().y / view.getSize().y;
 
         // Get the global position
-        sf::Vector2f topLeftPosition = sf::Vector2f(((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-        sf::Vector2f bottomRightPosition = sf::Vector2f((getAbsolutePosition().x + m_background.getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + m_background.getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Get the old clipping area
         GLint scissor[4];

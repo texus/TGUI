@@ -64,11 +64,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setSize(const sf::Vector2f& size)
+    void Picture::setSize(const Layout& size)
     {
-        m_size = size;
+        Widget::setSize(size);
 
-        m_texture.setSize(size);
+        m_texture.setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_texture.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_texture.setColor({255, 255, 255, m_opacity});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ namespace tgui
     bool Picture::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the picture
-        if (getTransform().transformRect(sf::FloatRect(0, 0, m_size.x, m_size.y)).contains(x, y))
+        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
             // Only return true when the pixel under the mouse isn't transparent
             if (!m_texture.isTransparentPixel(x, y))
