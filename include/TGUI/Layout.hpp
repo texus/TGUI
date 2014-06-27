@@ -115,7 +115,7 @@ namespace tgui
 
         Layout1d(float value = 0) : m_value{value}, m_constant{value} {}
 
-        explicit Layout1d(const std::shared_ptr<LayoutBind>& layout, LayoutChangeTrigger trigger);
+        explicit Layout1d(const LayoutBind& layout, LayoutChangeTrigger trigger);
 
         float getValue() const
         {
@@ -136,7 +136,7 @@ namespace tgui
         void unbindCallback(const Layout* layout);
 
     private:
-        std::list<std::shared_ptr<LayoutBind>> m_bindings;
+        std::list<LayoutBind> m_bindings;
         std::list<Operator> m_operators;
         float m_value = 0;
         float m_constant = 0;

@@ -137,8 +137,8 @@ namespace tgui
         if (m_textSize != 0)
             m_text.setCharacterSize(m_textSize);
 
-        // If the height is bigger than the width then the text should be vertical
-        if (getSize().y > getSize().x)
+        // If the height is much bigger than the width then the text should be vertical
+        if (getSize().y > getSize().x * 2)
         {
             // The text is vertical
             if (!m_string.isEmpty())
@@ -161,7 +161,7 @@ namespace tgui
                     m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().y * 0.8f / m_text.getLocalBounds().height));
             }
         }
-        else // The width of the button is bigger than the height
+        else // The width of the button is big enough
         {
             m_text.setString(text);
 
@@ -177,24 +177,7 @@ namespace tgui
                     m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getLocalBounds().width));
             }
         }
-/**
-        // Check if the text is auto sized
-        if (m_textSize == 0)
-        {
-            // Calculate a possible text size
-            float size = getSize().y * 0.75f;
-            m_text.setCharacterSize(static_cast<unsigned int>(size));
 
-            // Make the text smaller when it's too width
-            if (m_text.getGlobalBounds().width > (getSize().x * 0.8f))
-                m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getGlobalBounds().width));
-        }
-        else // When the text has a fixed size
-        {
-            // Set the text size
-            m_text.setCharacterSize(m_textSize);
-        }
-*/
         // Set the position of the text
         m_text.setPosition(std::floor(getPosition().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
                            std::floor(getPosition().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));

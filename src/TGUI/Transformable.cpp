@@ -33,6 +33,32 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Transformable::Transformable(const Transformable& copy) :
+        m_transformNeedUpdate(copy.m_transformNeedUpdate),
+        m_transform          (copy.m_transform)
+    {
+        setPosition(copy.m_position);
+        setSize(copy.m_size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Transformable& Transformable::operator=(const Transformable& right)
+    {
+        if (this != &right)
+        {
+            m_transformNeedUpdate = right.m_transformNeedUpdate;
+            m_transform           = right.m_transform;
+
+            setPosition(right.m_position);
+            setSize(right.m_size);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Transformable::setPosition(const Layout& position)
     {
         m_position = position;
@@ -62,7 +88,7 @@ namespace tgui
 
         if (m_size.getValue().y < 0)
         {
-            m_size.y = m_size.x * -1;
+            m_size.y = m_size.y * -1;
             m_size.recalculateValue();
         }
 
