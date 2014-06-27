@@ -155,6 +155,13 @@ namespace tgui
         else if (event.type == sf::Event::Resized)
         {
             m_container->m_size = {static_cast<float>(event.size.width), static_cast<float>(event.size.height)};
+
+            if (m_container->m_callbackFunctions[Widget::SizeChanged].empty() == false)
+            {
+                m_container->m_callback.trigger = Widget::SizeChanged;
+                m_container->m_callback.size    = m_container->m_size.getValue();
+                m_container->addCallback();
+            }
         }
 
         // Let the event manager handle the event

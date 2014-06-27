@@ -103,7 +103,7 @@ namespace tgui
 
         if (m_callbackFunctions[Widget::SizeChanged].empty() == false)
         {
-            m_callback.trigger = Widget::PositionChanged;
+            m_callback.trigger = Widget::SizeChanged;
             m_callback.size    = size.getValue();
             addCallback();
         }
