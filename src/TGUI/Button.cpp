@@ -120,7 +120,7 @@ namespace tgui
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
-            setText(m_text.getString());
+            setText(m_string);
 
         // Recalculate the position of the images
         updatePosition();
@@ -130,10 +130,54 @@ namespace tgui
 
     void Button::setText(const sf::String& text)
     {
-        // Set the new text
-        m_text.setString(text);
+        m_string = text;
         m_callback.text = text;
 
+        // Set the text size when the text has a fixed size
+        if (m_textSize != 0)
+            m_text.setCharacterSize(m_textSize);
+
+        // If the height is bigger than the width then the text should be vertical
+        if (getSize().y > getSize().x)
+        {
+            // The text is vertical
+            if (!m_string.isEmpty())
+            {
+                m_text.setString(m_string[0]);
+
+                for (unsigned int i = 1; i < m_string.getSize(); ++i)
+                    m_text.setString(m_text.getString() + "\n" + m_string[i]);
+            }
+
+            // Auto size the text when necessary
+            if (m_textSize == 0)
+            {
+                // Calculate a possible text size
+                float size = getSize().x * 0.75f;
+                m_text.setCharacterSize(static_cast<unsigned int>(size));
+
+                // Make the text smaller when it's too high
+                if (m_text.getLocalBounds().height > (getSize().y * 0.8f))
+                    m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().y * 0.8f / m_text.getLocalBounds().height));
+            }
+        }
+        else // The width of the button is bigger than the height
+        {
+            m_text.setString(text);
+
+            // Auto size the text when necessary
+            if (m_textSize == 0)
+            {
+                // Calculate a possible text size
+                float size = getSize().y * 0.75f;
+                m_text.setCharacterSize(static_cast<unsigned int>(size));
+
+                // Make the text smaller when it's too width
+                if (m_text.getLocalBounds().width > (getSize().x * 0.8f))
+                    m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getLocalBounds().width));
+            }
+        }
+/**
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
@@ -150,7 +194,7 @@ namespace tgui
             // Set the text size
             m_text.setCharacterSize(m_textSize);
         }
-
+*/
         // Set the position of the text
         m_text.setPosition(std::floor(getPosition().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
                            std::floor(getPosition().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
@@ -163,7 +207,7 @@ namespace tgui
         m_text.setFont(font);
 
         // Reposition the text
-        setText(getText());
+        setText(m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +218,7 @@ namespace tgui
         m_textSize = size;
 
         // Call setText to reposition the text
-        setText(m_text.getString());
+        setText(m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

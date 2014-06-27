@@ -134,9 +134,9 @@ namespace tgui
         /// @return Text that is drawn on top of the button.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getText() const
+        const sf::String& getText() const
         {
-            return m_text.getString();
+            return m_string;
         }
 
 
@@ -302,7 +302,7 @@ namespace tgui
         // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
         bool m_separateHoverImage = false;
 
-        // The SFML text
+        sf::String m_string;
         sf::Text m_text;
 
         // This will store the size of the text ( 0 to auto size )

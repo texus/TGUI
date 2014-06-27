@@ -46,11 +46,11 @@ namespace tgui
         m_draggableWidget = true;
 
         m_listBox->hide();
-        m_listBox->setSize({50, 24}); /// TODO !!!
-        m_listBox->setItemHeight(24);
         m_listBox->changeColors();
         m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
         m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, this));
+
+        setSize({50, 24});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
