@@ -663,7 +663,7 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getWidgetsOffset() const
     {
-        return sf::Vector2f(m_LeftBorder, m_TopBorder + getTitleBarHeight());
+        return sf::Vector2f(static_cast<float>(m_LeftBorder), static_cast<float>(m_TopBorder + getTitleBarHeight()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

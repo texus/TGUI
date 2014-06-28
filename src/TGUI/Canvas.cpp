@@ -90,7 +90,7 @@ namespace tgui
 
     void Canvas::setSize(float width, float height)
     {
-        m_renderTexture.create(width, height);
+        m_renderTexture.create(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
         m_sprite.setTexture(m_renderTexture.getTexture(), true);
 
         m_renderTexture.clear();
