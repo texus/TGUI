@@ -18,6 +18,24 @@
     <h2>Changelog</h2>
 
     <div>
+        <h3>TGUI v0.6.4 <span class="Date">(28 June 2014)</span></h3>
+        <ul>
+            <li>Improved auto-sizing of text</li>
+            <li>Allow rendering to a RenderTarget</li>
+            <li>On windows the system clipboard will be used</li>
+            <li>ListBox and ComboBox now have ids for their items</li>
+            <li>ListBox and ComboBox now have methods to change items</li>
+            <li>Fixed crash in TextBox when no font was set</li>
+            <li>Fixed crash in EditBox when LimitTextWidth was set</li>
+            <li>ScrollAmount now also taken into account when using the mouse wheel</li>
+            <li>Title text in ChildWindow wasn't vertically centered</li>
+            <li>Theme files edited on windows couldn't be loaded on unix</li>
+            <li>ListBox::setSelectedItem should move the scrollbar if needed</li>
+            <li>ChatBox didn't display correctly when text got split over multiple lines</li>
+        </ul>
+    </div>
+
+    <div>
         <h3>TGUI v0.6.3 <span class="Date">(11 April 2014)</span></h3>
         <ul>
             <li>Added canvas widget to render sfml inbetween tgui widgets</li>
