@@ -11,6 +11,7 @@ var searchData=
   ['removeframe',['removeFrame',['../classtgui_1_1AnimatedPicture.html#ada262d0411981a077389b7ebf6fc0809',1,'tgui::AnimatedPicture']]],
   ['removeicon',['removeIcon',['../classtgui_1_1ChildWindow.html#aa4b7441208692d073b8a6b7e00cf57aa',1,'tgui::ChildWindow']]],
   ['removeitem',['removeItem',['../classtgui_1_1ComboBox.html#ab6afb9e2aaa02b16228665c40ba06ced',1,'tgui::ComboBox::removeItem(unsigned int index)'],['../classtgui_1_1ComboBox.html#a13e783b70be6c898098578ea37cbba3b',1,'tgui::ComboBox::removeItem(const sf::String &amp;itemName)'],['../classtgui_1_1ListBox.html#a571baeb200b5b1d042f8b8d03afd1801',1,'tgui::ListBox::removeItem(unsigned int index)'],['../classtgui_1_1ListBox.html#a44099a46f32253ac1b45d55394c57c30',1,'tgui::ListBox::removeItem(const sf::String &amp;itemName)']]],
+  ['removeitemsbyid',['removeItemsById',['../classtgui_1_1ComboBox.html#acad00f93cf7c37d01927300711f238c9',1,'tgui::ComboBox::removeItemsById()'],['../classtgui_1_1ListBox.html#a9b7d1397eaf454414df9c4ebd65ae95a',1,'tgui::ListBox::removeItemsById()']]],
   ['removeline',['removeLine',['../classtgui_1_1ChatBox.html#ac486ecbfcab0bc8c7b8c2cd9362d8e8b',1,'tgui::ChatBox']]],
   ['removemenu',['removeMenu',['../classtgui_1_1MenuBar.html#a894e210ea45ce428a9c3acbb029b53fd',1,'tgui::MenuBar']]],
   ['removemenuitem',['removeMenuItem',['../classtgui_1_1MenuBar.html#a7e8b910fb177cca87cd37a17dad5be06',1,'tgui::MenuBar']]],

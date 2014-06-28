@@ -1,6 +1,7 @@
 var searchData=
 [
   ['get',['get',['../classtgui_1_1Clipboard.html#a77e25ef91b6b300126d31986537c2fb8',1,'tgui::Clipboard::get()'],['../classtgui_1_1Container.html#a2f26471c20c51fb06592d7c8c15adedb',1,'tgui::Container::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Container.html#a1c1ec2fc493c9ee4bcffec3ff14b00bc',1,'tgui::Container::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Gui.html#a8526c5d4cc999ffaa8190cea8dd36d6e',1,'tgui::Gui::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Gui.html#a33de352146c25519c5f0bffa4f3b0024',1,'tgui::Gui::get(const sf::String &amp;widgetName) const ']]],
+  ['getabsoluteposition',['getAbsolutePosition',['../classtgui_1_1Widget.html#a59112dbb748fa92647ef86b823c227f1',1,'tgui::Widget']]],
   ['getarrowscrollamount',['getArrowScrollAmount',['../classtgui_1_1Scrollbar.html#ac2917a17f373538998c1a224ba65ab88',1,'tgui::Scrollbar']]],
   ['getautohide',['getAutoHide',['../classtgui_1_1Scrollbar.html#aff095c0f3bb83c45cfa8b6254d971da4',1,'tgui::Scrollbar']]],
   ['getautosize',['getAutoSize',['../classtgui_1_1Label.html#abd2f1cec1d15f03d2176ab4a5b713502',1,'tgui::Label']]],
@@ -11,6 +12,7 @@ var searchData=
   ['getcallbackid',['getCallbackId',['../classtgui_1_1Widget.html#a47ceb70835fa31b10e2ffb92a605cdc3',1,'tgui::Widget']]],
   ['getclockwiseturning',['getClockwiseTurning',['../classtgui_1_1Knob.html#a6bdab0121e06e54c47c73bea68c869a7',1,'tgui::Knob']]],
   ['getcolumns',['getColumns',['../classtgui_1_1SpriteSheet.html#ae80dd47e4fdc46c5343cade03a506103',1,'tgui::SpriteSheet']]],
+  ['getcontainer',['getContainer',['../classtgui_1_1Gui.html#a87e968c160d3f81f9b54a8551ea74cfc',1,'tgui::Gui']]],
   ['getcurrentframe',['getCurrentFrame',['../classtgui_1_1AnimatedPicture.html#ab6e678eb56e3f587fc3390cdfc4a12cf',1,'tgui::AnimatedPicture']]],
   ['getcurrentframeduration',['getCurrentFrameDuration',['../classtgui_1_1AnimatedPicture.html#ae7acbdfcaaca6aeabdbfd5c212e0b706',1,'tgui::AnimatedPicture']]],
   ['getdistancetoside',['getDistanceToSide',['../classtgui_1_1ChildWindow.html#a0b5793c20c3b88fe44a12bbf877d650f',1,'tgui::ChildWindow::getDistanceToSide()'],['../classtgui_1_1MenuBar.html#a1a4db6df78313b5359183068525484b5',1,'tgui::MenuBar::getDistanceToSide()'],['../classtgui_1_1Tab.html#aad011205b47699a0eeec0df3f0803338',1,'tgui::Tab::getDistanceToSide()']]],
@@ -43,6 +45,7 @@ var searchData=
   ['getselectedbackgroundcolor',['getSelectedBackgroundColor',['../classtgui_1_1ComboBox.html#ad929b822c0e86b9d9f21affab273568c',1,'tgui::ComboBox::getSelectedBackgroundColor()'],['../classtgui_1_1ListBox.html#abab763992caadb51b545e28a21417430',1,'tgui::ListBox::getSelectedBackgroundColor()'],['../classtgui_1_1MenuBar.html#ac78bd4f640bc027e68d855edac47b24d',1,'tgui::MenuBar::getSelectedBackgroundColor()']]],
   ['getselectedindex',['getSelectedIndex',['../classtgui_1_1Tab.html#a60a2c2051801ddceb003d786ea22661c',1,'tgui::Tab']]],
   ['getselecteditem',['getSelectedItem',['../classtgui_1_1ComboBox.html#af8f7f461760840e4bae761102a287137',1,'tgui::ComboBox::getSelectedItem()'],['../classtgui_1_1ListBox.html#a786cb388ebc157ba184951a7707b2068',1,'tgui::ListBox::getSelectedItem()']]],
+  ['getselecteditemid',['getSelectedItemId',['../classtgui_1_1ComboBox.html#a6a23be2c73db5aac279f84b9eb4ac737',1,'tgui::ComboBox::getSelectedItemId()'],['../classtgui_1_1ListBox.html#a1d9a48bf1335fefb7c0b021603ee16e1',1,'tgui::ListBox::getSelectedItemId()']]],
   ['getselecteditemindex',['getSelectedItemIndex',['../classtgui_1_1ComboBox.html#a4ea0825fb8eb27fd8809eadc6eb82c24',1,'tgui::ComboBox::getSelectedItemIndex()'],['../classtgui_1_1ListBox.html#a9e40bbfd03f48405ac5c3ea7b676f488',1,'tgui::ListBox::getSelectedItemIndex()']]],
   ['getselectedtextbackgroundcolor',['getSelectedTextBackgroundColor',['../classtgui_1_1EditBox.html#af254ef4f9482a432a3f05e5ac65a42a4',1,'tgui::EditBox::getSelectedTextBackgroundColor()'],['../classtgui_1_1TextBox.html#ad0c9124b40fb0ca9c23bb7ff61c59f2f',1,'tgui::TextBox::getSelectedTextBackgroundColor()']]],
   ['getselectedtextcolor',['getSelectedTextColor',['../classtgui_1_1ComboBox.html#a09bba3d21c97b372c9a05b0720e1ac86',1,'tgui::ComboBox::getSelectedTextColor()'],['../classtgui_1_1EditBox.html#abb109546f985a61fc3bbaf8d927930d6',1,'tgui::EditBox::getSelectedTextColor()'],['../classtgui_1_1ListBox.html#a09135053c9c14a20b04609b6d0ed3c71',1,'tgui::ListBox::getSelectedTextColor()'],['../classtgui_1_1MenuBar.html#a38554111dc28d46bbc5772bbc48eb22f',1,'tgui::MenuBar::getSelectedTextColor()'],['../classtgui_1_1Tab.html#a7c80102a5025317d96760028317bf6dd',1,'tgui::Tab::getSelectedTextColor()'],['../classtgui_1_1TextBox.html#af55247957a41b761f5166f659deb124a',1,'tgui::TextBox::getSelectedTextColor()']]],
@@ -67,12 +70,13 @@ var searchData=
   ['getwidgetname',['getWidgetName',['../classtgui_1_1Container.html#a8fc40caf1afe31b3783c4f89456e9247',1,'tgui::Container::getWidgetName()'],['../classtgui_1_1Gui.html#af77d49fbee161d68b00d8b5eed64f648',1,'tgui::Gui::getWidgetName()']]],
   ['getwidgetnames',['getWidgetNames',['../classtgui_1_1Container.html#ac03474abcffae85e925175c82a522ad3',1,'tgui::Container::getWidgetNames()'],['../classtgui_1_1Gui.html#a77b9da38a993733cd690c184e81f7980',1,'tgui::Gui::getWidgetNames()']]],
   ['getwidgets',['getWidgets',['../classtgui_1_1Container.html#a3c21c0b36ebc67d803fc5d4433925d43',1,'tgui::Container::getWidgets()'],['../classtgui_1_1Gui.html#a1b1b6277e8c4e0467f4138a0ceae6037',1,'tgui::Gui::getWidgets()']]],
+  ['getwidgetsoffset',['getWidgetsOffset',['../classtgui_1_1ChildWindow.html#a83f2b7bf262e83e8c1ea16a4ae8ad891',1,'tgui::ChildWindow::getWidgetsOffset()'],['../classtgui_1_1Container.html#ac617a1fe847e4d8f34d2f838f96ebfa8',1,'tgui::Container::getWidgetsOffset()']]],
   ['getwidgettype',['getWidgetType',['../classtgui_1_1Widget.html#a11573ff65b1f2377a7fa24eb49fcac91',1,'tgui::Widget']]],
-  ['getwindow',['getWindow',['../classtgui_1_1Gui.html#a713a6f3fa37941cdc9fa956858e1e612',1,'tgui::Gui']]],
-  ['grid',['Grid',['../classtgui_1_1Grid.html#a613a7866203e5b90ad198e56ef8b1fa6',1,'tgui::Grid::Grid()'],['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid::Grid(const Grid &amp;copy)']]],
+  ['getwindow',['getWindow',['../classtgui_1_1Gui.html#ad849e73797dcaf0baada45e2fd3fa9bc',1,'tgui::Gui']]],
   ['grid',['Grid',['../classtgui_1_1Grid.html',1,'tgui']]],
+  ['grid',['Grid',['../classtgui_1_1Grid.html#a613a7866203e5b90ad198e56ef8b1fa6',1,'tgui::Grid::Grid()'],['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid::Grid(const Grid &amp;copy)']]],
   ['gridcallbacks',['GridCallbacks',['../classtgui_1_1Grid.html#a42aef8de8cd2672601c6830b1efd184d',1,'tgui::Grid']]],
   ['gui',['Gui',['../classtgui_1_1Gui.html',1,'tgui']]],
-  ['gui',['Gui',['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)']]],
+  ['gui',['Gui',['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#aa555f782ab60f3d521775688f8b23c14',1,'tgui::Gui::Gui(sf::RenderTarget &amp;window)']]],
   ['guicontainer',['GuiContainer',['../classtgui_1_1GuiContainer.html',1,'tgui']]]
 ];
