@@ -18,6 +18,7 @@ set(TGUI_SRC
     Gui.cpp
     Knob.cpp
     Label.cpp
+    Layout.cpp
     LoadingBar.cpp
     ListBox.cpp
     MenuBar.cpp
