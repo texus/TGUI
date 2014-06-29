@@ -48,12 +48,6 @@ namespace tgui
 
         button->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // If the button was loaded before then remove the old textures first
-        if (button->m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(button->m_textureNormal);
-        if (button->m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(button->m_textureHover);
-        if (button->m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(button->m_textureDown);
-        if (button->m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(button->m_textureFocused);
-
         // Open the config file
         ConfigFile configFile{button->m_loadedConfigFile, "Button"};
 

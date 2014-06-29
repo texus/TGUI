@@ -45,16 +45,6 @@ namespace tgui
 
         scrollbar->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove all textures if they were loaded before
-        if (scrollbar->m_textureTrackNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(scrollbar->m_textureTrackNormal);
-        if (scrollbar->m_textureTrackHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(scrollbar->m_textureTrackHover);
-        if (scrollbar->m_textureThumbNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(scrollbar->m_textureThumbNormal);
-        if (scrollbar->m_textureThumbHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(scrollbar->m_textureThumbHover);
-        if (scrollbar->m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowUpNormal);
-        if (scrollbar->m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowUpHover);
-        if (scrollbar->m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowDownNormal);
-        if (scrollbar->m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowDownHover);
-
         // Open the config file
         ConfigFile configFile{scrollbar->m_loadedConfigFile, "Scrollbar"};
 

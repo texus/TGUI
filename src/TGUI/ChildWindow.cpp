@@ -48,12 +48,6 @@ namespace tgui
 
         childWindow->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove the textures when they were loaded before
-        if (childWindow->m_textureTitleBar.getData() != nullptr)             TGUI_TextureManager.removeTexture(childWindow->m_textureTitleBar);
-        if (childWindow->m_closeButton.m_textureNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureNormal);
-        if (childWindow->m_closeButton.m_textureHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureHover);
-        if (childWindow->m_closeButton.m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureDown);
-
         // Open the config file
         ConfigFile configFile{childWindow->m_loadedConfigFile, "ChildWindow"};
 
@@ -295,10 +289,6 @@ namespace tgui
 
     void ChildWindow::setIcon(const std::string& filename)
     {
-        // If a texture has already been loaded then remove it first
-        if (m_iconTexture.getData())
-            TGUI_TextureManager.removeTexture(m_iconTexture);
-
         // Load the icon image
         TGUI_TextureManager.getTexture(m_iconTexture, filename);
 
@@ -313,8 +303,7 @@ namespace tgui
 
     void ChildWindow::removeIcon()
     {
-        if (m_iconTexture.getData())
-            TGUI_TextureManager.removeTexture(m_iconTexture);
+        m_iconTexture = {};
 
         // Reposition the images and text
         updatePosition();

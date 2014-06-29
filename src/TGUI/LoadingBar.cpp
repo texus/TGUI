@@ -47,10 +47,6 @@ namespace tgui
 
         loadingBar->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove all textures if they were loaded before
-        if (loadingBar->m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(loadingBar->m_textureBack);
-        if (loadingBar->m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(loadingBar->m_textureFront);
-
         // Open the config file
         ConfigFile configFile{loadingBar->m_loadedConfigFile, "LoadingBar"};
 

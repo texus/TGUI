@@ -49,27 +49,8 @@ namespace tgui
 
         tab->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // If the button was loaded before then remove the old textures first
-        if (tab->m_textureNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(tab->m_textureNormal);
-        if (tab->m_textureSelected.getData() != nullptr)  TGUI_TextureManager.removeTexture(tab->m_textureSelected);
-
-        if (!tab->m_texturesNormal.empty())
-        {
-            for (auto it = tab->m_texturesNormal.begin(); it != tab->m_texturesNormal.end(); ++it)
-            {
-                if (it->getData() != nullptr)
-                    TGUI_TextureManager.removeTexture(*it);
-            }
-
-            for (auto it = tab->m_texturesSelected.begin(); it != tab->m_texturesSelected.end(); ++it)
-            {
-                if (it->getData() != nullptr)
-                    TGUI_TextureManager.removeTexture(*it);
-            }
-
-            tab->m_texturesNormal.clear();
-            tab->m_texturesSelected.clear();
-        }
+        tab->m_texturesNormal.clear();
+        tab->m_texturesSelected.clear();
 
         // Open the config file
         ConfigFile configFile{tab->m_loadedConfigFile, "Tab"};
@@ -227,12 +208,6 @@ namespace tgui
                 // Remove the tab
                 m_tabNames.erase(m_tabNames.begin() + i);
 
-                if (texturesNormalIt->getData() != nullptr)
-                    TGUI_TextureManager.removeTexture(*texturesNormalIt);
-
-                if (texturesSelectedIt->getData() != nullptr)
-                    TGUI_TextureManager.removeTexture(*texturesSelectedIt);
-
                 m_texturesNormal.erase(texturesNormalIt);
                 m_texturesSelected.erase(texturesSelectedIt);
 
@@ -263,13 +238,9 @@ namespace tgui
         auto texturesNormalIt = m_texturesNormal.begin();
         std::advance(texturesNormalIt, index);
         m_width -= texturesNormalIt->getSize().x;
-        if (texturesNormalIt->getData() != nullptr)
-            TGUI_TextureManager.removeTexture(*texturesNormalIt);
 
         auto texturesSelectedIt = m_texturesSelected.begin();
         std::advance(texturesSelectedIt, index);
-        if (texturesSelectedIt->getData() != nullptr)
-            TGUI_TextureManager.removeTexture(*texturesSelectedIt);
 
         m_texturesNormal.erase(texturesNormalIt);
         m_texturesSelected.erase(texturesSelectedIt);
@@ -290,18 +261,6 @@ namespace tgui
     {
         m_tabNames.clear();
         m_selectedTab = -1;
-
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-        {
-            if (it->getData() != nullptr)
-                TGUI_TextureManager.removeTexture(*it);
-        }
-
-        for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
-        {
-            if (it->getData() != nullptr)
-                TGUI_TextureManager.removeTexture(*it);
-        }
 
         m_texturesNormal.clear();
         m_texturesSelected.clear();

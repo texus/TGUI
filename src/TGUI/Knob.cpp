@@ -60,10 +60,6 @@ namespace tgui
 
         knob->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // If the knob was loaded before then remove the old textures first
-        if (knob->m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(knob->m_backgroundTexture);
-        if (knob->m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(knob->m_foregroundTexture);
-
         // Open the config file
         ConfigFile configFile{knob->m_loadedConfigFile, "Knob"};
 

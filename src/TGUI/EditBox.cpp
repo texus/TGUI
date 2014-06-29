@@ -57,11 +57,6 @@ namespace tgui
 
         editBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove the textures when they were loaded before
-        if (editBox->m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(editBox->m_textureNormal);
-        if (editBox->m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(editBox->m_textureHover);
-        if (editBox->m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(editBox->m_textureFocused);
-
         // Open the config file
         ConfigFile configFile{editBox->m_loadedConfigFile, "EditBox"};
 

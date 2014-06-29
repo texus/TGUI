@@ -46,12 +46,6 @@ namespace tgui
 
         slider->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove all textures if they were loaded before
-        if (slider->m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(slider->m_textureTrackNormal);
-        if (slider->m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(slider->m_textureTrackHover);
-        if (slider->m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(slider->m_textureThumbNormal);
-        if (slider->m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(slider->m_textureThumbHover);
-
         // Open the config file
         ConfigFile configFile{slider->m_loadedConfigFile, "Slider"};
 

@@ -45,10 +45,6 @@ namespace tgui
         picture->m_fullyClickable = fullyClickable;
         picture->m_loadedFilename = getResourcePath() + filename;
 
-        // If we have already loaded a texture then first delete it
-        if (picture->m_texture.getData() != nullptr)
-            TGUI_TextureManager.removeTexture(picture->m_texture);
-
         // Try to load the texture from the file
         TGUI_TextureManager.getTexture(picture->m_texture, picture->m_loadedFilename);
 

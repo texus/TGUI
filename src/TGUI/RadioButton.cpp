@@ -49,12 +49,6 @@ namespace tgui
 
         radioButton->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-         // If the radio button was loaded before then remove the old textures
-        if (radioButton->m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(radioButton->m_textureUnchecked);
-        if (radioButton->m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(radioButton->m_textureChecked);
-        if (radioButton->m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(radioButton->m_textureHover);
-        if (radioButton->m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(radioButton->m_textureFocused);
-
         // Open the config file
         ConfigFile configFile{radioButton->m_loadedConfigFile, "RadioButton"};
 

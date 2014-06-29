@@ -45,12 +45,6 @@ namespace tgui
 
         spinButton->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // If the button was loaded before then remove the old textures first
-        if (spinButton->m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(spinButton->m_textureArrowUpNormal);
-        if (spinButton->m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(spinButton->m_textureArrowUpHover);
-        if (spinButton->m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(spinButton->m_textureArrowDownNormal);
-        if (spinButton->m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(spinButton->m_textureArrowDownHover);
-
         // Open the config file
         ConfigFile configFile{spinButton->m_loadedConfigFile, "SpinButton"};
 

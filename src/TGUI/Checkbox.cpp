@@ -47,12 +47,6 @@ namespace tgui
 
         checkbox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // If the checkbox was loaded before then remove the old textures
-        if (checkbox->m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(checkbox->m_textureUnchecked);
-        if (checkbox->m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(checkbox->m_textureChecked);
-        if (checkbox->m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(checkbox->m_textureHover);
-        if (checkbox->m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(checkbox->m_textureFocused);
-
         // Open the config file
         ConfigFile configFile{checkbox->m_loadedConfigFile, "Checkbox"};
 

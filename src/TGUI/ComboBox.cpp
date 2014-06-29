@@ -101,12 +101,6 @@ namespace tgui
 
         comboBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
-        // Remove all textures if they were loaded before
-        if (comboBox->m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(comboBox->m_textureArrowUpNormal);
-        if (comboBox->m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(comboBox->m_textureArrowUpHover);
-        if (comboBox->m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(comboBox->m_textureArrowDownNormal);
-        if (comboBox->m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(comboBox->m_textureArrowDownHover);
-
         comboBox->m_listBox = ListBox::create(configFileFilename);
         comboBox->m_listBox->hide();
         comboBox->m_listBox->changeColors();
