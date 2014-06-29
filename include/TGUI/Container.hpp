@@ -197,7 +197,7 @@ namespace tgui
         template <class T>
         typename T::Ptr get(const sf::String& widgetName) const
         {
-            return typename T::Ptr(get(widgetName));
+            return std::dynamic_pointer_cast<T>(get(widgetName));
         }
 
 
