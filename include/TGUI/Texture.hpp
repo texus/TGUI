@@ -39,7 +39,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class Texture : public sf::Transformable, public sf::Drawable
+    class TGUI_API Texture : public sf::Transformable, public sf::Drawable
     {
     public:
 
