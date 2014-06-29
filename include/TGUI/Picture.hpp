@@ -57,12 +57,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the picture
         ///
-        /// @param filename  The absolute or relative filename of the image that should be loaded
+        /// @param filename       The absolute or relative filename of the image that should be loaded
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it.
         ///
         /// @throw Exception when the image couldn't be loaded (probably not found)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr create(const std::string& filename);
+        static Picture::Ptr create(const std::string& filename, bool fullyClickable = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +233,9 @@ namespace tgui
         std::string m_loadedFilename;
 
         Texture m_texture;
+
+        // Set to false when clicks on transparent parts of the picture should go to the widgets behind the picture
+        bool m_fullyClickable = true;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

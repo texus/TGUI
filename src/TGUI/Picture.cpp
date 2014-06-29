@@ -38,10 +38,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Ptr Picture::create(const std::string& filename)
+    Picture::Ptr Picture::create(const std::string& filename, bool fullyClickable)
     {
         auto picture = std::make_shared<Picture>();
 
+        picture->m_fullyClickable = fullyClickable;
         picture->m_loadedFilename = getResourcePath() + filename;
 
         // If we have already loaded a texture then first delete it
@@ -91,9 +92,12 @@ namespace tgui
         // Check if the mouse is on top of the picture
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
-            // Only return true when the pixel under the mouse isn't transparent
-            if (!m_texture.isTransparentPixel(x, y))
-                return true;
+            // We sometimes want clicks to go through transparent parts of the picture
+            if (!m_fullyClickable)
+            {
+                if (!m_texture.isTransparentPixel(x, y))
+                    return true;
+            }
         }
 
         if (m_mouseHover == true)
