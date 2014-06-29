@@ -389,15 +389,12 @@ namespace tgui
 
     void Container::uncheckRadioButtons()
     {
-/// TODO: Fix code
-/**
         // Loop through all radio buttons and uncheck them
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i]->m_callback.widgetType == Type_RadioButton)
-                static_cast<RadioButton::Ptr>(m_widgets[i])->uncheck();
+                std::dynamic_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
-*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,12 +482,9 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::loadWidgetsFromFile(const std::string&/** filename*/)
-    {
-/// TODO: Uncomment
-/// Replace COMPARE_WIDGET with lambda function? See save variant.
 /**
+    void Container::loadWidgetsFromFile(const std::string& filename)
+    {
         #define COMPARE_WIDGET(length, name, widgetName) \
             if (line.substr(0, length).compare(name) == 0) \
             { \
@@ -689,7 +683,6 @@ namespace tgui
         }
 
         #undef COMPARE_WIDGET
-*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -780,8 +773,6 @@ namespace tgui
                     }
                 }
 
-/// TODO: Fix code
-/**
                 if ((*widgetIt)->m_containerWidget)
                 {
                     m_file << std::endl;
@@ -790,7 +781,6 @@ namespace tgui
 
                 tabs.erase(tabs.length()-1);
                 m_file << tabs << "}" << std::endl << std::endl;
-*/
             }
         };
 
@@ -799,7 +789,7 @@ namespace tgui
         tabs.erase(tabs.length()-1);
         m_file << tabs << "}" << std::endl;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::addChildCallback(const Callback& callback)
@@ -1130,10 +1120,8 @@ namespace tgui
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
                 {
-/// TODO: Fix code
-/**
                     // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i]->m_containerWidget) || (Container::Ptr(m_widgets[i])->focusNextWidgetInContainer()))
+                    if ((!m_widgets[i]->m_containerWidget) || (std::dynamic_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
                     {
                         if (m_focusedWidget > 0)
                         {
@@ -1149,7 +1137,6 @@ namespace tgui
 
                         return true;
                     }
-*/
                 }
             }
         }
@@ -1172,12 +1159,9 @@ namespace tgui
         {
             if (m_widgets[m_focusedWidget-1]->m_containerWidget)
             {
-/// TODO: Fix code
-/**
                 // Focus the next widget in container
-                if (Container::Ptr(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
+                if (std::dynamic_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
                     return true;
-*/
             }
         }
 
@@ -1231,15 +1215,13 @@ namespace tgui
             }
         }
 
-/// TODO: Fix code
-/**
         // If the currently focused container widget is the only widget to focus, then focus its next child widget
         if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1]->m_containerWidget))
         {
-            Container::Ptr(m_widgets[m_focusedWidget-1])->tabKeyPressed();
+            std::dynamic_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->tabKeyPressed();
             return true;
         }
-*/
+
         return false;
     }
 
