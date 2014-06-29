@@ -46,29 +46,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::load(const std::string& configFileFilename)
+    MenuBar::Ptr MenuBar::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto menuBar = std::make_shared<MenuBar>();
+
+        menuBar->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "MenuBar"};
+        ConfigFile configFile{menuBar->m_loadedConfigFile, "MenuBar"};
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "backgroundcolor")
-                setBackgroundColor(extractColor(it->second));
+                menuBar->setBackgroundColor(extractColor(it->second));
             else if (it->first == "textcolor")
-                setTextColor(extractColor(it->second));
+                menuBar->setTextColor(extractColor(it->second));
             else if (it->first == "selectedbackgroundcolor")
-                setSelectedBackgroundColor(extractColor(it->second));
+                menuBar->setSelectedBackgroundColor(extractColor(it->second));
             else if (it->first == "selectedtextcolor")
-                setSelectedTextColor(extractColor(it->second));
+                menuBar->setSelectedTextColor(extractColor(it->second));
             else if (it->first == "distancetoside")
-                setDistanceToSide(tgui::stoul(it->second));
+                menuBar->setDistanceToSide(tgui::stoul(it->second));
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section MenuBar in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section MenuBar in " + menuBar->m_loadedConfigFile + "."};
         }
+
+        return menuBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,7 +486,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void MenuBar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -643,7 +647,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("menus", "string"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MenuBar::initialize(Container *const parent)

@@ -39,47 +39,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::load(const std::string& configFileFilename)
+    SpinButton::Ptr SpinButton::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto spinButton = std::make_shared<SpinButton>();
+
+        spinButton->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // If the button was loaded before then remove the old textures first
-        if (m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
+        if (spinButton->m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(spinButton->m_textureArrowUpNormal);
+        if (spinButton->m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(spinButton->m_textureArrowUpHover);
+        if (spinButton->m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(spinButton->m_textureArrowDownNormal);
+        if (spinButton->m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(spinButton->m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "SpinButton"};
+        ConfigFile configFile{spinButton->m_loadedConfigFile, "SpinButton"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = spinButton->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = spinButton->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separatehoverimage")
-                m_separateHoverImage = configFile.readBool(it);
+                spinButton->m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "arrowupnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowUpNormal);
+                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowUpNormal);
             else if (it->first == "arrowuphoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowUpHover);
+                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowUpHover);
             else if (it->first == "arrowdownnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowDownNormal);
+                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowDownNormal);
             else if (it->first == "arrowdownhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowDownHover);
+                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowDownHover);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section SpinButton in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section SpinButton in " + spinButton->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the spin button. Is the SpinButton section in " + m_loadedConfigFile + " complete?"};
+        if ((spinButton->m_textureArrowUpNormal.getData() == nullptr) || (spinButton->m_textureArrowDownNormal.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the spin button. Is the SpinButton section in " + spinButton->m_loadedConfigFile + " complete?"};
 
-        setSize({m_textureArrowUpNormal.getSize().x, m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y});
+        spinButton->setSize({spinButton->m_textureArrowUpNormal.getSize().x, spinButton->m_textureArrowUpNormal.getSize().y + spinButton->m_textureArrowDownNormal.getSize().y});
+
+        return spinButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +252,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void SpinButton::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -344,7 +348,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("VerticalScroll", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const

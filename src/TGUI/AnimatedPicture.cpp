@@ -165,7 +165,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void AnimatedPicture::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -245,7 +245,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Looping", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void AnimatedPicture::update()

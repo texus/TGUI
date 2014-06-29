@@ -25,8 +25,6 @@
 
 #include <SFML/OpenGL.hpp>
 
-#include <TGUI/Button.hpp>
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ChildWindow.hpp>
 
 #include <cmath>
@@ -40,140 +38,82 @@ namespace tgui
     ChildWindow::ChildWindow()
     {
         m_callback.widgetType = Type_ChildWindow;
-        m_closeButton = new Button();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-        Container          {childWindowToCopy},
-        WidgetBorders      {childWindowToCopy},
-        m_loadedConfigFile {childWindowToCopy.m_loadedConfigFile},
-        m_backgroundColor  {childWindowToCopy.m_backgroundColor},
-        m_iconTexture      {childWindowToCopy.m_iconTexture},
-        m_textureTitleBar  {childWindowToCopy.m_textureTitleBar},
-        m_titleText        {childWindowToCopy.m_titleText},
-        m_titleBarHeight   {childWindowToCopy.m_titleBarHeight},
-        m_draggingPosition {childWindowToCopy.m_draggingPosition},
-        m_distanceToSide   {childWindowToCopy.m_distanceToSide},
-        m_titleAlignment   {childWindowToCopy.m_titleAlignment},
-        m_borderColor      {childWindowToCopy.m_borderColor},
-        m_keepInParent     {childWindowToCopy.m_keepInParent}
+    ChildWindow::Ptr ChildWindow::create(const std::string& configFileFilename)
     {
-        // Copy the button
-        m_closeButton = new Button{*childWindowToCopy.m_closeButton};
-    }
+        auto childWindow = std::make_shared<ChildWindow>();
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/// TODO: Get rid of manual memory managment
-/**
-    ChildWindow::~ChildWindow()
-    {
-        delete m_closeButton;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ChildWindow& ChildWindow::operator= (const ChildWindow& right)
-    {
-        // Make sure it is not the same widget
-        if (this != &right)
-        {
-            ChildWindow temp{right};
-            Container::operator=(right);
-            WidgetBorders::operator=(right);
-
-            // Delete the old close button
-            delete m_closeButton;
-
-            std::swap(m_loadedConfigFile,  temp.m_loadedConfigFile);
-            std::swap(m_backgroundColor,   temp.m_backgroundColor);
-            std::swap(m_iconTexture,       temp.m_iconTexture);
-            std::swap(m_textureTitleBar,   temp.m_textureTitleBar);
-            std::swap(m_titleText,         temp.m_titleText);
-            std::swap(m_titleBarHeight,    temp.m_titleBarHeight);
-            std::swap(m_draggingPosition,  temp.m_draggingPosition);
-            std::swap(m_distanceToSide,    temp.m_distanceToSide);
-            std::swap(m_titleAlignment,    temp.m_titleAlignment);
-            std::swap(m_borderColor,       temp.m_borderColor);
-            std::swap(m_closeButton,       temp.m_closeButton);
-            std::swap(m_keepInParent,      temp.m_keepInParent);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::load(const std::string& configFileFilename)
-    {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        childWindow->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove the textures when they were loaded before
-        if (m_textureTitleBar.getData() != nullptr)              TGUI_TextureManager.removeTexture(m_textureTitleBar);
-        if (m_closeButton->m_textureNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_closeButton->m_textureNormal);
-        if (m_closeButton->m_textureHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_closeButton->m_textureHover);
-        if (m_closeButton->m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_closeButton->m_textureDown);
+        if (childWindow->m_textureTitleBar.getData() != nullptr)             TGUI_TextureManager.removeTexture(childWindow->m_textureTitleBar);
+        if (childWindow->m_closeButton.m_textureNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureNormal);
+        if (childWindow->m_closeButton.m_textureHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureHover);
+        if (childWindow->m_closeButton.m_textureDown.getData() != nullptr)   TGUI_TextureManager.removeTexture(childWindow->m_closeButton.m_textureDown);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "ChildWindow"};
+        ConfigFile configFile{childWindow->m_loadedConfigFile, "ChildWindow"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = childWindow->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = childWindow->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "backgroundcolor")
-                setBackgroundColor(configFile.readColor(it));
+                childWindow->setBackgroundColor(configFile.readColor(it));
             else if (it->first == "titlecolor")
-                setTitleColor(configFile.readColor(it));
+                childWindow->setTitleColor(configFile.readColor(it));
             else if (it->first == "bordercolor")
-                setBorderColor(configFile.readColor(it));
+                childWindow->setBorderColor(configFile.readColor(it));
             else if (it->first == "titlebarimage")
-                configFile.readTexture(it, configFileFolder, m_textureTitleBar);
+                configFile.readTexture(it, configFileFolder, childWindow->m_textureTitleBar);
             else if (it->first == "closebuttonseparatehoverimage")
-                m_closeButton->m_separateHoverImage = configFile.readBool(it);
+                childWindow->m_closeButton.m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "closebuttonnormalimage")
-                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureNormal);
+                configFile.readTexture(it, configFileFolder, childWindow->m_closeButton.m_textureNormal);
             else if (it->first == "closebuttonhoverimage")
-                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureHover);
+                configFile.readTexture(it, configFileFolder, childWindow->m_closeButton.m_textureHover);
             else if (it->first == "closebuttondownimage")
-                configFile.readTexture(it, configFileFolder, m_closeButton->m_textureDown);
+                configFile.readTexture(it, configFileFolder, childWindow->m_closeButton.m_textureDown);
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    childWindow->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section ChildWindow in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section ChildWindow in " + childWindow->m_loadedConfigFile};
             }
             else if (it->first == "distancetoside")
-                setDistanceToSide(tgui::stoul(it->second));
+                childWindow->setDistanceToSide(tgui::stoul(it->second));
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section ChildWindow in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section ChildWindow in " + childWindow->m_loadedConfigFile + "."};
         }
 
         // Make sure the close button was loaded
-        if (m_closeButton->m_textureNormal.getData() == nullptr)
-            throw Exception{"Missing a CloseButtonNormalImage property in section ChildWindow in " + m_loadedConfigFile + "."};
+        if (childWindow->m_closeButton.m_textureNormal.getData() == nullptr)
+            throw Exception{"Missing a CloseButtonNormalImage property in section ChildWindow in " + childWindow->m_loadedConfigFile + "."};
 
-        m_closeButton->setSize(m_closeButton->m_textureNormal.getImageSize());
+        childWindow->m_closeButton.setSize(childWindow->m_closeButton.m_textureNormal.getImageSize());
 
         // Make sure the required texture was loaded
-        if (m_textureTitleBar.getData() == nullptr)
-            throw Exception{"Not all needed images were loaded for the child window. Is the ChildWindow section in " + m_loadedConfigFile + " complete?"};
+        if (childWindow->m_textureTitleBar.getData() == nullptr)
+            throw Exception{"Not all needed images were loaded for the child window. Is the ChildWindow section in " + childWindow->m_loadedConfigFile + " complete?"};
 
-        m_titleBarHeight = m_textureTitleBar.getImageSize().y;
+        childWindow->m_titleBarHeight = childWindow->m_textureTitleBar.getImageSize().y;
 
-        setSize({m_textureTitleBar.getImageSize().x, m_textureTitleBar.getImageSize().x * 3.0f / 4.0f});
+        childWindow->setSize({childWindow->m_textureTitleBar.getImageSize().x, childWindow->m_textureTitleBar.getImageSize().x * 3.0f / 4.0f});
 
         // Set the size of the title text
-        m_titleText.setCharacterSize(m_titleBarHeight * 8 / 10);
+        childWindow->m_titleText.setCharacterSize(childWindow->m_titleBarHeight * 8 / 10);
+
+        return childWindow;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,24 +154,24 @@ namespace tgui
         else if (m_titleAlignment == TitleAlignmentCentered)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((getSize().x + m_borders.left + m_borders.right) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((getSize().x + m_borders.left + m_borders.right) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton.getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
             else
-                m_titleText.setPosition(x + m_distanceToSide + (((getSize().x + m_borders.left + m_borders.right) - 3*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + m_distanceToSide + (((getSize().x + m_borders.left + m_borders.right) - 3*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
         }
         else // if (m_titleAlignment == TitleAlignmentRight)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
             else
-                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton->getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
+                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
                                         y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
         }
 
-        m_closeButton->setPosition({x + (getSize().x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton->getSize().x,
-                                    y + ((m_titleBarHeight - m_closeButton->getSize().y) / 2.0f)});
+        m_closeButton.setPosition({x + (getSize().x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton.getSize().x,
+                                    y + ((m_titleBarHeight - m_closeButton.getSize().y) / 2.0f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,8 +225,8 @@ namespace tgui
         m_titleBarHeight = height;
 
         // Set the size of the close button
-        m_closeButton->setSize({height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().x,
-                                height / m_textureTitleBar.getImageSize().y * m_closeButton->m_textureNormal.getImageSize().y});
+        m_closeButton.setSize({height / m_textureTitleBar.getImageSize().y * m_closeButton.m_textureNormal.getImageSize().x,
+                                height / m_textureTitleBar.getImageSize().y * m_closeButton.m_textureNormal.getImageSize().y});
 
         // Set the size of the text in the title bar
         m_titleText.setCharacterSize(static_cast<unsigned int>(m_titleBarHeight * 0.75f));
@@ -306,7 +246,7 @@ namespace tgui
         m_iconTexture.setColor(sf::Color(255, 255, 255, m_opacity));
         m_textureTitleBar.setColor(sf::Color(255, 255, 255, m_opacity));
 
-        m_closeButton->setTransparency(m_opacity);
+        m_closeButton.setTransparency(m_opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,7 +368,7 @@ namespace tgui
                     for (unsigned int i = 0; i < m_widgets.size(); ++i)
                         m_widgets[i]->mouseNotOnWidget();
 
-                    m_closeButton->mouseNotOnWidget();
+                    m_closeButton.mouseNotOnWidget();
                     m_mouseHover = false;
                 }
 
@@ -457,8 +397,8 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             // Send the mouse press event to the close button
-            if (m_closeButton->mouseOnWidget(x, y))
-                m_closeButton->leftMousePressed(x, y);
+            if (m_closeButton.mouseOnWidget(x, y))
+                m_closeButton.leftMousePressed(x, y);
             else
             {
                 // The mouse went down on the title bar
@@ -474,8 +414,8 @@ namespace tgui
         else // The mouse is not on top of the title bar
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+            if (m_closeButton.m_mouseHover)
+                m_closeButton.mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
@@ -499,12 +439,12 @@ namespace tgui
             m_mouseDown = false;
 
             // Check if the close button was clicked
-            if (m_closeButton->m_mouseDown == true)
+            if (m_closeButton.m_mouseDown == true)
             {
-                m_closeButton->m_mouseDown = false;
+                m_closeButton.m_mouseDown = false;
 
                 // Check if the mouse is still on the close button
-                if (m_closeButton->mouseOnWidget(x, y))
+                if (m_closeButton.mouseOnWidget(x, y))
                 {
                     // If a callback was requested then send it
                     if (m_callbackFunctions[Closed].empty() == false)
@@ -529,12 +469,12 @@ namespace tgui
         else // The mouse is not on top of the title bar
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+            if (m_closeButton.m_mouseHover)
+                m_closeButton.mouseNotOnWidget();
 
             // Change the mouse down flag
             m_mouseDown = false;
-            m_closeButton->mouseNoLongerDown();
+            m_closeButton.mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
             if ((getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
@@ -577,16 +517,16 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight))).contains(x, y))
         {
             // Send the hover event to the close button
-            if (m_closeButton->mouseOnWidget(x, y))
-                m_closeButton->mouseMoved(x, y);
+            if (m_closeButton.mouseOnWidget(x, y))
+                m_closeButton.mouseMoved(x, y);
 
             return;
         }
         else // The mouse is not on top of the title bar
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+            if (m_closeButton.m_mouseHover)
+                m_closeButton.mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom + m_titleBarHeight)).contains(x, y))
@@ -612,11 +552,11 @@ namespace tgui
     void ChildWindow::mouseNoLongerDown()
     {
         Container::mouseNoLongerDown();
-        m_closeButton->mouseNoLongerDown();
+        m_closeButton.mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void ChildWindow::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -761,7 +701,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("TitleAlignment", "custom"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::initialize(Container *const parent)
@@ -804,7 +744,7 @@ namespace tgui
             topLeftTitleBarPosition = {((getAbsolutePosition().x + m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
 
-        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + m_borders.left + m_borders.right - (2*m_distanceToSide) - m_closeButton->getSize().x - view.getCenter().x + (view.getSize().x / 2.f))
+        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + m_borders.left + m_borders.right - (2*m_distanceToSide) - m_closeButton.getSize().x - view.getCenter().x + (view.getSize().x / 2.f))
                                        * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                        (getAbsolutePosition().y + m_titleBarHeight - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
@@ -838,7 +778,7 @@ namespace tgui
         }
 
         // Draw the close button
-        target.draw(*m_closeButton, states);
+        target.draw(m_closeButton, states);
 
         // Set the correct transformation
         states.transform *= getTransform();

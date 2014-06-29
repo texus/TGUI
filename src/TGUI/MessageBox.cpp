@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/MessageBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,11 +47,12 @@ namespace tgui
         m_buttonConfigFileFilename{messageBoxToCopy.m_buttonConfigFileFilename},
         m_textSize                {messageBoxToCopy.m_textSize}
     {
-        m_label = copy(messageBoxToCopy.m_label, "MessageBoxText");
+        m_label = Label::copy(messageBoxToCopy.m_label);
+        add(m_label, "MessageBoxText");
 
         for (auto it = messageBoxToCopy.m_buttons.begin(); it != messageBoxToCopy.m_buttons.end(); ++it)
         {
-            tgui::Button::Ptr button = copy(*it);
+            Button::Ptr button = Button::copy(*it);
             button->unbindAllCallback();
             button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
                                    std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
@@ -82,12 +82,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::load(const std::string& configFileFilename)
+    MessageBox::Ptr MessageBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto messageBox = std::make_shared<MessageBox>();
+
+        messageBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "MessageBox"};
+        ConfigFile configFile{messageBox->m_loadedConfigFile, "MessageBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -103,16 +105,16 @@ namespace tgui
         {
             if (it->first == "textcolor")
             {
-                m_label->setTextColor(configFile.readColor(it));
+                messageBox->m_label->setTextColor(configFile.readColor(it));
             }
             else if (it->first == "childwindow")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for ChildWindow in section MessageBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for ChildWindow in section MessageBox in " + messageBox->m_loadedConfigFile + "."};
 
                 try
                 {
-                    ChildWindow::load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                    messageBox->ChildWindow::operator=(*ChildWindow::create(configFileFolder + it->second.substr(1, it->second.length()-2)));
                     childWindowPropertyFound = true;
                 }
                 catch (const Exception& e)
@@ -123,20 +125,22 @@ namespace tgui
             else if (it->first == "button")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Button in section MessageBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for Button in section MessageBox in " + messageBox->m_loadedConfigFile + "."};
 
-                m_buttonConfigFileFilename = configFileFolder + it->second.substr(1, it->second.length()-2);
+                messageBox->m_buttonConfigFileFilename = configFileFolder + it->second.substr(1, it->second.length()-2);
                 buttonPropertyFound = true;
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section MessageBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section MessageBox in " + messageBox->m_loadedConfigFile + "."};
         }
 
         if (!childWindowPropertyFound)
-            throw Exception{"Missing a ChildWindow property in section MessageBox in " + m_loadedConfigFile + "."};
+            throw Exception{"Missing a ChildWindow property in section MessageBox in " + messageBox->m_loadedConfigFile + "."};
 
         if (!buttonPropertyFound)
-            throw Exception{"Missing a Button property in section MessageBox in " + m_loadedConfigFile + "."};
+            throw Exception{"Missing a Button property in section MessageBox in " + messageBox->m_loadedConfigFile + "."};
+
+        return messageBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,20 +170,20 @@ namespace tgui
 
     void MessageBox::addButton(const sf::String& caption)
     {
-        Button::Ptr button(*this);
-        button->load(m_buttonConfigFileFilename);
+        auto button = Button::create(m_buttonConfigFileFilename);
         button->setTextSize(m_textSize);
         button->setText(caption);
         button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
                                std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
 
+        add(button);
         m_buttons.push_back(button);
 
         rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void MessageBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -277,7 +281,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Buttons", "string"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MessageBox::rearrange()

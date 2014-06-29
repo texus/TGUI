@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widget.hpp>
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/Container.hpp>
 
 #include <cassert>

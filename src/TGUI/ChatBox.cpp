@@ -26,10 +26,10 @@
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/Scrollbar.hpp>
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ChatBox.hpp>
 
 #include <cmath>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,58 +42,37 @@ namespace tgui
         m_callback.widgetType = Type_ChatBox;
         m_draggableWidget = true;
 
-        m_panel = new Panel();
-        m_panel->setSize({360, 200});
         m_panel->setBackgroundColor(sf::Color::White);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox::ChatBox(const ChatBox& copy) :
-        Widget            {copy},
-        WidgetBorders     {copy},
-        m_loadedConfigFile{copy.m_loadedConfigFile},
-        m_lineSpacing     {copy.m_lineSpacing},
-        m_textSize        {copy.m_textSize},
-        m_textColor       {copy.m_textColor},
-        m_borderColor     {copy.m_borderColor},
-        m_maxLines        {copy.m_maxLines},
-        m_fullTextHeight  {copy.m_fullTextHeight}
+    ChatBox::ChatBox(const ChatBox& chatBoxToCopy) :
+        Widget            {chatBoxToCopy},
+        WidgetBorders     {chatBoxToCopy},
+        m_loadedConfigFile{chatBoxToCopy.m_loadedConfigFile},
+        m_lineSpacing     {chatBoxToCopy.m_lineSpacing},
+        m_textSize        {chatBoxToCopy.m_textSize},
+        m_textColor       {chatBoxToCopy.m_textColor},
+        m_borderColor     {chatBoxToCopy.m_borderColor},
+        m_maxLines        {chatBoxToCopy.m_maxLines},
+        m_fullTextHeight  {chatBoxToCopy.m_fullTextHeight}
     {
-        m_panel = new Panel(*copy.m_panel);
+        m_panel = Panel::copy(chatBoxToCopy.m_panel);
 
         // If there is a scrollbar then copy it
-        if (copy.m_scroll != nullptr)
-            m_scroll = new Scrollbar(*copy.m_scroll);
+        if (chatBoxToCopy.m_scroll != nullptr)
+            m_scroll = Scrollbar::copy(chatBoxToCopy.m_scroll);
         else
             m_scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// TODO: Get rid of manual memory managment
-/**
-    ChatBox::~ChatBox()
-    {
-        delete m_panel;
-
-        if (m_scroll != nullptr)
-            delete m_scroll;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ChatBox& ChatBox::operator= (const ChatBox& right)
     {
         if (this != &right)
         {
-            // If there already was a scrollbar then delete it now
-            if (m_scroll != nullptr)
-            {
-                delete m_scroll;
-                m_scroll = nullptr;
-            }
-
             ChatBox temp{right};
             Widget::operator=(right);
             WidgetBorders::operator=(right);
@@ -114,19 +93,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::load(const std::string& configFileFilename)
+    ChatBox::Ptr ChatBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto chatBox = std::make_shared<ChatBox>();
 
-        // If there already was a scrollbar then delete it now
-        if (m_scroll != nullptr)
-        {
-            delete m_scroll;
-            m_scroll = nullptr;
-        }
+        chatBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "ChatBox"};
+        ConfigFile configFile{chatBox->m_loadedConfigFile, "ChatBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -139,46 +113,46 @@ namespace tgui
         {
             if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(it));
+                chatBox->setBackgroundColor(configFile.readColor(it));
             }
             else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(it));
+                chatBox->setBorderColor(configFile.readColor(it));
             }
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    chatBox->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section ChatBox in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section ChatBox in " + chatBox->m_loadedConfigFile};
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Scrollbar property in section ChatBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for Scrollbar property in section ChatBox in " + chatBox->m_loadedConfigFile + "."};
 
-                // load the scrollbar and check if it failed
-                m_scroll = new Scrollbar();
-                try {
-                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                try
+                {
+                    chatBox->m_scroll = Scrollbar::create(configFileFolder + it->second.substr(1, it->second.length()-2));
                 }
                 catch (Exception& e)
                 {
-                    delete m_scroll;
-                    m_scroll = nullptr;
-                    throw e;
+                    chatBox->m_scroll = nullptr;
+                    throw Exception{"Failed to create the internal scrollbar in ChatBox. " + std::string{e.what()}};
                 }
 
                 // Initialize the scrollbar
-                m_scroll->setVerticalScroll(true);
-                m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
-                m_scroll->setSize(m_scroll->getSize());
-                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+                chatBox->m_scroll->setVerticalScroll(true);
+                chatBox->m_scroll->setLowValue(static_cast<unsigned int>(chatBox->getSize().y));
+                chatBox->m_scroll->setSize(chatBox->m_scroll->getSize());
+                chatBox->m_scroll->setMaximum(static_cast<unsigned int>(chatBox->m_fullTextHeight));
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section ChatBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section ChatBox in " + chatBox->m_loadedConfigFile + "."};
         }
+
+        return chatBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,14 +216,15 @@ namespace tgui
         if ((m_maxLines > 0) && (m_maxLines < widgets.size() + 1))
             removeLine(0);
 
-        Label::Ptr label(*m_panel);
+        auto label = Label::create();
         label->setTextColor(color);
         label->setTextSize(textSize);
+        m_panel->add(label);
 
         if (font != nullptr)
             label->setTextFont(*font);
 
-        Label::Ptr tempLine;
+        auto tempLine = Label::create();
         tempLine->setTextSize(textSize);
         tempLine->setTextFont(*label->getTextFont());
 
@@ -297,7 +272,7 @@ namespace tgui
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
-            return tgui::Label::Ptr(m_panel->getWidgets()[lineIndex])->getText();
+            return std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getText();
         }
         else // Index too high
             return "";
@@ -309,7 +284,7 @@ namespace tgui
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
-            tgui::Label::Ptr label = m_panel->getWidgets()[lineIndex];
+            auto label = std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineIndex]);
             m_fullTextHeight -= getLineSpacing(lineIndex);
             m_panel->remove(label);
 
@@ -368,7 +343,7 @@ namespace tgui
         auto& labels = m_panel->getWidgets();
         for (unsigned int i = 0; i < labels.size(); ++i)
         {
-            Label::Ptr(labels[i])->setTextFont(font);
+            std::dynamic_pointer_cast<Label>(labels[i])->setTextFont(font);
             m_fullTextHeight += getLineSpacing(i);
         }
 
@@ -408,18 +383,12 @@ namespace tgui
 
     void ChatBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
     {
-        // If the scrollbar was already created then delete it first
-        if (m_scroll != nullptr)
-            delete m_scroll;
-
-        // load the scrollbar and check if it failed
-        m_scroll = new Scrollbar();
-        try {
-            m_scroll->load(scrollbarConfigFileFilename);
+        try
+        {
+            m_scroll = Scrollbar::create(scrollbarConfigFileFilename);
         }
         catch (Exception& e)
         {
-            delete m_scroll;
             m_scroll = nullptr;
             throw e;
         }
@@ -435,8 +404,6 @@ namespace tgui
 
     void ChatBox::removeScrollbar()
     {
-        // Delete the scrollbar
-        delete m_scroll;
         m_scroll = nullptr;
     }
 
@@ -661,7 +628,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void ChatBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -773,14 +740,14 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Lines", "string"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ChatBox::getLineSpacing(unsigned int lineNumber)
     {
         assert(lineNumber < m_panel->getWidgets().size());
 
-        auto line = tgui::Label::Ptr(m_panel->getWidgets()[lineNumber]);
+        auto line = std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineNumber]);
 
         // Count the amount of lines that the label is taking
         std::string lineText = line->getText().toAnsiString();
@@ -823,7 +790,7 @@ namespace tgui
         auto& labels = m_panel->getWidgets();
         for (unsigned int i = 0; i < labels.size(); ++i)
         {
-            tgui::Label::Ptr label = labels[i];
+            auto label = std::dynamic_pointer_cast<Label>(labels[i]);
             label->setPosition({2.0f, position});
 
             position += getLineSpacing(i);
@@ -832,7 +799,7 @@ namespace tgui
         // Correct the position when there is no scrollbar
         if ((m_scroll == nullptr) && (!labels.empty()))
         {
-            tgui::Label::Ptr label = labels.back();
+            auto label = std::dynamic_pointer_cast<Label>(labels.back());
             if (position > getSize().y)
             {
                 float diff = position - getSize().y;

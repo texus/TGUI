@@ -54,43 +54,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::load(const std::string& configFileFilename)
+    Knob::Ptr Knob::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto knob = std::make_shared<Knob>();
+
+        knob->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // If the knob was loaded before then remove the old textures first
-        if (m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_backgroundTexture);
-        if (m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_foregroundTexture);
+        if (knob->m_backgroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(knob->m_backgroundTexture);
+        if (knob->m_foregroundTexture.getData() != nullptr)  TGUI_TextureManager.removeTexture(knob->m_foregroundTexture);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Knob"};
+        ConfigFile configFile{knob->m_loadedConfigFile, "Knob"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = knob->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = knob->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "backgroundimage")
-                configFile.readTexture(it, configFileFolder, m_backgroundTexture);
+                configFile.readTexture(it, configFileFolder, knob->m_backgroundTexture);
             else if (it->first == "foregroundimage")
-                configFile.readTexture(it, configFileFolder, m_foregroundTexture);
+                configFile.readTexture(it, configFileFolder, knob->m_foregroundTexture);
             else if (it->first == "imagerotation")
-                m_imageRotation = tgui::stof(it->second);
+                knob->m_imageRotation = tgui::stof(it->second);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Knob in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Knob in " + knob->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures was loaded
-        if ((m_backgroundTexture.getData() == nullptr) || (m_foregroundTexture.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the knob. Is the Knob section in " + m_loadedConfigFile + " complete?"};
+        if ((knob->m_backgroundTexture.getData() == nullptr) || (knob->m_foregroundTexture.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the knob. Is the Knob section in " + knob->m_loadedConfigFile + " complete?"};
 
-        m_foregroundTexture.setRotation(m_startRotation - m_imageRotation);
+        knob->m_foregroundTexture.setRotation(knob->m_startRotation - knob->m_imageRotation);
 
-        setSize(m_backgroundTexture.getImageSize());
+        knob->setSize(knob->m_backgroundTexture.getImageSize());
+
+        return knob;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +418,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Knob::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -524,7 +528,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("ClockwiseTurning", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Knob::recalculateRotation()

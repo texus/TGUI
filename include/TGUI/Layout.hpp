@@ -28,8 +28,6 @@
 
 #include <memory>
 
-#include <TGUI/SharedWidgetPtr.hpp>
-
 /// TODO: Add documentation.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,12 +50,12 @@ namespace tgui
     class TGUI_API LayoutCallbackManager final
     {
     public:
-        void bindCallback(const SharedWidgetPtr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout, const std::function<void()>& function);
-        void unbindCallback(const SharedWidgetPtr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout);
+        void bindCallback(const std::shared_ptr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout, const std::function<void()>& function);
+        void unbindCallback(const std::shared_ptr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout);
 
     private:
-        void positionChanged(SharedWidgetPtr<Widget> widget);
-        void sizeChanged(SharedWidgetPtr<Widget> widget);
+        void positionChanged(std::shared_ptr<Widget> widget);
+        void sizeChanged(std::shared_ptr<Widget> widget);
 
     private:
         /// Use std::shared_ptr<Widget> when the changes have been made?
@@ -78,7 +76,7 @@ namespace tgui
             Y
         };
 
-        LayoutBind(const SharedWidgetPtr<Widget>& widget, Param param, float fraction = 1);
+        LayoutBind(const std::shared_ptr<Widget>& widget, Param param, float fraction = 1);
 
         float getValue() const;
 
@@ -89,7 +87,7 @@ namespace tgui
         void unbindCallback(const Layout* layout);
 
     protected:
-        SharedWidgetPtr<Widget> m_widget;
+        std::shared_ptr<Widget> m_widget;
         float m_fraction;
 
         LayoutChangeTrigger m_trigger;
@@ -188,15 +186,15 @@ namespace tgui
     TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
     TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
 
-    TGUI_API Layout1d bindLeft(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindTop(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindRight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindBottom(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindWidth(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindHeight(const SharedWidgetPtr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindLeft(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindTop(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindRight(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindBottom(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindWidth(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    TGUI_API Layout1d bindHeight(const std::shared_ptr<Widget>& widget, float fraction = 1);
 
-    TGUI_API Layout bindPosition(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
-    TGUI_API Layout bindSize(const SharedWidgetPtr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+    TGUI_API Layout bindPosition(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+    TGUI_API Layout bindSize(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

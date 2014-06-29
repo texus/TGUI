@@ -39,66 +39,70 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::load(const std::string& configFileFilename)
+    Scrollbar::Ptr Scrollbar::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto scrollbar = std::make_shared<Scrollbar>();
+
+        scrollbar->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove all textures if they were loaded before
-        if (m_textureTrackNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(m_textureThumbHover);
-        if (m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
+        if (scrollbar->m_textureTrackNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(scrollbar->m_textureTrackNormal);
+        if (scrollbar->m_textureTrackHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(scrollbar->m_textureTrackHover);
+        if (scrollbar->m_textureThumbNormal.getData() != nullptr)     TGUI_TextureManager.removeTexture(scrollbar->m_textureThumbNormal);
+        if (scrollbar->m_textureThumbHover.getData() != nullptr)      TGUI_TextureManager.removeTexture(scrollbar->m_textureThumbHover);
+        if (scrollbar->m_textureArrowUpNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowUpNormal);
+        if (scrollbar->m_textureArrowUpHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowUpHover);
+        if (scrollbar->m_textureArrowDownNormal.getData() != nullptr) TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowDownNormal);
+        if (scrollbar->m_textureArrowDownHover.getData() != nullptr)  TGUI_TextureManager.removeTexture(scrollbar->m_textureArrowDownHover);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Scrollbar"};
+        ConfigFile configFile{scrollbar->m_loadedConfigFile, "Scrollbar"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = scrollbar->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = scrollbar->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separatehoverimage")
-                m_separateHoverImage = configFile.readBool(it);
+                scrollbar->m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "verticalimage")
             {
-                m_verticalImage = configFile.readBool(it);
-                m_verticalScroll = m_verticalImage;
+                scrollbar->m_verticalImage = configFile.readBool(it);
+                scrollbar->m_verticalScroll = scrollbar->m_verticalImage;
             }
             else if (it->first == "tracknormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureTrackNormal);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureTrackNormal);
             else if (it->first == "trackhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureTrackHover);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureTrackHover);
             else if (it->first == "thumbnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureThumbNormal);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureThumbNormal);
             else if (it->first == "thumbhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureThumbHover);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureThumbHover);
             else if (it->first == "arrowupnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowUpNormal);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureArrowUpNormal);
             else if (it->first == "arrowuphoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowUpHover);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureArrowUpHover);
             else if (it->first == "arrowdownnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowDownNormal);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureArrowDownNormal);
             else if (it->first == "arrowdownhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureArrowDownHover);
+                configFile.readTexture(it, configFileFolder, scrollbar->m_textureArrowDownHover);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Scrollbar in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Scrollbar in " + scrollbar->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureTrackNormal.getData() == nullptr) || (m_textureThumbNormal.getData() == nullptr)
-         || (m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the scrollbar. Is the Scrollbar section in " + m_loadedConfigFile + " complete?"};
+        if ((scrollbar->m_textureTrackNormal.getData() == nullptr) || (scrollbar->m_textureThumbNormal.getData() == nullptr)
+         || (scrollbar->m_textureArrowUpNormal.getData() == nullptr) || (scrollbar->m_textureArrowDownNormal.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the scrollbar. Is the Scrollbar section in " + scrollbar->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureTrackNormal.getImageSize());
-        setVerticalScroll(m_verticalScroll);
+        scrollbar->setSize(scrollbar->m_textureTrackNormal.getImageSize());
+        scrollbar->setVerticalScroll(scrollbar->m_verticalScroll);
+
+        return scrollbar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -645,7 +649,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Scrollbar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -753,7 +757,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("AutoHide", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Scrollbar::getThumbSize() const

@@ -57,7 +57,7 @@ namespace tgui
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_widgets.size(); ++i)
         {
-            m_widgets.push_back(containerToCopy.m_widgets[i].clone());
+            m_widgets.push_back(Widget::Ptr{containerToCopy.m_widgets[i]->clone()});
             m_objName.push_back(containerToCopy.m_objName[i]);
 
             m_widgets.back()->m_parent = this;
@@ -89,7 +89,7 @@ namespace tgui
             // Copy all the widgets
             for (unsigned int i = 0; i < right.m_widgets.size(); ++i)
             {
-                m_widgets.push_back(right.m_widgets[i].clone());
+                m_widgets.push_back(Widget::Ptr{right.m_widgets[i]->clone()});
                 m_objName.push_back(right.m_objName[i]);
 
                 m_widgets.back()->m_parent = this;
@@ -145,16 +145,6 @@ namespace tgui
         }
 
         return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Container::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
-    {
-        Widget::Ptr newWidget = oldWidget.clone();
-        m_widgets.push_back(newWidget);
-        m_objName.push_back(newWidgetName);
-        return newWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,12 +389,15 @@ namespace tgui
 
     void Container::uncheckRadioButtons()
     {
+/// TODO: Fix code
+/**
         // Loop through all radio buttons and uncheck them
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i]->m_callback.widgetType == Type_RadioButton)
                 static_cast<RadioButton::Ptr>(m_widgets[i])->uncheck();
         }
+*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -493,8 +486,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromFile(const std::string& filename)
+    void Container::loadWidgetsFromFile(const std::string&/** filename*/)
     {
+/// TODO: Uncomment
+/// Replace COMPARE_WIDGET with lambda function? See save variant.
+/**
         #define COMPARE_WIDGET(length, name, widgetName) \
             if (line.substr(0, length).compare(name) == 0) \
             { \
@@ -693,6 +689,7 @@ namespace tgui
         }
 
         #undef COMPARE_WIDGET
+*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -783,6 +780,8 @@ namespace tgui
                     }
                 }
 
+/// TODO: Fix code
+/**
                 if ((*widgetIt)->m_containerWidget)
                 {
                     m_file << std::endl;
@@ -791,6 +790,7 @@ namespace tgui
 
                 tabs.erase(tabs.length()-1);
                 m_file << tabs << "}" << std::endl << std::endl;
+*/
             }
         };
 
@@ -1130,6 +1130,8 @@ namespace tgui
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
                 {
+/// TODO: Fix code
+/**
                     // Container widgets can only be focused it they contain focusable widgets
                     if ((!m_widgets[i]->m_containerWidget) || (Container::Ptr(m_widgets[i])->focusNextWidgetInContainer()))
                     {
@@ -1147,6 +1149,7 @@ namespace tgui
 
                         return true;
                     }
+*/
                 }
             }
         }
@@ -1169,9 +1172,12 @@ namespace tgui
         {
             if (m_widgets[m_focusedWidget-1]->m_containerWidget)
             {
+/// TODO: Fix code
+/**
                 // Focus the next widget in container
                 if (Container::Ptr(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
                     return true;
+*/
             }
         }
 
@@ -1225,13 +1231,15 @@ namespace tgui
             }
         }
 
+/// TODO: Fix code
+/**
         // If the currently focused container widget is the only widget to focus, then focus its next child widget
         if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1]->m_containerWidget))
         {
             Container::Ptr(m_widgets[m_focusedWidget-1])->tabKeyPressed();
             return true;
         }
-
+*/
         return false;
     }
 

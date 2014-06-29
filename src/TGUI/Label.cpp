@@ -45,21 +45,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::load(const std::string& configFileFilename)
+    Label::Ptr Label::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto label = std::make_shared<Label>();
 
-        // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Label"};
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (!configFileFilename.empty())
         {
-            if (it->first == "textcolor")
-                setTextColor(extractColor(it->second));
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Label in " + m_loadedConfigFile + "."};
+            label->m_loadedConfigFile = getResourcePath() + configFileFilename;
+
+            // Open the config file
+            ConfigFile configFile{label->m_loadedConfigFile, "Label"};
+
+            // Handle the read properties
+            for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+            {
+                if (it->first == "textcolor")
+                    label->setTextColor(extractColor(it->second));
+                else
+                    throw Exception{"Unrecognized property '" + it->first + "' in section Label in " + label->m_loadedConfigFile + "."};
+            }
         }
+
+        return label;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +147,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Label::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -215,7 +222,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("AutoSize", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::initialize(Container *const parent)

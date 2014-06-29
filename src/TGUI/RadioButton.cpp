@@ -43,51 +43,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::load(const std::string& configFileFilename)
+    RadioButton::Ptr RadioButton::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto radioButton = std::make_shared<RadioButton>();
+
+        radioButton->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
          // If the radio button was loaded before then remove the old textures
-        if (m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
-        if (m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
-        if (m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
+        if (radioButton->m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(radioButton->m_textureUnchecked);
+        if (radioButton->m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(radioButton->m_textureChecked);
+        if (radioButton->m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(radioButton->m_textureHover);
+        if (radioButton->m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(radioButton->m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "RadioButton"};
+        ConfigFile configFile{radioButton->m_loadedConfigFile, "RadioButton"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = radioButton->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = radioButton->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "textcolor")
-                m_text.setColor(configFile.readColor(it));
+                radioButton->m_text.setColor(configFile.readColor(it));
             else if (it->first == "checkedimage")
-                configFile.readTexture(it, configFileFolder, m_textureChecked);
+                configFile.readTexture(it, configFileFolder, radioButton->m_textureChecked);
             else if (it->first == "uncheckedimage")
-                configFile.readTexture(it, configFileFolder, m_textureUnchecked);
+                configFile.readTexture(it, configFileFolder, radioButton->m_textureUnchecked);
             else if (it->first == "hoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureHover);
+                configFile.readTexture(it, configFileFolder, radioButton->m_textureHover);
             else if (it->first == "focusedimage")
-                configFile.readTexture(it, configFileFolder, m_textureFocused);
+                configFile.readTexture(it, configFileFolder, radioButton->m_textureFocused);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section RadioButton in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section RadioButton in " + radioButton->m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
-        if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the radio button. Is the RadioButton section in " + m_loadedConfigFile + " complete?"};
+        if ((radioButton->m_textureChecked.getData() == nullptr) || (radioButton->m_textureUnchecked.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the radio button. Is the RadioButton section in " + radioButton->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureUnchecked.getImageSize());
+        radioButton->setSize(radioButton->m_textureUnchecked.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
-        if (m_textureFocused.getData() != nullptr)
-            m_allowFocus = true;
+        if (radioButton->m_textureFocused.getData() != nullptr)
+            radioButton->m_allowFocus = true;
+
+        return radioButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,7 +343,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void RadioButton::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -463,7 +467,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("AllowTextClick", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::initialize(Container *const parent)

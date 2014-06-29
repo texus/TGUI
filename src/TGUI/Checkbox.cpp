@@ -41,51 +41,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::load(const std::string& configFileFilename)
+    Checkbox::Ptr Checkbox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto checkbox = std::make_shared<Checkbox>();
+
+        checkbox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // If the checkbox was loaded before then remove the old textures
-        if (m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureUnchecked);
-        if (m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureChecked);
-        if (m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureFocused);
+        if (checkbox->m_textureUnchecked.getData() != nullptr) TGUI_TextureManager.removeTexture(checkbox->m_textureUnchecked);
+        if (checkbox->m_textureChecked.getData() != nullptr)   TGUI_TextureManager.removeTexture(checkbox->m_textureChecked);
+        if (checkbox->m_textureHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(checkbox->m_textureHover);
+        if (checkbox->m_textureFocused.getData() != nullptr)   TGUI_TextureManager.removeTexture(checkbox->m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Checkbox"};
+        ConfigFile configFile{checkbox->m_loadedConfigFile, "Checkbox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = checkbox->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = checkbox->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "textcolor")
-                m_text.setColor(configFile.readColor(it));
+                checkbox->m_text.setColor(configFile.readColor(it));
             else if (it->first == "checkedimage")
-                configFile.readTexture(it, configFileFolder, m_textureChecked);
+                configFile.readTexture(it, configFileFolder, checkbox->m_textureChecked);
             else if (it->first == "uncheckedimage")
-                configFile.readTexture(it, configFileFolder, m_textureUnchecked);
+                configFile.readTexture(it, configFileFolder, checkbox->m_textureUnchecked);
             else if (it->first == "hoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureHover);
+                configFile.readTexture(it, configFileFolder, checkbox->m_textureHover);
             else if (it->first == "focusedimage")
-                configFile.readTexture(it, configFileFolder, m_textureFocused);
+                configFile.readTexture(it, configFileFolder, checkbox->m_textureFocused);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Checkbox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Checkbox in " + checkbox->m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
-        if ((m_textureChecked.getData() == nullptr) || (m_textureUnchecked.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the checkbox. Is the Checkbox section in " + m_loadedConfigFile + " complete?"};
+        if ((checkbox->m_textureChecked.getData() == nullptr) || (checkbox->m_textureUnchecked.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the checkbox. Is the Checkbox section in " + checkbox->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureUnchecked.getImageSize());
+        checkbox->setSize(checkbox->m_textureUnchecked.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
-        if (m_textureFocused.getData() != nullptr)
-            m_allowFocus = true;
+        if (checkbox->m_textureFocused.getData() != nullptr)
+            checkbox->m_allowFocus = true;
+
+        return checkbox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

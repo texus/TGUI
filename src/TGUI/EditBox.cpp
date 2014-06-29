@@ -51,85 +51,89 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::load(const std::string& configFileFilename)
+    EditBox::Ptr EditBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto editBox = std::make_shared<EditBox>();
+
+        editBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove the textures when they were loaded before
-        if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
-        if (m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
+        if (editBox->m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(editBox->m_textureNormal);
+        if (editBox->m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(editBox->m_textureHover);
+        if (editBox->m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(editBox->m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "EditBox"};
+        ConfigFile configFile{editBox->m_loadedConfigFile, "EditBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = editBox->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = editBox->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separatehoverimage")
             {
-                m_separateHoverImage = configFile.readBool(it);
+                editBox->m_separateHoverImage = configFile.readBool(it);
             }
             else if (it->first == "textcolor")
             {
                 sf::Color color = extractColor(it->second);
-                m_textBeforeSelection.setColor(color);
-                m_textAfterSelection.setColor(color);
+                editBox->m_textBeforeSelection.setColor(color);
+                editBox->m_textAfterSelection.setColor(color);
             }
             else if (it->first == "selectedtextcolor")
             {
-                m_textSelection.setColor(extractColor(it->second));
+                editBox->m_textSelection.setColor(extractColor(it->second));
             }
             else if (it->first == "selectedtextbackgroundcolor")
             {
-                m_selectedTextBackground.setFillColor(extractColor(it->second));
+                editBox->m_selectedTextBackground.setFillColor(extractColor(it->second));
             }
             else if (it->first == "caretcolor")
             {
-                m_caret.setFillColor(extractColor(it->second));
+                editBox->m_caret.setFillColor(extractColor(it->second));
             }
             else if (it->first == "caretwidth")
             {
-                m_caret.setSize({tgui::stof(it->second), m_caret.getSize().y});
+                editBox->m_caret.setSize({tgui::stof(it->second), editBox->m_caret.getSize().y});
             }
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    editBox->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section EditBox in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section EditBox in " + editBox->m_loadedConfigFile};
             }
             else if (it->first == "normalimage")
             {
-                configFile.readTexture(it, configFileFolder, m_textureNormal);
+                configFile.readTexture(it, configFileFolder, editBox->m_textureNormal);
             }
             else if (it->first == "hoverimage")
             {
-                configFile.readTexture(it, configFileFolder, m_textureHover);
+                configFile.readTexture(it, configFileFolder, editBox->m_textureHover);
             }
             else if (it->first == "focusedimage")
             {
-                configFile.readTexture(it, configFileFolder, m_textureFocused);
+                configFile.readTexture(it, configFileFolder, editBox->m_textureFocused);
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section EditBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section EditBox in " + editBox->m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
-        if (m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the EditBox section in " + m_loadedConfigFile + " complete?"};
+        if (editBox->m_textureNormal.getData() == nullptr)
+            throw Exception{"NormalImage wasn't loaded. Is the EditBox section in " + editBox->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureNormal.getImageSize());
+        editBox->setSize(editBox->m_textureNormal.getImageSize());
 
         // Auto-size the text
-        setTextSize(0);
+        editBox->setTextSize(0);
+
+        return editBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1001,7 +1005,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void EditBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -1182,7 +1186,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("NumbersOnly", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int EditBox::findCaretPosition(float posX)

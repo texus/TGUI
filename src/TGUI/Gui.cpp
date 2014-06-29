@@ -25,7 +25,6 @@
 
 #include <SFML/OpenGL.hpp>
 
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Gui.hpp>
 
@@ -243,13 +242,6 @@ namespace tgui
     Widget::Ptr Gui::get(const sf::String& widgetName) const
     {
         return m_container->get(widgetName);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Widget::Ptr Gui::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
-    {
-        return m_container->copy(oldWidget, newWidgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

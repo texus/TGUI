@@ -41,46 +41,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::load(const std::string& configFileFilename)
+    LoadingBar::Ptr LoadingBar::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto loadingBar = std::make_shared<LoadingBar>();
+
+        loadingBar->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove all textures if they were loaded before
-        if (m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureBack);
-        if (m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(m_textureFront);
+        if (loadingBar->m_textureBack.getData() != nullptr)  TGUI_TextureManager.removeTexture(loadingBar->m_textureBack);
+        if (loadingBar->m_textureFront.getData() != nullptr) TGUI_TextureManager.removeTexture(loadingBar->m_textureFront);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "LoadingBar"};
+        ConfigFile configFile{loadingBar->m_loadedConfigFile, "LoadingBar"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = loadingBar->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = loadingBar->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "backimage")
-                configFile.readTexture(it, configFileFolder, m_textureBack);
+                configFile.readTexture(it, configFileFolder, loadingBar->m_textureBack);
             else if (it->first == "frontimage")
-                configFile.readTexture(it, configFileFolder, m_textureFront);
+                configFile.readTexture(it, configFileFolder, loadingBar->m_textureFront);
             else if (it->first == "textcolor")
-                setTextColor(extractColor(it->second));
+                loadingBar->setTextColor(extractColor(it->second));
             else if (it->first == "textsize")
-                setTextSize(tgui::stoi(it->second));
+                loadingBar->setTextSize(tgui::stoi(it->second));
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section LoadingBar in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section LoadingBar in " + loadingBar->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureBack.getData() == nullptr) || (m_textureFront.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + m_loadedConfigFile + " complete?"};
+        if ((loadingBar->m_textureBack.getData() == nullptr) || (loadingBar->m_textureFront.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + loadingBar->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureBack.getImageSize());
+        loadingBar->setSize(loadingBar->m_textureBack.getImageSize());
 
         // Calculate the size of the front image (the size of the part that will be drawn)
-        recalculateSize();
+        loadingBar->recalculateSize();
+
+        return loadingBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +250,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void LoadingBar::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -355,7 +359,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LoadingBar::recalculateSize()

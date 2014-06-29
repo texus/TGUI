@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/Grid.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +53,7 @@ namespace tgui
                 {
                     // If a widget matches then add it to the grid
                     if (widgets[i] == gridToCopy.m_gridWidgets[row][col])
-                        addWidget(widgets[i], row, col, gridToCopy.m_objBorders[row][col], gridToCopy.m_objAlignment[row][col]);
+                        addWidget(m_widgets[i], row, col, gridToCopy.m_objBorders[row][col], gridToCopy.m_objAlignment[row][col]);
                 }
             }
         }

@@ -43,70 +43,74 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::load(const std::string& configFileFilename)
+    Tab::Ptr Tab::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto tab = std::make_shared<Tab>();
+
+        tab->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // If the button was loaded before then remove the old textures first
-        if (m_textureNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureNormal);
-        if (m_textureSelected.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureSelected);
+        if (tab->m_textureNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(tab->m_textureNormal);
+        if (tab->m_textureSelected.getData() != nullptr)  TGUI_TextureManager.removeTexture(tab->m_textureSelected);
 
-        if (!m_texturesNormal.empty())
+        if (!tab->m_texturesNormal.empty())
         {
-            for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
+            for (auto it = tab->m_texturesNormal.begin(); it != tab->m_texturesNormal.end(); ++it)
             {
                 if (it->getData() != nullptr)
                     TGUI_TextureManager.removeTexture(*it);
             }
 
-            for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
+            for (auto it = tab->m_texturesSelected.begin(); it != tab->m_texturesSelected.end(); ++it)
             {
                 if (it->getData() != nullptr)
                     TGUI_TextureManager.removeTexture(*it);
             }
 
-            m_texturesNormal.clear();
-            m_texturesSelected.clear();
+            tab->m_texturesNormal.clear();
+            tab->m_texturesSelected.clear();
         }
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Tab"};
+        ConfigFile configFile{tab->m_loadedConfigFile, "Tab"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = tab->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = tab->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separateselectedimage")
-                m_separateSelectedImage = configFile.readBool(it);
+                tab->m_separateSelectedImage = configFile.readBool(it);
             else if (it->first == "textcolor")
-                m_textColor = configFile.readColor(it);
+                tab->m_textColor = configFile.readColor(it);
             else if (it->first == "selectedtextcolor")
-                m_selectedTextColor = configFile.readColor(it);
+                tab->m_selectedTextColor = configFile.readColor(it);
             else if (it->first == "distancetoside")
-                setDistanceToSide(tgui::stoul(it->second));
+                tab->setDistanceToSide(tgui::stoul(it->second));
             else if (it->first == "normalimage")
-                configFile.readTexture(it, configFileFolder, m_textureNormal);
+                configFile.readTexture(it, configFileFolder, tab->m_textureNormal);
             else if (it->first == "selectedimage")
-                configFile.readTexture(it, configFileFolder, m_textureSelected);
+                configFile.readTexture(it, configFileFolder, tab->m_textureSelected);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Tab in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Tab in " + tab->m_loadedConfigFile + "."};
         }
 
         // Clear the vectors
-        m_tabNames.clear();
+        tab->m_tabNames.clear();
 
         // Make sure the required texture was loaded
-        if (m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the Tab section in " + m_loadedConfigFile + " complete?"};
+        if (tab->m_textureNormal.getData() == nullptr)
+            throw Exception{"NormalImage wasn't loaded. Is the Tab section in " + tab->m_loadedConfigFile + " complete?"};
 
         // Recalculate the text size when auto sizing
-        if (m_textSize == 0)
-            setTextSize(0);
+        if (tab->m_textSize == 0)
+            tab->setTextSize(0);
+
+        return tab;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -440,7 +444,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Tab::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -558,7 +562,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("SelectedTab", "int"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Tab::recalculateTabsWidth()

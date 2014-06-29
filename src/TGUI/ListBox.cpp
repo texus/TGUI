@@ -49,39 +49,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListBox::ListBox(const ListBox& copy) :
-        Widget                   {copy},
-        WidgetBorders            {copy},
-        m_loadedConfigFile       {copy.m_loadedConfigFile},
-        m_items                  {copy.m_items},
-        m_selectedItem           {copy.m_selectedItem},
-        m_itemHeight             {copy.m_itemHeight},
-        m_textSize               {copy.m_textSize},
-        m_maxItems               {copy.m_maxItems},
-        m_backgroundColor        {copy.m_backgroundColor},
-        m_textColor              {copy.m_textColor},
-        m_selectedBackgroundColor{copy.m_selectedBackgroundColor},
-        m_selectedTextColor      {copy.m_selectedTextColor},
-        m_borderColor            {copy.m_borderColor},
-        m_textFont               {copy.m_textFont}
+    ListBox::ListBox(const ListBox& listBoxToCopy) :
+        Widget                   {listBoxToCopy},
+        WidgetBorders            {listBoxToCopy},
+        m_loadedConfigFile       {listBoxToCopy.m_loadedConfigFile},
+        m_items                  {listBoxToCopy.m_items},
+        m_selectedItem           {listBoxToCopy.m_selectedItem},
+        m_itemHeight             {listBoxToCopy.m_itemHeight},
+        m_textSize               {listBoxToCopy.m_textSize},
+        m_maxItems               {listBoxToCopy.m_maxItems},
+        m_backgroundColor        {listBoxToCopy.m_backgroundColor},
+        m_textColor              {listBoxToCopy.m_textColor},
+        m_selectedBackgroundColor{listBoxToCopy.m_selectedBackgroundColor},
+        m_selectedTextColor      {listBoxToCopy.m_selectedTextColor},
+        m_borderColor            {listBoxToCopy.m_borderColor},
+        m_textFont               {listBoxToCopy.m_textFont}
     {
-        // If there is a scrollbar then copy it
-        if (copy.m_scroll != nullptr)
-            m_scroll = new Scrollbar{*copy.m_scroll};
+        if (listBoxToCopy.m_scroll != nullptr)
+            m_scroll = Scrollbar::copy(listBoxToCopy.m_scroll);
         else
             m_scroll = nullptr;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/// TODO: Get rid of manual memory managment
-/**
-    ListBox::~ListBox()
-    {
-        if (m_scroll != nullptr)
-            delete m_scroll;
-    }
-*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox& ListBox::operator= (const ListBox& right)
@@ -91,13 +80,6 @@ namespace tgui
             ListBox temp(right);
             Widget::operator=(right);
             WidgetBorders::operator=(right);
-
-            // If there already was a scrollbar then delete it now
-            if (m_scroll != nullptr)
-            {
-                delete m_scroll;
-                m_scroll = nullptr;
-            }
 
             std::swap(m_loadedConfigFile,        temp.m_loadedConfigFile);
             std::swap(m_items,                   temp.m_items);
@@ -119,19 +101,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::load(const std::string& configFileFilename)
+    ListBox::Ptr ListBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto listBox = std::make_shared<ListBox>();
 
-        // If there already was a scrollbar then delete it now
-        if (m_scroll != nullptr)
-        {
-            delete m_scroll;
-            m_scroll = nullptr;
-        }
+        listBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "ListBox"};
+        ConfigFile configFile{listBox->m_loadedConfigFile, "ListBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -144,61 +121,59 @@ namespace tgui
         {
             if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(extractColor(it->second));
+                listBox->setBackgroundColor(extractColor(it->second));
             }
             else if (it->first == "textcolor")
             {
-                setTextColor(extractColor(it->second));
+                listBox->setTextColor(extractColor(it->second));
             }
             else if (it->first == "selectedbackgroundcolor")
             {
-                setSelectedBackgroundColor(extractColor(it->second));
+                listBox->setSelectedBackgroundColor(extractColor(it->second));
             }
             else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(extractColor(it->second));
+                listBox->setSelectedTextColor(extractColor(it->second));
             }
             else if (it->first == "bordercolor")
             {
-                setBorderColor(extractColor(it->second));
+                listBox->setBorderColor(extractColor(it->second));
             }
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    listBox->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section ListBox in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section ListBox in " + listBox->m_loadedConfigFile};
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Scrollbar in section ListBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for Scrollbar in section ListBox in " + listBox->m_loadedConfigFile + "."};
 
                 try
                 {
                     // load the scrollbar
-                    m_scroll = new Scrollbar();
-                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                    listBox->m_scroll = Scrollbar::create(configFileFolder + it->second.substr(1, it->second.length()-2));
                 }
                 catch (const Exception& e)
                 {
-                    // The scrollbar couldn't be loaded so it must be deleted
-                    delete m_scroll;
-                    m_scroll = nullptr;
-
+                    listBox->m_scroll = nullptr;
                     throw Exception{"Failed to create the internal scrollbar in ListBox. " + std::string{e.what()}};
                 }
 
                 // Initialize the scrollbar
-                m_scroll->setVerticalScroll(true);
-                m_scroll->setSize({m_scroll->getSize().x, getSize().y});
-                m_scroll->setLowValue(getSize().y);
-                m_scroll->setMaximum(m_items.size() * m_itemHeight);
+                listBox->m_scroll->setVerticalScroll(true);
+                listBox->m_scroll->setSize({listBox->m_scroll->getSize().x, listBox->getSize().y});
+                listBox->m_scroll->setLowValue(listBox->getSize().y);
+                listBox->m_scroll->setMaximum(listBox->m_items.size() * listBox->m_itemHeight);
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section ListBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section ListBox in " + listBox->m_loadedConfigFile + "."};
         }
+
+        return listBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -510,22 +485,13 @@ namespace tgui
             return true;
         }
 
-        // If the scrollbar was already created then delete it first
-        if (m_scroll != nullptr)
-            delete m_scroll;
-
         try
         {
-            // load the scrollbar
-            m_scroll = new Scrollbar();
-            m_scroll->load(scrollbarConfigFileFilename);
+            m_scroll = Scrollbar::create(scrollbarConfigFileFilename);
         }
         catch (const Exception& e)
         {
-            // The scrollbar couldn't be loaded so it must be deleted
-            delete m_scroll;
             m_scroll = nullptr;
-
             return false;
         }
 
@@ -542,8 +508,6 @@ namespace tgui
 
     void ListBox::removeScrollbar()
     {
-        // Delete the scrollbar
-        delete m_scroll;
         m_scroll = nullptr;
 
         // When the items no longer fit inside the list box then we need to remove some
@@ -858,7 +822,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void ListBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -1003,7 +967,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("SelectedItem", "int"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListBox::initialize(Container *const parent)

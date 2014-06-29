@@ -29,7 +29,6 @@
 #include <TGUI/ListBox.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/ChildWindow.hpp>
-#include <TGUI/SharedWidgetPtr.inl>
 #include <TGUI/ComboBox.hpp>
 
 #include <cmath>
@@ -44,33 +43,31 @@ namespace tgui
     {
         m_callback.widgetType = Type_ComboBox;
         m_draggableWidget = true;
-
-        m_listBox->hide();
-        m_listBox->changeColors();
-        m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
-        m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, this));
-
-        setSize({50, 24});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox::ComboBox(const ComboBox& copy) :
-        Widget                  {copy},
-        WidgetBorders           {copy},
-        m_loadedConfigFile      {copy.m_loadedConfigFile},
-        m_separateHoverImage    {copy.m_separateHoverImage},
-        m_nrOfItemsToDisplay    {copy.m_nrOfItemsToDisplay},
-        m_listBox               {copy.m_listBox.clone()},
-        m_textureArrowUpNormal  {copy.m_textureArrowUpNormal},
-        m_textureArrowUpHover   {copy.m_textureArrowUpHover},
-        m_textureArrowDownNormal{copy.m_textureArrowDownNormal},
-        m_textureArrowDownHover {copy.m_textureArrowDownHover}
+    ComboBox::ComboBox(const ComboBox& listBoxToCopy) :
+        Widget                  {listBoxToCopy},
+        WidgetBorders           {listBoxToCopy},
+        m_loadedConfigFile      {listBoxToCopy.m_loadedConfigFile},
+        m_separateHoverImage    {listBoxToCopy.m_separateHoverImage},
+        m_nrOfItemsToDisplay    {listBoxToCopy.m_nrOfItemsToDisplay},
+        m_textureArrowUpNormal  {listBoxToCopy.m_textureArrowUpNormal},
+        m_textureArrowUpHover   {listBoxToCopy.m_textureArrowUpHover},
+        m_textureArrowDownNormal{listBoxToCopy.m_textureArrowDownNormal},
+        m_textureArrowDownHover {listBoxToCopy.m_textureArrowDownHover}
     {
-        m_listBox->hide();
-        m_listBox->unbindAllCallback();
-        m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
-        m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, this));
+        if (listBoxToCopy.m_listBox != nullptr)
+        {
+            m_listBox = ListBox::copy(listBoxToCopy.m_listBox);
+            m_listBox->hide();
+            m_listBox->unbindAllCallback();
+            m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
+            m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, this));
+        }
+        else
+            m_listBox = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,18 +95,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::load(const std::string& configFileFilename)
+    ComboBox::Ptr ComboBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto comboBox = std::make_shared<ComboBox>();
+
+        comboBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove all textures if they were loaded before
-        if (m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureArrowUpNormal);
-        if (m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureArrowUpHover);
-        if (m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureArrowDownNormal);
-        if (m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureArrowDownHover);
+        if (comboBox->m_textureArrowUpNormal.getData() != nullptr)    TGUI_TextureManager.removeTexture(comboBox->m_textureArrowUpNormal);
+        if (comboBox->m_textureArrowUpHover.getData() != nullptr)     TGUI_TextureManager.removeTexture(comboBox->m_textureArrowUpHover);
+        if (comboBox->m_textureArrowDownNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(comboBox->m_textureArrowDownNormal);
+        if (comboBox->m_textureArrowDownHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(comboBox->m_textureArrowDownHover);
+
+        comboBox->m_listBox = ListBox::create(configFileFilename);
+        comboBox->m_listBox->hide();
+        comboBox->m_listBox->changeColors();
+        comboBox->m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, comboBox));
+        comboBox->m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, comboBox));
+
+        comboBox->setSize({50, 24});
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "ComboBox"};
+        ConfigFile configFile{comboBox->m_loadedConfigFile, "ComboBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -122,69 +129,71 @@ namespace tgui
         {
             if (it->first == "separatehoverimage")
             {
-                m_separateHoverImage = configFile.readBool(it);
+                comboBox->m_separateHoverImage = configFile.readBool(it);
             }
             else if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(it));
+                comboBox->setBackgroundColor(configFile.readColor(it));
             }
             else if (it->first == "textcolor")
             {
-                setTextColor(configFile.readColor(it));
+                comboBox->setTextColor(configFile.readColor(it));
             }
             else if (it->first == "selectedbackgroundcolor")
             {
-                setSelectedBackgroundColor(configFile.readColor(it));
+                comboBox->setSelectedBackgroundColor(configFile.readColor(it));
             }
             else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(configFile.readColor(it));
+                comboBox->setSelectedTextColor(configFile.readColor(it));
             }
             else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(it));
+                comboBox->setBorderColor(configFile.readColor(it));
             }
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    comboBox->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section ComboBox in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section ComboBox in " + comboBox->m_loadedConfigFile};
             }
             else if (it->first == "arrowupnormalimage")
             {
-                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowUpNormal);
+                configFile.readTexture(it, getResourcePath() + configFileFolder, comboBox->m_textureArrowUpNormal);
             }
             else if (it->first == "arrowuphoverimage")
             {
-                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowUpHover);
+                configFile.readTexture(it, getResourcePath() + configFileFolder, comboBox->m_textureArrowUpHover);
             }
             else if (it->first == "arrowdownnormalimage")
             {
-                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowDownNormal);
+                configFile.readTexture(it, getResourcePath() + configFileFolder, comboBox->m_textureArrowDownNormal);
             }
             else if (it->first == "arrowdownhoverimage")
             {
-                configFile.readTexture(it, getResourcePath() + configFileFolder, m_textureArrowDownHover);
+                configFile.readTexture(it, getResourcePath() + configFileFolder, comboBox->m_textureArrowDownHover);
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Scrollbar in section ComboBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for Scrollbar in section ComboBox in " + comboBox->m_loadedConfigFile + "."};
 
-                m_listBox->setScrollbar(configFileFolder + it->second.substr(1, it->second.length()-2));
+                comboBox->m_listBox->setScrollbar(configFileFolder + it->second.substr(1, it->second.length()-2));
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section ComboBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section ComboBox in " + comboBox->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureArrowUpNormal.getData() == nullptr) || (m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the combo box. Is the ComboBox section in " + m_loadedConfigFile + " complete?"};
+        if ((comboBox->m_textureArrowUpNormal.getData() == nullptr) || (comboBox->m_textureArrowDownNormal.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the combo box. Is the ComboBox section in " + comboBox->m_loadedConfigFile + " complete?"};
 
         // Remove all items (in case this is the second time that the load function was called)
-        m_listBox->removeAllItems();
+        comboBox->m_listBox->removeAllItems();
+
+        return comboBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,7 +438,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void ComboBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -574,7 +583,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("SelectedItem", "int"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::initialize(Container *const parent)

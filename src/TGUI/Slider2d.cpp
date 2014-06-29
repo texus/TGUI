@@ -42,48 +42,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::load(const std::string& configFileFilename)
+    Slider2d::Ptr Slider2d::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto slider = std::make_shared<Slider2d>();
+
+        slider->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Remove all textures if they were loaded before
-        if (m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureTrackNormal);
-        if (m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureTrackHover);
-        if (m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureThumbNormal);
-        if (m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureThumbHover);
+        if (slider->m_textureTrackNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(slider->m_textureTrackNormal);
+        if (slider->m_textureTrackHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(slider->m_textureTrackHover);
+        if (slider->m_textureThumbNormal.getData() != nullptr)  TGUI_TextureManager.removeTexture(slider->m_textureThumbNormal);
+        if (slider->m_textureThumbHover.getData() != nullptr)   TGUI_TextureManager.removeTexture(slider->m_textureThumbHover);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Slider2d"};
+        ConfigFile configFile{slider->m_loadedConfigFile, "Slider2d"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = slider->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = slider->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separatehoverimage")
-                m_separateHoverImage = configFile.readBool(it);
+                slider->m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "tracknormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureTrackNormal);
+                configFile.readTexture(it, configFileFolder, slider->m_textureTrackNormal);
             else if (it->first == "trackhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureTrackHover);
+                configFile.readTexture(it, configFileFolder, slider->m_textureTrackHover);
             else if (it->first == "thumbnormalimage")
-                configFile.readTexture(it, configFileFolder, m_textureThumbNormal);
+                configFile.readTexture(it, configFileFolder, slider->m_textureThumbNormal);
             else if (it->first == "thumbhoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureThumbHover);
+                configFile.readTexture(it, configFileFolder, slider->m_textureThumbHover);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Slider2d in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Slider2d in " + slider->m_loadedConfigFile + "."};
         }
 
         // Make sure the required textures were loaded
-        if ((m_textureTrackNormal.getData() == nullptr) || (m_textureThumbNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the slider. Is the Slider2d section in " + m_loadedConfigFile + " complete?"};
+        if ((slider->m_textureTrackNormal.getData() == nullptr) || (slider->m_textureThumbNormal.getData() == nullptr))
+            throw Exception{"Not all needed images were loaded for the slider. Is the Slider2d section in " + slider->m_loadedConfigFile + " complete?"};
 
         // Set the size of the slider
-        setSize(m_textureTrackNormal.getSize());
+        slider->setSize(slider->m_textureTrackNormal.getSize());
+
+        return slider;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,7 +276,7 @@ namespace tgui
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Slider2d::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -435,7 +439,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("EnableThumbCenter", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Slider2d::draw(sf::RenderTarget& target, sf::RenderStates states) const

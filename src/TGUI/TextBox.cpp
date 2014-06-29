@@ -48,68 +48,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextBox::TextBox(const TextBox& copy) :
-        Widget                       {copy},
-        WidgetBorders                {copy},
-        m_loadedConfigFile           {copy.m_loadedConfigFile},
-        m_text                       {copy.m_text},
-        m_displayedText              {copy.m_displayedText},
-        m_textSize                   {copy.m_textSize},
-        m_lineHeight                 {copy.m_lineHeight},
-        m_lines                      {copy.m_lines},
-        m_maxChars                   {copy.m_maxChars},
-        m_topLine                    {copy.m_topLine},
-        m_visibleLines               {copy.m_visibleLines},
-        m_selChars                   {copy.m_selChars},
-        m_selStart                   {copy.m_selStart},
-        m_selEnd                     {copy.m_selEnd},
-        m_caretPosition              {copy.m_caretPosition},
-        m_caretVisible               {copy.m_caretVisible},
-        m_caretColor                 {copy.m_caretColor},
-        m_caretWidth                 {copy.m_caretWidth},
-        m_selectionTextsNeedUpdate   {copy.m_selectionTextsNeedUpdate},
-        m_backgroundColor            {copy.m_backgroundColor},
-        m_selectedTextBgrColor       {copy.m_selectedTextBgrColor},
-        m_borderColor                {copy.m_borderColor},
-        m_textBeforeSelection        {copy.m_textBeforeSelection},
-        m_textSelection1             {copy.m_textSelection1},
-        m_textSelection2             {copy.m_textSelection2},
-        m_textAfterSelection1        {copy.m_textAfterSelection1},
-        m_textAfterSelection2        {copy.m_textAfterSelection2},
-        m_multilineSelectionRectWidth{copy.m_multilineSelectionRectWidth},
-        m_possibleDoubleClick        {copy.m_possibleDoubleClick},
-        m_readOnly                   {copy.m_readOnly}
+    TextBox::TextBox(const TextBox& scrollbarToCopy) :
+        Widget                       {scrollbarToCopy},
+        WidgetBorders                {scrollbarToCopy},
+        m_loadedConfigFile           {scrollbarToCopy.m_loadedConfigFile},
+        m_text                       {scrollbarToCopy.m_text},
+        m_displayedText              {scrollbarToCopy.m_displayedText},
+        m_textSize                   {scrollbarToCopy.m_textSize},
+        m_lineHeight                 {scrollbarToCopy.m_lineHeight},
+        m_lines                      {scrollbarToCopy.m_lines},
+        m_maxChars                   {scrollbarToCopy.m_maxChars},
+        m_topLine                    {scrollbarToCopy.m_topLine},
+        m_visibleLines               {scrollbarToCopy.m_visibleLines},
+        m_selChars                   {scrollbarToCopy.m_selChars},
+        m_selStart                   {scrollbarToCopy.m_selStart},
+        m_selEnd                     {scrollbarToCopy.m_selEnd},
+        m_caretPosition              {scrollbarToCopy.m_caretPosition},
+        m_caretVisible               {scrollbarToCopy.m_caretVisible},
+        m_caretColor                 {scrollbarToCopy.m_caretColor},
+        m_caretWidth                 {scrollbarToCopy.m_caretWidth},
+        m_selectionTextsNeedUpdate   {scrollbarToCopy.m_selectionTextsNeedUpdate},
+        m_backgroundColor            {scrollbarToCopy.m_backgroundColor},
+        m_selectedTextBgrColor       {scrollbarToCopy.m_selectedTextBgrColor},
+        m_borderColor                {scrollbarToCopy.m_borderColor},
+        m_textBeforeSelection        {scrollbarToCopy.m_textBeforeSelection},
+        m_textSelection1             {scrollbarToCopy.m_textSelection1},
+        m_textSelection2             {scrollbarToCopy.m_textSelection2},
+        m_textAfterSelection1        {scrollbarToCopy.m_textAfterSelection1},
+        m_textAfterSelection2        {scrollbarToCopy.m_textAfterSelection2},
+        m_multilineSelectionRectWidth{scrollbarToCopy.m_multilineSelectionRectWidth},
+        m_possibleDoubleClick        {scrollbarToCopy.m_possibleDoubleClick},
+        m_readOnly                   {scrollbarToCopy.m_readOnly}
     {
-        // If there is a scrollbar then copy it
-        if (copy.m_scroll != nullptr)
-            m_scroll = new Scrollbar{*copy.m_scroll};
+        if (scrollbarToCopy.m_scroll != nullptr)
+            m_scroll = Scrollbar::copy(scrollbarToCopy.m_scroll);
         else
             m_scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// TODO: Get rid of manual memory managment
-/**
-    TextBox::~TextBox()
-    {
-        if (m_scroll != nullptr)
-            delete m_scroll;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     TextBox& TextBox::operator= (const TextBox& right)
     {
         if (this != &right)
         {
-            // If there already was a scrollbar then delete it now
-            if (m_scroll != nullptr)
-            {
-                delete m_scroll;
-                m_scroll = nullptr;
-            }
-
             TextBox temp(right);
             Widget::operator=(right);
             WidgetBorders::operator=(right);
@@ -150,19 +132,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::load(const std::string& configFileFilename)
+    TextBox::Ptr TextBox::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto textBox = std::make_shared<TextBox>();
 
-        // If there already was a scrollbar then delete it now
-        if (m_scroll != nullptr)
-        {
-            delete m_scroll;
-            m_scroll = nullptr;
-        }
+        textBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "TextBox"};
+        ConfigFile configFile{textBox->m_loadedConfigFile, "TextBox"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
@@ -175,64 +152,62 @@ namespace tgui
         {
             if (it->first == "backgroundcolor")
             {
-                setBackgroundColor(configFile.readColor(it));
+                textBox->setBackgroundColor(configFile.readColor(it));
             }
             else if (it->first == "textcolor")
             {
-                setTextColor(configFile.readColor(it));
+                textBox->setTextColor(configFile.readColor(it));
             }
             else if (it->first == "selectedtextbackgroundcolor")
             {
-                setSelectedTextBackgroundColor(configFile.readColor(it));
+                textBox->setSelectedTextBackgroundColor(configFile.readColor(it));
             }
             else if (it->first == "selectedtextcolor")
             {
-                setSelectedTextColor(configFile.readColor(it));
+                textBox->setSelectedTextColor(configFile.readColor(it));
             }
             else if (it->first == "caretcolor")
             {
-                setCaretColor(configFile.readColor(it));
+                textBox->setCaretColor(configFile.readColor(it));
             }
             else if (it->first == "bordercolor")
             {
-                setBorderColor(configFile.readColor(it));
+                textBox->setBorderColor(configFile.readColor(it));
             }
             else if (it->first == "borders")
             {
                 Borders borders;
                 if (extractBorders(it->second, borders))
-                    setBorders(borders);
+                    textBox->setBorders(borders);
                 else
-                    throw Exception{"Failed to parse the 'Borders' property in section TextBox in " + m_loadedConfigFile};
+                    throw Exception{"Failed to parse the 'Borders' property in section TextBox in " + textBox->m_loadedConfigFile};
             }
             else if (it->first == "scrollbar")
             {
                 if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Scrollbar in section TextBox in " + m_loadedConfigFile + "."};
+                    throw Exception{"Failed to parse value for Scrollbar in section TextBox in " + textBox->m_loadedConfigFile + "."};
 
                 try
                 {
-                    // load the scrollbar
-                    m_scroll = new Scrollbar();
-                    m_scroll->load(configFileFolder + it->second.substr(1, it->second.length()-2));
+                    textBox->m_scroll = Scrollbar::create(configFileFolder + it->second.substr(1, it->second.length()-2));
                 }
                 catch (const Exception& e)
                 {
-                    // The scrollbar couldn't be loaded so it must be deleted
-                    delete m_scroll;
-                    m_scroll = nullptr;
+                    textBox->m_scroll = nullptr;
 
                     throw Exception{"Failed to create the internal scrollbar in TextBox. " + std::string{e.what()}};
                 }
 
                 // Initialize the scrollbar
-                m_scroll->setVerticalScroll(true);
-                m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
-                m_scroll->setSize({m_scroll->getSize().x, getSize().y});
+                textBox->m_scroll->setVerticalScroll(true);
+                textBox->m_scroll->setLowValue(static_cast<unsigned int>(textBox->getSize().y));
+                textBox->m_scroll->setSize({textBox->m_scroll->getSize().x, textBox->getSize().y});
             }
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section TextBox in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section TextBox in " + textBox->m_loadedConfigFile + "."};
         }
+
+        return textBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,22 +448,13 @@ namespace tgui
         if (scrollbarConfigFileFilename.empty() == true)
             return false;
 
-        // If the scrollbar was already created then delete it first
-        if (m_scroll != nullptr)
-            delete m_scroll;
-
         try
         {
-            // load the scrollbar
-            m_scroll = new Scrollbar();
-            m_scroll->load(scrollbarConfigFileFilename);
+            m_scroll = Scrollbar::create(scrollbarConfigFileFilename);
         }
         catch (const Exception& e)
         {
-            // The scrollbar couldn't be loaded so it must be deleted
-            delete m_scroll;
             m_scroll = nullptr;
-
             return false;
         }
 
@@ -505,8 +471,6 @@ namespace tgui
 
     void TextBox::removeScrollbar()
     {
-        // Delete the scrollbar
-        delete m_scroll;
         m_scroll = nullptr;
 
         m_topLine = 1;
@@ -1362,7 +1326,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void TextBox::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -1510,7 +1474,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("CaretWidth", "uint"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int TextBox::findCaretPosition(float posX, float posY)

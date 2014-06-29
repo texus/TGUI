@@ -329,25 +329,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Makes a copy of any existing widget and returns the pointer to the new widget.
-        ///
-        /// @param oldWidget     A pointer to the old widget.
-        /// @param newWidgetName If you want to access the widget later then you must do this with this name
-        ///
-        /// @return Pointer to the new widget
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.copy(pic, "picName_2");
-        /// tgui::Picture::Ptr pic3 = container.copy(container.get("picName"), "picName_3");
-        /// @endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName = "");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a single widget that was added to the container.
         ///
         /// @param widget  Pointer to the widget to remove
@@ -557,13 +538,8 @@ namespace tgui
         bool m_accessToWindow;
 
         // Internal container to store all widgets
-        GuiContainer::Ptr m_container;
+        GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();
 
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template<class T>
-        friend class SharedWidgetPtr;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

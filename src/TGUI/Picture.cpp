@@ -38,19 +38,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::load(const std::string& filename)
+    Picture::Ptr Picture::create(const std::string& filename)
     {
-        m_loadedFilename = getResourcePath() + filename;
+        auto picture = std::make_shared<Picture>();
+
+        picture->m_loadedFilename = getResourcePath() + filename;
 
         // If we have already loaded a texture then first delete it
-        if (m_texture.getData() != nullptr)
-            TGUI_TextureManager.removeTexture(m_texture);
+        if (picture->m_texture.getData() != nullptr)
+            TGUI_TextureManager.removeTexture(picture->m_texture);
 
         // Try to load the texture from the file
-        TGUI_TextureManager.getTexture(m_texture, m_loadedFilename);
+        TGUI_TextureManager.getTexture(picture->m_texture, picture->m_loadedFilename);
 
         // Remember the size of the texture
-        setSize(m_texture.getImageSize());
+        picture->setSize(picture->m_texture.getImageSize());
+
+        return picture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +104,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Picture::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -145,7 +149,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Smooth", "bool"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const

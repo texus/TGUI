@@ -38,6 +38,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpriteSheet::Ptr SpriteSheet::create(const std::string& filename, unsigned int rows, unsigned int columns)
+    {
+        auto spriteSheet = std::make_shared<SpriteSheet>();
+
+        spriteSheet->Picture::operator=(*Picture::create(filename));
+        spriteSheet->setCells(rows, columns);
+
+        return spriteSheet;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpriteSheet::setPosition(const Layout& position)
     {
         Widget::setPosition(position);
@@ -127,7 +139,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void SpriteSheet::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -167,7 +179,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("Columns", "uint"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

@@ -42,53 +42,57 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::load(const std::string& configFileFilename)
+    Button::Ptr Button::create(const std::string& configFileFilename)
     {
-        m_loadedConfigFile = getResourcePath() + configFileFilename;
+        auto button = std::make_shared<Button>();
+
+        button->m_loadedConfigFile = getResourcePath() + configFileFilename;
 
         // If the button was loaded before then remove the old textures first
-        if (m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(m_textureNormal);
-        if (m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(m_textureHover);
-        if (m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(m_textureDown);
-        if (m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(m_textureFocused);
+        if (button->m_textureNormal.getData() != nullptr)   TGUI_TextureManager.removeTexture(button->m_textureNormal);
+        if (button->m_textureHover.getData() != nullptr)    TGUI_TextureManager.removeTexture(button->m_textureHover);
+        if (button->m_textureDown.getData() != nullptr)     TGUI_TextureManager.removeTexture(button->m_textureDown);
+        if (button->m_textureFocused.getData() != nullptr)  TGUI_TextureManager.removeTexture(button->m_textureFocused);
 
         // Open the config file
-        ConfigFile configFile{m_loadedConfigFile, "Button"};
+        ConfigFile configFile{button->m_loadedConfigFile, "Button"};
 
         // Find the folder that contains the config file
         std::string configFileFolder = "";
-        std::string::size_type slashPos = m_loadedConfigFile.find_last_of("/\\");
+        std::string::size_type slashPos = button->m_loadedConfigFile.find_last_of("/\\");
         if (slashPos != std::string::npos)
-            configFileFolder = m_loadedConfigFile.substr(0, slashPos+1);
+            configFileFolder = button->m_loadedConfigFile.substr(0, slashPos+1);
 
         // Handle the read properties
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "separatehoverimage")
-                m_separateHoverImage = configFile.readBool(it);
+                button->m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "textcolor")
-                m_text.setColor(configFile.readColor(it));
+                button->m_text.setColor(configFile.readColor(it));
             else if (it->first == "normalimage")
-                configFile.readTexture(it, configFileFolder, m_textureNormal);
+                configFile.readTexture(it, configFileFolder, button->m_textureNormal);
             else if (it->first == "hoverimage")
-                configFile.readTexture(it, configFileFolder, m_textureHover);
+                configFile.readTexture(it, configFileFolder, button->m_textureHover);
             else if (it->first == "downimage")
-                configFile.readTexture(it, configFileFolder, m_textureDown);
+                configFile.readTexture(it, configFileFolder, button->m_textureDown);
             else if (it->first == "focusedimage")
-                configFile.readTexture(it, configFileFolder, m_textureFocused);
+                configFile.readTexture(it, configFileFolder, button->m_textureFocused);
             else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Button in " + m_loadedConfigFile + "."};
+                throw Exception{"Unrecognized property '" + it->first + "' in section Button in " + button->m_loadedConfigFile + "."};
         }
 
         // Make sure the required texture was loaded
-        if (m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the Button section in " + m_loadedConfigFile + " complete?"};
+        if (button->m_textureNormal.getData() == nullptr)
+            throw Exception{"NormalImage wasn't loaded. Is the Button section in " + button->m_loadedConfigFile + " complete?"};
 
-        setSize(m_textureNormal.getImageSize());
+        button->setSize(button->m_textureNormal.getImageSize());
 
         // The widget can only be focused when there is an image available for this phase
-        if (m_textureFocused.getData() != nullptr)
-            m_allowFocus = true;
+        if (button->m_textureFocused.getData() != nullptr)
+            button->m_allowFocus = true;
+
+        return button;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +257,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Button::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -341,7 +345,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Button::initialize(Container *const parent)
