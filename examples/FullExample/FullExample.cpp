@@ -11,148 +11,205 @@ int main()
     if (gui.setGlobalFont("../../fonts/DejaVuSans.ttf") == false)
         return 1;
 
-    tgui::Picture::Ptr picture(gui);
-    picture->load("../Linux.jpg");
+    gui.add(tgui::Picture::create("../RedBackground.jpg"));
 
-    tgui::Button::Ptr button(gui);
-    button->load(THEME_CONFIG_FILE);
-    button->setPosition(40, 25);
-    button->setText("Quit");
-    button->setCallbackId(1);
-    button->bindCallback(tgui::Button::LeftMouseClicked);
-    button->setSize(300, 40);
+    auto tab = tgui::Tab::create(THEME_CONFIG_FILE);
+    tab->setTabHeight(30);
+    tab->setPosition(70, 40);
+    tab->add("Tab - 1");
+    tab->add("Tab - 2");
+    tab->add("Tab - 3");
+    tab->bindCallback(tgui::Tab::TabChanged);
+    tab->setCallbackId(2);
+    gui.add(tab);
+    
+    auto menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
+    menu->setSize(window.getSize().x, 22);
+    menu->addMenu("MenuOption-1");
+    menu->addMenuItem("MenuOption-1", "Load");
+    menu->addMenuItem("MenuOption-1", "Save");
+    menu->addMenuItem("MenuOption-1", "Exit");
+    menu->addMenu("MenuOption-2");
+    menu->addMenu("MenuOption-3");
+    menu->bindCallback(tgui::MenuBar::MenuItemClicked);
+    menu->setCallbackId(1);
+    gui.add(menu);
+    
+    auto label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("This is a label.\nAnd these are radio buttons:");
+    label->setPosition(10, 90);
+    label->setTextSize(18);
+    gui.add(label);
 
-    tgui::ChatBox::Ptr chatbox(gui);
-    chatbox->load(THEME_CONFIG_FILE);
-    chatbox->setSize(200, 100);
-    chatbox->setTextSize(20);
-    chatbox->setPosition(400, 25);
-    chatbox->addLine("Line 1", sf::Color::Red);
-    chatbox->addLine("Line 2", sf::Color::Blue);
-    chatbox->addLine("Line 3", sf::Color::Green);
-    chatbox->addLine("Line 4", sf::Color::Yellow);
-    chatbox->addLine("Line 5", sf::Color::Cyan);
-    chatbox->addLine("Line 6", sf::Color::Magenta);
-
-    tgui::Checkbox::Ptr checkbox(gui);
-    checkbox->load(THEME_CONFIG_FILE);
-    checkbox->setPosition(40, 80);
-    checkbox->setText("Checkbox");
-    checkbox->setSize(32, 32);
-
-    tgui::ChildWindow::Ptr child(gui);
-    child->load(THEME_CONFIG_FILE);
-    child->setSize(200, 100);
-    child->setBackgroundColor(sf::Color(80, 80, 80));
-    child->setPosition(400, 460);
-    child->setTitle("Child window");
-    child->setIcon("../icon.jpg");
-
-    tgui::ComboBox::Ptr comboBox(gui);
-    comboBox->load(THEME_CONFIG_FILE);
+    auto radioButton = tgui::RadioButton::create(THEME_CONFIG_FILE);
+    radioButton->setPosition(20, 140);
+    radioButton->setText("Yep!");
+    radioButton->setSize(25, 25);
+    gui.add(radioButton);
+    
+    radioButton = tgui::RadioButton::create(THEME_CONFIG_FILE);
+    radioButton->setPosition(20, 170);
+    radioButton->setText("Nope!");
+    radioButton->setSize(25, 25);
+    gui.add(radioButton);
+    
+    radioButton = tgui::RadioButton::create(THEME_CONFIG_FILE);
+    radioButton->setPosition(20, 200);
+    radioButton->setText("Don't know!");
+    radioButton->setSize(25, 25);
+    gui.add(radioButton);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("We've got some edit boxes:");
+    label->setPosition(10, 240);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    auto editBox = tgui::EditBox::create(THEME_CONFIG_FILE);
+    editBox->setSize(200, 25);
+    editBox->setTextSize(18);
+    editBox->setPosition(10, 270);
+    editBox->setText("Click to edit text...");
+    gui.add(editBox);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("And some list boxes too...");
+    label->setPosition(10, 310);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    auto listBox = tgui::ListBox::create(THEME_CONFIG_FILE);
+    listBox->setSize(250, 120);
+    listBox->setItemHeight(20);
+    listBox->setPosition(10, 340);
+    listBox->addItem("Item 1");
+    listBox->addItem("Item 2");
+    listBox->addItem("Item 3");
+    gui.add(listBox);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("It's the loading bar below");
+    label->setPosition(10, 470);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    auto loadingbar = tgui::LoadingBar::create(THEME_CONFIG_FILE);
+    loadingbar->setPosition(10, 500);
+    loadingbar->setSize(200, 20);
+    loadingbar->setValue(50);
+    gui.add(loadingbar);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText(std::to_string(loadingbar->getValue()) + "%");
+    label->setPosition(220, 500);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("That's the slider");
+    label->setPosition(10, 530);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    auto slider = tgui::Slider::create(THEME_CONFIG_FILE);
+    slider->setVerticalScroll(false);
+    slider->setPosition(10, 560);
+    slider->setSize(200, 18);
+    slider->setValue(4);
+    gui.add(slider);
+    
+    auto scrollbar = tgui::Scrollbar::create(THEME_CONFIG_FILE);
+    scrollbar->setVerticalScroll(true);
+    scrollbar->setPosition(380, 40);
+    scrollbar->setSize(18, 540);
+    scrollbar->setMaximum(100);
+    scrollbar->setLowValue(70);
+    gui.add(scrollbar);
+    
+    auto comboBox = tgui::ComboBox::create(THEME_CONFIG_FILE);
     comboBox->setSize(120, 21);
-    comboBox->setPosition(210, 440);
+    comboBox->setPosition(420, 40);
     comboBox->addItem("Item 1");
     comboBox->addItem("Item 2");
     comboBox->addItem("Item 3");
     comboBox->setSelectedItem("Item 2");
-
-    tgui::EditBox::Ptr editBox(gui);
-    editBox->load(THEME_CONFIG_FILE);
-    editBox->setPosition(40, 200);
-    editBox->setSize(300, 30);
-
-    tgui::Label::Ptr label(gui);
-    label->load(THEME_CONFIG_FILE);
-    label->setText("Label");
-    label->setPosition(40, 160);
-    label->setTextColor(sf::Color(200, 200, 200));
-    label->setTextSize(24);
-
-    tgui::ListBox::Ptr listBox(gui);
-    listBox->load(THEME_CONFIG_FILE);
-    listBox->setSize(150, 120);
-    listBox->setItemHeight(20);
-    listBox->setPosition(40, 440);
-    listBox->addItem("Item 1");
-    listBox->addItem("Item 2");
-    listBox->addItem("Item 3");
-
-    tgui::LoadingBar::Ptr loadingbar(gui);
-    loadingbar->load(THEME_CONFIG_FILE);
-    loadingbar->setPosition(40, 330);
-    loadingbar->setSize(300, 30);
-    loadingbar->setValue(35);
-
-    tgui::MenuBar::Ptr menu(gui);
-    menu->load(THEME_CONFIG_FILE);
-    menu->setSize(window.getSize().x, 20);
-    menu->addMenu("File");
-    menu->addMenuItem("File", "Load");
-    menu->addMenuItem("File", "Save");
-    menu->addMenuItem("File", "Exit");
-    menu->bindCallback(tgui::MenuBar::MenuItemClicked);
-    menu->setCallbackId(2);
-
+    gui.add(comboBox);
+    
+    auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);
+    child->setSize(250, 120);
+    child->setBackgroundColor(sf::Color(80, 80, 80));
+    child->setPosition(420, 80);
+    child->setTitle("Child window");
+    child->setTitleBarHeight(20);
+    gui.add(child);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("Hi! I'm a child window.");
+    label->setPosition(30, 30);
+    label->setTextSize(15);
+    child->add(label);
+    
+    auto button = tgui::Button::create(THEME_CONFIG_FILE);
+    button->setPosition(75, 70);
+    button->setText("OK");
+    button->setSize(100, 30);
+    button->setCallbackId(3);
+    button->bindCallback(tgui::Button::LeftMouseClicked);
+    child->add(button);
+   
+    auto checkbox = tgui::Checkbox::create(THEME_CONFIG_FILE);
+    checkbox->setPosition(420, 240);
+    checkbox->setText("Ok, I got it");
+    checkbox->setSize(25, 25);
+    gui.add(checkbox);
+    
+    checkbox = tgui::Checkbox::create(THEME_CONFIG_FILE);
+    checkbox->setPosition(570, 240);
+    checkbox->setText("No, I didn't");
+    checkbox->setSize(25, 25);
+    gui.add(checkbox);
+    
+    label = tgui::Label::create(THEME_CONFIG_FILE);
+    label->setText("Chatbox");
+    label->setPosition(420, 280);
+    label->setTextSize(18);
+    gui.add(label);
+    
+    auto chatbox = tgui::ChatBox::create(THEME_CONFIG_FILE);
+    chatbox->setSize(300, 100);
+    chatbox->setTextSize(18);
+    chatbox->setPosition(420, 310);
+    gui.add(chatbox);
+    chatbox->addLine("texus : Hey, this is TGUI!", sf::Color::Green);
+    chatbox->addLine("Me : Looks awesome! ;)", sf::Color::Yellow);
+    chatbox->addLine("texus : Thanks! :)", sf::Color::Green);
+    chatbox->addLine("Me : The widgets rock ^^", sf::Color::Yellow);
+    
     sf::Texture texture;
+    sf::Sprite  sprite;
     texture.loadFromFile("../ThinkLinux.jpg");
-
-    tgui::Panel::Ptr panel(gui);
-    panel->setSize(200, 140);
-    panel->setPosition(400, 150);
-    panel->setBackgroundTexture(&texture);
-
-    tgui::RadioButton::Ptr radioButton(gui);
-    radioButton->load(THEME_CONFIG_FILE);
-    radioButton->setPosition(40, 120);
-    radioButton->setText("Radio Button");
-    radioButton->setSize(32, 32);
-
-    tgui::Slider::Ptr slider(gui);
-    slider->load(THEME_CONFIG_FILE);
-    slider->setVerticalScroll(false);
-    slider->setPosition(40, 250);
-    slider->setSize(300, 25);
-    slider->setValue(2);
-
-    tgui::Scrollbar::Ptr scrollbar(gui);
-    scrollbar->load(THEME_CONFIG_FILE);
-    scrollbar->setVerticalScroll(false);
-    scrollbar->setPosition(40, 290);
-    scrollbar->setSize(300, 25);
-    scrollbar->setMaximum(5);
-    scrollbar->setLowValue(3);
-
-    tgui::Slider2d::Ptr slider2d(gui);
-    slider2d->load("../../widgets/Slider2d/Black.conf");
-    slider2d->setPosition(400, 300);
-    slider2d->setSize(200, 150);
-
-    tgui::SpinButton::Ptr spinButton(gui);
-    spinButton->load(THEME_CONFIG_FILE);
-    spinButton->setPosition(40, 410);
-    spinButton->setVerticalScroll(false);
-    spinButton->setSize(40, 20);
-
-    tgui::SpriteSheet::Ptr spritesheet(gui);
-    spritesheet->load("../ThinkLinux.jpg");
-    spritesheet->setCells(4, 4);
-    spritesheet->setVisibleCell(2, 3);
-    spritesheet->setSize(160, 120);
-    spritesheet->setPosition(620, 25);
-
-    tgui::Tab::Ptr tab(gui);
-    tab->load(THEME_CONFIG_FILE);
-    tab->setPosition(40, 370);
-    tab->add("Item 1");
-    tab->add("Item 2");
-    tab->add("Item 3");
-
-    tgui::TextBox::Ptr textBox(gui);
-    textBox->load(THEME_CONFIG_FILE);
-    textBox->setPosition(210, 470);
-    textBox->setSize(180, 120);
-    textBox->setTextSize(16);
+    sprite.setTexture(texture);
+    sprite.setScale(200.f / texture.getSize().x, 140.f / texture.getSize().y);
+    
+    sf::Text text{"SFML Canvas", *gui.getGlobalFont(), 24};
+    text.setPosition(25, 100);
+    text.setColor({200, 200, 200});
+    
+    auto canvas = tgui::Canvas::create({200, 140});
+    canvas->setPosition(420, 430);
+    canvas->clear();
+    canvas->draw(sprite);
+    canvas->draw(text);
+    canvas->display();
+    gui.add(canvas);
+   
+    button = tgui::Button::create(THEME_CONFIG_FILE);
+    button->setPosition(window.getSize().x - 115, window.getSize().y - 50);
+    button->setText("Exit");
+    button->setSize(100, 40);
+    button->setCallbackId(1);
+    button->bindCallback(tgui::Button::LeftMouseClicked);
+    gui.add(button);
 
     while (window.isOpen())
     {
@@ -168,14 +225,10 @@ int main()
         tgui::Callback callback;
         while (gui.pollCallback(callback))
         {
-            if (callback.id == 1)
+            if (callback.id == 1 && callback.text == "Exit")
                 window.close();
-
-            else if (callback.id == 2)
-            {
-                if (callback.text == "Exit")
-                    window.close();
-            }
+            else if (callback.id == 3 && callback.text == "OK")
+                child->hide();
         }
 
         window.clear();

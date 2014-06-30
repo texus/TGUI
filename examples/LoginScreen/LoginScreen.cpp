@@ -3,39 +3,42 @@
 void loadWidgets( tgui::Gui& gui )
 {
     // Create the background image
-    tgui::Picture::Ptr picture(gui);
-    picture->load("../xubuntu_bg_aluminium.jpg");
+    auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
     picture->setSize(800, 600);
+    gui.add(picture);
 
     // Create the username label
-    tgui::Label::Ptr labelUsername(gui);
+    auto labelUsername = tgui::Label::create();
     labelUsername->setText("Username:");
     labelUsername->setPosition(200, 100);
+    gui.add(labelUsername);
 
     // Create the password label
-    tgui::Label::Ptr labelPassword(gui);
+    auto labelPassword = tgui::Label::create();
     labelPassword->setText("Password:");
     labelPassword->setPosition(200, 250);
+    gui.add(labelPassword);
 
     // Create the username edit box
-    tgui::EditBox::Ptr editBoxUsername(gui, "Username");
-    editBoxUsername->load("../../widgets/Black.conf");
+    auto editBoxUsername = tgui::EditBox::create("../../widgets/Black.conf");
     editBoxUsername->setSize(400, 40);
     editBoxUsername->setPosition(200, 140);
+    gui.add(editBoxUsername, "Username");
 
     // Create the password edit box (we will copy the previously created edit box)
-    tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
+    auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
     editBoxPassword->setPosition(200, 290);
     editBoxPassword->setPasswordCharacter('*');
+    gui.add(editBoxPassword, "Password");
 
     // Create the login button
-    tgui::Button::Ptr button(gui);
-    button->load("../../widgets/Black.conf");
+    auto button = tgui::Button::create("../../widgets/Black.conf");
     button->setSize(260, 60);
     button->setPosition(270, 440);
     button->setText("Login");
     button->bindCallback(tgui::Button::LeftMouseClicked);
     button->setCallbackId(1);
+    gui.add(button);
 }
 
 int main()
@@ -71,8 +74,8 @@ int main()
             if (callback.id == 1)
             {
                 // Get the username and password
-                tgui::EditBox::Ptr editBoxUsername = gui.get("Username");
-                tgui::EditBox::Ptr editBoxPassword = gui.get("Password");
+                auto editBoxUsername = gui.get<tgui::EditBox>("Username");
+                auto editBoxPassword = gui.get<tgui::EditBox>("Password");
 
                 sf::String username = editBoxUsername->getText();
                 sf::String password = editBoxPassword->getText();
