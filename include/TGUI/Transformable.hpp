@@ -149,6 +149,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Move the widget by a given offset
+        ///
+        /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
+        /// Thus, it is equivalent to the following code:
+        /// @code
+        /// widget.setPosition(widget.getPosition().x + x, widget.getPosition().y + y);
+        /// @endcode
+        ///
+        /// @param x  Horizontal offset
+        /// @param x  Vertical offset
+        ///
+        /// @see setPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void move(const Layout1d& x, const Layout1d& y);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the widget.
         ///
         /// @param size  Size of the widget
@@ -229,11 +247,27 @@ namespace tgui
         /// This function multiplies the current size of the widget with the given scale factors.
         /// Thus, it is equivalent to the following code:
         /// @code
-        /// widget.setSize(getSize().x * factors.x, getSize().y * factors.y);
+        /// widget.setSize({getSize().x * factors.x, getSize().y * factors.y});
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void scale(const Layout& factors);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Scale the widget
+        ///
+        /// @param x  horizontal scale factor
+        /// @param y  vertical scale factor
+        ///
+        /// This function multiplies the current size of the widget with the given scale factors.
+        /// Thus, it is equivalent to the following code:
+        /// @code
+        /// widget.setSize(getSize().x * factors.x, getSize().y * factors.y);
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void scale(const Layout1d& x, const Layout1d& y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
