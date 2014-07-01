@@ -1,7 +1,7 @@
 <div class="Follow">
-<a href="https://www.facebook.com/TexusGUI"><img class="Follow" alt="Facebook" src="{{site.baseurl}}resources/facebook.png" width="32" height="32" /></a>
-<a href="https://twitter.com/TexusGUI"><img class="Follow" alt="Twitter" src="{{site.baseurl}}resources/twitter.png" width="32" height="32" /></a>
-<a href="http://blog.tgui.eu/feed/"><img class="Follow" alt="Blog Feed" src="{{site.baseurl}}resources/feed.png" width="32" height="32" /></a>
+<a href="https://www.facebook.com/TexusGUI"><img class="Follow" alt="Facebook" src="{{site.baseurl}}/resources/facebook.png" width="32" height="32" /></a>
+<a href="https://twitter.com/TexusGUI"><img class="Follow" alt="Twitter" src="{{site.baseurl}}/resources/twitter.png" width="32" height="32" /></a>
+<a href="http://blog.tgui.eu/feed/"><img class="Follow" alt="Blog Feed" src="{{site.baseurl}}/resources/feed.png" width="32" height="32" /></a>
 </div>
 
 <h1 id="Title">TGUI</h1>

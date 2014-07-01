@@ -7,8 +7,8 @@
 
     <title>Linux</title>
 
-    <link rel="stylesheet" type="text/css" href="{{site.baseurl}}highlight.css">
-    <link rel="canonical" href="{{site.baseurl}}tutorials/v06/linux/" />
+    <link rel="stylesheet" type="text/css" href="{{site.baseurl}}/highlight.css">
+    <link rel="canonical" href="{{site.baseurl}}/tutorials/v06/linux/" />
 </head>
 
 <body>
@@ -48,15 +48,15 @@ sudo make install -j6
         <h3>Using TGUI (CodeBlocks)</h3>
 
         <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
-        <a class="img" href="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
+        <a class="img" href="{{site.baseurl}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.baseurl}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
 
         <p class="SmallBottomMargin">
             Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order of linking has to be correct: first tgui, then the libraries from sfml, namely graphics, windows and system. (you might also need to add -lGL to the list)
         </p>
-        <a class="img" href="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.baseurl}}resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
+        <a class="img" href="{{site.baseurl}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.baseurl}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
 
         <p class="SmallBottomMargin">In the “Search directories” of the “Compiler” add the path to tgui.</p>
-        <a class="img" href="{{site.baseurl}}resources/LinuxCodeBlocksCompilerSearchDirectories.png"><img alt="CodeBlocks Compiler Seach Directories" src="{{site.baseurl}}resources/LinuxCodeBlocksCompilerSearchDirectories.png" width="736" height="658" /></a>
+        <a class="img" href="{{site.baseurl}}/resources/LinuxCodeBlocksCompilerSearchDirectories.png"><img alt="CodeBlocks Compiler Seach Directories" src="{{site.baseurl}}/resources/LinuxCodeBlocksCompilerSearchDirectories.png" width="736" height="658" /></a>
 
         <p>You should now be able to use TGUI.<br />
            To test if it is working, simply take a working example code from sfml, include “TGUI\TGUI.hpp” and change sf::RenderWindow to tgui::Window.
