@@ -28,6 +28,8 @@
 #include <functional>
 
 #include <TGUI/ConfigFile.hpp>
+#include <TGUI/Texture.hpp>
+#include <TGUI/Global.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -252,8 +254,7 @@ namespace tgui
             }
         }
 
-        // Load the texture
-        TGUI_TextureManager.getTexture(texture, rootPath + filename, partRect, middleRect, repeat);
+        texture.load(rootPath + filename, partRect, middleRect, repeat);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

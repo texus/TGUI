@@ -37,8 +37,6 @@
 #include <TGUI/Borders.hpp>
 #include <TGUI/Exception.hpp>
 
-#include <TGUI/TextureManager.hpp>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define TGUI_MINIMUM(x, y)   (x < y) ? x : y
@@ -49,9 +47,6 @@
 
 namespace tgui
 {
-    /// @internal The texture manager will not just load the textures, but will also make sure that the textures are only loaded once.
-    extern TGUI_API TextureManager TGUI_TextureManager;
-
     /// @internal The internal clipboard that widgets use
     class Clipboard;
     extern TGUI_API Clipboard TGUI_Clipboard;

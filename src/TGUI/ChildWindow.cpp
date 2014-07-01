@@ -289,8 +289,7 @@ namespace tgui
 
     void ChildWindow::setIcon(const std::string& filename)
     {
-        // Load the icon image
-        TGUI_TextureManager.getTexture(m_iconTexture, filename);
+        m_iconTexture.load(filename);
 
         m_iconTexture.setSize({m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
                                m_titleBarHeight / m_textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y});

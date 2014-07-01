@@ -43,7 +43,7 @@ namespace tgui
     {
         // Try to load the texture from the file
         Texture tempTexture;
-        TGUI_TextureManager.getTexture(tempTexture, getResourcePath() + filename);
+        tempTexture.load(getResourcePath() + filename);
 
         // If this is the first frame then set it as the current displayed frame
         if (m_textures.empty())

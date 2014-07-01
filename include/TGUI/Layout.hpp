@@ -27,6 +27,7 @@
 #define TGUI_LAYOUT_HPP
 
 #include <memory>
+#include <list>
 
 /// TODO: Add documentation.
 

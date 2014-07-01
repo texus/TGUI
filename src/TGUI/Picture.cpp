@@ -46,7 +46,7 @@ namespace tgui
         picture->m_loadedFilename = getResourcePath() + filename;
 
         // Try to load the texture from the file
-        TGUI_TextureManager.getTexture(picture->m_texture, picture->m_loadedFilename);
+        picture->m_texture.load(picture->m_loadedFilename);
 
         // Remember the size of the texture
         picture->setSize(picture->m_texture.getImageSize());

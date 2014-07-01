@@ -32,8 +32,6 @@
 
 namespace tgui
 {
-    TextureManager TGUI_TextureManager;
-
     Clipboard TGUI_Clipboard;
 
     bool TGUI_TabKeyUsageEnabled = true;
