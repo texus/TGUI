@@ -42,21 +42,21 @@
             <li>Press this button to start configuring.</li>
           </ol>
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeBuildDirectoryMac.png"><img alt="CMake Build Directory" src="{{site.baseurl}}resources/CMakeBuildDirectoryMac.png" width="790" height="546" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeBuildDirectoryMac.png"><img alt="CMake Build Directory" src="{{site.url}}/resources/CMakeBuildDirectoryMac.png" width="790" height="546" /></a>
 
         <p class="SmallBottomMargin">
             Next select your compiler.<br />
             Just keep the “Use default native compilers” option checked and ignore the other three options.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeSelectCompilerMac.png"><img alt="CMake Select Compiler" src="{{site.baseurl}}resources/CMakeSelectCompilerMac.png" width="790" height="546" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeSelectCompilerMac.png"><img alt="CMake Select Compiler" src="{{site.url}}/resources/CMakeSelectCompilerMac.png" width="790" height="546" /></a>
 
         <p class="SmallBottomMargin">It is possible that CMake will give you an error, it might looks for sfml in the wrong folder. As you can see on the screenshot it looks in the /Library/Frameworks/SFML.framework folder, while my headers are in “/usr/local/include”. So if you have this error then change the SFML_INCLUDE_DIR to the correct folder.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeSfmlNotFoundMac.png"><img alt="CMake SFML not found" src="{{site.baseurl}}resources/CMakeSfmlNotFoundMac.png" width="790" height="546" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeSfmlNotFoundMac.png"><img alt="CMake SFML not found" src="{{site.url}}/resources/CMakeSfmlNotFoundMac.png" width="790" height="546" /></a>
 
         <p class="SmallBottomMargin">After you changed the SFML_INCLUDE_DIR (if it was necessary), and the other options that you would like to change, you need to press Configure again. Now you should have reached the message “Configuring done” at the bottom. All you have to do now is press Generate.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeGenerateMac.png"><img alt="CMake Generate" src="{{site.baseurl}}resources/CMakeGenerateMac.png" width="790" height="546" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeGenerateMac.png"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateMac.png" width="790" height="546" /></a>
 
         <p>Some last notes about CMake:
           <ul>
@@ -84,19 +84,19 @@
         <p><span class="Red">You must use the SFML frameworks. It seems like there are problems when using TGUI in combination with the SFML dylibs.</span></p>
 
         <p class="SmallBottomMargin">Go to the Build Settings.</p>
-        <a class="img" href="{{site.baseurl}}resources/XCodeBuildSettings.png"><img alt="XCode Build Settings" src="{{site.baseurl}}resources/XCodeBuildSettings.png" width="826" height="536" /></a>
+        <a class="img" href="{{site.url}}/resources/XCodeBuildSettings.png"><img alt="XCode Build Settings" src="{{site.url}}/resources/XCodeBuildSettings.png" width="826" height="536" /></a>
 
         <p class="SmallBottomMargin">
             Under “Linking” in “Other Linker Flags”, add “-ltgui” or “-ltgui-d”.<br />
             If you don’t see the “Linking” section, then you might need to select “All” instead of “Basic”.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/XCodeLinkerFlags.png"><img alt="XCode Linker Flags" src="{{site.baseurl}}resources/XCodeLinkerFlags.png" width="826" height="522" /></a>
+        <a class="img" href="{{site.url}}/resources/XCodeLinkerFlags.png"><img alt="XCode Linker Flags" src="{{site.url}}/resources/XCodeLinkerFlags.png" width="826" height="522" /></a>
 
         <p class="SmallBottomMargin">Under “Search Paths” in “Header Search Paths”, add the include directory of tgui.</p>
-        <a class="img" href="{{site.baseurl}}resources/XCodeHeaderSearchPath.png"><img alt="XCode Header Search Path" src="{{site.baseurl}}resources/XCodeHeaderSearchPath.png" width="852" height="494" /></a>
+        <a class="img" href="{{site.url}}/resources/XCodeHeaderSearchPath.png"><img alt="XCode Header Search Path" src="{{site.url}}/resources/XCodeHeaderSearchPath.png" width="852" height="494" /></a>
 
         <p class="SmallBottomMargin">Under “Search Paths” in “Library Search Paths”, add “/usr/local/lib” if not already there.</p>
-        <a class="img" href="{{site.baseurl}}resources/XCodeLibrarySearchPath.png"><img alt="XCode Library Search Path" src="{{site.baseurl}}resources/XCodeLibrarySearchPath.png" width="852" height="494" /></a>
+        <a class="img" href="{{site.url}}/resources/XCodeLibrarySearchPath.png"><img alt="XCode Library Search Path" src="{{site.url}}/resources/XCodeLibrarySearchPath.png" width="852" height="494" /></a>
 
         <p>You should now be able to use TGUI.</p>
 

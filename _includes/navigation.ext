@@ -1,26 +1,26 @@
 <div id="nav">
     <ul>
-        <li><a href="{{site.baseurl}}">Home</a></li>
-        <li><a href="{{site.baseurl}}download/">Download</a></li>
+        <li><a href="{{site.url}}/">Home</a></li>
+        <li><a href="{{site.url}}/download/">Download</a></li>
         <li>
-            <a href="{{site.baseurl}}example-code/">Example code</a>
+            <a href="{{site.url}}/example-code/">Example code</a>
             <ul>
-                <li><a href="{{site.baseurl}}example-code/v06/">TGUI 0.6</a></li>
-                <li><a href="{{site.baseurl}}example-code/v05/">TGUI 0.5</a></li>
+                <li><a href="{{site.url}}/example-code/v06/">TGUI 0.6</a></li>
+                <li><a href="{{site.url}}/example-code/v05/">TGUI 0.5</a></li>
             </ul>
         </li>
         <li>
-            <a href="{{site.baseurl}}tutorials/">Tutorials</a>
+            <a href="{{site.url}}/tutorials/">Tutorials</a>
             <ul>
-                <li><a href="{{site.baseurl}}tutorials/v06/">TGUI 0.6</a></li>
-                <li><a href="{{site.baseurl}}tutorials/v05/">TGUI 0.5</a></li>
+                <li><a href="{{site.url}}/tutorials/v06/">TGUI 0.6</a></li>
+                <li><a href="{{site.url}}/tutorials/v05/">TGUI 0.5</a></li>
             </ul>
         </li>
         <li>
-            <a href="{{site.baseurl}}documentation/">Documentation</a>
+            <a href="{{site.url}}/documentation/">Documentation</a>
             <ul>
-                <li><a href="{{site.baseurl}}documentation/v0.6/">TGUI 0.6</a></li>
-                <li><a href="{{site.baseurl}}documentation/v0.5/">TGUI 0.5</a></li>
+                <li><a href="{{site.url}}/documentation/v0.6/">TGUI 0.6</a></li>
+                <li><a href="{{site.url}}/documentation/v0.5/">TGUI 0.5</a></li>
             </ul>
         </li>
         <li><a href="http://blog.tgui.eu/">Blog</a></li>

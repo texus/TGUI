@@ -39,13 +39,13 @@
             <li>Press this button to start configuring.</li>
           </ol>
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="{{site.baseurl}}resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="{{site.url}}/resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
 
         <p class="SmallBottomMargin">
             Next select your compiler. I am using the Visual Studio 2008 in this example.<br />
             Just keep the “Use default native compilers” option checked and ignore the other three options.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeSelectCompilerWindowsVisualStudio.png"><img alt="CMake Select Compiler" src="{{site.baseurl}}resources/CMakeSelectCompilerWindowsVisualStudio.png" width="717" height="520" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeSelectCompilerWindowsVisualStudio.png"><img alt="CMake Select Compiler" src="{{site.url}}/resources/CMakeSelectCompilerWindowsVisualStudio.png" width="717" height="520" /></a>
 
         <p>It is possible that CMake will not be able to find sfml and will give you an error.<br />
            You will then have to tell CMake where it needs to search for sfml. Change the SFML_ROOT (not SFMLDIR like in older versions) to the correct path. This will be the root path of sfml, which contains the include and lib folders.
@@ -59,7 +59,7 @@
             <li>If you use static linking then the folder must of course contain the static sfml libraries.</li>
           </ul>
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeSfmlNotFoundWindowsVisualStudio.png"><img alt="CMake SFML not found" src="{{site.baseurl}}resources/CMakeSfmlNotFoundWindowsVisualStudio.png" width="716" height="528" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeSfmlNotFoundWindowsVisualStudio.png"><img alt="CMake SFML not found" src="{{site.url}}/resources/CMakeSfmlNotFoundWindowsVisualStudio.png" width="716" height="528" /></a>
 
         <p>Now you can also change the other options. At the end of this CMake part, you can find the explanation of some of the options. Once you are done, you need to press Configure again.</p>
 
@@ -67,7 +67,7 @@
             After you pressed configure, you should have reached the message “Configuring done” at the bottom.<br />
             All you have to do now is press Generate.
         </p>
-        <a class="img" href="{{site.baseurl}}resources/CMakeGenerateWindowsVisualStudio.png"><img alt="CMake Generate" src="{{site.baseurl}}resources/CMakeGenerateWindowsVisualStudio.png" width="716" height="528" /></a>
+        <a class="img" href="{{site.url}}/resources/CMakeGenerateWindowsVisualStudio.png"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateWindowsVisualStudio.png" width="716" height="528" /></a>
 
         <p>Some last notes about CMake:
           <ul>
@@ -101,21 +101,21 @@
         <h3>Using TGUI</h3>
 
         <p class="SmallBottomMargin">Open the Project Properties.</p>
-        <a class="img" href="{{site.baseurl}}resources/VS2010ProjectProperties.png"><img alt="Visual Studio Project Properties" src="{{site.baseurl}}resources/VS2010ProjectProperties.png" width="448" height="378" /></a>
+        <a class="img" href="{{site.url}}/resources/VS2010ProjectProperties.png"><img alt="Visual Studio Project Properties" src="{{site.url}}/resources/VS2010ProjectProperties.png" width="448" height="378" /></a>
 
         <p class="SmallBottomMargin">In both debug and release mode, add the include and library directories.</p>
-        <a class="img SmallBottomMargin" href="{{site.baseurl}}resources/VS2010AdditionalIncludeDirectories.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Include Directories" src="{{site.baseurl}}resources/VS2010AdditionalIncludeDirectories.png" width="853" height="605" /></a>
+        <a class="img SmallBottomMargin" href="{{site.url}}/resources/VS2010AdditionalIncludeDirectories.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Include Directories" src="{{site.url}}/resources/VS2010AdditionalIncludeDirectories.png" width="853" height="605" /></a>
         <br />
-        <a class="img" href="{{site.baseurl}}resources/VS2010AdditionalLibraryDirectories.png"><img alt="Visual Studio Additional Library Directories" src="{{site.baseurl}}resources/VS2010AdditionalLibraryDirectories.png" width="853" height="605" /></a>
+        <a class="img" href="{{site.url}}/resources/VS2010AdditionalLibraryDirectories.png"><img alt="Visual Studio Additional Library Directories" src="{{site.url}}/resources/VS2010AdditionalLibraryDirectories.png" width="853" height="605" /></a>
 
         <p class="SmallBottomMargin">
             In both debug and release mode (this time seperately), you must add the library to link with.<br />
             When linking statically it will of course become tgui-s.lib and tgui-s-d.lib.<br />
             The order of linking is also important: first sfml, then tgui.
         </p>
-        <a class="img SmallBottomMargin" href="{{site.baseurl}}resources/VS2010AdditionalDependenciesRelease.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Dependencies" src="{{site.baseurl}}resources/VS2010AdditionalDependenciesRelease.png" width="852" height="607" /></a>
+        <a class="img SmallBottomMargin" href="{{site.url}}/resources/VS2010AdditionalDependenciesRelease.png"><img class="SmallBottomMargin" alt="Visual Studio Additional Dependencies" src="{{site.url}}/resources/VS2010AdditionalDependenciesRelease.png" width="852" height="607" /></a>
         <br />
-        <a class="img" href="{{site.baseurl}}resources/VS2010AdditionalDependenciesDebug.png"><img alt="Visual Studio Additional Dependencies" src="{{site.baseurl}}resources/VS2010AdditionalDependenciesDebug.png" width="852" height="603" /></a>
+        <a class="img" href="{{site.url}}/resources/VS2010AdditionalDependenciesDebug.png"><img alt="Visual Studio Additional Dependencies" src="{{site.url}}/resources/VS2010AdditionalDependenciesDebug.png" width="852" height="603" /></a>
 
         <p>When linking dynamically, don’t forget to copy the needed dlls to the directory where your compiled executable is.</p>
 
