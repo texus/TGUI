@@ -29,19 +29,19 @@
             Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.<br />
             <span class="Red">Make sure to check the “-std=c++0x” or “-std=c++11″ compiler flag.</span>
         </p>
-        <a class="img" href="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptions.png"><img alt="CodeBlocks Project Build Options" src="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptions.png" width="841" height="514" /></a>
+        <a class="img" href="{{site.baseurl}}resources/CodeBlocksProjectBuildOptions.png"><img alt="CodeBlocks Project Build Options" src="{{site.baseurl}}resources/CodeBlocksProjectBuildOptions.png" width="841" height="514" /></a>
 
         <p class="SmallBottomMargin">
             In the “Search directories” of the “Compiler” add the path to tgui.<br />
             This will be “TGUI_Path/include” (which will include the SFML headers).
         </p>
-        <a class="img" href="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png"><img alt="CodeBlocks Search Directories Compiler" src="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png" width="704" height="521" /></a>
+        <a class="img" href="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png"><img alt="CodeBlocks Search Directories Compiler" src="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png" width="704" height="521" /></a>
 
         <p class="SmallBottomMargin">
             In the “Search directories” of the “Linker” add the path to the tgui libraries.<br />
             This will be “TGUI_Path/lib/TGUI” and “TGUI_Path/lib/SFML”.
         </p>
-        <a class="img" href="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png"><img alt="CodeBlocks Search Directories Linker" src="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png" width="704" height="521" /></a>
+        <a class="img" href="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png"><img alt="CodeBlocks Search Directories Linker" src="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png" width="704" height="521" /></a>
 
         <p class="SmallBottomMargin">
             In ‘Release’ settings, add ‘-ltgui’ to the “Linker settings” under “Other linker options”.<br />
@@ -49,7 +49,7 @@
             When linking statically, you have to use ‘-ltgui-s’ and ‘-ltgui-s-d’ of course.<br />
             The order of linking has to be correct: first tgui, then the libraries from sfml, namely graphics, windows and system.
         </p>
-        <a class="img" href="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png"><img alt="CodeBlocks Linker Settings" src="{{site.baseurl}}/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png" width="704" height="521" /></a>
+        <a class="img" href="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsLinkerSettings.png"><img alt="CodeBlocks Linker Settings" src="{{site.baseurl}}resources/CodeBlocksProjectBuildOptionsLinkerSettings.png" width="704" height="521" /></a>
 
         <p>When using shared libraries, don't forget to copy tgui.dll to your project’s folder.</p>
 

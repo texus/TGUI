@@ -1,4 +1,4 @@
-<p class="SmallText SmallBottomMargin"><a href="{{site.baseurl}}/privacy-policy/">Privacy Policy</a></p>
+<p class="SmallText SmallBottomMargin"><a href="{{site.baseurl}}privacy-policy/">Privacy Policy</a></p>
 
 <!-- Quantcast Tag -->
 <script type="text/javascript">
