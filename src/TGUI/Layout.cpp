@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widget.hpp>
+#include <TGUI/Gui.hpp>
 
 #include <cassert>
 
@@ -387,6 +388,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Layout1d bindLeft(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindTop(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindRight(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position}
+             + Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindBottom(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position}
+             + Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindWidth(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindHeight(const Gui& gui, float fraction)
+    {
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Layout bindPosition(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
         return {bindLeft(widget, fraction.x), bindTop(widget, fraction.y)};
@@ -397,6 +442,20 @@ namespace tgui
     Layout bindSize(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
         return {bindWidth(widget, fraction.x), bindHeight(widget, fraction.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout bindPosition(const Gui& gui, const sf::Vector2f& fraction)
+    {
+        return {bindLeft(gui.getContainer(), fraction.x), bindTop(gui.getContainer(), fraction.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout bindSize(const Gui& gui, const sf::Vector2f& fraction)
+    {
+        return {bindWidth(gui.getContainer(), fraction.x), bindHeight(gui.getContainer(), fraction.y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

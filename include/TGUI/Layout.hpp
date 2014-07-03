@@ -35,8 +35,9 @@
 
 namespace tgui
 {
-    class Widget;
     class Layout;
+    class Widget;
+    class Gui;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -194,8 +195,18 @@ namespace tgui
     TGUI_API Layout1d bindWidth(const std::shared_ptr<Widget>& widget, float fraction = 1);
     TGUI_API Layout1d bindHeight(const std::shared_ptr<Widget>& widget, float fraction = 1);
 
+    TGUI_API Layout1d bindLeft(const Gui& gui, float fraction = 1);
+    TGUI_API Layout1d bindTop(const Gui& gui, float fraction = 1);
+    TGUI_API Layout1d bindRight(const Gui& gui, float fraction = 1);
+    TGUI_API Layout1d bindBottom(const Gui& gui, float fraction = 1);
+    TGUI_API Layout1d bindWidth(const Gui& gui, float fraction = 1);
+    TGUI_API Layout1d bindHeight(const Gui& gui, float fraction = 1);
+
     TGUI_API Layout bindPosition(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
     TGUI_API Layout bindSize(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+
+    TGUI_API Layout bindPosition(const Gui& gui, const sf::Vector2f& fraction = {1,1});
+    TGUI_API Layout bindSize(const Gui& gui, const sf::Vector2f& fraction = {1,1});
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
