@@ -96,7 +96,7 @@ namespace tgui
         /// @return The sfml that is used by the gui.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::RenderTarget* getWindow()
+        sf::RenderTarget* getWindow() const
         {
             return m_window;
         }
@@ -163,7 +163,7 @@ namespace tgui
         /// @return Is the window currently focused?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool hasFocus()
+        bool hasFocus() const
         {
             return m_container->m_focused;
         }
@@ -194,7 +194,7 @@ namespace tgui
         /// @return Reference to the internal Container class
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        GuiContainer::Ptr getContainer()
+        GuiContainer::Ptr getContainer() const
         {
             return m_container;
         }

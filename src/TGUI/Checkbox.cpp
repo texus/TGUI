@@ -23,8 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <cmath>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/Checkbox.hpp>
 
@@ -60,7 +58,7 @@ namespace tgui
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "textcolor")
-                checkbox->m_text.setColor(configFile.readColor(it));
+                checkbox->m_text.setTextColor(configFile.readColor(it));
             else if (it->first == "checkedimage")
                 configFile.readTexture(it, configFileFolder, checkbox->m_textureChecked);
             else if (it->first == "uncheckedimage")

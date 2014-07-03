@@ -26,8 +26,6 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/RadioButton.hpp>
 
-#include <cmath>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -38,7 +36,7 @@ namespace tgui
     {
         m_callback.widgetType = Type_RadioButton;
 
-        m_text.setColor(sf::Color::Black);
+        m_text.setTextColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +60,7 @@ namespace tgui
         for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
         {
             if (it->first == "textcolor")
-                radioButton->m_text.setColor(configFile.readColor(it));
+                radioButton->m_text.setTextColor(configFile.readColor(it));
             else if (it->first == "checkedimage")
                 configFile.readTexture(it, configFileFolder, radioButton->m_textureChecked);
             else if (it->first == "uncheckedimage")
@@ -99,9 +97,8 @@ namespace tgui
         m_textureFocused.setPosition(position.getValue());
         m_textureHover.setPosition(position.getValue());
 
-        sf::FloatRect textBounds = m_text.getLocalBounds();
-        m_text.setPosition(position.getValue().x + std::floor(getSize().x * 11.0f / 10.0f - textBounds.left),
-                           position.getValue().y + std::floor(((getSize().y - textBounds.height) / 2.0f) - textBounds.top));
+        m_text.setPosition(position.getValue().x + getSize().x * 11.0f / 10.0f,
+                           position.getValue().y + ((getSize().y - m_text.getSize().y) / 2.0f));
     }
 
 
@@ -113,7 +110,7 @@ namespace tgui
 
         // If the text is auto sized then recalculate the size
         if (m_textSize == 0)
-            setText(m_text.getString());
+            setText(m_text.getText());
 
         m_textureUnchecked.setSize(getSize());
         m_textureFocused.setSize(getSize());
@@ -129,10 +126,10 @@ namespace tgui
 
     sf::Vector2f RadioButton::getFullSize() const
     {
-        if (m_text.getString().isEmpty())
+        if (m_text.getText().isEmpty())
             return getSize();
         else
-            return {(getSize().x * 11.0f / 10.0f) + m_text.getLocalBounds().left + m_text.getLocalBounds().width, getSize().y};
+            return {(getSize().x * 11.0f / 10.0f) + m_text.getSize().x, getSize().y};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,13 +177,13 @@ namespace tgui
     void RadioButton::setText(const sf::String& text)
     {
         // Set the new text
-        m_text.setString(text);
+        m_text.setText(text);
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setCharacterSize(static_cast<unsigned int>(getSize().y * 0.75f));
+            m_text.setTextSize(static_cast<unsigned int>(getSize().y * 0.75f));
         else
-            m_text.setCharacterSize(m_textSize);
+            m_text.setTextSize(m_textSize);
 
         // Reposition the text
         updatePosition();
@@ -196,7 +193,7 @@ namespace tgui
 
     void RadioButton::setTextFont(const sf::Font& font)
     {
-        m_text.setFont(font);
+        m_text.setTextFont(font);
 
         // Recalculate the text position and size
         setText(getText());
@@ -210,7 +207,7 @@ namespace tgui
         m_textSize = size;
 
         // Call setText to reposition the text
-        setText(m_text.getString());
+        setText(m_text.getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,8 +241,7 @@ namespace tgui
             // Check if the mouse is on top of the text
             if (m_allowTextClick)
             {
-                sf::FloatRect bounds = m_text.getLocalBounds();
-                if (sf::FloatRect(bounds.left, bounds.top, bounds.width, bounds.height).contains(x - (getPosition().x + ((getSize().x * 11.0f / 10.0f))), y - getPosition().y - ((getSize().y - bounds.height) / 2.0f) + bounds.top))
+                if (sf::FloatRect(0, 0, m_text.getSize().x, m_text.getSize().y).contains(x - (getPosition().x + ((getSize().x * 11.0f / 10.0f))), y - getPosition().y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                     return true;
             }
         }

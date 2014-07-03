@@ -31,8 +31,6 @@
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/ComboBox.hpp>
 
-#include <cmath>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -711,9 +709,11 @@ namespace tgui
         target.draw(front, states);
 
         // Create a text widget to draw it
-        sf::Text tempText("kg", *m_listBox->getTextFont());
-        tempText.setCharacterSize(static_cast<unsigned int>(getSize().y * 0.8f));
-        tempText.setColor(m_listBox->getTextColor());
+        Label tempText;
+        tempText.setTextFont(*m_listBox->getTextFont());
+        tempText.setTextSize(static_cast<unsigned int>(getSize().y * 0.8f));
+        tempText.setTextColor(m_listBox->getTextColor());
+        tempText.setText("kg");
 
         // Get the old clipping area
         GLint scissor[4];
@@ -735,8 +735,8 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the selected item
-        states.transform.translate(2, std::floor((getSize().y - tempText.getLocalBounds().height) / 2.0f -  tempText.getLocalBounds().top));
-        tempText.setString(m_listBox->getSelectedItem());
+        states.transform.translate(2, (getSize().y - tempText.getSize().y) / 2.0f);
+        tempText.setText(m_listBox->getSelectedItem());
         target.draw(tempText, states);
 
         // Reset the old clipping area

@@ -23,11 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/EditBox.hpp>
 #include <TGUI/Clipboard.hpp>
+
+#include <SFML/OpenGL.hpp>
 
 #include <cmath>
 

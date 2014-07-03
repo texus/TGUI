@@ -27,7 +27,7 @@
 #define TGUI_LOADING_BAR_HPP
 
 
-#include <TGUI/ClickableWidget.hpp>
+#include <TGUI/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,6 +92,22 @@ namespace tgui
         {
             return m_loadedConfigFile;
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +219,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
         {
-            return m_text.getString();
+            return m_text.getText();
         }
 
 
@@ -227,7 +243,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
         {
-            return m_text.getFont();
+            return m_text.getTextFont();
         }
 
 
@@ -239,7 +255,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
         {
-            m_text.setColor(color);
+            m_text.setTextColor(color);
         }
 
 
@@ -251,7 +267,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
         {
-            return m_text.getColor();
+            return m_text.getTextColor();
         }
 
 
@@ -273,7 +289,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
         {
-            return m_text.getCharacterSize();
+            return m_text.getTextSize();
         }
 
 
@@ -372,7 +388,7 @@ namespace tgui
         Texture  m_textureFront;
 
         // The text that is (optionally) drawn on top of the loading bar
-        sf::Text     m_text;
+        Label m_text;
         unsigned int m_textSize = 0;
     };
 

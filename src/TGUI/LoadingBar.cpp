@@ -26,8 +26,6 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/LoadingBar.hpp>
 
-#include <cmath>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -85,6 +83,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void LoadingBar::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        m_textureBack.setPosition(getPosition());
+        m_textureFront.setPosition(getPosition());
+
+        m_text.setPosition(getPosition().x + (getSize().x - m_text.getSize().x) / 2.0f,
+                           getPosition().y + (getSize().y - m_text.getSize().y) / 2.0f);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void LoadingBar::setSize(const Layout& size)
     {
         Widget::setSize(size);
@@ -96,7 +107,7 @@ namespace tgui
         recalculateSize();
 
         // Recalculate the text size
-        setText(m_text.getString());
+        setText(m_text.getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,31 +207,34 @@ namespace tgui
     void LoadingBar::setText(const sf::String& text)
     {
         // Set the new text
-        m_text.setString(text);
+        m_text.setText(text);
 
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
             // Calculate a possible text size
             float size = getSize().y * 0.75f;
-            m_text.setCharacterSize(static_cast<unsigned int>(size));
+            m_text.setTextSize(static_cast<unsigned int>(size));
 
             // Make the text smaller when it is too width
-            if (m_text.getGlobalBounds().width > (getSize().x * 0.8f))
-                m_text.setCharacterSize(static_cast<unsigned int>(size / (m_text.getGlobalBounds().width / (getSize().x * 0.8f))));
+            if (m_text.getSize().x > (getSize().x * 0.8f))
+                m_text.setTextSize(static_cast<unsigned int>(size / (m_text.getSize().x / (getSize().x * 0.8f))));
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_text.setCharacterSize(m_textSize);
+            m_text.setTextSize(m_textSize);
         }
+
+        // Reposition the text
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LoadingBar::setTextFont(const sf::Font& font)
     {
-        m_text.setFont(font);
+        m_text.setTextFont(font);
         setText(getText());
     }
 
@@ -232,7 +246,7 @@ namespace tgui
         m_textSize = size;
 
         // Call setText to reposition the text
-        setText(m_text.getString());
+        setText(m_text.getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,35 +391,11 @@ namespace tgui
 
     void LoadingBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Apply the transformation
-        states.transform *= getTransform();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
-
-        // Draw the loading bar
         target.draw(m_textureBack, states);
         target.draw(m_textureFront, states);
 
-        // Check if there is a text to draw
-        if (m_text.getString().isEmpty() == false)
-        {
-            // Reset the transformations
-            states.transform = oldTransform;
-
-            // Get the current size of the text, so that we can recalculate the position
-            sf::FloatRect rect = m_text.getGlobalBounds();
-
-            // Calculate the new position for the text
-            rect.left = (getSize().x - rect.width) * 0.5f - rect.left;
-            rect.top = (getSize().y - rect.height) * 0.5f - rect.top;
-
-            // Set the new position
-            states.transform.translate(std::floor(rect.left + 0.5f), std::floor(rect.top + 0.5f));
-
-            // Draw the text
+        if (m_text.getText().isEmpty() == false)
             target.draw(m_text, states);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

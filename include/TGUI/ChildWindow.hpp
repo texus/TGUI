@@ -29,6 +29,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Button.hpp>
+#include <TGUI/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -259,7 +260,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getTitle() const
         {
-            return m_titleText.getString();
+            return m_titleText.getText();
         }
 
 
@@ -271,7 +272,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleColor(const sf::Color& color)
         {
-            m_titleText.setColor(color);
+            m_titleText.setTextColor(color);
         }
 
 
@@ -283,7 +284,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTitleColor() const
         {
-            return m_titleText.getColor();
+            return m_titleText.getTextColor();
         }
 
 
@@ -537,7 +538,7 @@ namespace tgui
         Texture        m_iconTexture;
         Texture        m_textureTitleBar;
 
-        sf::Text       m_titleText;
+        Label          m_titleText;
         unsigned int   m_titleBarHeight =  0;
         sf::Vector2f   m_draggingPosition;
         unsigned int   m_distanceToSide = 5;

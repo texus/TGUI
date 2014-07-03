@@ -23,11 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/ChildWindow.hpp>
 
-#include <cmath>
+#include <SFML/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,7 +103,7 @@ namespace tgui
         childWindow->setSize({childWindow->m_textureTitleBar.getImageSize().x, childWindow->m_textureTitleBar.getImageSize().x * 3.0f / 4.0f});
 
         // Set the size of the title text
-        childWindow->m_titleText.setCharacterSize(childWindow->m_titleBarHeight * 8 / 10);
+        childWindow->m_titleText.setTextSize(childWindow->m_titleBarHeight * 8 / 10);
 
         return childWindow;
     }
@@ -138,34 +136,33 @@ namespace tgui
         if (m_titleAlignment == TitleAlignmentLeft)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x,
+                                        y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + m_distanceToSide - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + m_distanceToSide, y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
 
         }
         else if (m_titleAlignment == TitleAlignmentCentered)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((getSize().x + m_borders.left + m_borders.right) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton.getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + 2*m_distanceToSide + m_iconTexture.getSize().x + (((getSize().x + m_borders.left + m_borders.right) - 4*m_distanceToSide - m_iconTexture.getSize().x - m_closeButton.getSize().x - m_titleText.getSize().x) / 2.0f),
+                                        y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + m_distanceToSide + (((getSize().x + m_borders.left + m_borders.right) - 3*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width) / 2.0f) - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + m_distanceToSide + (((getSize().x + m_borders.left + m_borders.right) - 3*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getSize().x) / 2.0f),
+                                        y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
         else // if (m_titleAlignment == TitleAlignmentRight)
         {
             if (m_iconTexture.getData())
-                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getSize().x,
+                                        y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getLocalBounds().width - m_titleText.getLocalBounds().left,
-                                        y + ((m_titleBarHeight - m_titleText.getLocalBounds().height) / 2.0f) - m_titleText.getLocalBounds().top);
+                m_titleText.setPosition(x + (getSize().x + m_borders.left + m_borders.right) - 2*m_distanceToSide - m_closeButton.getSize().x - m_titleText.getSize().x,
+                                        y + ((m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
 
         m_closeButton.setPosition({x + (getSize().x + m_borders.left + m_borders.right) - m_distanceToSide - m_closeButton.getSize().x,
-                                    y + ((m_titleBarHeight - m_closeButton.getSize().y) / 2.0f)});
+                                   y + ((m_titleBarHeight - m_closeButton.getSize().y) / 2.0f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,7 +190,7 @@ namespace tgui
     {
         if (Container::setGlobalFont(filename))
         {
-            m_titleText.setFont(*getGlobalFont());
+            m_titleText.setTextFont(*getGlobalFont());
             setTitle(getTitle());
             return true;
         }
@@ -207,7 +204,7 @@ namespace tgui
     {
         Container::setGlobalFont(font);
 
-        m_titleText.setFont(*getGlobalFont());
+        m_titleText.setTextFont(*getGlobalFont());
         setTitle(getTitle());
     }
 
@@ -223,7 +220,7 @@ namespace tgui
                                 height / m_textureTitleBar.getImageSize().y * m_closeButton.m_textureNormal.getImageSize().y});
 
         // Set the size of the text in the title bar
-        m_titleText.setCharacterSize(static_cast<unsigned int>(m_titleBarHeight * 0.75f));
+        m_titleText.setTextSize(static_cast<unsigned int>(m_titleBarHeight * 0.75f));
 
         m_textureTitleBar.setSize({getSize().x + m_borders.left + m_borders.right, static_cast<float>(m_titleBarHeight)});
 
@@ -247,7 +244,7 @@ namespace tgui
 
     void ChildWindow::setTitle(const sf::String& title)
     {
-        m_titleText.setString(title);
+        m_titleText.setText(title);
 
         // Reposition the images and text
         updatePosition();
@@ -741,7 +738,7 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Check if there is a title
-        if (m_titleText.getString().isEmpty() == false)
+        if (m_titleText.getText().isEmpty() == false)
         {
             // Calculate the clipping area
             GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftTitleBarPosition.x * scaleViewX), scissor[0]);

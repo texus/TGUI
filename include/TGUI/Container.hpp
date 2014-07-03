@@ -123,7 +123,7 @@ namespace tgui
         /// @return Vector of all widget pointers
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector< Widget::Ptr >& getWidgets()
+        std::vector<Widget::Ptr>& getWidgets()
         {
             return m_widgets;
         }

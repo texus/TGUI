@@ -27,7 +27,7 @@
 #define TGUI_RADIO_BUTTON_HPP
 
 
-#include <TGUI/ClickableWidget.hpp>
+#include <TGUI/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -176,7 +176,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
         {
-            return m_text.getString();
+            return m_text.getText();
         }
 
 
@@ -200,7 +200,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
         {
-            return m_text.getFont();
+            return m_text.getTextFont();
         }
 
 
@@ -212,7 +212,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
         {
-            m_text.setColor(color);
+            m_text.setTextColor(color);
         }
 
 
@@ -224,7 +224,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
         {
-            return m_text.getColor();
+            return m_text.getTextColor();
         }
 
 
@@ -246,7 +246,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
         {
-            return m_text.getCharacterSize();
+            return m_text.getTextSize();
         }
 
 
@@ -369,7 +369,7 @@ namespace tgui
         bool m_allowTextClick = true;
 
         // This will contain the text that is written next to radio button.
-        sf::Text m_text;
+        Label m_text;
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_textSize = 0;

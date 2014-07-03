@@ -27,7 +27,7 @@
 #define TGUI_BUTTON_HPP
 
 
-#include <TGUI/ClickableWidget.hpp>
+#include <TGUI/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,7 +163,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
         {
-            return m_text.getFont();
+            return m_text.getTextFont();
         }
 
 
@@ -175,7 +175,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const sf::Color& color)
         {
-            m_text.setColor(color);
+            m_text.setTextColor(color);
         }
 
 
@@ -187,7 +187,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
         {
-            return m_text.getColor();
+            return m_text.getTextColor();
         }
 
 
@@ -209,7 +209,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
         {
-            return m_text.getCharacterSize();
+            return m_text.getTextSize();
         }
 
 
@@ -313,7 +313,7 @@ namespace tgui
         bool m_separateHoverImage = false;
 
         sf::String m_string;
-        sf::Text m_text;
+        Label m_text;
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_textSize = 0;

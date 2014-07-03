@@ -23,12 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/MenuBar.hpp>
 
-#include <cmath>
+#include <SFML/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,6 +75,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        if (!m_menus.empty())
+        {
+            Label tempText(m_menus[0].text);
+            tempText.setText("kg");
+
+            // Position the menus
+            sf::Vector2f pos = {getPosition().x, getPosition().y + (getSize().y - tempText.getSize().y) / 2.0f};
+            for (unsigned int i = 0; i < m_menus.size(); ++i)
+            {
+                m_menus[i].text.setPosition({pos.x + m_distanceToSide, pos.y});
+
+                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    m_menus[i].menuItems[j].setPosition(pos.x + 2*m_distanceToSide, pos.y + (j+1)*getSize().y);
+
+                pos.x += m_menus[i].text.getSize().x + 2*m_distanceToSide;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::setSize(const Layout& size)
     {
         Widget::setSize(size);
@@ -88,37 +111,51 @@ namespace tgui
 
     void MenuBar::addMenu(const sf::String& text)
     {
-        Menu menu;
+        Menu newMenu;
 
-        menu.selectedMenuItem = -1;
+        newMenu.selectedMenuItem = -1;
 
-        menu.text.setFont(*m_textFont);
-        menu.text.setString(text);
-        menu.text.setColor(m_textColor);
-        menu.text.setCharacterSize(m_textSize);
+        newMenu.text.setTextFont(*m_textFont);
+        newMenu.text.setText(text);
+        newMenu.text.setTextColor(m_textColor);
+        newMenu.text.setTextSize(m_textSize);
 
-        m_menus.push_back(menu);
+        m_menus.push_back(std::move(newMenu));
+
+        // Update the position of the menus
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
     {
+        Label tempText(m_menus[0].text);
+        tempText.setText("kg");
+
+        sf::Vector2f pos = {getPosition().x, getPosition().y + (getSize().y - tempText.getSize().y) / 2.0f};
+
         // Search for the menu
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             // If this is the menu then add the menu item to it
-            if (m_menus[i].text.getString() == menu)
+            if (m_menus[i].text.getText() == menu)
             {
-                sf::Text menuItem;
-                menuItem.setFont(*m_textFont);
-                menuItem.setString(text);
-                menuItem.setColor(m_textColor);
-                menuItem.setCharacterSize(m_textSize);
+                Label menuItem;
+                menuItem.setTextFont(*m_textFont);
+                menuItem.setText(text);
+                menuItem.setTextColor(m_textColor);
+                menuItem.setTextSize(m_textSize);
 
-                m_menus[i].menuItems.push_back(menuItem);
+                m_menus[i].menuItems.push_back(std::move(menuItem));
+
+                // Position the new menu item
+                m_menus[i].menuItems.back().setPosition({pos.x + 2*m_distanceToSide, pos.y + m_menus[i].menuItems.size() * getSize().y});
+
                 return true;
             }
+
+            pos.x += m_menus[i].text.getSize().x + 2*m_distanceToSide;
         }
 
         // Couldn't find the menu
@@ -133,7 +170,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             // If this is the menu then remove it
-            if (m_menus[i].text.getString() == menu)
+            if (m_menus[i].text.getText() == menu)
             {
                 m_menus.erase(m_menus.begin() + i);
 
@@ -141,6 +178,8 @@ namespace tgui
                 if (m_visibleMenu == static_cast<int>(i))
                     m_visibleMenu = -1;
 
+                // Update the position of the menus
+                updatePosition();
                 return true;
             }
         }
@@ -157,12 +196,12 @@ namespace tgui
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             // If this is the menu then search for the menu item
-            if (m_menus[i].text.getString() == menu)
+            if (m_menus[i].text.getText() == menu)
             {
                 for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                 {
                     // If this is the menu item then remove it
-                    if (m_menus[i].menuItems[j].getString() == menuItem)
+                    if (m_menus[i].menuItems[j].getText() == menuItem)
                     {
                         m_menus[i].menuItems.erase(m_menus[i].menuItems.begin() + j);
 
@@ -170,6 +209,8 @@ namespace tgui
                         if (m_menus[i].selectedMenuItem == static_cast<int>(j))
                             m_menus[i].selectedMenuItem = -1;
 
+                        // Update the position of the menus
+                        updatePosition();
                         return true;
                     }
                 }
@@ -202,12 +243,12 @@ namespace tgui
             for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
             {
                 if (m_menus[i].selectedMenuItem == static_cast<int>(j))
-                    m_menus[i].menuItems[j].setColor(selectedTextColor);
+                    m_menus[i].menuItems[j].setTextColor(selectedTextColor);
                 else
-                    m_menus[i].menuItems[j].setColor(textColor);
+                    m_menus[i].menuItems[j].setTextColor(textColor);
             }
 
-            m_menus[i].text.setColor(textColor);
+            m_menus[i].text.setTextColor(textColor);
         }
     }
 
@@ -222,10 +263,10 @@ namespace tgui
             for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
             {
                 if (m_menus[i].selectedMenuItem != static_cast<int>(j))
-                    m_menus[i].menuItems[j].setColor(textColor);
+                    m_menus[i].menuItems[j].setTextColor(textColor);
             }
 
-            m_menus[i].text.setColor(textColor);
+            m_menus[i].text.setTextColor(textColor);
         }
     }
 
@@ -238,7 +279,7 @@ namespace tgui
         if (m_visibleMenu != -1)
         {
             if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(selectedTextColor);
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(selectedTextColor);
         }
     }
 
@@ -252,10 +293,10 @@ namespace tgui
         {
             for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
             {
-                m_menus[i].menuItems[j].setFont(font);
+                m_menus[i].menuItems[j].setTextFont(font);
             }
 
-            m_menus[i].text.setFont(font);
+            m_menus[i].text.setTextFont(font);
         }
 
         setTextSize(m_textSize);
@@ -270,10 +311,13 @@ namespace tgui
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
             for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                m_menus[i].menuItems[j].setCharacterSize(m_textSize);
+                m_menus[i].menuItems[j].setTextSize(m_textSize);
 
-            m_menus[i].text.setCharacterSize(m_textSize);
+            m_menus[i].text.setTextSize(m_textSize);
         }
+
+        // Update the position of the items
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,19 +335,15 @@ namespace tgui
                 // Search the left position of the open menu
                 float left = 0;
                 for (int i = 0; i < m_visibleMenu; ++i)
-                    left += m_menus[i].text.getLocalBounds().width + (2 * m_distanceToSide);
+                    left += m_menus[i].text.getSize().x + (2 * m_distanceToSide);
 
                 // Find out what the width of the menu should be
-                float width = 0;
+                float width = m_minimumSubMenuWidth;
                 for (unsigned int j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
                 {
-                    if (width < m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide))
-                        width = m_menus[m_visibleMenu].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide);
+                    if (width < m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSide))
+                        width = m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSide);
                 }
-
-                // There is a minimum width
-                if (width < m_minimumSubMenuWidth)
-                    width = static_cast<float>(m_minimumSubMenuWidth);
 
                 // Check if the mouse is on top of the open menu
                 if (getTransform().transformRect(sf::FloatRect(left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
@@ -329,7 +369,7 @@ namespace tgui
             float menuWidth = 0;
             for (unsigned int i = 0; i < m_menus.size(); ++i)
             {
-                menuWidth += m_menus[i].text.getLocalBounds().width + (2 * m_distanceToSide);
+                menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSide);
                 if (x < menuWidth)
                 {
                     // Close the menu when it was already open
@@ -337,7 +377,7 @@ namespace tgui
                     {
                         if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                         {
-                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
                             m_menus[m_visibleMenu].selectedMenuItem = -1;
                         }
 
@@ -372,7 +412,7 @@ namespace tgui
                     if (m_callbackFunctions[MenuItemClicked].empty() == false)
                     {
                         m_callback.trigger = MenuItemClicked;
-                        m_callback.text = m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString();
+                        m_callback.text = m_menus[m_visibleMenu].menuItems[selectedMenuItem].getText();
                         m_callback.index = m_visibleMenu;
                         addCallback();
                     }
@@ -381,7 +421,7 @@ namespace tgui
                     {
                         if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                         {
-                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
                             m_menus[m_visibleMenu].selectedMenuItem = -1;
                         }
 
@@ -411,7 +451,7 @@ namespace tgui
                 float menuWidth = 0;
                 for (unsigned int i = 0; i < m_menus.size(); ++i)
                 {
-                    menuWidth += m_menus[i].text.getLocalBounds().width + (2 * m_distanceToSide);
+                    menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSide);
                     if (x < menuWidth)
                     {
                         // Check if the menu is already open
@@ -420,7 +460,7 @@ namespace tgui
                             // If one of the menu items is selected then unselect it
                             if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                             {
-                                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
                                 m_menus[m_visibleMenu].selectedMenuItem = -1;
                             }
                         }
@@ -432,7 +472,7 @@ namespace tgui
                                 // If an item in that other menu was selected then unselect it first
                                 if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                                 {
-                                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
                                     m_menus[m_visibleMenu].selectedMenuItem = -1;
                                 }
 
@@ -458,11 +498,11 @@ namespace tgui
             {
                 // If another of the menu items is selected then unselect it
                 if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
 
                 // Mark the item below the mouse as selected
                 m_menus[m_visibleMenu].selectedMenuItem = selectedMenuItem;
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_selectedTextColor);
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_selectedTextColor);
             }
         }
     }
@@ -477,7 +517,7 @@ namespace tgui
             // If an item in that menu was selected then unselect it first
             if (m_menus[m_visibleMenu].selectedMenuItem != -1)
             {
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColor);
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(m_textColor);
                 m_menus[m_visibleMenu].selectedMenuItem = -1;
             }
 
@@ -664,6 +704,7 @@ namespace tgui
 
     void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        sf::Transform oldTransform = states.transform;
         states.transform *= getTransform();
 
         // Draw the background
@@ -674,37 +715,18 @@ namespace tgui
         if (m_menus.empty())
             return;
 
-        sf::Text tempText(m_menus[0].text);
-        tempText.setString("kg");
-
-        sf::Vector2f textShift;
-        textShift.x = -tempText.getLocalBounds().left;
-        textShift.y = ((getSize().y - tempText.getLocalBounds().height) / 2.0f) - tempText.getLocalBounds().top;
-
         // Draw the menus
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
-            states.transform.translate(static_cast<float>(m_distanceToSide), 0);
-            states.transform.translate(textShift.x, textShift.y);
-            target.draw(m_menus[i].text, states);
-            states.transform.translate(-textShift.x, -textShift.y);
-
             // Is the menu open?
             if (m_visibleMenu == static_cast<int>(i))
             {
-                states.transform.translate(-static_cast<float>(m_distanceToSide), getSize().y);
+                states.transform.translate(0, getSize().y);
 
                 // Find out what the width of the menu should be
-                float menuWidth = 0;
+                float menuWidth = m_minimumSubMenuWidth;
                 for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                {
-                    if (menuWidth < m_menus[i].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide))
-                        menuWidth = m_menus[i].menuItems[j].getLocalBounds().width + (3 * m_distanceToSide);
-                }
-
-                // There is a minimum width
-                if (menuWidth < m_minimumSubMenuWidth)
-                    menuWidth = static_cast<float>(m_minimumSubMenuWidth);
+                    menuWidth = TGUI_MAXIMUM(menuWidth, m_menus[i].menuItems[j].getSize().x + (3 * m_distanceToSide));
 
                 // Draw the background of the menu
                 background = sf::RectangleShape({menuWidth, getSize().y * m_menus[i].menuItems.size()});
@@ -721,23 +743,24 @@ namespace tgui
                     states.transform.translate(0, m_menus[i].selectedMenuItem * -getSize().y);
                 }
 
-                states.transform.translate(2.0f * m_distanceToSide, 0);
-                states.transform.translate(textShift.x, textShift.y);
-
-                // Draw the menu items
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                {
-                    target.draw(m_menus[i].menuItems[j], states);
-
-                    states.transform.translate(0, getSize().y);
-                }
-
-                states.transform.translate(-textShift.x, -textShift.y);
-                states.transform.translate(m_menus[i].text.getLocalBounds().width, -getSize().y * (m_menus[i].menuItems.size()+1));
+                states.transform.translate(m_menus[i].text.getSize().x + 2*m_distanceToSide, -getSize().y);
             }
             else // The menu isn't open
+                states.transform.translate(m_menus[i].text.getSize().x + m_distanceToSide, 0);
+        }
+
+        states.transform = oldTransform;
+
+        // Draw the menus
+        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        {
+            target.draw(m_menus[i].text, states);
+
+            // Draw the menu items when the menu is open
+            if (m_visibleMenu == static_cast<int>(i))
             {
-                states.transform.translate(m_menus[i].text.getLocalBounds().width + m_distanceToSide, 0);
+                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    target.draw(m_menus[i].menuItems[j], states);
             }
         }
     }

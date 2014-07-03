@@ -27,7 +27,7 @@
 #define TGUI_MENU_BAR_HPP
 
 
-#include <TGUI/Widget.hpp>
+#include <TGUI/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,6 +92,22 @@ namespace tgui
         {
             return m_loadedConfigFile;
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,7 +365,7 @@ namespace tgui
         /// @param minimumWidth  minimum width of the submenus
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMinimumSubMenuWidth(unsigned int minimumWidth)
+        void setMinimumSubMenuWidth(float minimumWidth)
         {
             m_minimumSubMenuWidth = minimumWidth;
         }
@@ -363,7 +379,7 @@ namespace tgui
         /// @see setMinimumSubMenuWidth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMinimumSubMenuWidth() const
+        float getMinimumSubMenuWidth() const
         {
             return m_minimumSubMenuWidth;
         }
@@ -461,8 +477,8 @@ namespace tgui
 
         struct Menu
         {
-            sf::Text text;
-            std::vector<sf::Text> menuItems;
+            Label text;
+            std::vector<Label> menuItems;
             int selectedMenuItem;
         };
 
@@ -478,7 +494,7 @@ namespace tgui
 
         unsigned int m_distanceToSide = 4;
 
-        unsigned int m_minimumSubMenuWidth = 125;
+        float m_minimumSubMenuWidth = 125;
 
         sf::Color m_backgroundColor;
         sf::Color m_textColor;

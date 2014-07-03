@@ -26,8 +26,6 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Button.hpp>
 
-#include <cmath>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -37,7 +35,7 @@ namespace tgui
     Button::Button()
     {
         m_callback.widgetType = Type_Button;
-        m_text.setColor(sf::Color::Black);
+        m_text.setTextColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +61,7 @@ namespace tgui
             if (it->first == "separatehoverimage")
                 button->m_separateHoverImage = configFile.readBool(it);
             else if (it->first == "textcolor")
-                button->m_text.setColor(configFile.readColor(it));
+                button->m_text.setTextColor(configFile.readColor(it));
             else if (it->first == "normalimage")
                 configFile.readTexture(it, configFileFolder, button->m_textureNormal);
             else if (it->first == "hoverimage")
@@ -95,14 +93,14 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_textureDown.setPosition(position.getValue());
-        m_textureHover.setPosition(position.getValue());
-        m_textureNormal.setPosition(position.getValue());
-        m_textureFocused.setPosition(position.getValue());
+        m_textureDown.setPosition(getPosition());
+        m_textureHover.setPosition(getPosition());
+        m_textureNormal.setPosition(getPosition());
+        m_textureFocused.setPosition(getPosition());
 
         // Set the position of the text
-        m_text.setPosition(std::floor(position.getValue().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f - m_text.getLocalBounds().left),
-                           std::floor(position.getValue().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f - m_text.getLocalBounds().top));
+        m_text.setPosition(getPosition().x + (getSize().x - m_text.getSize().x) * 0.5f,
+                           getPosition().y + (getSize().y - m_text.getSize().y) * 0.5f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +131,7 @@ namespace tgui
 
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
-            m_text.setCharacterSize(m_textSize);
+            m_text.setTextSize(m_textSize);
 
         // If the height is much bigger than the width then the text should be vertical
         if (getSize().y > getSize().x * 2)
@@ -141,10 +139,10 @@ namespace tgui
             // The text is vertical
             if (!m_string.isEmpty())
             {
-                m_text.setString(m_string[0]);
+                m_text.setText(m_string[0]);
 
                 for (unsigned int i = 1; i < m_string.getSize(); ++i)
-                    m_text.setString(m_text.getString() + "\n" + m_string[i]);
+                    m_text.setText(m_text.getText() + "\n" + m_string[i]);
             }
 
             // Auto size the text when necessary
@@ -152,40 +150,40 @@ namespace tgui
             {
                 // Calculate a possible text size
                 float size = getSize().x * 0.75f;
-                m_text.setCharacterSize(static_cast<unsigned int>(size));
+                m_text.setTextSize(static_cast<unsigned int>(size));
 
                 // Make the text smaller when it's too high
-                if (m_text.getLocalBounds().height > (getSize().y * 0.8f))
-                    m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().y * 0.8f / m_text.getLocalBounds().height));
+                if (m_text.getSize().y > (getSize().y * 0.8f))
+                    m_text.setTextSize(static_cast<unsigned int>(size * getSize().y * 0.8f / m_text.getSize().y));
             }
         }
         else // The width of the button is big enough
         {
-            m_text.setString(text);
+            m_text.setText(text);
 
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
                 // Calculate a possible text size
                 float size = getSize().y * 0.75f;
-                m_text.setCharacterSize(static_cast<unsigned int>(size));
+                m_text.setTextSize(static_cast<unsigned int>(size));
 
                 // Make the text smaller when it's too width
-                if (m_text.getLocalBounds().width > (getSize().x * 0.8f))
-                    m_text.setCharacterSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getLocalBounds().width));
+                if (m_text.getSize().x > (getSize().x * 0.8f))
+                    m_text.setTextSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getSize().x));
             }
         }
 
         // Set the position of the text
-        m_text.setPosition(std::floor(getPosition().x + (getSize().x - m_text.getLocalBounds().width) * 0.5f -  m_text.getLocalBounds().left),
-                           std::floor(getPosition().y + (getSize().y - m_text.getLocalBounds().height) * 0.5f -  m_text.getLocalBounds().top));
+        m_text.setPosition(getPosition().x + (getSize().x - m_text.getSize().x) * 0.5f,
+                           getPosition().y + (getSize().y - m_text.getSize().y) * 0.5f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Button::setTextFont(const sf::Font& font)
     {
-        m_text.setFont(font);
+        m_text.setTextFont(font);
 
         // Reposition the text
         setText(m_string);

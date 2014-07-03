@@ -28,8 +28,8 @@
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/ListBox.hpp>
+#include <TGUI/Label.hpp>
 
-#include <cmath>
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1059,7 +1059,9 @@ namespace tgui
             scissorTop = scissorBottom;
 
         // Create a text widget to draw the items
-        sf::Text text("", *m_textFont, m_textSize);
+        Label text;
+        text.setTextFont(*m_textFont);
+        text.setTextSize(m_textSize);
 
         // Check if there is a scrollbar and whether it isn't hidden
         if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
@@ -1084,10 +1086,7 @@ namespace tgui
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_items[i]);
-
-                // Get the global bounds
-                sf::FloatRect bounds = text.getGlobalBounds();
+                text.setText(m_items[i]);
 
                 // Check if we are drawing the selected item
                 if (m_selectedItem == static_cast<int>(i))
@@ -1107,13 +1106,13 @@ namespace tgui
                     }
 
                     // Change the text color
-                    text.setColor(m_selectedTextColor);
+                    text.setTextColor(m_selectedTextColor);
                 }
                 else // Set the normal text color
-                    text.setColor(m_textColor);
+                    text.setTextColor(m_textColor);
 
                 // Set the translation for the text
-                states.transform.translate(2, std::floor(static_cast<float>(i * m_itemHeight) - m_scroll->getValue() + ((m_itemHeight - bounds.height) / 2.0f) - bounds.top));
+                states.transform.translate(2, static_cast<float>(i * m_itemHeight) - m_scroll->getValue() + ((m_itemHeight - text.getSize().y) / 2.0f));
 
                 // Draw the text
                 target.draw(text, states);
@@ -1133,7 +1132,7 @@ namespace tgui
                 states.transform = storedTransform;
 
                 // Set the next item
-                text.setString(m_items[i]);
+                text.setText(m_items[i]);
 
                 // Check if we are drawing the selected item
                 if (m_selectedItem == static_cast<int>(i))
@@ -1153,16 +1152,13 @@ namespace tgui
                     }
 
                     // Change the text color
-                    text.setColor(m_selectedTextColor);
+                    text.setTextColor(m_selectedTextColor);
                 }
                 else // Set the normal text color
-                    text.setColor(m_textColor);
-
-                // Get the global bounds
-                sf::FloatRect bounds = text.getGlobalBounds();
+                    text.setTextColor(m_textColor);
 
                 // Set the translation for the text
-                states.transform.translate(2, std::floor((i * m_itemHeight) + ((m_itemHeight - bounds.height) / 2.0f) - bounds.top));
+                states.transform.translate(2, (i * m_itemHeight) + ((m_itemHeight - text.getSize().y) / 2.0f));
 
                 // Draw the text
                 target.draw(text, states);
