@@ -113,14 +113,16 @@ namespace tgui
 
     void LayoutBind::setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const
     {
-        m_layoutCallbackManager.bindCallback(m_widget, m_trigger, layout, callback);
+        if (m_widget != nullptr)
+            m_layoutCallbackManager.bindCallback(m_widget, m_trigger, layout, callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LayoutBind::unbindCallback(const Layout* layout)
     {
-        m_layoutCallbackManager.unbindCallback(m_widget, m_trigger, layout);
+        if (m_widget != nullptr)
+            m_layoutCallbackManager.unbindCallback(m_widget, m_trigger, layout);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,10 +138,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d::Layout1d(const Layout1d& layout) :
-        m_bindings(layout.m_bindings),
-        m_operators(layout.m_operators),
-        m_value(layout.m_value),
-        m_constant(layout.m_constant)
+        m_bindings {layout.m_bindings},
+        m_operators{layout.m_operators},
+        m_value    {layout.m_value},
+        m_constant {layout.m_constant}
     {
         for (auto& group : layout.m_groups)
             m_groups.push_back(std::move(group.clone(*this)));
@@ -241,9 +243,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LayoutGroup::LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector) :
-        m_first(first),
-        m_second(second),
-        m_selector(selector)
+        m_first   {first},
+        m_second  {second},
+        m_selector{selector}
     {
         determineActiveLayout();
     }
@@ -367,14 +369,20 @@ namespace tgui
 
     Layout1d operator*(const Layout1d& left, const Layout1d& right)
     {
+        assert(!left.m_bindings.empty() || !right.m_bindings.empty());
+
         Layout1d layout = left;
         layout.m_value *= right.m_value;
         layout.m_constant *= right.m_constant;
 
-        layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
+        if (left.m_bindings.empty())
+            layout.m_bindings.push_back({nullptr, LayoutBind::Param::None, left.m_value, LayoutChangeTrigger::Position});
 
-        if (!left.m_bindings.empty() && !right.m_bindings.empty())
-            layout.m_operators.push_back(Layout1d::Operator::Multiply);
+        if (right.m_bindings.empty())
+            layout.m_bindings.push_back({nullptr, LayoutBind::Param::None, right.m_value, LayoutChangeTrigger::Position});
+
+        layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
+        layout.m_operators.push_back(Layout1d::Operator::Multiply);
 
         return layout;
     }
@@ -390,14 +398,20 @@ namespace tgui
 
     Layout1d operator/(const Layout1d& left, const Layout1d& right)
     {
+        assert(!left.m_bindings.empty() || !right.m_bindings.empty());
+
         Layout1d layout = left;
         layout.m_value /= right.m_value;
         layout.m_constant /= right.m_constant;
 
-        layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
+        if (left.m_bindings.empty())
+            layout.m_bindings.push_back({nullptr, LayoutBind::Param::None, left.m_value, LayoutChangeTrigger::Position});
 
-        if (!left.m_bindings.empty() && !right.m_bindings.empty())
-            layout.m_operators.push_back(Layout1d::Operator::Divide);
+        if (right.m_bindings.empty())
+            layout.m_bindings.push_back({nullptr, LayoutBind::Param::None, right.m_value, LayoutChangeTrigger::Position});
+
+        layout.m_bindings.insert(layout.m_bindings.end(), right.m_bindings.begin(), right.m_bindings.end());
+        layout.m_operators.push_back(Layout1d::Operator::Divide);
 
         return layout;
     }

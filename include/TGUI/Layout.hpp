@@ -75,6 +75,7 @@ namespace tgui
 
         enum class Param
         {
+            None,
             X,
             Y
         };
