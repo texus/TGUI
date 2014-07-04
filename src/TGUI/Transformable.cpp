@@ -60,7 +60,7 @@ namespace tgui
     void Transformable::setPosition(const Layout& position)
     {
         m_position = position;
-        m_position.setCallbackFunction(std::bind(&Transformable::updatePosition, this));
+        m_position.setCallbackFunction(std::bind(&Transformable::updatePosition, this, false));
 
         m_transformNeedUpdate = true;
     }
@@ -97,7 +97,7 @@ namespace tgui
             m_size.recalculateValue();
         }
 
-        m_size.setCallbackFunction(std::bind(&Transformable::updateSize, this));
+        m_size.setCallbackFunction(std::bind(&Transformable::updateSize, this, false));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,18 +132,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::updatePosition()
+    void Transformable::updatePosition(bool forceUpdate)
     {
-        m_position.recalculateValue();
-        setPosition(m_position);
+        if (forceUpdate)
+        {
+            m_position.recalculateValue();
+            setPosition(m_position);
+        }
+        else
+        {
+            sf::Vector2f oldPosition = m_position.getValue();
+
+            m_position.recalculateValue();
+
+            if (oldPosition != m_position.getValue())
+                setPosition(m_position);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::updateSize()
+    void Transformable::updateSize(bool forceUpdate)
     {
-        m_size.recalculateValue();
-        setSize(m_size);
+        if (forceUpdate)
+        {
+            m_size.recalculateValue();
+            setSize(m_size);
+        }
+        else
+        {
+            sf::Vector2f oldSize = m_size.getValue();
+
+            m_size.recalculateValue();
+
+            if (oldSize != m_size.getValue())
+                setSize(m_size);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
