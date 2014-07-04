@@ -23,10 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Gui.hpp>
+
+#include <SFML/OpenGL.hpp>
+
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,12 +52,13 @@ namespace tgui
         m_accessToWindow(true)
     {
         m_container->m_window = &window;
-        m_container->m_size = sf::Vector2f{window.getSize()};
         m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
         m_container->m_focused = true;
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+
+        setView(window.getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,10 +68,11 @@ namespace tgui
         m_accessToWindow(false)
     {
         m_container->m_window = &window;
-        m_container->m_size = sf::Vector2f{window.getSize()};
         m_container->bindGlobalCallback(&Gui::addChildCallback, this);
 
         m_container->m_focused = true;
+
+        setView(window.getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,9 +83,10 @@ namespace tgui
 
         m_window = &window;
         m_container->m_window = &window;
-        m_container->m_size = sf::Vector2f{window.getSize()};
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+
+        setView(window.getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,21 +97,35 @@ namespace tgui
 
         m_window = &window;
         m_container->m_window = &window;
-        m_container->m_size = sf::Vector2f{window.getSize()};
+
+        setView(window.getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::handleEvent(sf::Event event, bool resetView)
+    void Gui::setView(const sf::View& view)
     {
+        m_view = view;
+        m_container->m_size = view.getSize();
+
+        if (m_container->m_callbackFunctions[Widget::SizeChanged].empty() == false)
+        {
+            m_container->m_callback.trigger = Widget::SizeChanged;
+            m_container->m_callback.size    = m_container->m_size.getValue();
+            m_container->addCallback();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::handleEvent(sf::Event event)
+    {
+        assert(m_window != nullptr);
+
         // Check if the event has something to do with the mouse
         if (event.type == sf::Event::MouseMoved)
         {
-            sf::Vector2f mouseCoords;
-            if (resetView)
-                mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_window->getDefaultView());
-            else
-                mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_window->getView());
+            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
 
             // Adjust the mouse position of the event
             event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -114,11 +133,7 @@ namespace tgui
         }
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
         {
-            sf::Vector2f mouseCoords;
-            if (resetView)
-                mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_window->getDefaultView());
-            else
-                mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_window->getView());
+            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
 
             // Adjust the mouse position of the event
             event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -126,11 +141,7 @@ namespace tgui
         }
         else if (event.type == sf::Event::MouseWheelMoved)
         {
-            sf::Vector2f mouseCoords;
-            if (resetView)
-                mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_window->getDefaultView());
-            else
-                mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_window->getView());
+            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_view);
 
             // Adjust the mouse position of the event
             event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
@@ -150,32 +161,15 @@ namespace tgui
                 TGUI_Clipboard.setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
         }
 
-        // Make sure the internal container has the same size as the window
-        else if (event.type == sf::Event::Resized)
-        {
-            m_container->m_size = {static_cast<float>(event.size.width), static_cast<float>(event.size.height)};
-
-            if (m_container->m_callbackFunctions[Widget::SizeChanged].empty() == false)
-            {
-                m_container->m_callback.trigger = Widget::SizeChanged;
-                m_container->m_callback.size    = m_container->m_size.getValue();
-                m_container->addCallback();
-            }
-        }
-
         // Let the event manager handle the event
         return m_container->handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::draw(bool resetView)
+    void Gui::draw()
     {
-        sf::View oldView = m_window->getView();
-
-        // Reset the view when requested
-        if (resetView)
-            m_window->setView(m_window->getDefaultView());
+        assert(m_window != nullptr);
 
         // Update the time
         if (m_container->m_focused)
@@ -207,8 +201,6 @@ namespace tgui
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         else
             glDisable(GL_SCISSOR_TEST);
-
-        m_window->setView(oldView);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

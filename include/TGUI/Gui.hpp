@@ -103,13 +103,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the view that is used by the gui
+        ///
+        /// @param view  The new view
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setView(const sf::View& view);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Return the view that is currently used by the gui
+        ///
+        /// @return Currently set view
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::View& getView() const
+        {
+            return m_view;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Passes the event to the widgets.
         ///
         /// @param event  The event that was polled from the gui
-        /// @param resetView  Reset the view of the window while calculation the mouse coordinates.
-        ///                   This parameter must be the same as the one passed to the draw function.
-        ///                   If false, the current view will be used, otherwise the view will be reset.
-        ///                   If false then make sure the same view is set when calling this function and when calling draw.
         ///
         /// @return Has the event been consumed?
         ///         When this function returns false, then the event was ignored by all widgets.
@@ -117,21 +134,14 @@ namespace tgui
         /// You should call this function in your event loop.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool handleEvent(sf::Event event, bool resetView = true);
+        bool handleEvent(sf::Event event);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws all the widgets that were added to the gui.
         ///
-        /// @param resetView  Reset the view of the window while drawing the gui.
-        ///                   This parameter must be the same as the one passed to the handleEvent function.
-        ///                   If false, the current view will be used, otherwise the view will be reset.
-        ///                   If false then make sure the same view is set when calling this function and when calling handleEvent.
-        ///
-        /// When this function ends, the view will never be changed. Any changes to the view are temporary.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(bool resetView = true);
+        void draw();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -539,6 +549,8 @@ namespace tgui
 
         // Internal container to store all widgets
         GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();
+
+        sf::View m_view;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
