@@ -35,6 +35,7 @@
 
 namespace tgui
 {
+    class LayoutGroup;
     class Layout;
     class Widget;
     class Gui;
@@ -78,11 +79,9 @@ namespace tgui
             Y
         };
 
-        LayoutBind(const std::shared_ptr<Widget>& widget, Param param, float fraction = 1);
+        LayoutBind(const std::shared_ptr<Widget>& widget, Param param, float fraction, LayoutChangeTrigger trigger);
 
         float getValue() const;
-
-        void setTrigger(LayoutChangeTrigger trigger);
 
         void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
 
@@ -97,7 +96,6 @@ namespace tgui
 
         static LayoutCallbackManager m_layoutCallbackManager;
     };
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,12 +113,19 @@ namespace tgui
 
         Layout1d(float value = 0) : m_value{value}, m_constant{value} {}
 
-        explicit Layout1d(const LayoutBind& layout, LayoutChangeTrigger trigger);
+        explicit Layout1d(const LayoutBind& binding);
+
+        Layout1d(const Layout1d& layout);
+        Layout1d& operator=(const Layout1d& right);
 
         float getValue() const
         {
             return m_value;
         }
+
+        void setGroup(LayoutGroup&& group);
+
+        void recalculateValue();
 
         friend Layout1d operator+(const Layout1d& left, const Layout1d& right);
         friend Layout1d operator-(const Layout1d& left, const Layout1d& right);
@@ -131,7 +136,6 @@ namespace tgui
         friend Layout operator/(const Layout& left, const Layout1d& right);
 
     private:
-        void recalculateValue();
         void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
         void unbindCallback(const Layout* layout);
 
@@ -141,7 +145,41 @@ namespace tgui
         float m_value = 0;
         float m_constant = 0;
 
+        std::list<LayoutGroup> m_groups;
+
         friend class Layout;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TGUI_API LayoutGroup final
+    {
+    public:
+
+        enum class Selector
+        {
+            Minimum,
+            Maximum
+        };
+
+        LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector);
+
+        LayoutGroup clone(Layout1d& layout) const;
+
+        void determineActiveLayout();
+
+        Layout1d& getActiveLayout() const
+        {
+            return *m_active;
+        }
+
+    private:
+        Layout1d& m_first;
+        Layout1d m_second;
+
+        Layout1d* m_active = nullptr;
+
+        Selector m_selector;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +245,12 @@ namespace tgui
 
     TGUI_API Layout bindPosition(const Gui& gui, const sf::Vector2f& fraction = {1,1});
     TGUI_API Layout bindSize(const Gui& gui, const sf::Vector2f& fraction = {1,1});
+
+    TGUI_API Layout1d bindMinimum(const Layout1d& first, const Layout1d& second);
+    TGUI_API Layout1d bindMaximum(const Layout1d& first, const Layout1d& second);
+
+    // Alternative for bindMinimum(maximum, bindMaximum(minimum, value))
+    TGUI_API Layout1d bindLimits(const Layout1d& minimum, const Layout1d& maximum, const Layout1d& value);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

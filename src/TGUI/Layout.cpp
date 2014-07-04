@@ -76,10 +76,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LayoutBind::LayoutBind(const Widget::Ptr& widget, Param param, float fraction) :
-        m_widget(widget),
+    LayoutBind::LayoutBind(const Widget::Ptr& widget, Param param, float fraction, LayoutChangeTrigger trigger) :
+        m_widget  (widget),
         m_fraction(fraction),
-        m_param(param)
+        m_trigger (trigger),
+        m_param   (param)
     {
     }
 
@@ -110,13 +111,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LayoutBind::setTrigger(LayoutChangeTrigger trigger)
-    {
-        m_trigger = trigger;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void LayoutBind::setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const
     {
         m_layoutCallbackManager.bindCallback(m_widget, m_trigger, layout, callback);
@@ -132,52 +126,99 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout1d::Layout1d(const LayoutBind& layout, LayoutChangeTrigger trigger)
+    Layout1d::Layout1d(const LayoutBind& binding)
     {
-        m_bindings.push_back(layout);
+        m_bindings.push_back(binding);
 
-        m_bindings.back().setTrigger(trigger);
         m_value = m_bindings.back().getValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d::Layout1d(const Layout1d& layout) :
+        m_bindings(layout.m_bindings),
+        m_operators(layout.m_operators),
+        m_value(layout.m_value),
+        m_constant(layout.m_constant)
+    {
+        for (auto& group : layout.m_groups)
+            m_groups.push_back(std::move(group.clone(*this)));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d& Layout1d::operator=(const Layout1d& right)
+    {
+        if (this != &right)
+        {
+            m_bindings  = right.m_bindings;
+            m_operators = right.m_operators;
+            m_value     = right.m_value;
+            m_constant  = right.m_constant;
+
+            for (auto& group : right.m_groups)
+                m_groups.push_back(std::move(group.clone(*this)));
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout1d::setGroup(LayoutGroup&& group)
+    {
+        m_groups.push_back(std::move(group));
+
+        recalculateValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Layout1d::recalculateValue()
     {
+        m_value = m_constant;
+
         // Constants don't need to be updated
-        if (m_bindings.empty())
-            return;
-
-        assert(m_bindings.size() == m_operators.size() + 1);
-
-        auto bindingsIt = m_bindings.cbegin();
-        m_value = (*bindingsIt).getValue();
-        bindingsIt++;
-
-        // Apply the math operations between the bindings
-        for (auto operatorsIt = m_operators.cbegin(); operatorsIt != m_operators.cend(); ++operatorsIt, ++bindingsIt)
+        if (!m_bindings.empty())
         {
-            switch (*operatorsIt)
+            assert(m_bindings.size() == m_operators.size() + 1);
+
+            auto bindingsIt = m_bindings.cbegin();
+            m_value += bindingsIt->getValue();
+            bindingsIt++;
+
+            // Apply the math operations between the bindings
+            for (auto operatorsIt = m_operators.cbegin(); operatorsIt != m_operators.cend(); ++operatorsIt, ++bindingsIt)
             {
-            case Operator::Add:
-                m_value += (*bindingsIt).getValue();
-                break;
+                switch (*operatorsIt)
+                {
+                case Operator::Add:
+                    m_value += bindingsIt->getValue();
+                    break;
 
-            case Operator::Subtract:
-                m_value -= (*bindingsIt).getValue();
-                break;
+                case Operator::Subtract:
+                    m_value -= bindingsIt->getValue();
+                    break;
 
-            case Operator::Multiply:
-                m_value *= (*bindingsIt).getValue();
-                break;
+                case Operator::Multiply:
+                    m_value *= bindingsIt->getValue();
+                    break;
 
-            case Operator::Divide:
-                m_value /= (*bindingsIt).getValue();
-                break;
+                case Operator::Divide:
+                    m_value /= bindingsIt->getValue();
+                    break;
+                }
             }
         }
 
-        m_value += m_constant;
+        // It is possible that another layout in the group should be used
+        for (auto& group : m_groups)
+        {
+            group.determineActiveLayout();
+
+            if (&group.getActiveLayout() != this)
+                m_value = group.getActiveLayout().getValue();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +235,53 @@ namespace tgui
     {
         for (auto& binding : m_bindings)
             binding.unbindCallback(layout);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LayoutGroup::LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector) :
+        m_first(first),
+        m_second(second),
+        m_selector(selector)
+    {
+        determineActiveLayout();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LayoutGroup LayoutGroup::clone(Layout1d& layout) const
+    {
+        return {layout, m_second, m_selector};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LayoutGroup::determineActiveLayout()
+    {
+        m_second.recalculateValue();
+
+        switch (m_selector)
+        {
+            case Selector::Minimum:
+            {
+                if (m_first.getValue() < m_second.getValue())
+                    m_active = &m_first;
+                else
+                    m_active = &m_second;
+
+                break;
+            }
+            case Selector::Maximum:
+            {
+                if (m_first.getValue() > m_second.getValue())
+                    m_active = &m_first;
+                else
+                    m_active = &m_second;
+
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,88 +434,88 @@ namespace tgui
 
     Layout1d bindLeft(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position};
+        return Layout1d{{widget, LayoutBind::Param::X, fraction, LayoutChangeTrigger::Position}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindTop(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position};
+        return Layout1d{{widget, LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Position}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindRight(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position}
-             + Layout1d{{widget, LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{widget, LayoutBind::Param::X, fraction, LayoutChangeTrigger::Position}}
+             + Layout1d{{widget, LayoutBind::Param::X, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindBottom(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position}
-             + Layout1d{{widget, LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{widget, LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Position}}
+             + Layout1d{{widget, LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindWidth(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{widget, LayoutBind::Param::X, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindHeight(const Widget::Ptr& widget, float fraction)
     {
-        return Layout1d{{widget, LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{widget, LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindLeft(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction, LayoutChangeTrigger::Position}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindTop(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Position}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindRight(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Position}
-             + Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction, LayoutChangeTrigger::Position}}
+             + Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindBottom(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Position}
-             + Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Position}}
+             + Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindWidth(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::X, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d bindHeight(const Gui& gui, float fraction)
     {
-        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction}, LayoutChangeTrigger::Size};
+        return Layout1d{{gui.getContainer(), LayoutBind::Param::Y, fraction, LayoutChangeTrigger::Size}};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -456,6 +544,31 @@ namespace tgui
     Layout bindSize(const Gui& gui, const sf::Vector2f& fraction)
     {
         return {bindWidth(gui.getContainer(), fraction.x), bindHeight(gui.getContainer(), fraction.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindMinimum(const Layout1d& first, const Layout1d& second)
+    {
+        Layout1d layout = first;
+        layout.setGroup({layout, second, LayoutGroup::Selector::Minimum});
+        return layout;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindMaximum(const Layout1d& first, const Layout1d& second)
+    {
+        Layout1d layout = first;
+        layout.setGroup({layout, second, LayoutGroup::Selector::Maximum});
+        return layout;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout1d bindLimits(const Layout1d& minimum, const Layout1d& maximum, const Layout1d& value)
+    {
+        return bindMinimum(maximum, bindMaximum(minimum, value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
