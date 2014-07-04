@@ -15,8 +15,8 @@ int main()
     // Width:  80% of window width
     // Height: 25% of window height
     auto play = tgui::Button::create("../../widgets/Black.conf");
-    play->setPosition(tgui::bindWidth(gui.getContainer(), 0.1), tgui::bindHeight(gui.getContainer(), 0.2));
-    play->setSize(tgui::bindWidth(gui.getContainer(), 0.8), tgui::bindHeight(gui.getContainer(), 0.25));
+    play->setPosition(tgui::bindWidth(gui.getContainer())*0.1, tgui::bindHeight(gui.getContainer())*0.2);
+    play->setSize(tgui::bindWidth(gui.getContainer())*0.8, tgui::bindHeight(gui.getContainer())*0.25);
     play->setText("Play");
     gui.add(play);
 
@@ -24,7 +24,7 @@ int main()
     // Left:   10% of window width
     // Top:    60% of window height
     auto exit = tgui::Button::copy(play);
-    exit->setPosition(tgui::bindWidth(gui.getContainer(), 0.1), tgui::bindHeight(gui.getContainer(), 0.6));
+    exit->setPosition(tgui::bindWidth(gui.getContainer())*0.1, tgui::bindHeight(gui.getContainer())*0.6);
     exit->setText("Exit");
     gui.add(exit);
 
