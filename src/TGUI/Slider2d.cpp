@@ -450,8 +450,8 @@ namespace tgui
         sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                             (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
-        // Adjust the transformation
-        states.transform *= getTransform();
+        // Adjust the position
+        states.transform.translate(getPosition());
 
         // Calculate the scale of the slider
         sf::Vector2f scaling;

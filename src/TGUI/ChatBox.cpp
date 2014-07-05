@@ -156,6 +156,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        m_panel->setPosition(getPosition());
+        m_scroll->setPosition(getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::setSize(const Layout& size)
     {
         // Remember the old height
@@ -424,16 +434,7 @@ namespace tgui
     {
         // Pass the event to the scrollbar (if there is one)
         if (m_scroll != nullptr)
-        {
-            // Temporarily set the position of the scroll
-            m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y});
-
-            // Pass the event
             m_scroll->mouseOnWidget(x, y);
-
-            // Reset the position
-            m_scroll->setPosition({0, 0});
-        }
 
         // Check if the mouse is on top of the list box
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
@@ -461,15 +462,9 @@ namespace tgui
             // Remember the old scrollbar value
             unsigned int oldValue = m_scroll->getValue();
 
-            // Temporarily set the position of the scroll
-            m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y});
-
             // Pass the event
             if (m_scroll->mouseOnWidget(x, y))
                 m_scroll->leftMousePressed(x, y);
-
-            // Reset the position
-            m_scroll->setPosition({0, 0});
 
             // If the value of the scrollbar has changed then update the text
             if (oldValue != m_scroll->getValue())
@@ -490,14 +485,8 @@ namespace tgui
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_scroll->getValue();
 
-                // Temporarily set the position of the scroll
-                m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y});
-
                 // Pass the event
                 m_scroll->leftMouseReleased(x, y);
-
-                // Reset the position
-                m_scroll->setPosition({0, 0});
 
                 // If the value of the scrollbar has changed then update the text
                 if (oldValue != m_scroll->getValue())
@@ -544,9 +533,6 @@ namespace tgui
         // If there is a scrollbar then pass the event
         if (m_scroll != nullptr)
         {
-            // Temporarily set the position of the scroll
-            m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y});
-
             // Check if you are dragging the thumb of the scrollbar
             if ((m_scroll->m_mouseDown) && (m_scroll->m_mouseDownOnThumb))
             {
@@ -566,9 +552,6 @@ namespace tgui
                 if (m_scroll->mouseOnWidget(x, y))
                     m_scroll->mouseMoved(x, y);
             }
-
-            // Reset the position
-            m_scroll->setPosition({0, 0});
         }
     }
 
@@ -776,6 +759,8 @@ namespace tgui
 
         if (!getTextFont() && m_parent->getGlobalFont())
             setTextFont(*m_parent->getGlobalFont());
+
+        m_panel->initialize(m_parent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -812,42 +797,33 @@ namespace tgui
 
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        m_panel->setPosition(getAbsolutePosition());
-
         // Draw the panel
-        target.draw(*m_panel);
-
-        // Adjust the transformation
-        states.transform *= getTransform();
+        target.draw(*m_panel, states);
 
         // Draw left border
         sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
-        border.setPosition(-m_borders.left, -m_borders.top);
+        border.setPosition({getPosition().x - m_borders.left, getPosition().y - m_borders.top});
         border.setFillColor(m_borderColor);
         target.draw(border, states);
 
         // Draw top border
         border.setSize({getSize().x + m_borders.right, m_borders.top});
-        border.setPosition(0, -m_borders.top);
+        border.setPosition({getPosition().x, getPosition().y - m_borders.top});
         target.draw(border, states);
 
         // Draw right border
         border.setSize({m_borders.right, getSize().y + m_borders.bottom});
-        border.setPosition(getSize().x, 0);
+        border.setPosition({getPosition().x + getSize().x, getPosition().y});
         target.draw(border, states);
 
         // Draw bottom border
         border.setSize({getSize().x + m_borders.left, m_borders.bottom});
-        border.setPosition(-m_borders.left, getSize().y);
+        border.setPosition({getPosition().x - m_borders.left, getPosition().y + getSize().y});
         target.draw(border, states);
 
-        // Check if there is a scrollbar
+        // Draw the scrollbar if there is one
         if (m_scroll != nullptr)
-        {
-            // Draw the scrollbar
-            states.transform.translate(getSize().x - m_scroll->getSize().x, 0);
             target.draw(*m_scroll, states);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

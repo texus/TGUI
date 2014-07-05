@@ -211,7 +211,7 @@ namespace tgui
         if (m_passwordChar != '\0')
         {
             // Loop every character and change it
-            for (unsigned int i=0; i < m_text.getSize(); ++i)
+            for (unsigned int i = 0; i < m_text.getSize(); ++i)
                 m_displayedText[i] = m_passwordChar;
         }
 

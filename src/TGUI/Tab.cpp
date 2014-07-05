@@ -23,10 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/Tab.hpp>
+
+#include <SFML/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,12 +98,18 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        float positionX = 0;
+        float positionX = getPosition().x;
+        float textHeight = sf::Text{"kg", *getTextFont(), getTextSize()}.getLocalBounds().height;
+
         auto it2 = m_texturesSelected.begin();
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it, ++it2)
+        auto tabIt = m_tabNames.begin();
+        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it, ++it2, ++tabIt)
         {
-            it->setPosition(positionX, 0);
-            it2->setPosition(positionX, 0);
+            it->setPosition({positionX, getPosition().y});
+            it2->setPosition({positionX, getPosition().y});
+
+            tabIt->setPosition({positionX + m_distanceToSide + ((it->getSize().x - (2*m_distanceToSide) - tabIt->getSize().x) / 2.0f),
+                                getPosition().y + ((getSize().y - textHeight) / 2.0f)});
 
             positionX += it->getSize().x;
         }
@@ -120,18 +126,19 @@ namespace tgui
 
     unsigned int Tab::add(const sf::String& name, bool selectTab)
     {
-        // Add the tab
-        m_tabNames.push_back(name);
-        m_text.setText(name);
-
-        sf::Vector2f currentSize = getSize();
+        // Create the new tab
+        Label newTab;
+        newTab.setTextFont(*getTextFont());
+        newTab.setTextColor(getTextColor());
+        newTab.setTextSize(getTextSize());
+        newTab.setText(name);
 
         // Calculate the width of the tab
-        float width = 0;
+        float width;
         if (m_maximumTabWidth)
-            width += TGUI_MAXIMUM(TGUI_MINIMUM(m_text.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
+            width = TGUI_MAXIMUM(TGUI_MINIMUM(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
         else
-            width += TGUI_MAXIMUM(m_text.getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
+            width = TGUI_MAXIMUM(newTab.getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
 
         // Add the new tab sprite
         m_texturesNormal.push_back(m_textureNormal);
@@ -140,14 +147,28 @@ namespace tgui
         m_texturesNormal.back().setSize({width, m_texturesNormal.back().getSize().y});
         m_texturesSelected.back().setSize({width, m_texturesSelected.back().getSize().y});
 
-        m_texturesNormal.back().setPosition({currentSize.x, 0});
-        m_texturesSelected.back().setPosition({currentSize.x, 0});
+        m_texturesNormal.back().setPosition({getPosition().x + getSize().x, getPosition().y});
+        m_texturesSelected.back().setPosition({getPosition().x + getSize().x, getPosition().y});
 
-        m_width += width;
+        // Set the correct size of the tab text
+        float textHeight = sf::Text{"kg", *getTextFont(), getTextSize()}.getLocalBounds().height;
+        newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((width - (2*m_distanceToSide) - newTab.getSize().x) / 2.0f),
+                            getPosition().y + ((getSize().y - textHeight) / 2.0f)});
 
         // If the tab has to be selected then do so
         if (selectTab)
-            m_selectedTab = m_tabNames.size()-1;
+        {
+            if (m_selectedTab >= 0)
+                m_tabNames[m_selectedTab].setTextColor(m_textColor);
+
+            m_selectedTab = m_tabNames.size();
+            newTab.setTextColor(m_selectedTextColor);
+        }
+
+        // Add the tab
+        m_tabNames.push_back(std::move(newTab));
+
+        m_width += width;
 
         // Return the index of the new tab
         return m_tabNames.size()-1;
@@ -157,14 +178,18 @@ namespace tgui
 
     void Tab::select(const sf::String& name)
     {
+        if (m_selectedTab >= 0)
+            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+
         // Loop through all tabs
         for (unsigned int i = 0; i < m_tabNames.size(); ++i)
         {
             // Find the tab that should be selected
-            if (m_tabNames[i] == name)
+            if (m_tabNames[i].getText() == name)
             {
                 // Select the tab
                 m_selectedTab = i;
+                m_tabNames[i].setTextColor(m_selectedTextColor);
                 return;
             }
         }
@@ -178,14 +203,21 @@ namespace tgui
         if (index > m_tabNames.size() - 1)
             return;
 
+        if (m_selectedTab >= 0)
+            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+
         // Select the tab
         m_selectedTab = index;
+        m_tabNames[m_selectedTab].setTextColor(m_selectedTextColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Tab::deselect()
     {
+        if (m_selectedTab >= 0)
+            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+
         m_selectedTab = -1;
     }
 
@@ -199,7 +231,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_tabNames.size(); ++i)
         {
             // Check if you found the tab to remove
-            if (m_tabNames[i] == name)
+            if (m_tabNames[i].getText() == name)
             {
                 m_width -= texturesNormalIt->getSize().x;
 
@@ -270,25 +302,32 @@ namespace tgui
 
     void Tab::setTextFont(const sf::Font& font)
     {
-        m_text.setTextFont(font);
+        m_textFont = &font;
+        for (auto& tab : m_tabNames)
+            tab.setTextFont(font);
 
-        setTextSize(m_textSize);
+        recalculateTabsWidth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Tab::setTextSize(unsigned int size)
     {
-        // Change the text size
-        m_textSize = size;
+        if (m_textSize != size)
+        {
+            m_textSize = size;
+            recalculateTabsWidth();
+        }
+    }
 
-        // Set the text size
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Tab::getTextSize() const
+    {
         if (m_textSize == 0)
-            m_text.setTextSize(static_cast<unsigned int>(m_textureNormal.getSize().y * 0.75f));
+            return static_cast<unsigned int>(m_textureNormal.getSize().y * 0.75f);
         else
-            m_text.setTextSize(m_textSize);
-
-        recalculateTabsWidth();
+            return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -373,15 +412,19 @@ namespace tgui
             // Check if the mouse went down on the tab
             if (x < width)
             {
+                if (m_selectedTab >= 0)
+                    m_tabNames[m_selectedTab].setTextColor(m_textColor);
+
                 // Select this tab
                 m_selectedTab = i;
+                m_tabNames[m_selectedTab].setTextColor(m_selectedTextColor);
 
                 // Add the callback (if the user requested it)
                 if (m_callbackFunctions[TabChanged].empty() == false)
                 {
                     m_callback.trigger = TabChanged;
                     m_callback.value   = m_selectedTab;
-                    m_callback.text    = m_tabNames[i];
+                    m_callback.text    = m_tabNames[i].getText();
                     m_callback.mouse.x = static_cast<int>(x - getPosition().x);
                     m_callback.mouse.y = static_cast<int>(y - getPosition().y);
                     addCallback();
@@ -524,13 +567,11 @@ namespace tgui
         auto textureSelectedIt = m_texturesSelected.begin();
         for (unsigned int i = 0; i < m_texturesNormal.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
         {
-            m_text.setText(m_tabNames[i]);
-
             float width;
             if (m_maximumTabWidth)
-                width = TGUI_MAXIMUM(TGUI_MINIMUM(m_text.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
+                width = TGUI_MAXIMUM(TGUI_MINIMUM(m_tabNames[i].getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
             else
-                width = TGUI_MAXIMUM(m_text.getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
+                width = TGUI_MAXIMUM(m_tabNames[i].getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
 
             textureNormalIt->setSize({width, textureNormalIt->getSize().y});
             textureSelectedIt->setSize({width, textureSelectedIt->getSize().y});
@@ -557,17 +598,7 @@ namespace tgui
     void Tab::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         GLint scissor[4];
-        bool clippingRequired = false;
         unsigned int accumulatedTabWidth = 0;
-        Label tempText(m_text);
-
-        // Calculate the height of all strings
-        tempText.setText("kg");
-        float textHeight = tempText.getSize().y;
-
-        tempText.setPosition(0, (m_textureNormal.getSize().y - textHeight) / 2.0f);
-
-        states.transform *= getTransform();
 
         // Loop through all tabs
         auto textureNormalIt = m_texturesNormal.cbegin();
@@ -592,18 +623,9 @@ namespace tgui
 
             // Draw the text
             {
-                // Give the text the correct color
-                if (m_selectedTab == static_cast<int>(i))
-                    tempText.setTextColor(m_selectedTextColor);
-                else
-                    tempText.setTextColor(m_textColor);
-
-                // Get the current size of the text, so that we can recalculate the position
-                tempText.setText(m_tabNames[i]);
-                tempText.setPosition({m_distanceToSide + accumulatedTabWidth + ((textureNormalIt->getSize().x - (2*m_distanceToSide) - tempText.getSize().x) / 2.0f), tempText.getPosition().y});
-
                 // Check if clipping is required for this tab
-                if (tempText.getSize().x > textureNormalIt->getSize().x - 2 * m_distanceToSide)
+                bool clippingRequired = false;
+                if (m_tabNames[i].getSize().x > textureNormalIt->getSize().x - 2 * m_distanceToSide)
                     clippingRequired = true;
 
                 // Check if clipping is required for this text
@@ -622,7 +644,7 @@ namespace tgui
                     sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
                                                     ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
                     sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + accumulatedTabWidth + textureNormalIt->getSize().x - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                        ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + textHeight) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+                                                        ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + m_tabNames[i].getSize().y) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
 
                     // Calculate the clipping area
                     GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
@@ -641,7 +663,7 @@ namespace tgui
                 }
 
                 // Draw the text
-                target.draw(tempText, states);
+                target.draw(m_tabNames[i], states);
 
                 // Reset the old clipping area when needed
                 if (clippingRequired)

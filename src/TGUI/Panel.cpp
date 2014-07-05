@@ -237,8 +237,8 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        // Set the transform
-        states.transform *= getTransform();
+        // Set the position
+        states.transform.translate(getPosition());
 
         // Draw the background
         if (m_backgroundColor != sf::Color::Transparent)

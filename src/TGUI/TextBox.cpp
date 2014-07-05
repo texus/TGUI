@@ -394,7 +394,7 @@ namespace tgui
             unsigned int totalLines = 0;
 
             // Loop through all characters
-            for (unsigned int i=0; i<m_selEnd; ++i)
+            for (unsigned int i = 0; i < m_selEnd; ++i)
             {
                 // Make sure there is no newline in the text
                 if (m_text[i] != '\n')
@@ -582,7 +582,7 @@ namespace tgui
                     unsigned int totalLines = 0;
 
                     // Loop through all characters
-                    for (unsigned int i=0; i<m_selEnd; ++i)
+                    for (unsigned int i = 0; i < m_selEnd; ++i)
                     {
                         // Make sure there is no newline in the text
                         if (m_text[i] != '\n')
@@ -1231,7 +1231,7 @@ namespace tgui
             unsigned int lines = 1;
 
             // Loop through every character
-            for (unsigned i=1; i < text.getSize() + 1; ++i)
+            for (unsigned i = 1; i < text.getSize() + 1; ++i)
             {
                 // Make sure the character is not a newline
                 if (text[i-1] != '\n')
@@ -1522,19 +1522,19 @@ namespace tgui
         {
             // Prepare to skip part of the text
             sf::String tempString = m_displayedText;
-            std::size_t newlinePos = 0;
+            std::string::size_type newlinePos = 0;
 
             // Only remove lines when there are lines to remove
             if (line > 1)
             {
-                unsigned int i=1;
+                unsigned int i = 1;
 
                 // If the first character is a newline then remove it if needed
                 if (m_text[0] == '\n')
                     ++i;
 
                 // Skip the lines above the line where you clicked
-                for ( ; i<line; ++i)
+                for ( ; i < line; ++i)
                     newlinePos = tempString.find('\n', newlinePos + 1);
 
                 // Remove the first lines
@@ -1542,7 +1542,7 @@ namespace tgui
             }
 
             // Only keep one line
-            std::size_t newlinePos2 = tempString.find('\n');
+            std::string::size_type newlinePos2 = tempString.find('\n');
             if (newlinePos2 != sf::String::InvalidPos)
                 tempString.erase(newlinePos2, sf::String::InvalidPos);
 
@@ -1671,7 +1671,7 @@ namespace tgui
             unsigned int totalLines = 0;
 
             // Loop through all characters
-            for (unsigned int i=0; i<m_selEnd; ++i)
+            for (unsigned int i = 0; i < m_selEnd; ++i)
             {
                 // Make sure there is no newline in the text
                 if (m_text[i] != '\n')
@@ -1758,7 +1758,7 @@ namespace tgui
         m_lines = 1;
 
         // Loop through every character
-        for (unsigned i=1; i < m_text.getSize() + 1; ++i)
+        for (unsigned i = 1; i < m_text.getSize() + 1; ++i)
         {
             // Make sure the character is not a newline
             if (m_text[i-1] != '\n')
@@ -1887,7 +1887,7 @@ namespace tgui
             m_multilineSelectionRectWidth.clear();
 
             // Loop through every character before the selection
-            for (i=0; i < selectionStart; ++i)
+            for (i = 0; i < selectionStart; ++i)
             {
                 // Make sure the character is not a newline
                 if (m_text[i] != '\n')
@@ -1914,7 +1914,7 @@ namespace tgui
             beginChar = lastNewlineBeforeSelection;
 
             // Loop through every selected character
-            for (i=selectionStart; i < selectionEnd; ++i)
+            for (i = selectionStart; i < selectionEnd; ++i)
             {
                 // Make sure the character is not a newline
                 if (m_text[i] != '\n')
@@ -1950,7 +1950,7 @@ namespace tgui
             tempText2.setString(m_displayedText);
 
             // Loop through the selected characters again
-            for (i=selectionStart; i<selectionEnd; ++i)
+            for (i = selectionStart; i < selectionEnd; ++i)
             {
                 if (m_displayedText[i] == '\n')
                 {
@@ -1979,7 +1979,7 @@ namespace tgui
             m_textSelection2.setString("");
 
             // Loop through every character inside the selection
-            for (i=selectionStart; i < selectionEnd; ++i)
+            for (i = selectionStart; i < selectionEnd; ++i)
             {
                 // Check if the character is a newline
                 if (m_displayedText[i] == '\n')
@@ -1996,7 +1996,7 @@ namespace tgui
             m_textAfterSelection2.setString("");
 
             // Loop through every character after the selection
-            for (i=selectionEnd; i < m_displayedText.getSize(); ++i)
+            for (i = selectionEnd; i < m_displayedText.getSize(); ++i)
             {
                 // Check if the character is a newline
                 if (m_displayedText[i] == '\n')
@@ -2058,8 +2058,8 @@ namespace tgui
         sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                             (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
-        // Adjust the transformation
-        states.transform *= getTransform();
+        // Adjust the position
+        states.transform.translate(getPosition());
 
         // Store the current transform
         sf::Transform origTransform = states.transform;
@@ -2172,7 +2172,7 @@ namespace tgui
                 selectionBackground2.setFillColor(m_selectedTextBgrColor);
 
                 // Draw the background rectangles of the selected text
-                for (unsigned int i=0; i<m_multilineSelectionRectWidth.size(); ++i)
+                for (unsigned int i = 0; i < m_multilineSelectionRectWidth.size(); ++i)
                 {
                     selectionBackground2.setSize({m_multilineSelectionRectWidth[i], static_cast<float>(m_lineHeight)});
                     target.draw(selectionBackground2, states);

@@ -167,6 +167,10 @@ namespace tgui
                 if (widget->isFocused())
                     unfocusWidgets();
 
+                // Change the index of the focused widget if this is needed
+                if (m_focusedWidget > i+1)
+                    m_focusedWidget--;
+
                 // Remove the widget
                 m_widgets.erase(m_widgets.begin() + i);
 
@@ -904,7 +908,7 @@ namespace tgui
     {
         Widget::mouseNoLongerDown();
 
-        for (unsigned int i=0; i<m_widgets.size(); ++i)
+        for (unsigned int i = 0; i < m_widgets.size(); ++i)
             m_widgets[i]->mouseNoLongerDown();
     }
 
@@ -952,7 +956,7 @@ namespace tgui
         if (event.type == sf::Event::MouseMoved)
         {
             // Loop through all widgets
-            for (unsigned int i=0; i<m_widgets.size(); ++i)
+            for (unsigned int i = 0; i < m_widgets.size(); ++i)
             {
                 // Check if the mouse went down on the widget
                 if (m_widgets[i]->m_mouseDown)
@@ -1192,7 +1196,7 @@ namespace tgui
         // None of the widgets behind the focused one could be focused, so loop the ones before it
         if (m_focusedWidget)
         {
-            for (unsigned int i=0; i<m_focusedWidget-1; ++i)
+            for (unsigned int i = 0; i < m_focusedWidget-1; ++i)
             {
                 // If you are not allowed to focus the widget, then skip it
                 if (m_widgets[i]->m_allowFocus == true)

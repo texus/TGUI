@@ -766,8 +766,7 @@ namespace tgui
         target.draw(m_closeButton, states);
 
         // Set the correct transformation
-        states.transform *= getTransform();
-        states.transform.translate(0, static_cast<float>(m_titleBarHeight));
+        states.transform.translate(getPosition().x, getPosition().y + m_titleBarHeight);
 
         // Draw left border
         sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});

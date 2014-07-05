@@ -79,6 +79,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the animated picture.
+        ///
+        /// @param size  The new size of the animated picture
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSize(const Layout& size) override;
+        using Transformable::setSize;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Load another image/frame from a file.
         ///
         /// @param filename       The filename of the image that you want to use as next frame.

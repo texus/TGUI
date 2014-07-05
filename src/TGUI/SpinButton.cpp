@@ -347,8 +347,8 @@ namespace tgui
 
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Adjust the transformation
-        states.transform *= getTransform();
+        // Adjust the position
+        states.transform.translate(getPosition());
 
         // Check if the image is drawn in the same direction than it was loaded
         if (m_verticalScroll)

@@ -298,7 +298,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Widget::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -423,7 +423,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("CallbackId", "uint"));
         return list;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::initialize(Container *const parent)

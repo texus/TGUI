@@ -75,9 +75,9 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_background.setPosition(position.getValue());
-        m_text.setPosition(std::floor(position.getValue().x - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(position.getValue().y - m_text.getLocalBounds().top + 0.5f));
+        m_background.setPosition(getPosition());
+        m_text.setPosition(std::floor(getPosition().x - m_text.getLocalBounds().left + 0.5f),
+                           std::floor(getPosition().y - m_text.getLocalBounds().top + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,9 @@ namespace tgui
     {
         m_text.setString(string);
 
-        updatePosition();
+        // Update the position of the text
+        m_text.setPosition(std::floor(getPosition().x - m_text.getLocalBounds().left + 0.5f),
+                           std::floor(getPosition().y - m_text.getLocalBounds().top + 0.5f));
 
         // Change the size of the label if necessary
         if (m_autoSize)
@@ -144,13 +146,6 @@ namespace tgui
             setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
             m_autoSize = true;
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Label::findCharacterPos(std::size_t index) const
-    {
-        return m_text.findCharacterPos(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

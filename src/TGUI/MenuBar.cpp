@@ -705,7 +705,7 @@ namespace tgui
     void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         sf::Transform oldTransform = states.transform;
-        states.transform *= getTransform();
+        states.transform.translate(getPosition());
 
         // Draw the background
         sf::RectangleShape background(getSize());

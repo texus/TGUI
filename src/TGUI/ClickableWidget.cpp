@@ -100,7 +100,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void ClickableWidget::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
@@ -156,7 +156,7 @@ namespace tgui
         else // The property didn't match
             Widget::getProperty(property, value);
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ClickableWidget::draw(sf::RenderTarget&, sf::RenderStates) const

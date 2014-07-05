@@ -117,6 +117,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the chat box.
         ///
         /// This size does not include the borders.

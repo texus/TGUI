@@ -228,7 +228,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelected() const
         {
-            return (m_selectedTab >= 0) ? m_tabNames[m_selectedTab] : "";
+            return (m_selectedTab >= 0) ? m_tabNames[m_selectedTab].getText() : "";
         }
 
 
@@ -267,7 +267,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Font* getTextFont() const
         {
-            return m_text.getTextFont();
+            return m_textFont;
         }
 
 
@@ -335,10 +335,7 @@ namespace tgui
         /// @return The text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const
-        {
-            return m_text.getTextSize();
-        }
+        unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,33 +504,31 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string   m_loadedConfigFile;
+        std::string     m_loadedConfigFile;
 
-        bool          m_separateSelectedImage = true;
+        bool            m_separateSelectedImage = true;
 
-        unsigned int  m_textSize = 0;
+        unsigned int    m_textSize = 0;
+        const sf::Font* m_textFont = nullptr;
 
-        sf::Color     m_textColor;
-        sf::Color     m_selectedTextColor;
+        sf::Color       m_textColor;
+        sf::Color       m_selectedTextColor;
 
-        unsigned int  m_maximumTabWidth = 0;
+        unsigned int    m_maximumTabWidth = 0;
 
-        float         m_width = 0;
+        float           m_width = 0;
 
         // The distance between the side of the tab and the text that is drawn on top of the tab.
         unsigned int m_distanceToSide = 5;
 
         int  m_selectedTab = -1;
 
-        std::vector<sf::String> m_tabNames;
+        std::vector<Label>  m_tabNames;
 
         Texture             m_textureNormal;
         Texture             m_textureSelected;
         std::list<Texture>  m_texturesNormal;
         std::list<Texture>  m_texturesSelected;
-
-        Label m_text;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

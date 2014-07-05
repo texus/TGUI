@@ -39,6 +39,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void AnimatedPicture::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        for (auto& texture : m_textures)
+            texture.setPosition(getPosition());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void AnimatedPicture::setSize(const Layout& size)
+    {
+        Widget::setSize(size);
+
+        for (auto& texture : m_textures)
+            texture.setScale({getSize().x / texture.getSize().x, getSize().y / texture.getSize().y});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void AnimatedPicture::addFrame(const std::string& filename, sf::Time frameDuration)
     {
         // Try to load the texture from the file
@@ -297,11 +317,7 @@ namespace tgui
     void AnimatedPicture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         if (!m_textures.empty())
-        {
-            states.transform *= getTransform();
-            states.transform.scale(getSize().x / m_textures[m_currentFrame].getSize().x, getSize().y / m_textures[m_currentFrame].getSize().y);
             target.draw(m_textures[m_currentFrame], states);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

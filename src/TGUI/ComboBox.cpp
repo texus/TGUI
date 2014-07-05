@@ -54,7 +54,8 @@ namespace tgui
         m_textureArrowUpNormal  {listBoxToCopy.m_textureArrowUpNormal},
         m_textureArrowUpHover   {listBoxToCopy.m_textureArrowUpHover},
         m_textureArrowDownNormal{listBoxToCopy.m_textureArrowDownNormal},
-        m_textureArrowDownHover {listBoxToCopy.m_textureArrowDownHover}
+        m_textureArrowDownHover {listBoxToCopy.m_textureArrowDownHover},
+        m_text                  {listBoxToCopy.m_text}
     {
         if (listBoxToCopy.m_listBox != nullptr)
         {
@@ -86,6 +87,7 @@ namespace tgui
             std::swap(m_textureArrowUpHover,    temp.m_textureArrowUpHover);
             std::swap(m_textureArrowDownNormal, temp.m_textureArrowDownNormal);
             std::swap(m_textureArrowDownHover,  temp.m_textureArrowDownHover);
+            std::swap(m_text,                   temp.m_text);
         }
 
         return *this;
@@ -190,6 +192,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        m_textureArrowUpNormal.setPosition({getPosition().x + getSize().x - m_textureArrowUpNormal.getSize().x, getPosition().y});
+        m_textureArrowDownNormal.setPosition({getPosition().x + getSize().x - m_textureArrowDownNormal.getSize().x, getPosition().y});
+
+        m_textureArrowUpHover.setPosition(m_textureArrowUpNormal.getPosition());
+        m_textureArrowDownHover.setPosition(m_textureArrowUpNormal.getPosition());
+
+        float textHeight = sf::Text{"kg", *m_text.getTextFont(), m_text.getTextSize()}.getLocalBounds().height;
+        m_text.setPosition(getPosition().x + (m_text.getTextSize() / 10.0f),
+                           getPosition().y + ((getSize().y - textHeight) / 2.0f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setSize(const Layout& size)
     {
         Widget::setSize(size);
@@ -197,9 +216,19 @@ namespace tgui
         m_listBox->setItemHeight(static_cast<unsigned int>(getSize().y));
 
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItems().size())))});
+            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * (TGUI_MINIMUM(m_nrOfItemsToDisplay, m_listBox->getItemCount())))});
         else
-            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItems().size())});
+            m_listBox->setSize({getSize().x, static_cast<float>(m_listBox->getItemHeight() * m_listBox->getItemCount())});
+
+        m_textureArrowUpNormal.setSize({m_textureArrowUpNormal.getImageSize().x * (getSize().y / m_textureArrowUpNormal.getImageSize().y), getSize().y});
+        m_textureArrowDownNormal.setSize({m_textureArrowDownNormal.getImageSize().x * (getSize().y / m_textureArrowDownNormal.getImageSize().y), getSize().y});
+
+        m_textureArrowUpHover.setSize(m_textureArrowUpNormal.getSize());
+        m_textureArrowDownHover.setSize(m_textureArrowUpNormal.getSize());
+
+        m_text.setTextSize(static_cast<unsigned int>(getSize().y * 0.8f));
+
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,15 +252,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setTextColor(const sf::Color& textColor)
+    {
+        m_text.setTextColor(textColor);
+        m_listBox->setTextColor(textColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setTextFont(const sf::Font& font)
+    {
+        m_text.setTextFont(font);
+        m_listBox->setTextFont(font);
+
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setBorders(const Borders& borders)
     {
-        // Set the new border size
         m_borders = borders;
-        m_listBox->setBorders(borders);
-
-        // There is a minimum width
-        if (getSize().x < 50 + m_textureArrowDownNormal.getSize().x)
-            m_listBox->setSize({50.0f + m_textureArrowDownNormal.getSize().x, m_listBox->getSize().y});
+        m_listBox->setBorders({m_borders.left, m_borders.bottom, m_borders.right, m_borders.bottom});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,8 +281,8 @@ namespace tgui
     int ComboBox::addItem(const sf::String& item, int id)
     {
         // Make room to add another item, until there are enough items
-        if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItems().size()))
-            m_listBox->setSize({m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItems().size() + 1))});
+        if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItemCount()))
+            m_listBox->setSize({m_listBox->getSize().x, static_cast<float>(m_listBox->getItemHeight() * (m_listBox->getItemCount() + 1))});
 
         // Add the item
         return m_listBox->addItem(item, id);
@@ -248,8 +290,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ComboBox::setSelectedItem(const sf::String& itemName)
+    {
+        bool ret = m_listBox->setSelectedItem(itemName);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::setSelectedItem(int index)
+    {
+        bool ret = m_listBox->setSelectedItem(index);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::deselectItem()
     {
+        m_text.setText("");
         m_listBox->deselectItem();
     }
 
@@ -264,20 +325,25 @@ namespace tgui
 
     bool ComboBox::removeItem(const sf::String& itemName)
     {
-        return m_listBox->removeItem(itemName);
+        bool ret = m_listBox->removeItem(itemName);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::removeItemsById(int id)
     {
-        return m_listBox->removeItemsById(id);
+        unsigned int ret = m_listBox->removeItemsById(id);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::removeAllItems()
     {
+        m_text.setText("");
         m_listBox->removeAllItems();
     }
 
@@ -285,21 +351,27 @@ namespace tgui
 
     bool ComboBox::changeItem(unsigned int index, const sf::String& newValue)
     {
-        return m_listBox->changeItem(index, newValue);
+        bool ret = m_listBox->changeItem(index, newValue);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::changeItems(const sf::String& originalValue, const sf::String& newValue)
     {
-        return m_listBox->changeItems(originalValue, newValue);
+        unsigned int ret = m_listBox->changeItems(originalValue, newValue);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::changeItemsById(int id, const sf::String& newValue)
     {
-        return m_listBox->changeItemsById(id, newValue);
+        unsigned int ret = m_listBox->changeItemsById(id, newValue);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,6 +656,8 @@ namespace tgui
 
         if (!getTextFont() && m_parent->getGlobalFont())
             setTextFont(*m_parent->getGlobalFont());
+
+        m_text.initialize(parent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -594,7 +668,7 @@ namespace tgui
         {
             m_listBox->show();
 
-            sf::Vector2f position = {getPosition().x, getPosition().y + getSize().y + m_borders.bottom};
+            sf::Vector2f position = {getPosition().x, getPosition().y + getSize().y + m_borders.top};
 
             Widget* container = this;
             while (container->getParent() != nullptr)
@@ -639,6 +713,8 @@ namespace tgui
 
     void ComboBox::newItemSelectedCallbackFunction()
     {
+        m_text.setText(m_listBox->getSelectedItem());
+
         if (m_callbackFunctions[ItemSelected].empty() == false)
         {
             // When no item is selected then send an empty string, otherwise send the item
@@ -676,44 +752,35 @@ namespace tgui
                                              - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                             (getAbsolutePosition().y + m_listBox->getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
-        // Adjust the transformation
-        states.transform *= getTransform();
-
-        // Remember the current transformation
-        sf::Transform oldTransform = states.transform;
-
-        // Draw left border
-        sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
-        border.setPosition(-m_borders.left, -m_borders.top);
-        border.setFillColor(m_listBox->m_borderColor);
-        target.draw(border, states);
-
-        // Draw top border
-        border.setSize({getSize().x + m_borders.right, m_borders.top});
-        border.setPosition(0, -m_borders.top);
-        target.draw(border, states);
-
-        // Draw right border
-        border.setSize({m_borders.right, getSize().y + m_borders.bottom});
-        border.setPosition(getSize().x, 0);
-        target.draw(border, states);
-
-        // Draw bottom border
-        border.setSize({getSize().x + m_borders.left, m_borders.bottom});
-        border.setPosition(-m_borders.left, getSize().y);
-        target.draw(border, states);
-
         // Draw the combo box
         sf::RectangleShape front(getSize());
+        front.setPosition(getPosition());
         front.setFillColor(m_listBox->getBackgroundColor());
         target.draw(front, states);
 
-        // Create a text widget to draw it
-        Label tempText;
-        tempText.setTextFont(*m_listBox->getTextFont());
-        tempText.setTextSize(static_cast<unsigned int>(getSize().y * 0.8f));
-        tempText.setTextColor(m_listBox->getTextColor());
-        tempText.setText("kg");
+        // Draw the borders
+        {
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
+            border.setPosition(getPosition().x - m_borders.left, getPosition().y - m_borders.top);
+            border.setFillColor(m_listBox->m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({getSize().x + m_borders.right, m_borders.top});
+            border.setPosition(getPosition().x, getPosition().y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, getSize().y + m_borders.bottom});
+            border.setPosition(getPosition().x + getSize().x, getPosition().y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({getSize().x + m_borders.left, m_borders.bottom});
+            border.setPosition(getPosition().x - m_borders.left, getPosition().y + getSize().y);
+            target.draw(border, states);
+        }
 
         // Get the old clipping area
         GLint scissor[4];
@@ -735,23 +802,14 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the selected item
-        states.transform.translate(2, (getSize().y - tempText.getSize().y) / 2.0f);
-        tempText.setText(m_listBox->getSelectedItem());
-        target.draw(tempText, states);
+        target.draw(m_text, states);
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
-        // Reset the transformations
-        states.transform = oldTransform;
-
         // Set the arrow like it should (down when list box is invisible, up when it is visible)
         if (m_listBox->isVisible())
         {
-            float scaleFactor =  getSize().y / m_textureArrowUpNormal.getSize().y;
-            states.transform.translate(getSize().x - (m_textureArrowUpNormal.getSize().x * scaleFactor), 0);
-            states.transform.scale(scaleFactor, scaleFactor);
-
             // Draw the arrow
             if (m_separateHoverImage)
             {
@@ -770,10 +828,6 @@ namespace tgui
         }
         else
         {
-            float scaleFactor =  getSize().y / m_textureArrowDownNormal.getSize().y;
-            states.transform.translate(getSize().x - (m_textureArrowDownNormal.getSize().x * scaleFactor), 0);
-            states.transform.scale(scaleFactor, scaleFactor);
-
             // Draw the arrow
             if (m_separateHoverImage)
             {
