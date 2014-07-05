@@ -188,6 +188,10 @@ namespace tgui
                 if (widget->isFocused())
                     unfocusWidgets();
 
+                // Change the index of the focused widget if this is needed
+                if (m_FocusedWidget > i+1)
+                    m_FocusedWidget--;
+
                 // Remove the widget
                 m_Widgets.erase(m_Widgets.begin() + i);
 
