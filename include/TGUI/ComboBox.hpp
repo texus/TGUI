@@ -359,21 +359,19 @@ namespace tgui
         /// @brief Adds an item to the list, so that it can be selected later.
         ///
         /// @param itemName  The name of the item you want to add (this is the text that will be displayed inside the combo box)
-        /// @param id        Optional id given to this item for the purpose to later identifying this item.
+        /// @param id        Optional unique id given to this item for the purpose to later identifying this item.
         ///
         /// @return
-        ///         -  The index of the item when it was successfully added.
-        ///         -  -1 when the combo box wasn't loaded correctly
-        ///         -  -1 when the list is full (you have set a maximum item limit and you are trying to add more items)
-        ///         -  -1 when there is no scrollbar and you try to have more items than the number of items to display
-        ///
-        /// @warning The index returned by this function may no longer correct when an item is removed.
+        ///         - true when the item when it was successfully added
+        ///         - false when the combo box wasn't loaded correctly
+        ///         - false when the list is full (you have set a maximum item limit and you are trying to add more items)
+        ///         - false when there is no scrollbar and you try to have more items than the number of items to display
         ///
         /// @see setMaximumItems
         /// @see setItemsToDisplay
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int addItem(const sf::String& itemName, int id = 0);
+        bool addItem(const sf::String& itemName, const sf::String& id = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,15 +380,16 @@ namespace tgui
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
         /// then you can use this function to select an item.
-        /// The first item that matches the name will be selected.
         ///
         /// @param itemName  The item you want to select
+        ///
+        /// In case the names are not unique, the first item with that name will be selected.
         ///
         /// @return
         ///         - true on success
         ///         - false when none of the items matches the name
         ///
-        /// @see setSelectedItem(unsigned int)
+        /// @see setSelectedItemById
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setSelectedItem(const sf::String& itemName);
@@ -402,18 +401,19 @@ namespace tgui
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
         /// then you can use this function to select an item.
-        /// If the index is -1 then the deselectItem function will be called.
         ///
-        /// @param index  The index of the item
+        /// @param id  Unique id passed to addItem
+        ///
+        /// In case the id would not be unique, the first item with that id will be selected.
         ///
         /// @return
         ///         - true on success
-        ///         - false when the index was too high
+        ///         - false when none of the items has the given id
         ///
-        /// @see setSelectedItem(sf::String)
+        /// @see setSelectedItem
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItem(int index);
+        bool setSelectedItemById(const sf::String& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,22 +426,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes an item from the list with a given index.
-        ///
-        /// @param index  The index of the item to remove
-        ///
-        /// @return
-        ///        - true when the item was removed
-        ///        - false when the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeItem(unsigned int index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the first item from the list with a given name.
+        /// @brief Removes the item from the list with the given name.
         ///
         /// @param itemName  The item to remove
+        ///
+        /// In case the names are not unique, only the first item with that name will be removed.
         ///
         /// @return
         ///        - true when the item was removed
@@ -452,14 +441,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all items that were added with the given id.
+        /// @brief Removes the item that were added with the given id.
         ///
         /// @param id  Id that was given to the addItem function.
         ///
-        /// @return Amount of items that were removed.
+        /// In case the id is not unique, only the first item with that id will be removed.
+        ///
+        /// @return
+        ///        - true when the item was removed
+        ///        - false when there was no item with the given id
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int removeItemsById(int id);
+        bool removeItemById(const sf::String& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -470,39 +463,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the item name of the item with the given index.
+        /// @brief Returns the item name of the item with the given id.
         ///
-        /// @param index  The index of the item
+        /// @param id  The id of the item that was given to it when it was added
         ///
-        /// @return The requested item.
-        ///         The string will be empty when the index was too high.
+        /// In case the id is not unique, the first item with that id will be returned.
         ///
-        /// @see getItemIndex
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getItem(unsigned int index) const
-        {
-            return m_listBox->getItem(index);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the index of the first item with the given name.
-        ///
-        /// @param itemName  The name of the item
-        ///
-        /// @return The index of the item that matches the name.
-        ///         If none of the items matches then the returned index will be -1.
-        ///
-        /// @warning This index may become wrong when an item is removed from the list.
-        ///
-        /// @see getItem
+        /// @return The requested item, or an empty string when no item matches the id
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getItemIndex(const sf::String& itemName) const
-        {
-            return m_listBox->getItemIndex(itemName);
-        }
+        sf::String getItemById(const sf::String& id) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,29 +481,10 @@ namespace tgui
         /// @return The selected item.
         ///         When no item was selected then this function will return an empty string.
         ///
-        /// @see getSelectedItemIndex
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelectedItem() const
         {
             return m_listBox->getSelectedItem();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the index of the selected item.
-        ///
-        /// @return The index of the selected item.
-        ///         When no item was selected then this function returns -1.
-        ///
-        /// @warning This index may become wrong when an item is removed from the list.
-        ///
-        /// @see getSelectedItem
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getSelectedItemIndex() const
-        {
-            return m_listBox->getSelectedItemIndex();
         }
 
 
@@ -544,46 +495,42 @@ namespace tgui
         ///         When no item was selected then this function returns 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getSelectedItemId() const
+        sf::String getSelectedItemId() const
         {
             return m_listBox->getSelectedItemId();
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the value of the item at the given index
+        /// @brief Changes an item with name originalValue to newValue.
         ///
-        /// @param index    The index of the value that should be changed
+        /// @param originalValue The name of the item which you want to change
+        /// @param newValue      The new name for that item
+        ///
+        /// In case the names are not unique, only the first item with that name will be changed.
+        ///
+        /// @return
+        ///        - true when the item was changed
+        ///        - false when none of the items had the given name
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItem(const sf::String& originalValue, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the name of an item with the given id to newValue.
+        ///
+        /// @param id       The unique id of the item which you want to change
         /// @param newValue The new name for that item
         ///
-        /// @return True when the name was changed, false when the id was too high
+        /// In case the id is not unique, only the first item with that id will be changed.
+        ///
+        /// @return
+        ///        - true when the item was changed
+        ///        - false when none of the items had the given id
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool changeItem(unsigned int index, const sf::String& newValue);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes all items with originalValue to newValue.
-        ///
-        /// @param originalValue The name of the items which will change
-        /// @param newValue      The new name for these items
-        ///
-        /// @return The amount of items that were changed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int changeItems(const sf::String& originalValue, const sf::String& newValue);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes all items with the given id to newValue.
-        ///
-        /// @param id       The id of the items which will change
-        /// @param newValue The new name for these items
-        ///
-        /// @return The amount of items that were changed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int changeItemsById(int id, const sf::String& newValue);
+        bool changeItemById(const sf::String& id, const sf::String& newValue);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

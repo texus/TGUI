@@ -278,7 +278,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ComboBox::addItem(const sf::String& item, int id)
+    bool ComboBox::addItem(const sf::String& item, const sf::String& id)
     {
         // Make room to add another item, until there are enough items
         if ((m_nrOfItemsToDisplay == 0) || (m_nrOfItemsToDisplay > m_listBox->getItemCount()))
@@ -299,9 +299,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::setSelectedItem(int index)
+    bool ComboBox::setSelectedItemById(const sf::String& id)
     {
-        bool ret = m_listBox->setSelectedItem(index);
+        bool ret = m_listBox->setSelectedItemById(id);
         m_text.setText(m_listBox->getSelectedItem());
         return ret;
     }
@@ -316,13 +316,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::removeItem(unsigned int index)
-    {
-        return m_listBox->removeItem(index);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool ComboBox::removeItem(const sf::String& itemName)
     {
         bool ret = m_listBox->removeItem(itemName);
@@ -332,9 +325,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::removeItemsById(int id)
+    bool ComboBox::removeItemById(const sf::String& id)
     {
-        unsigned int ret = m_listBox->removeItemsById(id);
+        bool ret = m_listBox->removeItemById(id);
         m_text.setText(m_listBox->getSelectedItem());
         return ret;
     }
@@ -349,27 +342,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::changeItem(unsigned int index, const sf::String& newValue)
+    bool ComboBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
     {
-        bool ret = m_listBox->changeItem(index, newValue);
+        bool ret = m_listBox->changeItem(originalValue, newValue);
         m_text.setText(m_listBox->getSelectedItem());
         return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::changeItems(const sf::String& originalValue, const sf::String& newValue)
+    bool ComboBox::changeItemById(const sf::String& id, const sf::String& newValue)
     {
-        unsigned int ret = m_listBox->changeItems(originalValue, newValue);
-        m_text.setText(m_listBox->getSelectedItem());
-        return ret;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ComboBox::changeItemsById(int id, const sf::String& newValue)
-    {
-        unsigned int ret = m_listBox->changeItemsById(id, newValue);
+        bool ret = m_listBox->changeItemById(id, newValue);
         m_text.setText(m_listBox->getSelectedItem());
         return ret;
     }
@@ -453,8 +437,8 @@ namespace tgui
                 // If the selected item is not visible then change the value of the scrollbar
                 if (m_nrOfItemsToDisplay > 0)
                 {
-                    if (static_cast<unsigned int>(m_listBox->getSelectedItemIndex() + 1) > m_nrOfItemsToDisplay)
-                        m_listBox->m_scroll->setValue((static_cast<unsigned int>(m_listBox->getSelectedItemIndex()) - m_nrOfItemsToDisplay + 1) * m_listBox->getItemHeight());
+                    if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) > m_nrOfItemsToDisplay)
+                        m_listBox->m_scroll->setValue(static_cast<unsigned int>((m_listBox->m_selectedItem + 1 - m_nrOfItemsToDisplay) * m_listBox->getItemHeight()));
                     else
                         m_listBox->m_scroll->setValue(0);
                 }
@@ -482,14 +466,14 @@ namespace tgui
             if (delta < 0)
             {
                 // select the next item
-                if (static_cast<unsigned int>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->m_items.size())
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->getSelectedItemIndex()+1));
+                if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) < m_listBox->m_items.size())
+                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem+1));
             }
             else // You are scrolling up
             {
                 // select the previous item
-                if (m_listBox->getSelectedItemIndex() > 0)
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->getSelectedItemIndex()-1));
+                if (m_listBox->m_selectedItem > 0)
+                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem-1));
             }
         }
     }
@@ -719,7 +703,6 @@ namespace tgui
         {
             // When no item is selected then send an empty string, otherwise send the item
             m_callback.text    = m_listBox->getSelectedItem();
-            m_callback.value   = m_listBox->getSelectedItemIndex();
             m_callback.trigger = ItemSelected;
             addCallback();
         }

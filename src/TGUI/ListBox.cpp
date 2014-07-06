@@ -30,7 +30,7 @@
 #include <TGUI/ListBox.hpp>
 #include <TGUI/Label.hpp>
 
-#include <algorithm>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -257,7 +257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ListBox::addItem(const sf::String& itemName, int id)
+    bool ListBox::addItem(const sf::String& itemName, const sf::String& id)
     {
         // Check if the item limit is reached (if there is one)
         if ((m_maxItems == 0) || (m_items.size() < m_maxItems))
@@ -270,7 +270,7 @@ namespace tgui
 
                 // Check if the item still fits in the list box
                 if (m_items.size() == maximumItems)
-                    return -1;
+                    return false;
             }
             else // There is a scrollbar so tell it that another item was added
             {
@@ -289,87 +289,52 @@ namespace tgui
             m_itemIds.push_back(id);
 
             updatePosition();
-
-            // Return the item index
-            return m_items.size() - 1;
+            return true;
         }
         else // The item limit was reached
-            return -1;
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ListBox::setSelectedItem(const sf::String& itemName)
     {
-        // Loop through all items
         for (unsigned int i = 0; i < m_items.size(); ++i)
         {
-            // Check if a match was found
             if (m_items[i].getText() == itemName)
             {
-                if (m_selectedItem >= 0)
-                    m_items[m_selectedItem].setTextColor(m_textColor);
-
-                // Select the item
-                m_selectedItem = static_cast<int>(i);
-                m_items[m_selectedItem].setTextColor(m_selectedTextColor);
-
-                // Move the scrollbar if needed
-                if (m_scroll)
-                {
-                    if (m_selectedItem * getItemHeight() < m_scroll->getValue())
-                        m_scroll->setValue(m_selectedItem * getItemHeight());
-                    else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
-                        m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
-
-                    updatePosition();
-                }
-
+                setSelectedItemByIndex(i);
                 return true;
             }
         }
 
         // No match was found
+        if (m_selectedItem >= 0)
+            m_items[m_selectedItem].setTextColor(m_textColor);
+
         m_selectedItem = -1;
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItem(int index)
+    bool ListBox::setSelectedItemById(const sf::String& id)
     {
-        if (index < 0)
+        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
         {
-            deselectItem();
-            return true;
+            if (m_itemIds[i] == id)
+            {
+                setSelectedItemByIndex(i);
+                return true;
+            }
         }
 
+        // No match was found
         if (m_selectedItem >= 0)
             m_items[m_selectedItem].setTextColor(m_textColor);
 
-        // If the index is too high then deselect the items
-        if (index > static_cast<int>(m_items.size())-1)
-        {
-            m_selectedItem = -1;
-            return false;
-        }
-
-        // Select the item
-        m_selectedItem = index;
-        m_items[m_selectedItem].setTextColor(m_selectedTextColor);
-
-        // Move the scrollbar if needed
-        if (m_scroll)
-        {
-            if (m_selectedItem * getItemHeight() < m_scroll->getValue())
-                m_scroll->setValue(m_selectedItem * getItemHeight());
-            else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
-                m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
-
-            updatePosition();
-        }
-
-        return true;
+        m_selectedItem = -1;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,58 +350,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::removeItem(unsigned int index)
-    {
-        // The index can't be too high
-        if (index > m_items.size()-1)
-            return false;
-
-        // Remove the item
-        m_items.erase(m_items.begin() + index);
-        m_itemIds.erase(m_itemIds.begin() + index);
-
-        // If there is a scrollbar then tell it that an item was removed
-        if (m_scroll != nullptr)
-        {
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
-            updatePosition();
-        }
-
-        // Check if the selected item should change
-        if (m_selectedItem == static_cast<int>(index))
-            m_selectedItem = -1;
-        else if (m_selectedItem > static_cast<int>(index))
-            --m_selectedItem;
-
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool ListBox::removeItem(const sf::String& itemName)
     {
-        // Loop through all items
         for (unsigned int i = 0; i < m_items.size(); ++i)
         {
-            // When the name matches then delete the item
             if (m_items[i].getText() == itemName)
             {
-                m_items.erase(m_items.begin() + i);
-                m_itemIds.erase(m_itemIds.begin() + i);
-
-                // Check if the selected item should change
-                if (m_selectedItem == static_cast<int>(i))
-                    m_selectedItem = -1;
-                else if (m_selectedItem > static_cast<int>(i))
-                    --m_selectedItem;
-
-                // If there is a scrollbar then tell it that an item was removed
-                if (m_scroll != nullptr)
-                {
-                    m_scroll->setMaximum(m_items.size() * m_itemHeight);
-                    updatePosition();
-                }
-
+                removeItemByIndex(i);
                 return true;
             }
         }
@@ -446,24 +366,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::removeItemsById(int id)
+    bool ListBox::removeItemById(const sf::String& id)
     {
-        unsigned int removedItems = 0;
-
-        for (unsigned int i = 0; i < m_items.size();)
+        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
         {
             if (m_itemIds[i] == id)
             {
-                m_items.erase(m_items.begin() + i);
-                m_itemIds.erase(m_itemIds.begin() + i);
-
-                removedItems++;
+                removeItemByIndex(i);
+                return true;
             }
-            else
-                ++i;
         }
 
-        return removedItems;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,30 +398,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListBox::getItem(unsigned int index) const
+    sf::String ListBox::getItemById(const sf::String& id) const
     {
-        // The index can't be too high
-        if (index > m_items.size()-1)
-            return "";
-
-        // Return the item
-        return m_items[index].getText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    int ListBox::getItemIndex(const sf::String& itemName) const
-    {
-        // Loop through all items
-        for (unsigned int i = 0; i < m_items.size(); ++i)
+        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
         {
-            // When the name matches then return the index
-            if (m_items[i].getText() == itemName)
-                return i;
+            if (m_itemIds[i] == id)
+                return m_items[i].getText();
         }
 
-        // No match was found
-        return -1;
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,48 +418,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::changeItem(unsigned int index, const sf::String& newValue)
+    sf::String ListBox::getSelectedItemId() const
     {
-        if (index >= m_items.size())
-            return false;
-
-        m_items[index].setText(newValue);
-        return true;
+        return (m_selectedItem >= 0) ? m_itemIds[m_selectedItem] : "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::changeItems(const sf::String& originalValue, const sf::String& newValue)
+    bool ListBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
     {
-        unsigned int amountChanged = 0;
-        for (auto it = m_items.begin(); it != m_items.end(); ++it)
+        for (auto& item : m_items)
         {
-            if (it->getText() == originalValue)
+            if (item.getText() == originalValue)
             {
-                it->setText(newValue);
-                amountChanged++;
+                item.setText(newValue);
+                return true;
             }
         }
 
-        return amountChanged;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ListBox::changeItemsById(int id, const sf::String& newValue)
+    bool ListBox::changeItemById(const sf::String& id, const sf::String& newValue)
     {
-        unsigned int amountChanged = 0;
-        auto idIt = m_itemIds.begin();
-        for (auto it = m_items.begin(); it != m_items.end(); ++it, ++idIt)
+        for (unsigned int i = 0; i < m_items.size(); ++i)
         {
-            if (*idIt == id)
+            if (m_itemIds[i] == id)
             {
-                it->setText(newValue);
-                amountChanged++;
+                m_items[i].setText(newValue);
+                return true;
             }
         }
 
-        return amountChanged;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,6 +958,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setSelectedItemByIndex(unsigned int index)
+    {
+        assert(index < m_items.size());
+
+        if (m_selectedItem >= 0)
+            m_items[m_selectedItem].setTextColor(m_textColor);
+
+        // Select the item
+        m_selectedItem = static_cast<int>(index);
+        m_items[m_selectedItem].setTextColor(m_selectedTextColor);
+
+        // Move the scrollbar if needed
+        if (m_scroll)
+        {
+            if (m_selectedItem * getItemHeight() < m_scroll->getValue())
+                m_scroll->setValue(m_selectedItem * getItemHeight());
+            else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
+                m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
+
+            updatePosition();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::removeItemByIndex(unsigned int index)
+    {
+        assert(index < m_items.size());
+
+        // Remove the item
+        m_items.erase(m_items.begin() + index);
+        m_itemIds.erase(m_itemIds.begin() + index);
+
+        // If there is a scrollbar then tell it that an item was removed
+        if (m_scroll != nullptr)
+        {
+            m_scroll->setMaximum(m_items.size() * m_itemHeight);
+            updatePosition();
+        }
+
+        // Check if the selected item should change
+        if (m_selectedItem == static_cast<int>(index))
+            m_selectedItem = -1;
+        else if (m_selectedItem > static_cast<int>(index))
+            --m_selectedItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::initialize(Container *const parent)
     {
         Widget::initialize(parent);
@@ -1181,93 +1122,7 @@ namespace tgui
         // Draw the items
         for (unsigned int i = firstItem; i < lastItem; ++i)
             target.draw(m_items[i], states);
-/**
-        // Check if there is a scrollbar and whether it isn't hidden
-        if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-        {
-            for (unsigned int i = firstItem; i < lastItem; ++i)
-            {
-                // Restore the transformations
-                states.transform = storedTransform;
 
-                // Set the next item
-                text.setText(m_items[i]);
-
-                // Check if we are drawing the selected item
-                if (m_selectedItem == static_cast<int>(i))
-                {
-                    // Draw a background for the selected item
-                    {
-                        // Set a new transformation
-                        states.transform.translate(0, (static_cast<float>(i * m_itemHeight) - m_scroll->getValue()));
-
-                        // Create and draw the background
-                        sf::RectangleShape back({getSize().x, static_cast<float>(m_itemHeight)});
-                        back.setFillColor(m_selectedBackgroundColor);
-                        target.draw(back, states);
-
-                        // Restore the transformation
-                        states.transform = storedTransform;
-                    }
-
-                    // Change the text color
-                    text.setTextColor(m_selectedTextColor);
-                }
-                else // Set the normal text color
-                    text.setTextColor(m_textColor);
-
-                // Set the translation for the text
-                states.transform.translate(2, static_cast<float>(i * m_itemHeight) - m_scroll->getValue() + ((m_itemHeight - text.getSize().y) / 2.0f));
-
-                // Draw the text
-                target.draw(text, states);
-            }
-        }
-        else // There is no scrollbar or it is invisible
-        {
-
-            // Store the current transformations
-            sf::Transform storedTransform = states.transform;
-
-            for (unsigned int i = 0; i < m_items.size(); ++i)
-            {
-                // Restore the transformations
-                states.transform = storedTransform;
-
-                // Set the next item
-                text.setText(m_items[i]);
-
-                // Check if we are drawing the selected item
-                if (m_selectedItem == static_cast<int>(i))
-                {
-                    // Draw a background for the selected item
-                    {
-                        // Set a new transformation
-                        states.transform.translate(0, static_cast<float>(i * m_itemHeight));
-
-                        // Create and draw the background
-                        sf::RectangleShape back({getSize().x, static_cast<float>(m_itemHeight)});
-                        back.setFillColor(m_selectedBackgroundColor);
-                        target.draw(back, states);
-
-                        // Restore the transformation
-                        states.transform = storedTransform;
-                    }
-
-                    // Change the text color
-                    text.setTextColor(m_selectedTextColor);
-                }
-                else // Set the normal text color
-                    text.setTextColor(m_textColor);
-
-                // Set the translation for the text
-                states.transform.translate(2, (i * m_itemHeight) + ((m_itemHeight - text.getSize().y) / 2.0f));
-
-                // Draw the text
-                target.draw(text, states);
-            }
-        }
-*/
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
