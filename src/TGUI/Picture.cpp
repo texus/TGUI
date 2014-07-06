@@ -104,53 +104,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void Picture::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-
-        if (property == "filename")
-        {
-            load(value);
-        }
-        else if (property == "smooth")
-        {
-            if ((value == "true") || (value == "True"))
-                setSmooth(true);
-            else if ((value == "false") || (value == "False"))
-                setSmooth(false);
-            else
-                throw Exception{"Failed to parse 'Smooth' property."};
-        }
-        else // The property didn't match
-            ClickableWidget::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Picture::getProperty(std::string property, std::string& value) const
-    {
-        property = toLower(property);
-
-        if (property == "filename")
-            value = getLoadedFilename();
-        else if (property == "smooth")
-            value = isSmooth() ? "true" : "false";
-        else // The property didn't match
-            ClickableWidget::getProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::list< std::pair<std::string, std::string> > Picture::getPropertyList() const
-    {
-        auto list = ClickableWidget::getPropertyList();
-        list.push_back(std::pair<std::string, std::string>("Filename", "string"));
-        list.push_back(std::pair<std::string, std::string>("Smooth", "bool"));
-        return list;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {

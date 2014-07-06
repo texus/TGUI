@@ -139,48 +139,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void SpriteSheet::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-
-        if (property == "rows")
-        {
-            setRows(tgui::stoi(value));
-        }
-        else if (property == "columns")
-        {
-            setColumns(tgui::stoi(value));
-        }
-        else // The property didn't match
-            Picture::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpriteSheet::getProperty(std::string property, std::string& value) const
-    {
-        property = toLower(property);
-
-        if (property == "rows")
-            value = tgui::to_string(getRows());
-        else if (property == "columns")
-            value = tgui::to_string(getColumns());
-        else // The property didn't match
-            Picture::getProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::list< std::pair<std::string, std::string> > SpriteSheet::getPropertyList() const
-    {
-        auto list = Picture::getPropertyList();
-        list.push_back(std::pair<std::string, std::string>("Rows", "uint"));
-        list.push_back(std::pair<std::string, std::string>("Columns", "uint"));
-        return list;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

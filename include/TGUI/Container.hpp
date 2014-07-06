@@ -381,37 +381,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void unbindGlobalCallback();
 
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads a form from a file.
-        ///
-        /// The widgets will be loaded and added to the container.
-        /// Note that even when this function fails, some widgets might have been loaded already.
-        ///
-        /// @param filename  Filename of the widget file that is to be loaded
-        ///
-        /// @return
-        ///        - true on success
-        ///        - false when the file could not be opened
-        ///        - false when the file contains a mistake
-        ///        - false when one of the widgets couldn't be loaded
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromFile(const std::string& filename);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save the widgets to a file.
-        ///
-        /// @param filename  Filename of the widget file that is to be created
-        ///
-        /// @return
-        ///        - true on success
-        ///        - false when the file couldn't be created
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void saveWidgetsToFile(const std::string& filename);
-*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside

@@ -485,33 +485,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unbindGlobalCallback();
 
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads a form from a file.
-        ///
-        /// The widgets will be loaded and added to the container.
-        /// Note that even when this function fails, some widgets might have been loaded already.
-        ///
-        /// @param filename  Filename of the widget file that is to be loaded
-        ///
-        /// @throw Exception when the file could not be opened
-        /// @throw Exception when the file contains a mistake
-        /// @throw Exception when one of the widgets, described in the file, couldn't be loaded
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromFile(const std::string& filename);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save the widgets to a file.
-        ///
-        /// @param filename  Filename of the widget file that is to be created
-        ///
-        /// @throw Exception when the file couldn't be created
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void saveWidgetsToFile(const std::string& filename);
-*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Update the internal clock to make animation possible. This function is called automatically by the draw function.
