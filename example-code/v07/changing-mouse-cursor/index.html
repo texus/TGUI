@@ -1,0 +1,102 @@
+---
+---
+
+<!DOCTYPE html>
+
+<head>
+    {% include head.ext %}
+
+    <title>TGUI v0.7 example code</title>
+
+    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
+</head>
+
+<body>
+<div id="Background">
+
+    {% include header.ext %}
+
+    {% include navigation.ext %}
+
+    <h2>Changing mouse cursor on button hover</h2>
+
+    <p>This codes how to easily change the cursor image when hovering over a button.</p>
+
+{% highlight c++ %}
+#include <TGUI/TGUI.hpp>
+
+int main()
+{
+    sf::RenderWindow window{sf::VideoMode{300, 400}, "TGUI window"};
+
+    // Make the real cursor invisible inside the application
+    window.setMouseCursorVisible(false);
+
+    // Load the texture that will be used as cursor
+    sf::Texture textureCursorNormal;
+    textureCursorNormal.loadFromFile("CursorNormal.png");
+
+    // Load the texture that will be used as cursor when the mouse is on top of one of the buttons
+    sf::Texture textureCursorHover;
+    textureCursorHover.loadFromFile("CursorHover.png");
+
+    // Show the normal cursor by default
+    sf::Sprite sprite(textureCursorNormal);
+
+    tgui::Gui gui(window);
+    gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
+
+    auto play = tgui::Button::create("TGUI/widgets/Black.conf");
+    play->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.125);
+    play->setSize(tgui::bindWidth(gui)*0.7, tgui::bindHeight(gui)*0.15);
+    play->setText("Play");
+    gui.add(play);
+
+    // When the mouse enters or leaves the button, the mouse cursor should change.
+    // We only have to do this for one button, since the others will be copies of this one.
+    play->bindCallback(tgui::Button::MouseEntered, [&](){ sprite.setTexture(textureCursorHover); });
+    play->bindCallback(tgui::Button::MouseLeft, [&](){ sprite.setTexture(textureCursorNormal); });
+
+    auto load = tgui::Button::copy(play);
+    load->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.425);
+    load->setText("Load");
+    gui.add(load);
+
+    auto exit = tgui::Button::copy(play);
+    exit->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.725);
+    exit->setText("Exit");
+    gui.add(exit);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            // Reposition the sprite when the mouse moves
+            if (event.type == sf::Event::MouseMoved)
+                sprite.setPosition(window.mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}));
+
+            else if (event.type == sf::Event::Closed)
+                window.close();
+
+            gui.handleEvent(event);
+        }
+
+        window.clear();
+
+        // Draw the buttons
+        gui.draw();
+
+        // Draw the cursor
+        window.draw(sprite);
+
+        window.display();
+    }
+
+    return EXIT_SUCCESS;
+}
+{% endhighlight %}
+
+    {% include footer.ext %}
+</div>
+</body>
