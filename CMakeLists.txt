@@ -147,8 +147,7 @@ add_subdirectory(src/TGUI)
 
 # Install the widgets and fonts on linux
 if (SFML_OS_LINUX)
-    install( DIRECTORY widgets fonts
-             DESTINATION "${CMAKE_INSTALL_PREFIX}/${INSTALL_MISC_DIR}" )
+    install( DIRECTORY widgets fonts DESTINATION "${INSTALL_MISC_DIR}" )
 endif()
 
 # Build the documentation when requested
@@ -156,6 +155,11 @@ if (TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
-# install include files
+# Install include files
 install(DIRECTORY include DESTINATION .)
+
+# Install FindTGUI.cmake file
+if(NOT SFML_OS_ANDROID)
+    install(FILES cmake/Modules/FindTGUI.cmake DESTINATION "${INSTALL_MISC_DIR}/cmake/Modules")
+endif()
 
