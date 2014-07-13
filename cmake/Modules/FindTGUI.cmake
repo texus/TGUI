@@ -21,7 +21,7 @@ IF (WIN32)
         ${PROJECT_SOURCE_DIR}/TGUI/bin
         ${PROJECT_SOURCE_DIR}/TGUI/lib
         DOC "The TGUI release library")
-	FIND_LIBRARY( TGUI_LIBRARY_DEBUG
+    FIND_LIBRARY( TGUI_LIBRARY_DEBUG
         NAMES TGUI-D
         PATHS
         $ENV{TGUI_ROOT}/build/lib/Debug
