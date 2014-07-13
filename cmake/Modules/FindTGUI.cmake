@@ -11,7 +11,6 @@ IF (WIN32)
     FIND_PATH( TGUI_INCLUDE_PATH TGUI/TGUI.hpp
         $ENV{TGUI_ROOT}/include
         ${TGUI_ROOT}/include
-        ${PROJECT_SOURCE_DIR}/src/nvgl/TGUI/include
         DOC "The directory where TGUI.hpp resides")
     FIND_LIBRARY( TGUI_LIBRARY_RELEASE
         NAMES TGUI
