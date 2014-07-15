@@ -42,7 +42,7 @@ enum SelectionSquares
     RightSelectionSquare,
     BottomRightSelectionSquare,
     BottomSelectionSquare,
-    BottomLeftSelectionSquare,
+    BottomLeftSelectionSquare
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
