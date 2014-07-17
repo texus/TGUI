@@ -378,6 +378,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Let the first lines start from the top or from the bottom of the chat box.
+        ///
+        /// Note that this only makes a difference when the lines don't fill the entire chat box.
+        /// This does not change the order of the lines, new lines will always be below older lines.
+        ///
+        /// \param startFromBottom  Let the first lines be placed at the bottom of the chat box, or remain at the top?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setLinesStartFromBottom(bool startFromBottom);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// \brief Changes the scrollbar of the chat box.
         ///
         /// \param scrollbarConfigFileFilename  Filename of the config file.
@@ -531,6 +543,8 @@ namespace tgui
         unsigned int m_MaxLines;
 
         float m_FullTextHeight;
+
+        bool m_LinesStartFromBottom;
 
         // The panel containing the labels
         Panel* m_Panel;

@@ -38,13 +38,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox() :
-        m_LineSpacing   (0),
-        m_TextSize      (16),
-        m_TextColor     (sf::Color::Black),
-        m_BorderColor   (sf::Color::Black),
-        m_MaxLines      (0),
-        m_FullTextHeight(0),
-        m_Scroll        (nullptr)
+        m_LineSpacing         (0),
+        m_TextSize            (16),
+        m_TextColor           (sf::Color::Black),
+        m_BorderColor         (sf::Color::Black),
+        m_MaxLines            (0),
+        m_FullTextHeight      (0),
+        m_LinesStartFromBottom(false),
+        m_Scroll              (nullptr)
     {
         m_Callback.widgetType = Type_ChatBox;
         m_DraggableWidget = true;
@@ -60,15 +61,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& copy) :
-        Widget            (copy),
-        WidgetBorders     (copy),
-        m_LoadedConfigFile(copy.m_LoadedConfigFile),
-        m_LineSpacing     (copy.m_LineSpacing),
-        m_TextSize        (copy.m_TextSize),
-        m_TextColor       (copy.m_TextColor),
-        m_BorderColor     (copy.m_BorderColor),
-        m_MaxLines        (copy.m_MaxLines),
-        m_FullTextHeight  (copy.m_FullTextHeight)
+        Widget                (copy),
+        WidgetBorders         (copy),
+        m_LoadedConfigFile    (copy.m_LoadedConfigFile),
+        m_LineSpacing         (copy.m_LineSpacing),
+        m_TextSize            (copy.m_TextSize),
+        m_TextColor           (copy.m_TextColor),
+        m_BorderColor         (copy.m_BorderColor),
+        m_MaxLines            (copy.m_MaxLines),
+        m_FullTextHeight      (copy.m_FullTextHeight),
+        m_LinesStartFromBottom(copy.m_LinesStartFromBottom)
     {
         m_Panel = new Panel(*copy.m_Panel);
 
@@ -106,15 +108,16 @@ namespace tgui
             this->Widget::operator=(right);
             this->WidgetBorders::operator=(right);
 
-            std::swap(m_LoadedConfigFile, temp.m_LoadedConfigFile);
-            std::swap(m_LineSpacing,      temp.m_LineSpacing);
-            std::swap(m_TextSize,         temp.m_TextSize);
-            std::swap(m_TextColor,        temp.m_TextColor);
-            std::swap(m_BorderColor,      temp.m_BorderColor);
-            std::swap(m_MaxLines,         temp.m_MaxLines);
-            std::swap(m_FullTextHeight,   temp.m_FullTextHeight);
-            std::swap(m_Panel,            temp.m_Panel);
-            std::swap(m_Scroll,           temp.m_Scroll);
+            std::swap(m_LoadedConfigFile,     temp.m_LoadedConfigFile);
+            std::swap(m_LineSpacing,          temp.m_LineSpacing);
+            std::swap(m_TextSize,             temp.m_TextSize);
+            std::swap(m_TextColor,            temp.m_TextColor);
+            std::swap(m_BorderColor,          temp.m_BorderColor);
+            std::swap(m_MaxLines,             temp.m_MaxLines);
+            std::swap(m_FullTextHeight,       temp.m_FullTextHeight);
+            std::swap(m_LinesStartFromBottom, temp.m_LinesStartFromBottom);
+            std::swap(m_Panel,                temp.m_Panel);
+            std::swap(m_Scroll,               temp.m_Scroll);
         }
 
         return *this;
@@ -533,6 +536,15 @@ namespace tgui
     void ChatBox::setLineSpacing(unsigned int lineSpacing)
     {
         m_LineSpacing = lineSpacing;
+
+        updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setLinesStartFromBottom(bool startFromBottom)
+    {
+        m_LinesStartFromBottom = startFromBottom;
 
         updateDisplayedText();
     }
@@ -985,6 +997,14 @@ namespace tgui
                 for (auto it = labels.begin(); it != labels.end(); ++it)
                     (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y - diff);
             }
+        }
+
+        // Put the lines at the bottom of the chat box if needed
+        if (m_LinesStartFromBottom && (position < m_Panel->getSize().y))
+        {
+            float diff = m_Panel->getSize().y - position;
+            for (auto it = labels.begin(); it != labels.end(); ++it)
+                (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y + diff);
         }
     }
 
