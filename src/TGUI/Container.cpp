@@ -900,7 +900,7 @@ namespace tgui
     {
         sf::Event newEvent;
         newEvent.type = sf::Event::KeyPressed;
-        newEvent.key.code = event.code;
+        newEvent.key = event;
 
         // Let the event manager handle the event
         handleEvent(newEvent);

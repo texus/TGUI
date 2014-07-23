@@ -1502,6 +1502,20 @@ namespace tgui
 
                     deleteSelectedCharacters();
                 }
+                else if (event.code == sf::Keyboard::A)
+                {
+                    m_SelStart = 0;
+                    m_SelEnd = m_Text.getSize();
+                    m_SelChars = m_Text.getSize();
+
+                    m_TextBeforeSelection.setString("");
+                    m_TextSelection1.setString(m_DisplayedText);
+                    m_TextSelection2.setString("");
+                    m_TextAfterSelection1.setString("");
+                    m_TextAfterSelection2.setString("");
+
+                    updateDisplayedText();
+                }
             }
         }
     }

@@ -1437,6 +1437,18 @@ namespace tgui
                     TGUI_Clipboard.set(m_TextSelection.getString());
                     deleteSelectedCharacters();
                 }
+                else if (event.code == sf::Keyboard::A)
+                {
+                    m_SelStart = 0;
+                    m_SelEnd = m_Text.getSize();
+                    m_SelChars = m_Text.getSize();
+
+                    m_TextBeforeSelection.setString("");
+                    m_TextSelection.setString(m_DisplayedText);
+                    m_TextAfterSelection.setString("");
+
+                    recalculateTextPositions();
+                }
             }
         }
     }
