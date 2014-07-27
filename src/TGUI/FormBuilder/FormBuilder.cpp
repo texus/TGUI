@@ -370,7 +370,7 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
 
         // Add the widgets again
         for (auto it = activeForm->widgets.cbegin(); it != activeForm->widgets.cend(); ++it)
-            formPanel->add(it->widget);
+            formPanel->add(it->widget, it->properties.front().second.value);
 
         // Remove the edit menu
         menu.removeMenuItem("Edit", "To front");
@@ -1157,6 +1157,7 @@ void FormBuilder::changeProperty(tgui::EditBox::Ptr value, tgui::EditBox::Ptr pr
                 if (it->first == "Name")
                 {
                     it->second.value = value->getText();
+                    activeForm->window->get<tgui::Panel>("Panel")->setWidgetName(activeForm->activeWidget->widget, value->getText());
 
                     tgui::ComboBox::Ptr widgetSelector = tgui::ChildWindow::Ptr(panel->get("PropertiesWindow"))->get("WidgetSelector");
 
