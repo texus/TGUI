@@ -978,12 +978,20 @@ namespace tgui
         if (m_Scroll)
             position -= static_cast<float>(m_Scroll->getValue());
 
+        sf::Text tempText{"k", m_Panel->getGlobalFont(), 20};
+
         auto& labels = m_Panel->getWidgets();
         for (unsigned int i = 0; i < labels.size(); ++i)
         {
             tgui::Label::Ptr label = labels[i];
-            label->setPosition(2.0f, position);
 
+            // Not every line has the same height
+            float positionFix = 0;
+            tempText.setCharacterSize(label->getTextSize());
+            if (tempText.getLocalBounds().height > label->getSize().y)
+                positionFix = tempText.getLocalBounds().height - label->getSize().y;
+
+            label->setPosition(2.0f, position + positionFix);
             position += getLineSpacing(i);
         }
 
