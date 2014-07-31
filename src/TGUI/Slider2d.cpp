@@ -386,7 +386,7 @@ namespace tgui
                 m_Callback.value2d = m_Value;
                 addCallback();
             }
-		}
+        }
     }
 
 
@@ -447,15 +447,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void Slider2d::mouseNoLongerDown()
-	{
-		m_MouseDown = false;
+    void Slider2d::mouseNoLongerDown()
+    {
+        m_MouseDown = false;
 
-		if (m_ReturnThumbToCenter)
-		{
-		    if (m_Value != sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
-		    {
-		        setValue(sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
+        if (m_ReturnThumbToCenter)
+        {
+            if (m_Value != sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f))
+            {
+                setValue(sf::Vector2f((m_Maximum.x + m_Minimum.x) * 0.5f, (m_Maximum.y + m_Minimum.y) * 0.5f));
 
                 if (m_CallbackFunctions[ThumbReturnedToCenter].empty() == false)
                 {
@@ -463,11 +463,11 @@ namespace tgui
                     m_Callback.value2d = m_Value;
                     addCallback();
                 }
-		    }
-		}
-	}
+            }
+        }
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Slider2d::setProperty(std::string property, const std::string& value)
     {
