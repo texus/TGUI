@@ -978,7 +978,7 @@ namespace tgui
         if (m_Scroll)
             position -= static_cast<float>(m_Scroll->getValue());
 
-        sf::Text tempText{"k", m_Panel->getGlobalFont(), 20};
+        sf::Text tempText("k", m_Panel->getGlobalFont(), 20);
 
         auto& labels = m_Panel->getWidgets();
         for (unsigned int i = 0; i < labels.size(); ++i)
