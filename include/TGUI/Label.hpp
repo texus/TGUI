@@ -85,13 +85,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This function does not do anything
+        /// \brief Changes the area of the text that will be drawn.
         ///
-        /// \param width   Ignored
-        /// \param height  Ignored
+        /// \param width   Width of the part to draw
+        /// \param height  Height of the part to draw
         ///
-        /// In order to work around a bug in SFML 2.1, I have decided to remove some functionality from Label.
-        /// This functionality wasn't very useful anyway without the changes that are being made in v0.7.
+        /// Only the part of the text that lies within the size will be drawn.
+        ///
+        /// When a background color is set, the drawn background will have this size.
+        /// So setting a size that is bigger than the text will result in a bigger area being filled.
+        ///
+        /// When this function is called, the label will no longer be auto-sizing.
+        ///
+        /// \see setAutoSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(float width, float height);
@@ -119,7 +125,9 @@ namespace tgui
         ///
         /// \param text  The new text
         ///
-        /// The size of the label will be changed to fit the whole text.
+        /// When the text is auto-sized (default), then the size of the label will be changed to fit the whole text.
+        ///
+        /// \see setAutoSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
@@ -198,6 +206,9 @@ namespace tgui
         ///
         /// The background color is transparent by default.
         ///
+        /// When auto-size is enabled (default), then the background is just as big as the text.
+        /// When a manual size is set, the background will fill this whole area.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor);
 
@@ -214,21 +225,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief This function does nothing, auto-sizing is always enabled.
+        /// \brief Changes whether the label is auto-sized or not.
         ///
-        /// \param autoSize  ignored
+        /// \param autoSize  Should the size of the label be changed when the text changes?
         ///
-        /// In order to work around a bug in SFML 2.1, I have decided to remove some functionality from Label.
-        /// This functionality wasn't very useful anyway without the changes that are being made in v0.7.
+        /// When the label is in auto-size mode, the width and height of the label will be changed to fit the text.
+        /// Otherwise, only the part defined by the size will be visible.
+        ///
+        /// The label is auto-sized by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setAutoSize(bool autoSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Always returns true
+        /// \brief Returns whether the label is auto-sized or not.
         ///
-        /// \return true
+        /// \return Is the size of the label changed when the text changes?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool getAutoSize() const;
@@ -293,6 +306,8 @@ namespace tgui
         sf::RectangleShape m_Background;
 
         sf::Text m_Text;
+
+        bool m_AutoSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
