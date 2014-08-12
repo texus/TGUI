@@ -205,16 +205,12 @@ namespace tgui
         ///
         /// \param backgroundColor  New background color
         ///
-        /// The background is fully transparent by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const sf::Color& backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// \brief Returns the background color of the panel.
-        ///
-        /// The background is fully transparent by default.
+        /// \brief Returns the background color of the child window.
         ///
         /// \return The current background color
         ///
