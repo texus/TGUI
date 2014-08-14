@@ -71,8 +71,6 @@ namespace tgui
             // Tell the widgets inside the panel that the mouse is no longer on top of them
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNotOnWidget();
-
-            m_mouseHover = false;
         }
 
         return false;
@@ -150,12 +148,11 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)

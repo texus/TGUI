@@ -35,10 +35,11 @@
 namespace tgui
 {
     class Scrollbar;
+    class ChatBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API ChatBox : public Widget, public WidgetBorders
+    class TGUI_API ChatBox : public Widget
     {
     public:
 
@@ -80,13 +81,16 @@ namespace tgui
         /// @brief Create the chat box
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "ChatBox" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ChatBox::Ptr create(const std::string& configFileFilename);
+        static ChatBox::Ptr create(const std::string& configFileFilename = "", const std::string& section = "ChatBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,15 +108,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<ChatBoxRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<ChatBoxRenderer>(m_renderer);
         }
 
 
@@ -152,10 +155,7 @@ namespace tgui
         /// @return Full size of the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getFullSize() const override
-        {
-            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
-        }
+        virtual sf::Vector2f getFullSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,7 +272,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLineLimit(unsigned int maxLines);
 
-
+/// TODO: There has to be a font resource manager before the font can be changed dynamically.
+///       Otherwise the pointers will point to the old font and the line will be badly displayed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the default font of the text.
         ///
@@ -286,12 +287,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the default font of the text.
+        /// @brief Changes the default font of the text.
         ///
-        /// @return  Pointer to the font that is currently being used
+        /// @return The currently used default font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
+        const sf::Font* getTextFont()
         {
             return m_panel->getGlobalFont();
         }
@@ -344,54 +345,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the chat box.
-        ///
-        /// @param backgroundColor  The new background color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_panel->setBackgroundColor(backgroundColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color that will be used inside the chat box.
-        ///
-        /// @param borderColor  The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor)
-        {
-            m_borderColor = borderColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color that is currently being used inside the chat box.
-        ///
-        /// @return The color of the background of the chat box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor() const
-        {
-            return m_panel->getBackgroundColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the border color that is currently being used inside the chat box.
-        ///
-        /// @return The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBorderColor() const
-        {
-            return m_borderColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the line spacing of all lines.
         ///
         /// By default, line spacing is chosen based on the font and character size. This also means that when mixing different
@@ -407,26 +360,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the chat box.
-        ///
-        /// @param scrollbarConfigFileFilename  Filename of the config file.
-        ///                                     The config file must contain a Scrollbar section with the needed information.
-        ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbar(const std::string& scrollbarConfigFileFilename);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes the scrollbar from the chat box (if there is one).
-        ///
-        /// When there are too many lines to fit in the chat box then some lines will be removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeScrollbar();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Let the first lines start from the top or from the bottom of the chat box.
+        ///
+        /// Note that this only makes a difference when the lines don't fill the entire chat box.
+        /// This does not change the order of the lines, new lines will always be below older lines.
+        ///
+        /// @param startFromTop  Let the first lines be placed at the top of the chat box, or remain at the bottom?
+        ///
+        /// By default the first lines will be placed at the bottom of the chat box.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setLinesStartFromTop(bool startFromTop);
+
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,24 +429,42 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseNoLongerDown() override;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        // This function is called when the widget is added to a container.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void initialize(Container *const parent) override;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Retrieve the space of one of the lines.
+        // Retrieve the height of one of the lines, including the space below it that separates it from the next line.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getLineSpacing(unsigned int lineNumber);
+        float getLineSpacing(const Label::Ptr& line);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Recalculate the space used by all the labels.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void recalculateFullTextHeight();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Update the position of the labels.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateDisplayedText();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Update the position and size of the panel and scrollbar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateRendering();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the widget is added to a container.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(Container *const parent) override;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
@@ -503,12 +473,6 @@ namespace tgui
         {
             return std::make_shared<ChatBox>(*this);
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Update the position of the labels.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateDisplayedText();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,7 +489,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ChatBoxCallbacks
         {
-            AllChatBoxCallbacks = WidgetCallbacksCount - 1, ///< All triggers defined in ChatBox and its base classes
             ChatBoxCallbacksCount = WidgetCallbacksCount
         };
 
@@ -533,24 +496,165 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
-
         unsigned int m_lineSpacing = 0;
-        unsigned int m_textSize = 16;
+        unsigned int m_textSize = 18;
         sf::Color m_textColor = sf::Color::Black;
-        sf::Color m_borderColor = sf::Color::Black;
 
         unsigned int m_maxLines = 0;
 
         float m_fullTextHeight = 0;
 
+        bool m_linesStartFromTop = false;
+
         // The panel containing the labels
-        Panel::Ptr m_panel = Panel::create({360, 200});
+        Panel::Ptr m_panel = Panel::create();
 
         // The scrollbar
-        Scrollbar::Ptr m_scroll = nullptr;
+        Scrollbar::Ptr m_scroll = Scrollbar::create();
+
+        friend class ChatBoxRenderer;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class ChatBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param chatBox  The chat box that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ChatBoxRenderer(ChatBox* chatBox) : m_chatBox{chatBox} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the border color that will be used inside the chat box.
+        ///
+        /// @param borderColor  The color of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& borderColor)
+        {
+            m_borderColor = borderColor;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color that will be used inside the chat box.
+        ///
+        /// @param backgroundColor  The new background color.
+        ///
+        /// Note that this color is ignored when you set a background image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& backgroundColor)
+        {
+            m_backgroundColor = backgroundColor;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background image
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the scrollbar of the chat box.
+        ///
+        /// @param scrollbarThemeFileFilename  Filename of the theme file.
+        /// @param section  The section to look for inside the theme file.
+        ///
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the padding.
+        ///
+        /// @param padding  Size of the padding
+        ///
+        /// This padding will be scaled together with the background image.
+        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ChatBoxRenderer(const ChatBoxRenderer&) = default;
+        ChatBoxRenderer& operator=(const ChatBoxRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        ChatBox* m_chatBox;
+
+        sf::Color m_borderColor = {0, 0, 0};
+        sf::Color m_backgroundColor = {245, 245, 245};
+
+        Texture m_backgroundTexture;
+
+        friend class ChatBox;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

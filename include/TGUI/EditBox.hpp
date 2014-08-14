@@ -32,9 +32,11 @@
 
 namespace tgui
 {
+    class EditBoxRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API EditBox : public ClickableWidget, public WidgetBorders
+    class TGUI_API EditBox : public ClickableWidget
     {
     public:
 
@@ -77,13 +79,16 @@ namespace tgui
         /// @brief Creates the edit box
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "EditBox" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static EditBox::Ptr create(const std::string& configFileFilename);
+        static EditBox::Ptr create(const std::string& configFileFilename = "", const std::string& section = "EditBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,15 +106,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<EditBoxRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<EditBoxRenderer>(m_renderer);
         }
 
 
@@ -168,6 +172,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the default text of the editbox. This is the text drawn when the edit box is empty.
+        ///
+        /// This text is not affected by the password character.
+        ///
+        /// @param text  The new default text.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDefaultText(const sf::String& text)
+        {
+            m_defaultText.setString(text);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the default text of the edit box. This is the text drawn when the edit box is empty.
+        ///
+        /// This text is not affected by the password character.
+        ///
+        /// @return The default text of the edit box.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::String getDefaultText() const
+        {
+            return m_defaultText.getString();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the text that you currently have selected. This text is not affected by the password character.
         ///
         /// @return The selected text of the edit box.
@@ -195,30 +227,6 @@ namespace tgui
         unsigned int getTextSize() const
         {
             return m_textFull.getCharacterSize();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the text.
-        ///
-        /// @return  The font that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_textFull.getFont();
         }
 
 
@@ -277,128 +285,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the border width and border height of the edit box.
-        ///
-        /// When the text is auto-scaled then it will be drawn within these borders. The borders themselves are invisible.
-        /// The borders are also used to define the clipping area.
-        /// Note that these borders are scaled together with the image!
-        ///
-        /// @param borders  The size of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(const Borders& borders) override;
-        using WidgetBorders::setBorders;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the colors from the edit box.
-        ///
-        /// @param textColor                    The color of the text
-        /// @param selectedTextColor            The color of the text when it is selected
-        /// @param selectedTextBackgroundColor  The color of the background of the text that is selected
-        /// @param caretColor                   The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& textColor                   = sf::Color(  0,   0,   0),
-                          const sf::Color& selectedTextColor           = sf::Color(255, 255, 255),
-                          const sf::Color& selectedTextBackgroundColor = sf::Color( 10, 110, 255),
-                          const sf::Color& caretColor                  = sf::Color(110, 110, 255));
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the edit box.
-        ///
-        /// @param textColor  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the edit box.
-        ///
-        /// @param selectedTextColor  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor)
-        {
-            m_textSelection.setColor(selectedTextColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the edit box.
-        ///
-        /// @param selectedTextBackgroundColor  The new background color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
-        {
-            m_selectedTextBackground.setFillColor(selectedTextBackgroundColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color that will be used inside the edit box for the blinking caret.
-        ///
-        /// @param caretColor  The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretColor(const sf::Color& caretColor)
-        {
-            m_caret.setFillColor(caretColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the edit box.
-        ///
-        /// @return The text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_textBeforeSelection.getColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color of the selected text that is currently being used inside the edit box.
-        ///
-        /// @return The selected text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_textSelection.getColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color of the selected text that is currently being used inside the edit box.
-        ///
-        /// @return The background color of the selected text that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextBackgroundColor() const
-        {
-            return m_selectedTextBackground.getFillColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the color that is currently being used inside the edit box for the blinking caret.
-        ///
-        /// @return The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getCaretColor() const
-        {
-            return m_caret.getFillColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Should the text width be limited or should you be able to type even if the edit box is full?
         ///
         /// @param limitWidth  Should there be a text width limit or not.
@@ -427,19 +313,7 @@ namespace tgui
         /// @param width  New width of the caret
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretWidth(unsigned int width = 2);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the width of the caret.
-        ///
-        /// @return width  Width of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getCaretWidth() const
-        {
-            return static_cast<unsigned int>(m_caret.getSize().x);
-        }
+        void setCaretWidth(unsigned int width);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -495,6 +369,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the width of the edit box minus the padding.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getVisibleEditBoxWidth();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
@@ -531,7 +410,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // When AnimationManager changes the elapsed time then this function is called.
+        // When the elapsed time has changed then this function is called.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void update() override;
 
@@ -550,17 +429,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum EditBoxCallbacks
         {
-            TextChanged = ClickableWidgetCallbacksCount * 1,             ///< Text changed
-            ReturnKeyPressed = ClickableWidgetCallbacksCount * 2,        ///< Return key was pressed
-            AllEditBoxCallbacks = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in EditBox and its base classes
+            TextChanged = ClickableWidgetCallbacksCount * 1,       ///< Text changed
+            ReturnKeyPressed = ClickableWidgetCallbacksCount * 2,  ///< Return key was pressed
             EditBoxCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        std::string   m_loadedConfigFile;
 
         // Is the caret visible or not?
         bool          m_caretVisible = true;
@@ -606,20 +482,283 @@ namespace tgui
         sf::Text m_textSelection;
         sf::Text m_textAfterSelection;
         sf::Text m_textFull;
-
-        Texture  m_textureNormal;
-        Texture  m_textureHover;
-        Texture  m_textureFocused;
+        sf::Text m_defaultText;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;
 
         bool m_numbersOnly = false;
-        bool m_separateHoverImage = false;
+
+        friend class EditBoxRenderer;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class EditBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param button  The button that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        EditBoxRenderer(EditBox* editBox) : m_editBox{editBox} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the text.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the padding of the edit box.
+        ///
+        /// When the text is auto-scaled then it will be drawn within the area defined by the size minus the padding.
+        /// The padding is also used to define the clipping area for when the text it too long.
+        ///
+        /// This padding will be scaled together with the background image.
+        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
+        ///
+        /// @param padding  The padding width and height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the edit box.
+        ///
+        /// @param textColor  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& textColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color of the selected text that will be used inside the edit box.
+        ///
+        /// @param selectedTextColor  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextColor(const sf::Color& selectedTextColor)
+        {
+            m_editBox->m_textSelection.setColor(selectedTextColor);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the selected text that will be used inside the edit box.
+        ///
+        /// @param selectedTextBackgroundColor  The new background color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
+        {
+            m_editBox->m_selectedTextBackground.setFillColor(selectedTextBackgroundColor);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color of the default text that can optionally be displayed when the edit box is empty.
+        ///
+        /// @param defaultTextColor  The new default text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDefaultTextColor(const sf::Color& defaultTextColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background.
+        ///
+        /// @param color  New background color
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /// @see setTextColorNormal
+        /// @see setTextColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background in the normal state (mouse not on button).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color that will be used inside the edit box for the blinking caret.
+        ///
+        /// @param caretColor  The color of the blinking caret
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCaretColor(const sf::Color& caretColor)
+        {
+            m_editBox->m_caret.setFillColor(caretColor);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders.
+        ///
+        /// @param color  New border color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the mouse is not on top of the edit box
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setNormalImage(const std::string& filename,
+                            const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                            const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                            bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the mouse is located on top of the edit box
+        ///
+        /// A NormalImage should be loaded for this to work.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setHoverImage(const std::string& filename,
+                           const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                           const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                           bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is drawn on top of the edit box image when the edit box is focused
+        ///
+        /// A NormalImage should be loaded for this to work.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFocusedImage(const std::string& filename,
+                             const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                             const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                             bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the padding, which is possibly scaled with the background image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Padding getScaledPadding() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        EditBoxRenderer(const EditBoxRenderer&) = default;
+        EditBoxRenderer& operator=(const EditBoxRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        EditBox*  m_editBox;
+
+        sf::Color m_borderColor = {0, 0, 0};
+
+        sf::Color m_backgroundColorNormal = {245, 245, 245};
+        sf::Color m_backgroundColorHover  = {255, 255, 255};
+
+        Texture   m_textureNormal;
+        Texture   m_textureHover;
+        Texture   m_textureFocused;
+
+        friend class EditBox;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

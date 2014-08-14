@@ -73,6 +73,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Deleted copy constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Gui(const Gui& copy) = delete;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Deleted assignment operator overload
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Gui& operator=(const Gui& right) = delete;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the window on which the gui should be drawn.
         ///
         /// @param window  The sfml window that will be used by the gui.
@@ -217,12 +229,12 @@ namespace tgui
         ///
         /// @param filename  Path of the font file to load
         ///
-        /// @return True if loading succeeded, false if it failed
+        /// @throw Exception when loading fails
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setGlobalFont(const std::string& filename)
+        void setGlobalFont(const std::string& filename)
         {
-            return m_container->setGlobalFont(filename);
+            m_container->setGlobalFont(filename);
         }
 
 
@@ -299,6 +311,7 @@ namespace tgui
         /// @brief Returns a pointer to an earlier created widget.
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget
         ///
@@ -311,13 +324,14 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(const sf::String& widgetName) const;
+        Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to an earlier created widget.
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type.
@@ -332,9 +346,9 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
-        typename T::Ptr get(const sf::String& widgetName) const
+        typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
         {
-            return m_container->get<T>(widgetName);
+            return m_container->get<T>(widgetName, recursive);
         }
 
 

@@ -35,10 +35,11 @@ namespace tgui
 {
     class Label;
     class Scrollbar;
+    class ListBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API ListBox : public Widget, public WidgetBorders
+    class TGUI_API ListBox : public Widget
     {
       public:
 
@@ -81,13 +82,16 @@ namespace tgui
         /// @brief Create list box
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "ListBox" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListBox::Ptr create(const std::string& configFileFilename);
+        static ListBox::Ptr create(const std::string& configFileFilename = "", const std::string& section = "ListBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,15 +109,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<ListBoxRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<ListBoxRenderer>(m_renderer);
         }
 
 
@@ -151,165 +154,7 @@ namespace tgui
         /// @return Full size of the list box
         ///
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getFullSize() const override
-        {
-            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the colors used in the list box.
-        ///
-        /// @param backgroundColor          The color of the background of the list box
-        /// @param textColor                The color of the text
-        /// @param selectedBackgroundColor  The color of the background of the selected item
-        /// @param selectedTextColor        The color of the text when it is selected
-        /// @param borderColor              The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
-                          const sf::Color& textColor               = sf::Color::Black,
-                          const sf::Color& selectedBackgroundColor = sf::Color(50, 100, 200),
-                          const sf::Color& selectedTextColor       = sf::Color::White,
-                          const sf::Color& borderColor             = sf::Color::Black);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the list box.
-        ///
-        /// @param backgroundColor  The color of the background of the list box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_backgroundColor = backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the list box.
-        ///
-        /// @param textColor  The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the list box.
-        ///
-        /// @param selectedBackgroundColor  The color of the background of the selected item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
-        {
-            m_selectedBackgroundColor = selectedBackgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the list box.
-        ///
-        /// @param selectedTextColor  The color of the text when it is selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color text that will be used inside the list box.
-        ///
-        /// @param borderColor  The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor)
-        {
-            m_borderColor = borderColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color that is currently being used inside the list box.
-        ///
-        /// @return The color of the background of the list box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor() const
-        {
-            return m_backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the list box.
-        ///
-        /// @return The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_textColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color of the selected text that is currently being used inside the list box.
-        ///
-        /// @return The color of the background of the selected item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedBackgroundColor() const
-        {
-            return m_selectedBackgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color of the selected text that is currently being used inside the list box.
-        ///
-        /// @return The color of the text when it is selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_selectedTextColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the border color that is currently being used inside the list box.
-        ///
-        /// @return The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBorderColor() const
-        {
-            return m_borderColor;
-        }
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the items.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the items.
-        ///
-        /// @return  Pointer to the font that is currently being used.
-        ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_textFont;
-        }
+        virtual sf::Vector2f getFullSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +169,6 @@ namespace tgui
         ///         - false when there is no scrollbar and you try to have more items than fit inside the list box
         ///
         /// @see setMaximumItems
-        /// @see setScrollbar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addItem(const sf::String& itemName, const sf::String& id = "");
@@ -365,6 +209,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Selects an item in the list box.
+        ///
+        /// @param index  Index of the item in the list box
+        ///
+        /// @return
+        ///         - true on success
+        ///         - false when the index was too high
+        ///
+        /// @warning The index of an item could have changed when removing items.
+        ///
+        /// @see setSelectedItem
+        /// @see setSelectedItemById
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setSelectedItemByIndex(unsigned int index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Deselects the selected item.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -380,7 +242,7 @@ namespace tgui
         ///
         /// @return
         ///        - true when the item was removed
-        ///        - false when the name didn't match any item
+        ///        - false when the name did not match any item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItem(const sf::String& itemName);
@@ -399,6 +261,24 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItemById(const sf::String& id);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes the item from the list box.
+        ///
+        /// @param index  Index of the item in the list box
+        ///
+        /// @return
+        ///        - true when the item was removed
+        ///        - false when the index was too high
+        ///
+        /// @warning The index of an item could have changed when removing items.
+        ///
+        /// @see removeItem
+        /// @see removeItemById
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeItemByIndex(unsigned int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,20 +363,6 @@ namespace tgui
         {
             return m_items.size();
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the list box.
-        ///
-        /// @param scrollbarConfigFileFilename  Filename of the config file.
-        ///                                     The config file must contain a Scrollbar section with the needed information.
-        ///
-        /// @return
-        ///        - true when the scrollbar was successfully loaded
-        ///        - false when the loading of the scrollbar failed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setScrollbar(const std::string& scrollbarConfigFileFilename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -617,18 +483,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Selects a different item
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedItemByIndex(unsigned int index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Removes an item
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeItemByIndex(unsigned int index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the widget is added to a container.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(Container *const container) override;
@@ -641,6 +495,12 @@ namespace tgui
         {
             return std::make_shared<ListBox>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // When the elapsed time has changed then this function is called.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void update() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -657,16 +517,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ListBoxCallbacks
         {
-            ItemSelected = WidgetCallbacksCount * 1,            ///< A new item was selected
-            AllListBoxCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in ListBox and its base classes
-            ListBoxCallbacksCount = WidgetCallbacksCount * 2
+            ItemSelected = WidgetCallbacksCount * 1,           ///< A new item was selected
+            LeftMousePressed = WidgetCallbacksCount * 2,       ///< The mouse went down on top of an item
+            LeftMouseReleased = WidgetCallbacksCount * 4,      ///< The mouse button has been released after it went down on an item
+            LeftMouseDoubleClicked = WidgetCallbacksCount * 8, ///< An item has been double-clicked
+            ListBoxCallbacksCount = WidgetCallbacksCount * 16
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        std::string m_loadedConfigFile;
 
         // This contains the different items in the list box
         std::vector<Label>      m_items;
@@ -676,6 +536,8 @@ namespace tgui
         // This is also used by combo box, so it can't just be changed to a pointer!
         int m_selectedItem = -1;
 
+        int m_hoveringItem = -1;
+
         // The size must be stored
         unsigned int m_itemHeight = 24;
         unsigned int m_textSize = 19;
@@ -684,20 +546,235 @@ namespace tgui
         unsigned int m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
-        Scrollbar::Ptr m_scroll = nullptr;
-
-        // These colors are used to draw the list box
-        sf::Color m_backgroundColor;
-        sf::Color m_textColor;
-        sf::Color m_selectedBackgroundColor;
-        sf::Color m_selectedTextColor;
-        sf::Color m_borderColor;
+        Scrollbar::Ptr m_scroll = Scrollbar::create();
 
         // The font used to draw the text
         const sf::Font* m_textFont = nullptr;
 
+        // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
+        bool m_possibleDoubleClick = false;
+
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend class ComboBox;
+        friend class ListBoxRenderer;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class ListBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param listBox  The list box that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ListBoxRenderer(ListBox* listBox) : m_listBox{listBox} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background image
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color that will be used inside the list box.
+        ///
+        /// @param backgroundColor  The color of the background of the list box
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& backgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the list box.
+        ///
+        /// @param textColor  The color of the text
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// @see setTextColorNormal
+        /// @see setTextColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& textColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text in the normal state (mouse not on top of the item).
+        ///
+        /// @param color  New text color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text in the hover state (mouse is standing on top of the item).
+        ///
+        /// @param color  New text color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the unselected item on which the mouse is standing.
+        ///
+        /// @param hoverBackgroundColor  The color of the background of unselected item below the mouse
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setHoverBackgroundColor(const sf::Color& hoverBackgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the selected text that will be used inside the list box.
+        ///
+        /// @param selectedBackgroundColor  The color of the background of the selected item
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color of the selected text that will be used inside the list box.
+        ///
+        /// @param selectedTextColor  The color of the text when it is selected
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextColor(const sf::Color& selectedTextColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the border color text that will be used inside the list box.
+        ///
+        /// @param borderColor  The color of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& borderColor);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the items.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font.
+        ///
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the padding of the list box.
+        ///
+        /// This padding will be scaled together with the background image.
+        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
+        ///
+        /// @param padding  The padding width and height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the scrollbar of the list box.
+        ///
+        /// @param scrollbarThemeFileFilename  Filename of the theme file.
+        /// @param section  The section to look for inside the theme file.
+        ///
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the padding, which is possibly scaled with the background image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Padding getScaledPadding() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ListBoxRenderer(const ListBoxRenderer&) = default;
+        ListBoxRenderer& operator=(const ListBoxRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        ListBox*  m_listBox;
+
+        Texture   m_backgroundTexture;
+
+        sf::Color m_backgroundColor         = {245, 245, 245};
+        sf::Color m_textColor               = { 60,  60,  60};
+        sf::Color m_hoverBackgroundColor    = {255, 255, 255};
+        sf::Color m_hoverTextColor          = {  0,   0  , 0};
+        sf::Color m_selectedBackgroundColor = {  0, 110, 255};
+        sf::Color m_selectedTextColor       = {255, 255, 255};
+        sf::Color m_borderColor             = {  0,   0,   0};
+
+        friend class ListBox;
+        friend class ComboBox;
+        friend class ComboBoxRenderer;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

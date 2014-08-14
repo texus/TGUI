@@ -37,57 +37,59 @@ namespace tgui
     Tab::Tab()
     {
         m_callback.widgetType = Type_Tab;
+
+        m_renderer = std::make_shared<TabRenderer>(this);
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+
+        setTabHeight(30);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tab::Ptr Tab::create(const std::string& configFileFilename)
+    Tab::Ptr Tab::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto tab = std::make_shared<Tab>();
 
-        tab->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        tab->m_texturesNormal.clear();
-        tab->m_texturesSelected.clear();
-
-        // Open the config file
-        ConfigFile configFile{tab->m_loadedConfigFile, "Tab"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = tab->m_loadedConfigFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = tab->m_loadedConfigFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "separateselectedimage")
-                tab->m_separateSelectedImage = configFile.readBool(it);
-            else if (it->first == "textcolor")
-                tab->m_textColor = configFile.readColor(it);
-            else if (it->first == "selectedtextcolor")
-                tab->m_selectedTextColor = configFile.readColor(it);
-            else if (it->first == "distancetoside")
-                tab->setDistanceToSide(tgui::stoul(it->second));
-            else if (it->first == "normalimage")
-                configFile.readTexture(it, configFileFolder, tab->m_textureNormal);
-            else if (it->first == "selectedimage")
-                configFile.readTexture(it, configFileFolder, tab->m_textureSelected);
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Tab in " + tab->m_loadedConfigFile + "."};
+            tab->getRenderer()->setBorders({0, 0, 0, 0});
+
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            {
+                try
+                {
+                    tab->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
+            }
+
+            // Clear the vectors
+            tab->m_tabNames.clear();
+
+            // Make sure the required texture was loaded
+            if (tab->getRenderer()->m_textureNormal.getData() && tab->getRenderer()->m_textureSelected.getData())
+                tab->setTabHeight(tab->getRenderer()->m_textureNormal.getSize().y);
+
+            // Recalculate the text size when auto sizing
+            if (tab->m_textSize == 0)
+                tab->setTextSize(0);
         }
-
-        // Clear the vectors
-        tab->m_tabNames.clear();
-
-        // Make sure the required texture was loaded
-        if (tab->m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the Tab section in " + tab->m_loadedConfigFile + " complete?"};
-
-        // Recalculate the text size when auto sizing
-        if (tab->m_textSize == 0)
-            tab->setTextSize(0);
 
         return tab;
     }
@@ -99,19 +101,23 @@ namespace tgui
         Widget::setPosition(position);
 
         float positionX = getPosition().x;
-        float textHeight = sf::Text{"kg", *getTextFont(), getTextSize()}.getLocalBounds().height;
+        float textHeight = sf::Text{"kg", *m_textFont, getTextSize()}.getLocalBounds().height;
 
-        auto it2 = m_texturesSelected.begin();
-        auto tabIt = m_tabNames.begin();
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it, ++it2, ++tabIt)
+        auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
+        auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
+        auto tabNameIt = m_tabNames.begin();
+        for (auto tabWidthIt = m_tabWidth.cbegin(); tabWidthIt != m_tabWidth.cend(); ++tabWidthIt, ++textureNormalIt, ++textureSelectedIt, ++tabNameIt)
         {
-            it->setPosition({positionX, getPosition().y});
-            it2->setPosition({positionX, getPosition().y});
+            if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+            {
+                textureNormalIt->setPosition({positionX, getPosition().y});
+                textureSelectedIt->setPosition({positionX, getPosition().y});
+            }
 
-            tabIt->setPosition({positionX + m_distanceToSide + ((it->getSize().x - (2*m_distanceToSide) - tabIt->getSize().x) / 2.0f),
-                                getPosition().y + ((getSize().y - textHeight) / 2.0f)});
+            tabNameIt->setPosition({positionX + m_distanceToSide + ((*tabWidthIt - (2 * m_distanceToSide) - tabNameIt->getSize().x) / 2.0f),
+                                    getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
 
-            positionX += it->getSize().x;
+            positionX += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
         }
     }
 
@@ -128,47 +134,49 @@ namespace tgui
     {
         // Create the new tab
         Label newTab;
-        newTab.setTextFont(*getTextFont());
-        newTab.setTextColor(getTextColor());
+        newTab.setTextFont(*m_textFont);
+        newTab.setTextColor(getRenderer()->m_textColor);
         newTab.setTextSize(getTextSize());
         newTab.setText(name);
 
         // Calculate the width of the tab
-        float width;
         if (m_maximumTabWidth)
-            width = TGUI_MAXIMUM(TGUI_MINIMUM(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
+            m_tabWidth.push_back(std::min(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth));
         else
-            width = TGUI_MAXIMUM(newTab.getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
+            m_tabWidth.push_back(newTab.getSize().x + (2 * m_distanceToSide));
 
         // Add the new tab sprite
-        m_texturesNormal.push_back(m_textureNormal);
-        m_texturesSelected.push_back(m_textureSelected);
+        if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+        {
+            getRenderer()->m_texturesNormal.push_back(getRenderer()->m_textureNormal);
+            getRenderer()->m_texturesSelected.push_back(getRenderer()->m_textureSelected);
 
-        m_texturesNormal.back().setSize({width, m_texturesNormal.back().getSize().y});
-        m_texturesSelected.back().setSize({width, m_texturesSelected.back().getSize().y});
+            getRenderer()->m_texturesNormal.back().setSize({m_tabWidth.back(), getRenderer()->m_texturesNormal.back().getSize().y});
+            getRenderer()->m_texturesSelected.back().setSize({m_tabWidth.back(), getRenderer()->m_texturesSelected.back().getSize().y});
 
-        m_texturesNormal.back().setPosition({getPosition().x + getSize().x, getPosition().y});
-        m_texturesSelected.back().setPosition({getPosition().x + getSize().x, getPosition().y});
+            getRenderer()->m_texturesNormal.back().setPosition({getPosition().x + getSize().x, getPosition().y});
+            getRenderer()->m_texturesSelected.back().setPosition({getPosition().x + getSize().x, getPosition().y});
+        }
 
         // Set the correct size of the tab text
-        float textHeight = sf::Text{"kg", *getTextFont(), getTextSize()}.getLocalBounds().height;
-        newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((width - (2*m_distanceToSide) - newTab.getSize().x) / 2.0f),
-                            getPosition().y + ((getSize().y - textHeight) / 2.0f)});
+        float textHeight = sf::Text{"kg", *m_textFont, getTextSize()}.getLocalBounds().height;
+        newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((m_tabWidth.back() - (2 * m_distanceToSide) - newTab.getSize().x) / 2.0f),
+                            getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
 
         // If the tab has to be selected then do so
         if (selectTab)
         {
             if (m_selectedTab >= 0)
-                m_tabNames[m_selectedTab].setTextColor(m_textColor);
+                m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
             m_selectedTab = m_tabNames.size();
-            newTab.setTextColor(m_selectedTextColor);
+            newTab.setTextColor(getRenderer()->m_selectedTextColor);
         }
 
         // Add the tab
         m_tabNames.push_back(std::move(newTab));
 
-        m_width += width;
+        m_width += m_tabWidth.back() + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
 
         // Return the index of the new tab
         return m_tabNames.size()-1;
@@ -179,7 +187,7 @@ namespace tgui
     void Tab::select(const sf::String& name)
     {
         if (m_selectedTab >= 0)
-            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+            m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         // Loop through all tabs
         for (unsigned int i = 0; i < m_tabNames.size(); ++i)
@@ -189,7 +197,7 @@ namespace tgui
             {
                 // Select the tab
                 m_selectedTab = i;
-                m_tabNames[i].setTextColor(m_selectedTextColor);
+                m_tabNames[i].setTextColor(getRenderer()->m_selectedTextColor);
                 return;
             }
         }
@@ -204,11 +212,11 @@ namespace tgui
             return;
 
         if (m_selectedTab >= 0)
-            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+            m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         // Select the tab
         m_selectedTab = index;
-        m_tabNames[m_selectedTab].setTextColor(m_selectedTextColor);
+        m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +224,7 @@ namespace tgui
     void Tab::deselect()
     {
         if (m_selectedTab >= 0)
-            m_tabNames[m_selectedTab].setTextColor(m_textColor);
+            m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         m_selectedTab = -1;
     }
@@ -225,30 +233,11 @@ namespace tgui
 
     void Tab::remove(const sf::String& name)
     {
-        // Loop through all tabs
-        auto texturesNormalIt = m_texturesNormal.begin();
-        auto texturesSelectedIt = m_texturesSelected.begin();
         for (unsigned int i = 0; i < m_tabNames.size(); ++i)
         {
-            // Check if you found the tab to remove
             if (m_tabNames[i].getText() == name)
             {
-                m_width -= texturesNormalIt->getSize().x;
-
-                // Remove the tab
-                m_tabNames.erase(m_tabNames.begin() + i);
-
-                m_texturesNormal.erase(texturesNormalIt);
-                m_texturesSelected.erase(texturesSelectedIt);
-
-                // Check if the selected tab should change
-                if (m_selectedTab == static_cast<int>(i))
-                    m_selectedTab = -1;
-                else if (m_selectedTab > static_cast<int>(i))
-                    --m_selectedTab;
-
-                // Recalculate the positions of the tabs
-                updatePosition();
+                remove(i);
                 break;
             }
         }
@@ -262,18 +251,23 @@ namespace tgui
         if (index > m_tabNames.size() - 1)
             return;
 
+        if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+        {
+            auto texturesNormalIt = getRenderer()->m_texturesNormal.begin();
+            std::advance(texturesNormalIt, index);
+
+            auto texturesSelectedIt = getRenderer()->m_texturesSelected.begin();
+            std::advance(texturesSelectedIt, index);
+
+            getRenderer()->m_texturesNormal.erase(texturesNormalIt);
+            getRenderer()->m_texturesSelected.erase(texturesSelectedIt);
+        }
+
+        m_width -= m_tabWidth[index] + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+
         // Remove the tab
         m_tabNames.erase(m_tabNames.begin() + index);
-
-        auto texturesNormalIt = m_texturesNormal.begin();
-        std::advance(texturesNormalIt, index);
-        m_width -= texturesNormalIt->getSize().x;
-
-        auto texturesSelectedIt = m_texturesSelected.begin();
-        std::advance(texturesSelectedIt, index);
-
-        m_texturesNormal.erase(texturesNormalIt);
-        m_texturesSelected.erase(texturesSelectedIt);
+        m_tabWidth.erase(m_tabWidth.begin() + index);
 
         // Check if the selected tab should change
         if (m_selectedTab == static_cast<int>(index))
@@ -290,23 +284,13 @@ namespace tgui
     void Tab::removeAll()
     {
         m_tabNames.clear();
+        m_tabWidth.clear();
         m_selectedTab = -1;
 
-        m_texturesNormal.clear();
-        m_texturesSelected.clear();
+        getRenderer()->m_texturesNormal.clear();
+        getRenderer()->m_texturesSelected.clear();
 
         m_width = 0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::setTextFont(const sf::Font& font)
-    {
-        m_textFont = &font;
-        for (auto& tab : m_tabNames)
-            tab.setTextFont(font);
-
-        recalculateTabsWidth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +309,7 @@ namespace tgui
     unsigned int Tab::getTextSize() const
     {
         if (m_textSize == 0)
-            return static_cast<unsigned int>(m_textureNormal.getSize().y * 0.75f);
+            return static_cast<unsigned int>(m_tabHeight * 0.75f);
         else
             return m_textSize;
     }
@@ -334,14 +318,19 @@ namespace tgui
 
     void Tab::setTabHeight(float height)
     {
-        m_textureNormal.setSize({m_textureNormal.getSize().x, height});
-        m_textureSelected.setSize({m_textureSelected.getSize().x, height});
+        m_tabHeight = height;
 
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-            it->setSize({it->getSize().x, height});
+        if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+        {
+            getRenderer()->m_textureNormal.setSize({getRenderer()->m_textureNormal.getSize().x, height});
+            getRenderer()->m_textureSelected.setSize({getRenderer()->m_textureSelected.getSize().x, height});
 
-        for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
-            it->setSize({it->getSize().x, height});
+            for (auto it = getRenderer()->m_texturesNormal.begin(); it != getRenderer()->m_texturesNormal.end(); ++it)
+                it->setSize({it->getSize().x, height});
+
+            for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
+                it->setSize({it->getSize().x, height});
+        }
 
         // Recalculate the size when auto sizing
         if (m_textSize == 0)
@@ -350,18 +339,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setMaximumTabWidth(unsigned int maximumWidth)
+    void Tab::setMaximumTabWidth(float maximumWidth)
     {
-        m_maximumTabWidth = maximumWidth;
-
-        recalculateTabsWidth();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::setDistanceToSide(unsigned int distanceToSide)
-    {
-        m_distanceToSide = distanceToSide;
+        m_maximumTabWidth = std::abs(maximumWidth);
 
         recalculateTabsWidth();
     }
@@ -372,14 +352,17 @@ namespace tgui
     {
         Widget::setTransparency(transparency);
 
-        m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureSelected.setColor(sf::Color(255, 255, 255, m_opacity));
+        if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+        {
+            getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+            getRenderer()->m_textureSelected.setColor(sf::Color(255, 255, 255, m_opacity));
 
-        for (auto it = m_texturesNormal.begin(); it != m_texturesNormal.end(); ++it)
-            it->setColor(sf::Color(255, 255, 255, m_opacity));
+            for (auto it = getRenderer()->m_texturesNormal.begin(); it != getRenderer()->m_texturesNormal.end(); ++it)
+                it->setColor(sf::Color(255, 255, 255, m_opacity));
 
-        for (auto it = m_texturesSelected.begin(); it != m_texturesSelected.end(); ++it)
-            it->setColor(sf::Color(255, 255, 255, m_opacity));
+            for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
+                it->setColor(sf::Color(255, 255, 255, m_opacity));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -392,7 +375,6 @@ namespace tgui
         if (m_mouseHover)
             mouseLeftWidget();
 
-        m_mouseHover = false;
         return false;
     }
 
@@ -403,21 +385,20 @@ namespace tgui
         float width = getPosition().x;
 
         // Loop through all tabs
-        auto it = m_texturesNormal.cbegin();
-        for (unsigned int i = 0; i < m_texturesNormal.size(); ++i, ++it)
+        for (unsigned int i = 0; i < m_tabWidth.size(); ++i)
         {
             // Append the width of the tab
-            width += it->getSize().x;
+            width += m_tabWidth[i] + (getRenderer()->getBorders().left / 2.0f);
 
             // Check if the mouse went down on the tab
             if (x < width)
             {
                 if (m_selectedTab >= 0)
-                    m_tabNames[m_selectedTab].setTextColor(m_textColor);
+                    m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
                 // Select this tab
                 m_selectedTab = i;
-                m_tabNames[m_selectedTab].setTextColor(m_selectedTextColor);
+                m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
 
                 // Add the callback (if the user requested it)
                 if (m_callbackFunctions[TabChanged].empty() == false)
@@ -433,6 +414,8 @@ namespace tgui
                 // The tab was found
                 break;
             }
+
+            width += (getRenderer()->getBorders().right / 2.0f);
         }
     }
 
@@ -442,22 +425,26 @@ namespace tgui
     {
         m_width = 0;
 
-        // Recalculate the name widths
-        auto textureNormalIt = m_texturesNormal.begin();
-        auto textureSelectedIt = m_texturesSelected.begin();
-        for (unsigned int i = 0; i < m_texturesNormal.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
+        auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
+        auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
+        for (unsigned int i = 0; i < m_tabWidth.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
         {
-            float width;
             if (m_maximumTabWidth)
-                width = TGUI_MAXIMUM(TGUI_MINIMUM(m_tabNames[i].getSize().x + (2 * m_distanceToSide), m_maximumTabWidth), m_textureNormal.getSize().y);
+                m_tabWidth[i] = std::min(m_tabNames[i].getSize().x + (2 * m_distanceToSide), m_maximumTabWidth);
             else
-                width = TGUI_MAXIMUM(m_tabNames[i].getSize().x + (2 * m_distanceToSide), m_textureNormal.getSize().y);
+                m_tabWidth[i] = m_tabNames[i].getSize().x + (2 * m_distanceToSide);
 
-            textureNormalIt->setSize({width, textureNormalIt->getSize().y});
-            textureSelectedIt->setSize({width, textureSelectedIt->getSize().y});
+            if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+            {
+                textureNormalIt->setSize({m_tabWidth[i], m_tabHeight});
+                textureSelectedIt->setSize({m_tabWidth[i], m_tabHeight});
+            }
 
-            m_width += width;
+            m_width += m_tabWidth[i];
         }
+
+        if (!m_tabWidth.empty())
+            m_width += ((m_tabWidth.size() - 1) * ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f));
 
         // Recalculate the positions of the tabs
         updatePosition();
@@ -469,92 +456,220 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!getTextFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+        if (!m_textFont && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Tab::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        GLint scissor[4];
-        unsigned int accumulatedTabWidth = 0;
+        // Draw the background
+        getRenderer()->draw(target, states);
 
-        // Loop through all tabs
+        GLint scissor[4];
+        float accumulatedTabWidth = 0;
+
+        // Draw the text
+        for (unsigned int i = 0; i < m_tabNames.size(); ++i)
+        {
+            // Check if clipping is required for this tab
+            bool clippingRequired = false;
+            if (m_tabNames[i].getSize().x > m_tabWidth[i] - 2 * m_distanceToSide)
+                clippingRequired = true;
+
+            // Check if clipping is required for this text
+            if (clippingRequired)
+            {
+                // Get the old clipping area
+                glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+                const sf::View& view = target.getView();
+
+                // Calculate the scale factor of the view
+                float scaleViewX = target.getSize().x / view.getSize().x;
+                float scaleViewY = target.getSize().y / view.getSize().y;
+
+                // Get the global position
+                sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+                sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + accumulatedTabWidth + m_tabWidth[i] - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                    ((getAbsolutePosition().y + ((m_tabHeight + m_tabNames[i].getSize().y) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+
+                // Calculate the clipping area
+                GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+                GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+                GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+                if (scissorRight < scissorLeft)
+                    scissorRight = scissorLeft;
+                else if (scissorBottom < scissorTop)
+                    scissorTop = scissorBottom;
+
+                // Set the clipping area
+                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+            }
+
+            // Draw the text
+            target.draw(m_tabNames[i], states);
+
+            // Reset the old clipping area when needed
+            if (clippingRequired)
+            {
+                clippingRequired = false;
+                glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+            }
+
+            accumulatedTabWidth += m_tabWidth[i] + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "textcolor")
+            setTextColor(extractColorFromString(property, value));
+        else if (property == "selectedtextcolor")
+            setSelectedTextColor(extractColorFromString(property, value));
+        else if (property == "distancetoside")
+            setDistanceToSide(tgui::stoul(value));
+        else if (property == "normalimage")
+            extractTextureFromString(property, value, rootPath, m_textureNormal);
+        else if (property == "selectedimage")
+            extractTextureFromString(property, value, rootPath, m_textureSelected);
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "selectedbackgroundcolor")
+            setSelectedBackgroundColor(extractColorFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setTextFont(const sf::Font& font)
+    {
+        m_tab->m_textFont = &font;
+        for (auto& tab : m_tab->m_tabNames)
+            tab.setTextFont(font);
+
+        m_tab->recalculateTabsWidth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setDistanceToSide(unsigned int distanceToSide)
+    {
+        m_tab->m_distanceToSide = distanceToSide;
+
+        m_tab->recalculateTabsWidth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureNormal = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setSelectedImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureSelected.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureSelected = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        float positionX = m_tab->getPosition().x;
         auto textureNormalIt = m_texturesNormal.cbegin();
         auto textureSelectedIt = m_texturesSelected.cbegin();
-        for (unsigned int i = 0; i < m_tabNames.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
+        for (unsigned int i = 0; i < m_tab->m_tabNames.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
         {
-            // Draw the tab image
-            if (m_separateSelectedImage)
+            if (m_textureNormal.getData() && m_textureSelected.getData())
             {
-                if ((m_selectedTab == static_cast<int>(i)) && textureSelectedIt->getData())
+                if (m_tab->m_selectedTab == static_cast<int>(i))
                     target.draw(*textureSelectedIt, states);
                 else
                     target.draw(*textureNormalIt, states);
             }
-            else // There is no separate selected image
+            else // There are no textures
             {
-                target.draw(*textureNormalIt, states);
+                sf::RectangleShape background{{m_tab->m_tabWidth[i], m_tab->m_tabHeight}};
+                background.setPosition({positionX, m_tab->getPosition().y});
 
-                if ((m_selectedTab == static_cast<int>(i)) && textureSelectedIt->getData())
-                    target.draw(*textureSelectedIt, states);
+                if (m_tab->m_selectedTab == static_cast<int>(i))
+                    background.setFillColor(m_selectedBackgroundColor);
+                else
+                    background.setFillColor(m_backgroundColor);
+
+                target.draw(background, states);
             }
 
-            // Draw the text
+            // If there are borders then also draw them between the tabs
+            if (((m_borders.left != 0) || (m_borders.right != 0)) && (i+1 != m_tab->m_tabNames.size()))
             {
-                // Check if clipping is required for this tab
-                bool clippingRequired = false;
-                if (m_tabNames[i].getSize().x > textureNormalIt->getSize().x - 2 * m_distanceToSide)
-                    clippingRequired = true;
-
-                // Check if clipping is required for this text
-                if (clippingRequired)
-                {
-                    // Get the old clipping area
-                    glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-                    const sf::View& view = target.getView();
-
-                    // Calculate the scale factor of the view
-                    float scaleViewX = target.getSize().x / view.getSize().x;
-                    float scaleViewY = target.getSize().y / view.getSize().y;
-
-                    // Get the global position
-                    sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + accumulatedTabWidth + m_distanceToSide + (view.getSize().x / 2.f) - view.getCenter().x) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y + (view.getSize().y / 2.f) - view.getCenter().y) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-                    sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + accumulatedTabWidth + textureNormalIt->getSize().x - m_distanceToSide - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                        ((getAbsolutePosition().y + ((m_textureNormal.getSize().y + m_tabNames[i].getSize().y) / 2.f) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-
-                    // Calculate the clipping area
-                    GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-                    GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-                    GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-                    GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-                    // If the widget outside the window then don't draw anything
-                    if (scissorRight < scissorLeft)
-                        scissorRight = scissorLeft;
-                    else if (scissorBottom < scissorTop)
-                        scissorTop = scissorBottom;
-
-                    // Set the clipping area
-                    glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-                }
-
-                // Draw the text
-                target.draw(m_tabNames[i], states);
-
-                // Reset the old clipping area when needed
-                if (clippingRequired)
-                {
-                    clippingRequired = false;
-                    glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-                }
+                sf::RectangleShape border({(m_borders.left + m_borders.right / 2.0f), m_tab->m_tabHeight});
+                border.setPosition(positionX + m_tab->m_tabWidth[i], m_tab->getPosition().y);
+                border.setFillColor(m_borderColor);
+                target.draw(border, states);
             }
 
-            accumulatedTabWidth += textureNormalIt->getSize().x;
+            // Position the next tab
+            positionX += m_tab->m_tabWidth[i] + ((m_borders.left + m_borders.right) / 2.0f);
         }
+
+        // Draw the borders around the tab
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_tab->getPosition();
+            sf::Vector2f size = m_tab->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> TabRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<TabRenderer>(new TabRenderer{*this});
+        renderer->m_tab = static_cast<Tab*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

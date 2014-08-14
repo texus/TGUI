@@ -39,30 +39,34 @@ namespace tgui
     Label::Label()
     {
         m_callback.widgetType = Type_Label;
+        m_animatedWidget = true;
 
         m_background.setFillColor(sf::Color::Transparent);
+        m_text.setColor({60, 60, 60});
+
+        setTextSize(18);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::Ptr Label::create(const std::string& configFileFilename)
+    Label::Ptr Label::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto label = std::make_shared<Label>();
 
-        if (!configFileFilename.empty())
+        if (themeFileFilename != "")
         {
-            label->m_loadedConfigFile = getResourcePath() + configFileFilename;
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
-            // Open the config file
-            ConfigFile configFile{label->m_loadedConfigFile, "Label"};
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
 
             // Handle the read properties
-            for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
             {
                 if (it->first == "textcolor")
-                    label->setTextColor(extractColor(it->second));
+                    label->setTextColor(extractColorFromString(it->first, it->second));
                 else
-                    throw Exception{"Unrecognized property '" + it->first + "' in section Label in " + label->m_loadedConfigFile + "."};
+                    throw Exception{"Unrecognized property '" + it->first + "' in section '" + section + "' in " + loadedThemeFile + "."};
             }
         }
 
@@ -76,8 +80,9 @@ namespace tgui
         Widget::setPosition(position);
 
         m_background.setPosition(getPosition());
-        m_text.setPosition(std::floor(getPosition().x - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(getPosition().y - m_text.getLocalBounds().top + 0.5f));
+
+        m_text.setPosition(std::floor(getPosition().x + m_padding.left - m_text.getLocalBounds().left + 0.5f),
+                           std::floor(getPosition().y + m_padding.top - m_text.getLocalBounds().top + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,24 +95,18 @@ namespace tgui
 
         // You are no longer auto-sizing
         m_autoSize = false;
+
+        rearrangeText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setText(const sf::String& string)
     {
-        m_text.setString(string);
+        m_string = string;
 
-        // Update the position of the text
-        m_text.setPosition(std::floor(getPosition().x - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(getPosition().y - m_text.getLocalBounds().top + 0.5f));
-
-        // Change the size of the label if necessary
-        if (m_autoSize)
-        {
-            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
-            m_autoSize = true;
-        }
+        rearrangeText();
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,15 +121,13 @@ namespace tgui
 
     void Label::setTextSize(unsigned int size)
     {
-        m_text.setCharacterSize(size);
-
-        updatePosition();
-
-        // Change the size of the label if necessary
-        if (m_autoSize)
+        if (size != m_text.getCharacterSize())
         {
-            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
-            m_autoSize = true;
+            m_text.setCharacterSize(size);
+
+            updatePosition();
+
+            rearrangeText();
         }
     }
 
@@ -138,13 +135,46 @@ namespace tgui
 
     void Label::setAutoSize(bool autoSize)
     {
-        m_autoSize = autoSize;
-
-        // Change the size of the label if necessary
-        if (m_autoSize)
+        if (m_autoSize != autoSize)
         {
-            setSize({m_text.getLocalBounds().width, m_text.getLocalBounds().height});
-            m_autoSize = true;
+            m_autoSize = autoSize;
+
+            rearrangeText();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setMaximumTextWidth(float maximumWidth)
+    {
+        if (m_maximumTextWidth != maximumWidth)
+        {
+            m_maximumTextWidth = maximumWidth;
+
+            rearrangeText();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Label::getMaximumTextWidth()
+    {
+        if (m_autoSize)
+            return m_maximumTextWidth;
+        else
+            return getSize().x;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setPadding(const Padding& padding)
+    {
+        if (padding != getPadding())
+        {
+            WidgetPadding::setPadding(padding);
+
+            updatePosition();
+            rearrangeText();
         }
     }
 
@@ -156,6 +186,151 @@ namespace tgui
 
         if (!getTextFont() && m_parent->getGlobalFont())
             setTextFont(*m_parent->getGlobalFont());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::leftMouseReleased(float x, float y)
+    {
+        bool mouseDown = m_mouseDown;
+
+        ClickableWidget::leftMouseReleased(x, y);
+
+        if (mouseDown)
+        {
+            // Check if you double-clicked
+            if (m_possibleDoubleClick)
+            {
+                m_possibleDoubleClick = false;
+
+                if (m_callbackFunctions[LeftMouseDoubleClicked].empty() == false)
+                {
+                    m_callback.trigger = LeftMouseDoubleClicked;
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    addCallback();
+                }
+            }
+            else // This is the first click
+            {
+                m_animationTimeElapsed = {};
+                m_possibleDoubleClick = true;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::update()
+    {
+        // When double-clicking, the second click has to come within 500 milliseconds
+        if (m_animationTimeElapsed >= sf::milliseconds(500))
+        {
+            m_animationTimeElapsed = {};
+            m_possibleDoubleClick = false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::rearrangeText()
+    {
+        if (getTextFont() == nullptr)
+            return;
+
+        // Only rearrange the text when a maximum width was given
+        if (!m_autoSize || m_maximumTextWidth > 0)
+        {
+            // Find the maximum width of one line
+            float maxWidth = 0;
+            if (m_autoSize)
+                maxWidth = m_maximumTextWidth;
+            else if (getSize().x > m_padding.left + m_padding.right)
+                maxWidth = getSize().x - m_padding.left - m_padding.right;
+
+            m_text.setString("");
+            unsigned int index = 0;
+            while (index < m_string.getSize())
+            {
+                unsigned int oldIndex = index;
+
+                float width = 0;
+                sf::Uint32 prevChar = 0;
+                for (unsigned int i = index; i < m_string.getSize(); ++i)
+                {
+                    float charWidth;
+                    sf::Uint32 curChar = m_string[i];
+                    if (curChar == '\n')
+                    {
+                        index++;
+                        break;
+                    }
+                    else if (curChar == '\t')
+                        charWidth = static_cast<float>(getTextFont()->getGlyph(' ', m_text.getCharacterSize(), false).advance) * 4;
+                    else
+                        charWidth = static_cast<float>(getTextFont()->getGlyph(curChar, m_text.getCharacterSize(), false).advance);
+
+                    float kerning = static_cast<float>(getTextFont()->getKerning(prevChar, curChar, m_text.getCharacterSize()));
+                    if (width + charWidth + kerning <= maxWidth)
+                    {
+                        width += charWidth + kerning;
+                        index++;
+                    }
+                    else
+                        break;
+
+                    prevChar = curChar;
+                }
+
+                // Every line contains at least one character
+                if (index == oldIndex)
+                    index++;
+/*
+                // Implement the word-wrap
+                if (m_string[index-1] != '\n')
+                {
+                    unsigned int indexWithoutWordWrap = index;
+
+                    if ((index < m_string.getSize()) && (!isWhitespace(m_string[index])))
+                    {
+                        unsigned int wordWrapCorrection = 0;
+                        while ((index > oldIndex) && (!isWhitespace(m_string[index - 1])))
+                        {
+                            wordWrapCorrection++;
+                            index--;
+                        }
+
+                        // The word can't be split but there is no other choice, it does not fit on the line
+                        if ((index - oldIndex) <= wordWrapCorrection)
+                            index = indexWithoutWordWrap;
+                    }
+                }
+*/
+                if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
+                    m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex) + "\n");
+                else
+                    m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex));
+/*
+                // If the next line starts with just a space, then the space need not be visible
+                if ((index < m_string.getSize()) && (m_string[index] == ' '))
+                {
+                    if ((index == 0) || (!isWhitespace(m_string[index-1])))
+                    {
+                        if (((index + 1 < m_string.getSize()) && (!isWhitespace(m_string[index + 1]))) || (index + 1 == m_string.getSize()))
+                            index++;
+                    }
+                }
+*/
+            }
+        }
+        else // There is no maximum width, so the text should not be changed
+            m_text.setString(m_string);
+
+        if (m_autoSize)
+        {
+            m_size = {m_text.getLocalBounds().width + m_padding.left + m_padding.right, m_text.getLocalBounds().height + m_padding.top + m_padding.bottom};
+            m_background.setSize(getSize());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,20 +359,20 @@ namespace tgui
             float scaleViewY = target.getSize().y / view.getSize().y;
 
             // Get the global position
-            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + m_padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                            ((getAbsolutePosition().y + m_padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - m_padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                (getAbsolutePosition().y + getSize().y - m_padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
             // Get the old clipping area
             GLint scissor[4];
             glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
             // Calculate the clipping area
-            GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-            GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-            GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-            GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)
@@ -205,18 +380,43 @@ namespace tgui
             else if (scissorBottom < scissorTop)
                 scissorTop = scissorBottom;
 
-            // Set the clipping area
-            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
             // Draw the background
             if (m_background.getFillColor() != sf::Color::Transparent)
                 target.draw(m_background, states);
+
+            // Set the clipping area
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
             // Draw the text
             target.draw(m_text, states);
 
             // Reset the old clipping area
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+        }
+
+        // Draw the borders
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
+            border.setPosition(getPosition().x - m_borders.left, getPosition().y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({getSize().x + m_borders.right, m_borders.top});
+            border.setPosition(getPosition().x, getPosition().y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, getSize().y + m_borders.bottom});
+            border.setPosition(getPosition().x + getSize().x, getPosition().y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({getSize().x + m_borders.left, m_borders.bottom});
+            border.setPosition(getPosition().x - m_borders.left, getPosition().y + getSize().y);
+            target.draw(border, states);
         }
     }
 

@@ -60,7 +60,7 @@ namespace tgui
         }
         else // The image doesn't exist yet
         {
-            auto it = m_imageMap.emplace(filename, ImageMapData());
+            auto it = m_imageMap.insert({filename, ImageMapData()});
             imageIt = it.first;
         }
 
@@ -100,7 +100,7 @@ namespace tgui
             }
         }
 
-        // The image couldn't be loaded
+        // The image could not be loaded
         m_imageMap.erase(imageIt);
         throw Exception{"Failed to load image " + filename + "."};
     }

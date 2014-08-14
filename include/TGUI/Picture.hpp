@@ -61,7 +61,7 @@ namespace tgui
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
         ///                       Is the click caught by the picture, or does the event pass to the widgets behind it.
         ///
-        /// @throw Exception when the image couldn't be loaded (probably not found)
+        /// @throw Exception when the image could not be loaded (probably not found)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static Picture::Ptr create(const std::string& filename, bool fullyClickable = true);
@@ -199,7 +199,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum PictureCallbacks
         {
-            AllPictureCallbacks   = ClickableWidgetCallbacksCount - 1, ///< All triggers defined in Picture and its base classes
             PictureCallbacksCount = ClickableWidgetCallbacksCount
         };
 

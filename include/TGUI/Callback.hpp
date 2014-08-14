@@ -46,7 +46,7 @@ namespace tgui
         // The callback id that was passed to the widget. It is used to identify from what widget the callback came from.
         unsigned int id = 0;
 
-        // How did the callbak occur?
+        // How did the callback occur?
         unsigned int trigger = 0;
 
         // Pointer to the widget

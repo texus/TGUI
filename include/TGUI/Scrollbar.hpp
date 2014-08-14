@@ -27,12 +27,14 @@
 #define TGUI_SCROLLBAR_HPP
 
 
-#include <TGUI/Slider.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    class ScrollbarRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API Scrollbar : public Widget
@@ -58,13 +60,16 @@ namespace tgui
         /// @brief Create the scrollbar
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Scrollbar" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Scrollbar::Ptr create(const std::string& configFileFilename);
+        static Scrollbar::Ptr create(const std::string& configFileFilename = "", const std::string& section = "Scrollbar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +87,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<ScrollbarRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<ScrollbarRenderer>(m_renderer);
         }
 
 
@@ -158,15 +162,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the scrollbar lies vertical or horizontal.
-        ///
-        /// @param verticallScroll  Does the scrollbar lie vertically?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool verticallScroll);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum value.
         ///
         /// @return The current maximum value
@@ -203,18 +198,6 @@ namespace tgui
         unsigned int getLowValue() const
         {
             return m_lowValue;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the scrollbar lies vertical or horizontal.
-        ///
-        /// @return Does the scrollbar lie vertically?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getVerticalScroll() const
-        {
-            return m_verticalScroll;
         }
 
 
@@ -314,15 +297,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the size of the thumb image.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getThumbSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,8 +322,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ScrollbarCallbacks
         {
-            ValueChanged = WidgetCallbacksCount * 1,              ///< Value changed (thumb moved)
-            AllScrollbarCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Scrollbar and its base classes
+            ValueChanged = WidgetCallbacksCount * 1,  ///< Value changed (thumb moved)
             ScrollbarCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -357,7 +330,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
+        enum class Part
+        {
+            Track,
+            Thumb,
+            ArrowUp,
+            ArrowDown
+        };
+
+        // Keep track on which part of the scrollbar the mouse is standing
+        Part m_mouseHoverOverPart = Part::Thumb;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
         bool m_mouseDownOnThumb = false;
@@ -384,20 +366,10 @@ namespace tgui
         // Did the mouse went down on one of the arrows?
         bool m_mouseDownOnArrow = false;
 
-        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage = false;
-
-        Texture m_textureTrackNormal;
-        Texture m_textureTrackHover;
-
-        Texture m_textureThumbNormal;
-        Texture m_textureThumbHover;
-
-        Texture m_textureArrowUpNormal;
-        Texture m_textureArrowUpHover;
-
-        Texture m_textureArrowDownNormal;
-        Texture m_textureArrowDownHover;
+        sf::FloatRect m_track;
+        sf::FloatRect m_thumb;
+        sf::FloatRect m_arrowUp;
+        sf::FloatRect m_arrowDown;
 
         // ListBox, ComboBox and TextBox can access the scrollbar directly
         friend class ListBox;
@@ -405,8 +377,395 @@ namespace tgui
         friend class TextBox;
         friend class ChatBox;
 
+        friend class ScrollbarRenderer;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class ScrollbarRenderer : public WidgetRenderer
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param scrollbar  The scrollbar that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ScrollbarRenderer(Scrollbar* scrollbar) : m_scrollbar{scrollbar} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property does not exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is not on top of the scrollbar
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackNormalImage(const std::string& filename,
+                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                 bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is standing on top of the scrollbar
+        ///
+        /// This image is ignored when no normal track image has been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackHoverImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the scrollbar
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbNormalImage(const std::string& filename,
+                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                 bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is standing on top of the scrollbar
+        ///
+        /// This image is ignored when no normal thumb image has been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbHoverImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow.
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpNormalImage(const std::string& filename,
+                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow.
+        ///
+        /// When hover image is ignored if the normal image has not been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpHoverImage(const std::string& filename,
+                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the down arrow.
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownNormalImage(const std::string& filename,
+                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                     bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the down arrow when the mouse is on top of this arrow.
+        ///
+        /// When hover image is ignored if the normal image has not been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownHoverImage(const std::string& filename,
+                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                     bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track.
+        ///
+        /// @param color  New track color
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /// @see setTrackColorNormal
+        /// @see setTrackColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track in the normal state (mouse not on the track).
+        ///
+        /// @param color  New track color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track in hover state (mouse on top of the track).
+        ///
+        /// @param color  New track color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb.
+        ///
+        /// @param color  New thumb color
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /// @see setTrackColorNormal
+        /// @see setTrackColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb in the normal state (mouse not on the thumb).
+        ///
+        /// @param color  New thumb color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb in hover state (mouse on top of the thumb).
+        ///
+        /// @param color  New thumb color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows.
+        ///
+        /// @param color  New arrow background color
+        ///
+        /// This color will overwrite the color for both normal and hover states.
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /// @see setArrowBackgroundColorNormal
+        /// @see setArrowBackgroundColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows in the normal state (mouse not on arrow).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows in the hover state (mouse standing on top of the arrow).
+        ///
+        /// @param color  New arrow background color
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows.
+        ///
+        /// @param color  New arrow color
+        ///
+        /// This color will overwrite the color for both normal and hover states.
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /// @see setArrowColorNormal
+        /// @see setArrowColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows in the normal state (mouse not on arrow).
+        ///
+        /// @param color  New arrow color
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows in the hover state (mouse standing on top of the arrow).
+        ///
+        /// @param color  New arrow color
+        ///
+        /// Note that this color is ignored when all normal images have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ScrollbarRenderer(const ScrollbarRenderer&) = default;
+        ScrollbarRenderer& operator=(const ScrollbarRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Scrollbar* m_scrollbar;
+
+        Texture    m_textureTrackNormal;
+        Texture    m_textureTrackHover;
+        Texture    m_textureThumbNormal;
+        Texture    m_textureThumbHover;
+        Texture    m_textureArrowUpNormal;
+        Texture    m_textureArrowUpHover;
+        Texture    m_textureArrowDownNormal;
+        Texture    m_textureArrowDownHover;
+
+        sf::Color  m_trackColorNormal           = {255, 255, 255};
+        sf::Color  m_trackColorHover            = {255, 255, 255};
+        sf::Color  m_thumbColorNormal           = {220, 220, 220};
+        sf::Color  m_thumbColorHover            = {210, 210, 210};
+        sf::Color  m_arrowBackgroundColorNormal = {245, 245, 245};
+        sf::Color  m_arrowBackgroundColorHover  = {255, 255, 255};
+        sf::Color  m_arrowColorNormal           = { 60,  60,  60};
+        sf::Color  m_arrowColorHover            = {  0,   0,   0};
+
+        friend class Scrollbar;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class LoadingBarRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API LoadingBar : public ClickableWidget
@@ -40,6 +42,21 @@ namespace tgui
     public:
 
         typedef std::shared_ptr<LoadingBar> Ptr;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief The fill direction of the loading bar
+        ///
+        /// Determines in which direction the loading bar is filled when value goes from minimum to maximum.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        enum class FillDirection
+        {
+            LeftToRight,  ///< Start filling at the left side and go to the right
+            RightToLeft,  ///< Start filling at the right side and go to the left
+            TopToBottom,  ///< Start filling at the top an go downward
+            BottomToTop   ///< Start filling at the bottom and go upward
+        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,13 +75,16 @@ namespace tgui
         /// @brief Create the loading bar
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Loadingbar" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static LoadingBar::Ptr create(const std::string& configFileFilename);
+        static LoadingBar::Ptr create(const std::string& configFileFilename = "", const std::string& section = "Loadingbar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +102,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<LoadingBarRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<LoadingBarRenderer>(m_renderer);
         }
 
 
@@ -219,55 +238,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
         {
-            return m_text.getText();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the text.
-        ///
-        /// @return  Pointer to the font that is currently being used
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_text.getTextFont();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
-        ///
-        /// @param color  New text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& color)
-        {
-            m_text.setTextColor(color);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the text.
-        ///
-        /// @return The current text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_text.getTextColor();
+            return m_textBack.getText();
         }
 
 
@@ -289,7 +260,32 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
         {
-            return m_text.getTextSize();
+            return m_textBack.getTextSize();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the fill direction of the loading bar
+        ///
+        /// @param direction  In which direction is the loading bar filled when the value goes from minimum to maximum?
+        ///
+        /// By default the loading bar is filled from left to right.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFillDirection(FillDirection direction);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the fill direction of the loading bar
+        ///
+        /// @return In which direction is the loading bar filled when the value goes from minimum to maximum?
+        ///
+        /// By default the loading bar is filled from left to right.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        FillDirection getFillDirection()
+        {
+            return m_fillDirection;
         }
 
 
@@ -345,9 +341,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum LoadingBarCallbacks
         {
-            ValueChanged = ClickableWidgetCallbacksCount * 1,               ///< Value changed
-            LoadingBarFull = ClickableWidgetCallbacksCount * 2,             ///< Value reached the max value.
-            AllLoadingBarCallbacks = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in LoadingBar and its base classes
+            ValueChanged = ClickableWidgetCallbacksCount * 1,    ///< Value changed
+            LoadingBarFull = ClickableWidgetCallbacksCount * 2,  ///< Value reached the max value.
             LoadingBarCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
@@ -355,18 +350,211 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string  m_loadedConfigFile;
-
         unsigned int m_minimum = 0;
         unsigned int m_maximum = 100;
         unsigned int m_value = 0;
 
+        Label m_textBack;
+        Label m_textFront;
+        unsigned int m_textSize = 0;
+
+        sf::FloatRect m_frontRect;
+
+        FillDirection m_fillDirection = FillDirection::LeftToRight;
+
+        friend class LoadingBarRenderer;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class LoadingBarRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param loadingBar  The loading bar that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        LoadingBarRenderer(LoadingBar* loadingBar) : m_loadingBar{loadingBar} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the text.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        ///
+        /// @param color  The new text color
+        ///
+        /// This changes both the back and front text colors.
+        ///
+        /// @see setTextColorBack
+        /// @see setTextColorFront
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        ///
+        /// @param color  The new text color that is displayed on top of the background color/image.
+        ///
+        /// This color is displayed on top of the unfilled part. The front text color will be used on top of the filled part.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorBack(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        ///
+        /// @param color  The new text color that is displayed on top of the foreground color/image.
+        ///
+        /// This color is displayed on top of the filled part. The back text color will be used on top of the unfilled part.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorFront(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the loading bar.
+        ///
+        /// @param color  The new background color
+        ///
+        /// This is the color that you see in the part of the loading bar that is not filled.
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the foreground color of the loading bar.
+        ///
+        /// @param color  The new foreground color
+        ///
+        /// This is the color that is used to fill the loading bar and is drawn on top of the background color.
+        ///
+        /// Note that this color is ignored when you set an image as foreground.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setForegroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the border color.
+        ///
+        /// @param color  The color that is used for the borders that are optionally drawn around the loading bar
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the background image of the loading bar
+        ///
+        /// When this image and the front image are set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackImage(const std::string& filename,
+                          const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                          const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                          bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the foreground image of the loading bar
+        ///
+        /// When this image and the back image are set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFrontImage(const std::string& filename,
+                           const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                           const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                           bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        LoadingBarRenderer(const LoadingBarRenderer&) = default;
+        LoadingBarRenderer& operator=(const LoadingBarRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        LoadingBar* m_loadingBar;
+
         Texture  m_textureBack;
         Texture  m_textureFront;
 
-        // The text that is (optionally) drawn on top of the loading bar
-        Label m_text;
-        unsigned int m_textSize = 0;
+        sf::Color m_backgroundColor = {245, 245, 245};
+        sf::Color m_foregroundColor = {0, 110, 255};
+
+        sf::Color m_borderColor = {0, 0, 0};
+
+        friend class LoadingBar;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

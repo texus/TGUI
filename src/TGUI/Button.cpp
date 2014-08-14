@@ -35,54 +35,57 @@ namespace tgui
     Button::Button()
     {
         m_callback.widgetType = Type_Button;
-        m_text.setTextColor(sf::Color::Black);
+
+        m_renderer = std::make_shared<ButtonRenderer>(this);
+
+        getRenderer()->setBorders(2, 2, 2, 2);
+
+        m_text.setTextColor(getRenderer()->m_textColorNormal);
+
+        setSize(120, 30);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Ptr Button::create(const std::string& configFileFilename)
+    Button::Ptr Button::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto button = std::make_shared<Button>();
 
-        button->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // Open the config file
-        ConfigFile configFile{button->m_loadedConfigFile, "Button"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = button->m_loadedConfigFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = button->m_loadedConfigFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "separatehoverimage")
-                button->m_separateHoverImage = configFile.readBool(it);
-            else if (it->first == "textcolor")
-                button->m_text.setTextColor(configFile.readColor(it));
-            else if (it->first == "normalimage")
-                configFile.readTexture(it, configFileFolder, button->m_textureNormal);
-            else if (it->first == "hoverimage")
-                configFile.readTexture(it, configFileFolder, button->m_textureHover);
-            else if (it->first == "downimage")
-                configFile.readTexture(it, configFileFolder, button->m_textureDown);
-            else if (it->first == "focusedimage")
-                configFile.readTexture(it, configFileFolder, button->m_textureFocused);
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section Button in " + button->m_loadedConfigFile + "."};
+            button->getRenderer()->setBorders({0, 0, 0, 0});
+
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            {
+                try
+                {
+                    button->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
+            }
+
+            if (button->getRenderer()->m_textureNormal.getData())
+                button->setSize(button->getRenderer()->m_textureNormal.getImageSize());
+
+            // The widget can only be focused when there is an image available for this phase
+            if (button->getRenderer()->m_textureFocused.getData() != nullptr)
+                button->m_allowFocus = true;
         }
-
-        // Make sure the required texture was loaded
-        if (button->m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the Button section in " + button->m_loadedConfigFile + " complete?"};
-
-        button->setSize(button->m_textureNormal.getImageSize());
-
-        // The widget can only be focused when there is an image available for this phase
-        if (button->m_textureFocused.getData() != nullptr)
-            button->m_allowFocus = true;
 
         return button;
     }
@@ -93,10 +96,10 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_textureDown.setPosition(getPosition());
-        m_textureHover.setPosition(getPosition());
-        m_textureNormal.setPosition(getPosition());
-        m_textureFocused.setPosition(getPosition());
+        getRenderer()->m_textureDown.setPosition(getPosition());
+        getRenderer()->m_textureHover.setPosition(getPosition());
+        getRenderer()->m_textureNormal.setPosition(getPosition());
+        getRenderer()->m_textureFocused.setPosition(getPosition());
 
         // Set the position of the text
         m_text.setPosition(getPosition().x + (getSize().x - m_text.getSize().x) * 0.5f,
@@ -109,10 +112,10 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_textureDown.setSize(getSize());
-        m_textureHover.setSize(getSize());
-        m_textureNormal.setSize(getSize());
-        m_textureFocused.setSize(getSize());
+        getRenderer()->m_textureDown.setSize(getSize());
+        getRenderer()->m_textureHover.setSize(getSize());
+        getRenderer()->m_textureNormal.setSize(getSize());
+        getRenderer()->m_textureFocused.setSize(getSize());
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
@@ -181,16 +184,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setTextFont(const sf::Font& font)
-    {
-        m_text.setTextFont(font);
-
-        // Reposition the text
-        setText(m_string);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::setTextSize(unsigned int size)
     {
         // Change the text size
@@ -206,10 +199,28 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureDown.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureDown.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::leftMousePressed(float x, float y)
+    {
+        ClickableWidget::leftMousePressed(x, y);
+
+        m_text.setTextColor(getRenderer()->m_textColorDown);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::leftMouseReleased(float x, float y)
+    {
+        ClickableWidget::leftMouseReleased(x, y);
+
+        m_text.setTextColor(getRenderer()->m_textColorHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +253,7 @@ namespace tgui
     void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if (m_textureFocused.getData())
+        if (getRenderer()->m_textureFocused.getData())
             Widget::widgetFocused();
         else
             unfocus();
@@ -254,41 +265,280 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!getTextFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+        if (!m_text.getTextFont() && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::mouseEnteredWidget()
+    {
+        Widget::mouseEnteredWidget();
+
+        if (m_mouseDown)
+            m_text.setTextColor(getRenderer()->m_textColorDown);
+        else
+            m_text.setTextColor(getRenderer()->m_textColorHover);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::mouseLeftWidget()
+    {
+        Widget::mouseLeftWidget();
+
+        m_text.setTextColor(getRenderer()->m_textColorNormal);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_separateHoverImage)
-        {
-            if (m_mouseDown && m_mouseHover && m_textureDown.getData())
-                target.draw(m_textureDown, states);
-            else if (m_mouseHover && m_textureHover.getData())
-                target.draw(m_textureHover, states);
-            else
-                target.draw(m_textureNormal, states);
-        }
-        else // The hover image is drawn on top of the normal one
-        {
-            if (m_mouseDown && m_mouseHover && m_textureDown.getData())
-                target.draw(m_textureDown, states);
-            else
-                target.draw(m_textureNormal, states);
-
-            // When the mouse is on top of the button then draw an extra image
-            if (m_mouseHover && m_textureHover.getData())
-                target.draw(m_textureHover, states);
-        }
-
-        // When the button is focused then draw an extra image
-        if (m_focused && m_textureFocused.getData())
-            target.draw(m_textureFocused, states);
+        // Draw the background of the button
+        getRenderer()->draw(target, states);
 
         // If the button has a text then also draw the text
         target.draw(m_text, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "textcolor")
+            setTextColor(extractColorFromString(property, value));
+        else if (property == "textcolornormal")
+            setTextColorNormal(extractColorFromString(property, value));
+        else if (property == "textcolorhover")
+            setTextColorHover(extractColorFromString(property, value));
+        else if (property == "textcolordown")
+            setTextColorDown(extractColorFromString(property, value));
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "backgroundcolornormal")
+            setBackgroundColorNormal(extractColorFromString(property, value));
+        else if (property == "backgroundcolorhover")
+            setBackgroundColorHover(extractColorFromString(property, value));
+        else if (property == "backgroundcolordown")
+            setBackgroundColorDown(extractColorFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else if (property == "normalimage")
+            extractTextureFromString(property, value, rootPath, m_textureNormal);
+        else if (property == "hoverimage")
+            extractTextureFromString(property, value, rootPath, m_textureHover);
+        else if (property == "downimage")
+            extractTextureFromString(property, value, rootPath, m_textureDown);
+        else if (property == "focusedimage")
+            extractTextureFromString(property, value, rootPath, m_textureFocused);
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setTextFont(const sf::Font& font)
+    {
+        m_button->m_text.setTextFont(font);
+
+        // Reposition the text
+        m_button->setText(m_button->m_string);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setTextColor(const sf::Color& color)
+    {
+        m_textColorNormal = color;
+        m_textColorHover = color;
+        m_textColorDown = color;
+
+        m_button->m_text.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setTextColorNormal(const sf::Color& color)
+    {
+        m_textColorNormal = color;
+
+        if (!m_button->m_mouseHover)
+            m_button->m_text.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setTextColorHover(const sf::Color& color)
+    {
+        m_textColorHover = color;
+
+        if (m_button->m_mouseHover && !m_button->m_mouseDown)
+            m_button->m_text.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setTextColorDown(const sf::Color& color)
+    {
+        m_textColorDown = color;
+
+        if (m_button->m_mouseHover && m_button->m_mouseDown)
+            m_button->m_text.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setBackgroundColor(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+        m_backgroundColorHover = color;
+        m_backgroundColorDown = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setBackgroundColorNormal(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setBackgroundColorHover(const sf::Color& color)
+    {
+        m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setBackgroundColorDown(const sf::Color& color)
+    {
+        m_backgroundColorDown = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setBorderColor(const sf::Color& color)
+    {
+        m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureNormal = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureHover = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setDownImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureDown.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureDown = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::setFocusedImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureFocused.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureFocused = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ButtonRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Check if there is a background texture
+        if (m_textureNormal.getData() != nullptr)
+        {
+            if (m_button->m_mouseHover)
+            {
+                if (m_button->m_mouseDown && m_button->m_mouseHover && m_textureDown.getData())
+                    target.draw(m_textureDown, states);
+                else if (m_textureHover.getData())
+                    target.draw(m_textureHover, states);
+                else
+                    target.draw(m_textureNormal, states);
+            }
+            else
+                target.draw(m_textureNormal, states);
+        }
+        else // There is no background texture
+        {
+            sf::RectangleShape button(m_button->getSize());
+            button.setPosition(m_button->getPosition());
+
+            if (m_button->m_mouseHover)
+            {
+                if (m_button->m_mouseDown)
+                    button.setFillColor(m_backgroundColorDown);
+                else
+                    button.setFillColor(m_backgroundColorHover);
+            }
+            else
+                button.setFillColor(m_backgroundColorNormal);
+
+            target.draw(button, states);
+        }
+
+        // Draw the borders around the button
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_button->getPosition();
+            sf::Vector2f size = m_button->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> ButtonRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<ButtonRenderer>(new ButtonRenderer{*this});
+        renderer->m_button = static_cast<Button*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -86,10 +86,10 @@ namespace tgui
         ///
         /// @param filename  Path of the font file to load
         ///
-        /// @return True if loading succeeded, false if it failed
+        /// @throw Exception when loading fails
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool setGlobalFont(const std::string& filename);
+        virtual void setGlobalFont(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +162,7 @@ namespace tgui
         /// @brief Returns a pointer to an earlier created widget.
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget
         ///
@@ -174,13 +175,14 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(const sf::String& widgetName) const;
+        Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to an earlier created widget.
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type.
@@ -195,9 +197,9 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
-        typename T::Ptr get(const sf::String& widgetName) const
+        typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
         {
-            return std::dynamic_pointer_cast<T>(get(widgetName));
+            return std::dynamic_pointer_cast<T>(get(widgetName, recursive));
         }
 
 

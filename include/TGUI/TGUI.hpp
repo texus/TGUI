@@ -42,10 +42,7 @@
 #include <TGUI/LoadingBar.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>
-#include <TGUI/SpriteSheet.hpp>
-#include <TGUI/AnimatedPicture.hpp>
 #include <TGUI/SpinButton.hpp>
-#include <TGUI/Slider2d.hpp>
 #include <TGUI/Tab.hpp>
 #include <TGUI/MenuBar.hpp>
 #include <TGUI/ChatBox.hpp>
@@ -58,6 +55,10 @@
 #include <TGUI/MessageBox.hpp>
 #include <TGUI/Grid.hpp>
 #include <TGUI/Gui.hpp>
+
+#include <TGUI/extra/Slider2d.hpp>
+#include <TGUI/extra/SpriteSheet.hpp>
+#include <TGUI/extra/AnimatedPicture.hpp>
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

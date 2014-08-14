@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class KnobRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API Knob : public Widget
@@ -57,14 +59,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Create the knob
         ///
-        /// @param configFileFilename  Filename of the config file.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section            The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Knob" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Knob::Ptr create(const std::string& configFileFilename);
+        static Knob::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "Knob");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +87,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<KnobRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<KnobRenderer>(m_renderer);
         }
 
 
@@ -328,8 +332,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum KnobCallbacks
         {
-            ValueChanged       = WidgetCallbacksCount * 1,     ///< Value changed (knob turned)
-            AllKnobCallbacks   = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Knob and its base classes
+            ValueChanged       = WidgetCallbacksCount * 1,  ///< Value changed (knob turned)
             KnobCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -337,19 +340,175 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        std::string m_loadedConfigFile;
-
-        Texture m_backgroundTexture;
-        Texture m_foregroundTexture;
-
         bool m_clockwiseTurning = true; // Does rotating clockwise increment the value?
-        float m_imageRotation = 0;
-        float m_startRotation = 90;
-        float m_endRotation = 90;
+        float m_startRotation = 270;
+        float m_endRotation = 270;
 
         int m_minimum = 0;
         int m_value = 0;
         int m_maximum = 360;
+
+        float m_angle = 270;
+
+        friend class KnobRenderer;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class KnobRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param knob  The knob that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        KnobRenderer(Knob* knob) : m_knob{knob} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the background image of the knob
+        ///
+        /// When this image and the foreground image are set, the background and thumb color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the foreground image of the knob
+        ///
+        /// The foreground image is the part that is rotated around the center when the value changes.
+        ///
+        /// When this image and the background image are set, the background and thumb color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setForegroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the default rotation of the foreground image.
+        ///
+        /// This property defines in which direction is the foreground image pointing.
+        /// The rotation is in degrees, starts from the right side and increases when going counter-clockwise.
+        ///
+        /// @param rotation  Default rotation of the foreground image, which is a value between 0 and 360.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setImageRotation(float rotation);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background.
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when a background and foreground image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb which you can move around the circle.
+        ///
+        /// @param color  New thumb color
+        ///
+        /// Note that this is ignored when a background and foreground image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders that are optionally drawn around the knob.
+        ///
+        /// @param color  New border color
+        ///
+        /// Note that the borders are ignored when a background and foreground image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        KnobRenderer(const KnobRenderer&) = default;
+        KnobRenderer& operator=(const KnobRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Knob*     m_knob;
+
+        float     m_imageRotation = 0;
+
+        Texture   m_backgroundTexture;
+        Texture   m_foregroundTexture;
+
+        sf::Color m_backgroundColor = {255, 255, 255};
+        sf::Color m_thumbColor = {0, 0, 0};
+
+        sf::Color m_borderColor = {0, 0, 0};
+
+        friend class Knob;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -44,89 +44,65 @@ namespace tgui
         m_draggableWidget = true;
         m_allowFocus = true;
 
+        m_defaultText.setStyle(sf::Text::Italic);
+
         m_caret.setSize({1, 0});
 
-        changeColors();
+        m_renderer = std::make_shared<EditBoxRenderer>(this);
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setPadding({4, 2, 4, 2});
+
+        m_textBeforeSelection.setColor({0, 0, 0});
+        m_textSelection.setColor({255, 255, 255});
+        m_textAfterSelection.setColor({0, 0, 0});
+        m_defaultText.setColor({160, 160, 160});
+        m_caret.setFillColor({0, 0, 0});
+        m_selectedTextBackground.setFillColor({0, 110, 255});
+
+        setSize({240, 30});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::Ptr EditBox::create(const std::string& configFileFilename)
+    EditBox::Ptr EditBox::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto editBox = std::make_shared<EditBox>();
 
-        editBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // Open the config file
-        ConfigFile configFile{editBox->m_loadedConfigFile, "EditBox"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = editBox->m_loadedConfigFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = editBox->m_loadedConfigFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "separatehoverimage")
+            editBox->getRenderer()->setBorders({0, 0, 0, 0});
+
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
             {
-                editBox->m_separateHoverImage = configFile.readBool(it);
+                try
+                {
+                    editBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
             }
-            else if (it->first == "textcolor")
-            {
-                sf::Color color = extractColor(it->second);
-                editBox->m_textBeforeSelection.setColor(color);
-                editBox->m_textAfterSelection.setColor(color);
-            }
-            else if (it->first == "selectedtextcolor")
-            {
-                editBox->m_textSelection.setColor(extractColor(it->second));
-            }
-            else if (it->first == "selectedtextbackgroundcolor")
-            {
-                editBox->m_selectedTextBackground.setFillColor(extractColor(it->second));
-            }
-            else if (it->first == "caretcolor")
-            {
-                editBox->m_caret.setFillColor(extractColor(it->second));
-            }
-            else if (it->first == "caretwidth")
-            {
-                editBox->m_caret.setSize({tgui::stof(it->second), editBox->m_caret.getSize().y});
-            }
-            else if (it->first == "borders")
-            {
-                Borders borders;
-                if (extractBorders(it->second, borders))
-                    editBox->setBorders(borders);
-                else
-                    throw Exception{"Failed to parse the 'Borders' property in section EditBox in " + editBox->m_loadedConfigFile};
-            }
-            else if (it->first == "normalimage")
-            {
-                configFile.readTexture(it, configFileFolder, editBox->m_textureNormal);
-            }
-            else if (it->first == "hoverimage")
-            {
-                configFile.readTexture(it, configFileFolder, editBox->m_textureHover);
-            }
-            else if (it->first == "focusedimage")
-            {
-                configFile.readTexture(it, configFileFolder, editBox->m_textureFocused);
-            }
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section EditBox in " + editBox->m_loadedConfigFile + "."};
+
+            if (editBox->getRenderer()->m_textureNormal.getData() != nullptr)
+                editBox->setSize(editBox->getRenderer()->m_textureNormal.getImageSize());
+
+            // Auto-size the text
+            editBox->setTextSize(0);
         }
-
-        // Make sure the required texture was loaded
-        if (editBox->m_textureNormal.getData() == nullptr)
-            throw Exception{"NormalImage wasn't loaded. Is the EditBox section in " + editBox->m_loadedConfigFile + " complete?"};
-
-        editBox->setSize(editBox->m_textureNormal.getImageSize());
-
-        // Auto-size the text
-        editBox->setTextSize(0);
 
         return editBox;
     }
@@ -137,9 +113,9 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_textureHover.setPosition(position.getValue());
-        m_textureNormal.setPosition(position.getValue());
-        m_textureFocused.setPosition(position.getValue());
+        getRenderer()->m_textureHover.setPosition(getPosition());
+        getRenderer()->m_textureNormal.setPosition(getPosition());
+        getRenderer()->m_textureFocused.setPosition(getPosition());
 
         recalculateTextPositions();
     }
@@ -154,12 +130,13 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text);
 
-        m_textureHover.setSize(getSize());
-        m_textureNormal.setSize(getSize());
-        m_textureFocused.setSize(getSize());
+        getRenderer()->m_textureHover.setSize(getSize());
+        getRenderer()->m_textureNormal.setSize(getSize());
+        getRenderer()->m_textureFocused.setSize(getSize());
 
         // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x, getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
+        m_caret.setSize({m_caret.getSize().x,
+                         getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
 
         // Recalculate the position of the images and texts
         updatePosition();
@@ -174,13 +151,14 @@ namespace tgui
         {
             // Calculate the text size
             m_textFull.setString("kg");
-            m_textFull.setCharacterSize(static_cast<unsigned int>((getSize().y - ((m_borders.top + m_borders.bottom) * (getSize().y / m_textureNormal.getImageSize().y))) * 0.75f));
+            m_textFull.setCharacterSize(static_cast<unsigned int>((getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top) * 0.75f));
             m_textFull.setString(m_displayedText);
 
             // Also adjust the character size of the other texts
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
+            m_defaultText.setCharacterSize(m_textFull.getCharacterSize());
         }
         else // When the text has a fixed size
         {
@@ -189,6 +167,7 @@ namespace tgui
             m_textSelection.setCharacterSize(m_textSize);
             m_textAfterSelection.setCharacterSize(m_textSize);
             m_textFull.setCharacterSize(m_textSize);
+            m_defaultText.setCharacterSize(m_textSize);
         }
 
         // Change the text
@@ -221,8 +200,7 @@ namespace tgui
         m_textAfterSelection.setString("");
         m_textFull.setString(m_displayedText);
 
-        // Calculate the space inside the edit box
-        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
+        float width = getVisibleEditBoxWidth();
 
         // Check if there is a text width limit
         if (m_limitTextWidth)
@@ -279,20 +257,7 @@ namespace tgui
         // Change the text size
         m_textSize = size;
 
-        // Call setText to reposition the text
-        setText(m_text);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setTextFont(const sf::Font& font)
-    {
-        m_textBeforeSelection.setFont(font);
-        m_textSelection.setFont(font);
-        m_textAfterSelection.setFont(font);
-        m_textFull.setFont(font);
-
-        // Recalculate the text size and position
+        // Call setText to re-position the text
         setText(m_text);
     }
 
@@ -314,7 +279,7 @@ namespace tgui
         // Set the new character limit ( 0 to disable the limit )
         m_maxChars = maxChars;
 
-        // If there is a character limit then check if it is exeeded
+        // If there is a character limit then check if it is exceeded
         if ((m_maxChars > 0) && (m_displayedText.getSize() > m_maxChars))
         {
             // Remove all the excess characters
@@ -334,42 +299,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setBorders(const Borders& borders)
-    {
-        m_borders = borders;
-
-        // Recalculate the text size
-        setText(m_text);
-
-        // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x, getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::changeColors(const sf::Color& color,
-                               const sf::Color& selectedColor,
-                               const sf::Color& selectedBgrColor,
-                               const sf::Color& caretColor)
-    {
-        m_textBeforeSelection.setColor(color);
-        m_textSelection.setColor(selectedColor);
-        m_textAfterSelection.setColor(color);
-
-        m_caret.setFillColor(caretColor);
-        m_selectedTextBackground.setFillColor(selectedBgrColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::setTextColor(const sf::Color& textColor)
-    {
-        m_textBeforeSelection.setColor(textColor);
-        m_textAfterSelection.setColor(textColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::limitTextWidth(bool limitWidth)
     {
         m_limitTextWidth = limitWidth;
@@ -377,10 +306,8 @@ namespace tgui
         // Check if the width is being limited
         if (m_limitTextWidth == true)
         {
-            // Calculate the space inside the edit box
-            float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
             // Now check if the text fits into the EditBox
+            float width = getVisibleEditBoxWidth();
             while (m_textBeforeSelection.findCharacterPos(m_displayedText.getSize()).x - m_textBeforeSelection.getPosition().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
@@ -423,9 +350,6 @@ namespace tgui
         // Check if scrolling is enabled
         if (m_limitTextWidth == false)
         {
-            // Calculate the space inside the edit box
-            float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
             // Find out the position of the caret
             float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
 
@@ -433,8 +357,8 @@ namespace tgui
                 caretPosition += m_textFull.getCharacterSize() / 10.f;
 
             // If the caret is too far on the right then adjust the cropping
-            if (m_textCropPosition + width < caretPosition)
-                m_textCropPosition = static_cast<unsigned int>(caretPosition - width);
+            if (m_textCropPosition + getVisibleEditBoxWidth() < caretPosition)
+                m_textCropPosition = static_cast<unsigned int>(caretPosition - getVisibleEditBoxWidth());
 
             // If the caret is too far on the left then adjust the cropping
             if (m_textCropPosition > caretPosition)
@@ -449,7 +373,7 @@ namespace tgui
     void EditBox::setCaretWidth(unsigned int width)
     {
         m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
-        m_caret.setSize({static_cast<float>(width), getSize().y - ((m_borders.bottom + m_borders.top) * (getSize().y / m_textureNormal.getImageSize().y))});
+        m_caret.setSize({static_cast<float>(width), getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -495,20 +419,17 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::leftMousePressed(float x, float y)
     {
-        // Calculate the space inside the edit box
-        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
         // Find the caret position
-        float positionX = x - getPosition().x - (m_borders.left * (getSize().y / m_textureNormal.getImageSize().y));
+        float positionX = x - getPosition().x - getRenderer()->getScaledPadding().left;
 
         unsigned int caretPosition = findCaretPosition(positionX);
 
@@ -517,7 +438,7 @@ namespace tgui
             --caretPosition;
 
         // When clicking on the right of the right character, move the caret to the right
-        else if ((positionX > width) && (caretPosition < m_displayedText.getSize()))
+        else if ((positionX > getVisibleEditBoxWidth()) && (caretPosition < m_displayedText.getSize()))
             ++caretPosition;
 
         // Check if this is a double click
@@ -564,18 +485,15 @@ namespace tgui
 
         // The caret should be visible
         m_caretVisible = true;
-        m_animationTimeElapsed = sf::Time();
+        m_animationTimeElapsed = {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::mouseMoved(float x, float)
     {
-        if (m_mouseHover == false)
+        if (!m_mouseHover)
             mouseEnteredWidget();
-
-        // Set the mouse hover flag
-        m_mouseHover = true;
 
         // The mouse has moved so a double click is no longer possible
         m_possibleDoubleClick = false;
@@ -587,19 +505,14 @@ namespace tgui
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - (m_borders.left * (getSize().y / m_textureNormal.getImageSize().y)));
+                m_selEnd = findCaretPosition(x - getPosition().x - getRenderer()->getScaledPadding().left);
             }
             else // Scrolling is enabled
             {
-                float scalingX = getSize().y / m_textureNormal.getImageSize().y;
-                float width = getSize().x - ((m_borders.left + m_borders.right) * scalingX);
-
-                // If the width is negative then the edit box is too small to be displayed
-                if (width < 0)
-                    width = 0;
+                float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
-                if (x - getPosition().x < m_borders.left * scalingX)
+                if (x - getPosition().x < getRenderer()->getScaledPadding().left)
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -616,7 +529,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((x - getPosition().x > (m_borders.left * scalingX) + width) && (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width))
+                else if ((x - getPosition().x > getRenderer()->getScaledPadding().left + width) && (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -634,7 +547,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - (m_borders.left * scalingX));
+                m_selEnd = findCaretPosition(x - getPosition().x - getRenderer()->getScaledPadding().left);
             }
 
             // Check if we are selecting text from left to right
@@ -701,7 +614,7 @@ namespace tgui
                 else
                     setCaretPosition(m_selEnd);
             }
-            else // When we didn't select any text
+            else // When we did not select any text
             {
                 // Move the caret to the left
                 if (m_selEnd > 0)
@@ -710,7 +623,7 @@ namespace tgui
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
         }
         else if (event.code == sf::Keyboard::Right)
         {
@@ -723,7 +636,7 @@ namespace tgui
                 else
                     setCaretPosition(m_selStart);
             }
-            else // When we didn't select any text
+            else // When we did not select any text
             {
                 // Move the caret to the right
                 if (m_selEnd < m_displayedText.getSize())
@@ -732,7 +645,7 @@ namespace tgui
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
         }
         else if (event.code == sf::Keyboard::Home)
         {
@@ -741,7 +654,7 @@ namespace tgui
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
         }
         else if (event.code == sf::Keyboard::End)
         {
@@ -750,7 +663,7 @@ namespace tgui
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
         }
         else if (event.code == sf::Keyboard::Return)
         {
@@ -764,7 +677,7 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::BackSpace)
         {
-            // Make sure that we didn't select any characters
+            // Make sure that we did not select any characters
             if (m_selChars == 0)
             {
                 // We can't delete any characters when you are at the beginning of the string
@@ -778,8 +691,7 @@ namespace tgui
                 // Set the caret back on the correct position
                 setCaretPosition(m_selEnd - 1);
 
-                // Calculate the space inside the edit box
-                float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
+                float width = getVisibleEditBoxWidth();
 
                 // Calculate the text width
                 float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
@@ -798,7 +710,7 @@ namespace tgui
 
             // The caret should be visible again
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
 
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[TextChanged].empty() == false)
@@ -824,13 +736,11 @@ namespace tgui
                 // Set the caret back on the correct position
                 setCaretPosition(m_selEnd);
 
-                // Calculate the space inside the edit box
-                float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
                 // Calculate the text width
                 float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
 
                 // If the text can be moved to the right then do so
+                float width = getVisibleEditBoxWidth();
                 if (textWidth > width)
                 {
                     if (textWidth - m_textCropPosition < width)
@@ -844,7 +754,7 @@ namespace tgui
 
             // The caret should be visible again
             m_caretVisible = true;
-            m_animationTimeElapsed = sf::Time();
+            m_animationTimeElapsed = {};
 
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[TextChanged].empty() == false)
@@ -894,6 +804,18 @@ namespace tgui
                 {
                     TGUI_Clipboard.set(m_textSelection.getString());
                     deleteSelectedCharacters();
+                }
+                else if (event.code == sf::Keyboard::A)
+                {
+                    m_selStart = 0;
+                    m_selEnd = m_text.getSize();
+                    m_selChars = m_text.getSize();
+
+                    m_textBeforeSelection.setString("");
+                    m_textSelection.setString(m_displayedText);
+                    m_textAfterSelection.setString("");
+
+                    recalculateTextPositions();
                 }
             }
         }
@@ -956,14 +878,11 @@ namespace tgui
         // Append the character to the text
         m_textFull.setString(m_displayedText);
 
-        // Calculate the space inside the edit box
-        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
         // When there is a text width limit then reverse what we just did
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
-            if (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width)
+            if (m_textFull.findCharacterPos(m_displayedText.getSize()).x > getVisibleEditBoxWidth())
             {
                 // If the text does not fit in the EditBox then delete the added character
                 m_text.erase(m_selEnd, 1);
@@ -977,7 +896,7 @@ namespace tgui
 
         // The caret should be visible again
         m_caretVisible = true;
-        m_animationTimeElapsed = sf::Time();
+        m_animationTimeElapsed = {};
 
         // Add the callback (if the user requested it)
         if (m_callbackFunctions[TextChanged].empty() == false)
@@ -997,6 +916,13 @@ namespace tgui
             setCaretPosition(m_selEnd);
 
         Widget::widgetUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float EditBox::getVisibleEditBoxWidth()
+    {
+        return std::max(0.f, getSize().x - getRenderer()->getScaledPadding().left - getRenderer()->getScaledPadding().right);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1026,9 +952,7 @@ namespace tgui
         float fullTextWidth;
         float halfOfLastCharWidth;
         unsigned int lastVisibleChar;
-
-        // Calculate the space inside the edit box
-        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
+        float width = getVisibleEditBoxWidth();
 
         // Find out how many pixels the text is moved
         float pixelsToMove = 0;
@@ -1120,13 +1044,11 @@ namespace tgui
             setCaretPosition(m_selEnd);
         }
 
-        // Calculate the space inside the edit box
-        float width = std::max(0.f, getSize().x - ((m_borders.left + m_borders.right) * (getSize().y / m_textureNormal.getImageSize().y)));
-
         // Calculate the text width
         float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
 
         // If the text can be moved to the right then do so
+        float width = getVisibleEditBoxWidth();
         if (textWidth > width)
         {
             if (textWidth - m_textCropPosition < width)
@@ -1143,32 +1065,25 @@ namespace tgui
         float textX = getPosition().x;
         float textY = getPosition().y;
 
-        // Calculate the scaling
-        sf::Vector2f scaling = {getSize().x / m_textureNormal.getImageSize().x, getSize().y / m_textureNormal.getImageSize().y};
+        Padding padding = getRenderer()->getScaledPadding();
 
-        // Calculate the scale of the left and right border
-        float borderScale = scaling.y;
-
-        textX += m_borders.left * borderScale - m_textCropPosition;
-        textY += m_borders.top * scaling.y;
+        textX += padding.left - m_textCropPosition;
+        textY += padding.top;
 
         // Check if the layout wasn't left
         if (m_textAlignment != Alignment::Left)
         {
-            // Calculate the space inside the edit box
-            float width = getSize().x - ((m_borders.left + m_borders.right) * borderScale);
-
             // Calculate the text width
             float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
 
             // Check if a layout would make sense
-            if (textWidth < width)
+            if (textWidth < getVisibleEditBoxWidth())
             {
                 // Put the text on the correct position
                 if (m_textAlignment == Alignment::Center)
-                    textX += (width - textWidth) / 2.f;
+                    textX += (getVisibleEditBoxWidth() - textWidth) / 2.f;
                 else // if (textAlignment == Alignment::Right)
-                    textX += width - textWidth;
+                    textX += getVisibleEditBoxWidth() - textWidth;
             }
         }
 
@@ -1177,10 +1092,11 @@ namespace tgui
         // Set the position of the text
         sf::Text tempText(m_textFull);
         tempText.setString("kg");
-        textY += (((getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y)) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
+        textY += (((getSize().y - padding.top - padding.bottom) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
 
         // Set the text before the selection on the correct position
         m_textBeforeSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+        m_defaultText.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
 
         // Check if there is a selection
         if (m_selChars != 0)
@@ -1193,8 +1109,8 @@ namespace tgui
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
             m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
-                                              (getSize().y - ((m_borders.top + m_borders.bottom) * scaling.y))});
-            m_selectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(getPosition().y + (m_borders.top * scaling.y) + 0.5f));
+                                              getSize().y - padding.top - padding.bottom});
+            m_selectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(getPosition().y + padding.top + 0.5f));
 
             // Set the text selected text on the correct position
             m_textSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
@@ -1210,7 +1126,7 @@ namespace tgui
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
-        m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor((m_borders.top * scaling.y) + getPosition().y + 0.5f));
+        m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor(padding.top + getPosition().y + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1219,8 +1135,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!getTextFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+        if (!m_textFull.getFont() && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1232,7 +1148,7 @@ namespace tgui
             return;
 
         // Reset the elapsed time
-        m_animationTimeElapsed = sf::Time();
+        m_animationTimeElapsed = {};
 
         // Only update when the editbox is visible
         if (m_visible == false)
@@ -1249,54 +1165,32 @@ namespace tgui
 
     void EditBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_separateHoverImage)
-        {
-            if (m_mouseHover && m_textureHover.getData())
-                target.draw(m_textureHover, states);
-            else
-                target.draw(m_textureNormal, states);
-        }
-        else // The hover image is drawn on top of the normal one
-        {
-            target.draw(m_textureNormal, states);
-
-            // When the mouse is on top of the edit box then draw an extra image
-            if (m_mouseHover && m_textureHover.getData())
-                target.draw(m_textureHover, states);
-        }
-
-        // When the edit box is focused then draw an extra image
-        if (m_focused && m_textureFocused.getData())
-            target.draw(m_textureFocused, states);
-
-        // Calculate the scaling
-        sf::Vector2f scaling = {getSize().x / m_textureNormal.getImageSize().x, getSize().y / m_textureNormal.getImageSize().y};
-
-        // Calculate the scale of the left and right border
-        float borderScale = scaling.y;
+        // Draw the background
+        getRenderer()->draw(target, states);
 
         // Calculate the scale factor of the view
         const sf::View& view = target.getView();
         float scaleViewX = target.getSize().x / view.getSize().x;
         float scaleViewY = target.getSize().y / view.getSize().y;
 
+        Padding padding = getRenderer()->getScaledPadding();
+
         // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + (m_borders.left * borderScale) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                    ((getAbsolutePosition().y + (m_borders.top * scaling.y) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + (getSize().x - (m_borders.right * borderScale)) - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                        (getAbsolutePosition().y + (getSize().y - (m_borders.bottom * scaling.y)) - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                            (getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Get the old clipping area
         GLint scissor[4];
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Calculate the clipping area
-        GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
-        // If the widget outside the window then don't draw anything
         if (scissorRight < scissorLeft)
             scissorRight = scissorLeft;
         else if (scissorBottom < scissorTop)
@@ -1305,14 +1199,21 @@ namespace tgui
         // Set the clipping area
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
-        target.draw(m_textBeforeSelection, states);
-
-        if (m_textSelection.getString().isEmpty() == false)
+        if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
-            target.draw(m_selectedTextBackground, states);
+            target.draw(m_textBeforeSelection, states);
 
-            target.draw(m_textSelection, states);
-            target.draw(m_textAfterSelection, states);
+            if (m_textSelection.getString() != "")
+            {
+                target.draw(m_selectedTextBackground, states);
+
+                target.draw(m_textSelection, states);
+                target.draw(m_textAfterSelection, states);
+            }
+        }
+        else if (m_defaultText.getString() != "")
+        {
+            target.draw(m_defaultText, states);
         }
 
         // Draw the caret
@@ -1321,6 +1222,253 @@ namespace tgui
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "textcolor")
+            setTextColor(extractColorFromString(property, value));
+        else if (property == "selectedtextcolor")
+            setSelectedTextColor(extractColorFromString(property, value));
+        else if (property == "selectedtextbackgroundcolor")
+            setSelectedTextBackgroundColor(extractColorFromString(property, value));
+        else if (property == "defaulttextcolor")
+            setDefaultTextColor(extractColorFromString(property, value));
+        else if (property == "caretcolor")
+            setCaretColor(extractColorFromString(property, value));
+        else if (property == "padding")
+            setPadding(extractBordersFromString(property, value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "backgroundcolornormal")
+            setBackgroundColorNormal(extractColorFromString(property, value));
+        else if (property == "backgroundcolorhover")
+            setBackgroundColorHover(extractColorFromString(property, value));
+        else if (property == "normalimage")
+            extractTextureFromString(property, value, rootPath, m_textureNormal);
+        else if (property == "hoverimage")
+            extractTextureFromString(property, value, rootPath, m_textureHover);
+        else if (property == "focusedimage")
+            extractTextureFromString(property, value, rootPath, m_textureFocused);
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setTextFont(const sf::Font& font)
+    {
+        m_editBox->m_textBeforeSelection.setFont(font);
+        m_editBox->m_textSelection.setFont(font);
+        m_editBox->m_textAfterSelection.setFont(font);
+        m_editBox->m_textFull.setFont(font);
+        m_editBox->m_defaultText.setFont(font);
+
+        // Recalculate the text size and position
+        m_editBox->setText(m_editBox->m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setPadding(const Padding& padding)
+    {
+        WidgetPadding::setPadding(padding);
+
+        // Recalculate the text size
+        m_editBox->setText(m_editBox->m_text);
+
+        // Set the size of the caret
+        m_editBox->m_caret.setSize({m_editBox->m_caret.getSize().x,
+                                    m_editBox->getSize().y - getScaledPadding().bottom - getScaledPadding().top});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setTextColor(const sf::Color& textColor)
+    {
+        m_editBox->m_textBeforeSelection.setColor(textColor);
+        m_editBox->m_textAfterSelection.setColor(textColor);
+    }
+
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setDefaultTextColor(const sf::Color& defaultTextColor)
+    {
+        m_editBox->m_defaultText.setColor(defaultTextColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setBackgroundColor(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+        m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setBackgroundColorNormal(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setBackgroundColorHover(const sf::Color& color)
+    {
+        m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setBorderColor(const sf::Color& color)
+    {
+        m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureNormal = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureHover = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setFocusedImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureFocused.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureFocused = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Check if there is a background texture
+        if (m_textureNormal.getData() != nullptr)
+        {
+            if (m_editBox->m_mouseHover && m_textureHover.getData())
+                target.draw(m_textureHover, states);
+            else
+                target.draw(m_textureNormal, states);
+
+            // When the edit box is focused then draw an extra image
+            if (m_editBox->m_focused && m_textureFocused.getData())
+                target.draw(m_textureFocused, states);
+        }
+        else // There is no background texture
+        {
+            sf::RectangleShape editBox(m_editBox->getSize());
+            editBox.setPosition(m_editBox->getPosition());
+
+            if (m_editBox->m_mouseHover)
+                editBox.setFillColor(m_backgroundColorHover);
+            else
+                editBox.setFillColor(m_backgroundColorNormal);
+
+            target.draw(editBox, states);
+        }
+
+        // Draw the borders around the edit box
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_editBox->getPosition();
+            sf::Vector2f size = m_editBox->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Padding EditBoxRenderer::getScaledPadding() const
+    {
+        Padding padding = getPadding();
+        Padding scaledPadding = padding;
+
+        auto& texture = m_textureNormal;
+        if (texture.getData() != nullptr)
+        {
+            switch (texture.getScalingType())
+            {
+            case Texture::ScalingType::Normal:
+                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                break;
+
+            case Texture::ScalingType::Horizontal:
+                scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                break;
+
+            case Texture::ScalingType::Vertical:
+                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
+                break;
+
+            case Texture::ScalingType::NineSliceScaling:
+                break;
+            }
+        }
+
+        return scaledPadding;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> EditBoxRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<EditBoxRenderer>(new EditBoxRenderer{*this});
+        renderer->m_editBox = static_cast<EditBox*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

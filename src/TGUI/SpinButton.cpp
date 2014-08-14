@@ -35,49 +35,106 @@ namespace tgui
     SpinButton::SpinButton()
     {
         m_callback.widgetType = Type_SpinButton;
+
+        m_renderer = std::make_shared<SpinButtonRenderer>(this);
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+
+        setSize(20, 42);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinButton::Ptr SpinButton::create(const std::string& configFileFilename)
+    SpinButton::Ptr SpinButton::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto spinButton = std::make_shared<SpinButton>();
 
-        spinButton->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // Open the config file
-        ConfigFile configFile{spinButton->m_loadedConfigFile, "SpinButton"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = spinButton->m_loadedConfigFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = spinButton->m_loadedConfigFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "separatehoverimage")
-                spinButton->m_separateHoverImage = configFile.readBool(it);
-            else if (it->first == "arrowupnormalimage")
-                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowUpNormal);
-            else if (it->first == "arrowuphoverimage")
-                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowUpHover);
-            else if (it->first == "arrowdownnormalimage")
-                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowDownNormal);
-            else if (it->first == "arrowdownhoverimage")
-                configFile.readTexture(it, configFileFolder, spinButton->m_textureArrowDownHover);
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section SpinButton in " + spinButton->m_loadedConfigFile + "."};
+            spinButton->getRenderer()->setBorders({0, 0, 0, 0});
+
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            {
+                try
+                {
+                    spinButton->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
+            }
+
+            // Use the size of the images when images were loaded
+            if (spinButton->getRenderer()->m_textureArrowUpNormal.getData() && spinButton->getRenderer()->m_textureArrowDownNormal.getData())
+            {
+                spinButton->setSize({spinButton->getRenderer()->m_textureArrowUpNormal.getSize().x,
+                                     spinButton->getRenderer()->m_textureArrowUpNormal.getSize().y + spinButton->getRenderer()->m_textureArrowDownNormal.getSize().y});
+            }
         }
 
-        // Make sure the required textures were loaded
-        if ((spinButton->m_textureArrowUpNormal.getData() == nullptr) || (spinButton->m_textureArrowDownNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the spin button. Is the SpinButton section in " + spinButton->m_loadedConfigFile + " complete?"};
-
-        spinButton->setSize({spinButton->m_textureArrowUpNormal.getSize().x, spinButton->m_textureArrowUpNormal.getSize().y + spinButton->m_textureArrowDownNormal.getSize().y});
-
         return spinButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::setPosition(const Layout& position)
+    {
+        Widget::setPosition(position);
+
+        if (m_verticalScroll)
+        {
+            getRenderer()->m_textureArrowUpNormal.setPosition(getPosition());
+            getRenderer()->m_textureArrowUpHover.setPosition(getPosition());
+            getRenderer()->m_textureArrowDownNormal.setPosition(getPosition().x, getPosition().y + getRenderer()->m_textureArrowUpNormal.getSize().y + getRenderer()->m_spaceBetweenArrows);
+            getRenderer()->m_textureArrowDownHover.setPosition(getPosition().x, getPosition().y + getRenderer()->m_textureArrowUpHover.getSize().y + getRenderer()->m_spaceBetweenArrows);
+        }
+        else // Horizontal orientation
+        {
+            getRenderer()->m_textureArrowUpNormal.setPosition(getPosition());
+            getRenderer()->m_textureArrowUpHover.setPosition(getPosition());
+            getRenderer()->m_textureArrowDownNormal.setPosition(getPosition().x + getRenderer()->m_textureArrowUpNormal.getSize().y + getRenderer()->m_spaceBetweenArrows, getPosition().y);
+            getRenderer()->m_textureArrowDownHover.setPosition(getPosition().x + getRenderer()->m_textureArrowUpHover.getSize().y + getRenderer()->m_spaceBetweenArrows, getPosition().y);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::setSize(const Layout& size)
+    {
+        Widget::setSize(size);
+
+        if (m_verticalScroll)
+            getRenderer()->m_textureArrowUpNormal.setSize({getSize().x, (getSize().y - getRenderer()->m_spaceBetweenArrows) / 2.0f});
+        else
+            getRenderer()->m_textureArrowUpNormal.setSize({getSize().y, (getSize().x - getRenderer()->m_spaceBetweenArrows) / 2.0f});
+
+        getRenderer()->m_textureArrowUpHover.setSize(getRenderer()->m_textureArrowUpNormal.getSize());
+        getRenderer()->m_textureArrowDownNormal.setSize(getRenderer()->m_textureArrowUpNormal.getSize());
+        getRenderer()->m_textureArrowDownHover.setSize(getRenderer()->m_textureArrowUpNormal.getSize());
+
+        // Recalculate the position of the images
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f SpinButton::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,14 +184,38 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinButton::setVerticalScroll(bool verticalScroll)
+    {
+        m_verticalScroll = verticalScroll;
+
+        if (verticalScroll)
+        {
+            getRenderer()->m_textureArrowUpNormal.setRotation(0);
+            getRenderer()->m_textureArrowUpHover.setRotation(0);
+            getRenderer()->m_textureArrowDownNormal.setRotation(0);
+            getRenderer()->m_textureArrowDownHover.setRotation(0);
+        }
+        else
+        {
+            getRenderer()->m_textureArrowUpNormal.setRotation(-90);
+            getRenderer()->m_textureArrowUpHover.setRotation(-90);
+            getRenderer()->m_textureArrowDownNormal.setRotation(-90);
+            getRenderer()->m_textureArrowDownHover.setRotation(-90);
+        }
+
+        updateSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::setTransparency(unsigned char transparency)
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,14 +227,14 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y))
+            if (sf::FloatRect{getPosition().x - getRenderer()->getBorders().left, getPosition().y - getRenderer()->getBorders().top, getFullSize().x, getFullSize().y / 2.0f}.contains(x, y))
                 m_mouseDownOnTopArrow = true;
             else
                 m_mouseDownOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y))
+            if (sf::FloatRect{getPosition().x - getRenderer()->getBorders().left, getPosition().y - getRenderer()->getBorders().top, getFullSize().x / 2.0f, getFullSize().y}.contains(x, y))
                 m_mouseDownOnTopArrow = false;
             else
                 m_mouseDownOnTopArrow = true;
@@ -218,23 +299,21 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y / 2.f)).contains(x, y))
+            if (sf::FloatRect{getPosition().x - getRenderer()->getBorders().left, getPosition().y - getRenderer()->getBorders().top, getFullSize().x, getFullSize().y / 2.0f}.contains(x, y))
                 m_mouseHoverOnTopArrow = true;
             else
                 m_mouseHoverOnTopArrow = false;
         }
         else
         {
-            if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x / 2.f, getSize().y)).contains(x, y))
-                m_mouseHoverOnTopArrow = false;
-            else
+            if (sf::FloatRect{getPosition().x - getRenderer()->getBorders().left, getPosition().y - getRenderer()->getBorders().top, getFullSize().x / 2.0f, getFullSize().y}.contains(x, y))
                 m_mouseHoverOnTopArrow = true;
+            else
+                m_mouseHoverOnTopArrow = false;
         }
 
-        if (m_mouseHover == false)
+        if (!m_mouseHover)
             mouseEnteredWidget();
-
-        m_mouseHover = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,94 +328,285 @@ namespace tgui
 
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Adjust the position
-        states.transform.translate(getPosition());
+        getRenderer()->draw(target, states);
+    }
 
-        // Check if the image is drawn in the same direction than it was loaded
-        if (m_verticalScroll)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "arrowupnormalimage")
+            extractTextureFromString(property, value, rootPath, m_textureArrowUpNormal);
+        else if (property == "arrowuphoverimage")
+            extractTextureFromString(property, value, rootPath, m_textureArrowUpHover);
+        else if (property == "arrowdownnormalimage")
+            extractTextureFromString(property, value, rootPath, m_textureArrowDownNormal);
+        else if (property == "arrowdownhoverimage")
+            extractTextureFromString(property, value, rootPath, m_textureArrowDownHover);
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "backgroundcolornormal")
+            setBackgroundColorNormal(extractColorFromString(property, value));
+        else if (property == "backgroundcolorhover")
+            setBackgroundColorHover(extractColorFromString(property, value));
+        else if (property == "arrowcolor")
+            setArrowColor(extractColorFromString(property, value));
+        else if (property == "arrowcolornormal")
+            setArrowColorNormal(extractColorFromString(property, value));
+        else if (property == "arrowcolorhover")
+            setArrowColorHover(extractColorFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else if (property == "spacebetweenarrows")
+            setSpaceBetweenArrows(tgui::stof(value));
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowUpNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureArrowUpNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureArrowUpNormal = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowDownNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureArrowDownNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureArrowDownNormal = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowUpHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureArrowUpHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureArrowUpHover = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowDownHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureArrowDownHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureArrowDownHover = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setBackgroundColor(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+        m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setBackgroundColorNormal(const sf::Color& color)
+    {
+        m_backgroundColorNormal = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setBackgroundColorHover(const sf::Color& color)
+    {
+        m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowColor(const sf::Color& color)
+    {
+        m_arrowColorNormal = color;
+        m_arrowColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowColorNormal(const sf::Color& color)
+    {
+        m_arrowColorNormal = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowColorHover(const sf::Color& color)
+    {
+        m_arrowColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setBorderColor(const sf::Color& color)
+    {
+        m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setSpaceBetweenArrows(float space)
+    {
+        m_spaceBetweenArrows = space;
+
+        m_spinButton->updateSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        sf::Vector2f position = m_spinButton->getPosition();
+        sf::Vector2f size = m_spinButton->getSize();
+
+        // Draw the arrows
+        if (m_textureArrowUpNormal.getData() && m_textureArrowDownNormal.getData())
         {
-            states.transform.scale(getSize().x / m_textureArrowUpNormal.getSize().x, getSize().y / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y));
-
-            // Draw the first arrow
-            if (m_separateHoverImage)
-            {
-                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
-                    target.draw(m_textureArrowUpHover, states);
-                else
-                    target.draw(m_textureArrowUpNormal, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
+            if (m_spinButton->m_mouseHover && m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+                target.draw(m_textureArrowUpHover, states);
+            else
                 target.draw(m_textureArrowUpNormal, states);
 
-                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
-                    target.draw(m_textureArrowUpHover, states);
-            }
-
-            // Set the second arrow on the correct position
-            states.transform.translate(0, static_cast<float>(m_textureArrowUpNormal.getSize().y));
-
-            // Draw the second arrow
-            if (m_separateHoverImage)
-            {
-                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
-                    target.draw(m_textureArrowDownHover, states);
-                else
-                    target.draw(m_textureArrowDownNormal, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
+            if (m_spinButton->m_mouseHover && !m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+                target.draw(m_textureArrowDownHover, states);
+            else
                 target.draw(m_textureArrowDownNormal, states);
-
-                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
-                    target.draw(m_textureArrowDownHover, states);
-            }
         }
-        else // The image is not drawn in the same direction than the loaded image
+        else // There are no images
         {
-            states.transform.scale(getSize().x / (m_textureArrowUpNormal.getSize().y + m_textureArrowDownNormal.getSize().y), getSize().y / m_textureArrowUpNormal.getSize().x);
+            sf::ConvexShape arrow{3};
+            sf::RectangleShape arrowBack;
+            arrowBack.setPosition(position);
 
-            // Rotate the arrow
-            states.transform.rotate(-90, static_cast<float>(m_textureArrowUpNormal.getSize().x), static_cast<float>(m_textureArrowUpNormal.getSize().y));
-
-            // Set the left arrow on the correct position
-            states.transform.translate(static_cast<float>(m_textureArrowUpNormal.getSize().y), 0);
-
-            // Draw the first arrow
-            if (m_separateHoverImage)
+            if (m_spinButton->m_mouseHover && m_spinButton->m_mouseHoverOnTopArrow)
             {
-                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
-                    target.draw(m_textureArrowUpHover, states);
-                else
-                    target.draw(m_textureArrowUpNormal, states);
+                arrowBack.setFillColor(m_backgroundColorHover);
+                arrow.setFillColor(m_arrowColorHover);
             }
-            else // The hover image should be drawn on top of the normal image
+            else
             {
-                target.draw(m_textureArrowUpNormal, states);
-
-                if (m_mouseHover && !m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
-                    target.draw(m_textureArrowUpHover, states);
+                arrowBack.setFillColor(m_backgroundColorNormal);
+                arrow.setFillColor(m_arrowColorNormal);
             }
 
-            // Set the right arrow on the correct position
-            states.transform.translate(0, static_cast<float>(m_textureArrowUpNormal.getSize().y));
-
-            // Draw the second arrow
-            if (m_separateHoverImage)
+            if (m_spinButton->m_verticalScroll)
             {
-                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
-                    target.draw(m_textureArrowDownHover, states);
-                else
-                    target.draw(m_textureArrowDownNormal, states);
-            }
-            else // The hover image should be drawn on top of the normal image
-            {
-                target.draw(m_textureArrowDownNormal, states);
+                arrowBack.setSize({size.x, (size.y - m_spaceBetweenArrows) / 2.0f});
 
-                if (m_mouseHover && m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
-                    target.draw(m_textureArrowDownHover, states);
+                arrow.setPoint(0, {arrowBack.getPosition().x + (arrowBack.getSize().x / 5), arrowBack.getPosition().y + (arrowBack.getSize().y * 4/5)});
+                arrow.setPoint(1, {arrowBack.getPosition().x + (arrowBack.getSize().x / 2), arrowBack.getPosition().y + (arrowBack.getSize().y / 5)});
+                arrow.setPoint(2, {arrowBack.getPosition().x + (arrowBack.getSize().x * 4/5), arrowBack.getPosition().y + (arrowBack.getSize().y * 4/5)});
             }
+            else // Spin button lies horizontal
+            {
+                arrowBack.setSize({(size.x - m_spaceBetweenArrows) / 2.0f, size.y});
+
+                arrow.setPoint(0, {arrowBack.getPosition().x + (arrowBack.getSize().x * 4/5), arrowBack.getPosition().y + (arrowBack.getSize().y / 5)});
+                arrow.setPoint(1, {arrowBack.getPosition().x + (arrowBack.getSize().x / 5), arrowBack.getPosition().y + (arrowBack.getSize().y / 2)});
+                arrow.setPoint(2, {arrowBack.getPosition().x + (arrowBack.getSize().x * 4/5), arrowBack.getPosition().y + (arrowBack.getSize().y * 4/5)});
+            }
+
+            target.draw(arrowBack, states);
+            target.draw(arrow, states);
+
+            if (m_spinButton->m_mouseHover && !m_spinButton->m_mouseHoverOnTopArrow)
+            {
+                arrowBack.setFillColor(m_backgroundColorHover);
+                arrow.setFillColor(m_arrowColorHover);
+            }
+            else
+            {
+                arrowBack.setFillColor(m_backgroundColorNormal);
+                arrow.setFillColor(m_arrowColorNormal);
+            }
+
+            if (m_spinButton->m_verticalScroll)
+            {
+                arrowBack.move({0, arrowBack.getSize().y + m_spaceBetweenArrows});
+
+                arrow.setPoint(0, {arrowBack.getPosition().x + (arrowBack.getSize().x / 5), arrowBack.getPosition().y + (arrowBack.getSize().y / 5)});
+                arrow.setPoint(1, {arrowBack.getPosition().x + (arrowBack.getSize().x / 2), arrowBack.getPosition().y + (arrowBack.getSize().y * 4/5)});
+                arrow.setPoint(2, {arrowBack.getPosition().x + (arrowBack.getSize().x * 4/5), arrowBack.getPosition().y + (arrowBack.getSize().y / 5)});
+            }
+            else // Spin button lies horizontal
+            {
+                arrowBack.move({arrowBack.getSize().x + m_spaceBetweenArrows, 0});
+
+                arrow.setPoint(0, {arrowBack.getPosition().x + (arrowBack.getSize().x / 5), arrowBack.getPosition().y + (arrowBack.getSize().y / 5)});
+                arrow.setPoint(1, {arrowBack.getPosition().x + (arrowBack.getSize().x * 4/5), arrowBack.getPosition().y + (arrowBack.getSize().y / 2)});
+                arrow.setPoint(2, {arrowBack.getPosition().x + (arrowBack.getSize().x / 5), arrowBack.getPosition().y + (arrowBack.getSize().y * 4/5)});
+            }
+
+            target.draw(arrowBack, states);
+            target.draw(arrow, states);
         }
+
+        // Draw the space between the arrows if needed
+        if (m_spaceBetweenArrows > 0)
+        {
+            sf::RectangleShape space;
+            if (m_spinButton->m_verticalScroll)
+            {
+                space.setSize({size.x, m_spaceBetweenArrows});
+                space.setPosition(position.x, position.y + (size.y - m_spaceBetweenArrows) / 2.0f);
+            }
+            else // The spin button lies horizontal
+            {
+                space.setSize({m_spaceBetweenArrows, size.y});
+                space.setPosition(position.x + (size.x - m_spaceBetweenArrows) / 2.0f, position.y);
+            }
+
+            space.setFillColor(m_borderColor);
+            target.draw(space, states);
+        }
+
+        // Draw the borders around the spin button
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> SpinButtonRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<SpinButtonRenderer>(new SpinButtonRenderer{*this});
+        renderer->m_spinButton = static_cast<SpinButton*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

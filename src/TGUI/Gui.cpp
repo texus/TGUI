@@ -107,11 +107,12 @@ namespace tgui
     {
         m_view = view;
         m_container->m_size = view.getSize();
+        m_container->m_position = view.getCenter() - (view.getSize() / 2.0f);
 
         if (m_container->m_callbackFunctions[Widget::SizeChanged].empty() == false)
         {
             m_container->m_callback.trigger = Widget::SizeChanged;
-            m_container->m_callback.size    = m_container->m_size.getValue();
+            m_container->m_callback.size    = m_container->getSize();
             m_container->addCallback();
         }
     }
@@ -193,8 +194,15 @@ namespace tgui
             glScissor(0, 0, m_window->getSize().x, m_window->getSize().y);
         }
 
+        // Change the view
+        sf::View oldView = m_window->getView();
+        m_window->setView(sf::View{{m_container->getPosition().x, m_container->getPosition().y, m_container->getSize().x, m_container->getSize().y}});
+
         // Draw the window with all widgets inside it
         m_container->drawWidgetContainer(m_window, sf::RenderStates::Default);
+
+        // Restore the old view
+        m_window->setView(oldView);
 
         // Reset clipping to its original state
         if (clippingEnabled)
@@ -231,9 +239,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Gui::get(const sf::String& widgetName) const
+    Widget::Ptr Gui::get(const sf::String& widgetName, bool recursive) const
     {
-        return m_container->get(widgetName);
+        return m_container->get(widgetName, recursive);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

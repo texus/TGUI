@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class SliderRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API Slider : public Widget
@@ -57,14 +59,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Create the slider
         ///
-        /// @param configFileFilename  Filename of the config file.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Slider" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Slider::Ptr create(const std::string& configFileFilename);
+        static Slider::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "Slider");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +87,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<SliderRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<SliderRenderer>(m_renderer);
         }
 
 
@@ -130,7 +134,7 @@ namespace tgui
         /// The default minimum value is 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setMinimum(unsigned int minimum);
+        virtual void setMinimum(int minimum);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +147,7 @@ namespace tgui
         /// The default maximum value is 10.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setMaximum(unsigned int maximum);
+        virtual void setMaximum(int maximum);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,16 +159,7 @@ namespace tgui
         /// The default value is 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setValue(unsigned int value);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the slider lies vertical or horizontal.
-        ///
-        /// @param verticallScroll  Does the slider lie vertically?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool verticallScroll);
+        virtual void setValue(int value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +170,7 @@ namespace tgui
         /// The default minimum value is 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMinimum() const
+        int getMinimum() const
         {
             return m_minimum;
         }
@@ -189,7 +184,7 @@ namespace tgui
         /// The default maximum value is 100.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximum() const
+        int getMaximum() const
         {
             return m_maximum;
         }
@@ -203,21 +198,9 @@ namespace tgui
         /// The default value is 0.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getValue() const
+        int getValue() const
         {
             return m_value;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the slider lies vertical or horizontal.
-        ///
-        /// @return Does the slider lie vertically?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getVerticalScroll() const
-        {
-            return m_verticalScroll;
         }
 
 
@@ -266,15 +249,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Returns the size of the thumb image.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getThumbSize() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,8 +274,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SliderCallbacks
         {
-            ValueChanged = WidgetCallbacksCount * 1,           ///< Value changed (Slider moved)
-            AllSliderCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Slider and its base classes
+            ValueChanged = WidgetCallbacksCount * 1,  ///< Value changed (Slider moved)
             SliderCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -309,29 +282,261 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
+        sf::FloatRect m_thumb;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
         bool m_mouseDownOnThumb = false;
         sf::Vector2f m_mouseDownOnThumbPos;
 
-        unsigned int m_minimum = 0;
-        unsigned int m_maximum = 10;
-        unsigned int m_value = 0;
+        int m_minimum = 0;
+        int m_maximum = 10;
+        int m_value = 0;
 
-        // Is the slider draw vertically?
-        bool m_verticalScroll = true;
+        // Is the slider drawn vertically?
+        bool m_verticalScroll = false;
 
         // Does the image lie vertically?
-        bool m_verticalImage = true;
+        bool m_verticalImage = false;
 
-        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage = false;
 
-        Texture m_textureTrackNormal;
-        Texture m_textureTrackHover;
-        Texture m_textureThumbNormal;
-        Texture m_textureThumbHover;
+        friend class SliderRenderer;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class SliderRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param slider  The slider that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SliderRenderer(Slider* slider) : m_slider{slider} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is not on top of the slider
+        ///
+        /// When this image and the thumb image are set, then the track and thumb color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackNormalImage(const std::string& filename,
+                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                 bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is standing on top of the slider
+        ///
+        /// This image is ignored when no normal track image has been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackHoverImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the slider
+        ///
+        /// When this image and the track image are set, then the track and thumb color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbNormalImage(const std::string& filename,
+                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                 bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is standing on top of the slider
+        ///
+        /// This image is ignored when no normal thumb image has been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbHoverImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track.
+        ///
+        /// @param color  New track color
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /// @see setTrackColorNormal
+        /// @see setTrackColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track in the normal state (mouse not on slider).
+        ///
+        /// @param color  New track color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the track in hover state (mouse on slider).
+        ///
+        /// @param color  New track color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb.
+        ///
+        /// @param color  New thumb color
+        ///
+        /// This color will overwrite the color for both the normal and hover state.
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /// @see setTrackColorNormal
+        /// @see setTrackColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb in the normal state (mouse not on slider).
+        ///
+        /// @param color  New thumb color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the thumb in hover state (mouse on slider).
+        ///
+        /// @param color  New thumb color
+        ///
+        /// Note that this color is ignored when a track and thumb image have been set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders.
+        ///
+        /// @param color  New border color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        SliderRenderer(const SliderRenderer&) = default;
+        SliderRenderer& operator=(const SliderRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Slider*   m_slider;
+
+        Texture   m_textureTrackNormal;
+        Texture   m_textureTrackHover;
+        Texture   m_textureThumbNormal;
+        Texture   m_textureThumbHover;
+
+        sf::Color m_trackColorNormal = {245, 245, 245};
+        sf::Color m_trackColorHover  = {255, 255, 255};
+
+        sf::Color m_thumbColorNormal = {245, 245, 245};
+        sf::Color m_thumbColorHover  = {255, 255, 255};
+
+        sf::Color m_borderColor      = {  0,   0,   0};
+
+        friend class Slider;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

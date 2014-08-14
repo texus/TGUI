@@ -192,7 +192,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum CanvasCallbacks
         {
-            AllCanvasCallbacks   = ClickableWidgetCallbacksCount - 1, ///< All triggers defined in Canvas and its base classes
             CanvasCallbacksCount = ClickableWidgetCallbacksCount
         };
 

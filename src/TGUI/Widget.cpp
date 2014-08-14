@@ -50,6 +50,10 @@ namespace tgui
         m_draggableWidget{copy.m_draggableWidget},
         m_containerWidget{copy.m_containerWidget}
     {
+        if (copy.m_renderer != nullptr)
+            m_renderer = copy.m_renderer->clone(this);
+        else
+            m_renderer = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +79,11 @@ namespace tgui
             m_draggableWidget = right.m_draggableWidget;
             m_containerWidget = right.m_containerWidget;
             m_callback        = Callback();
+
+            if (right.m_renderer != nullptr)
+                m_renderer = right.m_renderer->clone(this);
+            else
+                m_renderer = nullptr;
         }
 
         return *this;
@@ -86,10 +95,10 @@ namespace tgui
     {
         Transformable::setPosition(position);
 
-        if (m_callbackFunctions[Widget::PositionChanged].empty() == false)
+        if (m_callbackFunctions[PositionChanged].empty() == false)
         {
-            m_callback.trigger  = Widget::PositionChanged;
-            m_callback.position = position.getValue();
+            m_callback.trigger  = PositionChanged;
+            m_callback.position = getPosition();
             addCallback();
         }
     }
@@ -100,10 +109,10 @@ namespace tgui
     {
         Transformable::setSize(size);
 
-        if (m_callbackFunctions[Widget::SizeChanged].empty() == false)
+        if (m_callbackFunctions[SizeChanged].empty() == false)
         {
-            m_callback.trigger = Widget::SizeChanged;
-            m_callback.size    = size.getValue();
+            m_callback.trigger = SizeChanged;
+            m_callback.size    = getSize();
             addCallback();
         }
     }
@@ -194,28 +203,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseEnteredWidget()
-    {
-        if (m_callbackFunctions[MouseEntered].empty() == false)
-        {
-            m_callback.trigger = MouseEntered;
-            addCallback();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::mouseLeftWidget()
-    {
-        if (m_callbackFunctions[MouseLeft].empty() == false)
-        {
-            m_callback.trigger = MouseLeft;
-            addCallback();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::leftMousePressed(float, float)
     {
     }
@@ -230,10 +217,8 @@ namespace tgui
 
     void Widget::mouseMoved(float, float)
     {
-        if (m_mouseHover == false)
+        if (!m_mouseHover)
             mouseEnteredWidget();
-
-        m_mouseHover = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,8 +271,6 @@ namespace tgui
     {
         if (m_mouseHover == true)
             mouseLeftWidget();
-
-        m_mouseHover = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,6 +287,32 @@ namespace tgui
         assert(parent);
 
         m_parent = parent;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::mouseEnteredWidget()
+    {
+        if (m_callbackFunctions[MouseEntered].empty() == false)
+        {
+            m_callback.trigger = MouseEntered;
+            addCallback();
+        }
+
+        m_mouseHover = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::mouseLeftWidget()
+    {
+        if (m_callbackFunctions[MouseLeft].empty() == false)
+        {
+            m_callback.trigger = MouseLeft;
+            addCallback();
+        }
+
+        m_mouseHover = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

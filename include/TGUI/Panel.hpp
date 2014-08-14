@@ -155,10 +155,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum PanelCallbacks
         {
-            LeftMousePressed = WidgetCallbacksCount * 1,      ///< The left mouse button was pressed
-            LeftMouseReleased = WidgetCallbacksCount * 2,     ///< The left mouse button was released
-            LeftMouseClicked = WidgetCallbacksCount * 4,      ///< The left mouse button was clicked
-            AllPanelCallbacks = WidgetCallbacksCount * 8 - 1, ///< All triggers defined in Panel and its base classes
+            LeftMousePressed = WidgetCallbacksCount * 1,   ///< The left mouse button was pressed
+            LeftMouseReleased = WidgetCallbacksCount * 2,  ///< The left mouse button was released
+            LeftMouseClicked = WidgetCallbacksCount * 4,   ///< The left mouse button was clicked
             PanelCallbacksCount = WidgetCallbacksCount * 8
         };
 

@@ -34,6 +34,7 @@
 namespace tgui
 {
     class Container;
+    class ButtonRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,14 +60,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the button
         ///
-        /// @param configFileFilename  Filename of the config file.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section            The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Button" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Button::Ptr create(const std::string& configFileFilename);
+        static Button::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "Button");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,15 +88,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<ButtonRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<ButtonRenderer>(m_renderer);
         }
 
 
@@ -144,54 +147,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the text.
-        ///
-        /// @return  Pointer to the font that is currently being used
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_text.getTextFont();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
-        ///
-        /// @param color  New text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& color)
-        {
-            m_text.setTextColor(color);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the text.
-        ///
-        /// @return The current text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_text.getTextColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of the text.
         ///
         /// @param size  The new text size.
@@ -229,6 +184,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void leftMousePressed(float x, float y) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void leftMouseReleased(float x, float y) override;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void keyPressed(const sf::Event::KeyEvent& event) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,6 +221,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called when the mouse enters the widget. If requested, a callback will be send.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void mouseEnteredWidget() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called when the mouse leaves the widget. If requested, a callback will be send.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void mouseLeftWidget() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -269,9 +246,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ButtonCallbacks
         {
-            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,     ///< Space key was pressed
-            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,     ///< Return key was pressed
-            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1, ///< All triggers defined in Button and its base classes
+            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,  ///< Space key was pressed
+            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,  ///< Return key was pressed
             ButtonCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
@@ -279,24 +255,280 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
+        sf::String m_string;
+        Label m_text;
+
+        // This will store the size of the text (0 to auto-size)
+        unsigned int m_textSize = 0;
+
+        friend class ButtonRenderer;
+        friend class ChildWindow;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class ButtonRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param button  The button that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ButtonRenderer(Button* button) : m_button{button} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the text
+        ///
+        /// @param font  The new font
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text.
+        ///
+        /// @param color  New text color
+        ///
+        /// This color will overwrite the color for any state (normal, hover and down).
+        ///
+        /// @see setTextColorNormal
+        /// @see setTextColorHover
+        /// @see setTextColorDown
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text in the normal state (mouse not on button).
+        ///
+        /// @param color  New text color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text in the hover state (mouse on button, but not pressed).
+        ///
+        /// @param color  New text color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the text in the down state (mouse on button and left mouse button being held down).
+        ///
+        /// @param color  New text color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColorDown(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background.
+        ///
+        /// @param color  New background color
+        ///
+        /// This color will overwrite the color for any state (normal, hover and down).
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /// @see setBackgroundColorNormal
+        /// @see setBackgroundColorHover
+        /// @see setBackgroundColorDown
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background in the normal state (mouse not on button).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the background in the down state (mouse on button and left mouse button being held down).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when you set an image as background.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorDown(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders.
+        ///
+        /// @param color  New border color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the mouse is not on the button
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setNormalImage(const std::string& filename,
+                            const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                            const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                            bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the mouse is located on top of the button
+        ///
+        /// A NormalImage should be loaded for this to work.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setHoverImage(const std::string& filename,
+                           const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                           const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                           bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the mouse is held down on top of the button
+        ///
+        /// A NormalImage should be loaded for this to work.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDownImage(const std::string& filename,
+                           const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                           const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                           bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is drawn on top of the button image when the button is focused
+        ///
+        /// A NormalImage should be loaded for this to work.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFocusedImage(const std::string& filename,
+                             const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                             const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                             bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ButtonRenderer(const ButtonRenderer&) = default;
+        ButtonRenderer& operator=(const ButtonRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Button* m_button;
+
+        sf::Color m_textColorNormal       = { 60,  60,  60};
+        sf::Color m_textColorHover        = {  0,   0,   0};
+        sf::Color m_textColorDown         = {  0,   0,   0};
+
+        sf::Color m_backgroundColorNormal = {245, 245, 245};
+        sf::Color m_backgroundColorHover  = {255, 255, 255};
+        sf::Color m_backgroundColorDown   = {255, 255, 255};
+
+        sf::Color m_borderColor           = {  0,   0,   0};
 
         Texture m_textureNormal;
         Texture m_textureHover;
         Texture m_textureDown;
         Texture m_textureFocused;
 
-        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage = false;
-
-        sf::String m_string;
-        Label m_text;
-
-        // This will store the size of the text ( 0 to auto size )
-        unsigned int m_textSize = 0;
-
-
+        friend class Button;
         friend class ChildWindow;
+        friend class MessageBox;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

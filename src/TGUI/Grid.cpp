@@ -170,7 +170,7 @@ namespace tgui
     void Grid::addWidget(const Widget::Ptr& widget, unsigned int row, unsigned int col,
                          const Borders& borders, Alignment alignment)
     {
-        // Create the row if it didn't exist yet
+        // Create the row if it did not exist yet
         if (m_gridWidgets.size() < row + 1)
         {
             m_gridWidgets.resize(row + 1);
@@ -178,7 +178,7 @@ namespace tgui
             m_objAlignment.resize(row + 1);
         }
 
-        // Create the column if it didn't exist yet
+        // Create the column if it did not exist yet
         if (m_gridWidgets[row].size() < col + 1)
         {
             m_gridWidgets[row].resize(col + 1, nullptr);
@@ -497,8 +497,6 @@ namespace tgui
             // Tell the widgets inside the grid that the mouse is no longer on top of them
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNotOnWidget();
-
-            m_mouseHover = false;
         }
 
         return false;

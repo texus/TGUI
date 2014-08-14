@@ -36,6 +36,13 @@ namespace tgui
 {
     TextureManager Texture::m_textureManager;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture::Texture(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        load(filename, partRect, middlePart, repeated);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& copy) :
@@ -92,16 +99,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setTexture(TextureData& data, const sf::IntRect& middleRect)
-    {
-        m_data = &data;
-        m_middleRect = middleRect;
-
-        setSize(sf::Vector2f{m_data->texture.getSize()});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     TextureData* Texture::getData() const
     {
         return m_data;
@@ -111,13 +108,13 @@ namespace tgui
 
     void Texture::setSize(const sf::Vector2f& size)
     {
-        assert(m_size.x >= 0 && m_size.y >= 0);
+        assert(size.x >= 0 && size.y >= 0);
 
         if (m_data != nullptr)
         {
             m_size = size;
 
-            setOrigin(m_size.x / 2.0f, m_size.x / 2.0f);
+            setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
 
             updateVertices();
         }
@@ -150,14 +147,17 @@ namespace tgui
         sf::Vector2u pixel;
         switch (m_scalingType)
         {
-        case Normal:
+        case ScalingType::Normal:
             pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
             pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
             break;
 
-        case Horizontal:
-        case Vertical:
-        case NineSliceScaling:
+        /**
+            TODO: Implement isTransparentPixel for other scaling types
+        */
+        case ScalingType::Horizontal:
+        case ScalingType::Vertical:
+        case ScalingType::NineSliceScaling:
             return false;
         };
 
@@ -169,47 +169,57 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Texture::setTexture(TextureData& data, const sf::IntRect& middleRect)
+    {
+        m_data = &data;
+        m_middleRect = middleRect;
+
+        setSize(sf::Vector2f{m_data->texture.getSize()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::updateVertices()
     {
         // Figure out how the image is scaled best
         if (m_middleRect == sf::IntRect(0, 0, m_data->texture.getSize().x, m_data->texture.getSize().y))
         {
-            m_scalingType = Normal;
+            m_scalingType = ScalingType::Normal;
         }
         else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
         {
             if (m_size.x >= (m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
-                m_scalingType = Horizontal;
+                m_scalingType = ScalingType::Horizontal;
             else
-                m_scalingType = Normal;
+                m_scalingType = ScalingType::Normal;
         }
         else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
         {
             if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
-                m_scalingType = Vertical;
+                m_scalingType = ScalingType::Vertical;
             else
-                m_scalingType = Normal;
+                m_scalingType = ScalingType::Normal;
         }
         else
         {
             if (m_size.x >= m_data->texture.getSize().x - m_middleRect.width)
             {
                 if (m_size.y >= m_data->texture.getSize().y - m_middleRect.height)
-                    m_scalingType = NineSliceScaling;
+                    m_scalingType = ScalingType::NineSliceScaling;
                 else
                 {
                     if (m_size.x >= (m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
-                        m_scalingType = Horizontal;
+                        m_scalingType = ScalingType::Horizontal;
                     else
-                        m_scalingType = Normal;
+                        m_scalingType = ScalingType::Normal;
                 }
             }
             else
             {
                 if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
-                    m_scalingType = Vertical;
+                    m_scalingType = ScalingType::Vertical;
                 else
-                    m_scalingType = Normal;
+                    m_scalingType = ScalingType::Normal;
             }
         }
 
@@ -219,7 +229,7 @@ namespace tgui
         // Calculate the vertices based on the way we are scaling
         switch (m_scalingType)
         {
-        case Normal:
+        case ScalingType::Normal:
             ///////////
             // 0---1 //
             // |   | //
@@ -232,7 +242,7 @@ namespace tgui
             m_vertices[3] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
-        case Horizontal:
+        case ScalingType::Horizontal:
             ///////////////////////
             // 0---2-------4---6 //
             // |   |       |   | //
@@ -249,7 +259,7 @@ namespace tgui
             m_vertices[7] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
-        case Vertical:
+        case ScalingType::Vertical:
             ///////////
             // 0---1 //
             // |   | //
@@ -272,7 +282,7 @@ namespace tgui
             m_vertices[7] = {{m_size.x, m_size.y}, {textureSize.x, textureSize.y}};
             break;
 
-        case NineSliceScaling:
+        case ScalingType::NineSliceScaling:
             //////////////////////////////////
             // 0---1/13-----------14-----15 //
             // |    |              |     |  //
@@ -333,6 +343,7 @@ namespace tgui
                 float scaleViewX = target.getSize().x / view.getSize().x;
                 float scaleViewY = target.getSize().y / view.getSize().y;
 
+/// TODO: Check this code! Other places don't use transformPoint
                 // Get the global position
                 sf::Vector2f topLeftPosition = states.transform.transformPoint(((m_textureRect.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
                                                                                ((m_textureRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
@@ -344,10 +355,10 @@ namespace tgui
                 glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
                 // Calculate the clipping area
-                GLint scissorLeft = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-                GLint scissorTop = TGUI_MAXIMUM(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-                GLint scissorRight = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-                GLint scissorBottom = TGUI_MINIMUM(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+                GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+                GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+                GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
 
                 // If the object outside the window then don't draw anything
                 if (scissorRight < scissorLeft)

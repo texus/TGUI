@@ -1,5 +1,5 @@
 
-file(GLOB TGUI_SRC "*.cpp")
+file(GLOB TGUI_SRC "*.cpp" "extra/*.cpp")
 
 # add the sfml and tgui include directories
 include_directories( "${PROJECT_SOURCE_DIR}/include" )

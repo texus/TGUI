@@ -25,6 +25,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/Texture.hpp>
 
 #include <cctype>
 
@@ -37,6 +38,79 @@ namespace tgui
     bool TGUI_TabKeyUsageEnabled = true;
 
     std::string TGUI_ResourcePath = "";
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    namespace
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool removeWhitespace(const std::string& line, std::string::const_iterator& c)
+        {
+            while (c != line.end())
+            {
+                if ((*c == ' ') || (*c == '\t') || (*c == '\r'))
+                    ++c;
+                else
+                    return true;
+            }
+
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool readIntRect(std::string value, sf::IntRect& rect)
+        {
+            // Make sure that the line isn't empty
+            if (value.empty() == false)
+            {
+                // The first and last character have to be brackets
+                if ((value[0] == '(') && (value[value.length()-1] == ')'))
+                {
+                    // Remove the brackets
+                    value.erase(0, 1);
+                    value.erase(value.length()-1);
+
+                    // Search for the first comma
+                    std::string::size_type commaPos = value.find(',');
+                    if (commaPos != std::string::npos)
+                    {
+                        // Get the left value and delete this part of the string
+                        rect.left = tgui::stoi(value.substr(0, commaPos));
+                        value.erase(0, commaPos+1);
+
+                        // Search for the second comma
+                        commaPos = value.find(',');
+                        if (commaPos != std::string::npos)
+                        {
+                            // Get the top value and delete this part of the string
+                            rect.top = tgui::stoi(value.substr(0, commaPos));
+                            value.erase(0, commaPos+1);
+
+                            // Search for the third comma
+                            commaPos = value.find(',');
+                            if (commaPos != std::string::npos)
+                            {
+                                // Get the width value and delete this part of the string
+                                rect.width = tgui::stoi(value.substr(0, commaPos));
+                                value.erase(0, commaPos+1);
+
+                                // Get the height value
+                                rect.height = tgui::stoi(value);
+
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +148,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool compareFloats(float x, float y)
+    {
+        return (std::abs(x - y) < 0.00000001f);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool isWhitespace(char character)
+    {
+        if (character == ' ' || character == '\t' || character == '\n')
+            return true;
+        else
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     int stoi(const std::string& value)
     {
         return std::atoi(value.c_str());
@@ -94,91 +185,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Color extractColor(std::string string)
-    {
-        int red;
-        int green;
-        int blue;
-        int alpha = 255;
-
-        // Make sure that the line isn't empty
-        if (string.empty() == false)
-        {
-            // The first and last character have to be brackets
-            if ((string[0] == '(') && (string[string.length()-1] == ')'))
-            {
-                // Remove the brackets
-                string.erase(0, 1);
-                string.erase(string.length()-1);
-
-                // Search for the first comma
-                std::string::size_type commaPos = string.find(',');
-                if (commaPos != std::string::npos)
-                {
-                    // Get the red value and delete this part of the string
-                    red = tgui::stoi(string.substr(0, commaPos));
-                    string.erase(0, commaPos+1);
-
-                    // Search for the second comma
-                    commaPos = string.find(',');
-                    if (commaPos != std::string::npos)
-                    {
-                        // Get the green value and delete this part of the string
-                        green = tgui::stoi(string.substr(0, commaPos));
-                        string.erase(0, commaPos+1);
-
-                        // Search for the third comma (optional)
-                        commaPos = string.find(',');
-                        if (commaPos != std::string::npos)
-                        {
-                            // Get the blue value and delete this part of the string
-                            blue = tgui::stoi(string.substr(0, commaPos));
-                            string.erase(0, commaPos+1);
-
-                            // Get the alpha value
-                            alpha = tgui::stoi(string);
-                        }
-                        else // No alpha value was passed
-                        {
-                            // Get the blue value
-                            blue = tgui::stoi(string.substr(0, commaPos));
-                        }
-
-                        // All values have to be unsigned chars
-                        return sf::Color(static_cast <unsigned char> (red),
-                                         static_cast <unsigned char> (green),
-                                         static_cast <unsigned char> (blue),
-                                         static_cast <unsigned char> (alpha));
-                    }
-                }
-            }
-        }
-
-        // If you pass here then something is wrong about the line
-        throw Exception{"Failed to parse color from string."};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string convertColorToString(const sf::Color& color)
-    {
-        // Return the color as a string
-        if (color.a < 255)
-            return "(" + tgui::to_string((unsigned int)color.r)
-                 + "," + tgui::to_string((unsigned int)color.g)
-                 + "," + tgui::to_string((unsigned int)color.b)
-                 + "," + tgui::to_string((unsigned int)color.a)
-                 + ")";
-        else
-            return "(" + tgui::to_string((unsigned int)color.r)
-                 + "," + tgui::to_string((unsigned int)color.g)
-                 + "," + tgui::to_string((unsigned int)color.b)
-                 + ")";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
     bool extractBorders(std::string string, Borders& borders)
     {
         // Make sure that the line isn't empty
@@ -227,6 +234,231 @@ namespace tgui
 
         // If you pass here then something is wrong with the string
         return false;
+    }
+*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool extractBoolFromString(const std::string& property, const std::string& value)
+    {
+        if ((value == "true") || (value == "True") || (value == "TRUE") || (value == "1"))
+            return true;
+        else if ((value == "false") || (value == "False") || (value == "FALSE") || (value == "0"))
+            return false;
+        else
+            throw Exception{"Failed to parse boolean value of property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color extractColorFromString(const std::string& property, const std::string& value)
+    {
+        std::string string = value;
+        sf::Color color;
+
+        // Make sure that the line isn't empty
+        if (string.empty() == false)
+        {
+            // The first and last character have to be brackets
+            if ((string[0] == '(') && (string[string.length()-1] == ')'))
+            {
+                // Remove the brackets
+                string.erase(0, 1);
+                string.erase(string.length()-1);
+
+                // Search for the first comma
+                std::string::size_type commaPos = string.find(',');
+                if (commaPos != std::string::npos)
+                {
+                    // Get the red value and delete this part of the string
+                    color.r = tgui::stoi(string.substr(0, commaPos));
+                    string.erase(0, commaPos+1);
+
+                    // Search for the second comma
+                    commaPos = string.find(',');
+                    if (commaPos != std::string::npos)
+                    {
+                        // Get the green value and delete this part of the string
+                        color.g = tgui::stoi(string.substr(0, commaPos));
+                        string.erase(0, commaPos+1);
+
+                        // Search for the third comma (optional)
+                        commaPos = string.find(',');
+                        if (commaPos != std::string::npos)
+                        {
+                            // Get the blue value and delete this part of the string
+                            color.b = tgui::stoi(string.substr(0, commaPos));
+                            string.erase(0, commaPos+1);
+
+                            // Get the alpha value
+                            color.a = tgui::stoi(string);
+                        }
+                        else // No alpha value was passed
+                        {
+                            // Get the blue value
+                            color.b = tgui::stoi(string.substr(0, commaPos));
+                        }
+
+                        return color;
+                    }
+                }
+            }
+        }
+
+        // If you pass here then something is wrong about the line
+        throw Exception{"Failed to parse the color value from property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Borders extractBordersFromString(const std::string& property, const std::string& value)
+    {
+        std::string string = value;
+        tgui::Borders borders;
+
+        // Make sure that the line isn't empty
+        if (string.empty() == false)
+        {
+            // The first and last character have to be brackets
+            if ((string[0] == '(') && (string[string.length()-1] == ')'))
+            {
+                // Remove the brackets
+                string.erase(0, 1);
+                string.erase(string.length()-1);
+
+                // Search for the first comma
+                std::string::size_type commaPos = string.find(',');
+                if (commaPos != std::string::npos)
+                {
+                    // Get the first value and delete this part of the string
+                    borders.left = tgui::stof(string.substr(0, commaPos));
+                    string.erase(0, commaPos+1);
+
+                    // Search for the second comma
+                    commaPos = string.find(',');
+                    if (commaPos != std::string::npos)
+                    {
+                        // Get the second value and delete this part of the string
+                        borders.top = tgui::stof(string.substr(0, commaPos));
+                        string.erase(0, commaPos+1);
+
+                        // Search for the third comma
+                        commaPos = string.find(',');
+                        if (commaPos != std::string::npos)
+                        {
+                            // Get the third value and delete this part of the string
+                            borders.right = tgui::stof(string.substr(0, commaPos));
+                            string.erase(0, commaPos+1);
+
+                            // Get the fourth value
+                            borders.bottom = tgui::stof(string);
+
+                            return borders;
+                        }
+                    }
+                }
+            }
+        }
+
+        throw Exception{"Failed to parse the value from property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void extractTextureFromString(const std::string& property, const std::string& value, const std::string& rootPath, Texture& texture)
+    {
+        std::string::const_iterator c = value.begin();
+
+        // Remove all whitespaces (string should still contains something)
+        if (!removeWhitespace(value, c))
+            throw Exception{"Failed to parse texture property '" + property + "'. Value is empty."};
+
+        // There has to be a quote
+        if (*c == '"')
+            ++c;
+        else
+        {
+            throw Exception{"Failed to parse texture property '" + property + "'. Expected an opening quote for the filename."};
+        }
+
+        std::string filename;
+        char prev = '\0';
+
+        // Look for the end quote
+        bool filenameFound = false;
+        while (c != value.end())
+        {
+            if ((*c != '"') || (prev == '\\'))
+            {
+                prev = *c;
+                filename.push_back(*c);
+                ++c;
+            }
+            else
+            {
+                ++c;
+                filenameFound = true;
+                break;
+            }
+        }
+
+        if (!filenameFound)
+            throw Exception{"Failed to parse texture property '" + property + "'. Failed to find the closing quote of the filename."};
+
+        // There may be optional parameters
+        sf::IntRect partRect;
+        sf::IntRect middleRect;
+        bool repeat = false;
+
+        while (removeWhitespace(value, c))
+        {
+            std::string word;
+            auto openingBracketPos = value.find('(', c - value.begin());
+            if (openingBracketPos != std::string::npos)
+                word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
+            else
+                word = value.substr(c - value.begin(), value.length() - (c - value.begin()));
+
+            if ((word == "Stretch") || (word == "stretch"))
+            {
+                repeat = false;
+                std::advance(c, 7);
+            }
+            else if ((word == "Repeat") || (word == "repeat"))
+            {
+                repeat = true;
+                std::advance(c, 6);
+            }
+            else
+            {
+                sf::IntRect* rect = nullptr;
+
+                if ((word == "Part") || (word == "part"))
+                {
+                    rect = &partRect;
+                    std::advance(c, 4);
+                }
+                else if ((word == "Middle") || (word == "middle"))
+                {
+                    rect = &middleRect;
+                    std::advance(c, 6);
+                }
+                else
+                    throw Exception{"Failed to parse texture property '" + property + "'. Unexpected word '" + word + "' in front of opening bracket."};
+
+                auto closeBracketPos = value.find(')', c - value.begin());
+                if (closeBracketPos != std::string::npos)
+                {
+                    if (!readIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect))
+                        throw Exception{"Failed to parse " + word + " rectangle for texture property '" + property + "'."};
+                }
+                else
+                    throw Exception{"Failed to parse texture property '" + property + "'. Failed to find closing bracket for " + word + " rectangle."};
+
+                std::advance(c, closeBracketPos - (c - value.begin()) + 1);
+            }
+        }
+
+        texture.load(rootPath + filename, partRect, middleRect, repeat);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

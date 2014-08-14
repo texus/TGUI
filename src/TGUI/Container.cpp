@@ -48,7 +48,7 @@ namespace tgui
         m_focusedWidget          {0},
         m_globalFont             {containerToCopy.m_globalFont},
         m_fontPtr                {containerToCopy.m_fontPtr},
-        m_globalCallbackFunctions{containerToCopy.m_globalCallbackFunctions}
+        m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions) // Did not compile on mingw 4.7 when using braces
     {
         if (m_fontPtr == &containerToCopy.m_globalFont)
             m_fontPtr = &m_globalFont;
@@ -59,7 +59,7 @@ namespace tgui
             m_widgets.push_back(containerToCopy.m_widgets[i]->clone());
             m_objName.push_back(containerToCopy.m_objName[i]);
 
-            m_widgets.back()->m_parent = this;
+            m_widgets.back()->initialize(this);
         }
     }
 
@@ -91,7 +91,7 @@ namespace tgui
                 m_widgets.push_back(right.m_widgets[i]->clone());
                 m_objName.push_back(right.m_objName[i]);
 
-                m_widgets.back()->m_parent = this;
+                m_widgets.back()->initialize(this);
             }
         }
 
@@ -100,17 +100,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::setGlobalFont(const std::string& filename)
+    void Container::setGlobalFont(const std::string& filename)
     {
         if (m_globalFont.loadFromFile(getResourcePath() + filename))
-        {
             m_fontPtr = &m_globalFont;
-            return true;
-        }
         else
         {
             m_fontPtr = nullptr;
-            return false;
+            throw Exception{"Failed to load font '" + filename + "'."};
         }
     }
 
@@ -135,12 +132,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::get(const sf::String& widgetName) const
+    Widget::Ptr Container::get(const sf::String& widgetName, bool recursive) const
     {
         for (unsigned int i = 0; i < m_objName.size(); ++i)
         {
             if (m_objName[i] == widgetName)
+            {
                 return m_widgets[i];
+            }
+            else if (recursive && m_widgets[i]->m_containerWidget)
+            {
+                Widget::Ptr widget = std::static_pointer_cast<Container>(m_widgets[i])->get(widgetName, true);
+                if (widget != nullptr)
+                    return widget;
+            }
         }
 
         return nullptr;
@@ -163,12 +168,12 @@ namespace tgui
             // Check if the pointer matches
             if (m_widgets[i].get() == widget)
             {
-                // Unfocus the widget, just in case it was focused
-                if (widget->isFocused())
+                // Unfocus the widget if it was focused
+                if (m_focusedWidget == i+1)
                     unfocusWidgets();
 
                 // Change the index of the focused widget if this is needed
-                if (m_focusedWidget > i+1)
+                else if (m_focusedWidget > i+1)
                     m_focusedWidget--;
 
                 // Remove the widget
@@ -396,7 +401,7 @@ namespace tgui
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i]->m_callback.widgetType == Type_RadioButton)
-                std::dynamic_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
+                std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
     }
 
@@ -546,7 +551,7 @@ namespace tgui
     {
         sf::Event newEvent;
         newEvent.type = sf::Event::KeyPressed;
-        newEvent.key.code = event.code;
+        newEvent.key = event;
 
         // Let the event manager handle the event
         handleEvent(newEvent);
@@ -588,8 +593,6 @@ namespace tgui
 
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNotOnWidget();
-
-            m_mouseHover = false;
         }
     }
 
@@ -636,7 +639,7 @@ namespace tgui
             }
         }
 
-        m_animationTimeElapsed = sf::Time();
+        m_animationTimeElapsed = {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,7 +704,7 @@ namespace tgui
                     widget->leftMousePressed(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
                     return true;
                 }
-                else // The mouse didn't went down on a widget, so unfocus the focused widget
+                else // The mouse did not went down on a widget, so unfocus the focused widget
                     unfocusWidgets();
             }
 
@@ -815,7 +818,7 @@ namespace tgui
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
                 {
                     // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i]->m_containerWidget) || (std::dynamic_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
+                    if ((!m_widgets[i]->m_containerWidget) || (std::static_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
                     {
                         if (m_focusedWidget > 0)
                         {
@@ -854,7 +857,7 @@ namespace tgui
             if (m_widgets[m_focusedWidget-1]->m_containerWidget)
             {
                 // Focus the next widget in container
-                if (std::dynamic_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
+                if (std::static_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
                     return true;
             }
         }
@@ -912,7 +915,7 @@ namespace tgui
         // If the currently focused container widget is the only widget to focus, then focus its next child widget
         if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1]->m_containerWidget))
         {
-            std::dynamic_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->tabKeyPressed();
+            std::static_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->tabKeyPressed();
             return true;
         }
 

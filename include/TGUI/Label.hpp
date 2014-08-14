@@ -35,7 +35,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Label : public ClickableWidget
+    class TGUI_API Label : public ClickableWidget, public WidgetBorders, public WidgetPadding
     {
     public:
 
@@ -58,12 +58,15 @@ namespace tgui
         /// @brief Create the label
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Label" section with the needed information.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Label::Ptr create(const std::string& configFileFilename = "");
+        static Label::Ptr create(const std::string& configFileFilename = "", const std::string& section = "Label");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,19 +80,6 @@ namespace tgui
         static Label::Ptr copy(const Label::Ptr& label)
         {
             return std::make_shared<Label>(*label);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
-        ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
-        {
-            return m_loadedConfigFile;
         }
 
 
@@ -149,7 +139,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getText() const
         {
-            return m_text.getString();
+            return m_string;
         }
 
 
@@ -254,6 +244,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders that can optionally be drawn around the label
+        ///
+        /// @param backgroundColor  New border color
+        ///
+        /// @see setBorders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& borderColor)
+        {
+            m_borderColor = borderColor;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the label is auto-sized or not.
         ///
         /// @param autoSize  Should the size of the label be changed when the text changes?
@@ -280,10 +284,54 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the maximum width that the text will have when auto-sizing.
+        ///
+        /// @param maximumWidth The new maximum text width
+        ///
+        /// This property is ignored when an exact size has been given.
+        /// Pass 0 to this function to disable the maximum.
+        ///
+        /// When the text is auto-sizing then the text will be split over several lines when its width would exceed th
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMaximumTextWidth(float maximumWidth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum width that the text will have.
+        ///
+        /// @return
+        ///        - The width of the label minus the padding when a specific size was set.
+        ///        - The maximum text width when auto-sizing and a maximum was set.
+        ///        - 0 when auto-sizing but there is no maximum width.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getMaximumTextWidth();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the padding.
+        ///
+        /// @param padding  Size of the padding
+        ///
+        /// This is the distance between the side of the background and the text.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         // Tell the widget about its parent
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initialize(Container *const container) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void leftMouseReleased(float x, float y) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,6 +348,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // When the elapsed time has changed then this function is called.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void update() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Rearrange the text, making use of the given size of maximum text width.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void rearrangeText();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -313,21 +373,27 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum LabelCallbacks
         {
-            AllLabelCallbacks   = ClickableWidgetCallbacksCount - 1, ///< All triggers defined in Label and its base classes
-            LabelCallbacksCount = ClickableWidgetCallbacksCount
+            LeftMouseDoubleClicked = ClickableWidgetCallbacksCount * 1, ///< The label has been double-clicked
+            LabelCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
-
         sf::RectangleShape m_background;
 
-        sf::Text m_text;
+        sf::String m_string;
+        sf::Text   m_text;
+
+        sf::Color  m_borderColor = {0, 0, 0};
 
         bool m_autoSize = true;
+
+        float m_maximumTextWidth = 0;
+
+        // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
+        bool m_possibleDoubleClick = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

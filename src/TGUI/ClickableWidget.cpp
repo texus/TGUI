@@ -41,14 +41,13 @@ namespace tgui
     bool ClickableWidget::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the widget
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
         else
         {
             if (m_mouseHover)
                 mouseLeftWidget();
 
-            m_mouseHover = false;
             return false;
         }
     }

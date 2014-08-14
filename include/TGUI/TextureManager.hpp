@@ -65,15 +65,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a texture.
         ///
-        /// @param filename   Filename of the image to load.
         /// @param texture    The texture object to store the loaded image.
+        /// @param filename   Filename of the image to load.
         /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
         ///
-        /// @throw Exception when image couldn't be loaded.
+        /// @throw Exception when image could not be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void getTexture(Texture& texture,

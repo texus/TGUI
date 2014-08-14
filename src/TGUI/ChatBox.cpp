@@ -41,21 +41,26 @@ namespace tgui
         m_callback.widgetType = Type_ChatBox;
         m_draggableWidget = true;
 
-        m_panel->setBackgroundColor(sf::Color::White);
+        m_renderer = std::make_shared<ChatBoxRenderer>(this);
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setPadding({2, 2, 2, 2});
+
+        m_panel->setBackgroundColor(sf::Color::Transparent);
+
+        setSize({200, 120});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& chatBoxToCopy) :
-        Widget            {chatBoxToCopy},
-        WidgetBorders     {chatBoxToCopy},
-        m_loadedConfigFile{chatBoxToCopy.m_loadedConfigFile},
-        m_lineSpacing     {chatBoxToCopy.m_lineSpacing},
-        m_textSize        {chatBoxToCopy.m_textSize},
-        m_textColor       {chatBoxToCopy.m_textColor},
-        m_borderColor     {chatBoxToCopy.m_borderColor},
-        m_maxLines        {chatBoxToCopy.m_maxLines},
-        m_fullTextHeight  {chatBoxToCopy.m_fullTextHeight}
+        Widget             {chatBoxToCopy},
+        m_lineSpacing      {chatBoxToCopy.m_lineSpacing},
+        m_textSize         {chatBoxToCopy.m_textSize},
+        m_textColor        {chatBoxToCopy.m_textColor},
+        m_maxLines         {chatBoxToCopy.m_maxLines},
+        m_fullTextHeight   {chatBoxToCopy.m_fullTextHeight},
+        m_linesStartFromTop{chatBoxToCopy.m_linesStartFromTop}
     {
         m_panel = Panel::copy(chatBoxToCopy.m_panel);
 
@@ -74,17 +79,15 @@ namespace tgui
         {
             ChatBox temp{right};
             Widget::operator=(right);
-            WidgetBorders::operator=(right);
 
-            std::swap(m_loadedConfigFile, temp.m_loadedConfigFile);
-            std::swap(m_lineSpacing,      temp.m_lineSpacing);
-            std::swap(m_textSize,         temp.m_textSize);
-            std::swap(m_textColor,        temp.m_textColor);
-            std::swap(m_borderColor,      temp.m_borderColor);
-            std::swap(m_maxLines,         temp.m_maxLines);
-            std::swap(m_fullTextHeight,   temp.m_fullTextHeight);
-            std::swap(m_panel,            temp.m_panel);
-            std::swap(m_scroll,           temp.m_scroll);
+            std::swap(m_lineSpacing,       temp.m_lineSpacing);
+            std::swap(m_textSize,          temp.m_textSize);
+            std::swap(m_textColor,         temp.m_textColor);
+            std::swap(m_maxLines,          temp.m_maxLines);
+            std::swap(m_fullTextHeight,    temp.m_fullTextHeight);
+            std::swap(m_linesStartFromTop, temp.m_linesStartFromTop);
+            std::swap(m_panel,             temp.m_panel);
+            std::swap(m_scroll,            temp.m_scroll);
         }
 
         return *this;
@@ -92,63 +95,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChatBox::Ptr ChatBox::create(const std::string& configFileFilename)
+    ChatBox::Ptr ChatBox::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto chatBox = std::make_shared<ChatBox>();
 
-        chatBox->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // Open the config file
-        ConfigFile configFile{chatBox->m_loadedConfigFile, "ChatBox"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = configFileFilename.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = configFileFilename.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "backgroundcolor")
-            {
-                chatBox->setBackgroundColor(configFile.readColor(it));
-            }
-            else if (it->first == "bordercolor")
-            {
-                chatBox->setBorderColor(configFile.readColor(it));
-            }
-            else if (it->first == "borders")
-            {
-                Borders borders;
-                if (extractBorders(it->second, borders))
-                    chatBox->setBorders(borders);
-                else
-                    throw Exception{"Failed to parse the 'Borders' property in section ChatBox in " + chatBox->m_loadedConfigFile};
-            }
-            else if (it->first == "scrollbar")
-            {
-                if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                    throw Exception{"Failed to parse value for Scrollbar property in section ChatBox in " + chatBox->m_loadedConfigFile + "."};
+            chatBox->getRenderer()->setBorders({0, 0, 0, 0});
 
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            {
                 try
                 {
-                    chatBox->m_scroll = Scrollbar::create(configFileFolder + it->second.substr(1, it->second.length()-2));
-                }
-                catch (Exception& e)
-                {
-                    chatBox->m_scroll = nullptr;
-                    throw Exception{"Failed to create the internal scrollbar in ChatBox. " + std::string{e.what()}};
-                }
+                    if (it->first == "scrollbar")
+                    {
+                        if (toLower(it->second) != "none")
+                        {
+                            if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
+                                throw Exception{"Failed to parse value for 'Scrollbar' property."};
 
-                // Initialize the scrollbar
-                chatBox->m_scroll->setVerticalScroll(true);
-                chatBox->m_scroll->setLowValue(static_cast<unsigned int>(chatBox->getSize().y));
-                chatBox->m_scroll->setSize(chatBox->m_scroll->getSize());
-                chatBox->m_scroll->setMaximum(static_cast<unsigned int>(chatBox->m_fullTextHeight));
+                            chatBox->getRenderer()->setScrollbar(themeFileFilename, it->second.substr(1, it->second.length()-2));
+                        }
+                        else // There should be no scrollbar
+                            chatBox->removeScrollbar();
+                    }
+                    else
+                        chatBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
             }
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section ChatBox in " + chatBox->m_loadedConfigFile + "."};
+
+            chatBox->updateSize();
         }
 
         return chatBox;
@@ -158,37 +150,34 @@ namespace tgui
 
     void ChatBox::setPosition(const Layout& position)
     {
+        sf::Vector2f oldPosition = getPosition();
+
         Widget::setPosition(position);
 
-        m_panel->setPosition(getPosition());
-        m_scroll->setPosition(getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y);
+        getRenderer()->m_backgroundTexture.setPosition(getPosition());
+
+        m_panel->move(getPosition() - oldPosition);
+        if (m_scroll)
+            m_scroll->move(getPosition() - oldPosition);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBox::setSize(const Layout& size)
     {
-        // Remember the old height
-        float oldHeight = getSize().y;
-
         Widget::setSize(size);
 
-        m_panel->setSize(getSize());
+        getRenderer()->m_backgroundTexture.setSize(getSize());
 
-        // If there is a scrollbar then reinitialize it
-        if (m_scroll != nullptr)
-        {
-            m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
-            m_scroll->setSize({m_scroll->getSize().x, getSize().y});
-        }
+        updateRendering();
+    }
 
-        // Find out how much the height has changed
-        float heightDiff = getSize().y - oldHeight;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Reposition all labels in the chatbox
-        auto& labels = m_panel->getWidgets();
-        for (auto it = labels.begin(); it != labels.end(); ++it)
-            (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y + heightDiff});
+    sf::Vector2f ChatBox::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,62 +205,24 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font)
     {
-        if (m_panel->getGlobalFont() == nullptr && font == nullptr)
-            throw Exception{"ChatBox::addLine called while no valid font was set."};
-
-        auto& widgets = m_panel->getWidgets();
-
         // Remove the top line if you exceed the maximum
-        if ((m_maxLines > 0) && (m_maxLines < widgets.size() + 1))
+        if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size() + 1))
             removeLine(0);
 
         auto label = Label::create();
         label->setTextColor(color);
         label->setTextSize(textSize);
+        label->setText(text);
         m_panel->add(label);
 
         if (font != nullptr)
             label->setTextFont(*font);
 
-        auto tempLine = Label::create();
-        tempLine->setTextSize(textSize);
-        tempLine->setTextFont(*label->getTextFont());
+        recalculateFullTextHeight();
 
-        float width = getSize().x;
-        if (m_scroll)
-            width -= m_scroll->getSize().x;
+        if (m_scroll && (m_scroll->getMaximum() > m_scroll->getLowValue()))
+            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
 
-        if (width < 0)
-            width = 0;
-
-        // Split the label over multiple lines if necessary
-        unsigned int pos = 0;
-        unsigned int size = 0;
-        while (pos + size < text.getSize())
-        {
-            tempLine->setText(text.toWideString().substr(pos, ++size));
-
-            if (tempLine->getSize().x + 4.0f > width)
-            {
-                label->setText(label->getText() + text.toWideString().substr(pos, size - 1) + "\n");
-
-                pos = pos + size - 1;
-                size = 0;
-            }
-        }
-        label->setText(label->getText() + tempLine->getText());
-
-        m_fullTextHeight += getLineSpacing(widgets.size()-1);
-
-        if (m_scroll != nullptr)
-        {
-            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
-
-            if (m_scroll->getMaximum() > m_scroll->getLowValue())
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-        }
-
-        // Reposition the labels
         updateDisplayedText();
     }
 
@@ -281,7 +232,7 @@ namespace tgui
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
-            return std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getText();
+            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getText();
         }
         else // Index too high
             return "";
@@ -293,13 +244,9 @@ namespace tgui
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
-            auto label = std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineIndex]);
-            m_fullTextHeight -= getLineSpacing(lineIndex);
-            m_panel->remove(label);
+            m_panel->remove(std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex]));
 
-            if (m_scroll != nullptr)
-                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
-
+            recalculateFullTextHeight();
             updateDisplayedText();
             return true;
         }
@@ -313,11 +260,7 @@ namespace tgui
     {
         m_panel->removeAllWidgets();
 
-        m_fullTextHeight = 0;
-
-        if (m_scroll != nullptr)
-            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
-
+        recalculateFullTextHeight();
         updateDisplayedText();
     }
 
@@ -330,14 +273,9 @@ namespace tgui
         if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size()))
         {
             while (m_maxLines < m_panel->getWidgets().size())
-            {
-                m_fullTextHeight -= getLineSpacing(0);
                 m_panel->remove(m_panel->getWidgets()[0]);
-            }
 
-            if (m_scroll != nullptr)
-                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
-
+            recalculateFullTextHeight();
             updateDisplayedText();
         }
     }
@@ -348,23 +286,26 @@ namespace tgui
     {
         m_panel->setGlobalFont(font);
 
-        m_fullTextHeight = 0;
-        auto& labels = m_panel->getWidgets();
-        for (unsigned int i = 0; i < labels.size(); ++i)
+        bool lineChanged = false;
+        for (auto& label : m_panel->getWidgets())
         {
-            std::dynamic_pointer_cast<Label>(labels[i])->setTextFont(font);
-            m_fullTextHeight += getLineSpacing(i);
+            auto line = std::static_pointer_cast<Label>(label);
+            if (line->getTextFont() == nullptr)
+            {
+                line->setTextFont(font);
+                lineChanged = true;
+            }
         }
 
-        if (m_scroll != nullptr)
+        if (lineChanged)
         {
-            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+            recalculateFullTextHeight();
 
-            if (m_scroll->getMaximum() > m_scroll->getLowValue())
+            if (m_scroll && (m_scroll->getMaximum() > m_scroll->getLowValue()))
                 m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-        }
 
-        updateDisplayedText();
+            updateDisplayedText();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,37 +324,38 @@ namespace tgui
 
     void ChatBox::setLineSpacing(unsigned int lineSpacing)
     {
-        m_lineSpacing = lineSpacing;
-
-        updateDisplayedText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setScrollbar(const std::string& scrollbarConfigFileFilename)
-    {
-        try
+        if (m_lineSpacing != lineSpacing)
         {
-            m_scroll = Scrollbar::create(scrollbarConfigFileFilename);
-        }
-        catch (Exception& e)
-        {
-            m_scroll = nullptr;
-            throw e;
-        }
+            m_lineSpacing = lineSpacing;
 
-        // Initialize the scrollbar
-        m_scroll->setVerticalScroll(true);
-        m_scroll->setSize({m_scroll->getSize().x, getSize().y});
-        m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
-        m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+            recalculateFullTextHeight();
+            updateDisplayedText();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBox::removeScrollbar()
     {
-        m_scroll = nullptr;
+        if (m_scroll != nullptr)
+        {
+            m_scroll = nullptr;
+
+            recalculateFullTextHeight();
+            updateDisplayedText();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setLinesStartFromTop(bool startFromTop)
+    {
+        if (m_linesStartFromTop != startFromTop)
+        {
+            m_linesStartFromTop = startFromTop;
+
+            updateDisplayedText();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,11 +466,8 @@ namespace tgui
 
     void ChatBox::mouseMoved(float x, float y)
     {
-        if (m_mouseHover == false)
+        if (!m_mouseHover)
             mouseEnteredWidget();
-
-        // Set the mouse move flag
-        m_mouseHover = true;
 
         // If there is a scrollbar then pass the event
         if (m_scroll != nullptr)
@@ -561,8 +500,6 @@ namespace tgui
     {
         if (m_mouseHover)
             mouseLeftWidget();
-
-        m_mouseHover = false;
 
         if (m_scroll != nullptr)
             m_scroll->m_mouseHover = false;
@@ -611,39 +548,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ChatBox::getLineSpacing(unsigned int lineNumber)
-    {
-        assert(lineNumber < m_panel->getWidgets().size());
-
-        auto line = std::dynamic_pointer_cast<Label>(m_panel->getWidgets()[lineNumber]);
-
-        // Count the amount of lines that the label is taking
-        std::string lineText = line->getText().toAnsiString();
-        int linesOfText = std::count(lineText.begin(), lineText.end(), '\n') + 1;
-
-        // If a line spacing was manually set then just return that one
-        if (m_lineSpacing > 0)
-            return m_lineSpacing * linesOfText;
-
-        unsigned int lineSpacing;
-        if (m_panel->getGlobalFont())
-            lineSpacing = m_panel->getGlobalFont()->getLineSpacing(line->getTextSize());
-        else
-            lineSpacing = 0;
-
-        if (lineSpacing > line->getTextSize())
-            return lineSpacing * linesOfText;
-        else
-            return static_cast<unsigned int>(std::ceil(line->getTextSize() * 13.5 / 10.0) * linesOfText);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::initialize(Container *const parent)
     {
         Widget::initialize(parent);
 
-        if (!getTextFont() && m_parent->getGlobalFont())
+        if (!m_panel->getGlobalFont() && m_parent->getGlobalFont())
             setTextFont(*m_parent->getGlobalFont());
 
         m_panel->initialize(m_parent);
@@ -651,65 +560,267 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::updateDisplayedText()
+    float ChatBox::getLineSpacing(const Label::Ptr& line)
     {
-        float position = 2.0f;
-        if (m_scroll)
-            position -= static_cast<float>(m_scroll->getValue());
+        // If a line spacing was manually set then just return that one
+        if (m_lineSpacing > 0)
+            return line->getSize().y + m_lineSpacing - line->getTextSize();
 
-        auto& labels = m_panel->getWidgets();
-        for (unsigned int i = 0; i < labels.size(); ++i)
+        float lineSpacing = line->getSize().y;
+        if (line->getTextFont())
         {
-            auto label = std::dynamic_pointer_cast<Label>(labels[i]);
-            label->setPosition({2.0f, position});
+            lineSpacing += line->getTextFont()->getLineSpacing(line->getTextSize()) - line->getTextSize();
 
-            position += getLineSpacing(i);
+            lineSpacing = std::max(lineSpacing, sf::Text{"kg", *line->getTextFont(), line->getTextSize()}.getLocalBounds().height);
         }
 
-        // Correct the position when there is no scrollbar
-        if ((m_scroll == nullptr) && (!labels.empty()))
+        if (lineSpacing > line->getSize().y)
+            return lineSpacing;
+        else
+            return line->getSize().y + std::ceil(line->getTextSize() * 3.5 / 10.0);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::recalculateFullTextHeight()
+    {
+        m_fullTextHeight = 0;
+        if (!m_panel->getWidgets().empty())
         {
-            auto label = std::dynamic_pointer_cast<Label>(labels.back());
-            if (position > getSize().y)
+            for (unsigned int i = 0; i < m_panel->getWidgets().size(); ++i)
             {
-                float diff = position - getSize().y;
-                for (auto it = labels.begin(); it != labels.end(); ++it)
-                    (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y - diff});
+                auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
+
+                // Limit the width of the label
+                if (m_scroll)
+                    label->setMaximumTextWidth(m_panel->getSize().x - m_scroll->getSize().x);
+                else
+                    label->setMaximumTextWidth(m_panel->getSize().x);
+
+                m_fullTextHeight += getLineSpacing(label);
+            }
+
+            // There should be no space below the bottom line
+            auto lastLine = std::static_pointer_cast<Label>(m_panel->getWidgets().back());
+            m_fullTextHeight -= getLineSpacing(lastLine) - lastLine->getSize().y;
+
+            // Set the maximum of the scrollbar when there is one
+            if (m_scroll != nullptr)
+                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::updateDisplayedText()
+    {
+        m_fullTextHeight = 0;
+        if (!m_panel->getWidgets().empty())
+        {
+            float positionY = 0;
+            if (m_scroll)
+                positionY -= static_cast<float>(m_scroll->getValue());
+
+            for (unsigned int i = 0; i < m_panel->getWidgets().size(); ++i)
+            {
+                auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
+
+                // Not every line has the same height
+                float positionFix = 0;
+                if ((label->getTextFont()) && (label->getTextFont()->getGlyph('k', label->getTextSize(), false).bounds.height > label->getSize().y))
+                    positionFix = label->getTextFont()->getGlyph('k', label->getTextSize(), false).bounds.height - label->getSize().y;
+
+                label->setPosition({0, positionY + positionFix});
+                positionY += getLineSpacing(label);
+            }
+
+            // Display the last lines when there is no scrollbar
+            if (m_scroll == nullptr)
+            {
+                if (positionY > getSize().y)
+                {
+                    float diff = positionY - getSize().y;
+                    for (auto it = m_panel->getWidgets().begin(); it != m_panel->getWidgets().end(); ++it)
+                        (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y - diff});
+                }
+            }
+
+            // Put the lines at the bottom of the chat box if needed
+            if (!m_linesStartFromTop && (positionY < m_panel->getSize().y))
+            {
+                float diff = m_panel->getSize().y - positionY;
+                for (auto it = m_panel->getWidgets().begin(); it != m_panel->getWidgets().end(); ++it)
+                    (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y + diff);
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::updateRendering()
+    {
+        Padding padding = getRenderer()->getPadding();
+        Padding scaledPadding = padding;
+
+        auto& texture = getRenderer()->m_backgroundTexture;
+        if (texture.getData() != nullptr)
+        {
+            switch (texture.getScalingType())
+            {
+            case Texture::ScalingType::Normal:
+                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                break;
+
+            case Texture::ScalingType::Horizontal:
+                scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                break;
+
+            case Texture::ScalingType::Vertical:
+                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
+                scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
+                break;
+
+            case Texture::ScalingType::NineSliceScaling:
+                break;
+            }
+        }
+
+        m_panel->setPosition({getPosition().x + scaledPadding.left, getPosition().y + scaledPadding.top});
+        m_panel->setSize({getSize().x - scaledPadding.left - scaledPadding.right, getSize().y - scaledPadding.top - scaledPadding.bottom});
+
+        if (m_scroll)
+        {
+            m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
+            m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
+            m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x - scaledPadding.right, getPosition().y + scaledPadding.top});
+        }
+
+        updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        // Draw the background
+        getRenderer()->draw(target, states);
+
         // Draw the panel
         target.draw(*m_panel, states);
-
-        // Draw left border
-        sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
-        border.setPosition({getPosition().x - m_borders.left, getPosition().y - m_borders.top});
-        border.setFillColor(m_borderColor);
-        target.draw(border, states);
-
-        // Draw top border
-        border.setSize({getSize().x + m_borders.right, m_borders.top});
-        border.setPosition({getPosition().x, getPosition().y - m_borders.top});
-        target.draw(border, states);
-
-        // Draw right border
-        border.setSize({m_borders.right, getSize().y + m_borders.bottom});
-        border.setPosition({getPosition().x + getSize().x, getPosition().y});
-        target.draw(border, states);
-
-        // Draw bottom border
-        border.setSize({getSize().x + m_borders.left, m_borders.bottom});
-        border.setPosition({getPosition().x - m_borders.left, getPosition().y + getSize().y});
-        target.draw(border, states);
 
         // Draw the scrollbar if there is one
         if (m_scroll != nullptr)
             target.draw(*m_scroll, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "backgroundimage")
+            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else if (property == "padding")
+            setPadding(extractBordersFromString(property, value));
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_backgroundTexture.load(filename, partRect, middlePart, repeated);
+        else
+            m_backgroundTexture = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setScrollbar(const std::string& scrollbarThemeFileFilename, const std::string& section)
+    {
+        m_chatBox->m_scroll = Scrollbar::create(scrollbarThemeFileFilename, section);
+
+        m_chatBox->m_scroll->setSize({m_chatBox->m_scroll->getSize().x, m_chatBox->getSize().y});
+        m_chatBox->m_scroll->setLowValue(static_cast<unsigned int>(m_chatBox->getSize().y));
+
+        m_chatBox->recalculateFullTextHeight();
+        m_chatBox->updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setPadding(const Padding& padding)
+    {
+        WidgetPadding::setPadding(padding);
+
+        m_chatBox->updateRendering();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        if (m_backgroundTexture.getData() == nullptr)
+        {
+            sf::RectangleShape background(m_chatBox->getSize());
+            background.setPosition(m_chatBox->getPosition());
+            background.setFillColor(m_backgroundColor);
+            target.draw(background, states);
+        }
+        else
+            target.draw(m_backgroundTexture, states);
+
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_chatBox->getPosition();
+            sf::Vector2f size = m_chatBox->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition({position.x - m_borders.left, position.y - m_borders.top});
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition({position.x, position.y - m_borders.top});
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition({position.x + size.x, position.y});
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition({position.x - m_borders.left, position.y + size.y});
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> ChatBoxRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<ChatBoxRenderer>(new ChatBoxRenderer{*this});
+        renderer->m_chatBox = static_cast<ChatBox*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

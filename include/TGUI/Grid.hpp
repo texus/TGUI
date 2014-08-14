@@ -288,7 +288,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum GridCallbacks
         {
-            AllGridCallbacks = WidgetCallbacksCount - 1, ///< All Callbacks defined in Grid and its base classes
             GridCallbacksCount = WidgetCallbacksCount
         };
 

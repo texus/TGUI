@@ -1,0 +1,16 @@
+language: cpp
+compiler:
+  - gcc
+
+branches:
+  only:
+    - master
+
+install:
+  - wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-linux-gcc-64bits.tar.bz2
+  - tar xf SFML-2.1-linux-gcc-64bits.tar.bz2
+  - sudo cp -r SFML-2.1/lib/* /usr/local/lib/
+  - sudo cp -r SFML-2.1/include/* /usr/local/include/
+  - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libjpeg62
+
+script: cmake . && make

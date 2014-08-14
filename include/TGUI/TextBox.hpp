@@ -34,10 +34,11 @@
 namespace tgui
 {
     class Scrollbar;
+    class TextBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API TextBox : public Widget, public WidgetBorders
+    class TGUI_API TextBox : public Widget
     {
     public:
 
@@ -80,13 +81,14 @@ namespace tgui
         /// @brief Create the text box
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "TextBox" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextBox::Ptr create(const std::string& configFileFilename);
+        static TextBox::Ptr create(const std::string& configFileFilename, const std::string& section = "TextBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,16 +106,31 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<TextBoxRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<TextBoxRenderer>(m_renderer);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,10 +153,7 @@ namespace tgui
         /// @return Full size of the text box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getFullSize() const override
-        {
-            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
-        }
+        virtual sf::Vector2f getFullSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,30 +183,6 @@ namespace tgui
         sf::String getText() const
         {
             return m_text;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the text.
-        ///
-        /// @return  Pointer to the font that is currently being used
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_textBeforeSelection.getFont();
         }
 
 
@@ -246,218 +236,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the colors from the text box.
-        ///
-        /// @param backgroundColor                      The color of the background of the text box.
-        /// @param textColor                            The color of the text
-        /// @param selectedTextColor                    The color of the text when it is selected
-        /// @param selectedTextBackgroundColor          The color of the background of the text that is selected
-        /// @param borderColor                          The color of the borders
-        /// @param caretColor                           The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& backgroundColor                      = sf::Color( 50,  50,  50),
-                          const sf::Color& textColor                            = sf::Color(  0,   0,   0),
-                          const sf::Color& selectedTextColor                    = sf::Color(255, 255, 255),
-                          const sf::Color& selectedTextBackgroundColor          = sf::Color( 10, 110, 255),
-                          const sf::Color& borderColor                          = sf::Color(  0,   0,   0),
-                          const sf::Color& caretColor                           = sf::Color(110, 110, 255));
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the text box.
-        ///
-        /// @param backgroundColor  The new background color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_backgroundColor = backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the text box.
-        ///
-        /// @param textColor  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the text box.
-        ///
-        /// @param selectedTextColor  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the text box.
-        ///
-        /// @param selectedTextBackgroundColor  The new background color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
-        {
-            m_selectedTextBgrColor = selectedTextBackgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color that will be used inside the text box.
-        ///
-        /// @param borderColor  The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor)
-        {
-            m_borderColor = borderColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color that will be used inside the text box for the blinking caret.
-        ///
-        /// @param caretColor  The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretColor(const sf::Color& caretColor)
-        {
-            m_caretColor = caretColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color that is currently being used inside the text box.
-        ///
-        /// @return The color of the background of the text box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor() const
-        {
-            return m_backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the text box.
-        ///
-        /// @return The text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_textBeforeSelection.getColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color of the selected text that is currently being used inside the text box.
-        ///
-        /// @return The selected text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_textSelection1.getColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color of the selected text that is currently being used inside the text box.
-        ///
-        /// @return The background color of the selected text that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextBackgroundColor() const
-        {
-            return m_selectedTextBgrColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the border color that is currently being used inside the text box.
-        ///
-        /// @return The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBorderColor() const
-        {
-            return m_borderColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the color that is currently being used inside the text box for the blinking caret.
-        ///
-        /// @return The color of the blinking caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getCaretColor() const
-        {
-            return m_caretColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the blinking caret to after a specific character.
-        ///
-        /// @param charactersBeforeCaret  The amount of characters that are before the blinking caret
-        ///
-        /// Normally you will not need this function.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretPosition(unsigned int charactersBeforeCaret);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the text box.
-        ///
-        /// @param scrollbarConfigFileFilename  Filename of the config file.
-        ///                                     The config file must contain a Scrollbar section with the needed information.
-        ///
-        /// @return
-        ///        - true when the scrollbar was successfully loaded
-        ///        - false when the loading of the scrollbar failed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setScrollbar(const std::string& scrollbarConfigFileFilename);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes the scrollbar from the text box (if there is one).
         ///
         /// When there are too many lines to fit in the text box then some lines will be removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeScrollbar();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This will change the width of the blinking caret.
-        ///
-        /// @param width  New width of the caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretWidth(unsigned int width = 2)
-        {
-            m_caretWidth = width;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the width of the blinking caret.
-        ///
-        /// @return width  Width of the caret
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getCaretWidth() const
-        {
-            return m_caretWidth;
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -540,13 +324,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+    private:
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int findCaretPosition(float posX, float posY);
+        sf::Vector2u findCaretPosition(sf::Vector2f position);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Converts the two dimensional caret positions into a one dimensional position in the text.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::pair<unsigned int, unsigned int> findTextCaretPosition();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,18 +354,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // To keep the drawing as fast as possible, all the calculation are done in front by this function.
-        // It is called when the text changes, when scrolling, ...
+        // Rearrange the text inside the text box (by using word wrap).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateDisplayedText();
+        void rearrangeText(bool keepSelection);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called by updateDisplayedText and will split the text into five pieces so that the text can
-        // be easily drawn.
+        // This function will split the text into five pieces so that the text can be easily drawn.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateSelectionTexts(float maxLineWidth);
+        void updateSelectionTexts();
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the widget is added to a container.
@@ -612,8 +403,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TextBoxCallbacks
         {
-            TextChanged = WidgetCallbacksCount * 1,             ///< Text has changed
-            AllTextBoxCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in TextBox and its base classes
+            TextChanged = WidgetCallbacksCount * 1,  ///< Text has changed
             TextBoxCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -621,14 +411,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
-
-        // Some information about the text
         sf::String   m_text;
-        sf::String   m_displayedText;
-        unsigned int m_textSize = 30;
+        unsigned int m_textSize = 18;
         unsigned int m_lineHeight = 40;
-        unsigned int m_lines = 1;
+
+        std::vector<sf::String> m_lines = {""};
 
         // The maximum characters (0 by default, which means no limit)
         unsigned int m_maxChars = 0;
@@ -638,44 +425,231 @@ namespace tgui
         unsigned int m_visibleLines = 1;
 
         // Information about the selection
-        unsigned int m_selChars = 0;
-        unsigned int m_selStart = 0;
-        unsigned int m_selEnd = 0;
+        sf::Vector2u m_selStart;
+        sf::Vector2u m_selEnd;
 
         // Information about the caret
-        sf::Vector2u m_caretPosition;
+        sf::Vector2f m_caretPosition;
         bool m_caretVisible = true;
 
-        // The color of the blinking caret
-        sf::Color m_caretColor;
-
-        // The width in pixels of the blinking caret
-        unsigned int m_caretWidth = 2;
-
-        // Should the text be resplit into the five texts?
-        bool m_selectionTextsNeedUpdate = true;
-
-        // The colors that are used by the text box
-        sf::Color m_backgroundColor;
-        sf::Color m_selectedTextBgrColor;
-        sf::Color m_borderColor;
-
-        // The sfml Text widgets
         sf::Text m_textBeforeSelection;
         sf::Text m_textSelection1;
         sf::Text m_textSelection2;
         sf::Text m_textAfterSelection1;
         sf::Text m_textAfterSelection2;
 
-        std::vector<float> m_multilineSelectionRectWidth;
+        std::vector<sf::FloatRect> m_selectionRects;
 
         // The scrollbar
-        Scrollbar::Ptr m_scroll = nullptr;
+        Scrollbar::Ptr m_scroll = Scrollbar::create();
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;
 
         bool m_readOnly = false;
+
+        friend class TextBoxRenderer;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TextBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param textBox  The text box that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TextBoxRenderer(TextBox* textBox) : m_textBox{textBox} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background image
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color that will be used inside the text box.
+        ///
+        /// @param backgroundColor  The new background color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& backgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the text box.
+        ///
+        /// @param textColor  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& textColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color of the selected text that will be used inside the text box.
+        ///
+        /// @param selectedTextColor  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextColor(const sf::Color& selectedTextColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the selected text that will be used inside the text box.
+        ///
+        /// @param selectedTextBackgroundColor  The new background color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the border color that will be used inside the text box.
+        ///
+        /// @param borderColor  The color of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& borderColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color that will be used inside the text box for the blinking caret.
+        ///
+        /// @param caretColor  The color of the blinking caret
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCaretColor(const sf::Color& caretColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This will change the width of the blinking caret.
+        ///
+        /// @param width  New width of the caret
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCaretWidth(float width);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the text.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the padding of the text box.
+        ///
+        /// This padding will be scaled together with the background image.
+        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
+        ///
+        /// @param padding  The padding width and height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the scrollbar of the text box.
+        ///
+        /// @param scrollbarThemeFileFilename  Filename of the theme file.
+        /// @param section  The section to look for inside the theme file.
+        ///
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the padding, which is possibly scaled with the background image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Padding getScaledPadding() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TextBoxRenderer(const TextBoxRenderer&) = default;
+        TextBoxRenderer& operator=(const TextBoxRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        TextBox* m_textBox;
+
+        float m_caretWidth = 2;
+
+        Texture   m_backgroundTexture;
+
+        sf::Color m_caretColor           = {  0,   0,   0};
+        sf::Color m_backgroundColor      = {255, 255, 255};
+        sf::Color m_selectedTextBgrColor = {  0, 110, 255};
+        sf::Color m_borderColor          = {  0,   0,   0};
+
+        friend class TextBox;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

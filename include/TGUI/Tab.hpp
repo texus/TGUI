@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class TabRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API Tab : public Widget
@@ -58,13 +60,16 @@ namespace tgui
         /// @brief Create the tab
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "Tab" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Tab::Ptr create(const std::string& configFileFilename);
+        static Tab::Ptr create(const std::string& configFileFilename = "", const std::string& section = "Tab");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +87,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<TabRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<TabRenderer>(m_renderer);
         }
 
 
@@ -134,7 +138,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getSize() const override
         {
-            return {m_width, m_textureNormal.getSize().y};
+            return {m_width, m_tabHeight};
         }
 
 
@@ -248,78 +252,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the tabs.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the tabs.
-        ///
-        /// @return  Pointer to the font that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_textFont;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the tabs.
-        ///
-        /// @param color  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& color)
-        {
-            m_textColor = color;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the tabs.
-        ///
-        /// @return The text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_textColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used for the selected tab.
-        ///
-        /// @param color  The new text color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& color)
-        {
-            m_selectedTextColor = color;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used for the selected tab.
-        ///
-        /// @return The text color that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_selectedTextColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of the text.
         ///
         /// @param size  The new size of the text.
@@ -357,7 +289,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getTabHeight() const
         {
-            return m_textureNormal.getSize().y;
+            return m_tabHeight;
         }
 
 
@@ -370,7 +302,7 @@ namespace tgui
         /// By default, the maximum width is 0 which means that there is no limitation.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumTabWidth(unsigned int maximumWidth);
+        void setMaximumTabWidth(float maximumWidth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,30 +314,9 @@ namespace tgui
         /// By default, the maximum width is 0 which means that there is no limitation.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximumTabWidth() const
+        float getMaximumTabWidth() const
         {
             return m_maximumTabWidth;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the text and the side of the tab.
-        ///
-        /// @param distanceToSide  distance between the text and the side of the tab
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setDistanceToSide(unsigned int distanceToSide);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the distance between the text and the side of the tab.
-        ///
-        /// @return distance between the text and the side of the tab
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getDistanceToSide() const
-        {
-            return m_distanceToSide;
         }
 
 
@@ -472,8 +383,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum TabCallbacks
         {
-            TabChanged = WidgetCallbacksCount * 1,          ///< Current Tab changed
-            AllTabCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in Tab and its base classes
+            TabChanged = WidgetCallbacksCount * 1,  ///< Current Tab changed
             TabCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -481,31 +391,220 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string     m_loadedConfigFile;
-
-        bool            m_separateSelectedImage = true;
-
-        unsigned int    m_textSize = 0;
-        const sf::Font* m_textFont = nullptr;
-
-        sf::Color       m_textColor;
-        sf::Color       m_selectedTextColor;
-
-        unsigned int    m_maximumTabWidth = 0;
-
-        float           m_width = 0;
-
         // The distance between the side of the tab and the text that is drawn on top of the tab.
-        unsigned int m_distanceToSide = 5;
+        unsigned int       m_distanceToSide = 5;
 
-        int  m_selectedTab = -1;
+        unsigned int       m_textSize = 0;
+        const sf::Font*    m_textFont = nullptr;
+        float              m_maximumTabWidth = 0;
+        int                m_selectedTab = -1;
 
-        std::vector<Label>  m_tabNames;
+        float              m_width = 0;
+        float              m_tabHeight = 0;
+        std::vector<float> m_tabWidth;
 
-        Texture             m_textureNormal;
-        Texture             m_textureSelected;
-        std::list<Texture>  m_texturesNormal;
-        std::list<Texture>  m_texturesSelected;
+        std::vector<Label> m_tabNames;
+
+        friend class TabRenderer;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class TabRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param tab  The tab that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TabRenderer(Tab* tab) : m_tab{tab} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the tabs.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the tabs.
+        ///
+        /// @param color  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& color)
+        {
+            m_textColor = color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used for the selected tab.
+        ///
+        /// @param color  The new text color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextColor(const sf::Color& color)
+        {
+            m_selectedTextColor = color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the distance between the text and the side of the tab.
+        ///
+        /// @param distanceToSide  distance between the text and the side of the tab
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDistanceToSide(unsigned int distanceToSide);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the tab is not selected
+        ///
+        /// When this image and the selected image are set, the background color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color properties will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setNormalImage(const std::string& filename,
+                            const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                            const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                            bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the tab is selected
+        ///
+        /// When this image and the normal image are set, the background color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color properties will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedImage(const std::string& filename,
+                              const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                              const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                              bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the tabs
+        ///
+        /// @param color  The new background color.
+        ///
+        /// Note that this color is ignored when a normal and selected image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color)
+        {
+            m_backgroundColor = color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the selected tab.
+        ///
+        /// @param color  The new background color.
+        ///
+        /// Note that this color is ignored when a normal and selected image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedBackgroundColor(const sf::Color& color)
+        {
+            m_selectedBackgroundColor = color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color of the borders
+        ///
+        /// @param color  The new border color.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color)
+        {
+            m_borderColor = color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TabRenderer(const TabRenderer&) = default;
+        TabRenderer& operator=(const TabRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        Tab* m_tab;
+
+        Texture            m_textureNormal;
+        Texture            m_textureSelected;
+        std::list<Texture> m_texturesNormal;
+        std::list<Texture> m_texturesSelected;
+
+        sf::Color m_textColor         = {  0,   0,   0};
+        sf::Color m_selectedTextColor = {255, 255, 255};
+
+        sf::Color m_backgroundColor         = {255, 255, 255};
+        sf::Color m_selectedBackgroundColor = {  0, 110, 255};
+
+        sf::Color m_borderColor = {0, 0, 0};
+
+        friend class Tab;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

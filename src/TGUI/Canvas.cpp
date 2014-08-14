@@ -75,7 +75,7 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_sprite.setPosition(position.getValue());
+        m_sprite.setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class MenuBarRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API MenuBar : public Widget
@@ -57,14 +59,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Create the menu bar
         ///
-        /// @param configFileFilename  Filename of the config file.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section            The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "MenuBar" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MenuBar::Ptr create(const std::string& configFileFilename);
+        static MenuBar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "MenuBar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,15 +87,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<MenuBarRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<MenuBarRenderer>(m_renderer);
         }
 
 
@@ -182,135 +186,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the colors used in the menu bar.
-        ///
-        /// @param backgroundColor          The color of the background of the menu bar
-        /// @param textColor                The color of the text
-        /// @param selectedBackgroundColor  The color of the background of the selected item
-        /// @param selectedTextColor        The color of the text when it is selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
-                          const sf::Color& textColor               = sf::Color::Black,
-                          const sf::Color& selectedBackgroundColor = sf::Color(50, 100, 200),
-                          const sf::Color& selectedTextColor       = sf::Color::White);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the menu bar.
-        ///
-        /// @param backgroundColor  The color of the background of the menu bar
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_backgroundColor = backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the menu bar.
-        ///
-        /// @param textColor  The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the menu bar.
-        ///
-        /// @param selectedBackgroundColor  The color of the background of the selected item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
-        {
-            m_selectedBackgroundColor = selectedBackgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the menu bar.
-        ///
-        /// @param selectedTextColor  The color of the text when it is selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color that is currently being used inside the menu bar.
-        ///
-        /// @return The color of the background of the menu bar
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor() const
-        {
-            return m_backgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the menu bar.
-        ///
-        /// @return The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_textColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color of the selected text that is currently being used inside the menu bar.
-        ///
-        /// @return The color of the background of the selected item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedBackgroundColor() const
-        {
-            return m_selectedBackgroundColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color of the selected text that is currently being used inside the menu bar.
-        ///
-        /// @return The color of the text when it is selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_selectedTextColor;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font used in the menu bar.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font that is used in the menu bar.
-        ///
-        /// @return  Pointer to the font that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_textFont;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of the text.
         ///
         /// @param size  The new size of the text.
@@ -329,30 +204,6 @@ namespace tgui
         unsigned int getTextSize() const
         {
             return m_textSize;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the text and the side of the menu item.
-        ///
-        /// @param distanceToSide  distance between the text and the side of the menu item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setDistanceToSide(unsigned int distanceToSide)
-        {
-            m_distanceToSide = distanceToSide;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the distance between the text and the side of the menu item.
-        ///
-        /// @return distance between the text and the side of the menu item
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getDistanceToSide() const
-        {
-            return m_distanceToSide;
         }
 
 
@@ -412,6 +263,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This function is called when the mouse leaves the widget. If requested, a callback will be send.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void mouseLeftWidget() override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Closes any menu that might be open
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void closeVisibleMenu();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,8 +309,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum MenuBarCallbacks
         {
-            MenuItemClicked = WidgetCallbacksCount * 1,         ///< A menu item was clicked
-            AllMenuBarCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in MenuBar and its base classes
+            MenuItemClicked = WidgetCallbacksCount * 1,  ///< A menu item was clicked
             MenuBarCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -456,10 +321,8 @@ namespace tgui
         {
             Label text;
             std::vector<Label> menuItems;
-            int selectedMenuItem;
+            int selectedMenuItem = -1;
         };
-
-        std::string m_loadedConfigFile;
 
         std::vector<Menu> m_menus;
 
@@ -469,14 +332,201 @@ namespace tgui
 
         unsigned int m_textSize = 0;
 
-        unsigned int m_distanceToSide = 4;
-
         float m_minimumSubMenuWidth = 125;
 
-        sf::Color m_backgroundColor;
-        sf::Color m_textColor;
-        sf::Color m_selectedBackgroundColor;
-        sf::Color m_selectedTextColor;
+        friend class MenuBarRenderer;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class MenuBarRenderer : public WidgetRenderer
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param menuBar  The loading bar that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        MenuBarRenderer(MenuBar* menuBar) : m_menuBar{menuBar} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color that will be used inside the menu bar.
+        ///
+        /// @param backgroundColor  The color of the background of the menu bar
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& backgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the menu bar.
+        ///
+        /// @param textColor  The color of the text
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& textColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the selected text that will be used inside the menu bar.
+        ///
+        /// @param selectedBackgroundColor  The color of the background of the selected item
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color of the selected text that will be used inside the menu bar.
+        ///
+        /// @param selectedTextColor  The color of the text when it is selected
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedTextColor(const sf::Color& selectedTextColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font used in the menu bar.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the distance between the text and the side of the menu item.
+        ///
+        /// @param distanceToSide  distance between the text and the side of the menu item
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDistanceToSide(unsigned int distanceToSide);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders that are optionally drawn around the menu items.
+        ///
+        /// @param color  New border color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used to fill the entire menu bar
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as background for every menu item
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setItemBackgroundImage(const std::string& filename,
+                                    const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                    const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                    bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as background of the selected menu item
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSelectedItemBackgroundImage(const std::string& filename,
+                                            const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                            const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                            bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        MenuBarRenderer(const MenuBarRenderer&) = default;
+        MenuBarRenderer& operator=(const MenuBarRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        MenuBar*  m_menuBar;
+
+        float     m_distanceToSide = 4;
+
+        sf::Color m_textColor               = {  0,   0,   0};
+        sf::Color m_selectedTextColor       = {255, 255, 255};
+
+        sf::Color m_backgroundColor         = {255, 255, 255};
+        sf::Color m_selectedBackgroundColor = {  0, 110, 255};
+
+        Texture   m_backgroundTexture;
+        Texture   m_itemBackgroundTexture;
+        Texture   m_selectedItemBackgroundTexture;
+
+        friend class MenuBar;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

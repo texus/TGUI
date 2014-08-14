@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    class SpinButtonRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class TGUI_API SpinButton : public ClickableWidget
@@ -57,14 +59,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Create the spin button
         ///
-        /// @param configFileFilename  Filename of the config file.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section            The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "SpinButton" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SpinButton::Ptr create(const std::string& configFileFilename);
+        static SpinButton::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "SpinButton");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,16 +87,52 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<SpinButtonRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<SpinButtonRenderer>(m_renderer);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param position  New position
+        ///
+        /// @see move, getPosition
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPosition(const Layout& position) override;
+        using Transformable::setPosition;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the spin button.
+        ///
+        /// @param size  The new size of the spin button
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setSize(const Layout& size) override;
+        using Transformable::setSize;
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the full size of the spin button
+        ///
+        /// The size returned by this function includes the borders.
+        ///
+        /// @return Full size of the spin button
+        ///
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getFullSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,10 +219,7 @@ namespace tgui
         /// @param verticalScroll  Does the spin button lie vertically?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScroll(bool verticalScroll)
-        {
-            m_verticalScroll = verticalScroll;
-        }
+        void setVerticalScroll(bool verticalScroll);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,16 +294,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum SpinButtonCallbacks
         {
-            ValueChanged = ClickableWidgetCallbacksCount * 1,               ///< Value has changed
-            AllSpinButtonCallbacks = ClickableWidgetCallbacksCount * 2 - 1, ///< All triggers defined in TextBox and its base classes
+            ValueChanged = ClickableWidgetCallbacksCount * 1,  ///< Value has changed
             SpinButtonCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        std::string m_loadedConfigFile;
 
         // Is the spin button draw vertically (arrows on top of each other)?
         bool m_verticalScroll = true;
@@ -274,17 +309,263 @@ namespace tgui
         unsigned int m_maximum = 10;
         unsigned int m_value = 0;
 
-        // Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?
-        bool m_separateHoverImage = false;
-
         // On which arrow is the mouse?
         bool m_mouseHoverOnTopArrow = false;
         bool m_mouseDownOnTopArrow = false;
 
-        Texture m_textureArrowUpNormal;
-        Texture m_textureArrowUpHover;
-        Texture m_textureArrowDownNormal;
-        Texture m_textureArrowDownHover;
+        friend class SpinButtonRenderer;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class SpinButtonRenderer : public WidgetRenderer, public WidgetBorders
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param spinButton  The spin button that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SpinButtonRenderer(SpinButton* spinButton) : m_spinButton{spinButton} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property does not exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow.
+        ///
+        /// When this image and the down image are set, the color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the color properties will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpNormalImage(const std::string& filename,
+                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the down arrow.
+        ///
+        /// When this image and the up image are set, the color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the color properties will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownNormalImage(const std::string& filename,
+                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                     bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow.
+        ///
+        /// When hover image is ignored if the normal image has not been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpHoverImage(const std::string& filename,
+                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the down arrow when the mouse is on top of this arrow.
+        ///
+        /// When hover image is ignored if the normal image has not been set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownHoverImage(const std::string& filename,
+                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                     bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows.
+        ///
+        /// @param color  New background color
+        ///
+        /// This color will overwrite the color for both normal and hover states.
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /// @see setBackgroundColorNormal
+        /// @see setBackgroundColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows in the normal state (mouse not on spin button).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the arrows in the hover state (mouse standing on top of the spin button).
+        ///
+        /// @param color  New background color
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows.
+        ///
+        /// @param color  New arrow color
+        ///
+        /// This color will overwrite the color for both normal and hover states.
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /// @see setArrowColorNormal
+        /// @see setArrowColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows in the normal state (mouse not on spin button).
+        ///
+        /// @param color  New arrow color
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the arrows in the hover state (mouse standing on top of the spin button).
+        ///
+        /// @param color  New arrow color
+        ///
+        /// Note that this color is ignored when an up and down arrow image were set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the color of the borders that are optionally drawn around the arrows.
+        ///
+        /// @param color  New border color
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the space that is placed between the arrows.
+        ///
+        /// This space will use the BorderColor as color.
+        ///
+        /// When images are used, this space is scaled together with the size of the images
+        ///
+        /// @param space  New space between the arrows
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSpaceBetweenArrows(float space);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        SpinButtonRenderer(const SpinButtonRenderer&) = default;
+        SpinButtonRenderer& operator=(const SpinButtonRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        SpinButton* m_spinButton;
+
+        float     m_spaceBetweenArrows = 2;
+
+        Texture   m_textureArrowUpNormal;
+        Texture   m_textureArrowUpHover;
+        Texture   m_textureArrowDownNormal;
+        Texture   m_textureArrowDownHover;
+
+        sf::Color m_backgroundColorNormal = {245, 245, 245};
+        sf::Color m_backgroundColorHover  = {255, 255, 255};
+        sf::Color m_arrowColorNormal      = { 60,  60,  60};
+        sf::Color m_arrowColorHover       = {  0,   0,   0};
+
+        sf::Color m_borderColor           = {  0,   0,   0};
+
+
+        friend class SpinButton;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

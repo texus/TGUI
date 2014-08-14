@@ -60,7 +60,7 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_texture.setPosition(position.getValue());
+        m_texture.setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +96,9 @@ namespace tgui
             }
         }
 
-        if (m_mouseHover == true)
+        if (m_mouseHover)
             mouseLeftWidget();
 
-        m_mouseHover = false;
         return false;
     }
 

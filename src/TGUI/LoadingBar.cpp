@@ -26,6 +26,8 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/LoadingBar.hpp>
 
+#include <SFML/OpenGL.hpp>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -35,48 +37,63 @@ namespace tgui
     LoadingBar::LoadingBar()
     {
         m_callback.widgetType = Type_LoadingBar;
+
+        m_renderer = std::make_shared<LoadingBarRenderer>(this);
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+
+        m_textBack.setTextColor({0, 0, 0});
+        m_textFront.setTextColor({255, 255, 255});
+
+        setSize(160, 20);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LoadingBar::Ptr LoadingBar::create(const std::string& configFileFilename)
+    LoadingBar::Ptr LoadingBar::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto loadingBar = std::make_shared<LoadingBar>();
 
-        loadingBar->m_loadedConfigFile = getResourcePath() + configFileFilename;
-
-        // Open the config file
-        ConfigFile configFile{loadingBar->m_loadedConfigFile, "LoadingBar"};
-
-        // Find the folder that contains the config file
-        std::string configFileFolder = "";
-        std::string::size_type slashPos = loadingBar->m_loadedConfigFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            configFileFolder = loadingBar->m_loadedConfigFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = configFile.getProperties().cbegin(); it != configFile.getProperties().cend(); ++it)
+        if (themeFileFilename != "")
         {
-            if (it->first == "backimage")
-                configFile.readTexture(it, configFileFolder, loadingBar->m_textureBack);
-            else if (it->first == "frontimage")
-                configFile.readTexture(it, configFileFolder, loadingBar->m_textureFront);
-            else if (it->first == "textcolor")
-                loadingBar->setTextColor(extractColor(it->second));
-            else if (it->first == "textsize")
-                loadingBar->setTextSize(tgui::stoi(it->second));
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section LoadingBar in " + loadingBar->m_loadedConfigFile + "."};
+            loadingBar->getRenderer()->setBorders({0, 0, 0, 0});
+
+            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
+
+            // Open the theme file
+            ConfigFile themeFile{loadedThemeFile, section};
+
+            // Find the folder that contains the theme file
+            std::string themeFileFolder = "";
+            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
+
+            // Handle the read properties
+            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            {
+                try
+                {
+                    loadingBar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                }
+                catch (const Exception& e)
+                {
+                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
+                }
+            }
+
+            // Use the size of the images when images were loaded
+            if (loadingBar->getRenderer()->m_textureBack.getData() != nullptr)
+            {
+                loadingBar->setSize(loadingBar->getRenderer()->m_textureBack.getImageSize());
+
+                if (loadingBar->getSize().y >= 2 * loadingBar->getSize().x)
+                    loadingBar->setFillDirection(FillDirection::BottomToTop);
+            }
+
+            // Calculate the size of the front image (the size of the part that will be drawn)
+            loadingBar->recalculateSize();
         }
-
-        // Make sure the required textures were loaded
-        if ((loadingBar->m_textureBack.getData() == nullptr) || (loadingBar->m_textureFront.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the loading bar. Is the LoadingBar section in " + loadingBar->m_loadedConfigFile + " complete?"};
-
-        loadingBar->setSize(loadingBar->m_textureBack.getImageSize());
-
-        // Calculate the size of the front image (the size of the part that will be drawn)
-        loadingBar->recalculateSize();
 
         return loadingBar;
     }
@@ -87,11 +104,15 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        m_textureBack.setPosition(getPosition());
-        m_textureFront.setPosition(getPosition());
+        getRenderer()->m_textureBack.setPosition(getPosition());
 
-        m_text.setPosition(getPosition().x + (getSize().x - m_text.getSize().x) / 2.0f,
-                           getPosition().y + (getSize().y - m_text.getSize().y) / 2.0f);
+        getRenderer()->m_textureFront.setPosition(getRenderer()->m_textureBack.getPosition()
+                                                  + ((getRenderer()->m_textureBack.getSize() - getRenderer()->m_textureFront.getSize()) / 2.0f));
+
+
+        m_textBack.setPosition(getPosition().x + (getSize().x - m_textBack.getSize().x) / 2.0f,
+                               getPosition().y + (getSize().y - m_textBack.getSize().y) / 2.0f);
+        m_textFront.setPosition(m_textBack.getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,14 +121,42 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_textureBack.setSize(getSize());
-        m_textureFront.setSize(getSize());
+        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+        {
+            getRenderer()->m_textureBack.setSize(getSize());
+
+            sf::Vector2f frontSize;
+            switch (getRenderer()->m_textureBack.getScalingType())
+            {
+            case Texture::ScalingType::Normal:
+                frontSize.x = getRenderer()->m_textureFront.getImageSize().x * getSize().x / getRenderer()->m_textureBack.getImageSize().x;
+                frontSize.y = getRenderer()->m_textureFront.getImageSize().y * getSize().y / getRenderer()->m_textureBack.getImageSize().y;
+                break;
+
+            case Texture::ScalingType::Horizontal:
+                frontSize.x = getSize().x - ((getRenderer()->m_textureBack.getImageSize().x - getRenderer()->m_textureFront.getImageSize().x) * (getSize().y / getRenderer()->m_textureBack.getImageSize().y));
+                frontSize.y = getRenderer()->m_textureFront.getImageSize().y * getSize().y / getRenderer()->m_textureBack.getImageSize().y;
+                break;
+
+            case Texture::ScalingType::Vertical:
+                frontSize.x = getRenderer()->m_textureFront.getImageSize().x * getSize().x / getRenderer()->m_textureBack.getImageSize().x;
+                frontSize.y = getSize().y - ((getRenderer()->m_textureBack.getImageSize().y - getRenderer()->m_textureFront.getImageSize().y) * (getSize().x / getRenderer()->m_textureBack.getImageSize().x));
+                break;
+
+            case Texture::ScalingType::NineSliceScaling:
+                frontSize.x = getSize().x - (getRenderer()->m_textureBack.getImageSize().x - getRenderer()->m_textureFront.getImageSize().x);
+                frontSize.y = getSize().y - (getRenderer()->m_textureBack.getImageSize().y - getRenderer()->m_textureFront.getImageSize().y);
+                break;
+            }
+
+            getRenderer()->m_textureFront.setSize(frontSize);
+        }
 
         // Recalculate the size of the front image
         recalculateSize();
 
         // Recalculate the text size
-        setText(m_text.getText());
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,35 +256,30 @@ namespace tgui
     void LoadingBar::setText(const sf::String& text)
     {
         // Set the new text
-        m_text.setText(text);
+        m_textBack.setText(text);
+        m_textFront.setText(text);
 
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
             // Calculate a possible text size
             float size = getSize().y * 0.75f;
-            m_text.setTextSize(static_cast<unsigned int>(size));
+            m_textBack.setTextSize(static_cast<unsigned int>(size));
 
             // Make the text smaller when it is too width
-            if (m_text.getSize().x > (getSize().x * 0.8f))
-                m_text.setTextSize(static_cast<unsigned int>(size / (m_text.getSize().x / (getSize().x * 0.8f))));
+            if (m_textBack.getSize().x > (getSize().x * 0.8f))
+                m_textBack.setTextSize(static_cast<unsigned int>(size / (m_textBack.getSize().x / (getSize().x * 0.8f))));
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_text.setTextSize(m_textSize);
+            m_textBack.setTextSize(m_textSize);
         }
+
+        m_textFront.setTextSize(m_textBack.getTextSize());
 
         // Reposition the text
         updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LoadingBar::setTextFont(const sf::Font& font)
-    {
-        m_text.setTextFont(font);
-        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +290,16 @@ namespace tgui
         m_textSize = size;
 
         // Call setText to reposition the text
-        setText(m_text.getText());
+        setText(getText());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBar::setFillDirection(FillDirection direction)
+    {
+        m_fillDirection = direction;
+
+        recalculateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,15 +308,43 @@ namespace tgui
     {
         ClickableWidget::setTransparency(transparency);
 
-        m_textureBack.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureFront.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureBack.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureFront.setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LoadingBar::recalculateSize()
     {
-        m_textureFront.setTextureRect(sf::FloatRect(0, 0, m_textureFront.getSize().x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), m_textureFront.getSize().y));
+        sf::Vector2f size;
+        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+            size = getRenderer()->m_textureFront.getSize();
+        else
+            size = getSize();
+
+        switch (getFillDirection())
+        {
+            case LoadingBar::FillDirection::LeftToRight:
+                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
+                break;
+
+            case LoadingBar::FillDirection::RightToLeft:
+                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
+                m_frontRect.left = size.x - m_frontRect.width;
+                break;
+
+            case LoadingBar::FillDirection::TopToBottom:
+                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
+                break;
+
+            case LoadingBar::FillDirection::BottomToTop:
+                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
+                m_frontRect.top = size.y - m_frontRect.height;
+                break;
+        }
+
+        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+            getRenderer()->m_textureFront.setTextureRect(m_frontRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,19 +353,339 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!getTextFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+        if (!m_textBack.getTextFont() && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(*m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LoadingBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(m_textureBack, states);
-        target.draw(m_textureFront, states);
+        getRenderer()->draw(target, states);
+    }
 
-        if (m_text.getText().isEmpty() == false)
-            target.draw(m_text, states);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    {
+        if (property == "backimage")
+            extractTextureFromString(property, value, rootPath, m_textureBack);
+        else if (property == "frontimage")
+            extractTextureFromString(property, value, rootPath, m_textureFront);
+        else if (property == "backgroundcolor")
+            setBackgroundColor(extractColorFromString(property, value));
+        else if (property == "foregroundcolor")
+            setForegroundColor(extractColorFromString(property, value));
+        else if (property == "textcolor")
+            setTextColor(extractColorFromString(property, value));
+        else if (property == "textcolorback")
+            setTextColorBack(extractColorFromString(property, value));
+        else if (property == "textcolorfront")
+            setTextColorFront(extractColorFromString(property, value));
+        else if (property == "textsize")
+            m_loadingBar->setTextSize(tgui::stoi(value));
+        else if (property == "borders")
+            setBorders(extractBordersFromString(property, value));
+        else if (property == "bordercolor")
+            setBorderColor(extractColorFromString(property, value));
+        else
+            throw Exception{"Unrecognized property '" + property + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setTextFont(const sf::Font& font)
+    {
+        m_loadingBar->m_textBack.setTextFont(font);
+        m_loadingBar->m_textFront.setTextFont(font);
+
+        m_loadingBar->setText(m_loadingBar->getText());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setTextColor(const sf::Color& color)
+    {
+        m_loadingBar->m_textBack.setTextColor(color);
+        m_loadingBar->m_textFront.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setTextColorBack(const sf::Color& color)
+    {
+        m_loadingBar->m_textBack.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setTextColorFront(const sf::Color& color)
+    {
+        m_loadingBar->m_textFront.setTextColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setBackgroundColor(const sf::Color& color)
+    {
+        m_backgroundColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setForegroundColor(const sf::Color& color)
+    {
+        m_foregroundColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setBorderColor(const sf::Color& color)
+    {
+        m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setBackImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureBack.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureBack = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::setFrontImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    {
+        if (filename != "")
+            m_textureFront.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        else
+            m_textureFront = {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadingBarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Check if there are textures
+        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+        {
+            target.draw(m_textureBack, states);
+            target.draw(m_textureFront, states);
+        }
+        else // There is no background texture
+        {
+            sf::RectangleShape back(m_loadingBar->getSize());
+            back.setPosition(m_loadingBar->getPosition());
+            back.setFillColor(m_backgroundColor);
+            target.draw(back, states);
+
+            sf::Vector2f frontPosition = m_loadingBar->getPosition();
+            if (m_loadingBar->getFillDirection() == LoadingBar::FillDirection::RightToLeft)
+                frontPosition.x += m_loadingBar->getSize().x - m_loadingBar->m_frontRect.width;
+            else if (m_loadingBar->getFillDirection() == LoadingBar::FillDirection::BottomToTop)
+                frontPosition.y += m_loadingBar->getSize().y - m_loadingBar->m_frontRect.height;
+
+            sf::RectangleShape front({m_loadingBar->m_frontRect.width, m_loadingBar->m_frontRect.height});
+            front.setPosition(frontPosition);
+            front.setFillColor(m_foregroundColor);
+            target.draw(front, states);
+        }
+
+        // Draw the text
+        if (m_loadingBar->m_textBack.getText() != "")
+        {
+            if (m_loadingBar->m_textBack.getTextColor() == m_loadingBar->m_textFront.getTextColor())
+                target.draw(m_loadingBar->m_textBack, states);
+            else
+            {
+                // Get the old clipping area
+                GLint scissor[4];
+                glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+                // Calculate the scale factor of the view
+                const sf::View& view = target.getView();
+                float scaleViewX = target.getSize().x / view.getSize().x;
+                float scaleViewY = target.getSize().y / view.getSize().y;
+
+                sf::FloatRect backRect;
+                sf::FloatRect frontRect;
+                frontRect.width = m_loadingBar->m_frontRect.width;
+                frontRect.height = m_loadingBar->m_frontRect.height;
+
+                switch (m_loadingBar->getFillDirection())
+                {
+                    case LoadingBar::FillDirection::LeftToRight:
+                    {
+                        frontRect.left = m_loadingBar->getAbsolutePosition().x;
+                        frontRect.top = m_loadingBar->getAbsolutePosition().y;
+
+                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        {
+                            frontRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
+                            frontRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+
+                            backRect.width = m_textureFront.getSize().x - frontRect.width;
+                        }
+                        else
+                            backRect.width = m_loadingBar->getSize().x - frontRect.width;
+
+                        backRect.left = frontRect.left + frontRect.width;
+                        backRect.top = frontRect.top;
+                        backRect.height = frontRect.height;
+                        break;
+                    }
+
+                    case LoadingBar::FillDirection::RightToLeft:
+                    {
+                        backRect.left = m_loadingBar->getAbsolutePosition().x;
+                        backRect.top = m_loadingBar->getAbsolutePosition().y;
+
+                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        {
+                            backRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
+                            backRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+
+                            backRect.width = m_textureFront.getSize().x - frontRect.width;
+                            backRect.height = m_textureFront.getSize().y;
+                        }
+                        else
+                        {
+                            backRect.width = m_loadingBar->getSize().x - frontRect.width;
+                            backRect.height = m_loadingBar->getSize().y;
+                        }
+
+                        frontRect.left = backRect.left + backRect.width;
+                        frontRect.top = backRect.top;
+                        frontRect.height = backRect.height;
+                        break;
+                    }
+
+                    case LoadingBar::FillDirection::TopToBottom:
+                    {
+                        frontRect.left = m_loadingBar->getAbsolutePosition().x;
+                        frontRect.top = m_loadingBar->getAbsolutePosition().y;
+
+                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        {
+                            frontRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
+                            frontRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+
+                            backRect.height = m_textureFront.getSize().y - frontRect.height;
+                        }
+                        else
+                            backRect.height = m_loadingBar->getSize().y - frontRect.height;
+
+                        backRect.left = frontRect.left;
+                        backRect.top = frontRect.top + frontRect.height;
+                        backRect.width = frontRect.width;
+                        break;
+                    }
+
+                    case LoadingBar::FillDirection::BottomToTop:
+                    {
+                        backRect.left = m_loadingBar->getAbsolutePosition().x;
+                        backRect.top = m_loadingBar->getAbsolutePosition().y;
+
+                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        {
+                            backRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
+                            backRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+
+                            backRect.width = m_textureFront.getSize().x;
+                            backRect.height = m_textureFront.getSize().y - frontRect.height;
+                        }
+                        else
+                        {
+                            backRect.width = m_loadingBar->getSize().x;
+                            backRect.height = m_loadingBar->getSize().y - frontRect.height;
+                        }
+
+                        frontRect.left = backRect.left;
+                        frontRect.top = backRect.top + backRect.height;
+                        frontRect.width = backRect.width;
+                        break;
+                    }
+                }
+
+                // Calculate the clipping area for the back text
+                GLint scissorLeft = std::max(static_cast<GLint>(backRect.left * scaleViewX), scissor[0]);
+                GLint scissorTop = std::max(static_cast<GLint>(backRect.top * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                GLint scissorRight = std::min(static_cast<GLint>((backRect.left + backRect.width) * scaleViewX), scissor[0] + scissor[2]);
+                GLint scissorBottom = std::min(static_cast<GLint>((backRect.top + backRect.height) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+                if (scissorRight < scissorLeft)
+                    scissorRight = scissorLeft;
+                else if (scissorBottom < scissorTop)
+                    scissorTop = scissorBottom;
+
+                // Set the clipping area
+                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+
+                // Draw the back text
+                target.draw(m_loadingBar->m_textBack, states);
+
+                // Calculate the clipping area for the front text
+                scissorLeft = std::max(static_cast<GLint>(frontRect.left * scaleViewX), scissor[0]);
+                scissorTop = std::max(static_cast<GLint>(frontRect.top * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+                scissorRight = std::min(static_cast<GLint>((frontRect.left + frontRect.width) * scaleViewX), scissor[0] + scissor[2]);
+                scissorBottom = std::min(static_cast<GLint>((frontRect.top + frontRect.height) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+                if (scissorRight < scissorLeft)
+                    scissorRight = scissorLeft;
+                else if (scissorBottom < scissorTop)
+                    scissorTop = scissorBottom;
+
+                // Set the clipping area
+                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+
+                // Draw the front text
+                target.draw(m_loadingBar->m_textFront, states);
+
+                // Reset the old clipping area
+                glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+            }
+        }
+
+        // Draw the borders around the loading bar
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_loadingBar->getPosition();
+            sf::Vector2f size = m_loadingBar->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<WidgetRenderer> LoadingBarRenderer::clone(Widget* widget)
+    {
+        auto renderer = std::shared_ptr<LoadingBarRenderer>(new LoadingBarRenderer{*this});
+        renderer->m_loadingBar = static_cast<LoadingBar*>(widget);
+        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

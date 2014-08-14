@@ -84,6 +84,7 @@ namespace tgui
     void Transformable::setSize(const Layout& size)
     {
         m_size = size;
+        m_size.recalculateValue();
 
         if (m_size.getValue().x < 0)
         {
@@ -120,8 +121,8 @@ namespace tgui
     {
         if (m_transformNeedUpdate)
         {
-            m_transform = sf::Transform( 1, 0, m_position.getValue().x,
-                                         0, 1, m_position.getValue().y,
+            m_transform = sf::Transform( 1, 0, getPosition().x,
+                                         0, 1, getPosition().y,
                                          0.f, 0.f, 1.f);
 
             m_transformNeedUpdate = false;
@@ -141,11 +142,11 @@ namespace tgui
         }
         else
         {
-            sf::Vector2f oldPosition = m_position.getValue();
+            sf::Vector2f oldPosition = getPosition();
 
             m_position.recalculateValue();
 
-            if (oldPosition != m_position.getValue())
+            if (oldPosition != getPosition())
                 setPosition(m_position);
         }
     }
@@ -161,11 +162,11 @@ namespace tgui
         }
         else
         {
-            sf::Vector2f oldSize = m_size.getValue();
+            sf::Vector2f oldSize = getSize();
 
             m_size.recalculateValue();
 
-            if (oldSize != m_size.getValue())
+            if (oldSize != getSize())
                 setSize(m_size);
         }
     }

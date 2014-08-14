@@ -29,8 +29,6 @@
 #include <memory>
 #include <list>
 
-/// TODO: Add documentation.
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -61,7 +59,6 @@ namespace tgui
         void sizeChanged(std::shared_ptr<Widget> widget);
 
     private:
-        /// Use std::shared_ptr<Widget> when the changes have been made?
         std::map<Widget*, std::map<LayoutChangeTrigger, std::map<const Layout*, std::function<void()>>>> m_callbacks;
     };
 
@@ -165,6 +162,11 @@ namespace tgui
 
         LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector);
 
+        LayoutGroup(const LayoutGroup&) = delete;
+        LayoutGroup& operator=(const LayoutGroup&) = delete;
+
+        LayoutGroup(LayoutGroup&& group);
+
         LayoutGroup clone(Layout1d& layout) const;
 
         void determineActiveLayout();
@@ -174,11 +176,17 @@ namespace tgui
             return *m_active;
         }
 
+        Layout1d& getNonActiveLayout() const
+        {
+            return *m_nonActive;
+        }
+
     private:
         Layout1d& m_first;
         Layout1d m_second;
 
         Layout1d* m_active = nullptr;
+        Layout1d* m_nonActive = nullptr;
 
         Selector m_selector;
     };

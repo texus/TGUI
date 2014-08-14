@@ -33,9 +33,11 @@
 
 namespace tgui
 {
+    class ComboBoxRenderer;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API ComboBox : public Widget, public WidgetBorders
+    class TGUI_API ComboBox : public Widget
     {
     public:
 
@@ -78,13 +80,16 @@ namespace tgui
         /// @brief Create the combo box
         ///
         /// @param configFileFilename  Filename of the config file.
+        /// @param section             The section in the theme file to read.
         ///
-        /// @throw Exception when the config file couldn't be opened.
-        /// @throw Exception when the config file didn't contain a "ComboBox" section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, couldn't be loaded.
+        /// @throw Exception when the config file could not be opened.
+        /// @throw Exception when the config file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ComboBox::Ptr create(const std::string& configFileFilename);
+        static ComboBox::Ptr create(const std::string& configFileFilename = "", const std::string& section = "ComboBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,15 +107,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the config file that was used to load the widget.
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @return Filename of loaded config file.
-        ///         Empty string when no config file was loaded yet.
+        /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::string& getLoadedConfigFile() const
+        std::shared_ptr<ComboBoxRenderer> getRenderer() const
         {
-            return m_loadedConfigFile;
+            return std::static_pointer_cast<ComboBoxRenderer>(m_renderer);
         }
 
 
@@ -150,10 +154,7 @@ namespace tgui
         /// @return The full size of the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getFullSize() const override
-        {
-            return {getSize().x + m_borders.left + m_borders.right, getSize().y + m_borders.top + m_borders.bottom};
-        }
+        virtual sf::Vector2f getFullSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,174 +186,6 @@ namespace tgui
         {
             return m_nrOfItemsToDisplay;
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the colors that are used in the combo box.
-        ///
-        /// @param backgroundColor          The color of the background of the combo box
-        /// @param textColor                The color of the text
-        /// @param selectedBackgroundColor  The color of the background of the selected item in the list
-        /// @param selectedTextColor        The color of the text when it is selected in the list
-        /// @param borderColor              The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeColors(const sf::Color& backgroundColor         = sf::Color::White,
-                          const sf::Color& textColor               = sf::Color::Black,
-                          const sf::Color& selectedBackgroundColor = sf::Color(50, 100, 200),
-                          const sf::Color& selectedTextColor       = sf::Color::White,
-                          const sf::Color& borderColor             = sf::Color::Black);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the combo box.
-        ///
-        /// @param backgroundColor  The color of the background of the combo box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_listBox->setBackgroundColor(backgroundColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the combo box.
-        ///
-        /// @param textColor  The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& textColor);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the combo box.
-        ///
-        /// @param selectedBackgroundColor  The color of the background of the selected item in the list
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
-        {
-            m_listBox->setSelectedBackgroundColor(selectedBackgroundColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the combo box.
-        ///
-        /// @param selectedTextColor  The color of the text when it is selected in the list
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedTextColor(const sf::Color& selectedTextColor)
-        {
-            m_listBox->setSelectedTextColor(selectedTextColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color text that will be used inside the combo box.
-        ///
-        /// @param borderColor  The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor)
-        {
-            m_listBox->setBorderColor(borderColor);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color that is currently being used inside the combo box.
-        ///
-        /// @return The color of the background of the combo box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBackgroundColor() const
-        {
-            return m_listBox->getBackgroundColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color that is currently being used inside the combo box.
-        ///
-        /// @return The color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getTextColor() const
-        {
-            return m_text.getTextColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the background color of the selected text that is currently being used inside the combo box.
-        ///
-        /// @return  The color of the background of the selected item in the list
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedBackgroundColor() const
-        {
-            return m_listBox->getSelectedBackgroundColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text color of the selected text that is currently being used inside the combo box.
-        ///
-        /// @return The color of the text when it is selected in the list
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getSelectedTextColor() const
-        {
-            return m_listBox->getSelectedTextColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the border color that is currently being used inside the combo box.
-        ///
-        /// @return The color of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getBorderColor() const
-        {
-            return m_listBox->getBorderColor();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text font.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text font.
-        ///
-        /// @return  Pointer to the font that is currently being used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getTextFont() const
-        {
-            return m_listBox->getTextFont();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders.
-        ///
-        /// @param borders  The size of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setBorders(const Borders& borders) override;
-        using WidgetBorders::setBorders;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,7 +267,7 @@ namespace tgui
         ///
         /// @return
         ///        - true when the item was removed
-        ///        - false when the name didn't match any item
+        ///        - false when the name did not match any item
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeItem(const sf::String& itemName);
@@ -546,20 +379,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar that is displayed next to the list.
-        ///
-        /// @param scrollbarConfigFileFilename  Filename of the config file.
-        ///                                     The config file must contain a Scrollbar section with the needed information.
-        ///
-        /// @return
-        ///        - true when the scrollbar was successfully loaded
-        ///        - false when the loading of the scrollbar failed
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setScrollbar(const std::string& scrollbarConfigFileFilename);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes the scrollbar.
         ///
         /// When there are too many items to fit in the list then the items will be removed.
@@ -660,6 +479,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Initialize the internal list box
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void initListBox();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Called by the internal ListBox when a different item is selected.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void newItemSelectedCallbackFunction();
@@ -685,8 +510,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum ComboBoxCallbacks
         {
-            ItemSelected = WidgetCallbacksCount * 1,             ///< A new item was selected
-            AllComboBoxCallbacks = WidgetCallbacksCount * 2 - 1, ///< All triggers defined in ComboBox and its base classes
+            ItemSelected = WidgetCallbacksCount * 1,  ///< A new item was selected
             ComboBoxCallbacksCount = WidgetCallbacksCount * 2
         };
 
@@ -694,24 +518,341 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::string m_loadedConfigFile;
-
-        bool m_separateHoverImage = false;
-
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
         unsigned int m_nrOfItemsToDisplay = 0;
 
         // Internally a list box is used to store all items
-        ListBox::Ptr m_listBox = nullptr;
-
-        // The textures for the arrow image
-        Texture m_textureArrowUpNormal;
-        Texture m_textureArrowUpHover;
-        Texture m_textureArrowDownNormal;
-        Texture m_textureArrowDownHover;
+        ListBox::Ptr m_listBox = ListBox::create();
 
         Label m_text;
+
+        friend class ComboBoxRenderer;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class ComboBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param comboBox  The combo box that is connected to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ComboBoxRenderer(ComboBox* comboBox) : m_comboBox{comboBox} {}
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
+        ///
+        /// This function should only be used when you don't know the type of the widget.
+        /// Otherwise you can make a direct function call to make the wanted change.
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property
+        /// @param rootPath  Path that should be placed in front of any resource filename
+        ///
+        /// @throw Exception when the property doesn't exist for this widget.
+        /// @throw Exception when the value is invalid for this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath()) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background image
+        ///
+        /// When this image is set, the background color property will be ignored.
+        ///
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundImage(const std::string& filename,
+                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the arrow up image
+        ///
+        /// When this image and the down image are set, the arrow color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpNormalImage(const std::string& filename,
+                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the arrow down image
+        ///
+        /// When this image and the up image are set, the arrow color properties will be ignored.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownNormalImage(const std::string& filename,
+                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                     bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the arrow up image for when the mouse is on top of the combo box
+        ///
+        /// This image is ignored when the up and down normal images are not set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpHoverImage(const std::string& filename,
+                                  const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                  const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                  bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the arrow down image for when the mouse is on top of the combo box
+        ///
+        /// This image is ignored when the up and down normal images are not set.
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /// @param filename   Filename of the image to load.
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownHoverImage(const std::string& filename,
+                                    const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                                    const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                                    bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color that will be used inside the combo box.
+        ///
+        /// @param backgroundColor  The color of the background of the combo box
+        ///
+        /// This color will be ignored when a background image was set.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundColor(const sf::Color& backgroundColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the arrow that will be used inside the combo box.
+        ///
+        /// @param color  The color of the arrow background of the combo box
+        ///
+        /// This will overwrite the color in both normal and hover states.
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /// @see setArrowBackgroundColorNormal
+        /// @see setArrowBackgroundColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the arrow when the mouse is not on top of the combo box
+        ///
+        /// @param color  The color of the arrow background in normal state
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the background color of the arrow when the mouse is standing on top of the combo box
+        ///
+        /// @param color  The color of the arrow background in hover state
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowBackgroundColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color of the arrow that will be used inside the combo box.
+        ///
+        /// @param color  The color of the arrow of the combo box
+        ///
+        /// This will overwrite the color in both normal and hover states.
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /// @see setArrowColorNormal
+        /// @see setArrowColorHover
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color of the arrow when the mouse is not on top of the combo box
+        ///
+        /// @param color  The color of the arrow in normal state
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorNormal(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the color of the arrow when the mouse is standing on top of the combo box
+        ///
+        /// @param color  The color of the arrow in hover state
+        ///
+        /// This color will be ignored when a up and down image were loaded for the normal state.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the text color that will be used inside the combo box.
+        ///
+        /// @param textColor  The color of the text
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextColor(const sf::Color& textColor);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the border color text that will be used inside the combo box.
+        ///
+        /// @param borderColor  The color of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorderColor(const sf::Color& borderColor);
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the items.
+        ///
+        /// When you don't call this function then the global font will be use.
+        /// This global font can be changed with the setGlobalFont function from the parent.
+        ///
+        /// @param font  The new font.
+        ///
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextFont(const sf::Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the borders.
+        ///
+        /// @param borders  The size of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setBorders(const Borders& borders) override;
+        using WidgetBorders::setBorders;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the padding of the list box.
+        ///
+        /// This padding will be scaled together with the background image.
+        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
+        ///
+        /// @param padding  The padding width and height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setPadding(const Padding& padding) override;
+        using WidgetPadding::setPadding;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer of the list box
+        ///
+        /// @return The list box used to display all the items
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<ListBoxRenderer> getListBox() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draws the widget on the render target.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the padding, which is possibly scaled with the background image.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Padding getScaledPadding() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the renderer
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ComboBoxRenderer(const ComboBoxRenderer&) = default;
+        ComboBoxRenderer& operator=(const ComboBoxRenderer&) = delete;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        ComboBox* m_comboBox;
+
+        Texture   m_backgroundTexture;
+
+        Texture   m_textureArrowUpNormal;
+        Texture   m_textureArrowUpHover;
+        Texture   m_textureArrowDownNormal;
+        Texture   m_textureArrowDownHover;
+
+        sf::Color m_arrowBackgroundColorNormal = {245, 245, 245};
+        sf::Color m_arrowBackgroundColorHover  = {255, 255, 255};
+        sf::Color m_arrowColorNormal           = { 60,  60,  60};
+        sf::Color m_arrowColorHover            = {  0,   0,   0};
+
+        friend class ComboBox;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
