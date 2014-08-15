@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>CodeBlocks</title>
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>CodeBlocks (precompiled libs)</h2>
     <div>
         <p>The precompiled libraries from the download page include the SFML libraries. You must use the libraries included in the download! If you really need to use your own SFML version, then you will have to use <a href="../codeblocks/">CMake</a> to recompile TGUI.</p>
@@ -56,7 +54,8 @@
         <p>You should now be able to use TGUI.</p>
 
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

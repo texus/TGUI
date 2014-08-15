@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Config Files</title>
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Config files</h2>
 
     <p>Config files are needed to load widgets. TGUI comes with the default Black theme which can be used until you have created your own theme.</p>
@@ -26,7 +24,7 @@
 
     <p>When it says “SplitImage available” between brackets, it means that the xxx option can be replaced by xxx_L, xxx_M and xxx_R. In this case, only the middle image will be repeated horizontally, while the left and right parts keep their ratio.</p>
 
-<p>
+<div>
 <b>Button</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -36,7 +34,7 @@
   <li>DownImage (SplitImage available)</li>
   <li>FocusedImage (SplitImage available)</li>
 </ul>
-
+<br>
 <b>ChatBox</b>
 <ul>
   <li>BackgroundColor</li>
@@ -44,7 +42,7 @@
   <li>Borders</li>
   <li>Scrollbar</li>
 </ul>
-
+<br>
 <b>CheckBox</b>
 <ul>
   <li>TextColor</li>
@@ -53,7 +51,7 @@
   <li>HoverImage</li>
   <li>FocusedImage</li>
 </ul>
-
+<br>
 <b>ChildWindow</b>
 <ul>
   <li>BackgroundColor</li>
@@ -67,7 +65,7 @@
   <li>Borders</li>
   <li>DistanceToSide</li>
 </ul>
-
+<br>
 <b>ComboBox</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -83,7 +81,7 @@
   <li>ArrowDownHoverImage</li>
   <li>Scrollbar</li>
 </ul>
-
+<br>
 <b>EditBox</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -97,12 +95,12 @@
   <li>HoverImage (SplitImage available)</li>
   <li>FocusedImage (SplitImage available)</li>
 </ul>
-
+<br>
 <b>Label</b>
 <ul>
   <li>TextColor</li>
 </ul>
-
+<br>
 <b>ListBox</b>
 <ul>
   <li>BackgroundColor</li>
@@ -113,13 +111,13 @@
   <li>Borders</li>
   <li>Scrollbar</li>
 </ul>
-
+<br>
 <b>LoadingBar</b>
 <ul>
   <li>BackImage (SplitImage available)</li>
   <li>FrontImage (SplitImage available)</li>
 </ul>
-
+<br>
 <b>MenuBar</b>
 <ul>
   <li>BackgroundColor</li>
@@ -128,14 +126,14 @@
   <li>SelectedTextColor</li>
   <li>DistanceToSide</li>
 </ul>
-
+<br>
 <b>MessageBox</b>
 <ul>
   <li>TextColor</li>
   <li>ChildWindow</li>
   <li>Button</li>
 </ul>
-
+<br>
 <b>RadioButton</b>
 <ul>
   <li>TextColor</li>
@@ -144,7 +142,7 @@
   <li>HoverImage</li>
   <li>FocusedImage</li>
 </ul>
-
+<br>
 <b>Scrollbar</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -158,7 +156,7 @@
   <li>ArrowDownNormalImage</li>
   <li>ArrowDownHoverImage</li>
 </ul>
-
+<br>
 <b>Slider</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -168,7 +166,7 @@
   <li>ThumbNormalImage</li>
   <li>ThumbHoverImage</li>
 </ul>
-
+<br>
 <b>Slider2d</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -177,7 +175,7 @@
   <li>ThumbNormalImage</li>
   <li>ThumbHoverImage</li>
 </ul>
-
+<br>
 <b>SpinButton</b>
 <ul>
   <li>SeparateHoverImage</li>
@@ -186,7 +184,7 @@
   <li>ArrowDownNormalImage</li>
   <li>ArrowDownHoverImage</li>
 </ul>
-
+<br>
 <b>Tab</b>
 <ul>
   <li>SeparateSelectedImage</li>
@@ -195,7 +193,7 @@
   <li>NormalImage (SplitImage available)</li>
   <li>SelectedImage (SplitImage available)</li>
 </ul>
-
+<br>
 <b>TextBox</b>
 <ul>
   <li>BackgroundColor</li>
@@ -207,8 +205,10 @@
   <li>Borders</li>
   <li>Scrollbar</li>
 </ul>
-</p>
+<br>
+</div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

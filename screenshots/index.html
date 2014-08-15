@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Sceenshots</title>
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Screenshots</h2>
 
     <div>
@@ -50,7 +48,8 @@
         <p class="SmallBottomMargin">Objects can now be transparent!</p>
         <a class="img" href="{{site.url}}/resources/Screenshot_v0.6_Transparency.jpg"><img alt="Screenshot v0.6 Transparency" src="{{site.url}}/resources/Screenshot_v0.6_Transparency.jpg" width="480" height="378" /></a>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

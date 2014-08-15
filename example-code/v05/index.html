@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI v0.5 example code</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>TGUI v0.5 example code</h2>
 
     <a class="img" href="{{site.url}}/resources/BasicObjects.jpg"><img alt="TGUI Login Screen Example" src="{{site.url}}/resources/BasicObjects.jpg" width="640" height="480" /></a>
@@ -247,7 +243,8 @@ int main()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 {% endhighlight %}
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

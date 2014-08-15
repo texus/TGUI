@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI v0.5 Tutorials</title>
 
@@ -11,12 +11,10 @@
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>TGUI v0.5 Tutorials</h2>
 
     <p><span class="Red">TGUI v0.5 is depreciated. You should use TGUI v0.6 instead.</span></p>
@@ -44,7 +42,8 @@
     <div>
         <p>Also make sure to check the <a href="{{site.url}}/documentation/v0.5/">documentation</a> and <a href="{{site.url}}/example-code/v05/">example code</a>.</p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

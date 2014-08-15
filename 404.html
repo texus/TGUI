@@ -3,24 +3,23 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Not Found</title>
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <div>
         <h2>Page not found</h2>
 
         <p>Please return to the <a href="{{site.url}}/">home page</a>.</p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

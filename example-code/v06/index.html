@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI v0.6 example code</title>
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>TGUI v0.6 Example code</h2>
 
     <div>
@@ -26,7 +24,8 @@
             <li><a href="full-example/">Full example</a></li>
         </ol>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

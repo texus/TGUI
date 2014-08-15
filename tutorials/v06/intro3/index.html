@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Handling callbacks</h2>
 
     <p>In part 2 of this tutorial, you have seen how to create a login screen. It all looks fine but there is one important thing missing: the callbacks.</p>
@@ -169,7 +165,8 @@ int main()
     </p>
 
     <p>Previous: <a href="../intro2/">Working with widgets</a></p>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

@@ -3,19 +3,40 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
+
+<style>
+  span.Date {
+    color: #9e9e9e;
+    font-size: 0.7em;
+  }
+}
+</style>
 
     <title>Changelog</title>
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Changelog</h2>
+
+    <div>
+        <h3>TGUI v0.6.5 <span class="Date">(13 August 2014)</span></h3>
+        <ul>
+            <li>Added FindTGUI.cmake</li>
+            <li>Added recursive search with widget name</li>
+            <li>Text can now be selected with ctrl+A</li>
+            <li>Lines in ChatBox can now start from bottom</li>
+            <li>Worked around bug in SFML 2.1 in Label</li>
+            <li>Fixed bug in ChatBox with displaying some lines</li>
+            <li>Fixed panel keeping hover state of widget</li>
+            <li>Fixed potential crash when removing a widget</li>
+            <li>Fixed bug with saving and loading in form builder</li>
+        </ul>
+    </div>
 
     <div>
         <h3>TGUI v0.6.4 <span class="Date">(28 June 2014)</span></h3>
@@ -257,7 +278,8 @@
             <li>First public release.</li>
         </ul>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

@@ -3,24 +3,28 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI</title>
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
+    <h2>Texus' Graphical User Interface</h2>
+    
+    <p style="color:blue">Please take a few seconds to let me know which compiler you are using in <a href="https://apps.facebook.com/my-polls/tgui-compiler-usage-17072014">this poll</a>.</p>
 
-    {% include header.ext %}
+    <div>
+        <p>TGUI is an easy to use cross-platform GUI based on SFML2 and written in C++.<br>
+           The .Net port (tested with C# and VB.Net) can be found on <a href="http://tgui.net">tgui.net.</a>
+        </p>
+    </div>
 
-    {% include navigation.ext %}
-
-    <div class="SmallerMargin">
-        <p>TGUI is an easy to use cross-platform GUI based on SFML2 and written in C++.<br />
-           The .Net version (tested with C# and VB.Net) can be found on <a href="http://tgui.net">tgui.net</a></p>
-
-        <p>
-        Features:
+    <div>
+        <p class="SmallBottomMargin">Features:</p>
         <ul>
             <li>Extremely <b>easy to use</b>: only a few lines of code and you have a fully working edit box.</li>
             <li><b>Cross-platform</b>: Windows, Linux and Mac OS X.</li>
@@ -31,21 +35,32 @@
             <li>Just like SFML, it is licensed under the zlib/libpng license.</li>
             <li>TGUI provides an easy to use <b>drag-and-drop form builder</b>.</li>
         </ul>
-        </p>
     </div>
-
+    
     <div>
         <p class="SmallBottomMargin">Screenshots:</p>
-        <a class="img Thumbnail" href="resources/Screenshot_v0.4_Black.png"><img alt="Screenshot TGUI v0.4 Black style" src="resources/Screenshot_v0.4_Black_small.jpg" width="240" height="188" /></a>
-        <a class="img Thumbnail" href="resources/Screenshot_v0.4_BabyBlue.png"><img alt="Screenshot TGUI v0.4 BabyBlue style" src="resources/Screenshot_v0.4_BabyBlue_small.jpg" width="240" height="188" /></a>
-        <a class="img Thumbnail" href="resources/Screenshot_FormBuilder_v0.2.png"><img alt="Screenshot TGUI v0.4 BabyBlue style" src="resources/Screenshot_FormBuilder_v0.2_small.jpg" width="360" height="182" /></a>
+        <a class="img SmallBottomMargin" href="resources/Screenshot_v0.4_Black.png"><img alt="Screenshot TGUI v0.4 Black style" src="resources/Screenshot_v0.4_Black_small.jpg" width="240" height="188" /></a>
+        <a class="img SmallBottomMargin" href="resources/Screenshot_v0.4_BabyBlue.png"><img alt="Screenshot TGUI v0.4 BabyBlue style" src="resources/Screenshot_v0.4_BabyBlue_small.jpg" width="240" height="188" /></a>
+        <a class="img SmallBottomMargin" href="resources/Screenshot_FormBuilder_v0.2.png"><img alt="Screenshot TGUI v0.4 BabyBlue style" src="resources/Screenshot_FormBuilder_v0.2_small.jpg" width="360" height="182" /></a>
         <p class="SmallText SmallBottomMargin"><a href="screenshots/">More screenshots</a></p>
     </div>
-
-    <div>
-        <p>For more information about the project you can contact me on <a href="mailto:support@tgui.eu">support@tgui.eu</a>.</p>
-    </div>
-
-    {% include footer.ext %}
 </div>
+
+{% include footer.ext %}
+</div>
+
+<!-- Start of Browser-Update code -->
+<script type="text/javascript">
+var $buoop = {};
+$buoop.ol = window.onload;
+window.onload=function(){
+ try {if ($buoop.ol) $buoop.ol();}catch (e) {}
+ var e = document.createElement("script");
+ e.setAttribute("type", "text/javascript");
+ e.setAttribute("src", "//browser-update.org/update.js");
+ document.body.appendChild(e);
+}
+</script>
+<!-- End of Browser-Update code -->
+
 </body>

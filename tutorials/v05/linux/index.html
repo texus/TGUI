@@ -3,21 +3,18 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Linux</title>
 
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
     <link rel="canonical" href="{{site.url}}/tutorials/v06/linux/" />
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Linux</h2>
     <div>
         <h3>Preparation</h3>
@@ -77,7 +74,8 @@ sudo make install -j6
            One of the things you could do is add “/usr/local/lib/” (without the quotes) to /etc/ld.so.conf and then run “sudo ldconfig” again.
         </p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

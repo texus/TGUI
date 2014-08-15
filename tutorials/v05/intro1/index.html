@@ -4,21 +4,18 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
 
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
     <link rel="canonical" href="{{site.url}}/tutorials/v06/intro1/" />
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Starting with TGUI v0.5</h2>
     <div>
     <p class="SmallBottomMargin">There are five things you need to change in your code to get tgui working.<br />
@@ -134,7 +131,8 @@ int main()
 
     <p>Next: <a href="../intro2/">Working with objects</a></p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

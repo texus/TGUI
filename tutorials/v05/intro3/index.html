@@ -4,21 +4,18 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
 
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
     <link rel="canonical" href="{{site.url}}/tutorials/v06/intro3/" />
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Handling callbacks</h2>
 
     <div>
@@ -177,7 +174,8 @@ int main()
 
     <p>Previous: <a href="../intro2/">Working with objects</a></p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

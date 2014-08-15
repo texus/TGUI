@@ -4,21 +4,18 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
 
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
     <link rel="canonical" href="{{site.url}}/tutorials/v06/intro2/" />
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Working with objects</h2>
 
     <div>
@@ -103,7 +100,8 @@ void loadObjects( tgui::Window& window )
     <p>Previous: <a href="../intro1/">Starting with TGUI</a><br />
        Next: <a href="../intro3/">Handling callbacks</a></p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

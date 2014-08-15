@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI Privacy Policy</title>
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Privacy Policy</h2>
 
     <div>
@@ -47,7 +45,8 @@
        However, because the site is open-source and hosted on Github Pages, you can follow all changes on github.
     </p>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

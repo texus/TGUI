@@ -3,30 +3,29 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI v0.7 example code</title>
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>TGUI v0.7 Example code</h2>
 
     <div>
         <p>Click on the example code that you would like to view.</p>
 
-        <ol>
+        <ul>
             <li><a href="scalable-login-screen/">Scalable login screen</a></li>
             <li><a href="changing-mouse-cursor/">Changing mouse cursor on hover</a></li>
             <li><a href="simple-console/">Simple console</a></li>
         </ol>
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

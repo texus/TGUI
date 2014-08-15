@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>TGUI v0.6 example code</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>Loading from file</h2>
 
 {% highlight c++ %}
@@ -59,7 +55,8 @@ int main()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 {% endhighlight %}
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

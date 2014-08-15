@@ -3,20 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Panel</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Panel</h2>
 
     <div>
@@ -80,7 +76,8 @@ form2->setBackgroundColor(sf::Color::Transparent);
 form2->hide();
 {% endhighlight %}
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

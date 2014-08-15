@@ -3,18 +3,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Visual Studio</title>
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Visual Studio</h2>
     <div>
         <p><span class="Red">TGUI requires a compiler that supports c++11. This means that you need at least the VC++10 compiler (Visual Studio 2010).</span></p>
@@ -122,7 +120,8 @@
         <p>You should now be able to use TGUI.</p>
 
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

@@ -1,35 +1,12 @@
-<p class="SmallText SmallBottomMargin"><a href="{{site.url}}/privacy-policy/">Privacy Policy</a></p>
-
-<!-- Quantcast Tag -->
-<script type="text/javascript">
-var _qevents = _qevents || [];
-
-(function() {
-var elem = document.createElement('script');
-elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
-elem.async = true;
-elem.type = "text/javascript";
-var scpt = document.getElementsByTagName('script')[0];
-scpt.parentNode.insertBefore(elem, scpt);
-})();
-
-_qevents.push({
-qacct:"p-UhbfNkfHNk77M"
-});
-</script>
-
-<noscript>
-<div style="display:none;">
-<img src="//pixel.quantserve.com/pixel/p-UhbfNkfHNk77M.gif" border="0" height="1" width="1" alt="Quantcast"/>
+<div id="footer" class="NoMargin clear">
+  <p><a href="{{site.url}}/privacy-policy/">Privacy Policy</a></p>
 </div>
-</noscript>
-<!-- End Quantcast tag -->
 
 <!-- Start of StatCounter Code for Default Guide -->
 <script type="text/javascript">
-var sc_project=9660579; 
+var sc_project=9890085; 
 var sc_invisible=1; 
-var sc_security="e3bbd1b5"; 
+var sc_security="b7830268"; 
 var scJsHost = (("https:" == document.location.protocol) ?
 "https://secure." : "http://www.");
 document.write("<sc"+"ript type='text/javascript' src='" +
@@ -37,7 +14,8 @@ scJsHost+
 "statcounter.com/counter/counter.js'></"+"script>");
 </script>
 <noscript><div class="statcounter"><a title="click tracking"
-href="http://statcounter.com/" target="_blank" rel="nofollow"><img
+href="http://statcounter.com/" target="_blank"><img
 class="statcounter"
-src="http://c.statcounter.com/9660579/0/e3bbd1b5/1/"></a></div></noscript>
+src="http://c.statcounter.com/9890085/0/b7830268/0/"
+alt="click tracking"></a></div></noscript>
 <!-- End of StatCounter Code for Default Guide -->

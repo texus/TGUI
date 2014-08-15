@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Starting with TGUI v0.6</h2>
     <p class="SmallBottomMargin">There are five things you need to change in your code to get tgui working.<br />
        The first thing to do is including it. TGUI will include “SFML/Graphics.hpp” for you.
@@ -88,7 +84,8 @@ int main()
 {% endhighlight %}
 
     <p>Next: <a href="../intro2/">Working with widgets</a></p>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

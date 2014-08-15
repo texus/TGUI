@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>CodeBlocks</title>
 
@@ -11,12 +11,10 @@
 </head>
 
 <body>
-<div id="Background">
-
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+    
+<div id="contents" class="NoMargin">
     <h2>CodeBlocks</h2>
     <div>
         <h3>CMake</h3>
@@ -116,7 +114,8 @@
         </p>
 
     </div>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

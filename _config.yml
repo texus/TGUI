@@ -1,3 +1,5 @@
-safe: true
 lsi: false
 highlighter: pygments
+
+gems:
+  - jekyll-sitemap

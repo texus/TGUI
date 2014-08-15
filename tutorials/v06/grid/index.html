@@ -4,22 +4,23 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Grid</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Grid</h2>
     <p>Grid allows you to automatically position your widgets.</p>
+
+    <p class="SmallBottomMargin">You create the grid like you would create any other widget. But unlike most widgets there is no load function, since you don't have to load anything.</p>
+{% highlight c++ %}
+tgui::Grid::Ptr grid(gui);
+{% endhighlight %}
 
     <p class="SmallBottomMargin">Adding widgets goes in two fases. The first one is creating the widget, just like you would do in the Gui, Panel, ChildWindow, ...
     </p>
@@ -43,7 +44,8 @@ grid->updateWidgets();
 {% highlight c++ %}
 grid->setSize(800, 600);
 {% endhighlight %}
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

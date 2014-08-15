@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Tabs</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Tabs</h2>
     <p>There is no real tutorial yet about the Tab widget, but below you can find some code to understand how to use it.</p>
 
@@ -100,7 +96,8 @@ int main()
     return 0;
 }
 {% endhighlight %}
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>

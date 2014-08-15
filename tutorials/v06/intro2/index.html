@@ -4,20 +4,16 @@
 <!DOCTYPE html>
 
 <head>
-    {% include head.ext %}
+{% include head.ext %}
 
     <title>Introduction tutorial</title>
-
-    <link rel="stylesheet" type="text/css" href="{{site.url}}/highlight.css">
 </head>
 
 <body>
-<div id="Background">
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
 
-    {% include header.ext %}
-
-    {% include navigation.ext %}
-
+<div id="contents" class="NoMargin">
     <h2>Working with objects</h2>
     <p class="SmallBottomMargin">In this tutorial, you will learn how to make a login screen like in the screenshot below.</p>
     <a class="img" href="{{site.url}}/resources/Login screen.png"><img alt="TGUI Login Screen Example" src="{{site.url}}/resources/Login screen.png" width="640" height="480" /></a>
@@ -97,7 +93,8 @@ void loadWidgets( tgui::Gui& gui )
 
     <p>Previous: <a href="../intro1/">Starting with TGUI</a><br />
        Next: <a href="../intro3/">Handling callbacks</a></p>
+</div>
 
-    {% include footer.ext %}
+{% include footer.ext %}
 </div>
 </body>
