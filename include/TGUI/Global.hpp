@@ -44,9 +44,9 @@
     #define TGUI_OUTPUT(x)   sf::err() << x << std::endl;
 #endif
 
-#define TGUI_MINIMUM(x, y)   (x < y) ? x : y
+#define TGUI_MINIMUM(x, y)   ((x < y) ? x : y)
 
-#define TGUI_MAXIMUM(x, y)   (x > y) ? x : y
+#define TGUI_MAXIMUM(x, y)   ((x > y) ? x : y)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
