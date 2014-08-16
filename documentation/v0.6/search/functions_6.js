@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['get',['get',['../classtgui_1_1Clipboard.html#a77e25ef91b6b300126d31986537c2fb8',1,'tgui::Clipboard::get()'],['../classtgui_1_1Container.html#a2f26471c20c51fb06592d7c8c15adedb',1,'tgui::Container::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Container.html#a1c1ec2fc493c9ee4bcffec3ff14b00bc',1,'tgui::Container::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Gui.html#a8526c5d4cc999ffaa8190cea8dd36d6e',1,'tgui::Gui::get(const sf::String &amp;widgetName) const '],['../classtgui_1_1Gui.html#a33de352146c25519c5f0bffa4f3b0024',1,'tgui::Gui::get(const sf::String &amp;widgetName) const ']]],
+  ['get',['get',['../classtgui_1_1Clipboard.html#a77e25ef91b6b300126d31986537c2fb8',1,'tgui::Clipboard::get()'],['../classtgui_1_1Container.html#add49acaa17b77237c837f90a20c2f589',1,'tgui::Container::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Container.html#ac065b68ee708d09c086662305da23b68',1,'tgui::Container::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Gui.html#a81bc7a04400ef54b1610604de7032fbc',1,'tgui::Gui::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Gui.html#a09adca672824a85fc8d8e39daae23438',1,'tgui::Gui::get(const sf::String &amp;widgetName, bool recursive=false) const ']]],
   ['getabsoluteposition',['getAbsolutePosition',['../classtgui_1_1Widget.html#a59112dbb748fa92647ef86b823c227f1',1,'tgui::Widget']]],
   ['getarrowscrollamount',['getArrowScrollAmount',['../classtgui_1_1Scrollbar.html#ac2917a17f373538998c1a224ba65ab88',1,'tgui::Scrollbar']]],
   ['getautohide',['getAutoHide',['../classtgui_1_1Scrollbar.html#aff095c0f3bb83c45cfa8b6254d971da4',1,'tgui::Scrollbar']]],
@@ -69,10 +69,10 @@ var searchData=
   ['getwidget',['getWidget',['../classtgui_1_1Grid.html#aa4f0468ece56bc80e110f081d207c2d0',1,'tgui::Grid']]],
   ['getwidgetname',['getWidgetName',['../classtgui_1_1Container.html#a8fc40caf1afe31b3783c4f89456e9247',1,'tgui::Container::getWidgetName()'],['../classtgui_1_1Gui.html#af77d49fbee161d68b00d8b5eed64f648',1,'tgui::Gui::getWidgetName()']]],
   ['getwidgetnames',['getWidgetNames',['../classtgui_1_1Container.html#ac03474abcffae85e925175c82a522ad3',1,'tgui::Container::getWidgetNames()'],['../classtgui_1_1Gui.html#a77b9da38a993733cd690c184e81f7980',1,'tgui::Gui::getWidgetNames()']]],
-  ['getwidgets',['getWidgets',['../classtgui_1_1Container.html#a3c21c0b36ebc67d803fc5d4433925d43',1,'tgui::Container::getWidgets()'],['../classtgui_1_1Gui.html#a1b1b6277e8c4e0467f4138a0ceae6037',1,'tgui::Gui::getWidgets()']]],
+  ['getwidgets',['getWidgets',['../classtgui_1_1Container.html#a49689f051f282e0521ac97645a5a5cb2',1,'tgui::Container::getWidgets()'],['../classtgui_1_1Gui.html#a1b1b6277e8c4e0467f4138a0ceae6037',1,'tgui::Gui::getWidgets()']]],
   ['getwidgetsoffset',['getWidgetsOffset',['../classtgui_1_1ChildWindow.html#a83f2b7bf262e83e8c1ea16a4ae8ad891',1,'tgui::ChildWindow::getWidgetsOffset()'],['../classtgui_1_1Container.html#ac617a1fe847e4d8f34d2f838f96ebfa8',1,'tgui::Container::getWidgetsOffset()']]],
   ['getwidgettype',['getWidgetType',['../classtgui_1_1Widget.html#a11573ff65b1f2377a7fa24eb49fcac91',1,'tgui::Widget']]],
-  ['getwindow',['getWindow',['../classtgui_1_1Gui.html#ad849e73797dcaf0baada45e2fd3fa9bc',1,'tgui::Gui']]],
+  ['getwindow',['getWindow',['../classtgui_1_1Gui.html#ac968ab34c19372610c1dfc362d6cbf8d',1,'tgui::Gui']]],
   ['grid',['Grid',['../classtgui_1_1Grid.html#a613a7866203e5b90ad198e56ef8b1fa6',1,'tgui::Grid::Grid()'],['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid::Grid(const Grid &amp;copy)']]],
   ['gui',['Gui',['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#aa555f782ab60f3d521775688f8b23c14',1,'tgui::Gui::Gui(sf::RenderTarget &amp;window)']]]
 ];

@@ -26,6 +26,7 @@ var searchData=
   ['setitemstodisplay',['setItemsToDisplay',['../classtgui_1_1ComboBox.html#ae1ab7be7d7df69ebf3dec9e8ec1233b0',1,'tgui::ComboBox']]],
   ['setlinelimit',['setLineLimit',['../classtgui_1_1ChatBox.html#aeba2fc7b8c81d798141c172a195408a2',1,'tgui::ChatBox']]],
   ['setlinespacing',['setLineSpacing',['../classtgui_1_1ChatBox.html#a78fc5fce4e06d2e08af03ec52a3ef57a',1,'tgui::ChatBox']]],
+  ['setlinesstartfrombottom',['setLinesStartFromBottom',['../classtgui_1_1ChatBox.html#ad673cb1992e7387dd84070c02b893e91',1,'tgui::ChatBox']]],
   ['setlooping',['setLooping',['../classtgui_1_1AnimatedPicture.html#abf4858d851589009b18f08d22f8b0444',1,'tgui::AnimatedPicture']]],
   ['setlowvalue',['setLowValue',['../classtgui_1_1Scrollbar.html#ae5b746dbf436a2676892c61a33441938',1,'tgui::Scrollbar']]],
   ['setmaximum',['setMaximum',['../classtgui_1_1Knob.html#a7280472d45aefc7a83f3f669f89793dc',1,'tgui::Knob::setMaximum()'],['../classtgui_1_1LoadingBar.html#ae0afeb7ecb03921108a977217d2fa91d',1,'tgui::LoadingBar::setMaximum()'],['../classtgui_1_1Scrollbar.html#a4c91febe4d27d01163a5463b90c62c6d',1,'tgui::Scrollbar::setMaximum()'],['../classtgui_1_1Slider.html#af1a606bfa6f3965ad2a0323c8170377d',1,'tgui::Slider::setMaximum()'],['../classtgui_1_1Slider2d.html#a935db97d691b627c1fc9e828cb673b5c',1,'tgui::Slider2d::setMaximum()'],['../classtgui_1_1SpinButton.html#a1744ea59c6a6c95c9078d78d725b3f74',1,'tgui::SpinButton::setMaximum()']]],

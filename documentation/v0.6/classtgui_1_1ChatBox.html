@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6-dev</span>
+   &#160;<span id="projectnumber">v0.6.5</span>
    </div>
   </td>
  </tr>
@@ -217,6 +217,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a78fc5fce4e06d2e08af03ec52a3ef57a">setLineSpacing</a> (unsigned int lineSpacing)</td></tr>
 <tr class="memdesc:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the line spacing of all lines.  <a href="#a78fc5fce4e06d2e08af03ec52a3ef57a">More...</a><br /></td></tr>
 <tr class="separator:a78fc5fce4e06d2e08af03ec52a3ef57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad673cb1992e7387dd84070c02b893e91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#ad673cb1992e7387dd84070c02b893e91">setLinesStartFromBottom</a> (bool startFromBottom)</td></tr>
+<tr class="memdesc:ad673cb1992e7387dd84070c02b893e91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the first lines start from the top or from the bottom of the chat box.  <a href="#ad673cb1992e7387dd84070c02b893e91">More...</a><br /></td></tr>
+<tr class="separator:ad673cb1992e7387dd84070c02b893e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b28860724fb92c5903102d85f18b465"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBox.html#a1b28860724fb92c5903102d85f18b465">setScrollbar</a> (const std::string &amp;scrollbarConfigFileFilename)</td></tr>
 <tr class="memdesc:a1b28860724fb92c5903102d85f18b465"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the scrollbar of the chat box.  <a href="#a1b28860724fb92c5903102d85f18b465">More...</a><br /></td></tr>
 <tr class="separator:a1b28860724fb92c5903102d85f18b465"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1074,6 +1077,31 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ad673cb1992e7387dd84070c02b893e91"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBox::setLinesStartFromBottom </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>startFromBottom</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Let the first lines start from the top or from the bottom of the chat box. </p>
+<p>Note that this only makes a difference when the lines don't fill the entire chat box. This does not change the order of the lines, new lines will always be below older lines.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">startFromBottom</td><td>Let the first lines be placed at the bottom of the chat box, or remain at the top? </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a1b28860724fb92c5903102d85f18b465"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1263,7 +1291,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 28 2014 19:22:14 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 16 2014 20:30:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.7
 </small></address>
