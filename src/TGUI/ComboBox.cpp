@@ -283,9 +283,9 @@ namespace tgui
 
         // Set the size of the list box
         if (m_NrOfItemsToDisplay > 0)
-            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * (TGUI_MINIMUM(m_NrOfItemsToDisplay, m_ListBox->getItems().size()))));
+            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * (TGUI_MINIMUM(m_NrOfItemsToDisplay, TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)))));
         else
-            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * m_ListBox->getItems().size()));
+            m_ListBox->setSize(width, static_cast<float>(m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,21 +477,39 @@ namespace tgui
 
     bool ComboBox::removeItem(unsigned int index)
     {
-        return m_ListBox->removeItem(index);
+        bool ret = m_ListBox->removeItem(index);
+
+        // Shrink the list size
+        if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ComboBox::removeItem(const sf::String& itemName)
     {
-        return m_ListBox->removeItem(itemName);
+        bool ret = m_ListBox->removeItem(itemName);
+
+        // Shrink the list size
+        if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int ComboBox::removeItemsById(int id)
     {
-        return m_ListBox->removeItemsById(id);
+        unsigned int ret = m_ListBox->removeItemsById(id);
+
+        // Shrink the list size
+        if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
+            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,6 +517,7 @@ namespace tgui
     void ComboBox::removeAllItems()
     {
         m_ListBox->removeAllItems();
+        m_ListBox->setSize(m_ListBox->getSize().x, m_ListBox->getItemHeight());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
