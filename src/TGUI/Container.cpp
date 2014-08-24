@@ -192,8 +192,8 @@ namespace tgui
             // Check if the pointer matches
             if (m_Widgets[i].get() == widget)
             {
-                // Unfocus the widget, just in case it was focused
-                if (widget->isFocused())
+                // Unfocus the widget if it was focused
+                if (m_FocusedWidget == i+1)
                     unfocusWidgets();
 
                 // Change the index of the focused widget if this is needed
