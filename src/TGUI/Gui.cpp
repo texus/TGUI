@@ -72,6 +72,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Gui::Gui(const Gui& guiToCopy) :
+        m_Callback      (guiToCopy.m_Callback),
+        m_Clock         (guiToCopy.m_Clock),
+        m_Window        (guiToCopy.m_Window),
+        m_accessToWindow(guiToCopy.m_accessToWindow),
+        m_Container     ()
+    {
+        m_Container.m_Window = m_Window;
+        m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
+
+        m_Container.m_Focused = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Gui& Gui::operator=(const Gui& right)
+    {
+        if (this != &right)
+        {
+            m_Callback       = right.m_Callback;
+            m_Clock          = right.m_Clock;
+            m_Window         = right.m_Window;
+            m_accessToWindow = right.m_accessToWindow;
+            m_Container      = GuiContainer();
+
+            m_Container.m_Window = m_Window;
+            m_Container.bindGlobalCallback(&Gui::addChildCallback, this);
+
+            m_Container.m_Focused = true;
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Gui::setWindow(sf::RenderWindow& window)
     {
         m_accessToWindow = true;
