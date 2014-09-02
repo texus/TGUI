@@ -52,7 +52,12 @@ namespace tgui
     {
         // Remove the texture (if we are the only one using it)
         if (m_Texture.data != nullptr)
-            TGUI_TextureManager.removeTexture(m_Texture);
+        {
+            if (m_LoadedFilename != "")
+                TGUI_TextureManager.removeTexture(m_Texture);
+            else
+                delete m_Texture.data;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,11 +97,16 @@ namespace tgui
         if (filename.empty())
             return false;
 
-        m_LoadedFilename = getResourcePath() + filename;
-
         // If we have already loaded a texture then first delete it
         if (m_Texture.data != nullptr)
-            TGUI_TextureManager.removeTexture(m_Texture);
+        {
+            if (m_LoadedFilename != "")
+                TGUI_TextureManager.removeTexture(m_Texture);
+            else
+                delete m_Texture.data;
+        }
+
+        m_LoadedFilename = getResourcePath() + filename;
 
         // Try to load the texture from the file
         if (TGUI_TextureManager.getTexture(m_LoadedFilename, m_Texture))
@@ -110,6 +120,25 @@ namespace tgui
         }
         else // The texture was not loaded
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::loadFromTexture(const sf::Texture& texture)
+    {
+        m_LoadedFilename = "";
+
+        if (m_Texture.data != nullptr)
+            TGUI_TextureManager.removeTexture(m_Texture);
+
+        m_Texture.data = new TextureData();
+        m_Texture.data->texture = texture;
+        m_Texture.data->rect = sf::IntRect(0, 0, m_Texture.getSize().x, m_Texture.getSize().y);
+        m_Texture.data->users = 1;
+        m_Texture.sprite.setTexture(m_Texture.data->texture, true);
+
+        m_Loaded = true;
+        setSize(static_cast<float>(m_Texture.getSize().x),static_cast<float>(m_Texture.getSize().y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,8 +219,11 @@ namespace tgui
             scaling.y = m_Size.y / m_Texture.getSize().y;
 
             // Only return true when the pixel under the mouse isn't transparent
-            if (!m_Texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
-                return true;
+            if (m_LoadedFilename != "")
+            {
+                if (!m_Texture.isTransparentPixel(static_cast<unsigned int>((x - getPosition().x) / scaling.x), static_cast<unsigned int>((y - getPosition().y) / scaling.y)))
+                    return true;
+            }
         }
 
         if (m_MouseHover == true)
