@@ -940,7 +940,7 @@ namespace tgui
         if ((m_maxChars > 0) && (m_text.getSize() + 1 > m_maxChars))
             return;
 
-        auto insert = [this](sf::Uint32 key)
+        auto insert = [=]()
         {
             deleteSelectedCharacters();
 
@@ -958,7 +958,7 @@ namespace tgui
         // If there is a scrollbar then inserting can't go wrong
         if (m_scroll)
         {
-            insert(key);
+            insert();
         }
         else // There is no scrollbar, the text may not fit
         {
@@ -968,7 +968,7 @@ namespace tgui
             sf::Vector2u oldSelEnd = m_selEnd;
 
             // Try to insert the character
-            insert(key);
+            insert();
 
             // Undo the insert if the text does not fit
             if (oldText.getSize() + 1 != m_text.getSize())
