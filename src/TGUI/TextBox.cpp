@@ -127,7 +127,7 @@ namespace tgui
             std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
             // Open the theme file
-            ConfigFile themeFile{loadedThemeFile, section};
+            ThemeFileParser themeFile{loadedThemeFile, section};
 
             // Find the folder that contains the theme file
             std::string themeFileFolder = "";
@@ -1658,9 +1658,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setScrollbar(const std::string& scrollbarConfigFileFilename, const std::string& section)
+    void TextBoxRenderer::setScrollbar(const std::string& scrollbarThemeFileFilename, const std::string& section)
     {
-        m_textBox->m_scroll = Scrollbar::create(scrollbarConfigFileFilename, section);
+        m_textBox->m_scroll = Scrollbar::create(scrollbarThemeFileFilename, section);
         m_textBox->updateSize();
     }
 

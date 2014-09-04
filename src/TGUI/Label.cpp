@@ -58,7 +58,7 @@ namespace tgui
             std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
             // Open the theme file
-            ConfigFile themeFile{loadedThemeFile, section};
+            ThemeFileParser themeFile{loadedThemeFile, section};
 
             // Handle the read properties
             for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)

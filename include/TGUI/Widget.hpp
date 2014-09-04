@@ -28,7 +28,7 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/ConfigFile.hpp>
+#include <TGUI/ThemeFileParser.hpp>
 #include <TGUI/Callback.hpp>
 #include <TGUI/Transformable.hpp>
 #include <TGUI/Texture.hpp>

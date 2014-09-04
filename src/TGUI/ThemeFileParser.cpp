@@ -27,7 +27,7 @@
 #include <cctype>
 #include <functional>
 
-#include <TGUI/ConfigFile.hpp>
+#include <TGUI/ThemeFileParser.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
 
@@ -55,14 +55,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ConfigFile::ConfigFile(const std::string& filename, const std::string& section) :
+    ThemeFileParser::ThemeFileParser(const std::string& filename, const std::string& section) :
         m_filename(filename),
         m_section (section)
     {
         std::ifstream file{filename};
 
         if (!file.is_open())
-            throw Exception{"Failed to open config file '" + filename + "'."};
+            throw Exception{"Failed to open theme file '" + filename + "'."};
 
         bool sectionFound = false;
         unsigned int lineNumber = 0;
@@ -135,14 +135,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<std::pair<std::string, std::string>>& ConfigFile::getProperties() const
+    const std::vector<std::pair<std::string, std::string>>& ThemeFileParser::getProperties() const
     {
         return m_properties;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string ConfigFile::readWord(const std::string& line, std::string::const_iterator& c) const
+    std::string ThemeFileParser::readWord(const std::string& line, std::string::const_iterator& c) const
     {
         std::string word;
         while (c != line.end())
@@ -161,7 +161,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ConfigFile::isSection(const std::string& line, std::string::const_iterator c, std::string& sectionName) const
+    bool ThemeFileParser::isSection(const std::string& line, std::string::const_iterator c, std::string& sectionName) const
     {
         if (!removeWhitespace(line, c))
             return false;

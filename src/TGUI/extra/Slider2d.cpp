@@ -51,7 +51,7 @@ namespace ext
         std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
         // Open the theme file
-        ConfigFile themeFile{loadedThemeFile, section};
+        ThemeFileParser themeFile{loadedThemeFile, section};
 
         // Find the folder that contains the theme file
         std::string themeFileFolder = "";

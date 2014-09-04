@@ -80,15 +80,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Create the text box
         ///
-        /// @param configFileFilename  Filename of the config file.
-        /// @param section             The section in the theme file to read.
+        /// @param themeFileFilename  Filename of the theme file.
+        /// @param section            The section in the theme file to read.
         ///
-        /// @throw Exception when the config file could not be opened.
-        /// @throw Exception when the config file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the config file, could not be loaded.
+        /// @throw Exception when the theme file could not be opened.
+        /// @throw Exception when the theme file did not contain the requested section with the needed information.
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextBox::Ptr create(const std::string& configFileFilename, const std::string& section = "TextBox");
+        static TextBox::Ptr create(const std::string& themeFileFilename, const std::string& section = "TextBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
