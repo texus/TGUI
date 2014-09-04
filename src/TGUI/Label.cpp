@@ -285,7 +285,7 @@ namespace tgui
                 // Every line contains at least one character
                 if (index == oldIndex)
                     index++;
-/*
+
                 // Implement the word-wrap
                 if (m_string[index-1] != '\n')
                 {
@@ -305,12 +305,12 @@ namespace tgui
                             index = indexWithoutWordWrap;
                     }
                 }
-*/
+
                 if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
                     m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex) + "\n");
                 else
                     m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex));
-/*
+
                 // If the next line starts with just a space, then the space need not be visible
                 if ((index < m_string.getSize()) && (m_string[index] == ' '))
                 {
@@ -320,7 +320,6 @@ namespace tgui
                             index++;
                     }
                 }
-*/
             }
         }
         else // There is no maximum width, so the text should not be changed

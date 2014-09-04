@@ -1117,7 +1117,7 @@ namespace tgui
             {
                 counter += m_lines[i].getSize();
 /*
-                /// THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN rearrangeText
+                // THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN rearrangeText
                 // If the next line starts with just a space, then the space need not be visible
                 if ((counter + 1 < m_text.getSize()) && (m_text[counter] == ' ') && (!isWhitespace(m_text[counter + 1])))
                 {
@@ -1280,8 +1280,8 @@ namespace tgui
 
             m_lines.push_back(m_text.substring(oldIndex, index - oldIndex));
 /*
-            /// THIS CODE MESSES UP newSelStart AND newSelEnd
-            /// THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN rearrangeText
+            // THIS CODE MESSES UP newSelStart AND newSelEnd
+            // THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN rearrangeText
             // If the next line starts with just a space, then the space need not be visible
             if ((index + 1 < m_text.getSize()) && (m_text[index] == ' ') && (!isWhitespace(m_text[index + 1])))
             {

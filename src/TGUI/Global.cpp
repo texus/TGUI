@@ -185,58 +185,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-    bool extractBorders(std::string string, Borders& borders)
-    {
-        // Make sure that the line isn't empty
-        if (string.empty() == false)
-        {
-            // The first and last character have to be brackets
-            if ((string[0] == '(') && (string[string.length()-1] == ')'))
-            {
-                // Remove the brackets
-                string.erase(0, 1);
-                string.erase(string.length()-1);
-
-                // Search for the first comma
-                std::string::size_type commaPos = string.find(',');
-                if (commaPos != std::string::npos)
-                {
-                    // Get the first value and delete this part of the string
-                    borders.left = tgui::stof(string.substr(0, commaPos));
-                    string.erase(0, commaPos+1);
-
-                    // Search for the second comma
-                    commaPos = string.find(',');
-                    if (commaPos != std::string::npos)
-                    {
-                        // Get the second value and delete this part of the string
-                        borders.top = tgui::stof(string.substr(0, commaPos));
-                        string.erase(0, commaPos+1);
-
-                        // Search for the third comma
-                        commaPos = string.find(',');
-                        if (commaPos != std::string::npos)
-                        {
-                            // Get the third value and delete this part of the string
-                            borders.right = tgui::stof(string.substr(0, commaPos));
-                            string.erase(0, commaPos+1);
-
-                            // Get the fourth value
-                            borders.bottom = tgui::stof(string);
-
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        // If you pass here then something is wrong with the string
-        return false;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool extractBoolFromString(const std::string& property, const std::string& value)
     {

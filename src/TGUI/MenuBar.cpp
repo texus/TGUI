@@ -721,40 +721,6 @@ namespace tgui
             }
 
             positionX += m_menuBar->m_menus[i].text.getSize().x + 2*m_distanceToSide;
-
-            /*
-            states.transform.translate(static_cast<float>(m_DistanceToSide), 0);
-
-            // Is the menu open?
-            if (m_visibleMenu == static_cast<int>(i))
-            {
-                states.transform.translate(0, getSize().y);
-
-                // Find out what the width of the menu should be
-                float menuWidth = m_minimumSubMenuWidth;
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    menuWidth = std::max(menuWidth, m_menus[i].menuItems[j].getSize().x + (3 * getRenderer()->m_distanceToSide));
-
-                // Draw the background of the menu
-                sf::RectangleShape background({menuWidth, getSize().y * m_menus[i].menuItems.size()});
-                background.setFillColor(getRenderer()->m_backgroundColor);
-                target.draw(background, states);
-
-                // If there is a selected menu item then draw its background
-                if (m_menus[i].selectedMenuItem != -1)
-                {
-                    states.transform.translate(0, m_menus[i].selectedMenuItem * getSize().y);
-                    background = sf::RectangleShape({menuWidth, getSize().y});
-                    background.setFillColor(getRenderer()->m_selectedBackgroundColor);
-                    target.draw(background, states);
-                    states.transform.translate(0, m_menus[i].selectedMenuItem * -getSize().y);
-                }
-
-                states.transform.translate(m_menus[i].text.getSize().x + 2 * getRenderer()->m_distanceToSide, -getSize().y);
-            }
-
-            states.transform.translate(m_menus[i].text.getSize().x + 2*getRenderer()->m_distanceToSide, 0);
-            */
         }
     }
 
