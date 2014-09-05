@@ -551,7 +551,7 @@ namespace tgui
             m_scroll->mouseOnWidget(x, y);
 
         // Check if the mouse is on top of the list box
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
         else // The mouse is not on top of the list box
         {
@@ -577,7 +577,7 @@ namespace tgui
 
         // If the click occurred on the list box
         Padding padding = getRenderer()->getScaledPadding();
-        if (!mouseOnScrollbar && getTransform().transformRect({padding.left, padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}).contains(x, y))
+        if (!mouseOnScrollbar && (sf::FloatRect{getPosition().x + padding.left, getPosition().y + padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}.contains(x, y)))
         {
             m_mouseDown = true;
 
@@ -729,7 +729,7 @@ namespace tgui
 
         // Find out on which item the mouse is hovering
         Padding padding = getRenderer()->getScaledPadding();
-        if (!mouseOnScrollbar && getTransform().transformRect({padding.left, padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}).contains(x, y))
+        if (!mouseOnScrollbar && (sf::FloatRect{getPosition().x + padding.left, getPosition().y + padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}.contains(x, y)))
         {
             y -= padding.top;
 

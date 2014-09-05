@@ -364,7 +364,7 @@ namespace tgui
             return false;
 
         // Check if the mouse is on top of the scrollbar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
 
         if (m_mouseHover)

@@ -443,7 +443,7 @@ namespace tgui
             m_scroll->mouseOnWidget(x, y);
 
         // Check if the mouse is on top of the text box
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
         else // The mouse is not on top of the text box
         {

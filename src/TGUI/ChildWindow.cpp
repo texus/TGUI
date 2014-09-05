@@ -255,7 +255,7 @@ namespace tgui
     bool ChildWindow::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect({0, 0, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             for (unsigned int i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->mouseNotOnWidget();
@@ -265,9 +265,11 @@ namespace tgui
         else
         {
             // Check if the mouse is inside the child window
-            if (getTransform().transformRect({0, 0, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                                                    getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom}).contains(x, y - getRenderer()->m_titleBarHeight))
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                              getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom}.contains(x, y - getRenderer()->m_titleBarHeight))
+            {
                 return true;
+            }
             else
             {
                 if (m_mouseHover)
@@ -305,7 +307,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect({0, 0, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             // Send the mouse press event to the close button
             if (m_closeButton.mouseOnWidget(x, y))
@@ -329,9 +331,10 @@ namespace tgui
                 m_closeButton.mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect({0, 0, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                                                     getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom + getRenderer()->m_titleBarHeight}).contains(x, y))
-             && (getTransform().transformRect({getRenderer()->getBorders().left, getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top, getSize().x, getSize().y}).contains(x, y) == false))
+            if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                               getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
+             && (sf::FloatRect{getPosition().x + getRenderer()->getBorders().left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top,
+                               getSize().x, getSize().y}.contains(x, y) == false))
             {
                 // Don't send the event to the widgets
                 return;
@@ -349,7 +352,7 @@ namespace tgui
         m_mouseDownOnTitleBar = false;
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             // Check if the close button was clicked
             if (m_closeButton.m_mouseDown == true)
@@ -388,9 +391,10 @@ namespace tgui
             m_closeButton.mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect({0, 0, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                                                     getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}).contains(x, y))
-             && (getTransform().transformRect({getRenderer()->m_borders.left, getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top, getSize().x, getSize().y}).contains(x, y) == false))
+            if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                               getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
+             && (sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
+                               getSize().x, getSize().y}.contains(x, y) == false))
             {
                 // Tell the widgets about that the mouse was released
                 for (unsigned int i = 0; i < m_widgets.size(); ++i)
@@ -418,7 +422,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the title bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             // Send the hover event to the close button
             if (m_closeButton.mouseOnWidget(x, y))
@@ -433,9 +437,10 @@ namespace tgui
                 m_closeButton.mouseNotOnWidget();
 
             // Check if the mouse is on top of the borders
-            if ((getTransform().transformRect({0, 0, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                                                     getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}).contains(x, y))
-             && (getTransform().transformRect({getRenderer()->m_borders.left, getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top, getSize().x, getSize().y}).contains(x, y) == false))
+            if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                               getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
+             && (sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
+                               getSize().x, getSize().y}.contains(x, y) == false))
             {
                 // Don't send the event to the widgets
                 return;

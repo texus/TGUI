@@ -31,9 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Transformable::Transformable(const Transformable& copy) :
-        m_transformNeedUpdate(copy.m_transformNeedUpdate),
-        m_transform          (copy.m_transform)
+    Transformable::Transformable(const Transformable& copy)
     {
         setPosition(copy.m_position);
         setSize(copy.m_size);
@@ -45,9 +43,6 @@ namespace tgui
     {
         if (this != &right)
         {
-            m_transformNeedUpdate = right.m_transformNeedUpdate;
-            m_transform           = right.m_transform;
-
             setPosition(right.m_position);
             setSize(right.m_size);
         }
@@ -61,8 +56,6 @@ namespace tgui
     {
         m_position = position;
         m_position.setCallbackFunction(std::bind(&Transformable::updatePosition, this, false));
-
-        m_transformNeedUpdate = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,22 +106,6 @@ namespace tgui
     void Transformable::scale(const Layout1d& x, const Layout1d& y)
     {
         setSize({m_size.x * x, m_size.y * y});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Transform& Transformable::getTransform() const
-    {
-        if (m_transformNeedUpdate)
-        {
-            m_transform = sf::Transform( 1, 0, getPosition().x,
-                                         0, 1, getPosition().y,
-                                         0.f, 0.f, 1.f);
-
-            m_transformNeedUpdate = false;
-        }
-
-        return m_transform;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

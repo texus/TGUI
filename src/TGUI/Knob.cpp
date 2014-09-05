@@ -244,7 +244,7 @@ namespace tgui
     bool Knob::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the widget
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
         {
             if (getRenderer()->m_backgroundTexture.getData())
             {

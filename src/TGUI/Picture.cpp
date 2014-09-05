@@ -87,7 +87,7 @@ namespace tgui
     bool Picture::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the picture
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
         {
             // We sometimes want clicks to go through transparent parts of the picture
             if (!m_fullyClickable && m_texture.isTransparentPixel(x, y))

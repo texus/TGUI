@@ -255,7 +255,7 @@ namespace tgui
     bool MenuBar::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the menu bar
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
         else
         {
@@ -276,7 +276,7 @@ namespace tgui
                 }
 
                 // Check if the mouse is on top of the open menu
-                if (getTransform().transformRect(sf::FloatRect(left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size())).contains(x, y))
+                if (sf::FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(x, y))
                     return true;
             }
         }

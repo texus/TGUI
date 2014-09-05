@@ -61,7 +61,7 @@ namespace tgui
     bool Panel::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is inside the panel
-        if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
 
         if (m_mouseHover)
