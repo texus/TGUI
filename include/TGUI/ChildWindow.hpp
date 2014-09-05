@@ -525,6 +525,7 @@ namespace tgui
         unsigned int   m_DistanceToSide;
         TitleAlignment m_TitleAlignment;
         sf::Color      m_BorderColor;
+        bool           m_MouseDownOnTitleBar;
 
         Texture   m_TextureTitleBar_L;
         Texture   m_TextureTitleBar_M;

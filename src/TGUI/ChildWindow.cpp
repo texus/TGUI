@@ -38,15 +38,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow() :
-    m_Size             (0, 0),
-    m_BackgroundTexture(nullptr),
-    m_TitleBarHeight   (0),
-    m_SplitImage       (false),
-    m_DraggingPosition (0, 0),
-    m_DistanceToSide   (5),
-    m_TitleAlignment   (TitleAlignmentCentered),
-    m_BorderColor      (0, 0, 0),
-    m_KeepInParent     (false)
+    m_Size               (0, 0),
+    m_BackgroundTexture  (nullptr),
+    m_TitleBarHeight     (0),
+    m_SplitImage         (false),
+    m_DraggingPosition   (0, 0),
+    m_DistanceToSide     (5),
+    m_TitleAlignment     (TitleAlignmentCentered),
+    m_BorderColor        (0, 0, 0),
+    m_MouseDownOnTitleBar(false),
+    m_KeepInParent       (false)
     {
         m_Callback.widgetType = Type_ChildWindow;
         m_CloseButton = new Button();
@@ -55,20 +56,21 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& childWindowToCopy) :
-    Container          (childWindowToCopy),
-    WidgetBorders      (childWindowToCopy),
-    m_LoadedConfigFile (childWindowToCopy.m_LoadedConfigFile),
-    m_Size             (childWindowToCopy.m_Size),
-    m_BackgroundColor  (childWindowToCopy.m_BackgroundColor),
-    m_BackgroundTexture(childWindowToCopy.m_BackgroundTexture),
-    m_TitleText        (childWindowToCopy.m_TitleText),
-    m_TitleBarHeight   (childWindowToCopy.m_TitleBarHeight),
-    m_SplitImage       (childWindowToCopy.m_SplitImage),
-    m_DraggingPosition (childWindowToCopy.m_DraggingPosition),
-    m_DistanceToSide   (childWindowToCopy.m_DistanceToSide),
-    m_TitleAlignment   (childWindowToCopy.m_TitleAlignment),
-    m_BorderColor      (childWindowToCopy.m_BorderColor),
-    m_KeepInParent     (childWindowToCopy.m_KeepInParent)
+    Container            (childWindowToCopy),
+    WidgetBorders        (childWindowToCopy),
+    m_LoadedConfigFile   (childWindowToCopy.m_LoadedConfigFile),
+    m_Size               (childWindowToCopy.m_Size),
+    m_BackgroundColor    (childWindowToCopy.m_BackgroundColor),
+    m_BackgroundTexture  (childWindowToCopy.m_BackgroundTexture),
+    m_TitleText          (childWindowToCopy.m_TitleText),
+    m_TitleBarHeight     (childWindowToCopy.m_TitleBarHeight),
+    m_SplitImage         (childWindowToCopy.m_SplitImage),
+    m_DraggingPosition   (childWindowToCopy.m_DraggingPosition),
+    m_DistanceToSide     (childWindowToCopy.m_DistanceToSide),
+    m_TitleAlignment     (childWindowToCopy.m_TitleAlignment),
+    m_BorderColor        (childWindowToCopy.m_BorderColor),
+    m_MouseDownOnTitleBar(childWindowToCopy.m_MouseDownOnTitleBar),
+    m_KeepInParent       (childWindowToCopy.m_KeepInParent)
     {
         // Copy the textures
         TGUI_TextureManager.copyTexture(childWindowToCopy.m_IconTexture, m_IconTexture);
@@ -119,24 +121,25 @@ namespace tgui
             // Delete the old close button
             delete m_CloseButton;
 
-            std::swap(m_LoadedConfigFile,  temp.m_LoadedConfigFile);
-            std::swap(m_Size,              temp.m_Size);
-            std::swap(m_BackgroundColor,   temp.m_BackgroundColor);
-            std::swap(m_BackgroundTexture, temp.m_BackgroundTexture);
-            std::swap(m_BackgroundSprite,  temp.m_BackgroundSprite);
-            std::swap(m_IconTexture,       temp.m_IconTexture);
-            std::swap(m_TitleText,         temp.m_TitleText);
-            std::swap(m_TitleBarHeight,    temp.m_TitleBarHeight);
-            std::swap(m_SplitImage,        temp.m_SplitImage);
-            std::swap(m_DraggingPosition,  temp.m_DraggingPosition);
-            std::swap(m_DistanceToSide,    temp.m_DistanceToSide);
-            std::swap(m_TitleAlignment,    temp.m_TitleAlignment);
-            std::swap(m_BorderColor,       temp.m_BorderColor);
-            std::swap(m_TextureTitleBar_L, temp.m_TextureTitleBar_L);
-            std::swap(m_TextureTitleBar_M, temp.m_TextureTitleBar_M);
-            std::swap(m_TextureTitleBar_R, temp.m_TextureTitleBar_R);
-            std::swap(m_CloseButton,       temp.m_CloseButton);
-            std::swap(m_KeepInParent,      temp.m_KeepInParent);
+            std::swap(m_LoadedConfigFile,    temp.m_LoadedConfigFile);
+            std::swap(m_Size,                temp.m_Size);
+            std::swap(m_BackgroundColor,     temp.m_BackgroundColor);
+            std::swap(m_BackgroundTexture,   temp.m_BackgroundTexture);
+            std::swap(m_BackgroundSprite,    temp.m_BackgroundSprite);
+            std::swap(m_IconTexture,         temp.m_IconTexture);
+            std::swap(m_TitleText,           temp.m_TitleText);
+            std::swap(m_TitleBarHeight,      temp.m_TitleBarHeight);
+            std::swap(m_SplitImage,          temp.m_SplitImage);
+            std::swap(m_DraggingPosition,    temp.m_DraggingPosition);
+            std::swap(m_DistanceToSide,      temp.m_DistanceToSide);
+            std::swap(m_TitleAlignment,      temp.m_TitleAlignment);
+            std::swap(m_BorderColor,         temp.m_BorderColor);
+            std::swap(m_MouseDownOnTitleBar, temp.m_MouseDownOnTitleBar);
+            std::swap(m_TextureTitleBar_L,   temp.m_TextureTitleBar_L);
+            std::swap(m_TextureTitleBar_M,   temp.m_TextureTitleBar_M);
+            std::swap(m_TextureTitleBar_R,   temp.m_TextureTitleBar_R);
+            std::swap(m_CloseButton,         temp.m_CloseButton);
+            std::swap(m_KeepInParent,        temp.m_KeepInParent);
         }
 
         return *this;
@@ -734,6 +737,8 @@ namespace tgui
 
     void ChildWindow::leftMousePressed(float x, float y)
     {
+        m_MouseDown = true;
+
         // Move the childwindow to the front
         m_Parent->moveWidgetToFront(this);
 
@@ -761,7 +766,7 @@ namespace tgui
             else
             {
                 // The mouse went down on the title bar
-                m_MouseDown = true;
+                m_MouseDownOnTitleBar = true;
 
                 // Remember where we are dragging the title bar
                 m_DraggingPosition.x = x - position.x;
@@ -794,6 +799,9 @@ namespace tgui
 
     void ChildWindow::leftMouseReleased(float x , float y)
     {
+        m_MouseDown = false;
+        m_MouseDownOnTitleBar = false;
+
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, m_Size.x + m_LeftBorder + m_RightBorder, static_cast<float>(m_TitleBarHeight))).contains(x, y))
         {
@@ -802,8 +810,6 @@ namespace tgui
 
             // Temporary set the close button to the correct position
             m_CloseButton->setPosition(position.x + ((m_Size.x + m_LeftBorder + m_RightBorder - m_DistanceToSide - m_CloseButton->getSize().x)), position.y + ((m_TitleBarHeight / 2.f) - (m_CloseButton->getSize().x / 2.f)));
-
-            m_MouseDown = false;
 
             // Check if the close button was clicked
             if (m_CloseButton->m_MouseDown == true)
@@ -841,8 +847,6 @@ namespace tgui
             if (m_CloseButton->m_MouseHover)
                 m_CloseButton->mouseNotOnWidget();
 
-            // Change the mouse down flag
-            m_MouseDown = false;
             m_CloseButton->mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
@@ -868,7 +872,7 @@ namespace tgui
         m_MouseHover = true;
 
         // Check if you are dragging the child window
-        if (m_MouseDown == true)
+        if (m_MouseDown && m_MouseDownOnTitleBar)
         {
             // Move the child window
             sf::Vector2f position = getPosition();
@@ -915,7 +919,7 @@ namespace tgui
             }
         }
 
-        Container::mouseMoved(x - m_LeftBorder, y - (m_TitleBarHeight + m_TopBorder));
+        Container::mouseMoved(x - m_LeftBorder, y - m_TitleBarHeight - m_TopBorder);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
