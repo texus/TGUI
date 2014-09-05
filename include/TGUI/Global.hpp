@@ -77,7 +77,7 @@ namespace tgui
         Type_ComboBox,
         Type_Slider,
         Type_Scrollbar,
-        Type_LoadingBar,
+        Type_ProgressBar,
         Type_TextBox,
         Type_SpriteSheet,
         Type_AnimatedPicture,

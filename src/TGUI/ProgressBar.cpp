@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/LoadingBar.hpp>
+#include <TGUI/ProgressBar.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -34,11 +34,11 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LoadingBar::LoadingBar()
+    ProgressBar::ProgressBar()
     {
-        m_callback.widgetType = Type_LoadingBar;
+        m_callback.widgetType = Type_ProgressBar;
 
-        m_renderer = std::make_shared<LoadingBarRenderer>(this);
+        m_renderer = std::make_shared<ProgressBarRenderer>(this);
 
         getRenderer()->setBorders({2, 2, 2, 2});
 
@@ -50,13 +50,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    LoadingBar::Ptr LoadingBar::create(const std::string& themeFileFilename, const std::string& section)
+    ProgressBar::Ptr ProgressBar::create(const std::string& themeFileFilename, const std::string& section)
     {
-        auto loadingBar = std::make_shared<LoadingBar>();
+        auto progressBar = std::make_shared<ProgressBar>();
 
         if (themeFileFilename != "")
         {
-            loadingBar->getRenderer()->setBorders({0, 0, 0, 0});
+            progressBar->getRenderer()->setBorders({0, 0, 0, 0});
 
             std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
@@ -74,7 +74,7 @@ namespace tgui
             {
                 try
                 {
-                    loadingBar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
+                    progressBar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
                 }
                 catch (const Exception& e)
                 {
@@ -83,24 +83,24 @@ namespace tgui
             }
 
             // Use the size of the images when images were loaded
-            if (loadingBar->getRenderer()->m_textureBack.getData() != nullptr)
+            if (progressBar->getRenderer()->m_textureBack.getData() != nullptr)
             {
-                loadingBar->setSize(loadingBar->getRenderer()->m_textureBack.getImageSize());
+                progressBar->setSize(progressBar->getRenderer()->m_textureBack.getImageSize());
 
-                if (loadingBar->getSize().y >= 2 * loadingBar->getSize().x)
-                    loadingBar->setFillDirection(FillDirection::BottomToTop);
+                if (progressBar->getSize().y >= 2 * progressBar->getSize().x)
+                    progressBar->setFillDirection(FillDirection::BottomToTop);
             }
 
             // Calculate the size of the front image (the size of the part that will be drawn)
-            loadingBar->recalculateSize();
+            progressBar->recalculateSize();
         }
 
-        return loadingBar;
+        return progressBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setPosition(const Layout& position)
+    void ProgressBar::setPosition(const Layout& position)
     {
         Widget::setPosition(position);
 
@@ -117,7 +117,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setSize(const Layout& size)
+    void ProgressBar::setSize(const Layout& size)
     {
         Widget::setSize(size);
 
@@ -161,7 +161,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setMinimum(unsigned int minimum)
+    void ProgressBar::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_minimum = minimum;
@@ -180,7 +180,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setMaximum(unsigned int maximum)
+    void ProgressBar::setMaximum(unsigned int maximum)
     {
         // Set the new maximum
         m_maximum = maximum;
@@ -199,7 +199,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setValue(unsigned int value)
+    void ProgressBar::setValue(unsigned int value)
     {
         // Set the new value
         m_value = value;
@@ -216,7 +216,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int LoadingBar::incrementValue()
+    unsigned int ProgressBar::incrementValue()
     {
         // When the value is still below the maximum then adjust it
         if (m_value < m_maximum)
@@ -231,13 +231,13 @@ namespace tgui
                 addCallback();
             }
 
-            // Check if the loading bar is now full
+            // Check if the progress bar is now full
             if (m_value == m_maximum)
             {
                 // Add the callback (if the user requested it)
-                if (m_callbackFunctions[LoadingBarFull].empty() == false)
+                if (m_callbackFunctions[ProgressBarFull].empty() == false)
                 {
-                    m_callback.trigger = LoadingBarFull;
+                    m_callback.trigger = ProgressBarFull;
                     m_callback.value   = static_cast<int>(m_value);
                     addCallback();
                 }
@@ -253,7 +253,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setText(const sf::String& text)
+    void ProgressBar::setText(const sf::String& text)
     {
         // Set the new text
         m_textBack.setText(text);
@@ -284,7 +284,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setTextSize(unsigned int size)
+    void ProgressBar::setTextSize(unsigned int size)
     {
         // Change the text size
         m_textSize = size;
@@ -295,7 +295,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setFillDirection(FillDirection direction)
+    void ProgressBar::setFillDirection(FillDirection direction)
     {
         m_fillDirection = direction;
 
@@ -304,7 +304,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::setTransparency(unsigned char transparency)
+    void ProgressBar::setTransparency(unsigned char transparency)
     {
         ClickableWidget::setTransparency(transparency);
 
@@ -314,7 +314,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::recalculateSize()
+    void ProgressBar::recalculateSize()
     {
         sf::Vector2f size;
         if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
@@ -324,20 +324,20 @@ namespace tgui
 
         switch (getFillDirection())
         {
-            case LoadingBar::FillDirection::LeftToRight:
+            case FillDirection::LeftToRight:
                 m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
                 break;
 
-            case LoadingBar::FillDirection::RightToLeft:
+            case FillDirection::RightToLeft:
                 m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
                 m_frontRect.left = size.x - m_frontRect.width;
                 break;
 
-            case LoadingBar::FillDirection::TopToBottom:
+            case FillDirection::TopToBottom:
                 m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
                 break;
 
-            case LoadingBar::FillDirection::BottomToTop:
+            case FillDirection::BottomToTop:
                 m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
                 m_frontRect.top = size.y - m_frontRect.height;
                 break;
@@ -349,7 +349,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::initialize(Container *const parent)
+    void ProgressBar::initialize(Container *const parent)
     {
         Widget::initialize(parent);
 
@@ -359,7 +359,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ProgressBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         getRenderer()->draw(target, states);
     }
@@ -367,7 +367,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void ProgressBarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
     {
         if (property == "backimage")
             extractTextureFromString(property, value, rootPath, m_textureBack);
@@ -384,7 +384,7 @@ namespace tgui
         else if (property == "textcolorfront")
             setTextColorFront(extractColorFromString(property, value));
         else if (property == "textsize")
-            m_loadingBar->setTextSize(tgui::stoi(value));
+            m_progressBar->setTextSize(tgui::stoi(value));
         else if (property == "borders")
             setBorders(extractBordersFromString(property, value));
         else if (property == "bordercolor")
@@ -395,60 +395,60 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setTextFont(const sf::Font& font)
+    void ProgressBarRenderer::setTextFont(const sf::Font& font)
     {
-        m_loadingBar->m_textBack.setTextFont(font);
-        m_loadingBar->m_textFront.setTextFont(font);
+        m_progressBar->m_textBack.setTextFont(font);
+        m_progressBar->m_textFront.setTextFont(font);
 
-        m_loadingBar->setText(m_loadingBar->getText());
+        m_progressBar->setText(m_progressBar->getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setTextColor(const sf::Color& color)
+    void ProgressBarRenderer::setTextColor(const sf::Color& color)
     {
-        m_loadingBar->m_textBack.setTextColor(color);
-        m_loadingBar->m_textFront.setTextColor(color);
+        m_progressBar->m_textBack.setTextColor(color);
+        m_progressBar->m_textFront.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setTextColorBack(const sf::Color& color)
+    void ProgressBarRenderer::setTextColorBack(const sf::Color& color)
     {
-        m_loadingBar->m_textBack.setTextColor(color);
+        m_progressBar->m_textBack.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setTextColorFront(const sf::Color& color)
+    void ProgressBarRenderer::setTextColorFront(const sf::Color& color)
     {
-        m_loadingBar->m_textFront.setTextColor(color);
+        m_progressBar->m_textFront.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setBackgroundColor(const sf::Color& color)
+    void ProgressBarRenderer::setBackgroundColor(const sf::Color& color)
     {
         m_backgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setForegroundColor(const sf::Color& color)
+    void ProgressBarRenderer::setForegroundColor(const sf::Color& color)
     {
         m_foregroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setBorderColor(const sf::Color& color)
+    void ProgressBarRenderer::setBorderColor(const sf::Color& color)
     {
         m_borderColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setBackImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ProgressBarRenderer::setBackImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
     {
         if (filename != "")
             m_textureBack.load(getResourcePath() + filename, partRect, middlePart, repeated);
@@ -458,7 +458,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::setFrontImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ProgressBarRenderer::setFrontImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
     {
         if (filename != "")
             m_textureFront.load(getResourcePath() + filename, partRect, middlePart, repeated);
@@ -468,7 +468,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LoadingBarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void ProgressBarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Check if there are textures
         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
@@ -478,28 +478,28 @@ namespace tgui
         }
         else // There is no background texture
         {
-            sf::RectangleShape back(m_loadingBar->getSize());
-            back.setPosition(m_loadingBar->getPosition());
+            sf::RectangleShape back(m_progressBar->getSize());
+            back.setPosition(m_progressBar->getPosition());
             back.setFillColor(m_backgroundColor);
             target.draw(back, states);
 
-            sf::Vector2f frontPosition = m_loadingBar->getPosition();
-            if (m_loadingBar->getFillDirection() == LoadingBar::FillDirection::RightToLeft)
-                frontPosition.x += m_loadingBar->getSize().x - m_loadingBar->m_frontRect.width;
-            else if (m_loadingBar->getFillDirection() == LoadingBar::FillDirection::BottomToTop)
-                frontPosition.y += m_loadingBar->getSize().y - m_loadingBar->m_frontRect.height;
+            sf::Vector2f frontPosition = m_progressBar->getPosition();
+            if (m_progressBar->getFillDirection() == ProgressBar::FillDirection::RightToLeft)
+                frontPosition.x += m_progressBar->getSize().x - m_progressBar->m_frontRect.width;
+            else if (m_progressBar->getFillDirection() == ProgressBar::FillDirection::BottomToTop)
+                frontPosition.y += m_progressBar->getSize().y - m_progressBar->m_frontRect.height;
 
-            sf::RectangleShape front({m_loadingBar->m_frontRect.width, m_loadingBar->m_frontRect.height});
+            sf::RectangleShape front({m_progressBar->m_frontRect.width, m_progressBar->m_frontRect.height});
             front.setPosition(frontPosition);
             front.setFillColor(m_foregroundColor);
             target.draw(front, states);
         }
 
         // Draw the text
-        if (m_loadingBar->m_textBack.getText() != "")
+        if (m_progressBar->m_textBack.getText() != "")
         {
-            if (m_loadingBar->m_textBack.getTextColor() == m_loadingBar->m_textFront.getTextColor())
-                target.draw(m_loadingBar->m_textBack, states);
+            if (m_progressBar->m_textBack.getTextColor() == m_progressBar->m_textFront.getTextColor())
+                target.draw(m_progressBar->m_textBack, states);
             else
             {
                 // Get the old clipping area
@@ -513,25 +513,25 @@ namespace tgui
 
                 sf::FloatRect backRect;
                 sf::FloatRect frontRect;
-                frontRect.width = m_loadingBar->m_frontRect.width;
-                frontRect.height = m_loadingBar->m_frontRect.height;
+                frontRect.width = m_progressBar->m_frontRect.width;
+                frontRect.height = m_progressBar->m_frontRect.height;
 
-                switch (m_loadingBar->getFillDirection())
+                switch (m_progressBar->getFillDirection())
                 {
-                    case LoadingBar::FillDirection::LeftToRight:
+                    case ProgressBar::FillDirection::LeftToRight:
                     {
-                        frontRect.left = m_loadingBar->getAbsolutePosition().x;
-                        frontRect.top = m_loadingBar->getAbsolutePosition().y;
+                        frontRect.left = m_progressBar->getAbsolutePosition().x;
+                        frontRect.top = m_progressBar->getAbsolutePosition().y;
 
                         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
                         {
-                            frontRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
-                            frontRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+                            frontRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
+                            frontRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
 
                             backRect.width = m_textureFront.getSize().x - frontRect.width;
                         }
                         else
-                            backRect.width = m_loadingBar->getSize().x - frontRect.width;
+                            backRect.width = m_progressBar->getSize().x - frontRect.width;
 
                         backRect.left = frontRect.left + frontRect.width;
                         backRect.top = frontRect.top;
@@ -539,23 +539,23 @@ namespace tgui
                         break;
                     }
 
-                    case LoadingBar::FillDirection::RightToLeft:
+                    case ProgressBar::FillDirection::RightToLeft:
                     {
-                        backRect.left = m_loadingBar->getAbsolutePosition().x;
-                        backRect.top = m_loadingBar->getAbsolutePosition().y;
+                        backRect.left = m_progressBar->getAbsolutePosition().x;
+                        backRect.top = m_progressBar->getAbsolutePosition().y;
 
                         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
                         {
-                            backRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
-                            backRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+                            backRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
+                            backRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
 
                             backRect.width = m_textureFront.getSize().x - frontRect.width;
                             backRect.height = m_textureFront.getSize().y;
                         }
                         else
                         {
-                            backRect.width = m_loadingBar->getSize().x - frontRect.width;
-                            backRect.height = m_loadingBar->getSize().y;
+                            backRect.width = m_progressBar->getSize().x - frontRect.width;
+                            backRect.height = m_progressBar->getSize().y;
                         }
 
                         frontRect.left = backRect.left + backRect.width;
@@ -564,20 +564,20 @@ namespace tgui
                         break;
                     }
 
-                    case LoadingBar::FillDirection::TopToBottom:
+                    case ProgressBar::FillDirection::TopToBottom:
                     {
-                        frontRect.left = m_loadingBar->getAbsolutePosition().x;
-                        frontRect.top = m_loadingBar->getAbsolutePosition().y;
+                        frontRect.left = m_progressBar->getAbsolutePosition().x;
+                        frontRect.top = m_progressBar->getAbsolutePosition().y;
 
                         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
                         {
-                            frontRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
-                            frontRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+                            frontRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
+                            frontRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
 
                             backRect.height = m_textureFront.getSize().y - frontRect.height;
                         }
                         else
-                            backRect.height = m_loadingBar->getSize().y - frontRect.height;
+                            backRect.height = m_progressBar->getSize().y - frontRect.height;
 
                         backRect.left = frontRect.left;
                         backRect.top = frontRect.top + frontRect.height;
@@ -585,23 +585,23 @@ namespace tgui
                         break;
                     }
 
-                    case LoadingBar::FillDirection::BottomToTop:
+                    case ProgressBar::FillDirection::BottomToTop:
                     {
-                        backRect.left = m_loadingBar->getAbsolutePosition().x;
-                        backRect.top = m_loadingBar->getAbsolutePosition().y;
+                        backRect.left = m_progressBar->getAbsolutePosition().x;
+                        backRect.top = m_progressBar->getAbsolutePosition().y;
 
                         if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
                         {
-                            backRect.left += m_textureFront.getPosition().x - m_loadingBar->getPosition().x;
-                            backRect.top += m_textureFront.getPosition().y - m_loadingBar->getPosition().y;
+                            backRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
+                            backRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
 
                             backRect.width = m_textureFront.getSize().x;
                             backRect.height = m_textureFront.getSize().y - frontRect.height;
                         }
                         else
                         {
-                            backRect.width = m_loadingBar->getSize().x;
-                            backRect.height = m_loadingBar->getSize().y - frontRect.height;
+                            backRect.width = m_progressBar->getSize().x;
+                            backRect.height = m_progressBar->getSize().y - frontRect.height;
                         }
 
                         frontRect.left = backRect.left;
@@ -626,7 +626,7 @@ namespace tgui
                 glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
                 // Draw the back text
-                target.draw(m_loadingBar->m_textBack, states);
+                target.draw(m_progressBar->m_textBack, states);
 
                 // Calculate the clipping area for the front text
                 scissorLeft = std::max(static_cast<GLint>(frontRect.left * scaleViewX), scissor[0]);
@@ -643,18 +643,18 @@ namespace tgui
                 glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
                 // Draw the front text
-                target.draw(m_loadingBar->m_textFront, states);
+                target.draw(m_progressBar->m_textFront, states);
 
                 // Reset the old clipping area
                 glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
             }
         }
 
-        // Draw the borders around the loading bar
+        // Draw the borders around the progress bar
         if (m_borders != Borders{0, 0, 0, 0})
         {
-            sf::Vector2f position = m_loadingBar->getPosition();
-            sf::Vector2f size = m_loadingBar->getSize();
+            sf::Vector2f position = m_progressBar->getPosition();
+            sf::Vector2f size = m_progressBar->getSize();
 
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
@@ -681,10 +681,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<WidgetRenderer> LoadingBarRenderer::clone(Widget* widget)
+    std::shared_ptr<WidgetRenderer> ProgressBarRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<LoadingBarRenderer>(new LoadingBarRenderer{*this});
-        renderer->m_loadingBar = static_cast<LoadingBar*>(widget);
+        auto renderer = std::shared_ptr<ProgressBarRenderer>(new ProgressBarRenderer{*this});
+        renderer->m_progressBar = static_cast<ProgressBar*>(widget);
         return renderer;
     }
 

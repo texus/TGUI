@@ -87,19 +87,19 @@ int main()
     gui.add(listBox);
     
     label = tgui::Label::create(THEME_CONFIG_FILE);
-    label->setText("It's the loading bar below");
+    label->setText("It's the progress bar below");
     label->setPosition(10, 470);
     label->setTextSize(18);
     gui.add(label);
     
-    auto loadingbar = tgui::LoadingBar::create(THEME_CONFIG_FILE);
-    loadingbar->setPosition(10, 500);
-    loadingbar->setSize(200, 20);
-    loadingbar->setValue(50);
-    gui.add(loadingbar);
+    auto progressBar = tgui::ProgressBar::create(THEME_CONFIG_FILE);
+    progressBar->setPosition(10, 500);
+    progressBar->setSize(200, 20);
+    progressBar->setValue(50);
+    gui.add(progressBar);
     
     label = tgui::Label::create(THEME_CONFIG_FILE);
-    label->setText(std::to_string(loadingbar->getValue()) + "%");
+    label->setText(std::to_string(progressBar->getValue()) + "%");
     label->setPosition(220, 500);
     label->setTextSize(18);
     gui.add(label);

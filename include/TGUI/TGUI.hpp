@@ -39,7 +39,7 @@
 #include <TGUI/Slider.hpp>
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ListBox.hpp>
-#include <TGUI/LoadingBar.hpp>
+#include <TGUI/ProgressBar.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/TextBox.hpp>
 #include <TGUI/SpinButton.hpp>

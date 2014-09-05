@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_LOADING_BAR_HPP
-#define TGUI_LOADING_BAR_HPP
+#ifndef TGUI_PROGRESS_BAR_HPP
+#define TGUI_PROGRESS_BAR_HPP
 
 
 #include <TGUI/Label.hpp>
@@ -33,21 +33,21 @@
 
 namespace tgui
 {
-    class LoadingBarRenderer;
+    class ProgressBarRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API LoadingBar : public ClickableWidget
+    class TGUI_API ProgressBar : public ClickableWidget
     {
     public:
 
-        typedef std::shared_ptr<LoadingBar> Ptr;
+        typedef std::shared_ptr<ProgressBar> Ptr;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief The fill direction of the loading bar
+        /// @brief The fill direction of the progress bar
         ///
-        /// Determines in which direction the loading bar is filled when value goes from minimum to maximum.
+        /// Determines in which direction the progress bar is filled when value goes from minimum to maximum.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class FillDirection
@@ -62,17 +62,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        LoadingBar();
+        ProgressBar();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Virtual destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~LoadingBar() {}
+        virtual ~ProgressBar() {}
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the loading bar
+        /// @brief Create the progress bar
         ///
         /// @param themeFileFilename  Filename of the theme file.
         /// @param section            The section in the theme file to read.
@@ -84,20 +84,20 @@ namespace tgui
         /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static LoadingBar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "Loadingbar");
+        static ProgressBar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "ProgressBar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Makes a copy of another loading bar
+        /// @brief Makes a copy of another progress bar
         ///
-        /// @param loadingBar  The other loading bar
+        /// @param progressBar  The other progress bar
         ///
-        /// @return The new loading bar
+        /// @return The new progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static LoadingBar::Ptr copy(const LoadingBar::Ptr& loadingBar)
+        static ProgressBar::Ptr copy(const ProgressBar::Ptr& progressBar)
         {
-            return std::make_shared<LoadingBar>(*loadingBar);
+            return std::make_shared<ProgressBar>(*progressBar);
         }
 
 
@@ -107,9 +107,9 @@ namespace tgui
         /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<LoadingBarRenderer> getRenderer() const
+        std::shared_ptr<ProgressBarRenderer> getRenderer() const
         {
-            return std::static_pointer_cast<LoadingBarRenderer>(m_renderer);
+            return std::static_pointer_cast<ProgressBarRenderer>(m_renderer);
         }
 
 
@@ -130,9 +130,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the loading bar.
+        /// @brief Changes the size of the progress bar.
         ///
-        /// @param size  The new size of the loading bar
+        /// @param size  The new size of the progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout& size) override;
@@ -220,20 +220,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the caption of the loading bar.
+        /// @brief Changes the caption of the progress bar.
         ///
-        /// @param text  New text to draw on top of the loading bar
+        /// @param text  New text to draw on top of the progress bar
         ///
-        /// This text will be centered in the loading bar. It could e.g. contain the progress.
+        /// This text will be centered in the progress bar. It could e.g. contain the progress.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the caption of the loading bar.
+        /// @brief Returns the caption of the progress bar.
         ///
-        /// @return Text that is drawn on top of the loading bar
+        /// @return Text that is drawn on top of the progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
@@ -246,7 +246,7 @@ namespace tgui
         /// @brief Changes the character size of the text.
         ///
         /// @param size  The new text size.
-        ///              If the size is set to 0 then the text will be auto-sized to fit inside the loading bar.
+        ///              If the size is set to 0 then the text will be auto-sized to fit inside the progress bar.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
@@ -265,22 +265,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the fill direction of the loading bar
+        /// @brief Changes the fill direction of the progress bar
         ///
-        /// @param direction  In which direction is the loading bar filled when the value goes from minimum to maximum?
+        /// @param direction  In which direction is the progress bar filled when the value goes from minimum to maximum?
         ///
-        /// By default the loading bar is filled from left to right.
+        /// By default the progress bar is filled from left to right.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setFillDirection(FillDirection direction);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the fill direction of the loading bar
+        /// @brief Returns the fill direction of the progress bar
         ///
-        /// @return In which direction is the loading bar filled when the value goes from minimum to maximum?
+        /// @return In which direction is the progress bar filled when the value goes from minimum to maximum?
         ///
-        /// By default the loading bar is filled from left to right.
+        /// By default the progress bar is filled from left to right.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         FillDirection getFillDirection()
@@ -316,7 +316,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
         {
-            return std::make_shared<LoadingBar>(*this);
+            return std::make_shared<ProgressBar>(*this);
         }
 
 
@@ -337,13 +337,13 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Defines specific triggers to LoadingBar.
+        /// Defines specific triggers to ProgressBar.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum LoadingBarCallbacks
+        enum ProgressBarCallbacks
         {
-            ValueChanged = ClickableWidgetCallbacksCount * 1,    ///< Value changed
-            LoadingBarFull = ClickableWidgetCallbacksCount * 2,  ///< Value reached the max value.
-            LoadingBarCallbacksCount = ClickableWidgetCallbacksCount * 4
+            ValueChanged = ClickableWidgetCallbacksCount * 1,     ///< Value changed
+            ProgressBarFull = ClickableWidgetCallbacksCount * 2,  ///< Value reached the max value.
+            ProgressBarCallbacksCount = ClickableWidgetCallbacksCount * 4
         };
 
 
@@ -362,23 +362,23 @@ namespace tgui
 
         FillDirection m_fillDirection = FillDirection::LeftToRight;
 
-        friend class LoadingBarRenderer;
+        friend class ProgressBarRenderer;
     };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class LoadingBarRenderer : public WidgetRenderer, public WidgetBorders
+    class ProgressBarRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         ///
-        /// @param loadingBar  The loading bar that is connected to the renderer
+        /// @param progressBar  The progress bar that is connected to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        LoadingBarRenderer(LoadingBar* loadingBar) : m_loadingBar{loadingBar} {}
+        ProgressBarRenderer(ProgressBar* progressBar) : m_progressBar{progressBar} {}
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,7 +411,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        /// @brief Changes the color of the text that is optionally displayed on top of the progress bar.
         ///
         /// @param color  The new text color
         ///
@@ -425,7 +425,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        /// @brief Changes the color of the text that is optionally displayed on top of the progress bar.
         ///
         /// @param color  The new text color that is displayed on top of the background color/image.
         ///
@@ -436,7 +436,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text that is optionally displayed on top of the loading bar.
+        /// @brief Changes the color of the text that is optionally displayed on top of the progress bar.
         ///
         /// @param color  The new text color that is displayed on top of the foreground color/image.
         ///
@@ -447,11 +447,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the loading bar.
+        /// @brief Changes the background color of the progress bar.
         ///
         /// @param color  The new background color
         ///
-        /// This is the color that you see in the part of the loading bar that is not filled.
+        /// This is the color that you see in the part of the progress bar that is not filled.
         ///
         /// Note that this color is ignored when you set an image as background.
         ///
@@ -460,11 +460,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color of the loading bar.
+        /// @brief Changes the foreground color of the progress bar.
         ///
         /// @param color  The new foreground color
         ///
-        /// This is the color that is used to fill the loading bar and is drawn on top of the background color.
+        /// This is the color that is used to fill the progress bar and is drawn on top of the background color.
         ///
         /// Note that this color is ignored when you set an image as foreground.
         ///
@@ -475,14 +475,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the border color.
         ///
-        /// @param color  The color that is used for the borders that are optionally drawn around the loading bar
+        /// @param color  The color that is used for the borders that are optionally drawn around the progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorderColor(const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the background image of the loading bar
+        /// @brief Change the background image of the progress bar
         ///
         /// When this image and the front image are set, the background color property will be ignored.
         ///
@@ -501,7 +501,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the foreground image of the loading bar
+        /// @brief Change the foreground image of the progress bar
         ///
         /// When this image and the back image are set, the background color property will be ignored.
         ///
@@ -536,13 +536,13 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        LoadingBarRenderer(const LoadingBarRenderer&) = default;
-        LoadingBarRenderer& operator=(const LoadingBarRenderer&) = delete;
+        ProgressBarRenderer(const ProgressBarRenderer&) = default;
+        ProgressBarRenderer& operator=(const ProgressBarRenderer&) = delete;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        LoadingBar* m_loadingBar;
+        ProgressBar* m_progressBar;
 
         Texture  m_textureBack;
         Texture  m_textureFront;
@@ -552,7 +552,7 @@ namespace tgui
 
         sf::Color m_borderColor = {0, 0, 0};
 
-        friend class LoadingBar;
+        friend class ProgressBar;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -562,4 +562,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_LOADING_BAR_HPP
+#endif // TGUI_PROGRESS_BAR_HPP
