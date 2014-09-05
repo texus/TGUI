@@ -34,6 +34,7 @@ namespace tgui
     Picture::Picture()
     {
         m_callback.widgetType = Type_Picture;
+        m_animatedWidget = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,17 +90,59 @@ namespace tgui
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x, getSize().y)).contains(x, y))
         {
             // We sometimes want clicks to go through transparent parts of the picture
-            if (!m_fullyClickable)
-            {
-                if (!m_texture.isTransparentPixel(x, y))
-                    return true;
-            }
+            if (!m_fullyClickable && m_texture.isTransparentPixel(x, y))
+                return false;
+            else
+                return true;
         }
 
         if (m_mouseHover)
             mouseLeftWidget();
 
         return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::leftMouseReleased(float x, float y)
+    {
+        bool mouseDown = m_mouseDown;
+
+        ClickableWidget::leftMouseReleased(x, y);
+
+        if (mouseDown)
+        {
+            // Check if you double-clicked
+            if (m_possibleDoubleClick)
+            {
+                m_possibleDoubleClick = false;
+
+                if (m_callbackFunctions[LeftMouseDoubleClicked].empty() == false)
+                {
+                    m_callback.trigger = LeftMouseDoubleClicked;
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    addCallback();
+                }
+            }
+            else // This is the first click
+            {
+                m_animationTimeElapsed = {};
+                m_possibleDoubleClick = true;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::update()
+    {
+        // When double-clicking, the second click has to come within 500 milliseconds
+        if (m_animationTimeElapsed >= sf::milliseconds(500))
+        {
+            m_animationTimeElapsed = {};
+            m_possibleDoubleClick = false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

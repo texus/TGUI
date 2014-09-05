@@ -83,7 +83,7 @@ namespace tgui
         }
 
         // Check if we clicked on the label (not just mouse release)
-        if (m_mouseDown == true)
+        if (m_mouseDown)
         {
             // Add the callback (if the user requested it)
             if (m_callbackFunctions[LeftMouseClicked].empty() == false)
