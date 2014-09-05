@@ -40,7 +40,7 @@ tgui_set_option( TGUI_SHARED_LIBS TRUE BOOL "Build shared libraries (Set to OFF 
 if( SFML_COMPILER_GCC )
 
     if( NOT CMAKE_CXX_FLAGS )
-        set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++0x" CACHE STRING "C++ compiler flags" FORCE )
+        set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11" CACHE STRING "C++ compiler flags" FORCE )
         set( CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE )
     endif()
 
