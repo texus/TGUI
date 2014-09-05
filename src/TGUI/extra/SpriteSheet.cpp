@@ -47,6 +47,9 @@ namespace ext
         spriteSheet->Picture::operator=(*Picture::create(filename));
         spriteSheet->setCells(rows, columns);
 
+        if ((rows > 1) || (columns > 1))
+            spriteSheet->setSize(spriteSheet->m_texture.getImageSize().x / columns, spriteSheet->m_texture.getImageSize().y / rows);
+
         return spriteSheet;
     }
 
@@ -91,22 +94,10 @@ namespace ext
         if (columns == 0)
             columns = 1;
 
-        // Make sure the sprite has the correct size
-        m_texture.setSize({m_texture.getSize().x / m_columns * columns, m_texture.getSize().y / m_rows * rows});
-
-        // Store the number of rows and columns
         m_rows = rows;
         m_columns = columns;
 
-        // Make the correct part of the image visible
-        m_texture.setTextureRect({(m_visibleCell.x-1) * m_texture.getSize().x / m_columns,
-                                  (m_visibleCell.y-1) * m_texture.getSize().y / m_rows,
-                                  m_texture.getSize().x / m_columns,
-                                  m_texture.getSize().y / m_rows});
-
-        // Make sure the image is displayed at the correct position
-        m_texture.setPosition(getPosition().x - ((m_visibleCell.x-1) * m_texture.getSize().x / m_columns),
-                              getPosition().y - ((m_visibleCell.y-1) * m_texture.getSize().y / m_rows));
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
