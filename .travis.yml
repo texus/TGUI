@@ -5,6 +5,7 @@ compiler:
 branches:
   only:
     - master
+    - v0.7-dev
 
 install:
   - wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-linux-gcc-64bits.tar.bz2
