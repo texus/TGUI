@@ -234,17 +234,21 @@ namespace tgui
 
     bool RadioButton::mouseOnWidget(float x, float y)
     {
-        // Check if the mouse is on top of the image
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-            return true;
-        else
+        if (m_allowTextClick)
         {
+            // Check if the mouse is on top of the image or the small gap between image and text
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x * 11.0f / 10.0f, getSize().y}.contains(x, y))
+                return true;
+
             // Check if the mouse is on top of the text
-            if (m_allowTextClick)
-            {
-                if (sf::FloatRect(0, 0, m_text.getSize().x, m_text.getSize().y).contains(x - (getPosition().x + ((getSize().x * 11.0f / 10.0f))), y - getPosition().y - ((getSize().y - m_text.getSize().y) / 2.0f)))
-                    return true;
-            }
+            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x * 11.0f / 10.0f), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+                return true;
+        }
+        else // You are not allowed to click on the text
+        {
+            // Check if the mouse is on top of the image
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
+                return true;
         }
 
         if (m_mouseHover == true)
