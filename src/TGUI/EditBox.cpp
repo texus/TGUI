@@ -1144,21 +1144,17 @@ namespace tgui
     void EditBox::update()
     {
         // Only show/hide the caret every half second
-        if (m_animationTimeElapsed < sf::milliseconds(500))
-            return;
+        if (m_animationTimeElapsed >= sf::milliseconds(500))
+        {
+            // Reset the elapsed time
+            m_animationTimeElapsed = {};
 
-        // Reset the elapsed time
-        m_animationTimeElapsed = {};
+            // Switch the value of the visible flag
+            m_caretVisible = !m_caretVisible;
 
-        // Only update when the editbox is visible
-        if (m_visible == false)
-            return;
-
-        // Switch the value of the visible flag
-        m_caretVisible = !m_caretVisible;
-
-        // Too slow for double clicking
-        m_possibleDoubleClick = false;
+            // Too slow for double clicking
+            m_possibleDoubleClick = false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

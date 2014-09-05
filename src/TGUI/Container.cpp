@@ -630,10 +630,9 @@ namespace tgui
         // Loop through all widgets
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
-            // Check if the widget is a container or a widget that uses the time
-            if (m_widgets[i]->m_animatedWidget)
+            // Update the elapsed time in widgets that need it
+            if ((m_widgets[i]->m_animatedWidget) && (m_widgets[i]->isVisible()))
             {
-                // Update the elapsed time
                 m_widgets[i]->m_animationTimeElapsed += m_animationTimeElapsed;
                 m_widgets[i]->update();
             }
