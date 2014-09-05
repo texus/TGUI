@@ -1,5 +1,5 @@
 language: cpp
-compiler: gcc
+compiler: clang
 
 install:
   - wget -O SFML.tar.bz2 https://www.dropbox.com/s/n9a4tife0np3ejf/SFML-2.1-linux-gcc-64bits.tar.bz2?dl=1
