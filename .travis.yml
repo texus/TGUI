@@ -7,5 +7,6 @@ install:
   - cd SFML
   - cmake .
   - sudo make install
+  - cd ..
 
 script: cmake . && make
