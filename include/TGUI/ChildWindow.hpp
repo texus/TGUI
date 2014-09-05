@@ -387,6 +387,7 @@ namespace tgui
 
         Button m_closeButton;
 
+        bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;
 
         friend class ChildWindowRenderer;

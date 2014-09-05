@@ -290,6 +290,8 @@ namespace tgui
 
     void ChildWindow::leftMousePressed(float x, float y)
     {
+        m_mouseDown = true;
+
         // Move the child window to the front
         m_parent->moveWidgetToFront(this);
 
@@ -311,7 +313,7 @@ namespace tgui
             else
             {
                 // The mouse went down on the title bar
-                m_mouseDown = true;
+                m_mouseDownOnTitleBar = true;
 
                 // Remember where we are dragging the title bar
                 m_draggingPosition.x = x - getPosition().x;
@@ -343,11 +345,12 @@ namespace tgui
 
     void ChildWindow::leftMouseReleased(float x , float y)
     {
+        m_mouseDown = false;
+        m_mouseDownOnTitleBar = false;
+
         // Check if the mouse is on top of the title bar
         if (getTransform().transformRect(sf::FloatRect(0, 0, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight)).contains(x, y))
         {
-            m_mouseDown = false;
-
             // Check if the close button was clicked
             if (m_closeButton.m_mouseDown == true)
             {
@@ -382,8 +385,6 @@ namespace tgui
             if (m_closeButton.m_mouseHover)
                 m_closeButton.mouseNotOnWidget();
 
-            // Change the mouse down flag
-            m_mouseDown = false;
             m_closeButton.mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
@@ -410,7 +411,7 @@ namespace tgui
         m_mouseHover = true;
 
         // Check if you are dragging the child window
-        if (m_mouseDown == true)
+        if (m_mouseDown && m_mouseDownOnTitleBar)
         {
             // Move the child window
             setPosition(sf::Vector2f{x, y} - m_draggingPosition);
@@ -441,7 +442,7 @@ namespace tgui
             }
         }
 
-        Container::mouseMoved(x - getRenderer()->m_borders.left, y - (getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top));
+        Container::mouseMoved(x - getRenderer()->m_borders.left, y - getRenderer()->m_titleBarHeight - getRenderer()->m_borders.top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
