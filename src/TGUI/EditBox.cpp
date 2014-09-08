@@ -1103,7 +1103,7 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_textBeforeSelection.getString().getSize() > 0)
-                textX += m_textBeforeSelection.getFont()->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += m_font->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x;
 
@@ -1117,7 +1117,7 @@ namespace tgui
 
             // Watch out for kerning
             if (m_displayedText.getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
-                textX += m_textBeforeSelection.getFont()->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += m_font->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x  - m_textSelection.getPosition().x;
@@ -1135,8 +1135,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textFull.getFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1259,13 +1259,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setTextFont(const sf::Font& font)
+    void EditBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_editBox->m_textBeforeSelection.setFont(font);
-        m_editBox->m_textSelection.setFont(font);
-        m_editBox->m_textAfterSelection.setFont(font);
-        m_editBox->m_textFull.setFont(font);
-        m_editBox->m_defaultText.setFont(font);
+        m_editBox->m_font = font;
+
+        if (font != nullptr)
+        {
+            m_editBox->m_textBeforeSelection.setFont(*font);
+            m_editBox->m_textSelection.setFont(*font);
+            m_editBox->m_textAfterSelection.setFont(*font);
+            m_editBox->m_textFull.setFont(*font);
+            m_editBox->m_defaultText.setFont(*font);
+        }
 
         // Recalculate the text size and position
         m_editBox->setText(m_editBox->m_text);

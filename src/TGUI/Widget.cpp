@@ -48,7 +48,8 @@ namespace tgui
         m_allowFocus     {copy.m_allowFocus},
         m_animatedWidget {copy.m_animatedWidget},
         m_draggableWidget{copy.m_draggableWidget},
-        m_containerWidget{copy.m_containerWidget}
+        m_containerWidget{copy.m_containerWidget},
+        m_font           {copy.m_font}
     {
         if (copy.m_renderer != nullptr)
             m_renderer = copy.m_renderer->clone(this);
@@ -78,6 +79,7 @@ namespace tgui
             m_animatedWidget  = right.m_animatedWidget;
             m_draggableWidget = right.m_draggableWidget;
             m_containerWidget = right.m_containerWidget;
+            m_font            = right.m_font;
             m_callback        = Callback();
 
             if (right.m_renderer != nullptr)

@@ -97,10 +97,10 @@ namespace tgui
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// @param font  Font to copy
+        /// @param font  Font to use
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setGlobalFont(const sf::Font& font);
+        virtual void setGlobalFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,9 +111,9 @@ namespace tgui
         /// @return global font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getGlobalFont() const
+        std::shared_ptr<sf::Font> getGlobalFont() const
         {
-            return m_fontPtr;
+            return m_font;
         }
 
 
@@ -509,9 +509,6 @@ namespace tgui
 
         // The id of the focused widget
         unsigned int m_focusedWidget = 0;
-
-        sf::Font m_globalFont;
-        const sf::Font* m_fontPtr = nullptr;
 
         // A list that stores all functions that receive callbacks triggered by child widgets
         std::list< std::function<void(const Callback&)> > m_globalCallbackFunctions;

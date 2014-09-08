@@ -111,9 +111,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextFont(const sf::Font& font)
+    void Label::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_text.setFont(font);
+        m_font = font;
+
+        if (font != nullptr)
+            m_text.setFont(*font);
+
         setText(getText());
     }
 
@@ -185,7 +189,7 @@ namespace tgui
         Widget::initialize(parent);
 
         if (!getTextFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+            setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

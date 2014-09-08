@@ -174,10 +174,10 @@ namespace tgui
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// @param font  Font to copy
+        /// @param font  Font to use
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setGlobalFont(const sf::Font& font) override;
+        virtual void setGlobalFont(std::shared_ptr<sf::Font> font) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

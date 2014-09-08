@@ -147,7 +147,12 @@ namespace tgui
         getRenderer()->m_textureArrowUpHover.setPosition(getRenderer()->m_textureArrowUpNormal.getPosition());
         getRenderer()->m_textureArrowDownHover.setPosition(getRenderer()->m_textureArrowUpNormal.getPosition());
 
-        float textHeight = sf::Text{"kg", *m_text.getTextFont(), m_text.getTextSize()}.getLocalBounds().height;
+        float textHeight;
+        if (m_font)
+            textHeight = sf::Text{"kg", *m_font, m_text.getTextSize()}.getLocalBounds().height;
+        else
+            textHeight = 0;
+
         m_text.setPosition(getPosition().x + padding.left + (m_text.getTextSize() / 10.0f),
                            getPosition().y + padding.top + ((getSize().y - textHeight) / 2.0f));
     }
@@ -437,8 +442,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_listBox->m_textFont && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
 
         m_text.initialize(parent);
     }
@@ -726,8 +731,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBoxRenderer::setTextFont(const sf::Font& font)
+    void ComboBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_comboBox->m_font = font;
         m_comboBox->m_text.setTextFont(font);
 
         m_comboBox->updatePosition();

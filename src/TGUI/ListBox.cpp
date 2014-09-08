@@ -61,7 +61,6 @@ namespace tgui
         m_itemHeight         {listBoxToCopy.m_itemHeight},
         m_textSize           {listBoxToCopy.m_textSize},
         m_maxItems           {listBoxToCopy.m_maxItems},
-        m_textFont           {listBoxToCopy.m_textFont},
         m_possibleDoubleClick{listBoxToCopy.m_possibleDoubleClick}
     {
         if (listBoxToCopy.m_scroll != nullptr)
@@ -85,7 +84,6 @@ namespace tgui
             std::swap(m_textSize,            temp.m_textSize);
             std::swap(m_maxItems,            temp.m_maxItems);
             std::swap(m_scroll,              temp.m_scroll);
-            std::swap(m_textFont,            temp.m_textFont);
             std::swap(m_possibleDoubleClick, temp.m_possibleDoubleClick);
         }
 
@@ -156,14 +154,17 @@ namespace tgui
 
         Padding padding = getRenderer()->getScaledPadding();
 
-        float textHeight = sf::Text{"kg", *m_textFont, m_textSize}.getLocalBounds().height;
-        for (unsigned int i = 0; i < m_items.size(); ++i)
+        if (m_font != nullptr)
         {
-            m_items[i].setPosition({getPosition().x + (textHeight / 10.0f) + padding.left,
-                                    getPosition().y + static_cast<float>(i * m_itemHeight) + ((m_itemHeight - textHeight) / 2.0f) + padding.top});
+            float textHeight = sf::Text{"kg", *m_font, m_textSize}.getLocalBounds().height;
+            for (unsigned int i = 0; i < m_items.size(); ++i)
+            {
+                m_items[i].setPosition({getPosition().x + (textHeight / 10.0f) + padding.left,
+                                        getPosition().y + static_cast<float>(i * m_itemHeight) + ((m_itemHeight - textHeight) / 2.0f) + padding.top});
 
-            if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                m_items[i].setPosition({m_items[i].getPosition().x, m_items[i].getPosition().y - m_scroll->getValue()});
+                if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+                    m_items[i].setPosition({m_items[i].getPosition().x, m_items[i].getPosition().y - m_scroll->getValue()});
+            }
         }
 
         if (m_scroll != nullptr)
@@ -222,7 +223,7 @@ namespace tgui
 
             // Create the new item
             Label newItem;
-            newItem.setTextFont(*m_textFont);
+            newItem.setTextFont(m_font);
             newItem.setTextColor(getRenderer()->m_textColor);
             newItem.setTextSize(m_textSize);
             newItem.setText(itemName);
@@ -869,8 +870,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textFont && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1084,9 +1085,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setTextFont(const sf::Font& font)
+    void ListBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_listBox->m_textFont = &font;
+        m_listBox->m_font = font;
 
         for (auto& item : m_listBox->m_items)
             item.setTextFont(font);

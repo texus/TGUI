@@ -101,7 +101,12 @@ namespace tgui
         Widget::setPosition(position);
 
         float positionX = getPosition().x;
-        float textHeight = sf::Text{"kg", *m_textFont, getTextSize()}.getLocalBounds().height;
+
+        float textHeight;
+        if (m_font)
+            textHeight = sf::Text{"kg", *m_font, getTextSize()}.getLocalBounds().height;
+        else
+            textHeight = 0;
 
         auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
         auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
@@ -134,7 +139,7 @@ namespace tgui
     {
         // Create the new tab
         Label newTab;
-        newTab.setTextFont(*m_textFont);
+        newTab.setTextFont(m_font);
         newTab.setTextColor(getRenderer()->m_textColor);
         newTab.setTextSize(getTextSize());
         newTab.setText(name);
@@ -158,8 +163,13 @@ namespace tgui
             getRenderer()->m_texturesSelected.back().setPosition({getPosition().x + getSize().x, getPosition().y});
         }
 
+        float textHeight;
+        if (m_font)
+            textHeight = sf::Text{"kg", *m_font, getTextSize()}.getLocalBounds().height;
+        else
+            textHeight = 0;
+
         // Set the correct size of the tab text
-        float textHeight = sf::Text{"kg", *m_textFont, getTextSize()}.getLocalBounds().height;
         newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((m_tabWidth.back() - (2 * m_distanceToSide) - newTab.getSize().x) / 2.0f),
                             getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
 
@@ -456,8 +466,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textFont && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,9 +564,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setTextFont(const sf::Font& font)
+    void TabRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_tab->m_textFont = &font;
+        m_tab->m_font = font;
+
         for (auto& tab : m_tab->m_tabNames)
             tab.setTextFont(font);
 

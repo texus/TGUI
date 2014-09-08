@@ -243,10 +243,10 @@ namespace tgui
         ///
         /// This font will be used by all widgets that are created after calling this function.
         ///
-        /// @param font  Font to copy
+        /// @param font  Font to use
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setGlobalFont(const sf::Font& font)
+        void setGlobalFont(std::shared_ptr<sf::Font> font)
         {
             m_container->setGlobalFont(font);
         }
@@ -260,7 +260,7 @@ namespace tgui
         /// @return global font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Font* getGlobalFont() const
+        std::shared_ptr<sf::Font> getGlobalFont() const
         {
             return m_container->getGlobalFont();
         }

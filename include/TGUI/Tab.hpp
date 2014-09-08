@@ -395,7 +395,6 @@ namespace tgui
         unsigned int       m_distanceToSide = 5;
 
         unsigned int       m_textSize = 0;
-        const sf::Font*    m_textFont = nullptr;
         float              m_maximumTabWidth = 0;
         int                m_selectedTab = -1;
 
@@ -452,7 +451,7 @@ namespace tgui
         /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
+        void setTextFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

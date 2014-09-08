@@ -483,6 +483,9 @@ namespace tgui
         // This is set to true for widgets that store other widgets inside them
         bool m_containerWidget = false;
 
+        // The font that the widget can use
+        std::shared_ptr<sf::Font> m_font = nullptr;
+
         // Renderer of the widget
         std::shared_ptr<WidgetRenderer> m_renderer = nullptr;
 

@@ -46,13 +46,8 @@ namespace tgui
     Container::Container(const Container& containerToCopy) :
         Widget                   {containerToCopy},
         m_focusedWidget          {0},
-        m_globalFont             {containerToCopy.m_globalFont},
-        m_fontPtr                {containerToCopy.m_fontPtr},
         m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions) // Did not compile on mingw 4.7 when using braces
     {
-        if (m_fontPtr == &containerToCopy.m_globalFont)
-            m_fontPtr = &m_globalFont;
-
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_widgets.size(); ++i)
         {
@@ -74,13 +69,7 @@ namespace tgui
 
             // Copy the font and the callback functions
             m_focusedWidget = 0;
-            m_globalFont = right.m_globalFont;
             m_globalCallbackFunctions = right.m_globalCallbackFunctions;
-
-            if (right.m_fontPtr == &right.m_globalFont)
-                m_fontPtr = &m_globalFont;
-            else
-                m_fontPtr = right.m_fontPtr;
 
             // Remove all the old widgets
             removeAllWidgets();
@@ -102,21 +91,16 @@ namespace tgui
 
     void Container::setGlobalFont(const std::string& filename)
     {
-        if (m_globalFont.loadFromFile(getResourcePath() + filename))
-            m_fontPtr = &m_globalFont;
-        else
-        {
-            m_fontPtr = nullptr;
+        m_font = std::make_shared<sf::Font>();
+        if (!m_font->loadFromFile(getResourcePath() + filename))
             throw Exception{"Failed to load font '" + filename + "'."};
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setGlobalFont(const sf::Font& font)
+    void Container::setGlobalFont(std::shared_ptr<sf::Font> font)
     {
-        m_globalFont = font;
-        m_fontPtr = &m_globalFont;
+        m_font = font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,8 +603,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_fontPtr && m_parent->getGlobalFont())
-            setGlobalFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            setGlobalFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

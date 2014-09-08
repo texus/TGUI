@@ -353,8 +353,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textBack.getTextFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +395,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBarRenderer::setTextFont(const sf::Font& font)
+    void ProgressBarRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_progressBar->m_font = font;
         m_progressBar->m_textBack.setTextFont(font);
         m_progressBar->m_textFront.setTextFont(font);
 

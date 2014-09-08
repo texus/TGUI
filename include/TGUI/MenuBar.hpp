@@ -328,8 +328,6 @@ namespace tgui
 
         int m_visibleMenu = -1;
 
-        const sf::Font* m_textFont = nullptr;
-
         unsigned int m_textSize = 0;
 
         float m_minimumSubMenuWidth = 125;
@@ -417,7 +415,7 @@ namespace tgui
         /// @param font  The new font.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
+        void setTextFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

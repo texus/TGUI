@@ -341,8 +341,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_text.getTextFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,8 +420,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButtonRenderer::setTextFont(const sf::Font& font)
+    void RadioButtonRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_radioButton->m_font = font;
         m_radioButton->m_text.setTextFont(font);
 
         // Recalculate the text position and size

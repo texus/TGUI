@@ -203,7 +203,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const sf::Font* font)
+    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, std::shared_ptr<sf::Font> font)
     {
         // Remove the top line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size() + 1))
@@ -216,7 +216,7 @@ namespace tgui
         m_panel->add(label);
 
         if (font != nullptr)
-            label->setTextFont(*font);
+            label->setTextFont(font);
 
         recalculateFullTextHeight();
 
@@ -282,8 +282,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTextFont(const sf::Font& font)
+    void ChatBox::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_font = font;
         m_panel->setGlobalFont(font);
 
         bool lineChanged = false;
@@ -552,8 +553,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_panel->getGlobalFont() && m_parent->getGlobalFont())
-            setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            setTextFont(m_parent->getGlobalFont());
 
         m_panel->initialize(m_parent);
     }

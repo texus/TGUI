@@ -193,12 +193,11 @@ namespace tgui
             if (m_scroll)
                 m_scroll->setPosition(m_scroll->getPosition() + diff);
         }
-        else // Recalculate everything
+        else if (m_font) // Recalculate everything
         {
             getRenderer()->m_backgroundTexture.setPosition(getPosition());
 
-            const sf::Font* font = m_textBeforeSelection.getFont();
-            sf::Text tempText{"kg", *font, getTextSize()};
+            sf::Text tempText{"kg", *m_font, getTextSize()};
             float textShiftY = tempText.getLocalBounds().top;
             Padding padding = getRenderer()->getScaledPadding();
 
@@ -208,7 +207,7 @@ namespace tgui
 
                 float kerning = 0;
                 if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].getSize()))
-                    kerning = font->getKerning(m_lines[m_selEnd.y][m_selEnd.x-1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
+                    kerning = m_font->getKerning(m_lines[m_selEnd.y][m_selEnd.x-1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
 
                 m_caretPosition = {getPosition().x + padding.left + tempText.findCharacterPos(tempText.getString().getSize()).x + kerning,
                                    getPosition().y + padding.top + (m_selEnd.y * m_lineHeight)};
@@ -228,11 +227,11 @@ namespace tgui
 
                 float kerningSelectionStart = 0;
                 if ((selectionStart.x > 0) && (selectionStart.x < m_lines[selectionStart.y].getSize()))
-                    kerningSelectionStart = font->getKerning(m_lines[selectionStart.y][selectionStart.x-1], m_lines[selectionStart.y][selectionStart.x], m_textSize);
+                    kerningSelectionStart = m_font->getKerning(m_lines[selectionStart.y][selectionStart.x-1], m_lines[selectionStart.y][selectionStart.x], m_textSize);
 
                 float kerningSelectionEnd = 0;
                 if ((selectionEnd.x > 0) && (selectionEnd.x < m_lines[selectionEnd.y].getSize()))
-                    kerningSelectionEnd = font->getKerning(m_lines[selectionEnd.y][selectionEnd.x-1], m_lines[selectionEnd.y][selectionEnd.x], m_textSize);
+                    kerningSelectionEnd = m_font->getKerning(m_lines[selectionEnd.y][selectionEnd.x-1], m_lines[selectionEnd.y][selectionEnd.x], m_textSize);
 
                 if (selectionStart.x > 0)
                 {
@@ -325,6 +324,11 @@ namespace tgui
                 m_visibleLines = std::min<unsigned int>((getSize().y - padding.top - padding.bottom) / m_lineHeight, m_lines.size());
             }
         }
+        else // There is no font, so there can't be calculations
+        {
+            m_topLine = 0;
+            m_visibleLines = 0;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,8 +398,10 @@ namespace tgui
         m_textAfterSelection2.setCharacterSize(m_textSize);
 
         // Calculate the height of one line
-        if (m_textBeforeSelection.getFont())
-            m_lineHeight = m_textBeforeSelection.getFont()->getLineSpacing(m_textSize);
+        if (m_font)
+            m_lineHeight = m_font->getLineSpacing(m_textSize);
+        else
+            m_lineHeight = 0;
 
         updateSize();
     }
@@ -1049,7 +1055,7 @@ namespace tgui
         position.y -= getPosition().y + padding.top;
 
         // Don't continue when line height is 0 or when there is no font yet
-        if ((m_lineHeight == 0) || (m_textBeforeSelection.getFont() == nullptr))
+        if ((m_lineHeight == 0) || (m_font == nullptr))
             return sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
         // Find on which line the mouse is
@@ -1083,11 +1089,11 @@ namespace tgui
             if (curChar == '\n')
                 return sf::Vector2u(m_lines[lineNumber].getSize() - 1, lineNumber);
             else if (curChar == '\t')
-                charWidth = static_cast<float>(m_textBeforeSelection.getFont()->getGlyph(' ', getTextSize(), false).advance) * 4;
+                charWidth = static_cast<float>(m_font->getGlyph(' ', getTextSize(), false).advance) * 4;
             else
-                charWidth = static_cast<float>(m_textBeforeSelection.getFont()->getGlyph(curChar, getTextSize(), false).advance);
+                charWidth = static_cast<float>(m_font->getGlyph(curChar, getTextSize(), false).advance);
 
-            float kerning = static_cast<float>(m_textBeforeSelection.getFont()->getKerning(prevChar, curChar, getTextSize()));
+            float kerning = static_cast<float>(m_font->getKerning(prevChar, curChar, getTextSize()));
             if (width + charWidth + kerning <= position.x)
                 width += charWidth + kerning;
             else
@@ -1171,7 +1177,7 @@ namespace tgui
     void TextBox::rearrangeText(bool keepSelection)
     {
         // Don't continue when line height is 0 or when there is no font yet
-        if ((m_lineHeight == 0) || (m_textBeforeSelection.getFont() == nullptr))
+        if ((m_lineHeight == 0) || (m_font == nullptr))
             return;
 
         sf::Vector2u newSelStart;
@@ -1205,11 +1211,11 @@ namespace tgui
                     break;
                 }
                 else if (curChar == '\t')
-                    charWidth = static_cast<float>(m_textBeforeSelection.getFont()->getGlyph(' ', getTextSize(), false).advance) * 4;
+                    charWidth = static_cast<float>(m_font->getGlyph(' ', getTextSize(), false).advance) * 4;
                 else
-                    charWidth = static_cast<float>(m_textBeforeSelection.getFont()->getGlyph(curChar, getTextSize(), false).advance);
+                    charWidth = static_cast<float>(m_font->getGlyph(curChar, getTextSize(), false).advance);
 
-                float kerning = static_cast<float>(m_textBeforeSelection.getFont()->getKerning(prevChar, curChar, getTextSize()));
+                float kerning = static_cast<float>(m_font->getKerning(prevChar, curChar, getTextSize()));
                 if (width + charWidth + kerning <= maxLineWidth)
                 {
                     width += charWidth + kerning;
@@ -1445,8 +1451,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textBeforeSelection.getFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1637,13 +1643,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setTextFont(const sf::Font& font)
+    void TextBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_textBox->m_textBeforeSelection.setFont(font);
-        m_textBox->m_textSelection1.setFont(font);
-        m_textBox->m_textSelection2.setFont(font);
-        m_textBox->m_textAfterSelection1.setFont(font);
-        m_textBox->m_textAfterSelection2.setFont(font);
+        m_textBox->m_font = font;
+
+        if (font)
+        {
+            m_textBox->m_textBeforeSelection.setFont(*font);
+            m_textBox->m_textSelection1.setFont(*font);
+            m_textBox->m_textSelection2.setFont(*font);
+            m_textBox->m_textAfterSelection1.setFont(*font);
+            m_textBox->m_textAfterSelection2.setFont(*font);
+        }
 
         m_textBox->setTextSize(m_textBox->getTextSize());
     }

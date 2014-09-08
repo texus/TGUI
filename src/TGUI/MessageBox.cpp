@@ -196,8 +196,8 @@ namespace tgui
     {
         ChildWindow::initialize(parent);
 
-        if (!m_label->getTextFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,8 +279,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBoxRenderer::setTextFont(const sf::Font& font)
+    void MessageBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_messageBox->m_font = font;
         m_messageBox->m_label->setTextFont(font);
 
         for (unsigned int i = 0; i < m_messageBox->m_buttons.size(); ++i)

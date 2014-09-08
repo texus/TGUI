@@ -155,19 +155,19 @@ namespace tgui
     {
         Container::setGlobalFont(filename);
 
-        m_closeButton.getRenderer()->setTextFont(*getGlobalFont());
-        m_titleText.setTextFont(*getGlobalFont());
+        m_closeButton.getRenderer()->setTextFont(getGlobalFont());
+        m_titleText.setTextFont(getGlobalFont());
         setTitle(getTitle());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setGlobalFont(const sf::Font& font)
+    void ChildWindow::setGlobalFont(std::shared_ptr<sf::Font> font)
     {
         Container::setGlobalFont(font);
 
-        m_closeButton.getRenderer()->setTextFont(*getGlobalFont());
-        m_titleText.setTextFont(*getGlobalFont());
+        m_closeButton.getRenderer()->setTextFont(getGlobalFont());
+        m_titleText.setTextFont(getGlobalFont());
         setTitle(getTitle());
     }
 
@@ -473,8 +473,8 @@ namespace tgui
 
         m_closeButton.initialize(this);
 
-        if (!m_fontPtr && m_parent->getGlobalFont())
-            setGlobalFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            setGlobalFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

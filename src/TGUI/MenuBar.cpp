@@ -119,7 +119,7 @@ namespace tgui
     {
         Menu newMenu;
 
-        newMenu.text.setTextFont(*m_textFont);
+        newMenu.text.setTextFont(m_font);
         newMenu.text.setText(text);
         newMenu.text.setTextColor(getRenderer()->m_textColor);
         newMenu.text.setTextSize(m_textSize);
@@ -146,7 +146,7 @@ namespace tgui
             if (m_menus[i].text.getText() == menu)
             {
                 Label menuItem;
-                menuItem.setTextFont(*m_textFont);
+                menuItem.setTextFont(m_font);
                 menuItem.setText(text);
                 menuItem.setTextColor(getRenderer()->m_textColor);
                 menuItem.setTextSize(m_textSize);
@@ -438,8 +438,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_textFont && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
 
         setSize(m_parent->getSize().x, m_size.y);
     }
@@ -568,9 +568,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setTextFont(const sf::Font& font)
+    void MenuBarRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
-        m_menuBar->m_textFont = &font;
+        m_menuBar->m_font = font;
 
         for (unsigned int i = 0; i < m_menuBar->m_menus.size(); ++i)
         {

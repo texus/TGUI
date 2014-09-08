@@ -548,9 +548,6 @@ namespace tgui
         // When there are too many items a scrollbar will be shown
         Scrollbar::Ptr m_scroll = Scrollbar::create();
 
-        // The font used to draw the text
-        const sf::Font* m_textFont = nullptr;
-
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
 
@@ -699,7 +696,7 @@ namespace tgui
         /// @param font  The new font.
         ///
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(const sf::Font& font);
+        void setTextFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -265,8 +265,8 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_text.getTextFont() && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(*m_parent->getGlobalFont());
+        if (!m_font && m_parent->getGlobalFont())
+            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,8 +340,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setTextFont(const sf::Font& font)
+    void ButtonRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
+        m_button->m_font = font;
         m_button->m_text.setTextFont(font);
 
         // Reposition the text
