@@ -1,7 +1,7 @@
 TGUI - Texus's Graphical User Interface
 =======================================
 
-[![Build Status](https://travis-ci.org/texus/TGUI.png)](https://travis-ci.org/texus/TGUI)
+[![Build Status](https://travis-ci.org/texus/TGUI.svg?branch=v0.7-dev)](https://travis-ci.org/texus/TGUI)
 
 In one line: TGUI is an easy to use, cross-platform, c++ GUI for SFML.
 
