@@ -39,7 +39,7 @@ namespace tgui
 
     ComboBox::ComboBox()
     {
-        m_callback.widgetType = Type_ComboBox;
+        m_callback.widgetType = WidgetType::ComboBox;
         m_draggableWidget = true;
 
         initListBox();

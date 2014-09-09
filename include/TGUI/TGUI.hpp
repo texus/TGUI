@@ -47,6 +47,7 @@
 #include <TGUI/MenuBar.hpp>
 #include <TGUI/ChatBox.hpp>
 #include <TGUI/Knob.hpp>
+#include <TGUI/Tooltip.hpp>
 
 #include <TGUI/Canvas.hpp>
 #include <TGUI/Container.hpp>

@@ -36,7 +36,7 @@ namespace tgui
 
     Checkbox::Checkbox()
     {
-        m_callback.widgetType = Type_Checkbox;
+        m_callback.widgetType = WidgetType::Checkbox;
 
         m_renderer = std::make_shared<CheckboxRenderer>(this);
 

@@ -35,7 +35,7 @@ namespace ext
 
     AnimatedPicture::AnimatedPicture()
     {
-        m_callback.widgetType = Type_AnimatedPicture;
+        m_callback.widgetType = WidgetType::AnimatedPicture;
         m_animatedWidget = true;
     }
 

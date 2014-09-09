@@ -38,7 +38,7 @@ namespace ext
 
     Slider2d::Slider2d()
     {
-        m_callback.widgetType = Type_Slider2d;
+        m_callback.widgetType = WidgetType::Slider2d;
         m_draggableWidget = true;
     }
 

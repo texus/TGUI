@@ -35,7 +35,7 @@ namespace tgui
 
     ChildWindow::ChildWindow()
     {
-        m_callback.widgetType = Type_ChildWindow;
+        m_callback.widgetType = WidgetType::ChildWindow;
 
         m_renderer = std::make_shared<ChildWindowRenderer>(this);
 

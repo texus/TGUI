@@ -33,7 +33,7 @@ namespace tgui
 
     Picture::Picture()
     {
-        m_callback.widgetType = Type_Picture;
+        m_callback.widgetType = WidgetType::Picture;
         m_animatedWidget = true;
     }
 

@@ -35,7 +35,7 @@ namespace ext
 
     SpriteSheet::SpriteSheet()
     {
-        m_callback.widgetType = Type_SpriteSheet;
+        m_callback.widgetType = WidgetType::SpriteSheet;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

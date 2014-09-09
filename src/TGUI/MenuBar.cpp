@@ -36,7 +36,7 @@ namespace tgui
 
     MenuBar::MenuBar()
     {
-        m_callback.widgetType = Type_MenuBar;
+        m_callback.widgetType = WidgetType::MenuBar;
 
         m_renderer = std::make_shared<MenuBarRenderer>(this);
 

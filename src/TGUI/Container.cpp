@@ -384,7 +384,7 @@ namespace tgui
         // Loop through all radio buttons and uncheck them
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_widgets[i]->m_callback.widgetType == Type_RadioButton)
+            if (m_widgets[i]->m_callback.widgetType == WidgetType::RadioButton)
                 std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
     }
@@ -595,6 +595,29 @@ namespace tgui
     void Container::widgetUnfocused()
     {
         unfocusWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Tooltip::Ptr Container::askTooltip(sf::Vector2f mousePos)
+    {
+        if (mouseOnWidget(mousePos.x, mousePos.y))
+        {
+            Tooltip::Ptr tooltip = nullptr;
+
+            mousePos -= getPosition() + getWidgetsOffset();
+
+            Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
+            if (widget)
+                tooltip = widget->askTooltip(mousePos);
+
+            if (tooltip)
+                return tooltip;
+            else if (getTooltip()->getText() != "")
+                return getTooltip();
+        }
+
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

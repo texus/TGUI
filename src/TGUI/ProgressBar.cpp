@@ -36,7 +36,7 @@ namespace tgui
 
     ProgressBar::ProgressBar()
     {
-        m_callback.widgetType = Type_ProgressBar;
+        m_callback.widgetType = WidgetType::ProgressBar;
 
         m_renderer = std::make_shared<ProgressBarRenderer>(this);
 

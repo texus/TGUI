@@ -33,7 +33,7 @@ namespace tgui
 
     Scrollbar::Scrollbar()
     {
-        m_callback.widgetType = Type_Scrollbar;
+        m_callback.widgetType = WidgetType::Scrollbar;
         m_draggableWidget = true;
 
         m_renderer = std::make_shared<ScrollbarRenderer>(this);

@@ -34,7 +34,7 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_callback.widgetType = Type_RadioButton;
+        m_callback.widgetType = WidgetType::RadioButton;
 
         m_renderer = std::make_shared<RadioButtonRenderer>(this);
 

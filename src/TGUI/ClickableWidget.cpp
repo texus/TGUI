@@ -33,7 +33,7 @@ namespace tgui
 
     ClickableWidget::ClickableWidget()
     {
-        m_callback.widgetType = Type_ClickableWidget;
+        m_callback.widgetType = WidgetType::ClickableWidget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

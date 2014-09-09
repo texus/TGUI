@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/Tooltip.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -124,29 +125,50 @@ namespace tgui
         assert(m_window != nullptr);
 
         // Check if the event has something to do with the mouse
-        if (event.type == sf::Event::MouseMoved)
+        if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed)
+         || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::MouseWheelMoved))
         {
-            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
+            sf::Vector2f mouseCoords;
 
-            // Adjust the mouse position of the event
-            event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
-            event.mouseMove.y = static_cast<int>(mouseCoords.y + 0.5f);
-        }
-        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::MouseButtonReleased))
-        {
-            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
+            switch (event.type)
+            {
+                case sf::Event::MouseMoved:
+                {
+                    mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
+                    event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
+                    event.mouseMove.y = static_cast<int>(mouseCoords.y + 0.5f);
+                    break;
+                }
 
-            // Adjust the mouse position of the event
-            event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
-            event.mouseButton.y = static_cast<int>(mouseCoords.y + 0.5f);
-        }
-        else if (event.type == sf::Event::MouseWheelMoved)
-        {
-            sf::Vector2f mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_view);
+                case sf::Event::MouseButtonPressed:
+                case sf::Event::MouseButtonReleased:
+                {
+                    mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
+                    event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
+                    event.mouseButton.y = static_cast<int>(mouseCoords.y + 0.5f);
+                    break;
+                }
 
-            // Adjust the mouse position of the event
-            event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
-            event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
+                case sf::Event::MouseWheelMoved:
+                {
+                    mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_view);
+                    event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
+                    event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            // If a tooltip is visible then hide it now
+            if (m_visibleTooltip != nullptr)
+                remove(m_visibleTooltip);
+
+            // Reset the data for the tooltip since the mouse has moved
+            m_tooltipTime = {};
+            m_tooltipPossible = true;
+            m_lastMousePos = mouseCoords;
         }
 
         // Keep track of whether the window is focused or not
@@ -341,6 +363,25 @@ namespace tgui
     {
         m_container->m_animationTimeElapsed = elapsedTime;
         m_container->update();
+
+        if (m_tooltipPossible)
+        {
+            m_tooltipTime += elapsedTime;
+            if (m_tooltipTime >= sf::milliseconds(500))
+            {
+                Tooltip::Ptr tooltip = m_container->askTooltip(m_lastMousePos);
+                if (tooltip)
+                {
+                    m_visibleTooltip = tooltip;
+                    add(tooltip, "#TGUI_INTERNAL$Tooltip#");
+
+                    tooltip->setPosition({m_lastMousePos.x + 5, m_lastMousePos.y + 20});
+                    tooltip->moveToFront();
+                }
+
+                m_tooltipPossible = false;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

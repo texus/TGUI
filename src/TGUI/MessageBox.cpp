@@ -33,7 +33,7 @@ namespace tgui
 
     MessageBox::MessageBox()
     {
-        m_callback.widgetType = Type_MessageBox;
+        m_callback.widgetType = WidgetType::MessageBox;
 
         m_renderer = std::make_shared<MessageBoxRenderer>(this);
 

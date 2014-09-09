@@ -39,7 +39,7 @@ namespace tgui
 
     EditBox::EditBox()
     {
-        m_callback.widgetType = Type_EditBox;
+        m_callback.widgetType = WidgetType::EditBox;
         m_animatedWidget = true;
         m_draggableWidget = true;
         m_allowFocus = true;

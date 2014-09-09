@@ -34,7 +34,7 @@ namespace tgui
 
     Knob::Knob()
     {
-        m_callback.widgetType = Type_Knob;
+        m_callback.widgetType = WidgetType::Knob;
         m_draggableWidget = true;
 
         m_renderer = std::make_shared<KnobRenderer>(this);

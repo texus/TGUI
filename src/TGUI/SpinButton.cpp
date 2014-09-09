@@ -34,7 +34,7 @@ namespace tgui
 
     SpinButton::SpinButton()
     {
-        m_callback.widgetType = Type_SpinButton;
+        m_callback.widgetType = WidgetType::SpinButton;
 
         m_renderer = std::make_shared<SpinButtonRenderer>(this);
 

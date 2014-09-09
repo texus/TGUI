@@ -34,7 +34,7 @@ namespace tgui
 
     Slider::Slider()
     {
-        m_callback.widgetType = Type_Slider;
+        m_callback.widgetType = WidgetType::Slider;
         m_draggableWidget = true;
 
         m_renderer = std::make_shared<SliderRenderer>(this);

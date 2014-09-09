@@ -38,7 +38,7 @@ namespace tgui
 
     Label::Label()
     {
-        m_callback.widgetType = Type_Label;
+        m_callback.widgetType = WidgetType::Label;
         m_animatedWidget = true;
 
         m_background.setFillColor(sf::Color::Transparent);

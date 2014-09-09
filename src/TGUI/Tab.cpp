@@ -36,7 +36,7 @@ namespace tgui
 
     Tab::Tab()
     {
-        m_callback.widgetType = Type_Tab;
+        m_callback.widgetType = WidgetType::Tab;
 
         m_renderer = std::make_shared<TabRenderer>(this);
 

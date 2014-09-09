@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widget.hpp>
+#include <TGUI/Tooltip.hpp>
 #include <TGUI/Container.hpp>
 
 #include <cassert>
@@ -32,6 +33,12 @@
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Widget()
+    {
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(const Widget& copy) :
@@ -51,6 +58,11 @@ namespace tgui
         m_containerWidget{copy.m_containerWidget},
         m_font           {copy.m_font}
     {
+        if (copy.m_tooltip)
+            m_tooltip = Tooltip::copy(copy.m_tooltip);
+        else
+            m_tooltip = nullptr;
+
         if (copy.m_renderer != nullptr)
             m_renderer = copy.m_renderer->clone(this);
         else
@@ -81,6 +93,11 @@ namespace tgui
             m_containerWidget = right.m_containerWidget;
             m_font            = right.m_font;
             m_callback        = Callback();
+
+            if (right.m_tooltip)
+                m_tooltip = Tooltip::copy(right.m_tooltip);
+            else
+                m_tooltip = nullptr;
 
             if (right.m_renderer != nullptr)
                 m_renderer = right.m_renderer->clone(this);
@@ -199,6 +216,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setTooltip(Tooltip::Ptr tooltip)
+    {
+        m_tooltip = tooltip;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Tooltip::Ptr Widget::getTooltip()
+    {
+        if (!m_tooltip)
+            m_tooltip = Tooltip::create();
+
+        return m_tooltip;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::update()
     {
     }
@@ -280,6 +314,16 @@ namespace tgui
     void Widget::mouseNoLongerDown()
     {
         m_mouseDown = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Tooltip::Ptr Widget::askTooltip(sf::Vector2f mousePos)
+    {
+        if (mouseOnWidget(mousePos.x, mousePos.y) && getTooltip()->getText() != "")
+            return getTooltip();
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

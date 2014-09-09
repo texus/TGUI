@@ -34,7 +34,7 @@ namespace tgui
 
     Button::Button()
     {
-        m_callback.widgetType = Type_Button;
+        m_callback.widgetType = WidgetType::Button;
 
         m_renderer = std::make_shared<ButtonRenderer>(this);
 
