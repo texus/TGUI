@@ -42,7 +42,8 @@ namespace ext
     {
     public:
 
-        typedef std::shared_ptr<SpriteSheet> Ptr;
+        typedef std::shared_ptr<SpriteSheet> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const SpriteSheet> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,10 +79,7 @@ namespace ext
         /// @return The new sprite sheet
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SpriteSheet::Ptr copy(const SpriteSheet::Ptr& spriteSheet)
-        {
-            return std::make_shared<SpriteSheet>(*spriteSheet);
-        }
+        static SpriteSheet::Ptr copy(SpriteSheet::ConstPtr spriteSheet);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

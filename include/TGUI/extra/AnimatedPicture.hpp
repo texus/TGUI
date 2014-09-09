@@ -41,7 +41,8 @@ namespace ext
     {
     public:
 
-        typedef std::shared_ptr<AnimatedPicture> Ptr;
+        typedef std::shared_ptr<AnimatedPicture> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const AnimatedPicture> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,10 +75,7 @@ namespace ext
         /// @return The new animated picture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static AnimatedPicture::Ptr copy(const AnimatedPicture::Ptr& picture)
-        {
-            return std::make_shared<AnimatedPicture>(*picture);
-        }
+        static AnimatedPicture::Ptr copy(AnimatedPicture::ConstPtr picture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

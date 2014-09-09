@@ -40,7 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Panel> Ptr;
+        typedef std::shared_ptr<Panel> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Panel> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,10 +71,7 @@ namespace tgui
         /// @return The new panel
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Panel::Ptr copy(const Panel::Ptr& panel)
-        {
-            return std::make_shared<Panel>(*panel);
-        }
+        static Panel::Ptr copy(Panel::ConstPtr panel);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -41,6 +41,16 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    AnimatedPicture::Ptr AnimatedPicture::copy(AnimatedPicture::ConstPtr picture)
+    {
+        if (picture)
+            return std::make_shared<AnimatedPicture>(*picture);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void AnimatedPicture::setPosition(const Layout& position)
     {
         Widget::setPosition(position);

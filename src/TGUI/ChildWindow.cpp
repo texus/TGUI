@@ -57,6 +57,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ChildWindow::Ptr ChildWindow::copy(ChildWindow::ConstPtr childWindow)
+    {
+        if (childWindow)
+            return std::make_shared<ChildWindow>(*childWindow);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setPosition(const Layout& position)
     {
         float x = position.getValue().x;
@@ -226,7 +236,7 @@ namespace tgui
 
     void ChildWindow::destroy()
     {
-        m_parent->remove(this);
+        m_parent->remove(shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

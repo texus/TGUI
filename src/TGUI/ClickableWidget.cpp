@@ -38,6 +38,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ClickableWidget::Ptr ClickableWidget::copy(ClickableWidget::ConstPtr widget)
+    {
+        if (widget)
+            return std::make_shared<ClickableWidget>(*widget);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ClickableWidget::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the widget

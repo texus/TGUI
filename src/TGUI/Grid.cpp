@@ -82,6 +82,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Grid::Ptr Grid::copy(Grid::ConstPtr grid)
+    {
+        if (grid)
+            return std::make_shared<Grid>(*grid);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Grid::setSize(const Layout& size)
     {
         Widget::setSize(size);
@@ -93,19 +103,12 @@ namespace tgui
 
     void Grid::remove(const Widget::Ptr& widget)
     {
-        remove(widget.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Grid::remove(Widget* widget)
-    {
         // Find the widget in the grid
         for (unsigned int row = 0; row < m_gridWidgets.size(); ++row)
         {
             for (unsigned int col = 0; col < m_gridWidgets[row].size(); ++col)
             {
-                if (m_gridWidgets[row][col].get() == widget)
+                if (m_gridWidgets[row][col] == widget)
                 {
                     // Remove the widget from the grid
                     m_gridWidgets[row].erase(m_gridWidgets[row].begin() + col);

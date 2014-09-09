@@ -41,7 +41,8 @@ namespace ext
     {
     public:
 
-        typedef std::shared_ptr<Slider2d> Ptr;
+        typedef std::shared_ptr<Slider2d> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Slider2d> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,10 +79,7 @@ namespace ext
         /// @return The new slider
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Slider2d::Ptr copy(const Slider2d::Ptr& slider)
-        {
-            return std::make_shared<Slider2d>(*slider);
-        }
+        static Slider2d::Ptr copy(Slider2d::ConstPtr slider);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

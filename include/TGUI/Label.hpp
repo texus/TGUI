@@ -39,7 +39,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Label> Ptr;
+        typedef std::shared_ptr<Label> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Label> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,10 +78,7 @@ namespace tgui
         /// @return The new label
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Label::Ptr copy(const Label::Ptr& label)
-        {
-            return std::make_shared<Label>(*label);
-        }
+        static Label::Ptr copy(Label::ConstPtr label);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -90,6 +90,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpinButton::Ptr SpinButton::copy(SpinButton::ConstPtr spinButton)
+    {
+        if (spinButton)
+            return std::make_shared<SpinButton>(*spinButton);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::setPosition(const Layout& position)
     {
         Widget::setPosition(position);

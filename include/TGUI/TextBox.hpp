@@ -42,7 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<TextBox> Ptr;
+        typedef std::shared_ptr<TextBox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const TextBox> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +100,7 @@ namespace tgui
         /// @return The new text box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextBox::Ptr copy(const TextBox::Ptr& textBox)
-        {
-            return std::make_shared<TextBox>(*textBox);
-        }
+        static TextBox::Ptr copy(TextBox::ConstPtr textBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

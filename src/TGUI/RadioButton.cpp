@@ -90,6 +90,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    RadioButton::Ptr RadioButton::copy(RadioButton::ConstPtr radioButton)
+    {
+        if (radioButton)
+            return std::make_shared<RadioButton>(*radioButton);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void RadioButton::setPosition(const Layout& position)
     {
         ClickableWidget::setPosition(position);

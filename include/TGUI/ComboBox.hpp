@@ -41,7 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ComboBox> Ptr;
+        typedef std::shared_ptr<ComboBox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const ComboBox> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,10 +101,7 @@ namespace tgui
         /// @return The new combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ComboBox::Ptr copy(const ComboBox::Ptr& comboBox)
-        {
-            return std::make_shared<ComboBox>(*comboBox);
-        }
+        static ComboBox::Ptr copy(ComboBox::ConstPtr comboBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

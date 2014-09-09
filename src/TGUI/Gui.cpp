@@ -376,7 +376,6 @@ namespace tgui
                     add(tooltip, "#TGUI_INTERNAL$Tooltip#");
 
                     tooltip->setPosition({m_lastMousePos.x + 5, m_lastMousePos.y + 20});
-                    tooltip->moveToFront();
                 }
 
                 m_tooltipPossible = false;

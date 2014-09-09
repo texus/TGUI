@@ -45,6 +45,7 @@ namespace tgui
         sf::Drawable     {copy},
         Transformable    {copy},
         CallbackManager  {copy},
+        enable_shared_from_this<Widget>{copy},
         m_enabled        {copy.m_enabled},
         m_visible        {copy.m_visible},
         m_parent         {copy.m_parent},
@@ -56,13 +57,9 @@ namespace tgui
         m_animatedWidget {copy.m_animatedWidget},
         m_draggableWidget{copy.m_draggableWidget},
         m_containerWidget{copy.m_containerWidget},
+        m_tooltip        {Tooltip::copy(copy.m_tooltip)},
         m_font           {copy.m_font}
     {
-        if (copy.m_tooltip)
-            m_tooltip = Tooltip::copy(copy.m_tooltip);
-        else
-            m_tooltip = nullptr;
-
         if (copy.m_renderer != nullptr)
             m_renderer = copy.m_renderer->clone(this);
         else
@@ -91,13 +88,9 @@ namespace tgui
             m_animatedWidget  = right.m_animatedWidget;
             m_draggableWidget = right.m_draggableWidget;
             m_containerWidget = right.m_containerWidget;
+            m_tooltip         = Tooltip::copy(right.m_tooltip);
             m_font            = right.m_font;
             m_callback        = Callback();
-
-            if (right.m_tooltip)
-                m_tooltip = Tooltip::copy(right.m_tooltip);
-            else
-                m_tooltip = nullptr;
 
             if (right.m_renderer != nullptr)
                 m_renderer = right.m_renderer->clone(this);

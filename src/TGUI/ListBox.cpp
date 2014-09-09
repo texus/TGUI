@@ -61,12 +61,9 @@ namespace tgui
         m_itemHeight         {listBoxToCopy.m_itemHeight},
         m_textSize           {listBoxToCopy.m_textSize},
         m_maxItems           {listBoxToCopy.m_maxItems},
+        m_scroll             {Scrollbar::copy(listBoxToCopy.m_scroll)},
         m_possibleDoubleClick{listBoxToCopy.m_possibleDoubleClick}
     {
-        if (listBoxToCopy.m_scroll != nullptr)
-            m_scroll = Scrollbar::copy(listBoxToCopy.m_scroll);
-        else
-            m_scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +139,16 @@ namespace tgui
         }
 
         return listBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ListBox::Ptr ListBox::copy(ListBox::ConstPtr listBox)
+    {
+        if (listBox)
+            return std::make_shared<ListBox>(*listBox);
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

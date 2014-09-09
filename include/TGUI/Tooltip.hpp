@@ -41,7 +41,8 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<Tooltip> Ptr;
+        typedef std::shared_ptr<Tooltip> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Tooltip> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +81,7 @@ namespace tgui
         /// @return The new tooltip
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Tooltip::Ptr copy(const Tooltip::Ptr& tooltip)
-        {
-            return std::make_shared<Tooltip>(*tooltip);
-        }
+        static Tooltip::Ptr copy(Tooltip::ConstPtr tooltip);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

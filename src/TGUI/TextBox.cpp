@@ -73,13 +73,10 @@ namespace tgui
         m_textAfterSelection1{scrollbarToCopy.m_textAfterSelection1},
         m_textAfterSelection2{scrollbarToCopy.m_textAfterSelection2},
         m_selectionRects     {scrollbarToCopy.m_selectionRects},
+        m_scroll             {Scrollbar::copy(scrollbarToCopy.m_scroll)},
         m_possibleDoubleClick{scrollbarToCopy.m_possibleDoubleClick},
         m_readOnly           {scrollbarToCopy.m_readOnly}
     {
-        if (scrollbarToCopy.m_scroll != nullptr)
-            m_scroll = Scrollbar::copy(scrollbarToCopy.m_scroll);
-        else
-            m_scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +160,16 @@ namespace tgui
         }
 
         return textBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextBox::Ptr TextBox::copy(TextBox::ConstPtr textBox)
+    {
+        if (textBox)
+            return std::make_shared<TextBox>(*textBox);
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

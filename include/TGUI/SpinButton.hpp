@@ -41,7 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<SpinButton> Ptr;
+        typedef std::shared_ptr<SpinButton> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const SpinButton> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +81,7 @@ namespace tgui
         /// @return The new spin button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static SpinButton::Ptr copy(const SpinButton::Ptr& spinButton)
-        {
-            return std::make_shared<SpinButton>(*spinButton);
-        }
+        static SpinButton::Ptr copy(SpinButton::ConstPtr spinButton);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

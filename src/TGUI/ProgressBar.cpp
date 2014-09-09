@@ -100,6 +100,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ProgressBar::Ptr ProgressBar::copy(ProgressBar::ConstPtr progressBar)
+    {
+        if (progressBar)
+            return std::make_shared<ProgressBar>(*progressBar);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ProgressBar::setPosition(const Layout& position)
     {
         Widget::setPosition(position);

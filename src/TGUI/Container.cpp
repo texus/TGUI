@@ -139,18 +139,11 @@ namespace tgui
 
     void Container::remove(const Widget::Ptr& widget)
     {
-        remove(widget.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::remove(Widget* widget)
-    {
         // Loop through every widget
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
             // Check if the pointer matches
-            if (m_widgets[i].get() == widget)
+            if (m_widgets[i] == widget)
             {
                 // Unfocus the widget if it was focused
                 if (m_focusedWidget == i+1)

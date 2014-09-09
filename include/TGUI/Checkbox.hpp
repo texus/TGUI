@@ -41,7 +41,8 @@ namespace tgui
     {
       public:
 
-        typedef std::shared_ptr<Checkbox> Ptr;
+        typedef std::shared_ptr<Checkbox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Checkbox> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +81,7 @@ namespace tgui
         /// @return The new checkbox
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Checkbox::Ptr copy(const Checkbox::Ptr& checkbox)
-        {
-            return std::make_shared<Checkbox>(*checkbox);
-        }
+        static Checkbox::Ptr copy(Checkbox::ConstPtr checkbox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -60,15 +60,10 @@ namespace tgui
         m_textColor        {chatBoxToCopy.m_textColor},
         m_maxLines         {chatBoxToCopy.m_maxLines},
         m_fullTextHeight   {chatBoxToCopy.m_fullTextHeight},
-        m_linesStartFromTop{chatBoxToCopy.m_linesStartFromTop}
+        m_linesStartFromTop{chatBoxToCopy.m_linesStartFromTop},
+        m_panel            {Panel::copy(chatBoxToCopy.m_panel)},
+        m_scroll           {Scrollbar::copy(chatBoxToCopy.m_scroll)}
     {
-        m_panel = Panel::copy(chatBoxToCopy.m_panel);
-
-        // If there is a scrollbar then copy it
-        if (chatBoxToCopy.m_scroll != nullptr)
-            m_scroll = Scrollbar::copy(chatBoxToCopy.m_scroll);
-        else
-            m_scroll = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,6 +139,16 @@ namespace tgui
         }
 
         return chatBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChatBox::Ptr ChatBox::copy(ChatBox::ConstPtr chatBox)
+    {
+        if (chatBox)
+            return std::make_shared<ChatBox>(*chatBox);
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

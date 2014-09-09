@@ -41,7 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<RadioButton> Ptr;
+        typedef std::shared_ptr<RadioButton> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const RadioButton> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +81,7 @@ namespace tgui
         /// @return The new radio button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static RadioButton::Ptr copy(const RadioButton::Ptr& radioButton)
-        {
-            return std::make_shared<RadioButton>(*radioButton);
-        }
+        static RadioButton::Ptr copy(RadioButton::ConstPtr radioButton);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

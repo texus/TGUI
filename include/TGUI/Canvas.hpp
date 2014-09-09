@@ -39,7 +39,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Canvas> Ptr;
+        typedef std::shared_ptr<Canvas> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Canvas> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,10 +90,7 @@ namespace tgui
         /// @return The new canvas
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Canvas::Ptr copy(const Canvas::Ptr& canvas)
-        {
-            return std::make_shared<Canvas>(*canvas);
-        }
+        static Canvas::Ptr copy(Canvas::ConstPtr canvas);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

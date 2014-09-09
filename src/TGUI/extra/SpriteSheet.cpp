@@ -55,6 +55,16 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpriteSheet::Ptr SpriteSheet::copy(SpriteSheet::ConstPtr spriteSheet)
+    {
+        if (spriteSheet)
+            return std::make_shared<SpriteSheet>(*spriteSheet);
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpriteSheet::setPosition(const Layout& position)
     {
         Widget::setPosition(position);

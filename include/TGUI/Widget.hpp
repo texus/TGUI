@@ -45,11 +45,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Widget : public sf::Drawable, public Transformable, public CallbackManager
+    class TGUI_API Widget : public sf::Drawable, public Transformable, public CallbackManager, public std::enable_shared_from_this<Widget>
     {
       public:
 
-        typedef std::shared_ptr<Widget> Ptr;
+        typedef std::shared_ptr<Widget> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Widget> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

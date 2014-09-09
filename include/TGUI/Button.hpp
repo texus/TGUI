@@ -42,7 +42,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<Button> Ptr;
+        typedef std::shared_ptr<Button> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Button> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,10 +82,7 @@ namespace tgui
         /// @return The new button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Button::Ptr copy(const Button::Ptr& button)
-        {
-            return std::make_shared<Button>(*button);
-        }
+        static Button::Ptr copy(Button::ConstPtr button);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

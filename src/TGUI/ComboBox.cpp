@@ -58,15 +58,11 @@ namespace tgui
     ComboBox::ComboBox(const ComboBox& listBoxToCopy) :
         Widget              {listBoxToCopy},
         m_nrOfItemsToDisplay{listBoxToCopy.m_nrOfItemsToDisplay},
+        m_listBox           {ListBox::copy(listBoxToCopy.m_listBox)},
         m_text              {listBoxToCopy.m_text}
     {
-        if (listBoxToCopy.m_listBox != nullptr)
-        {
-            m_listBox = ListBox::copy(listBoxToCopy.m_listBox);
+        if (m_listBox != nullptr)
             initListBox();
-        }
-        else
-            m_listBox = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +125,16 @@ namespace tgui
         }
 
         return comboBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ComboBox::Ptr ComboBox::copy(ComboBox::ConstPtr comboBox)
+    {
+        if (comboBox)
+            return std::make_shared<ComboBox>(*comboBox);
+        else
+            return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,7 +487,8 @@ namespace tgui
             while (container->getParent() != nullptr)
                 container = container->getParent();
 
-            static_cast<Container*>(container)->remove(m_listBox);
+            if (container != this)
+                static_cast<Container*>(container)->remove(m_listBox);
         }
     }
 

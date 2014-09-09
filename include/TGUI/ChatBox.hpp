@@ -43,7 +43,9 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ChatBox> Ptr;
+        typedef std::shared_ptr<ChatBox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const ChatBox> ConstPtr; ///< Shared constant widget pointer
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
@@ -101,10 +103,7 @@ namespace tgui
         /// @return The new chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ChatBox::Ptr copy(const ChatBox::Ptr& chatBox)
-        {
-            return std::make_shared<ChatBox>(*chatBox);
-        }
+        static ChatBox::Ptr copy(ChatBox::ConstPtr chatBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

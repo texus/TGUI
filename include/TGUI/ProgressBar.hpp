@@ -41,7 +41,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<ProgressBar> Ptr;
+        typedef std::shared_ptr<ProgressBar> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const ProgressBar> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,10 +96,7 @@ namespace tgui
         /// @return The new progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ProgressBar::Ptr copy(const ProgressBar::Ptr& progressBar)
-        {
-            return std::make_shared<ProgressBar>(*progressBar);
-        }
+        static ProgressBar::Ptr copy(ProgressBar::ConstPtr progressBar);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

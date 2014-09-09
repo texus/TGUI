@@ -40,7 +40,8 @@ namespace tgui
     {
     public:
 
-        typedef std::shared_ptr<EditBox> Ptr;
+        typedef std::shared_ptr<EditBox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const EditBox> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +100,7 @@ namespace tgui
         /// @return The new edit box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static EditBox::Ptr copy(const EditBox::Ptr& editBox)
-        {
-            return std::make_shared<EditBox>(*editBox);
-        }
+        static EditBox::Ptr copy(EditBox::ConstPtr editBox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
