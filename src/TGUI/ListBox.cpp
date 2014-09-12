@@ -61,6 +61,7 @@ namespace tgui
     WidgetBorders            (copy),
     m_LoadedConfigFile       (copy.m_LoadedConfigFile),
     m_Items                  (copy.m_Items),
+    m_ItemIds                (copy.m_ItemIds),
     m_SelectedItem           (copy.m_SelectedItem),
     m_Size                   (copy.m_Size),
     m_ItemHeight             (copy.m_ItemHeight),
@@ -107,6 +108,7 @@ namespace tgui
 
             std::swap(m_LoadedConfigFile,        temp.m_LoadedConfigFile);
             std::swap(m_Items,                   temp.m_Items);
+            std::swap(m_ItemIds,                 temp.m_ItemIds);
             std::swap(m_SelectedItem,            temp.m_SelectedItem);
             std::swap(m_Size,                    temp.m_Size);
             std::swap(m_ItemHeight,              temp.m_ItemHeight);
