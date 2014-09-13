@@ -35,6 +35,8 @@
 
 namespace tgui
 {
+    std::map<std::pair<std::string, std::string>, std::vector<std::pair<std::string, std::string>>> ThemeFileParser::m_cache;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     namespace
@@ -59,6 +61,13 @@ namespace tgui
         m_filename(filename),
         m_section (section)
     {
+        // Don't read and parse the file every time
+        if (!m_cache[{filename, section}].empty())
+        {
+            m_properties = m_cache[{filename, section}];
+            return;
+        }
+
         std::ifstream file{filename};
 
         if (!file.is_open())
@@ -131,6 +140,8 @@ namespace tgui
         // Throw an exception when the section wasn't found
         if (!sectionFound)
             throw Exception{"Section '" + section + "' was not found in " + filename + "."};
+        else
+            m_cache[{filename, section}] = m_properties;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +188,13 @@ namespace tgui
             return true;
         else
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ThemeFileParser::flushCache()
+    {
+        m_cache.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
