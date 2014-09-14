@@ -71,8 +71,8 @@ namespace tgui
         // Don't read and parse the file every time
         if (!m_Cache[std::make_pair(m_Filename, section)].first.empty())
         {
-            properties = m_Cache[{m_Filename, section}].first;
-            values = m_Cache[{m_Filename, section}].second;
+            properties = m_Cache[std::make_pair(m_Filename, section)].first;
+            values = m_Cache[std::make_pair(m_Filename, section)].second;
             return true;
         }
 
