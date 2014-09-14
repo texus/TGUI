@@ -69,7 +69,7 @@ namespace tgui
     bool ConfigFile::read(const std::string& section, std::vector<std::string>& properties, std::vector<std::string>& values)
     {
         // Don't read and parse the file every time
-        if (!m_Cache[{m_Filename, section}].first.empty())
+        if (!m_Cache[std::make_pair(m_Filename, section)].first.empty())
         {
             properties = m_Cache[{m_Filename, section}].first;
             values = m_Cache[{m_Filename, section}].second;
@@ -168,8 +168,8 @@ namespace tgui
 
         if (!error)
         {
-            m_Cache[{m_Filename, section}].first = properties;
-            m_Cache[{m_Filename, section}].second = values;
+            m_Cache[std::make_pair(m_Filename, section)].first = properties;
+            m_Cache[std::make_pair(m_Filename, section)].second = values;
         }
 
         return !error;
