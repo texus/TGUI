@@ -33,6 +33,8 @@
 
 namespace tgui
 {
+    std::map<std::pair<std::string, std::string>, std::pair<std::vector<std::string>, std::vector<std::string>>> ConfigFile::m_Cache;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ConfigFile::~ConfigFile()
@@ -46,6 +48,8 @@ namespace tgui
 
     bool ConfigFile::open(const std::string& filename)
     {
+        m_Filename = filename;
+
         // If a file is already open then close it
         if (m_File.is_open())
             m_File.close();
@@ -62,8 +66,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ConfigFile::read(std::string section, std::vector<std::string>& properties, std::vector<std::string>& values)
+    bool ConfigFile::read(const std::string& section, std::vector<std::string>& properties, std::vector<std::string>& values)
     {
+        // Don't read and parse the file every time
+        if (!m_Cache[{m_Filename, section}].first.empty())
+        {
+            properties = m_Cache[{m_Filename, section}].first;
+            values = m_Cache[{m_Filename, section}].second;
+            return true;
+        }
+
+        std::string lowercaseSection = toLower(section);
+
         bool error = false;
         bool sectionFound = false;
         unsigned int lineNumber = 0;
@@ -91,14 +105,13 @@ namespace tgui
             {
                 // If we already found our section then this would be the next section
                 if (sectionFound)
-                    return !error;
+                    break;
 
                 // Convert the section names to lowercase in order to compare them
-                section = toLower(section);
                 sectionName = toLower(sectionName);
 
                 // If this is the section we were looking for then start reading the properties
-                if ((section + ":") == sectionName)
+                if ((lowercaseSection + ":") == sectionName)
                     sectionFound = true;
             }
             else // This isn't a section
@@ -153,7 +166,12 @@ namespace tgui
             error = true;
         }
 
-        // The end of the file was reached
+        if (!error)
+        {
+            m_Cache[{m_Filename, section}].first = properties;
+            m_Cache[{m_Filename, section}].second = values;
+        }
+
         return !error;
     }
 
