@@ -34,7 +34,9 @@ namespace tgui
 
     Button::Button()
     {
-        m_callback.widgetType = WidgetType::Button;
+        m_widgetType = WidgetType::Button;
+
+        addSignal<SignalString>("Pressed");
 
         m_renderer = std::make_shared<ButtonRenderer>(this);
 
@@ -140,8 +142,6 @@ namespace tgui
     void Button::setText(const sf::String& text)
     {
         m_string = text;
-        m_callback.text = text;
-
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
             m_text.setTextSize(m_textSize);
@@ -228,6 +228,9 @@ namespace tgui
 
     void Button::leftMouseReleased(float x, float y)
     {
+        if (m_mouseDown)
+            sendSignal("Pressed", m_text.getText());
+
         ClickableWidget::leftMouseReleased(x, y);
 
         m_text.setTextColor(getRenderer()->m_textColorHover);
@@ -237,25 +240,8 @@ namespace tgui
 
     void Button::keyPressed(const sf::Event::KeyEvent& event)
     {
-        // Check if the space key or the return key was pressed
-        if (event.code == sf::Keyboard::Space)
-        {
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[SpaceKeyPressed].empty() == false)
-            {
-                m_callback.trigger = SpaceKeyPressed;
-                addCallback();
-            }
-        }
-        else if (event.code == sf::Keyboard::Return)
-        {
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
-            {
-                m_callback.trigger = ReturnKeyPressed;
-                addCallback();
-            }
-        }
+        if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
+            sendSignal("Pressed", m_text.getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -35,8 +35,10 @@ namespace ext
 
     AnimatedPicture::AnimatedPicture()
     {
-        m_callback.widgetType = WidgetType::AnimatedPicture;
+        m_widgetType = WidgetType::AnimatedPicture;
         m_animatedWidget = true;
+
+        addSignal("AnimationFinished");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,13 +230,7 @@ namespace ext
                         m_animationTimeElapsed = {};
                     }
 
-                    // The animation has finished, send a callback if needed
-                    if (m_callbackFunctions[AnimationFinished].empty() == false)
-                    {
-                        m_callback.trigger = AnimationFinished;
-                        addCallback();
-                    }
-
+                    sendSignal("AnimationFinished");
                 }
             }
             else // The frame has to remain visible

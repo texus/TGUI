@@ -33,7 +33,11 @@ namespace tgui
 
     ClickableWidget::ClickableWidget()
     {
-        m_callback.widgetType = WidgetType::ClickableWidget;
+        m_widgetType = WidgetType::ClickableWidget;
+
+        addSignal<SignalVector2f>("MousePressed");
+        addSignal<SignalVector2f>("MouseReleased");
+        addSignal<SignalVector2f>("Clicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +54,6 @@ namespace tgui
 
     bool ClickableWidget::mouseOnWidget(float x, float y)
     {
-        // Check if the mouse is on top of the widget
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
         else
@@ -66,45 +69,20 @@ namespace tgui
 
     void ClickableWidget::leftMousePressed(float x, float y)
     {
-        // Set the mouse down flag
         m_mouseDown = true;
-
-        // Add the callback (if the user requested it)
-        if (m_callbackFunctions[LeftMousePressed].empty() == false)
-        {
-            m_callback.trigger = LeftMousePressed;
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            addCallback();
-        }
+        sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ClickableWidget::leftMouseReleased(float x, float y)
     {
-        // Add the callback (if the user requested it)
-        if (m_callbackFunctions[LeftMouseReleased].empty() == false)
-        {
-            m_callback.trigger = LeftMouseReleased;
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            addCallback();
-        }
+        sendSignal("MouseReleased", sf::Vector2f{x - getPosition().x, y - getPosition().y});
 
-        // Check if we clicked on the label (not just mouse release)
         if (m_mouseDown)
         {
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[LeftMouseClicked].empty() == false)
-            {
-                m_callback.trigger = LeftMouseClicked;
-                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                addCallback();
-            }
-
             m_mouseDown = false;
+            sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
         }
     }
 

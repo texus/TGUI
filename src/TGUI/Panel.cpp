@@ -35,7 +35,11 @@ namespace tgui
 
     Panel::Panel()
     {
-        m_callback.widgetType = WidgetType::Panel;
+        m_widgetType = WidgetType::Panel;
+
+        addSignal<SignalVector2f>("MousePressed");
+        addSignal<SignalVector2f>("MouseReleased");
+        addSignal<SignalVector2f>("Clicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,14 +97,7 @@ namespace tgui
         if (mouseOnWidget(x, y))
         {
             m_mouseDown = true;
-
-            if (!m_callbackFunctions[LeftMousePressed].empty())
-            {
-                m_callback.trigger = LeftMousePressed;
-                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                addCallback();
-            }
+            sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
         }
 
         Container::leftMousePressed(x, y);
@@ -112,24 +109,10 @@ namespace tgui
     {
         if (mouseOnWidget(x, y))
         {
-            if (!m_callbackFunctions[LeftMouseReleased].empty())
-            {
-                m_callback.trigger = LeftMouseReleased;
-                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                addCallback();
-            }
+            sendSignal("MouseReleased", sf::Vector2f{x - getPosition().x, y - getPosition().y});
 
             if (m_mouseDown)
-            {
-                if (!m_callbackFunctions[LeftMouseClicked].empty())
-                {
-                    m_callback.trigger = LeftMouseClicked;
-                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                    addCallback();
-                }
-            }
+                sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
         }
 
         m_mouseDown = false;

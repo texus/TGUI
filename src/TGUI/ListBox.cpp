@@ -40,9 +40,14 @@ namespace tgui
 
     ListBox::ListBox()
     {
-        m_callback.widgetType = WidgetType::ListBox;
+        m_widgetType = WidgetType::ListBox;
         m_draggableWidget = true;
         m_animatedWidget = true;
+
+        addSignal<SignalDoubleString>("ItemSelected");
+        addSignal<SignalDoubleString>("MousePressed");
+        addSignal<SignalDoubleString>("MouseReleased");
+        addSignal<SignalDoubleString>("DoubleClicked");
 
         m_renderer = std::make_shared<ListBoxRenderer>(this);
 
@@ -57,7 +62,9 @@ namespace tgui
     ListBox::ListBox(const ListBox& listBoxToCopy) :
         Widget               {listBoxToCopy},
         m_items              {listBoxToCopy.m_items},
+        m_itemIds            {listBoxToCopy.m_itemIds},
         m_selectedItem       {listBoxToCopy.m_selectedItem},
+        m_hoveringItem       {listBoxToCopy.m_hoveringItem},
         m_itemHeight         {listBoxToCopy.m_itemHeight},
         m_textSize           {listBoxToCopy.m_textSize},
         m_maxItems           {listBoxToCopy.m_maxItems},
@@ -76,7 +83,9 @@ namespace tgui
             Widget::operator=(right);
 
             std::swap(m_items,               temp.m_items);
+            std::swap(m_itemIds,             temp.m_itemIds);
             std::swap(m_selectedItem,        temp.m_selectedItem);
+            std::swap(m_hoveringItem,        temp.m_hoveringItem);
             std::swap(m_itemHeight,          temp.m_itemHeight);
             std::swap(m_textSize,            temp.m_textSize);
             std::swap(m_maxItems,            temp.m_maxItems);
@@ -590,15 +599,7 @@ namespace tgui
             m_mouseDown = true;
 
             if (m_hoveringItem >= 0)
-            {
-                if (!m_callbackFunctions[LeftMousePressed].empty())
-                {
-                    m_callback.text    = (m_hoveringItem >= 0) ? m_items[m_hoveringItem].getText() : "";
-                    m_callback.value   = m_hoveringItem;
-                    m_callback.trigger = LeftMousePressed;
-                    addCallback();
-                }
-            }
+                sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
 
             if (m_selectedItem != m_hoveringItem)
             {
@@ -610,15 +611,13 @@ namespace tgui
                 m_selectedItem = m_hoveringItem;
 
                 if (m_selectedItem >= 0)
+                {
                     m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
 
-                if (!m_callbackFunctions[ItemSelected].empty())
-                {
-                    m_callback.text    = (m_selectedItem >= 0) ? m_items[m_selectedItem].getText() : "";
-                    m_callback.value   = m_selectedItem;
-                    m_callback.trigger = ItemSelected;
-                    addCallback();
+                    sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
                 }
+                else
+                    sendSignal("ItemSelected", "", "");
             }
         }
     }
@@ -663,13 +662,9 @@ namespace tgui
         if (m_mouseDown)
         {
             m_mouseDown = false;
-            if (!m_callbackFunctions[LeftMouseReleased].empty())
-            {
-                m_callback.text    = (m_selectedItem >= 0) ? m_items[m_selectedItem].getText() : "";
-                m_callback.value   = m_selectedItem;
-                m_callback.trigger = LeftMouseReleased;
-                addCallback();
-            }
+
+            if (m_selectedItem >= 0)
+                sendSignal("MouseReleased", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
 
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -677,15 +672,7 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                {
-                    if (!m_callbackFunctions[LeftMouseDoubleClicked].empty())
-                    {
-                        m_callback.text    = (m_selectedItem >= 0) ? m_items[m_selectedItem].getText() : "";
-                        m_callback.value   = m_selectedItem;
-                        m_callback.trigger = LeftMouseDoubleClicked;
-                        addCallback();
-                    }
-                }
+                    sendSignal("DoubleClicked", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
             }
             else // This is the first click
             {
@@ -784,13 +771,10 @@ namespace tgui
                     m_selectedItem = m_hoveringItem;
                     m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
 
-                    if (!m_callbackFunctions[ItemSelected].empty())
-                    {
-                        m_callback.text    = (m_selectedItem >= 0) ? m_items[m_selectedItem].getText() : "";
-                        m_callback.value   = m_selectedItem;
-                        m_callback.trigger = ItemSelected;
-                        addCallback();
-                    }
+                    if (m_selectedItem >= 0)
+                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                    else
+                        sendSignal("ItemSelected", "", "");
                 }
             }
             else // The mouse isn't held down, just change the text color to hover

@@ -38,7 +38,28 @@ namespace tgui
     class ListBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    /// @brief List box widget
+    ///
+    /// Signals:
+    ///     - ItemSelected (a new item was selected)
+    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
+    ///         * Optional parameters sf::String and sf::String: Name and id of the item
+    ///
+    ///     - MousePressed (left mouse went down on top of an item
+    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
+    ///         * Optional parameters sf::String and sf::String: Name and id of the item
+    ///
+    ///     - MouseReleased (left mouse went up on top of an item after it went down on of the items of the list box)
+    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
+    ///         * Optional parameters sf::String and sf::String: Name and id of the item
+    ///
+    ///     - DoubleClicked (double clicked on an item with the left mouse button)
+    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
+    ///         * Optional parameters sf::String and sf::String: Name and id of the item
+    ///
+    ///     - Inherited signals from Widget
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ListBox : public Widget
     {
       public:
@@ -505,22 +526,6 @@ namespace tgui
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Defines specific triggers to ListBox.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum ListBoxCallbacks
-        {
-            ItemSelected = WidgetCallbacksCount * 1,           ///< A new item was selected
-            LeftMousePressed = WidgetCallbacksCount * 2,       ///< The mouse went down on top of an item
-            LeftMouseReleased = WidgetCallbacksCount * 4,      ///< The mouse button has been released after it went down on an item
-            LeftMouseDoubleClicked = WidgetCallbacksCount * 8, ///< An item has been double-clicked
-            ListBoxCallbacksCount = WidgetCallbacksCount * 16
-        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

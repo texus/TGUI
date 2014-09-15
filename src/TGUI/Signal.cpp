@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Canvas.hpp>
+#include <TGUI/Signal.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -31,28 +31,68 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Canvas()
+    int                          Signal::m_int = 0;
+    sf::Vector2f                 Signal::m_vector2f;
+    sf::String                   Signal::m_string;
+    sf::String                   Signal::m_string2;
+    std::vector<sf::String>      Signal::m_stringList;
+    std::shared_ptr<ChildWindow> Signal::m_childWindowPtr;
+
+    unsigned int SignalWidgetBase::m_lastId = 0;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Signal::disconnect(unsigned int id)
     {
-        m_widgetType = WidgetType::Canvas;
+        return !!m_functions.erase(id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Canvas(const Canvas& canvasToCopy) :
-        ClickableWidget{canvasToCopy}
+    void Signal::disconnectAll()
     {
-        setSize(canvasToCopy.getSize());
+        m_functions.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas& Canvas::operator= (const Canvas& right)
+    bool Signal::isEmpty()
+    {
+        return m_functions.empty();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Signal::operator()()
+    {
+        for (auto& function : m_functions)
+            function.second();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Signal::checkCompatibleParameterType(const std::string& type)
+    {
+        throw Exception{"Could not bind optional parameter type '" + type + "'"};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SignalWidgetBase::SignalWidgetBase(const SignalWidgetBase& copy)
+    {
+        for (auto& signal : copy.m_signals)
+            m_signals[signal.first] = std::make_shared<Signal>(*signal.second);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SignalWidgetBase& SignalWidgetBase::operator=(const SignalWidgetBase& right)
     {
         if (this != &right)
         {
-            ClickableWidget::operator=(right);
-
-            setSize(right.getSize());
+            for (auto& signal : right.m_signals)
+                m_signals[signal.first] = std::make_shared<Signal>(*signal.second);
         }
 
         return *this;
@@ -60,80 +100,61 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Ptr Canvas::create(const sf::Vector2f& size)
+    void SignalWidgetBase::disconnect(unsigned int id)
     {
-        auto picture = std::make_shared<Canvas>();
+        for (auto& signal : m_signals)
+        {
+            if (signal.second->disconnect(id))
+                return;
+        }
 
-        picture->setSize(size);
-
-        return picture;
+        throw Exception{"Failed to disconnect signal handler. There is no function bound to the given id " + tgui::to_string(id) + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Canvas::Ptr Canvas::copy(Canvas::ConstPtr canvas)
+    void SignalWidgetBase::disconnectAll(const std::string& signalName)
     {
-        if (canvas)
-            return std::make_shared<Canvas>(*canvas);
-        else
-            return nullptr;
+        for (auto& name : extractSignalNames(signalName))
+            m_signals.at(toLower(name))->disconnectAll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setPosition(const Layout& position)
+    void SignalWidgetBase::disconnectAll()
     {
-        Widget::setPosition(position);
-
-        m_sprite.setPosition(getPosition());
+        for (auto& signal : m_signals)
+            signal.second->disconnectAll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setSize(const Layout& size)
+    bool SignalWidgetBase::isSignalBound(const std::string& name)
     {
-        Widget::setSize(size);
-
-        m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
-        m_sprite.setTexture(m_renderTexture.getTexture(), true);
-
-        m_renderTexture.clear();
-        m_renderTexture.display();
+        assert(m_signals[toLower(name)]);
+        return !m_signals[toLower(name)]->isEmpty();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::clear(const sf::Color& color)
+    std::vector<std::string> SignalWidgetBase::extractSignalNames(std::string input)
     {
-        m_renderTexture.clear(color);
-    }
+        // A space is used for binding multiple signals at once
+        std::vector<std::string> names;
+        std::string::size_type pos = 0;
+        while ((pos = input.find(" ")) != std::string::npos)
+        {
+            std::string token = input.substr(0, pos);
+            if (token != "")
+                names.push_back(token);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            input.erase(0, pos+1);
+        }
 
-    void Canvas::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
-    {
-        m_renderTexture.draw(drawable, states);
-    }
+        if (input != "")
+            names.push_back(input);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Canvas::draw(const sf::Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
-    {
-        m_renderTexture.draw(vertices, vertexCount, type, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Canvas::display()
-    {
-        m_renderTexture.display();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Canvas::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        target.draw(m_sprite, states);
+        return names;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

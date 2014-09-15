@@ -37,6 +37,12 @@ namespace tgui
 
     Widget::Widget()
     {
+        addSignal<SignalVector2f>("PositionChanged");
+        addSignal<SignalVector2f>("SizeChanged");
+        addSignal("Focused");
+        addSignal("Unfocused");
+        addSignal("MouseEntered");
+        addSignal("MouseLeft");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +50,9 @@ namespace tgui
     Widget::Widget(const Widget& copy) :
         sf::Drawable     {copy},
         Transformable    {copy},
-        CallbackManager  {copy},
+        SignalWidgetBase {copy},
         enable_shared_from_this<Widget>{copy},
+        m_widgetType     {copy.m_widgetType},
         m_enabled        {copy.m_enabled},
         m_visible        {copy.m_visible},
         m_parent         {copy.m_parent},
@@ -70,12 +77,12 @@ namespace tgui
 
     Widget& Widget::operator= (const Widget& right)
     {
-        // Make sure it is not the same widget
         if (this != &right)
         {
             sf::Drawable::operator=(right);
             Transformable::operator=(right);
-            CallbackManager::operator=(right);
+            SignalWidgetBase::operator=(right);
+            enable_shared_from_this::operator=(right);
 
             m_enabled         = right.m_enabled;
             m_visible         = right.m_visible;
@@ -90,7 +97,6 @@ namespace tgui
             m_containerWidget = right.m_containerWidget;
             m_tooltip         = Tooltip::copy(right.m_tooltip);
             m_font            = right.m_font;
-            m_callback        = Callback();
 
             if (right.m_renderer != nullptr)
                 m_renderer = right.m_renderer->clone(this);
@@ -106,13 +112,7 @@ namespace tgui
     void Widget::setPosition(const Layout& position)
     {
         Transformable::setPosition(position);
-
-        if (m_callbackFunctions[PositionChanged].empty() == false)
-        {
-            m_callback.trigger  = PositionChanged;
-            m_callback.position = getPosition();
-            addCallback();
-        }
+        sendSignal("PositionChanged", getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,13 +120,7 @@ namespace tgui
     void Widget::setSize(const Layout& size)
     {
         Transformable::setSize(size);
-
-        if (m_callbackFunctions[SizeChanged].empty() == false)
-        {
-            m_callback.trigger = SizeChanged;
-            m_callback.size    = getSize();
-            addCallback();
-        }
+        sendSignal("SizeChanged", getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,11 +266,7 @@ namespace tgui
 
     void Widget::widgetFocused()
     {
-        if (m_callbackFunctions[Focused].empty() == false)
-        {
-            m_callback.trigger = Focused;
-            addCallback();
-        }
+        sendSignal("Focused");
 
         // Make sure the parent is also focused
         if (m_parent)
@@ -287,11 +277,7 @@ namespace tgui
 
     void Widget::widgetUnfocused()
     {
-        if (m_callbackFunctions[Unfocused].empty() == false)
-        {
-            m_callback.trigger = Unfocused;
-            addCallback();
-        }
+        sendSignal("Unfocused");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,42 +318,16 @@ namespace tgui
 
     void Widget::mouseEnteredWidget()
     {
-        if (m_callbackFunctions[MouseEntered].empty() == false)
-        {
-            m_callback.trigger = MouseEntered;
-            addCallback();
-        }
-
         m_mouseHover = true;
+        sendSignal("MouseEntered");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::mouseLeftWidget()
     {
-        if (m_callbackFunctions[MouseLeft].empty() == false)
-        {
-            m_callback.trigger = MouseLeft;
-            addCallback();
-        }
-
         m_mouseHover = false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::addCallback()
-    {
-        // Loop through all callback functions
-        auto& functions = m_callbackFunctions[m_callback.trigger];
-        for (auto func = functions.cbegin(); func != functions.cend(); ++func)
-        {
-            // Pass the callback to the correct place
-            if (*func != nullptr)
-                (*func)();
-            else
-                m_parent->addChildCallback(m_callback);
-        }
+        sendSignal("MouseLeft");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

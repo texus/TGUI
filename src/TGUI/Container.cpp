@@ -45,8 +45,7 @@ namespace tgui
 
     Container::Container(const Container& containerToCopy) :
         Widget                   {containerToCopy},
-        m_focusedWidget          {0},
-        m_globalCallbackFunctions(containerToCopy.m_globalCallbackFunctions) // Did not compile on mingw 4.7 when using braces
+        m_focusedWidget          {0}
     {
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_widgets.size(); ++i)
@@ -69,7 +68,6 @@ namespace tgui
 
             // Copy the font and the callback functions
             m_focusedWidget = 0;
-            m_globalCallbackFunctions = right.m_globalCallbackFunctions;
 
             // Remove all the old widgets
             removeAllWidgets();
@@ -377,7 +375,7 @@ namespace tgui
         // Loop through all radio buttons and uncheck them
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_widgets[i]->m_callback.widgetType == WidgetType::RadioButton)
+            if (m_widgets[i]->m_widgetType == WidgetType::RadioButton)
                 std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
     }
@@ -450,35 +448,6 @@ namespace tgui
 
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
             m_widgets[i]->setTransparency(transparency);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::bindGlobalCallback(std::function<void(const Callback&)> func)
-    {
-        m_globalCallbackFunctions.push_back(func);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::unbindGlobalCallback()
-    {
-        m_globalCallbackFunctions.clear();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::addChildCallback(const Callback& callback)
-    {
-        // If there is no global callback function then send the callback to the parent
-        if (m_globalCallbackFunctions.empty())
-            m_parent->addChildCallback(callback);
-        else
-        {
-            // Loop through all callback functions and call them
-            for (auto it = m_globalCallbackFunctions.cbegin(); it != m_globalCallbackFunctions.cend(); ++it)
-                (*it)(callback);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -964,13 +933,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void GuiContainer::unbindGlobalCallback()
-    {
-        m_globalCallbackFunctions.erase(++m_globalCallbackFunctions.begin(), m_globalCallbackFunctions.end());
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void GuiContainer::setSize(const Layout&)

@@ -38,8 +38,11 @@ namespace ext
 
     Slider2d::Slider2d()
     {
-        m_callback.widgetType = WidgetType::Slider2d;
+        m_widgetType = WidgetType::Slider2d;
         m_draggableWidget = true;
+
+        addSignal<SignalVector2f>("ValueChanged");
+        addSignal<SignalVector2f>("ThumbReturnedToCenter");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,21 +139,24 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::setValue(const sf::Vector2f& value)
+    void Slider2d::setValue(sf::Vector2f value)
     {
-        // Set the new value
-        m_value = value;
-
         // When the value is below the minimum or above the maximum then adjust it
-        if (m_value.x < m_minimum.x)
-            m_value.x = m_minimum.x;
-        else if (m_value.x > m_maximum.x)
-            m_value.x = m_maximum.x;
+        if (value.x < m_minimum.x)
+            value.x = m_minimum.x;
+        else if (value.x > m_maximum.x)
+            value.x = m_maximum.x;
 
-        if (m_value.y < m_minimum.y)
-            m_value.y = m_minimum.y;
-        else if (m_value.y > m_maximum.y)
-            m_value.y = m_maximum.y;
+        if (value.y < m_minimum.y)
+            value.y = m_minimum.y;
+        else if (value.y > m_maximum.y)
+            value.y = m_maximum.y;
+
+        if (m_value != value)
+        {
+            m_value = value;
+            sendSignal("ValueChanged", m_value);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +170,12 @@ namespace ext
 
     void Slider2d::centerThumb()
     {
-        setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
+        sf::Vector2f newValue = {(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f};
+        if (m_value != newValue)
+        {
+            sendSignal("ThumbReturnedToCenter", m_value);
+            setValue(newValue);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,16 +207,7 @@ namespace ext
         ClickableWidget::leftMouseReleased(x, y);
 
         if (m_returnThumbToCenter)
-        {
-            setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
-
-            if (m_callbackFunctions[ThumbReturnedToCenter].empty() == false)
-            {
-                m_callback.trigger = ThumbReturnedToCenter;
-                m_callback.value2d = m_value;
-                addCallback();
-            }
-        }
+            centerThumb();
     }
 
 
@@ -215,9 +217,6 @@ namespace ext
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
-
-        // Remember the old value
-        sf::Vector2f oldValue = m_value;
 
         // Check if the mouse button is down
         if (m_mouseDown)
@@ -236,14 +235,6 @@ namespace ext
 
             // Set the new value, making sure that it lies within the minimum and maximum
             setValue(m_value);
-
-            // Add the callback (if the user requested it)
-            if ((oldValue != m_value) && (m_callbackFunctions[ValueChanged].empty() == false))
-            {
-                m_callback.trigger = ValueChanged;
-                m_callback.value2d = m_value;
-                addCallback();
-            }
         }
     }
 
@@ -262,19 +253,7 @@ namespace ext
         m_mouseDown = false;
 
         if (m_returnThumbToCenter)
-        {
-            if (m_value != sf::Vector2f{(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f})
-            {
-                setValue({(m_maximum.x + m_minimum.x) * 0.5f, (m_maximum.y + m_minimum.y) * 0.5f});
-
-                if (m_callbackFunctions[ThumbReturnedToCenter].empty() == false)
-                {
-                    m_callback.trigger = ThumbReturnedToCenter;
-                    m_callback.value2d = m_value;
-                    addCallback();
-                }
-            }
-        }
+            centerThumb();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

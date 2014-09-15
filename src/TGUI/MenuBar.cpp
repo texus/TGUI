@@ -36,7 +36,9 @@ namespace tgui
 
     MenuBar::MenuBar()
     {
-        m_callback.widgetType = WidgetType::MenuBar;
+        m_widgetType = WidgetType::MenuBar;
+
+        addSignal<SignalMenuBar>("MenuItemClicked");
 
         m_renderer = std::make_shared<MenuBarRenderer>(this);
 
@@ -352,13 +354,9 @@ namespace tgui
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
-                    if (m_callbackFunctions[MenuItemClicked].empty() == false)
-                    {
-                        m_callback.trigger = MenuItemClicked;
-                        m_callback.text = m_menus[m_visibleMenu].menuItems[selectedMenuItem].getText();
-                        m_callback.index = m_visibleMenu;
-                        addCallback();
-                    }
+                    sendSignal("MenuItemClicked",
+                               std::vector<sf::String>{m_menus[m_visibleMenu].text.getText(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getText()},
+                               m_menus[m_visibleMenu].menuItems[selectedMenuItem].getText());
 
                     closeVisibleMenu();
                 }

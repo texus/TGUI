@@ -33,7 +33,7 @@ namespace tgui
 
     Tooltip::Tooltip()
     {
-        m_callback.widgetType = WidgetType::Tooltip;
+        m_widgetType = WidgetType::Tooltip;
 
         m_background.setFillColor({245, 245, 245});
         m_text.setColor({60, 60, 60});

@@ -41,8 +41,6 @@ namespace tgui
         m_window        (nullptr),
         m_accessToWindow(false)
     {
-        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
-
         m_container->m_focused = true;
     }
 
@@ -53,8 +51,6 @@ namespace tgui
         m_accessToWindow(true)
     {
         m_container->m_window = &window;
-        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
-
         m_container->m_focused = true;
 
         TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
@@ -69,8 +65,6 @@ namespace tgui
         m_accessToWindow(false)
     {
         m_container->m_window = &window;
-        m_container->bindGlobalCallback(&Gui::addChildCallback, this);
-
         m_container->m_focused = true;
 
         setView(window.getDefaultView());
@@ -110,12 +104,8 @@ namespace tgui
         m_container->m_size = view.getSize();
         m_container->m_position = view.getCenter() - (view.getSize() / 2.0f);
 
-        if (m_container->m_callbackFunctions[Widget::SizeChanged].empty() == false)
-        {
-            m_container->m_callback.trigger = Widget::SizeChanged;
-            m_container->m_callback.size    = m_container->getSize();
-            m_container->addCallback();
-        }
+        m_container->sendSignal("PositionChanged", m_container->getPosition());
+        m_container->sendSignal("SizeChanged", m_container->getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,25 +225,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Gui::pollCallback(Callback& callback)
-    {
-        // Check if the callback queue is empty
-        if (m_callback.empty())
-            return false;
-        else // The queue is not empty
-        {
-            // Get the next callback
-            callback = m_callback.front();
-
-            // Remove the callback from the queue
-            m_callback.pop();
-
-            return true;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Gui::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
         m_container->add(widgetPtr, widgetName);
@@ -345,20 +316,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::bindGlobalCallback(std::function<void(const Callback&)> func)
-    {
-        m_container->bindGlobalCallback(func);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::unbindGlobalCallback()
-    {
-        m_container->unbindGlobalCallback();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
         m_container->m_animationTimeElapsed = elapsedTime;
@@ -381,14 +338,6 @@ namespace tgui
                 m_tooltipPossible = false;
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Gui::addChildCallback(const Callback& callback)
-    {
-        // Add the callback to the queue
-        m_callback.push(callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,10 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_callback.widgetType = WidgetType::RadioButton;
+        m_widgetType = WidgetType::RadioButton;
+
+        addSignal<SignalBool>("Checked");
+        addSignal<SignalBool>("Unchecked");
 
         m_renderer = std::make_shared<RadioButtonRenderer>(this);
 
@@ -163,14 +166,7 @@ namespace tgui
 
             // Check this radio button
             m_checked = true;
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[Checked].empty() == false)
-            {
-                m_callback.trigger = Checked;
-                m_callback.checked = true;
-                addCallback();
-            }
+            sendSignal("Checked", m_checked);
         }
     }
 
@@ -181,14 +177,7 @@ namespace tgui
         if (m_checked)
         {
             m_checked = false;
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[Unchecked].empty() == false)
-            {
-                m_callback.trigger = Unchecked;
-                m_callback.checked = false;
-                addCallback();
-            }
+            sendSignal("Unchecked", m_checked);
         }
     }
 
@@ -271,67 +260,21 @@ namespace tgui
 
     void RadioButton::leftMouseReleased(float x, float y)
     {
-        // Add the callback (if the user requested it)
-        if (m_callbackFunctions[LeftMouseReleased].empty() == false)
-        {
-            m_callback.trigger = LeftMouseReleased;
-            m_callback.checked = m_checked;
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            addCallback();
-        }
+        bool mouseDown = m_mouseDown;
 
-        // Check if we clicked on the radio button (not just mouse release)
-        if (m_mouseDown == true)
-        {
-            // Check the radio button
+        ClickableWidget::leftMouseReleased(x, y);
+
+        // Check the radio button if we clicked on the radio button (not just mouse release)
+        if (mouseDown)
             check();
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[LeftMouseClicked].empty() == false)
-            {
-                m_callback.trigger = LeftMouseClicked;
-                m_callback.checked = m_checked;
-                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                addCallback();
-            }
-
-            m_mouseDown = false;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::keyPressed(const sf::Event::KeyEvent& event)
     {
-        // Check if the space key or the return key was pressed
-        if (event.code == sf::Keyboard::Space)
-        {
-            // Check the radio button
+        if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
             check();
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[SpaceKeyPressed].empty() == false)
-            {
-                m_callback.trigger = SpaceKeyPressed;
-                m_callback.checked = m_checked;
-                addCallback();
-            }
-        }
-        else if (event.code == sf::Keyboard::Return)
-        {
-            // Check the radio button
-            check();
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
-            {
-                m_callback.trigger = ReturnKeyPressed;
-                m_callback.checked = m_checked;
-                addCallback();
-            }
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
