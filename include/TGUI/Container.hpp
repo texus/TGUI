@@ -35,14 +35,10 @@
 
 namespace tgui
 {
+    struct Callback;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Container widget
-    ///
-    /// Parent class for widgets that store multiple widgets.
-    ///
-    /// Signals:
-    ///     - Inherited signals from Widget
-    ///
+    /// @brief Parent class for widgets that store multiple widgets.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Container : public Widget
     {
@@ -345,6 +341,42 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Bind a function to the callbacks of all child widgets.
+        ///
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
+        ///
+        /// @param func  Pointer to a free function with a reference to a Callback widget as parameter.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void bindGlobalCallback(std::function<void(const Callback&)> func);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Bind a function to the callbacks of all child widgets.
+        ///
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
+        ///
+        /// @param func      Pointer to a member function with a reference to a Callback widget as parameter.
+        /// @param classPtr  Pointer to the widget of the class.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        void bindGlobalCallback(void (T::*func)(const Callback&), T* const classPtr)
+        {
+            m_globalCallbackFunctions.push_back(std::bind(func, classPtr, std::placeholders::_1));
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Unbind the global callback function(s).
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void unbindGlobalCallback();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
         ///        this container on relative position (0,0).
         ///
@@ -355,6 +387,14 @@ namespace tgui
         {
             return sf::Vector2f(0, 0);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        // This function is used internally by child widget to alert there parent about a callback.
+        // If it reaches the gui, then the callback can be obtained by calling the pollCallback function of the gui.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void addChildCallback(const Callback& callback);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,6 +512,10 @@ namespace tgui
         // The id of the focused widget
         unsigned int m_focusedWidget = 0;
 
+        // A list that stores all functions that receive callbacks triggered by child widgets
+        std::list< std::function<void(const Callback&)> > m_globalCallbackFunctions;
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
@@ -485,6 +529,13 @@ namespace tgui
 
         typedef std::shared_ptr<GuiContainer> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const GuiContainer> ConstPtr; ///< Shared constant widget pointer
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Unbind the global callback function(s).
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unbindGlobalCallback() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

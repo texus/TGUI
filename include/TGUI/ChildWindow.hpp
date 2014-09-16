@@ -38,17 +38,7 @@ namespace tgui
     class ChildWindowRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Child window widget
-    ///
-    /// Signals:
-    ///     - MousePressed (left mouse button went down on top of the child window and the window was in front of other widgets)
-    ///         * Optional parameter sf::Vector2f: Position of the mouse relative to the position of the child window
-    ///
-    ///     - Closed (Child window was closed)
-    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the closed child window
-    ///
-    ///     - Inherited signals from Container
-    ///
+    /// @brief Movable Panel with title bar.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ChildWindow : public Container
     {
@@ -266,7 +256,7 @@ namespace tgui
         ///
         /// When no callback is requested when closing the window, this function will be called automatically.
         ///
-        /// When you requested a callback then you get the opportunity to cancel the closing of the window.
+        /// When you requested a callback then you get the opportunity to cancel the closure of the window.
         /// If you want to keep it open then don't do anything, if you want to close it then just call this function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,6 +358,20 @@ namespace tgui
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to ChildWindow.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        enum ChildWindowCallbacks
+        {
+            LeftMousePressed = WidgetCallbacksCount * 1,  ///< The left mouse button was pressed (child window was thus brought to front)
+            Closed = WidgetCallbacksCount * 2,            ///< Child window was closed
+            ChildWindowCallbacksCount = WidgetCallbacksCount * 4
+        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -39,13 +39,10 @@ namespace tgui
 
     EditBox::EditBox()
     {
-        m_widgetType = WidgetType::EditBox;
+        m_callback.widgetType = WidgetType::EditBox;
         m_animatedWidget = true;
         m_draggableWidget = true;
         m_allowFocus = true;
-
-        addSignal<SignalString>("TextChanged");
-        addSignal<SignalString>("ReturnKeyPressed");
 
         m_defaultText.setStyle(sf::Text::Italic);
 
@@ -484,7 +481,15 @@ namespace tgui
 
         // Set the mouse down flag
         m_mouseDown = true;
-        sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+
+        // Add the callback (if the user requested it)
+        if (m_callbackFunctions[LeftMousePressed].empty() == false)
+        {
+            m_callback.trigger = LeftMousePressed;
+            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+            addCallback();
+        }
 
         recalculateTextPositions();
 
@@ -672,7 +677,13 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Return)
         {
-            sendSignal("ReturnKeyPressed", getText());
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[ReturnKeyPressed].empty() == false)
+            {
+                m_callback.trigger = ReturnKeyPressed;
+                m_callback.text    = m_text;
+                addCallback();
+            }
         }
         else if (event.code == sf::Keyboard::BackSpace)
         {
@@ -711,7 +722,13 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            sendSignal("TextChanged", getText());
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[TextChanged].empty() == false)
+            {
+                m_callback.trigger = TextChanged;
+                m_callback.text    = m_text;
+                addCallback();
+            }
         }
         else if (event.code == sf::Keyboard::Delete)
         {
@@ -749,7 +766,13 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            sendSignal("TextChanged", getText());
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[TextChanged].empty() == false)
+            {
+                m_callback.trigger = TextChanged;
+                m_callback.text    = m_text;
+                addCallback();
+            }
         }
         else
         {
@@ -778,7 +801,13 @@ namespace tgui
 
                         setCaretPosition(oldCaretPos + clipboardContents.getSize());
 
-                        sendSignal("TextChanged", getText());
+                        // Add the callback (if the user requested it)
+                        if (m_callbackFunctions[TextChanged].empty() == false)
+                        {
+                            m_callback.trigger = TextChanged;
+                            m_callback.text    = m_text;
+                            addCallback();
+                        }
                     }
                 }
                 else if (event.code == sf::Keyboard::X)
@@ -879,7 +908,13 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        sendSignal("TextChanged", getText());
+        // Add the callback (if the user requested it)
+        if (m_callbackFunctions[TextChanged].empty() == false)
+        {
+            m_callback.trigger = TextChanged;
+            m_callback.text    = m_text;
+            addCallback();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

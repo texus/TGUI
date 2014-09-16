@@ -34,24 +34,10 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Clickable widget
-    ///
-    /// Signals:
-    ///     - MousePressed (the left mouse button was pressed on top of the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///
-    ///     - MouseReleased (the left mouse button was released on top of the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///
-    ///     - Clicked (you left clicked the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///
-    ///     - Inherited signals from Widget
-    ///
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class TGUI_API ClickableWidget : public Widget
     {
-    public:
+      public:
 
         typedef std::shared_ptr<ClickableWidget> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const ClickableWidget> ConstPtr; ///< Shared constant widget pointer
@@ -106,13 +92,28 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+      protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         // This function draws nothing.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Defines specific triggers to ClickableWidget.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        enum ClickableWidgetCallbacks
+        {
+            LeftMousePressed              = WidgetCallbacksCount * 1,  ///< The left mouse button was pressed
+            LeftMouseReleased             = WidgetCallbacksCount * 2,  ///< The left mouse button was released
+            LeftMouseClicked              = WidgetCallbacksCount * 4,  ///< The left mouse button was clicked
+            ClickableWidgetCallbacksCount = WidgetCallbacksCount * 8
+        };
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

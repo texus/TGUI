@@ -40,11 +40,9 @@ namespace tgui
 
     TextBox::TextBox()
     {
-        m_widgetType = WidgetType::TextBox;
+        m_callback.widgetType = WidgetType::TextBox;
         m_animatedWidget = true;
         m_draggableWidget = true;
-
-        addSignal<SignalString>("TextChanged");
 
         m_renderer = std::make_shared<TextBoxRenderer>(this);
 
@@ -822,7 +820,14 @@ namespace tgui
                 m_caretVisible = true;
                 m_animationTimeElapsed = {};
 
-                sendSignal("TextChanged", m_text);
+                // Add the callback (if the user requested it)
+                if (m_callbackFunctions[TextChanged].empty() == false)
+                {
+                    m_callback.trigger = TextChanged;
+                    m_callback.text    = m_text;
+                    addCallback();
+                }
+
                 break;
             }
 
@@ -855,7 +860,14 @@ namespace tgui
                 else // You did select some characters, so remove them
                     deleteSelectedCharacters();
 
-                sendSignal("TextChanged", m_text);
+                // Add the callback (if the user requested it)
+                if (m_callbackFunctions[TextChanged].empty() == false)
+                {
+                    m_callback.trigger = TextChanged;
+                    m_callback.text    = m_text;
+                    addCallback();
+                }
+
                 break;
             }
 
@@ -908,7 +920,13 @@ namespace tgui
                         m_selEnd = m_selStart;
                         rearrangeText(true);
 
-                        sendSignal("TextChanged", m_text);
+                        // Add the callback (if the user requested it)
+                        if (m_callbackFunctions[TextChanged].empty() == false)
+                        {
+                            m_callback.trigger = TextChanged;
+                            m_callback.text    = m_text;
+                            addCallback();
+                        }
                     }
                 }
 
@@ -980,7 +998,13 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        sendSignal("TextChanged", m_text);
+        // Add the callback (if the user requested it)
+        if (m_callbackFunctions[TextChanged].empty() == false)
+        {
+            m_callback.trigger = TextChanged;
+            m_callback.text    = m_text;
+            addCallback();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

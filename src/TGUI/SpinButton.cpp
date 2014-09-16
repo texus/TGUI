@@ -34,9 +34,7 @@ namespace tgui
 
     SpinButton::SpinButton()
     {
-        m_widgetType = WidgetType::SpinButton;
-
-        addSignal<SignalInt>("ValueChanged");
+        m_callback.widgetType = WidgetType::SpinButton;
 
         m_renderer = std::make_shared<SpinButtonRenderer>(this);
 
@@ -151,50 +149,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMinimum(int minimum)
+    void SpinButton::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
         m_minimum = minimum;
 
         // The minimum can never be greater than the maximum
         if (m_minimum > m_maximum)
-            setMaximum(m_minimum);
+            m_maximum = m_minimum;
 
         // When the value is below the minimum then adjust it
         if (m_value < m_minimum)
-            setValue(m_minimum);
+            m_value = m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMaximum(int maximum)
+    void SpinButton::setMaximum(unsigned int maximum)
     {
         m_maximum = maximum;
 
         // The maximum can never be below the minimum
         if (m_maximum < m_minimum)
-            setMinimum(m_maximum);
+            m_minimum = m_maximum;
 
         // When the value is above the maximum then adjust it
         if (m_value > m_maximum)
-            setValue(m_maximum);
+            m_value = m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setValue(int value)
+    void SpinButton::setValue(unsigned int value)
     {
-        // When the value is below the minimum or above the maximum then adjust it
-        if (value < m_minimum)
-            value = m_minimum;
-        else if (value > m_maximum)
-            value = m_maximum;
+        // Set the new value
+        m_value = value;
 
-        if (m_value != value)
-        {
-            m_value = value;
-            sendSignal("ValueChanged", value);
-        }
+        // When the value is below the minimum or above the maximum then adjust it
+        if (m_value < m_minimum)
+            m_value = m_minimum;
+        else if (m_value > m_maximum)
+            m_value = m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +269,7 @@ namespace tgui
                 {
                     // Increment the value
                     if (m_value < m_maximum)
-                        setValue(m_value + 1);
+                        ++m_value;
                     else
                         return;
                 }
@@ -289,12 +284,20 @@ namespace tgui
                 {
                     // Decrement the value
                     if (m_value > m_minimum)
-                        setValue(m_value - 1);
+                        --m_value;
                     else
                         return;
                 }
                 else
                     return;
+            }
+
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
+            {
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
+                addCallback();
             }
         }
     }

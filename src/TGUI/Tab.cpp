@@ -36,9 +36,7 @@ namespace tgui
 
     Tab::Tab()
     {
-        m_widgetType = WidgetType::Tab;
-
-        addSignal<SignalString>("TabChanged");
+        m_callback.widgetType = WidgetType::Tab;
 
         m_renderer = std::make_shared<TabRenderer>(this);
 
@@ -402,7 +400,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::leftMousePressed(float x, float)
+    void Tab::leftMousePressed(float x, float y)
     {
         float width = getPosition().x;
 
@@ -415,17 +413,22 @@ namespace tgui
             // Check if the mouse went down on the tab
             if (x < width)
             {
-                // We don't have to select the tab if it is already selected
-                if (m_selectedTab != static_cast<int>(i))
+                if (m_selectedTab >= 0)
+                    m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
+
+                // Select this tab
+                m_selectedTab = i;
+                m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
+
+                // Add the callback (if the user requested it)
+                if (m_callbackFunctions[TabChanged].empty() == false)
                 {
-                    if (m_selectedTab >= 0)
-                        m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
-
-                    // Select this tab
-                    m_selectedTab = static_cast<int>(i);
-                    m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
-
-                    sendSignal("TabChanged", m_tabNames[i].getText());
+                    m_callback.trigger = TabChanged;
+                    m_callback.value   = m_selectedTab;
+                    m_callback.text    = m_tabNames[i].getText();
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    addCallback();
                 }
 
                 // The tab was found

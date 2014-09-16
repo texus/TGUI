@@ -33,9 +33,7 @@ namespace tgui
 
     MessageBox::MessageBox()
     {
-        m_widgetType = WidgetType::MessageBox;
-
-        addSignal<SignalString>("ButtonPressed");
+        m_callback.widgetType = WidgetType::MessageBox;
 
         m_renderer = std::make_shared<MessageBoxRenderer>(this);
 
@@ -61,8 +59,9 @@ namespace tgui
         for (auto it = messageBoxToCopy.m_buttons.begin(); it != messageBoxToCopy.m_buttons.end(); ++it)
         {
             Button::Ptr button = Button::copy(*it);
-            button->disconnectAll();
-            button->connect("Pressed", [this](const sf::String& caption){ sendSignal("ButtonClicked", caption); });
+            button->unbindAllCallback();
+            button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
+                                   std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
 
             m_buttons.push_back(button);
         }
@@ -192,9 +191,10 @@ namespace tgui
         auto button = Button::create(m_loadedThemeFile, m_buttonSectionName);
         button->setTextSize(m_textSize);
         button->setText(caption);
-        button->connect("Pressed", [=](){ sendSignal("ButtonClicked", caption); });
+        button->bindCallbackEx(Button::LeftMouseClicked | Button::SpaceKeyPressed | Button::ReturnKeyPressed,
+                               std::bind(&MessageBox::buttonClickedCallbackFunction, this, std::placeholders::_1));
 
-        add(button, "#TGUI_INTERNAL$MessageBoxButton$" + caption + "#");
+        add(button);
         m_buttons.push_back(button);
 
         rearrange();
@@ -254,6 +254,18 @@ namespace tgui
             leftPosition += distance + ((size.x - buttonsAreaWidth) / (m_buttons.size()+1));
             m_buttons[i]->setPosition({leftPosition, topPosition});
             leftPosition += m_buttons[i]->getSize().x;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::buttonClickedCallbackFunction(const Callback& callback)
+    {
+        if (m_callbackFunctions[ButtonClicked].empty() == false)
+        {
+            m_callback.trigger = ButtonClicked;
+            m_callback.text    = static_cast<Button*>(callback.widget)->getText();
+            addCallback();
         }
     }
 

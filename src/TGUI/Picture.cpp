@@ -33,10 +33,8 @@ namespace tgui
 
     Picture::Picture()
     {
-        m_widgetType = WidgetType::Picture;
+        m_callback.widgetType = WidgetType::Picture;
         m_animatedWidget = true;
-
-        addSignal<Signal>("DoubleClicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +126,14 @@ namespace tgui
             if (m_possibleDoubleClick)
             {
                 m_possibleDoubleClick = false;
-                sendSignal("DoubleClicked");
+
+                if (m_callbackFunctions[LeftMouseDoubleClicked].empty() == false)
+                {
+                    m_callback.trigger = LeftMouseDoubleClicked;
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    addCallback();
+                }
             }
             else // This is the first click
             {

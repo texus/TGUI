@@ -36,10 +36,7 @@ namespace tgui
 
     ProgressBar::ProgressBar()
     {
-        m_widgetType = WidgetType::ProgressBar;
-
-        addSignal<SignalInt>("ValueChanged");
-        addSignal<SignalInt>("Full");
+        m_callback.widgetType = WidgetType::ProgressBar;
 
         m_renderer = std::make_shared<ProgressBarRenderer>(this);
 
@@ -214,23 +211,17 @@ namespace tgui
 
     void ProgressBar::setValue(unsigned int value)
     {
+        // Set the new value
+        m_value = value;
+
         // When the value is below the minimum or above the maximum then adjust it
-        if (value < m_minimum)
-            value = m_minimum;
-        else if (value > m_maximum)
-            value = m_maximum;
+        if (m_value < m_minimum)
+            m_value = m_minimum;
+        else if (m_value > m_maximum)
+            m_value = m_maximum;
 
-        if (m_value != value)
-        {
-            m_value = value;
-            sendSignal("ValueChanged", m_value);
-
-            if (m_value == m_maximum)
-                sendSignal("Full", m_value);
-
-            // Recalculate the size of the front image (the size of the part that will be drawn)
-            recalculateSize();
-        }
+        // Recalculate the size of the front image (the size of the part that will be drawn)
+        recalculateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +230,32 @@ namespace tgui
     {
         // When the value is still below the maximum then adjust it
         if (m_value < m_maximum)
-            setValue(m_value + 1);
+        {
+            ++m_value;
+
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
+            {
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
+                addCallback();
+            }
+
+            // Check if the progress bar is now full
+            if (m_value == m_maximum)
+            {
+                // Add the callback (if the user requested it)
+                if (m_callbackFunctions[ProgressBarFull].empty() == false)
+                {
+                    m_callback.trigger = ProgressBarFull;
+                    m_callback.value   = static_cast<int>(m_value);
+                    addCallback();
+                }
+            }
+
+            // Recalculate the size of the front image (the size of the part that will be drawn)
+            recalculateSize();
+        }
 
         // return the new value
         return m_value;

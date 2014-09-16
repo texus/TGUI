@@ -33,10 +33,8 @@ namespace tgui
 
     Scrollbar::Scrollbar()
     {
-        m_widgetType = WidgetType::Scrollbar;
+        m_callback.widgetType = WidgetType::Scrollbar;
         m_draggableWidget = true;
-
-        addSignal<SignalInt>("ValueChanged");
 
         m_renderer = std::make_shared<ScrollbarRenderer>(this);
 
@@ -307,16 +305,24 @@ namespace tgui
 
     void Scrollbar::setValue(unsigned int value)
     {
-        // When the value is above the maximum then adjust it
-        if (m_maximum < m_lowValue)
-            value = 0;
-        else if (value > m_maximum - m_lowValue)
-            value = m_maximum - m_lowValue;
-
         if (m_value != value)
         {
+            // Set the new value
             m_value = value;
-            sendSignal("ValueChanged", static_cast<int>(m_value));
+
+            // When the value is above the maximum then adjust it
+            if (m_maximum < m_lowValue)
+                m_value = 0;
+            else if (m_value > m_maximum - m_lowValue)
+                m_value = m_maximum - m_lowValue;
+
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
+            {
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
+                addCallback();
+            }
 
             // Recalculate the size and position of the thumb image
             updateSize();

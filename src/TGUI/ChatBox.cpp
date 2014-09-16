@@ -38,7 +38,7 @@ namespace tgui
 
     ChatBox::ChatBox()
     {
-        m_widgetType = WidgetType::ChatBox;
+        m_callback.widgetType = WidgetType::ChatBox;
         m_draggableWidget = true;
 
         m_renderer = std::make_shared<ChatBoxRenderer>(this);

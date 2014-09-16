@@ -35,11 +35,7 @@ namespace tgui
 
     Panel::Panel()
     {
-        m_widgetType = WidgetType::Panel;
-
-        addSignal<SignalVector2f>("MousePressed");
-        addSignal<SignalVector2f>("MouseReleased");
-        addSignal<SignalVector2f>("Clicked");
+        m_callback.widgetType = WidgetType::Panel;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +93,14 @@ namespace tgui
         if (mouseOnWidget(x, y))
         {
             m_mouseDown = true;
-            sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+
+            if (!m_callbackFunctions[LeftMousePressed].empty())
+            {
+                m_callback.trigger = LeftMousePressed;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                addCallback();
+            }
         }
 
         Container::leftMousePressed(x, y);
@@ -109,10 +112,24 @@ namespace tgui
     {
         if (mouseOnWidget(x, y))
         {
-            sendSignal("MouseReleased", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+            if (!m_callbackFunctions[LeftMouseReleased].empty())
+            {
+                m_callback.trigger = LeftMouseReleased;
+                m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                addCallback();
+            }
 
             if (m_mouseDown)
-                sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+            {
+                if (!m_callbackFunctions[LeftMouseClicked].empty())
+                {
+                    m_callback.trigger = LeftMouseClicked;
+                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+                    addCallback();
+                }
+            }
         }
 
         m_mouseDown = false;

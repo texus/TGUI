@@ -36,9 +36,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Gui class
-    ///
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class TGUI_API Gui
     {
       public:
@@ -156,6 +154,27 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the next callback from the callback queue.
+        ///
+        /// This function works just like the pollEvent function from sfml.
+        ///
+        /// The gui stores the callback of all the widgets.
+        /// This function will return the next callback and then remove it from the queue.
+        ///
+        /// Note that more than one callbacks may be present in the queue, thus you should always call this
+        /// function in a loop to make sure that you process every callback.
+        ///
+        /// @param callback  An empty tgui::Callback widget that will be (partly) filled when there is a callback.
+        ///
+        /// @return
+        ///        - true when there is another callback. The callback parameter will be filled with information.
+        ///        - false when there is no callback. The callback parameter remains uninitialized and may not be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool pollCallback(Callback& callback);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,7 +465,42 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
+        /// @brief Bind a function to the callbacks of all child widgets.
+        ///
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
+        ///
+        /// @param func  Pointer to a free function with a reference to a Callback widget as parameter.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void bindGlobalCallback(std::function<void(const Callback&)> func);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Bind a function to the callbacks of all child widgets.
+        ///
+        /// When a child widget tells this widget about the callback then the global callback function(s) will be called.
+        /// If no global callback function has been bound then the callback is passed to the parent of this widget.
+        ///
+        /// @param func      Pointer to a member function with a reference to a Callback widget as parameter.
+        /// @param classPtr  Pointer to the widget of the class.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        void bindGlobalCallback(void (T::*func)(const Callback&), const T* const classPtr)
+        {
+            m_container->bindGlobalCallback(func, classPtr);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Unbind the global callback function(s).
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unbindGlobalCallback();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Update the internal clock to make animation possible. This function is called automatically by the draw function.
         // You will thus only need to call it yourself when you are drawing everything manually.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,7 +508,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // TGUI uses this function internally to handle widget callbacks.
+        // When you tell a widget to send its callbacks to its parent then this function is called.
+        //
+        // When one or more global callback functions were set then these functions will be called.
+        // Otherwise, the callback will be added to the callback queue and you will be able to poll it later with pollCallback.
+        //
+        // You can use this function to fake a widget callback.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addChildCallback(const Callback& callback);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
+
+        // This will store all widget callbacks until you pop them with getCallback
+        std::queue<Callback> m_callback;
 
         // The internal clock which is used for animation of widgets
         sf::Clock m_clock;

@@ -34,10 +34,8 @@ namespace tgui
 
     Knob::Knob()
     {
-        m_widgetType = WidgetType::Knob;
+        m_callback.widgetType = WidgetType::Knob;
         m_draggableWidget = true;
-
-        addSignal<SignalInt>("ValueChanged");
 
         m_renderer = std::make_shared<KnobRenderer>(this);
 
@@ -218,10 +216,16 @@ namespace tgui
             else if (m_value > m_maximum)
                 m_value = m_maximum;
 
-            // The knob might have to point in a different direction
+            // The knob might have to point in a different direction even though it has the same value
             recalculateRotation();
 
-            sendSignal("ValueChanged", m_value);
+            // Add the callback (if the user requested it)
+            if (m_callbackFunctions[ValueChanged].empty() == false)
+            {
+                m_callback.trigger = ValueChanged;
+                m_callback.value   = static_cast<int>(m_value);
+                addCallback();
+            }
         }
     }
 

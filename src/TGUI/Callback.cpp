@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Tooltip.hpp>
+#include <TGUI/Callback.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -31,67 +31,74 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tooltip::Tooltip()
+    void CallbackManager::bindCallback(unsigned int trigger, std::function<void()> func)
     {
-        m_callback.widgetType = WidgetType::Tooltip;
-
-        m_background.setFillColor({245, 245, 245});
-        m_text.setColor({60, 60, 60});
-
-        setBorders(1);
-        setPadding(2);
-
-        setTextSize(16);
+        mapCallback(trigger, func);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tooltip::Ptr Tooltip::create(const std::string& themeFileFilename, const std::string& section)
+    void CallbackManager::bindCallbackEx(unsigned int trigger, std::function<void(const Callback&)> func)
     {
-        auto tooltip = std::make_shared<Tooltip>();
+        mapCallback(trigger, std::bind(func, std::ref(m_callback)));
+    }
 
-        if (themeFileFilename != "")
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void CallbackManager::bindCallback(unsigned int trigger)
+    {
+        mapCallback(trigger, nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void CallbackManager::unbindCallback(unsigned int trigger)
+    {
+        unsigned int counter = 1;
+        while (counter * 2 <= trigger)
+            counter *= 2;
+
+        while (counter > 0)
         {
-            tooltip->setBorders(0);
-            tooltip->setPadding(0);
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
+            if (trigger >= counter)
             {
-                if (it->first == "textcolor")
-                    tooltip->setTextColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "backgroundcolor")
-                    tooltip->setBackgroundColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "bordercolor")
-                    tooltip->setBorderColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "borders")
-                    tooltip->setBorders(extractBordersFromString(it->first, it->second));
-                else if (it->first == "padding")
-                    tooltip->setPadding(extractBordersFromString(it->first, it->second));
-                else
-                    throw Exception{"Unrecognized property '" + it->first + "' in section '" + section + "' in " + loadedThemeFile + "."};
+                m_callbackFunctions.erase(counter);
+                trigger -= counter;
             }
-        }
 
-        return tooltip;
+            counter /= 2;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tooltip::Ptr Tooltip::copy(Tooltip::ConstPtr tooltip)
+    void CallbackManager::unbindAllCallback()
     {
-        if (tooltip)
-            return std::make_shared<Tooltip>(*tooltip);
-        else
-            return nullptr;
+        m_callbackFunctions.clear();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void CallbackManager::mapCallback(unsigned int trigger, const std::function<void()>& function)
+    {
+        unsigned int counter = 1;
+        while (counter * 2 <= trigger)
+            counter *= 2;
+
+        while (counter > 0)
+        {
+            if (trigger >= counter)
+            {
+                m_callbackFunctions[counter].push_back(function);
+                trigger -= counter;
+            }
+
+            counter /= 2;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
