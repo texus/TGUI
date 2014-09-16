@@ -192,7 +192,7 @@ namespace tgui
         auto button = Button::create(m_loadedThemeFile, m_buttonSectionName);
         button->setTextSize(m_textSize);
         button->setText(caption);
-        button->connect("Pressed", [this](const sf::String& caption){ sendSignal("ButtonClicked", caption); });
+        button->connect("Pressed", [=](){ sendSignal("ButtonClicked", caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton$" + caption + "#");
         m_buttons.push_back(button);

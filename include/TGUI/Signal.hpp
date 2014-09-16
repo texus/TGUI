@@ -65,10 +65,11 @@ namespace tgui
         template <typename Func>
         void connect(unsigned int id, Func func)
         {
+            #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
 
             m_functions[id] = connectInternal(
-                TGUI_CONDITINAL(
+                TGUI_CONDITINAL_0(
                     NoneParameter,
                     TGUI_CONDITINAL(
                         IntParameter,
@@ -89,6 +90,7 @@ namespace tgui
                 func
             );
 
+            #undef TGUI_CONDITINAL_0
             #undef TGUI_CONDITINAL
         }
 
