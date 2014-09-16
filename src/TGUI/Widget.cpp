@@ -205,7 +205,15 @@ namespace tgui
 
     void Widget::setTooltip(Tooltip::Ptr tooltip)
     {
+        if (tooltip == nullptr)
+            tooltip = Tooltip::create();
+
+        sf::String oldTooltipText = getTooltip()->getText();
+
         m_tooltip = tooltip;
+
+        if ((oldTooltipText != "") && (tooltip->getText() == ""))
+            m_tooltip->setText(oldTooltipText);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
