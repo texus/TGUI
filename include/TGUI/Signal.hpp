@@ -336,14 +336,14 @@ namespace tgui
         {
             for (auto& name : extractSignalNames(signalName))
             {
-                if (m_signals.find(toLower(signalName)) == m_signals.end())
-                    throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
+                if (m_signals.find(toLower(name)) == m_signals.end())
+                    throw Exception{"Cannot connect to unknown signal '" + name + "'."};
 
                 try {
-                    m_signals[toLower(signalName)]->connectEx(++m_lastId, func, args...);
+                    m_signals[toLower(name)]->connectEx(++m_lastId, func, args...);
                 }
                 catch (const Exception& e) {
-                    throw Exception{e.what() + (" since it is not valid for the '" + signalName + "' signal.")};
+                    throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
                 }
             }
 
