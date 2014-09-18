@@ -29,7 +29,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/ThemeFileParser.hpp>
-#include <TGUI/Callback.hpp>
+#include <TGUI/Signal.hpp>
 #include <TGUI/Transformable.hpp>
 #include <TGUI/Texture.hpp>
 
@@ -44,10 +44,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget.
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Widget : public sf::Drawable, public Transformable, public CallbackManager, public std::enable_shared_from_this<Widget>
+    ///
+    /// Signals
+    ///     - PositionChanged (Position of the widget has changed)
+    ///         * Optional parameter sf::Vector2f: New widget position
+    ///         * Uses Callback member 'position'
+    ///
+    ///     - SizeChanged (Size of the widget has changed)
+    ///         * Optional parameter sf::Vector2f: New widget size
+    ///         * Uses Callback member 'size'
+    ///
+    ///     - Focused (Widget gained focus)
+    ///     - Unfocused (Widget lost focus)
+    ///     - MouseEntered (Mouse cursor entered in the Widget area)
+    ///     - MouseLeft (Mouse cursor left the Widget area)
+    ///
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API Widget : public sf::Drawable, public Transformable, public SignalWidgetBase, public std::enable_shared_from_this<Widget>
     {
-      public:
+    public:
 
         typedef std::shared_ptr<Widget> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const Widget> ConstPtr; ///< Shared constant widget pointer
@@ -445,7 +460,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the mouse enters the widget. If requested, a callback will be send.
@@ -457,31 +472,6 @@ namespace tgui
         // This function is called when the mouse leaves the widget. If requested, a callback will be send.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseLeftWidget();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // The widgets use this function to send their callbacks to their parent and/or to a callback function.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addCallback();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Defines specific triggers to Widget.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum WidgetCallbacks
-        {
-            None = 0,                  ///< No trigger
-            PositionChanged = 1,       ///< Position of the widget has changed
-            SizeChanged = 2,           ///< Size of the widget has changed
-            Focused = 4,               ///< Widget gained focus.
-            Unfocused = 8,             ///< Widget lost focus.
-            MouseEntered = 16,         ///< Mouse cursor entered in the Widget area.
-            MouseLeft = 32,            ///< Mouse cursor left the Widget area.
-            WidgetCallbacksCount = 64
-        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

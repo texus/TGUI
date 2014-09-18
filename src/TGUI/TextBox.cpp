@@ -44,6 +44,8 @@ namespace tgui
         m_animatedWidget = true;
         m_draggableWidget = true;
 
+        addSignal<SignalString>("TextChanged");
+
         m_renderer = std::make_shared<TextBoxRenderer>(this);
 
         getRenderer()->setTextColor({0, 0, 0});
@@ -262,30 +264,39 @@ namespace tgui
 
                 // Recalculate the selection rectangles
                 {
+                    m_selectionRects.push_back({m_textSelection1.getPosition().x, getPosition().y + padding.top + (selectionStart.y * m_lineHeight), 0, static_cast<float>(m_lineHeight)});
+
                     if ((!m_lines[selectionStart.y].isEmpty()) && (m_lines[selectionStart.y] != "\n"))
                     {
-                        m_selectionRects.push_back({m_textSelection1.getPosition().x,
-                                                    getPosition().y + padding.top + (selectionStart.y * m_lineHeight),
-                                                    m_textSelection1.findCharacterPos(m_lines[selectionStart.y].getSize() - selectionStart.x).x - m_textSelection1.getPosition().x,
-                                                    static_cast<float>(m_lineHeight)});
+                        if (m_textSelection1.getString()[m_textSelection1.getString().getSize()-1] == '\n')
+                            m_selectionRects.back().width = m_textSelection1.findCharacterPos(m_textSelection1.getString().getSize()-1).x - m_textSelection1.getPosition().x;
+                        else
+                            m_selectionRects.back().width = m_textSelection1.findCharacterPos(m_textSelection1.getString().getSize()).x - m_textSelection1.getPosition().x;
 
                         // There is kerning when the selection is on just this line
                         if (selectionStart.y == selectionEnd.y)
                             m_selectionRects.back().width += kerningSelectionEnd;
                     }
-                    else
-                        m_selectionRects.push_back({m_textSelection1.getPosition().x, getPosition().y + padding.top + (selectionStart.y * m_lineHeight), 2, static_cast<float>(m_lineHeight)});
+
+                    // The selection should still be visible even when no character is selected on that line
+                    if (m_selectionRects.back().width == 0)
+                        m_selectionRects.back().width = 2;
 
                     for (unsigned int i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                     {
+                        m_selectionRects.push_back({m_textSelection2.getPosition().x, getPosition().y + padding.top + (i * m_lineHeight), 0, static_cast<float>(m_lineHeight)});
+
                         if ((!m_lines[i].isEmpty()) && (m_lines[i] != "\n"))
                         {
                             tempText.setString(m_lines[i]);
-                            m_selectionRects.push_back({m_textSelection2.getPosition().x, getPosition().y + padding.top + (i * m_lineHeight),
-                                                        tempText.findCharacterPos(tempText.getString().getSize()).x, static_cast<float>(m_lineHeight)});
+
+                            if (tempText.getString()[tempText.getString().getSize()-1] == '\n')
+                                m_selectionRects.back().width = tempText.findCharacterPos(tempText.getString().getSize()-1).x;
+                            else
+                                m_selectionRects.back().width = tempText.findCharacterPos(tempText.getString().getSize()).x;
                         }
                         else
-                            m_selectionRects.push_back({m_textSelection2.getPosition().x, getPosition().y + padding.top + (i * m_lineHeight), 2, static_cast<float>(m_lineHeight)});
+                            m_selectionRects.back().width = 2;
                     }
 
                     if (m_textSelection2.getString() != "")
@@ -820,14 +831,8 @@ namespace tgui
                 m_caretVisible = true;
                 m_animationTimeElapsed = {};
 
-                // Add the callback (if the user requested it)
-                if (m_callbackFunctions[TextChanged].empty() == false)
-                {
-                    m_callback.trigger = TextChanged;
-                    m_callback.text    = m_text;
-                    addCallback();
-                }
-
+                m_callback.text = m_text;
+                sendSignal("TextChanged", m_text);
                 break;
             }
 
@@ -860,14 +865,8 @@ namespace tgui
                 else // You did select some characters, so remove them
                     deleteSelectedCharacters();
 
-                // Add the callback (if the user requested it)
-                if (m_callbackFunctions[TextChanged].empty() == false)
-                {
-                    m_callback.trigger = TextChanged;
-                    m_callback.text    = m_text;
-                    addCallback();
-                }
-
+                m_callback.text = m_text;
+                sendSignal("TextChanged", m_text);
                 break;
             }
 
@@ -920,13 +919,8 @@ namespace tgui
                         m_selEnd = m_selStart;
                         rearrangeText(true);
 
-                        // Add the callback (if the user requested it)
-                        if (m_callbackFunctions[TextChanged].empty() == false)
-                        {
-                            m_callback.trigger = TextChanged;
-                            m_callback.text    = m_text;
-                            addCallback();
-                        }
+                        m_callback.text = m_text;
+                        sendSignal("TextChanged", m_text);
                     }
                 }
 
@@ -998,13 +992,8 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        // Add the callback (if the user requested it)
-        if (m_callbackFunctions[TextChanged].empty() == false)
-        {
-            m_callback.trigger = TextChanged;
-            m_callback.text    = m_text;
-            addCallback();
-        }
+        m_callback.text = m_text;
+        sendSignal("TextChanged", m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

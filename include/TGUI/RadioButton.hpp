@@ -36,7 +36,20 @@ namespace tgui
     class RadioButtonRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    /// @brief Radio button widget
+    ///
+    /// Signals:
+    ///     - Checked
+    ///         * Optional parameter bool: always contains true
+    ///         * Uses Callback member 'checked'
+    ///
+    ///     - Unchecked
+    ///         * Optional parameter bool: always contains false
+    ///         * Uses Callback member 'checked'
+    ///
+    ///     - Inherited signals from ClickableWidget
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API RadioButton : public ClickableWidget
     {
     public:
@@ -284,23 +297,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Defines specific triggers to RadioButton.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum RadioButtonCallbacks
-        {
-            Checked = ClickableWidgetCallbacksCount * 1,            ///< RadioButton was checked
-            Unchecked = ClickableWidgetCallbacksCount * 2,          ///< RadioButton was unchecked
-            SpaceKeyPressed = ClickableWidgetCallbacksCount * 8,    ///< Space key was pressed
-            ReturnKeyPressed = ClickableWidgetCallbacksCount * 16,  ///< Return key was pressed
-            RadioButtonCallbacksCount = ClickableWidgetCallbacksCount * 32
-        };
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    protected:
 
         // This is the checked flag. When the radio button is checked then this variable will be true.
         bool m_checked = false;

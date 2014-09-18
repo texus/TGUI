@@ -42,9 +42,9 @@ namespace tgui
         if (m_callbacks[widget.get()][trigger].empty())
         {
             if (trigger == LayoutChangeTrigger::Position)
-                widget->bindCallback(Widget::PositionChanged, std::bind(&LayoutCallbackManager::positionChanged, this, widget));
+                widget->connect("PositionChanged", &LayoutCallbackManager::positionChanged, this, widget);
             else
-                widget->bindCallback(Widget::SizeChanged, std::bind(&LayoutCallbackManager::sizeChanged, this, widget));
+                widget->connect("SizeChanged", &LayoutCallbackManager::sizeChanged, this, widget);
         }
 
         m_callbacks[widget.get()][trigger][layout] = function;

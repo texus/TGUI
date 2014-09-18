@@ -42,6 +42,8 @@ namespace tgui
         m_callback.widgetType = WidgetType::ComboBox;
         m_draggableWidget = true;
 
+        addSignal<SignalDoubleString>("ItemSelected");
+
         initListBox();
 
         m_renderer = std::make_shared<ComboBoxRenderer>(this);
@@ -62,7 +64,10 @@ namespace tgui
         m_text              {listBoxToCopy.m_text}
     {
         if (m_listBox != nullptr)
+        {
+            m_listBox->disconnectAll();
             initListBox();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,9 +502,9 @@ namespace tgui
     void ComboBox::initListBox()
     {
         m_listBox->hide();
-        m_listBox->bindCallback(ListBox::ItemSelected, std::bind(&ComboBox::newItemSelectedCallbackFunction, this));
-        m_listBox->bindCallback(ListBox::Unfocused, std::bind(&ComboBox::listBoxUnfocusedCallbackFunction, this));
-        m_listBox->bindCallback(ListBox::LeftMouseReleased, std::bind(&ComboBox::hideListBox, this));
+        m_listBox->connect("ItemSelected", &ComboBox::newItemSelectedCallbackFunction, this);
+        m_listBox->connect("Unfocused", &ComboBox::listBoxUnfocusedCallbackFunction, this);
+        m_listBox->connect("MouseReleased", &ComboBox::hideListBox, this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,13 +513,9 @@ namespace tgui
     {
         m_text.setText(m_listBox->getSelectedItem());
 
-        if (m_callbackFunctions[ItemSelected].empty() == false)
-        {
-            // When no item is selected then send an empty string, otherwise send the item
-            m_callback.text    = m_listBox->getSelectedItem();
-            m_callback.trigger = ItemSelected;
-            addCallback();
-        }
+        m_callback.text   = m_listBox->getSelectedItem();
+        m_callback.itemId = m_listBox->getSelectedItemId();
+        sendSignal("ItemSelected", m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

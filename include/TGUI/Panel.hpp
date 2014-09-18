@@ -34,7 +34,26 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief A static container of widgets. The background color can be solid or transparent.
+    /// @brief Panel widget
+    ///
+    /// The panel is a static container of widgets. The background color can be solid or transparent.
+    /// It can be used for having radio button groups or any other reason to group certain widgets.
+    ///
+    /// Signals:
+    ///     - MousePressed (the left mouse button was pressed on top of the panel)
+    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
+    ///         * Uses Callback member 'mouse'
+    ///
+    ///     - MouseReleased (the left mouse button was released on top of the panel)
+    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
+    ///         * Uses Callback member 'mouse'
+    ///
+    ///     - Clicked (you left clicked the panel)
+    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
+    ///         * Uses Callback member 'mouse'
+    ///
+    ///     - Inherited signals from Container
+    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Panel : public Container
     {
@@ -143,21 +162,6 @@ namespace tgui
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Defines specific triggers to Panel.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum PanelCallbacks
-        {
-            LeftMousePressed = WidgetCallbacksCount * 1,   ///< The left mouse button was pressed
-            LeftMouseReleased = WidgetCallbacksCount * 2,  ///< The left mouse button was released
-            LeftMouseClicked = WidgetCallbacksCount * 4,   ///< The left mouse button was clicked
-            PanelCallbacksCount = WidgetCallbacksCount * 8
-        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

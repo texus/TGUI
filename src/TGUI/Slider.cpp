@@ -37,6 +37,8 @@ namespace tgui
         m_callback.widgetType = WidgetType::Slider;
         m_draggableWidget = true;
 
+        addSignal<SignalInt>("ValueChanged");
+
         m_renderer = std::make_shared<SliderRenderer>(this);
 
         getRenderer()->setBorders({2, 2, 2, 2});
@@ -258,24 +260,18 @@ namespace tgui
 
     void Slider::setValue(int value)
     {
+        // When the value is below the minimum or above the maximum then adjust it
+        if (value < m_minimum)
+            value = m_minimum;
+        else if (value > m_maximum)
+            value = m_maximum;
+
         if (m_value != value)
         {
-            // Set the new value
             m_value = value;
 
-            // When the value is below the minimum or above the maximum then adjust it
-            if (m_value < m_minimum)
-                m_value = m_minimum;
-            else if (m_value > m_maximum)
-                m_value = m_maximum;
-
-            // Add the callback (if the user requested it)
-            if (m_callbackFunctions[ValueChanged].empty() == false)
-            {
-                m_callback.trigger = ValueChanged;
-                m_callback.value   = m_value;
-                addCallback();
-            }
+            m_callback.value = m_value;
+            sendSignal("ValueChanged", m_value);
 
             // Recalculate the position of the thumb image
             updatePosition();

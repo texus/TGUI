@@ -41,6 +41,8 @@ namespace tgui
         m_callback.widgetType = WidgetType::Label;
         m_animatedWidget = true;
 
+        addSignal<SignalString>("DoubleClicked");
+
         m_background.setFillColor(sf::Color::Transparent);
         m_text.setColor({60, 60, 60});
 
@@ -218,13 +220,8 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
-                if (m_callbackFunctions[LeftMouseDoubleClicked].empty() == false)
-                {
-                    m_callback.trigger = LeftMouseDoubleClicked;
-                    m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-                    m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-                    addCallback();
-                }
+                m_callback.text = m_text.getString();
+                sendSignal("DoubleClicked", m_text.getString());
             }
             else // This is the first click
             {

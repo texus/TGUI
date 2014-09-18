@@ -37,6 +37,9 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::ChildWindow;
 
+        addSignal<SignalVector2f>("MousePressed");
+        addSignal<SignalChildWindowPtr>("Closed");
+
         m_renderer = std::make_shared<ChildWindowRenderer>(this);
 
         getRenderer()->setBorders({1, 1, 1, 1});
@@ -307,14 +310,9 @@ namespace tgui
         // Move the child window to the front
         m_parent->moveWidgetToFront(this);
 
-        // Add the callback (if the user requested it)
-        if (m_callbackFunctions[LeftMousePressed].empty() == false)
-        {
-            m_callback.trigger = LeftMousePressed;
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            addCallback();
-        }
+        m_callback.mouse.x = static_cast<int>(x - getPosition().x);
+        m_callback.mouse.y = static_cast<int>(y - getPosition().y);
+        sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
 
         // Check if the mouse is on top of the title bar
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}.contains(x, y))
@@ -372,12 +370,8 @@ namespace tgui
                 // Check if the mouse is still on the close button
                 if (m_closeButton.mouseOnWidget(x, y))
                 {
-                    // If a callback was requested then send it
-                    if (m_callbackFunctions[Closed].empty() == false)
-                    {
-                        m_callback.trigger = Closed;
-                        addCallback();
-                    }
+                    if (isSignalBound("closed"))
+                        sendSignal("closed", std::static_pointer_cast<ChildWindow>(shared_from_this()));
                     else // The user won't stop the closing, so destroy the window
                     {
                         destroy();
