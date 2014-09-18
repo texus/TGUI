@@ -1461,7 +1461,10 @@ namespace tgui
             {
                 if (event.code == sf::Keyboard::C)
                 {
-                    TGUI_Clipboard.set(m_TextSelection1.getString() + m_TextSelection2.getString());
+                    if ((m_TextSelection1.getString() != "") && (m_TextSelection2.getString() != ""))
+                        TGUI_Clipboard.set(m_TextSelection1.getString() + "\n" + m_TextSelection2.getString());
+                    else
+                        TGUI_Clipboard.set(m_TextSelection1.getString() + m_TextSelection2.getString());
                 }
                 else if (event.code == sf::Keyboard::V)
                 {
@@ -1495,7 +1498,10 @@ namespace tgui
                 }
                 else if (event.code == sf::Keyboard::X)
                 {
-                    TGUI_Clipboard.set(m_TextSelection1.getString() + m_TextSelection2.getString());
+                    if ((m_TextSelection1.getString() != "") && (m_TextSelection2.getString() != ""))
+                        TGUI_Clipboard.set(m_TextSelection1.getString() + "\n" + m_TextSelection2.getString());
+                    else
+                        TGUI_Clipboard.set(m_TextSelection1.getString() + m_TextSelection2.getString());
 
                     if (m_readOnly)
                         return;
