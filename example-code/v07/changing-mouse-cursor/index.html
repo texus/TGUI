@@ -52,8 +52,8 @@ int main()
 
     // When the mouse enters or leaves the button, the mouse cursor should change.
     // We only have to do this for one button, since the others will be copies of this one.
-    play->bindCallback(tgui::Button::MouseEntered, [&](){ sprite.setTexture(textureCursorHover); });
-    play->bindCallback(tgui::Button::MouseLeft, [&](){ sprite.setTexture(textureCursorNormal); });
+    play->connect("MouseEntered", [&](){ sprite.setTexture(textureCursorHover); });
+    play->connect("MouseLeft", [&](){ sprite.setTexture(textureCursorNormal); });
 
     auto load = tgui::Button::copy(play);
     load->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.425);

@@ -101,7 +101,7 @@ a#navbar-title:hover h1 {
   padding: 0;
 }
 
-@media only screen and (max-width: 859px) {
+@media only screen and (max-width: 949px) {
 
   .navbar-toggle {
     float: right;
@@ -126,13 +126,13 @@ a#navbar-title:hover h1 {
     left: 0px;
     top: 50px;
     width: 100%;
-	  max-height: 0px;
-	  overflow: hidden;
-	  
-	  -webkit-transition: all 0.5s;
-	  -moz-transition: all 0.5s;
-	  -o-transition: all 0.5s;
-	  transition: all 0.5s;
+    max-height: 0px;
+    overflow: hidden;
+
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
   }
 
   #navbar-list-div ul {
@@ -170,11 +170,11 @@ a#navbar-title:hover h1 {
   }
 
   #navbar-check:checked ~ #navbar-list-div {
-	  max-height: 250px
+    max-height: 300px
   }
 }
 
-@media only screen and (min-width: 860px) {
+@media only screen and (min-width: 950px) {
 
   #navbar ul {
     margin: 0;
@@ -243,7 +243,7 @@ a#navbar-title:hover h1 {
   }
 }
 
-@media only screen and (min-width: 860px) and (min-height: 400px) {
+@media only screen and (min-width: 950px) and (min-height: 400px) {
   #navbar {
     position: fixed;
   }

@@ -68,7 +68,7 @@ int main()
     editBox->getRenderer()->setTextColor(sf::Color::Black);
 
     // When hitting enter, the line is added to the chatbox
-    editBox->bindCallback(tgui::EditBox::ReturnKeyPressed, std::bind(addToChatBox, chatBox, editBox));
+    editBox->connect("ReturnKeyPressed", addToChatBox, chatBox, editBox);
 
     // Focus the edit box so that we can immediately type into it without needing to click it first
     editBox->focus();

@@ -1,0 +1,67 @@
+---
+---
+<!DOCTYPE html>
+
+<head>
+{% include head.ext %}
+
+    <title>TGUI v0.7-dev</title>
+</head>
+
+<body>
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+
+<div id="contents" class="NoMargin">
+    <h2>TGUI v0.7 development version</h2>
+
+    <div>
+        <p>This page is about the current version in development. You will find links to tutorials and documentation here, but keep in mind that everything can still change.</p>
+        <p>The expected release date for the final 0.7 version (or at least a release candidate) is set to September 2015.</p>
+
+        <p><a href="../tutorials/v07/">Tutorials</a></p>
+        <p><a href="../documentation/v0.7/">Documentation</a></p>
+        <p><a href="../example-code/v07/">Example codes</a></p>
+        <p><a href="https://github.com/texus/TGUI/archive/v0.7-dev.zip">Download latest version from github</a></p>
+    </div>
+
+    <div>
+        <h3 name="Features">Features</h3>
+        <p class="SmallBottomMargin">Here is a list of some important features that are already implemented and available.</p>
+        <ul>
+            <li>The layout system. You can now give widgets a position or size relative to another one. The value will automatically be updated when the bound widget changes.</li>
+
+            <li>There is a new callback system</li>
+
+            <li>Exceptions are now used for error handing</li>
+
+            <li>Widgets no longer need textures. There is also a simple colored version for each widget. There is even a built-in theme that is used when you don't provide any theme file.</li>
+
+            <li>Label and TextBox were rewritten. The biggest addition is probably that they now have word wrap.</li>
+
+            <li>Many small improvements to all widgets. Stuff like allowing the text color to change on mouse hover in button and checkbox.</li>
+
+            <li>TGUI now has its own view. You no longer have to change the view every frame between sfml and tgui rendering, while not forgetting to have the right view set during event handling.</li>
+            <li>...</li>
+        </ul>
+    </div>
+</div>
+
+{% include footer.ext %}
+</div>
+
+<!-- Start of Browser-Update code -->
+<script type="text/javascript">
+var $buoop = {};
+$buoop.ol = window.onload;
+window.onload=function(){
+ try {if ($buoop.ol) $buoop.ol();}catch (e) {}
+ var e = document.createElement("script");
+ e.setAttribute("type", "text/javascript");
+ e.setAttribute("src", "//browser-update.org/update.js");
+ document.body.appendChild(e);
+}
+</script>
+<!-- End of Browser-Update code -->
+
+</body>

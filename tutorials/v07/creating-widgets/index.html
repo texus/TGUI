@@ -1,0 +1,95 @@
+---
+---
+
+<!DOCTYPE html>
+
+<head>
+{% include head.ext %}
+
+    <title>Creating widgets</title>
+</head>
+
+<body>
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+
+<div id="contents" class="NoMargin">
+    <h2>Creating, copying and removing widgets</h2>
+
+    <div>
+    <h3 name="Creating_widgets">Creating widgets</h3>
+    <p>Creating a widget goes in two steps: creating it and adding it to its parent.</p>
+    <p class="SmallBottomMargin">Because TGUI comes with a built-in "White" theme, you can create a widget without needing any external files.</p>
+{% highlight c++ %}
+tgui::Button::Ptr button = tgui::Button::create();
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">But if you want to change the appearance then you will need to load a theme file. This theme file will contain a section which describes how the widget should look. TGUI also ships with a "Black" theme which uses textured widgets instead of the simple colored ones that are used by the White theme.</p>
+{% highlight c++ %}
+auto button1 = tgui::Button::create("TGUI/widgets/Black.conf"); // Loads the Button section in Black.conf
+auto button2 = tgui::Button::create("custom.txt", "MyButton"); // Loads the MyButton section in custom.txt
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">The second step is to add the widget to its parent widget. Usually this is the Gui object, but it could also be e.g. a child window.
+{% highlight c++ %}
+gui.add(button1);
+gui.add(button2, "MyUniqueName");
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">After your widget is created, you can start making changes to it. The button should e.g. display some text on top of it.
+{% highlight c++ %}
+button->setText("Quit");
+{% endhighlight %}
+    </div>
+
+    <div>
+    <h3 name="Retrieving_widgets">Retrieving widgets</h3>
+    <p class="SmallBottomMargin">Once a widget is added to a parent widget (or directly to the gui), you no longer have to store it yourself, you can just let your pointer go out of scope. When you need it later you can always get it back from the parent widget. The name that the get function takes as parameter was the optional parameter of the add function.
+    </p>
+{% highlight c++ %}
+tgui::Button::Ptr button = gui.get<tgui::Button>("MyUniqueName");
+tgui::Widget::Ptr widget = gui.get("MyWidgetName");
+{% endhighlight %}
+
+<p class="SmallBottomMargin">It is also possible to retrieve a list of all widgets and their names in the container.</p>
+{% highlight c++ %}
+std::vector<Widget::Ptr>& widgets = gui.getWidgets();
+std::vector<sf::String>& widgetNames = gui.getWidgetNames();
+{% endhighlight %}
+    </div>
+
+    <div>
+    <h3 name="Copying_widgets">Copying widgets</h3>
+    <p class="SmallBottomMargin">When you know the type of your widget then you can simply use the copy function. The copied widget is however not bound to the same parent widget, you must add it again. This is done so that you can e.g. make a copy of a widget inside a child window and then add the copy to another child window.
+    </p>
+{% highlight c++ %}
+auto newButton = tgui::Button::copy(oldButton);
+gui.add(newButton);
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">It is of course possible that you do not know the type of the widget. If you have been storing all the widgets in a list and you want to copy the list then you cannot use the copy function. In this situation you must use the clone function.
+    </p>
+{% highlight c++ %}
+std::vector<tgui::Widget::Ptr> newList;
+for (auto& widget : oldList)
+    newList.push_back(widget->clone());
+{% endhighlight %}
+    </div>
+
+    <div>
+    <h3 name="Removing_widgets">Removing widgets</h3>
+    <p class="SmallBottomMargin">Once a widget is no longer needed, you can remove it from its parent container.</p>
+{% highlight c++ %}
+gui.remove(button);
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">You could also remove all widgets inside a container at once.</p>
+{% highlight c++ %}
+gui.removeAllWidgets();
+{% endhighlight %}
+    </div>
+</div>
+
+{% include footer.ext %}
+</div>
+</body>
