@@ -37,11 +37,10 @@ void loadWidgets( tgui::Gui& gui )
     button->setSize(windowWidth / 2, windowHeight / 6);
     button->setPosition(windowWidth / 4, windowHeight * 7/10);
     button->setText("Login");
-    button->bindCallback(tgui::Button::LeftMouseClicked);
     gui.add(button);
 
     // Call the login function when the button is pressed
-    button->bindCallback(tgui::Button::LeftMouseClicked, std::bind(login, editBoxUsername, editBoxPassword));
+    button->connect("pressed", login, editBoxUsername, editBoxPassword);
 }
 
 int main()

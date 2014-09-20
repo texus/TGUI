@@ -18,8 +18,6 @@ int main()
     tab->add("Tab - 1");
     tab->add("Tab - 2");
     tab->add("Tab - 3");
-    tab->bindCallback(tgui::Tab::TabChanged);
-    tab->setCallbackId(2);
     gui.add(tab);
     
     auto menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
@@ -29,9 +27,10 @@ int main()
     menu->addMenuItem("MenuOption-1", "Save");
     menu->addMenuItem("MenuOption-1", "Exit");
     menu->addMenu("MenuOption-2");
+    menu->addMenuItem("MenuOption-2", "Copy");
+    menu->addMenuItem("MenuOption-2", "Paste");
     menu->addMenu("MenuOption-3");
-    menu->bindCallback(tgui::MenuBar::MenuItemClicked);
-    menu->setCallbackId(1);
+    menu->addMenuItem("MenuOption-3", "About");
     gui.add(menu);
     
     auto label = tgui::Label::create(THEME_CONFIG_FILE);
@@ -148,8 +147,7 @@ int main()
     button->setPosition(75, 70);
     button->setText("OK");
     button->setSize(100, 30);
-    button->setCallbackId(3);
-    button->bindCallback(tgui::Button::LeftMouseClicked);
+    button->connect("pressed", [=](){ child->hide(); });
     child->add(button);
    
     auto checkbox = tgui::Checkbox::create(THEME_CONFIG_FILE);
@@ -202,8 +200,7 @@ int main()
     button->setPosition(window.getSize().x - 115, window.getSize().y - 50);
     button->setText("Exit");
     button->setSize(100, 40);
-    button->setCallbackId(1);
-    button->bindCallback(tgui::Button::LeftMouseClicked);
+    button->connect("pressed", [&](){ window.close(); });
     gui.add(button);
 
     while (window.isOpen())
@@ -215,15 +212,6 @@ int main()
                 window.close();
 
             gui.handleEvent(event);
-        }
-
-        tgui::Callback callback;
-        while (gui.pollCallback(callback))
-        {
-            if (callback.id == 1 && callback.text == "Exit")
-                window.close();
-            else if (callback.id == 3 && callback.text == "OK")
-                child->hide();
         }
 
         window.clear();
