@@ -4,7 +4,7 @@
 /// These pages contain the description of all usable functions and members in TGUI v0.7-dev.\n
 /// The few functions that you should not use are hidden.
 ///
-/// This is a development version for which no tutorials exist yet.
+/// Make sure to also check the tutorials (http://tgui.eu/tutorials/v07/) and example codes (http://tgui.eu/example-code/v07/).
 ///
 /// More information about this project can be found on the TGUI home page (http://tgui.eu).
 ///
