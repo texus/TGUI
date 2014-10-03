@@ -47,6 +47,10 @@ body {
   font-size: 0.8em;
 }
 
+#footer p a {
+  margin-left: 0.5em
+}
+
 p, li {
   line-height: 1.4em;
 }

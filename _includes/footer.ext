@@ -1,5 +1,9 @@
 <div id="footer" class="NoMargin clear">
-  <p><a href="{{site.url}}/privacy-policy/">Privacy Policy</a></p>
+  <p>
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SLMFNRVX4UF6S">Donate</a>
+    <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
+    <a href="{{site.url}}/sitemap.xml">Sitemap</a>
+  </p>
 </div>
 
 <!-- Start of StatCounter Code -->
