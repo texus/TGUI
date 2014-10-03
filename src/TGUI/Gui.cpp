@@ -211,7 +211,7 @@ namespace tgui
 
         // Change the view
         sf::View oldView = m_window->getView();
-        m_window->setView(sf::View{{m_container->getPosition().x, m_container->getPosition().y, m_container->getSize().x, m_container->getSize().y}});
+        m_window->setView(m_window->getView());
 
         // Draw the window with all widgets inside it
         m_container->drawWidgetContainer(m_window, sf::RenderStates::Default);
