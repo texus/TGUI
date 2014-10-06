@@ -325,7 +325,7 @@ namespace tgui
                 m_caretPosition = {m_caretPosition.x, m_caretPosition.y - m_scroll->getValue()};
             }
 
-            m_visibleLines = std::min<unsigned int>((getSize().y - padding.top - padding.bottom) / m_lineHeight, m_lines.size());
+            m_visibleLines = std::min<decltype(m_lines.size())>(static_cast<decltype(m_lines.size())>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
 
             // Store which area is visible
             if (m_scroll != nullptr)
