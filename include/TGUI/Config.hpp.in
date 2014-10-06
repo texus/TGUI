@@ -26,6 +26,8 @@
 #define TGUI_CONFIG_HPP
 
 
+#include <SFML/Config.hpp>
+
 #ifndef SFML_STATIC
 
     #ifdef SFML_SYSTEM_WINDOWS
