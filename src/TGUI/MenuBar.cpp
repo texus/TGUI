@@ -521,7 +521,7 @@ namespace tgui
         else if (property == "selectedtextcolor")
             setSelectedTextColor(extractColorFromString(property, value));
         else if (property == "distancetoside")
-            setDistanceToSide(tgui::stoul(value));
+            setDistanceToSide(tgui::stof(value));
         else if (property == "backgroundimage")
             extractTextureFromString(property, value, rootPath, m_backgroundTexture);
         else if (property == "itembackgroundimage")
@@ -596,7 +596,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setDistanceToSide(unsigned int distanceToSide)
+    void MenuBarRenderer::setDistanceToSide(float distanceToSide)
     {
         m_distanceToSide = distanceToSide;
     }

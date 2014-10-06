@@ -51,8 +51,8 @@ namespace tgui
 
     MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
         ChildWindow        {messageBoxToCopy},
-        m_loadedThemeFile  {messageBoxToCopy.m_loadedThemeFile},
-        m_buttonSectionName{messageBoxToCopy.m_buttonSectionName},
+        m_loadedThemeFile  (messageBoxToCopy.m_loadedThemeFile), // Did not compile in VS2013 when using braces
+        m_buttonSectionName(messageBoxToCopy.m_buttonSectionName), // Did not compile in VS2013 when using braces
         m_textSize         {messageBoxToCopy.m_textSize}
     {
         m_label = Label::copy(messageBoxToCopy.m_label);
@@ -147,7 +147,7 @@ namespace tgui
         }
 
         // Set the size of the title text
-        messageBox->m_titleText.setTextSize(messageBox->getRenderer()->m_titleBarHeight * 0.8f);
+        messageBox->m_titleText.setTextSize(static_cast<unsigned int>(messageBox->getRenderer()->m_titleBarHeight * 0.8f));
 
         return messageBox;
     }

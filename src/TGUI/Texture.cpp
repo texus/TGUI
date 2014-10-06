@@ -49,7 +49,7 @@ namespace tgui
         sf::Transformable{copy},
         sf::Drawable     {copy},
         m_data           {copy.m_data},
-        m_vertices       {copy.m_vertices},
+        m_vertices       (copy.m_vertices), // Did not compile in VS2013 when using braces
         m_size           {copy.m_size},
         m_middleRect     {copy.m_middleRect},
         m_textureRect    {copy.m_textureRect},

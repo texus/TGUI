@@ -26,6 +26,7 @@
 #ifndef TGUI_LAYOUT_HPP
 #define TGUI_LAYOUT_HPP
 
+#include <functional>
 #include <memory>
 #include <list>
 
@@ -125,13 +126,13 @@ namespace tgui
 
         void recalculateValue();
 
-        friend Layout1d operator+(const Layout1d& left, const Layout1d& right);
-        friend Layout1d operator-(const Layout1d& left, const Layout1d& right);
-        friend Layout1d operator*(const Layout1d& left, const Layout1d& right);
-        friend Layout1d operator/(const Layout1d& left, const Layout1d& right);
+        friend TGUI_API Layout1d operator+(const Layout1d& left, const Layout1d& right);
+        friend TGUI_API Layout1d operator-(const Layout1d& left, const Layout1d& right);
+        friend TGUI_API Layout1d operator*(const Layout1d& left, const Layout1d& right);
+        friend TGUI_API Layout1d operator/(const Layout1d& left, const Layout1d& right);
 
-        friend Layout operator*(const Layout& left, const Layout1d& right);
-        friend Layout operator/(const Layout& left, const Layout1d& right);
+        friend TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
+        friend TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
 
     private:
         void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
@@ -211,11 +212,11 @@ namespace tgui
         void recalculateValue();
         void setCallbackFunction(const std::function<void()>& callback) const;
 
-        friend Layout operator+(const Layout& left, const Layout& right);
-        friend Layout operator-(const Layout& left, const Layout& right);
+        friend TGUI_API Layout operator+(const Layout& left, const Layout& right);
+        friend TGUI_API Layout operator-(const Layout& left, const Layout& right);
 
-        friend Layout operator*(const Layout& left, const Layout1d& right);
-        friend Layout operator/(const Layout& left, const Layout1d& right);
+        friend TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
+        friend TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
 
     public:
         Layout1d x;

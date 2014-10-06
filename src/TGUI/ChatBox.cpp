@@ -583,7 +583,7 @@ namespace tgui
         if (lineSpacing > line->getSize().y)
             return lineSpacing;
         else
-            return line->getSize().y + std::ceil(line->getTextSize() * 3.5 / 10.0);
+            return line->getSize().y + std::ceil(line->getTextSize() * 3.5f / 10.0f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

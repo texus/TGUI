@@ -61,7 +61,7 @@ namespace tgui
         m_text               {scrollbarToCopy.m_text},
         m_textSize           {scrollbarToCopy.m_textSize},
         m_lineHeight         {scrollbarToCopy.m_lineHeight},
-        m_lines              {scrollbarToCopy.m_lines},
+        m_lines              (scrollbarToCopy.m_lines), // Did not compile in VS2013 when using braces
         m_maxChars           {scrollbarToCopy.m_maxChars},
         m_topLine            {scrollbarToCopy.m_topLine},
         m_visibleLines       {scrollbarToCopy.m_visibleLines},
@@ -74,7 +74,7 @@ namespace tgui
         m_textSelection2     {scrollbarToCopy.m_textSelection2},
         m_textAfterSelection1{scrollbarToCopy.m_textAfterSelection1},
         m_textAfterSelection2{scrollbarToCopy.m_textAfterSelection2},
-        m_selectionRects     {scrollbarToCopy.m_selectionRects},
+        m_selectionRects     (scrollbarToCopy.m_selectionRects), // Did not compile in VS2013 when using braces
         m_scroll             {Scrollbar::copy(scrollbarToCopy.m_scroll)},
         m_possibleDoubleClick{scrollbarToCopy.m_possibleDoubleClick},
         m_readOnly           {scrollbarToCopy.m_readOnly}
@@ -339,7 +339,7 @@ namespace tgui
             else // There is no scrollbar
             {
                 m_topLine = 0;
-                m_visibleLines = std::min<unsigned int>((getSize().y - padding.top - padding.bottom) / m_lineHeight, m_lines.size());
+                m_visibleLines = std::min(static_cast<unsigned int>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
             }
         }
         else // There is no font, so there can't be calculations

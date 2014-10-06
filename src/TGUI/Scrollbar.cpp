@@ -670,13 +670,13 @@ namespace tgui
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
         // Find out over which part the mouse is hovering
-        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(x, y))
+        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(static_cast<float>(x), static_cast<float>(y)))
             m_mouseHoverOverPart = Part::Thumb;
-        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(x, y))
+        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(static_cast<float>(x), static_cast<float>(y)))
             m_mouseHoverOverPart = Part::Track;
-        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(x, y))
+        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(static_cast<float>(x), static_cast<float>(y)))
             m_mouseHoverOverPart = Part::ArrowUp;
-        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(x, y))
+        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(static_cast<float>(x), static_cast<float>(y)))
             m_mouseHoverOverPart = Part::ArrowDown;
     }
 

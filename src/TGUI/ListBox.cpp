@@ -61,8 +61,8 @@ namespace tgui
 
     ListBox::ListBox(const ListBox& listBoxToCopy) :
         Widget               {listBoxToCopy},
-        m_items              {listBoxToCopy.m_items},
-        m_itemIds            {listBoxToCopy.m_itemIds},
+        m_items              (listBoxToCopy.m_items), // Did not compile in VS2013 when using braces
+        m_itemIds            (listBoxToCopy.m_itemIds), // Did not compile in VS2013 when using braces
         m_selectedItem       {listBoxToCopy.m_selectedItem},
         m_hoveringItem       {listBoxToCopy.m_hoveringItem},
         m_itemHeight         {listBoxToCopy.m_itemHeight},
@@ -834,7 +834,7 @@ namespace tgui
                 }
 
                 updatePosition();
-                mouseMoved(x, y);
+                mouseMoved(static_cast<float>(x), static_cast<float>(y));
             }
         }
     }

@@ -138,8 +138,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout1d::Layout1d(const Layout1d& layout) :
-        m_bindings {layout.m_bindings},
-        m_operators{layout.m_operators},
+        m_bindings (layout.m_bindings), // Did not compile in VS2013 when using braces
+        m_operators(layout.m_operators), // Did not compile in VS2013 when using braces
         m_value    {layout.m_value},
         m_constant {layout.m_constant}
     {

@@ -201,12 +201,12 @@ namespace tgui
         {
             if (m_verticalScroll)
             {
-                m_thumb.width = getSize().x * 1.6;
+                m_thumb.width = getSize().x * 1.6f;
                 m_thumb.height = m_thumb.width / 2.0f;
             }
             else
             {
-                m_thumb.height = getSize().y * 1.6;
+                m_thumb.height = getSize().y * 1.6f;
                 m_thumb.width = m_thumb.height / 2.0f;
             }
         }

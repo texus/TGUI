@@ -458,7 +458,9 @@ namespace tgui
 
     void ChildWindow::mouseWheelMoved(int delta, int x, int y)
     {
-        Container::mouseWheelMoved(delta, x - getRenderer()->m_borders.left, y - (getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top));
+        Container::mouseWheelMoved(delta,
+                                   static_cast<int>(x - getRenderer()->m_borders.left),
+                                   static_cast<int>(y - (getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,7 +533,7 @@ namespace tgui
         }
 
         // Set the size of the title text
-        m_titleText.setTextSize(getRenderer()->m_titleBarHeight * 0.8f);
+        m_titleText.setTextSize(static_cast<unsigned int>(getRenderer()->m_titleBarHeight * 0.8f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,9 +653,9 @@ namespace tgui
         else if (property == "borders")
             setBorders(extractBordersFromString(property, value));
         else if (property == "distancetoside")
-            setDistanceToSide(tgui::stoul(value));
+            setDistanceToSide(tgui::stof(value));
         else if (property == "titlebarheight")
-            setTitleBarHeight(tgui::stoul(value));
+            setTitleBarHeight(tgui::stof(value));
         else
             throw Exception{"Unrecognized property '" + property + "'."};
     }
@@ -722,7 +724,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindowRenderer::setDistanceToSide(unsigned int distanceToSide)
+    void ChildWindowRenderer::setDistanceToSide(float distanceToSide)
     {
         m_distanceToSide = distanceToSide;
 

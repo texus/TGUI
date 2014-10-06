@@ -69,27 +69,26 @@ namespace tgui
             #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
 
-            m_functions[id] = connectInternal(
-                TGUI_CONDITINAL_0(
-                    NoneParameter,
+            TGUI_CONDITINAL_0(
+                NoneParameter,
+                TGUI_CONDITINAL(
+                    IntParameter,
                     TGUI_CONDITINAL(
-                        IntParameter,
+                        Vector2fParameter,
                         TGUI_CONDITINAL(
-                            Vector2fParameter,
+                            StringParameter,
                             TGUI_CONDITINAL(
-                                StringParameter,
-                                TGUI_CONDITINAL(
-                                    DoubleStringParameter,
-                                        TGUI_CONDITINAL(StringListParameter,
-                                            TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, std::shared_ptr<ChildWindow>),
-                                        std::vector<sf::String>),
-                                    sf::String, sf::String),
-                                sf::String),
-                            sf::Vector2f),
-                        int)
-                    ){},
-                func
-            );
+                                DoubleStringParameter,
+                                    TGUI_CONDITINAL(StringListParameter,
+                                        TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, std::shared_ptr<ChildWindow>),
+                                    std::vector<sf::String>),
+                                sf::String, sf::String),
+                            sf::String),
+                        sf::Vector2f),
+                    int)
+                ) type{};
+
+            m_functions[id] = connectInternal(type, func);
 
             #undef TGUI_CONDITINAL_0
             #undef TGUI_CONDITINAL
@@ -100,27 +99,26 @@ namespace tgui
         {
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<decltype(std::bind(func, __VA_ARGS__)), std::function<void()>>::value, TypeA, TypeB>::type
 
-            m_functions[id] = connectInternal(
+            TGUI_CONDITINAL(
+                NoneParameter,
                 TGUI_CONDITINAL(
-                    NoneParameter,
+                    IntParameter,
                     TGUI_CONDITINAL(
-                        IntParameter,
+                        Vector2fParameter,
                         TGUI_CONDITINAL(
-                            Vector2fParameter,
+                            StringParameter,
                             TGUI_CONDITINAL(
-                                StringParameter,
-                                TGUI_CONDITINAL(
-                                    DoubleStringParameter,
-                                        TGUI_CONDITINAL(StringListParameter,
-                                            TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, args..., m_childWindowPtr),
-                                        args..., m_stringList),
-                                    args..., m_string, m_string2),
-                                args..., m_string),
-                            args..., m_vector2f),
-                        args..., m_int),
-                    args...){},
-                func, args...
-            );
+                                DoubleStringParameter,
+                                    TGUI_CONDITINAL(StringListParameter,
+                                        TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, args..., m_childWindowPtr),
+                                    args..., m_stringList),
+                                args..., m_string, m_string2),
+                            args..., m_string),
+                        args..., m_vector2f),
+                    args..., m_int),
+                args...) type{};
+
+            m_functions[id] = connectInternal(type, func, args...);
 
             #undef TGUI_CONDITINAL
         }
