@@ -339,7 +339,7 @@ namespace tgui
             else // There is no scrollbar
             {
                 m_topLine = 0;
-                m_visibleLines = std::min(static_cast<unsigned int>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
+                m_visibleLines = std::min<decltype(m_lines.size())>(static_cast<decltype(m_lines.size())>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
             }
         }
         else // There is no font, so there can't be calculations
