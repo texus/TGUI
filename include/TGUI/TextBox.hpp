@@ -409,7 +409,7 @@ namespace tgui
         unsigned int m_textSize = 18;
         unsigned int m_lineHeight = 40;
 
-        std::vector<sf::String> m_lines = std::vector<sf::String>{""};
+        std::vector<sf::String> m_lines = std::vector<sf::String>{""}; // Did not compile in VS2013 with just braces
 
         // The maximum characters (0 by default, which means no limit)
         unsigned int m_maxChars = 0;
