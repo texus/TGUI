@@ -13,7 +13,7 @@
         <li><a href="{{site.url}}/tutorials/v06/">Tutorials</a></li>
         <li><a href="{{site.url}}/documentation/v0.6/">Documentation</a></li>
         <li><a href="https://www.facebook.com/TexusGUI">Blog</a></li>
-        <li><a href="http://forum.tgui.eu/">Forum</a></li>
+        <li><a href="https://forum.tgui.eu/">Forum</a></li>
         <li><a href="{{site.url}}/v0.7-dev">v0.7-dev</a></li>
     </ul>
     </div>
