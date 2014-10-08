@@ -1,3 +1,10 @@
+<script>
+var host = "tgui.eu"
+if (window.location.host == host && window.location.protocol != "https:") {
+  window.location.protocol = "https:"
+}
+</script>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
 
