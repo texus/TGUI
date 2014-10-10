@@ -16,23 +16,18 @@
     <h2>CodeBlocks</h2>
     <div>
         <h3>CMake</h3>
+        <ul>
+          <li>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/cmake/resources/software.html">here</a>.</li>
+          <li>Also make sure that you already have sfml on your computer.
+              It would be even better to make sure you have sfml working before trying to use TGUI.
+              If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
+        </ul>
 
-        <p>
-          <ul>
-            <li>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/cmake/resources/software.html">here</a>.</li>
-            <li>Also make sure that you already have sfml on your computer.
-                It would be even better to make sure you have sfml working before trying to use TGUI.
-                If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
-          </ul>
-        </p>
-
-        <p class="SmallBottomMargin">
-          <ol>
-            <li>Set the pathname to the TGUI folder that you downloaded.</li>
-            <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
-            <li>Press this button to start configuring.</li>
-          </ol>
-        </p>
+        <ol>
+          <li>Set the pathname to the TGUI folder that you downloaded.</li>
+          <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
+          <li>Press this button to start configuring.</li>
+        </ol>
         <a class="img" href="{{site.url}}/resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="{{site.url}}/resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
 
         <p class="SmallBottomMargin">
@@ -45,13 +40,11 @@
            You will then have to tell CMake where it needs to search for sfml. Change the SFML_ROOT to the correct path. This will be the root path of sfml, which contains the include and lib folders.
         </p>
 
-        <p class="SmallBottomMargin">
-          When you compiled sfml yourself then you will have to watch out for two things:
-          <ul>
-            <li>You probably need to place the lib folder there yourself, with the libraries that you have build.</li>
-            <li>If you use static linking then the folder must of course contain the static sfml libraries.</li>
-          </ul>
-        </p>
+        <p class="SmallBottomMargin">When you compiled sfml yourself then you will have to watch out for two things:</p>
+        <ul>
+          <li>You probably need to place the lib folder there yourself, with the libraries that you have build.</li>
+          <li>If you use static linking then the folder must of course contain the static sfml libraries.</li>
+        </ul>
         <a class="img" href="{{site.url}}/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg"><img alt="CMake SFML not found" src="{{site.url}}/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg" width="779" height="512" /></a>
 
         <p>Now you can also change the other options. At the end of this CMake part, you can find the explanation of some of the options. Once you are done, you need to press Configure again.</p>
@@ -62,14 +55,12 @@
         </p>
         <a class="img" href="{{site.url}}/resources/CMakeGenerateWindowsCodeBlocks.jpg"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateWindowsCodeBlocks.jpg" width="779" height="512" /></a>
 
-        <p>Some last notes about CMake:
-          <ul>
-            <li>The <span class="Red">TGUI_SHARED_LIBS</span> <span class="Blue">option has to match the one from sfml</span>.</li>
-            <li>If you use the static sfml libraries (the ones that have “-s” in their names) then you should uncheck this option.</li>
-            <li>The <span class="Red">CMAKE_BUILD_TYPE</span> can be <span class="Blue">Release</span> or <span class="Blue">Debug</span>.</li>
-          </ul>
-        </p>
-
+        <p>Some last notes about CMake:</p>
+        <ul>
+          <li>The <span class="Red">TGUI_SHARED_LIBS</span> <span class="Blue">option has to match the one from sfml</span>.</li>
+          <li>If you use the static sfml libraries (the ones that have “-s” in their names) then you should uncheck this option.</li>
+          <li>The <span class="Red">CMAKE_BUILD_TYPE</span> can be <span class="Blue">Release</span> or <span class="Blue">Debug</span>.</li>
+        </ul>
     </div>
 
     <div>

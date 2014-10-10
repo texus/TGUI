@@ -155,14 +155,14 @@ int main()
 }
 {% endhighlight %}
 
-    <p>There is still one very important thing that you should take into account: errors.<br />
+    <p class="SmallBottomMargin">There is still one very important thing that you should take into account: errors.<br />
        In the above code, there is no error checking. If you write a program then you will probably want to add error checking to the following places:
-       <ul>
-           <li>gui.setGlobalFont will return false when the font couldn’t be loaded.</li>
-           <li>All load functions return false on failure. (you could also use the isLoaded function later).</li>
-           <li>The get function will return NULL when the widget name was wrong.</li>
-       </ul>
     </p>
+    <ul>
+      <li>gui.setGlobalFont will return false when the font couldn’t be loaded.</li>
+      <li>All load functions return false on failure. (you could also use the isLoaded function later).</li>
+      <li>The get function will return NULL when the widget name was wrong.</li>
+    </ul>
 
     <p>Previous: <a href="../intro2/">Working with widgets</a></p>
 </div>
