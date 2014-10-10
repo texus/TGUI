@@ -1,6 +1,6 @@
 <div id="footer" class="NoMargin clear">
   <p>
-    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SLMFNRVX4UF6S">Donate</a>
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=SLMFNRVX4UF6S">Donate</a>
     <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
     <a href="{{site.url}}/sitemap.xml">Sitemap</a>
   </p>
@@ -11,10 +11,6 @@
 var sc_project=9660579;
 var sc_invisible=1; 
 var sc_security="e3bbd1b5"; 
-var scJsHost = (("https:" == document.location.protocol) ?
-"https://secure." : "http://www.");
-document.write("<sc"+"ript type='text/javascript' src='" +
-scJsHost+
-"statcounter.com/counter/counter.js'></"+"script>");
+document.write("<script type='text/javascript' src='https://secure.statcounter.com/counter/counter.js'></script>");
 </script>
 <!-- End of StatCounter Code -->
