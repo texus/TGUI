@@ -11,6 +11,6 @@
 var sc_project=9660579;
 var sc_invisible=1; 
 var sc_security="e3bbd1b5"; 
-document.write("<sc"+"ript type='text/javascript' src='https://secure.statcounter.com/counter/counter.js'></"+"script>");
+document.write("&lt;script type='text/javascript' src='https://secure.statcounter.com/counter/counter.js'&gt;&lt;/script&gt;");
 </script>
 <!-- End of StatCounter Code -->
