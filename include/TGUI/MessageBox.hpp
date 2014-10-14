@@ -229,7 +229,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class MessageBoxRenderer : public ChildWindowRenderer
+    class TGUI_API MessageBoxRenderer : public ChildWindowRenderer
     {
     public:
 

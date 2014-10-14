@@ -530,7 +530,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ComboBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    class TGUI_API ComboBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
     {
     public:
 

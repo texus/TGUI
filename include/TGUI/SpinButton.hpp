@@ -313,7 +313,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class SpinButtonRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API SpinButtonRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 

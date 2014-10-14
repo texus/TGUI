@@ -506,7 +506,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ChatBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    class TGUI_API ChatBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
     {
     public:
 

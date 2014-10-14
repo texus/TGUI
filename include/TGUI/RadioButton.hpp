@@ -320,7 +320,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class RadioButtonRenderer : public WidgetRenderer, public WidgetPadding
+    class TGUI_API RadioButtonRenderer : public WidgetRenderer, public WidgetPadding
     {
     public:
 

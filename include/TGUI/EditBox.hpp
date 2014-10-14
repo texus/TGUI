@@ -495,7 +495,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class EditBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    class TGUI_API EditBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
     {
     public:
 

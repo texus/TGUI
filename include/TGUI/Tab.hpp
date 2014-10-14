@@ -406,7 +406,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TabRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API TabRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 

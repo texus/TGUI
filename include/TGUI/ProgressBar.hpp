@@ -365,7 +365,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ProgressBarRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API ProgressBarRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 

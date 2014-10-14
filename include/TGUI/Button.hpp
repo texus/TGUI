@@ -261,7 +261,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ButtonRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API ButtonRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 

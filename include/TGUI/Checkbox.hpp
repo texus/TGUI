@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class CheckboxRenderer : public RadioButtonRenderer
+    class TGUI_API CheckboxRenderer : public RadioButtonRenderer
     {
     public:
 

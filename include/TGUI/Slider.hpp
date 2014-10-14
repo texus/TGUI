@@ -299,7 +299,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class SliderRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API SliderRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 

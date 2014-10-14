@@ -568,7 +568,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ListBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    class TGUI_API ListBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
     {
     public:
 

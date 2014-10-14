@@ -450,7 +450,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TextBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
+    class TGUI_API TextBoxRenderer : public WidgetRenderer, public WidgetBorders, public WidgetPadding
     {
     public:
 

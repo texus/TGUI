@@ -393,7 +393,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class ChildWindowRenderer : public WidgetRenderer, public WidgetBorders
+    class TGUI_API ChildWindowRenderer : public WidgetRenderer, public WidgetBorders
     {
     public:
 
