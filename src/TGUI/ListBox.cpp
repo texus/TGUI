@@ -783,10 +783,11 @@ namespace tgui
                         m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
 
                     m_selectedItem = m_hoveringItem;
-                    m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
 
                     if (m_selectedItem >= 0)
                     {
+                        m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
+
                         m_callback.text = m_items[m_selectedItem].getText();
                         m_callback.itemId = m_itemIds[m_selectedItem];
                         sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
