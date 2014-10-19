@@ -97,8 +97,10 @@ namespace tgui
         /// @throw Exception when the theme file did not contain the requested section with the needed information.
         /// @throw Exception when one of the images, described in the theme file, could not be loaded.
         ///
+        /// When an empty string is passed as filename, the built-in white theme will be used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextBox::Ptr create(const std::string& themeFileFilename, const std::string& section = "TextBox");
+        static TextBox::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "TextBox");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
