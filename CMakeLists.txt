@@ -92,7 +92,7 @@ endif()
 # Set the correct architecture on mac
 if ( SFML_OS_MACOSX )
     if( NOT CMAKE_OSX_ARCHITECTURES )
-        set( CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE )
+        set( CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE )
     endif()
 endif()
 
