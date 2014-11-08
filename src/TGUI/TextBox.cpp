@@ -48,6 +48,7 @@ namespace tgui
 
         m_renderer = std::make_shared<TextBoxRenderer>(this);
 
+        getRenderer()->setBorders(2, 2, 2, 2);
         getRenderer()->setTextColor({0, 0, 0});
         getRenderer()->setSelectedTextColor({255, 255, 255});
 
@@ -123,6 +124,8 @@ namespace tgui
 
         if (themeFileFilename != "")
         {
+            textBox->getRenderer()->setBorders(0, 0, 0, 0);
+
             std::string loadedThemeFile = getResourcePath() + themeFileFilename;
 
             // Open the theme file
@@ -1283,7 +1286,7 @@ namespace tgui
             m_lines.push_back(m_text.substring(oldIndex, index - oldIndex));
 /*
             // THIS CODE MESSES UP newSelStart AND newSelEnd
-            // THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN rearrangeText
+            // THIS CODE SHOULD ONLY BE UNCOMMENTED TOGETHER WITH THE CODE IN findTextCaretPosition
             // If the next line starts with just a space, then the space need not be visible
             if ((index + 1 < m_text.getSize()) && (m_text[index] == ' ') && (!isWhitespace(m_text[index + 1])))
             {
