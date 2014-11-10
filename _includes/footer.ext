@@ -20,24 +20,6 @@ window.onload=function(){
 </script>
 <!-- End of Browser-Update code -->
 
-<!-- Start of StatCounter Code for Default Guide -->
-<script type="text/javascript">
-var sc_project=9660579; 
-var sc_invisible=1; 
-var sc_security="e3bbd1b5"; 
-var scJsHost = (("https:" == document.location.protocol) ?
-"https://secure." : "http://www.");
-document.write("<sc"+"ript type='text/javascript' src='" +
-scJsHost+
-"statcounter.com/counter/counter.js'></"+"script>");
-</script>
-<noscript><div class="statcounter"><a title="shopify
-analytics tool" href="http://statcounter.com/shopify/"
-target="_blank"><img class="statcounter"
-src="http://c.statcounter.com/9660579/0/e3bbd1b5/1/"
-alt="shopify analytics tool"></a></div></noscript>
-<!-- End of StatCounter Code for Default Guide -->
-
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
