@@ -590,6 +590,11 @@ namespace tgui
 
         if (!m_font && m_parent->getGlobalFont())
             setGlobalFont(m_parent->getGlobalFont());
+
+        // Re-initialize any widget that was already added
+        // They were most likely not given a font yet, as we are only receiving a font now
+        for (auto& widget : m_widgets)
+            widget->initialize(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
