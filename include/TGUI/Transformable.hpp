@@ -158,7 +158,7 @@ namespace tgui
         /// @endcode
         ///
         /// @param x  Horizontal offset
-        /// @param x  Vertical offset
+        /// @param y  Vertical offset
         ///
         /// @see setPosition
         ///

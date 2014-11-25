@@ -131,8 +131,7 @@ namespace tgui
         /// See the move function to apply an offset based on the previous position instead.
         /// The default position of a transformable widget is (0, 0).
         ///
-        /// @param x X coordinate of the new position
-        /// @param y Y coordinate of the new position
+        /// @param position New position
         ///
         /// @see move, getPosition
         ///
@@ -145,7 +144,6 @@ namespace tgui
         /// @brief Changes the size of the child window.
         ///
         /// @param size   Sets the new size of the child window
-        /// @param height  Sets the new height of the child window
         ///
         /// This is the size of the child window, without the title bar nor the borders.
         ///

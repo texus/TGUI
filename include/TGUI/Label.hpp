@@ -253,7 +253,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the borders that can optionally be drawn around the label
         ///
-        /// @param backgroundColor  New border color
+        /// @param borderColor  New border color
         ///
         /// @see setBorders
         ///
