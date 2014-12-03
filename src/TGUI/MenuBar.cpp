@@ -452,7 +452,8 @@ namespace tgui
         if (!m_font && m_parent->getGlobalFont())
             getRenderer()->setTextFont(m_parent->getGlobalFont());
 
-        setSize(m_parent->getSize().x, m_size.y);
+        if (getSize().x == 0)
+            setSize(bindWidth(m_parent->shared_from_this()), m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
