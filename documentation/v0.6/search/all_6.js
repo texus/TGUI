@@ -40,6 +40,7 @@ var searchData=
   ['getparent',['getParent',['../classtgui_1_1Widget.html#a0cf4e57ff28230753afe8197e8945a3a',1,'tgui::Widget']]],
   ['getpasswordcharacter',['getPasswordCharacter',['../classtgui_1_1EditBox.html#a260a6d913c6d3059d396e691e64e9da0',1,'tgui::EditBox']]],
   ['getposition',['getPosition',['../classtgui_1_1Transformable.html#aedc24e5fd37da909d6b6f0f850d278dc',1,'tgui::Transformable']]],
+  ['getresourcepath',['getResourcePath',['../namespacetgui.html#a2efca1c075fdbd9f7fb9270a798ae664',1,'tgui']]],
   ['getrows',['getRows',['../classtgui_1_1SpriteSheet.html#a2b0173e8728a5bc4d2d1e857d022f85a',1,'tgui::SpriteSheet']]],
   ['getselected',['getSelected',['../classtgui_1_1Tab.html#afc201a2c0a1241a93b79795bc0fce713',1,'tgui::Tab']]],
   ['getselectedbackgroundcolor',['getSelectedBackgroundColor',['../classtgui_1_1ComboBox.html#ad929b822c0e86b9d9f21affab273568c',1,'tgui::ComboBox::getSelectedBackgroundColor()'],['../classtgui_1_1ListBox.html#abab763992caadb51b545e28a21417430',1,'tgui::ListBox::getSelectedBackgroundColor()'],['../classtgui_1_1MenuBar.html#ac78bd4f640bc027e68d855edac47b24d',1,'tgui::MenuBar::getSelectedBackgroundColor()']]],
@@ -73,10 +74,10 @@ var searchData=
   ['getwidgetsoffset',['getWidgetsOffset',['../classtgui_1_1ChildWindow.html#a83f2b7bf262e83e8c1ea16a4ae8ad891',1,'tgui::ChildWindow::getWidgetsOffset()'],['../classtgui_1_1Container.html#ac617a1fe847e4d8f34d2f838f96ebfa8',1,'tgui::Container::getWidgetsOffset()']]],
   ['getwidgettype',['getWidgetType',['../classtgui_1_1Widget.html#a11573ff65b1f2377a7fa24eb49fcac91',1,'tgui::Widget']]],
   ['getwindow',['getWindow',['../classtgui_1_1Gui.html#ac968ab34c19372610c1dfc362d6cbf8d',1,'tgui::Gui']]],
-  ['grid',['Grid',['../classtgui_1_1Grid.html',1,'tgui']]],
   ['grid',['Grid',['../classtgui_1_1Grid.html#a613a7866203e5b90ad198e56ef8b1fa6',1,'tgui::Grid::Grid()'],['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid::Grid(const Grid &amp;copy)']]],
+  ['grid',['Grid',['../classtgui_1_1Grid.html',1,'tgui']]],
   ['gridcallbacks',['GridCallbacks',['../classtgui_1_1Grid.html#a42aef8de8cd2672601c6830b1efd184d',1,'tgui::Grid']]],
-  ['gui',['Gui',['../classtgui_1_1Gui.html',1,'tgui']]],
   ['gui',['Gui',['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#aa555f782ab60f3d521775688f8b23c14',1,'tgui::Gui::Gui(sf::RenderTarget &amp;window)']]],
+  ['gui',['Gui',['../classtgui_1_1Gui.html',1,'tgui']]],
   ['guicontainer',['GuiContainer',['../classtgui_1_1GuiContainer.html',1,'tgui']]]
 ];
