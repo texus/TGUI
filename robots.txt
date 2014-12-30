@@ -1,5 +1,4 @@
 Sitemap: https://tgui.eu/sitemap.xml
-Sitemap: https://forum.tgui.eu/index.php?action=kitsitemap;xml
 
 User-agent: *
 Disallow:
