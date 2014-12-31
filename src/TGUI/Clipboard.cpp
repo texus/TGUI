@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012-2014 Bruno Van de Velde (vdv_b@tgui.eu)
+// Copyright (C) 2012-2015 Bruno Van de Velde (vdv_b@tgui.eu)
 //                         Koushtav Chakrabarty (koushtav@fleptic.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
