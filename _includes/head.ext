@@ -4,5 +4,5 @@
 <link rel="stylesheet" type="text/css" href="{{site.url}}/resources/style.css">
 <link rel="icon" type="image/png" href="/favicon.png" />
 
-<meta name="description" content="TGUI is an easy to use cross-platform c++ GUI for SFML" />
+<meta name="description" content="TGUI is an easy to use cross-platform c++ GUI library for SFML" />
 <meta name="keywords" content="TGUI, SFML, GUI, UI" />
