@@ -1,2 +1,5 @@
 lsi: false
 highlighter: pygments
+
+gems:
+  - jekyll-sitemap
