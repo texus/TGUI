@@ -77,10 +77,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Signal::operator()(unsigned int count)
+    void Signal::operator()(unsigned int)
     {
-        assert(count == m_data.size());
-
         for (auto& function : m_functions)
             function.second();
     }
