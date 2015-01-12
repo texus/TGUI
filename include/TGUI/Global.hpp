@@ -51,9 +51,6 @@ namespace tgui
     /// @internal When disabling the tab key usage, pressing tab will no longer focus another widget.
     extern TGUI_API bool TGUI_TabKeyUsageEnabled;
 
-    /// @internal The resource path is added in front of every filename that is used to load a resource.
-    extern TGUI_API std::string TGUI_ResourcePath;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const float pi = 3.14159265358979f;
