@@ -315,7 +315,7 @@ namespace tgui
 
     Tooltip::Ptr Widget::askTooltip(sf::Vector2f mousePos)
     {
-        if (mouseOnWidget(mousePos.x, mousePos.y) && getTooltip()->getText() != "")
+        if (m_tooltip && mouseOnWidget(mousePos.x, mousePos.y) && getTooltip()->getText() != "")
             return getTooltip();
         else
             return nullptr;

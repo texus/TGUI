@@ -571,11 +571,13 @@ namespace tgui
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
             if (widget)
+            {
                 tooltip = widget->askTooltip(mousePos);
+                if (tooltip)
+                    return tooltip;
+            }
 
-            if (tooltip)
-                return tooltip;
-            else if (getTooltip()->getText() != "")
+            if (m_tooltip && getTooltip()->getText() != "")
                 return getTooltip();
         }
 
