@@ -332,7 +332,7 @@ namespace tgui
         if (m_tooltipPossible)
         {
             m_tooltipTime += elapsedTime;
-            if (m_tooltipTime >= sf::milliseconds(500))
+            if (m_tooltipTime >= Tooltip::getTimeToDisplay())
             {
                 Tooltip::Ptr tooltip = m_container->askTooltip(m_lastMousePos);
                 if (tooltip)
