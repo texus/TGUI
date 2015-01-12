@@ -4,10 +4,9 @@ compiler: clang
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libudev-dev libjpeg62
-  - git clone https://github.com/LaurentGomila/SFML
-  - cd SFML
-  - cmake .
-  - sudo make install
-  - cd ..
+  - wget https://www.dropbox.com/s/o1ab52jekbb1x62/SFML-2.2-linux-gcc-64-bit.tar.gz?dl=1
+  - tar xf SFML-2.2-linux-gcc-64-bit.tar.gz
+  - sudo cp -r SFML-2.2/lib/* /usr/local/lib/
+  - sudo cp -r SFML-2.2/include/* /usr/local/include/
 
 script: cmake . && make
