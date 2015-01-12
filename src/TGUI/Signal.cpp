@@ -31,14 +31,27 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int                          Signal::m_int = 0;
-    sf::Vector2f                 Signal::m_vector2f;
-    sf::String                   Signal::m_string;
-    sf::String                   Signal::m_string2;
-    std::vector<sf::String>      Signal::m_stringList;
-    std::shared_ptr<ChildWindow> Signal::m_childWindowPtr;
-
     unsigned int SignalWidgetBase::m_lastId = 0;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    template <> std::string convertTypeToString<int>() { return "int"; };
+    template <> std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; };
+    template <> std::string convertTypeToString<sf::String>() { return "sf::String"; };
+    template <> std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; };
+    template <> std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal::Signal(std::vector<std::vector<std::string>>&& types)
+    {
+        std::vector<std::string>::size_type maxSize = 0;
+        for (auto& typeList : types)
+            maxSize = std::max(maxSize, typeList.size());
+
+        m_data.resize(maxSize, nullptr);
+        m_allowedTypes = types;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,17 +77,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Signal::operator()()
+    void Signal::operator()(unsigned int count)
     {
+        assert(count == m_data.size());
+
         for (auto& function : m_functions)
             function.second();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Signal::checkCompatibleParameterType(const std::string& type)
-    {
-        throw Exception{"Could not bind optional parameter type '" + type + "'"};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalWidgetBase::isSignalBound(const std::string& name)
+    bool SignalWidgetBase::isSignalBound(std::string&& name)
     {
         assert(m_signals[toLower(name)]);
         return !m_signals[toLower(name)]->isEmpty() || !m_signals[toLower(name)]->m_functionsEx.empty();

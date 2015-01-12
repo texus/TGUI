@@ -38,8 +38,8 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::ProgressBar;
 
-        addSignal<SignalInt>("ValueChanged");
-        addSignal<SignalInt>("Full");
+        addSignal<int>("ValueChanged");
+        addSignal<int>("Full");
 
         m_renderer = std::make_shared<ProgressBarRenderer>(this);
 

@@ -44,7 +44,7 @@ namespace tgui
         m_animatedWidget = true;
         m_draggableWidget = true;
 
-        addSignal<SignalString>("TextChanged");
+        addSignal<sf::String>("TextChanged");
 
         m_renderer = std::make_shared<TextBoxRenderer>(this);
 

@@ -36,7 +36,7 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::Button;
 
-        addSignal<SignalString>("Pressed");
+        addSignal<sf::String>("Pressed");
 
         m_renderer = std::make_shared<ButtonRenderer>(this);
 

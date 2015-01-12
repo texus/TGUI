@@ -37,7 +37,7 @@ namespace tgui
         m_callback.widgetType = WidgetType::Slider;
         m_draggableWidget = true;
 
-        addSignal<SignalInt>("ValueChanged");
+        addSignal<int>("ValueChanged");
 
         m_renderer = std::make_shared<SliderRenderer>(this);
 

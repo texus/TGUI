@@ -44,83 +44,140 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /// @internal
+    template <typename... Types>
+    struct TypeSet {};
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// @internal
+    template <typename T>
+    std::string convertTypeToString();
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// @internal
+    template <typename... Types>
+    struct extractTypes
+    {
+        static std::vector<std::vector<std::string>> get() { return {}; }
+        static std::vector<std::string> getRow() { return {}; }
+    };
+
+    template <typename Type>
+    struct extractTypes<Type>
+    {
+        static std::vector<std::vector<std::string>> get() { return {{convertTypeToString<Type>()}}; }
+        static std::vector<std::string> getRow() { return {convertTypeToString<Type>()}; }
+    };
+
+    template <typename Type, typename... OtherTypes>
+    struct extractTypes<Type, OtherTypes...>
+    {
+        static std::vector<std::vector<std::string>> get()
+        {
+            auto types = extractTypes<OtherTypes...>::get();
+            types.push_back({convertTypeToString<Type>()});
+            return types;
+        }
+
+        static std::vector<std::string> getRow()
+        {
+            auto types = extractTypes<OtherTypes...>::getRow();
+            types.push_back(convertTypeToString<Type>());
+            return types;
+        }
+    };
+
+    template <typename... T>
+    struct extractTypes<TypeSet<T...>>
+    {
+        static std::vector<std::vector<std::string>> get() { return {extractTypes<T...>::getRow()}; }
+    };
+
+    template <typename... T, typename... U>
+    struct extractTypes<TypeSet<T...>, U...>
+    {
+        static std::vector<std::vector<std::string>> get()
+        {
+            auto types = {extractTypes<T...>::getRow()};
+            types.insert(types.end(), extractTypes<U...>::get());
+            return types;
+        }
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// @internal
+    template <typename Func, typename TypeA, typename TypeB, typename... Args>
+    struct isConvertible;
+
+    template <typename Func, typename... TypesA, typename... TypesB, typename... Args>
+    struct isConvertible<Func, TypeSet<TypesA...>, TypeSet<TypesB...>, Args...>
+    {
+        using type = typename std::conditional<std::is_convertible<decltype(
+            std::bind<Func, Args..., TypesA...>(std::declval<Func>(), std::declval<Args>()..., std::declval<TypesA>()...)),
+            std::function<void()>>::value, TypeSet<TypesA...>, TypeSet<TypesB...>>::type;
+    };
+
+    template <typename Func, typename... Type>
+    struct isConvertible<Func, TypeSet<>, TypeSet<Type...>>
+    {
+        using type = typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeSet<>, TypeSet<Type...>>::type;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @internal
+    // Stores the actual callback functions and checks if their parameters are valid
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Signal
     {
-    private:
-
-        #define PARAMETERS(Name) using Name##Parameter = struct Name##ParametersStruct {};
-
-        PARAMETERS(None)
-        PARAMETERS(Int)
-        PARAMETERS(Vector2f)
-        PARAMETERS(String)
-        PARAMETERS(DoubleString)
-        PARAMETERS(StringList)
-        PARAMETERS(ChildWindowPtr)
-        PARAMETERS(Error)
-
-        #undef PARAMETERS
-
     public:
+
+        Signal(std::vector<std::vector<std::string>>&& types);
 
         template <typename Func>
         void connect(unsigned int id, Func func)
         {
-            #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
-            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
+            using type = typename isConvertible<Func, TypeSet<>,
+                            typename isConvertible<Func, TypeSet<int>,
+                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
+                                    typename isConvertible<Func, TypeSet<sf::String>,
+                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
+                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
+                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
+                                                    TypeSet<void>
+                                                    >::type
+                                                >::type
+                                            >::type
+                                        >::type
+                                    >::type
+                                >::type
+                            >::type;
 
-            TGUI_CONDITINAL_0(
-                NoneParameter,
-                TGUI_CONDITINAL(
-                    IntParameter,
-                    TGUI_CONDITINAL(
-                        Vector2fParameter,
-                        TGUI_CONDITINAL(
-                            StringParameter,
-                            TGUI_CONDITINAL(
-                                DoubleStringParameter,
-                                    TGUI_CONDITINAL(StringListParameter,
-                                        TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, std::shared_ptr<ChildWindow>),
-                                    std::vector<sf::String>),
-                                sf::String, sf::String),
-                            sf::String),
-                        sf::Vector2f),
-                    int)
-                ) type{};
-
-            m_functions[id] = connectInternal(type, func);
-
-            #undef TGUI_CONDITINAL_0
-            #undef TGUI_CONDITINAL
+            m_functions[id] = connectInternal(type{}, func);
         }
 
         template <typename Func, typename... Args>
         void connect(unsigned int id, Func func, Args... args)
         {
-            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<decltype(std::bind(func, __VA_ARGS__)), std::function<void()>>::value, TypeA, TypeB>::type
+            using type = typename isConvertible<Func, TypeSet<>,
+                            typename isConvertible<Func, TypeSet<int>,
+                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
+                                    typename isConvertible<Func, TypeSet<sf::String>,
+                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
+                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
+                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
+                                                    TypeSet<void>,
+                                                    Args...>::type,
+                                                Args...>::type,
+                                            Args...>::type,
+                                        Args...>::type,
+                                    Args...>::type,
+                                Args...>::type,
+                            Args...>::type;
 
-            TGUI_CONDITINAL(
-                NoneParameter,
-                TGUI_CONDITINAL(
-                    IntParameter,
-                    TGUI_CONDITINAL(
-                        Vector2fParameter,
-                        TGUI_CONDITINAL(
-                            StringParameter,
-                            TGUI_CONDITINAL(
-                                DoubleStringParameter,
-                                    TGUI_CONDITINAL(StringListParameter,
-                                        TGUI_CONDITINAL(ChildWindowPtrParameter, ErrorParameter, args..., m_childWindowPtr),
-                                    args..., m_stringList),
-                                args..., m_string, m_string2),
-                            args..., m_string),
-                        args..., m_vector2f),
-                    args..., m_int),
-                args...) type{};
-
-            m_functions[id] = connectInternal(type, func, args...);
-
-            #undef TGUI_CONDITINAL
+            m_functions[id] = connectInternal(type{}, func, args...);
         }
 
         template <typename Func, typename... Args>
@@ -135,132 +192,77 @@ namespace tgui
 
         bool isEmpty();
 
-        #define SEND_SIGNAL_ONE_PARAMETER(Type, Variable) \
-            void operator()(const Type& value) \
-            { \
-                Variable = value; \
-                (*this)(); \
-            }
+        void operator()(unsigned int count);
 
-        #define SEND_SIGNAL_TWO_PARAMETERS(Type1, Type2, Variable1, Variable2) \
-            void operator()(const Type1& value1, const Type2& value2) \
-            { \
-                Variable1 = value1; \
-                Variable2 = value2; \
-                (*this)(); \
-            }
-
-        void operator()();
-
-        void operator()(const std::shared_ptr<ChildWindow>& value)
+        template <typename T, typename... Args>
+        void operator()(unsigned int count, const T& value, Args... args)
         {
-            m_childWindowPtr = value;
-            (*this)();
-            m_childWindowPtr = nullptr;
+            m_data[count] = static_cast<const void*>(&value);
+            (*this)(count+1, args...);
         }
-
-        SEND_SIGNAL_ONE_PARAMETER(int, m_int)
-        SEND_SIGNAL_ONE_PARAMETER(sf::Vector2f, m_vector2f)
-        SEND_SIGNAL_ONE_PARAMETER(sf::String, m_string)
-        SEND_SIGNAL_ONE_PARAMETER(std::vector<sf::String>, m_stringList)
-
-        SEND_SIGNAL_TWO_PARAMETERS(sf::String, sf::String, m_string, m_string2)
-        SEND_SIGNAL_TWO_PARAMETERS(std::vector<sf::String>, sf::String, m_stringList, m_string)
-
-        #undef SEND_SIGNAL_ONE_PARAMETER
-        #undef SEND_SIGNAL_TWO_PARAMETERS
 
     protected:
 
-        virtual void checkCompatibleParameterType(const std::string& type);
-
-        #define CONNECT_INTERNAL_ONE_PARAMETER(ClassType, Type, Variable) \
-            template <typename Func, typename... Args> \
-            std::function<void()> connectInternal(ClassType##Parameter, Func func, Args... args) \
-            { \
-                checkCompatibleParameterType(#Type); \
-                return std::bind(func, args..., std::cref(Variable)); \
-            }
-
-        #define CONNECT_INTERNAL_TWO_PARAMETERS(ClassType, Type1, Type2, Variable1, Variable2) \
-            template <typename Func, typename... Args> \
-            std::function<void()> connectInternal(ClassType##Parameter, Func func, Args... args) \
-            { \
-                checkCompatibleParameterType(#Type1 ", " #Type2); \
-                return std::bind(func, args..., std::cref(Variable1), std::cref(Variable2)); \
-            }
-
-        // Parameters passed to connect function are wrong.
-        // Most likely one has a slightly wrong type, but you may also be providing the wrong amount of arguments for the function.
         template <typename Func, typename... Args>
-        std::function<void()> connectInternal(ErrorParameter, Func, Args...);
+        std::function<void()> connectInternal(TypeSet<void>, Func, Args...)
+        {
+            static_assert(!std::is_same<Func, Func>::value, "Parameters passed to the connect function are wrong!");
+            return nullptr;
+        }
 
         template <typename Func, typename... Args>
-        std::function<void()> connectInternal(NoneParameter, Func func, Args... args)
+        std::function<void()> connectInternal(TypeSet<>, Func func, Args... args)
         {
             return std::bind(func, args...);
         }
 
-        CONNECT_INTERNAL_ONE_PARAMETER(Int, int, m_int)
-        CONNECT_INTERNAL_ONE_PARAMETER(Vector2f, sf::Vector2f, m_vector2f)
-        CONNECT_INTERNAL_ONE_PARAMETER(String, sf::String, m_string)
-        CONNECT_INTERNAL_ONE_PARAMETER(StringList, std::vector<sf::String>, m_stringList)
-        CONNECT_INTERNAL_ONE_PARAMETER(ChildWindowPtr, std::shared_ptr<ChildWindow>, m_childWindowPtr)
+        template <typename Func, typename... Args, typename Type>
+        std::function<void()> connectInternal(TypeSet<Type>, Func func, Args... args)
+        {
+            checkCompatibleParameterType<Type>();
+            return std::bind(func, args..., std::bind(dereference<Type>, std::cref(m_data[0])));
+        }
 
-        CONNECT_INTERNAL_TWO_PARAMETERS(DoubleString, sf::String, sf::String, m_string, m_string2)
+        template <typename Func, typename... Args, typename TypeA, typename TypeB>
+        std::function<void()> connectInternal(TypeSet<TypeA, TypeB>, Func func, Args... args)
+        {
+            checkCompatibleParameterType<TypeA, TypeB>();
+            return std::bind(func, args...,
+                             std::bind(dereference<TypeA>, std::cref(m_data[0])),
+                             std::bind(dereference<TypeB>, std::cref(m_data[1])));
+        }
 
-        #undef CONNECT_INTERNAL_ONE_PARAMETER
-        #undef CONNECT_INTERNAL_TWO_PARAMETERS
+        template <typename... Types>
+        void checkCompatibleParameterType()
+        {
+            auto acceptedType = extractTypes<TypeSet<Types...>>::get();
+            assert(acceptedType.size() == 1);
+
+            for (auto& type : m_allowedTypes)
+            {
+                if (acceptedType[0] == type)
+                    return;
+            }
+
+            throw Exception{"Failed to bind parameter to callback function."};
+        }
+
+        template <typename Type>
+        static const Type& dereference(const void* obj)
+        {
+            return *static_cast<const Type*>(obj);
+        }
 
     private:
 
         std::map<unsigned int, std::function<void()>> m_functions;
         std::map<unsigned int, std::function<void(const Callback&)>> m_functionsEx;
 
-        static int          m_int;
-        static sf::Vector2f m_vector2f;
-        static sf::String   m_string;
-        static sf::String   m_string2;
-        static std::vector<sf::String>      m_stringList;
-        static std::shared_ptr<ChildWindow> m_childWindowPtr;
+        std::vector<const void*> m_data;
+        std::vector<std::vector<std::string>> m_allowedTypes;
 
         friend class SignalWidgetBase; // Only needed for m_functionsEx
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    #define SIGNAL_DERIVED_ONE_TYPE(ClassType, Type) \
-        class Signal##ClassType : public Signal \
-        { \
-            void checkCompatibleParameterType(const std::string& type) \
-            { \
-                if (type != Type) \
-                    Signal::checkCompatibleParameterType(type); \
-            } \
-        };
-
-    #define SIGNAL_DERIVED_TWO_TYPES(ClassType, Type1, Type2) \
-        class Signal##ClassType : public Signal \
-        { \
-            void checkCompatibleParameterType(const std::string& type) \
-            { \
-                if ((type != Type1) && (type != Type2)) \
-                    Signal::checkCompatibleParameterType(type); \
-            } \
-        };
-
-    SIGNAL_DERIVED_ONE_TYPE(Bool, "int")
-    SIGNAL_DERIVED_ONE_TYPE(Int, "int")
-    SIGNAL_DERIVED_ONE_TYPE(Vector2f, "sf::Vector2f")
-    SIGNAL_DERIVED_ONE_TYPE(String, "sf::String")
-    SIGNAL_DERIVED_ONE_TYPE(ChildWindowPtr, "std::shared_ptr<ChildWindow>")
-
-    SIGNAL_DERIVED_TWO_TYPES(MenuBar, "std::vector<sf::String>", "sf::String")
-    SIGNAL_DERIVED_TWO_TYPES(DoubleString, "sf::String, sf::String", "sf::String")
-    SIGNAL_DERIVED_TWO_TYPES(Container, "std::shared_ptr<Widget>, sf::String", "std::shared_ptr<Widget>")
-
-    #undef SIGNAL_DERIVED_ONE_TYPE
-    #undef SIGNAL_DERIVED_TWO_TYPES
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,18 +302,28 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler function to one or more signals
         ///
-        /// @param signalName Name of the signal, or multiple names split by spaces
-        /// @param func       The function to connect
-        /// @param args       The arguments that should be bound to the function
+        /// @param signalNames Name of the signal, or multiple names split by spaces
+        /// @param func        The function to connect
+        /// @param args        The arguments that should be bound to the function
         ///
         /// @return Id of this connection, which you need if you want to disconnect it later
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
-        unsigned int connect(const std::string& signalName, Func func, Args... args)
+        unsigned int connect(const std::string& signalNames, Func func, Args... args)
         {
-            for (auto& name : extractSignalNames(signalName))
-                connectInternal(name, func, args...);
+            for (auto& signalName : extractSignalNames(signalNames))
+            {
+                if (m_signals.find(toLower(signalName)) == m_signals.end())
+                    throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
+
+                try {
+                    m_signals[toLower(signalName)]->connect(++m_lastId, func, args...);
+                }
+                catch (const Exception& e) {
+                    throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
+                }
+            }
 
             return m_lastId;
         }
@@ -379,51 +391,33 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Handle a new connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args>
-        void connectInternal(const std::string& signalName, Func func, Args... args)
-        {
-            if (m_signals.find(toLower(signalName)) == m_signals.end())
-                throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
-
-            try {
-                m_signals[toLower(signalName)]->connect(++m_lastId, func, args...);
-            }
-            catch (const Exception& e) {
-                throw Exception{e.what() + (" since it is not valid for the '" + signalName + "' signal.")};
-            }
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Add a new signal that people can bind.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename SignalType = Signal>
-        void addSignal(const std::string& name)
+        template <typename... T>
+        void addSignal(std::string&& name)
         {
             assert(m_signals[toLower(name)] == nullptr);
-            m_signals[toLower(name)] = std::make_shared<SignalType>();
+            m_signals[toLower(name)] = std::make_shared<Signal>(extractTypes<T...>::get());
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Check if some signal handler has been bound to the signal.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool isSignalBound(const std::string& name);
+        bool isSignalBound(std::string&& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Send a signal to all signal handlers that are connected with this signal.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename... Args>
-        void sendSignal(const std::string& name, Args... args)
+        void sendSignal(std::string&& name, Args... args)
         {
             assert(m_signals[toLower(name)] != nullptr);
 
             auto& signal = *m_signals[toLower(name)];
             if (!signal.isEmpty())
-                signal(args...);
+                signal(0, args...);
 
             m_callback.trigger = name;
             if (!signal.m_functionsEx.empty())

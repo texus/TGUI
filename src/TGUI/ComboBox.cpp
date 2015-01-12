@@ -42,7 +42,7 @@ namespace tgui
         m_callback.widgetType = WidgetType::ComboBox;
         m_draggableWidget = true;
 
-        addSignal<SignalDoubleString>("ItemSelected");
+        addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
 
         initListBox();
 

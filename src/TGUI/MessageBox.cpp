@@ -35,7 +35,7 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::MessageBox;
 
-        addSignal<SignalString>("ButtonPressed");
+        addSignal<sf::String>("ButtonPressed");
 
         m_renderer = std::make_shared<MessageBoxRenderer>(this);
 

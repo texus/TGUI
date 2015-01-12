@@ -41,8 +41,8 @@ namespace ext
         m_callback.widgetType = WidgetType::Slider2d;
         m_draggableWidget = true;
 
-        addSignal<SignalVector2f>("ValueChanged");
-        addSignal<SignalVector2f>("ThumbReturnedToCenter");
+        addSignal<sf::Vector2f>("ValueChanged");
+        addSignal<sf::Vector2f>("ThumbReturnedToCenter");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

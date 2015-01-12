@@ -36,7 +36,7 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::SpinButton;
 
-        addSignal<SignalInt>("ValueChanged");
+        addSignal<int>("ValueChanged");
 
         m_renderer = std::make_shared<SpinButtonRenderer>(this);
 

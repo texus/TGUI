@@ -44,10 +44,10 @@ namespace tgui
         m_draggableWidget = true;
         m_animatedWidget = true;
 
-        addSignal<SignalDoubleString>("ItemSelected");
-        addSignal<SignalDoubleString>("MousePressed");
-        addSignal<SignalDoubleString>("MouseReleased");
-        addSignal<SignalDoubleString>("DoubleClicked");
+        addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
+        addSignal<sf::String, TypeSet<sf::String, sf::String>>("MousePressed");
+        addSignal<sf::String, TypeSet<sf::String, sf::String>>("MouseReleased");
+        addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
         m_renderer = std::make_shared<ListBoxRenderer>(this);
 

@@ -44,8 +44,8 @@ namespace tgui
         m_draggableWidget = true;
         m_allowFocus = true;
 
-        addSignal<SignalString>("TextChanged");
-        addSignal<SignalString>("ReturnKeyPressed");
+        addSignal<sf::String>("TextChanged");
+        addSignal<sf::String>("ReturnKeyPressed");
 
         m_defaultText.setStyle(sf::Text::Italic);
 

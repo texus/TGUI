@@ -38,7 +38,7 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::Tab;
 
-        addSignal<SignalString>("TabChanged");
+        addSignal<sf::String>("TabChanged");
 
         m_renderer = std::make_shared<TabRenderer>(this);
 

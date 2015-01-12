@@ -37,9 +37,9 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::Panel;
 
-        addSignal<SignalVector2f>("MousePressed");
-        addSignal<SignalVector2f>("MouseReleased");
-        addSignal<SignalVector2f>("Clicked");
+        addSignal<sf::Vector2f>("MousePressed");
+        addSignal<sf::Vector2f>("MouseReleased");
+        addSignal<sf::Vector2f>("Clicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

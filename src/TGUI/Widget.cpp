@@ -39,8 +39,8 @@ namespace tgui
     {
         m_callback.widget = this;
 
-        addSignal<SignalVector2f>("PositionChanged");
-        addSignal<SignalVector2f>("SizeChanged");
+        addSignal<sf::Vector2f>("PositionChanged");
+        addSignal<sf::Vector2f>("SizeChanged");
         addSignal("Focused");
         addSignal("Unfocused");
         addSignal("MouseEntered");

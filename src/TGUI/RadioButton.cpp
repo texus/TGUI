@@ -36,8 +36,8 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::RadioButton;
 
-        addSignal<SignalBool>("Checked");
-        addSignal<SignalBool>("Unchecked");
+        addSignal<int>("Checked");
+        addSignal<int>("Unchecked");
 
         m_renderer = std::make_shared<RadioButtonRenderer>(this);
 

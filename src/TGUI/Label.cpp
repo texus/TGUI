@@ -41,7 +41,7 @@ namespace tgui
         m_callback.widgetType = WidgetType::Label;
         m_animatedWidget = true;
 
-        addSignal<SignalString>("DoubleClicked");
+        addSignal<sf::String>("DoubleClicked");
 
         m_background.setFillColor(sf::Color::Transparent);
         m_text.setColor({60, 60, 60});
