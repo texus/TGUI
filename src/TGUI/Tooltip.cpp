@@ -35,6 +35,8 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::Tooltip;
 
+        setPosition(5, 20);
+
         m_background.setFillColor({245, 245, 245});
         m_text.setColor({60, 60, 60});
 

@@ -156,7 +156,12 @@ namespace tgui
 
             // If a tooltip is visible then hide it now
             if (m_visibleTooltip != nullptr)
+            {
+                m_visibleTooltip->setPosition(m_visibleTooltip->getPosition() - m_lastMousePos);
+
                 remove(m_visibleTooltip);
+                m_visibleTooltip = nullptr;
+            }
 
             // Reset the data for the tooltip since the mouse has moved
             m_tooltipTime = {};
@@ -335,7 +340,7 @@ namespace tgui
                     m_visibleTooltip = tooltip;
                     add(tooltip, "#TGUI_INTERNAL$Tooltip#");
 
-                    tooltip->setPosition({m_lastMousePos.x + 5, m_lastMousePos.y + 20});
+                    tooltip->setPosition(m_lastMousePos + tooltip->getPosition());
                 }
 
                 m_tooltipPossible = false;
