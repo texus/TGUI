@@ -108,6 +108,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Alternative code has to be used since VS2013 compiler crashed when trying to compile this
+/*
     /// @internal
     template <typename Func, typename TypeA, typename TypeB, typename... Args>
     struct isConvertible;
@@ -125,6 +127,7 @@ namespace tgui
     {
         using type = typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeSet<>, TypeSet<Type...>>::type;
     };
+*/
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @internal
@@ -136,32 +139,13 @@ namespace tgui
 
         Signal(std::vector<std::vector<std::string>>&& types);
 
-        template <typename Func>
-        void connect(unsigned int id, Func func)
-        {
-            using type = typename isConvertible<Func, TypeSet<>,
-                            typename isConvertible<Func, TypeSet<int>,
-                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
-                                    typename isConvertible<Func, TypeSet<sf::String>,
-                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
-                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
-                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
-                                                    TypeSet<void>
-                                                    >::type
-                                                >::type
-                                            >::type
-                                        >::type
-                                    >::type
-                                >::type
-                            >::type;
-
-            m_functions[id] = connectInternal(type{}, func);
-        }
-
+// Alternative code has to be used since VS2013 compiler crashed when trying to compile this
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*
         template <typename Func, typename... Args>
         void connect(unsigned int id, Func func, Args... args)
         {
-            using type = typename isConvertible<Func, TypeSet<>,
+            using Type = typename isConvertible<Func, TypeSet<>,
                             typename isConvertible<Func, TypeSet<int>,
                                 typename isConvertible<Func, TypeSet<sf::Vector2f>,
                                     typename isConvertible<Func, TypeSet<sf::String>,
@@ -177,8 +161,68 @@ namespace tgui
                                 Args...>::type,
                             Args...>::type;
 
-            m_functions[id] = connectInternal(type{}, func, args...);
+            m_functions[id] = connectInternal(Type{}, func, args...);
         }
+*/
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        template <typename Func>
+        void connect(unsigned int id, Func func)
+        {
+            #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
+            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
+            using DoubleString = TypeSet<sf::String, sf::String>;
+            using Type = TGUI_CONDITINAL_0(
+                TypeSet<>,
+                TGUI_CONDITINAL(
+                    TypeSet<int>,
+                    TGUI_CONDITINAL(
+                        TypeSet<sf::Vector2f>,
+                        TGUI_CONDITINAL(
+                            TypeSet<sf::String>,
+                            TGUI_CONDITINAL(
+                                DoubleString,
+                                    TGUI_CONDITINAL(TypeSet<std::vector<sf::String>>,
+                                        TGUI_CONDITINAL(TypeSet<std::shared_ptr<ChildWindow>>, TypeSet<void>, std::shared_ptr<ChildWindow>),
+                                    std::vector<sf::String>),
+                                sf::String, sf::String),
+                            sf::String),
+                        sf::Vector2f),
+                    int)
+                );
+            #undef TGUI_CONDITINAL_0
+            #undef TGUI_CONDITINAL
+
+            m_functions[id] = connectInternal(Type{}, func);
+        }
+
+        template <typename Func, typename... Args>
+        void connect(unsigned int id, Func func, Args... args)
+        {
+            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<decltype(std::bind(func, __VA_ARGS__)), std::function<void()>>::value, TypeA, TypeB>::type
+            using DoubleString = TypeSet<sf::String, sf::String>;
+            using Type = TGUI_CONDITINAL(
+                TypeSet<>,
+                TGUI_CONDITINAL(
+                    TypeSet<int>,
+                    TGUI_CONDITINAL(
+                        TypeSet<sf::Vector2f>,
+                        TGUI_CONDITINAL(
+                            TypeSet<sf::String>,
+                            TGUI_CONDITINAL(
+                                DoubleString,
+                                    TGUI_CONDITINAL(TypeSet<std::vector<sf::String>>,
+                                        TGUI_CONDITINAL(TypeSet<std::shared_ptr<ChildWindow>>, TypeSet<void>, args..., std::declval<std::shared_ptr<ChildWindow>>()),
+                                    args..., std::declval<std::vector<sf::String>>()),
+                                args..., std::declval<sf::String>(), std::declval<sf::String>()),
+                            args..., std::declval<sf::String>()),
+                        args..., std::declval<sf::Vector2f>()),
+                    args..., std::declval<int>()),
+                args...);
+            #undef TGUI_CONDITINAL
+
+            m_functions[id] = connectInternal(Type{}, func, args...);
+        }
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         template <typename Func, typename... Args>
         void connectEx(unsigned int id, Func func, Args... args)
