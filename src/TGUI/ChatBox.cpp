@@ -291,6 +291,7 @@ namespace tgui
     void ChatBox::setTextFont(std::shared_ptr<sf::Font> font)
     {
         m_font = font;
+        m_panel->setGlobalFont(font);
 
         bool lineChanged = false;
         for (auto& label : m_panel->getWidgets())
@@ -312,8 +313,6 @@ namespace tgui
 
             updateDisplayedText();
         }
-
-        m_panel->setGlobalFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

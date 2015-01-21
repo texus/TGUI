@@ -475,12 +475,9 @@ namespace tgui
 
     void ChildWindow::initialize(Container *const parent)
     {
-        Widget::initialize(parent);
+        Container::initialize(parent);
 
         m_closeButton.initialize(this);
-
-        if (!m_font && m_parent->getGlobalFont())
-            setGlobalFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

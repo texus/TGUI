@@ -89,11 +89,9 @@ namespace tgui
 
     void Container::setGlobalFont(const std::string& filename)
     {
-        auto font = std::make_shared<sf::Font>();
-        if (!font->loadFromFile(getResourcePath() + filename))
+        m_font = std::make_shared<sf::Font>();
+        if (!m_font->loadFromFile(getResourcePath() + filename))
             throw Exception{"Failed to load font '" + filename + "'."};
-
-        setGlobalFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,10 +99,6 @@ namespace tgui
     void Container::setGlobalFont(std::shared_ptr<sf::Font> font)
     {
         m_font = font;
-
-        // Widgets without a font are given a font now
-        for (auto& widget : m_widgets)
-            widget->initialize(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
