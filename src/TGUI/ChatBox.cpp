@@ -342,11 +342,11 @@ namespace tgui
         unsigned int size = 0;
         while (pos + size < text.getSize())
         {
-            tempLine->setText(text.toWideString().substr(pos, ++size));
+            tempLine->setText(text.substring(pos, ++size));
 
             if (tempLine->getSize().x + 4.0f > width)
             {
-                label->setText(label->getText() + text.toWideString().substr(pos, size - 1) + "\n");
+                label->setText(label->getText() + text.substring(pos, size - 1) + "\n");
 
                 pos = pos + size - 1;
                 size = 0;

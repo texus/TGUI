@@ -1169,9 +1169,9 @@ namespace tgui
                     m_SelChars = m_SelEnd - m_SelStart;
 
                     // Change our three texts
-                    m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelStart));
-                    m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart, m_SelChars));
-                    m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd));
+                    m_TextBeforeSelection.setString(m_DisplayedText.substring(0, m_SelStart));
+                    m_TextSelection.setString(m_DisplayedText.substring(m_SelStart, m_SelChars));
+                    m_TextAfterSelection.setString(m_DisplayedText.substring(m_SelEnd));
 
                     recalculateTextPositions();
                 }
@@ -1185,9 +1185,9 @@ namespace tgui
                     m_SelChars = m_SelStart - m_SelEnd;
 
                     // Change our three texts
-                    m_TextBeforeSelection.setString(m_DisplayedText.toWideString().substr(0, m_SelEnd));
-                    m_TextSelection.setString(m_DisplayedText.toWideString().substr(m_SelEnd, m_SelChars));
-                    m_TextAfterSelection.setString(m_DisplayedText.toWideString().substr(m_SelStart));
+                    m_TextBeforeSelection.setString(m_DisplayedText.substring(0, m_SelEnd));
+                    m_TextSelection.setString(m_DisplayedText.substring(m_SelEnd, m_SelChars));
+                    m_TextAfterSelection.setString(m_DisplayedText.substring(m_SelStart));
 
                     recalculateTextPositions();
                 }
@@ -1417,7 +1417,7 @@ namespace tgui
                         unsigned int oldCaretPos = m_SelEnd;
 
                         if (m_Text.getSize() > m_SelEnd)
-                            setText(m_Text.toWideString().substr(0, m_SelEnd) + TGUI_Clipboard.get() + m_Text.toWideString().substr(m_SelEnd, m_Text.getSize() - m_SelEnd));
+                            setText(m_Text.substring(0, m_SelEnd) + TGUI_Clipboard.get() + m_Text.substring(m_SelEnd, m_Text.getSize() - m_SelEnd));
                         else
                             setText(m_Text + clipboardContents);
 
@@ -1821,7 +1821,7 @@ namespace tgui
         }
 
         // Set the first part of the text
-        tempString = m_DisplayedText.toWideString().substr(0, firstVisibleChar);
+        tempString = m_DisplayedText.substring(0, firstVisibleChar);
         m_TextFull.setString(tempString);
 
         // Calculate the first position
