@@ -1,11 +1,14 @@
 language: cpp
-compiler: gcc
+compiler: clang
 
 install:
-  - wget -O SFML.tar.bz2 https://www.dropbox.com/s/n9a4tife0np3ejf/SFML-2.1-linux-gcc-64bits.tar.bz2?dl=1
-  - tar xf SFML.tar.bz2
-  - sudo cp -r SFML-2.1/lib/* /usr/local/lib/
-  - sudo cp -r SFML-2.1/include/* /usr/local/include/
-  - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libjpeg62
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libudev-dev libjpeg62
+  - wget -O SFML.tar.gz https://github.com/LaurentGomila/SFML/archive/2.2.tar.gz
+  - tar -xzf SFML.tar.gz
+  - cd SFML-2.2
+  - cmake .
+  - make && sudo make install
+  - cd ..
 
 script: cmake . && make
