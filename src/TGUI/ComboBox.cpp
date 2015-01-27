@@ -875,7 +875,7 @@ namespace tgui
     void ComboBox::initialize(Container *const parent)
     {
         m_Parent = parent;
-        m_ListBox->setTextFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

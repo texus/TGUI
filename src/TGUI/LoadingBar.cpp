@@ -741,7 +741,7 @@ namespace tgui
     void LoadingBar::initialize(Container *const parent)
     {
         m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -364,6 +364,7 @@ namespace tgui
     void RadioButton::setTextFont(const sf::Font& font)
     {
         m_Text.setFont(font);
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -669,7 +670,7 @@ namespace tgui
     void RadioButton::initialize(Container *const parent)
     {
         m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

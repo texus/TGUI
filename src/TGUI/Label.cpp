@@ -337,7 +337,6 @@ namespace tgui
 
     void Label::initialize(Container *const parent)
     {
-
         m_Parent = parent;
         setTextFont(m_Parent->getGlobalFont());
     }

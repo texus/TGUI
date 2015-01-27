@@ -561,6 +561,9 @@ namespace tgui
     void Button::setTextFont(const sf::Font& font)
     {
         m_Text.setFont(font);
+
+        // Call setText to reposition the text
+        setText(m_Text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -765,7 +768,7 @@ namespace tgui
     void Button::initialize(Container *const parent)
     {
         m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -448,9 +448,24 @@ namespace tgui
     {
         m_Panel->setGlobalFont(font);
 
+        m_FullTextHeight = 0;
+        unsigned int labelNr = 0;
         auto& labels = m_Panel->getWidgets();
-        for (auto it = labels.begin(); it != labels.end(); ++it)
+        for (auto it = labels.begin(); it != labels.end(); ++it, ++labelNr)
+        {
             Label::Ptr(*it)->setTextFont(font);
+            m_FullTextHeight += getLineSpacing(labelNr);
+        }
+
+        if (m_Scroll != nullptr)
+        {
+            m_Scroll->setMaximum(static_cast<unsigned int>(m_FullTextHeight));
+            if (m_Scroll->getMaximum() > m_Scroll->getLowValue())
+                m_Scroll->setValue(m_Scroll->getMaximum() - m_Scroll->getLowValue());
+        }
+
+        // Reposition the labels
+        updateDisplayedText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

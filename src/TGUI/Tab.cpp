@@ -496,6 +496,13 @@ namespace tgui
     void Tab::setTextFont(const sf::Font& font)
     {
         m_Text.setFont(font);
+
+        // Recalculate the name widths
+        for (unsigned int i = 0; i < m_NameWidth.size(); ++i)
+        {
+            m_Text.setString(m_TabNames[i]);
+            m_NameWidth[i] = m_Text.getLocalBounds().width;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -820,7 +827,7 @@ namespace tgui
     void Tab::initialize(Container *const parent)
     {
         m_Parent = parent;
-        m_Text.setFont(m_Parent->getGlobalFont());
+        setTextFont(m_Parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

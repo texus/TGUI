@@ -420,6 +420,8 @@ namespace tgui
         m_TextSelection2.setFont(font);
         m_TextAfterSelection1.setFont(font);
         m_TextAfterSelection2.setFont(font);
+
+        setTextSize(m_TextSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
