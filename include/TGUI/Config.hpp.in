@@ -25,6 +25,7 @@
 #ifndef TGUI_CONFIG_HPP
 #define TGUI_CONFIG_HPP
 
+#include <SFML/Config.hpp>
 
 #include <SFML/Config.hpp>
 

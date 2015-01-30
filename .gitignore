@@ -2,5 +2,7 @@
 /build
 /form-builder/tgui-form-builder
 /_site
+/examples/Android/libs
+/examples/Android/obj
 .DS_Store
 *~

@@ -70,6 +70,10 @@ endif()
 set(FIND_SFML_PATHS
     ${SFML_ROOT}
     $ENV{SFML_ROOT}
+    ${ANDROID_NDK}/sources/sfml
+    $ENV{ANDROID_NDK}/sources/sfml
+    ${ANDROID_NDK}/sources/sfml/lib/${ANDROID_ABI}
+    $ENV{ANDROID_NDK}/sources/sfml/lib/${ANDROID_ABI}
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local

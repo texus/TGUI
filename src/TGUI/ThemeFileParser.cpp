@@ -23,19 +23,28 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <algorithm>
-#include <cctype>
-#include <functional>
-
 #include <TGUI/ThemeFileParser.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
+
+#include <algorithm>
+#include <cctype>
+#include <functional>
+#include <cassert>
+
+#ifdef SFML_SYSTEM_ANDROID
+    #include "SFML/System/Android/Activity.hpp"
+    #include <android/asset_manager_jni.h>
+    #include <android/asset_manager.h>
+    #include <android/native_activity.h>
+    #include <android/configuration.h>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    std::map<std::pair<std::string, std::string>, std::vector<std::pair<std::string, std::string>>> ThemeFileParser::m_cache;
+    std::map<std::string, std::map<std::string, std::vector<std::pair<std::string, std::string>>>> ThemeFileParser::m_cache;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,87 +70,109 @@ namespace tgui
         m_filename(filename),
         m_section (section)
     {
-        // Don't read and parse the file every time
-        if (!m_cache[{filename, section}].empty())
-        {
-            m_properties = m_cache[{filename, section}];
-            return;
-        }
-
-        std::ifstream file{filename};
-
-        if (!file.is_open())
-            throw Exception{"Failed to open theme file '" + filename + "'."};
-
-        bool sectionFound = false;
-        unsigned int lineNumber = 0;
+        std::stringstream fileContents;
         std::string lowercaseSection = toLower(section);
 
-        // Stop reading when we reach the end of the file
-        while (!file.eof())
+        // The file may be cached
+        if (m_cache.find(m_filename) == m_cache.end())
         {
-            // Get the next line
-            std::string line;
-            std::getline(file, line);
-            lineNumber++;
-
-            if (line.empty())
-                continue;
-
-            // If the lines contains a '\r' at the end then remove it
-            if (line[line.size()-1] == '\r')
-                line.erase(line.size()-1);
-
-            std::string::const_iterator c = line.begin();
-
-            // Check if we are reading a section
-            std::string sectionName;
-            if (isSection(line, c, sectionName))
+        #ifdef SFML_SYSTEM_ANDROID
+            // If the file does not start with a slash then load it from the assets
+            if (!filename.empty() && (filename[0] != '/'))
             {
-                // If we already found our section then this would be the next section
-                if (sectionFound)
-                    break;
+                /// TODO: Workaround until SFML makes native activity publically accessible
+                /// When this happens, extra SFML folder in include can be removed as well.
+                ANativeActivity* activity = sf::priv::getActivity(NULL)->activity;
 
-                // If this is the section we were looking for then start reading the properties
-                if ((lowercaseSection + ":") == toLower(sectionName))
-                    sectionFound = true;
+                JNIEnv* env = 0;
+                activity->vm->AttachCurrentThread(&env, NULL);
+                jclass clazz = env->GetObjectClass(activity->clazz);
+
+                jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
+                jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
+                jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
+                AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
+                assert(assetManager);
+
+                AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
+                if (!asset)
+                    throw Exception{"Failed to open theme file '" + filename + "' from assets."};
+
+                off_t assetLength = AAsset_getLength(asset);
+
+                char* buffer = new char[assetLength + 1];
+                AAsset_read(asset, buffer, assetLength);
+                buffer[assetLength] = 0;
+
+                fileContents << buffer;
+
+                AAsset_close(asset);
+                delete[] buffer;
+
+                activity->vm->DetachCurrentThread();
             }
-            else // This isn't a section
+            else
+        #endif
             {
-                // We are only interested in one section
-                if (!sectionFound)
+                std::ifstream file{filename};
+                if (!file.is_open())
+                    throw Exception{"Failed to open theme file '" + filename + "'."};
+
+                fileContents << file.rdbuf();
+                file.close();
+            }
+
+            std::string sectionName;
+            unsigned int lineNumber = 0;
+
+            // Stop reading when we reach the end of the file
+            while (!fileContents.eof())
+            {
+                // Get the next line
+                std::string line;
+                std::getline(fileContents, line);
+                lineNumber++;
+
+                // If the lines contains a '\r' at the end then remove it
+                if (!line.empty() && line[line.size()-1] == '\r')
+                    line.erase(line.size()-1);
+
+                std::string::const_iterator c = line.begin();
+
+                // Skip empty lines
+                if (!removeWhitespace(line, c))
                     continue;
 
-                if (!removeWhitespace(line, c))
-                    continue; // empty line
+                if (!isSection(line, c, sectionName))
+                {
+                    // Read the property in lowercase
+                    std::string property = toLower(readWord(line, c));
 
-                // Read the property in lowercase
-                std::string property = toLower(readWord(line, c));
+                    if (!removeWhitespace(line, c))
+                        throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
-                if (!removeWhitespace(line, c))
-                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
+                    // There has to be an assignment character
+                    if (*c == '=')
+                        ++c;
+                    else
+                        throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
-                // There has to be an assignment character
-                if (*c == '=')
-                    ++c;
-                else
-                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
+                    if (!removeWhitespace(line, c))
+                        throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
-                if (!removeWhitespace(line, c))
-                    throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
+                    int pos = c - line.begin();
+                    std::string value = line.substr(pos, line.length() - pos);
 
-                int pos = c - line.begin();
-                std::string value = line.substr(pos, line.length() - pos);
-
-                m_properties.push_back(std::make_pair(property, value));
+                    m_cache[m_filename][toLower(sectionName)].push_back(std::make_pair(property, value));
+                }
             }
         }
 
-        // Throw an exception when the section wasn't found
-        if (!sectionFound)
-            throw Exception{"Section '" + section + "' was not found in " + filename + "."};
-        else
-            m_cache[{filename, section}] = m_properties;
+        // The section should be in the cache now
+        if (m_cache[m_filename].find(lowercaseSection) == m_cache[m_filename].end())
+            throw Exception{"Section '" + m_section + "' was not found in " + m_filename + "."};
+
+        m_properties = m_cache[m_filename][lowercaseSection];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,15 +208,18 @@ namespace tgui
         if (!removeWhitespace(line, c))
             return false;
 
-        sectionName = readWord(line, c);
+        std::string name = readWord(line, c);
 
         removeWhitespace(line, c);
 
         if (c != line.end())
             return false;
 
-        if (sectionName[sectionName.length()-1] == ':')
+        if (name[name.length()-1] == ':')
+        {
+            sectionName = toLower(name.substr(0, name.length()-1));
             return true;
+        }
         else
             return false;
     }

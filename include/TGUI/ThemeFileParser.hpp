@@ -95,7 +95,7 @@ namespace tgui
         std::string m_section;
         std::vector<std::pair<std::string, std::string>> m_properties;
 
-        static std::map<std::pair<std::string, std::string>, std::vector<std::pair<std::string, std::string>>> m_cache;
+        static std::map<std::string, std::map<std::string, std::vector<std::pair<std::string, std::string>>>> m_cache;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
