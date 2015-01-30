@@ -112,6 +112,11 @@ APP_MODULES := sfml-activity tgui-activity your-program
 <meta-data android:name="tgui.app.lib_name" android:value="your-program" />
 {% endhighlight %}
 
+    <p class="SmallBottomMargin">If you would be using TGUI v0.7-dev then you must also enable exceptions in Application.mk</p>
+{% highlight bash %}
+APP_CPPFLAGS += -fexceptions
+{% endhighlight %}
+
     <p>That's it. You should now know enough to use tgui in your project.</p>
   </div>
 </div>
