@@ -31,12 +31,17 @@ int main(int argc, char *argv[])
     gui.add(picPortrait, "Portrait");
 
     auto button = tgui::Button::create("widgets/Black.conf");
-
     button->setText("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
     button->connect("clicked", [&](){ window.close(); });
     gui.add(button);
+    
+    auto editBox = tgui::EditBox::create("widgets/Black.conf");
+    editBox->setPosition(50, 150);
+    editBox->setSize(400, 40);
+    editBox->setDefaultText("Enter text here...");
+    gui.add(editBox);
 
     setBackground(gui, window.getDefaultView());
 

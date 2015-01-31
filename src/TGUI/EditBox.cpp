@@ -891,11 +891,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::widgetFocused()
+    {
+    #ifdef SFML_SYSTEM_ANDROID
+        displayKeyboard(true);
+    #endif
+
+        Widget::widgetFocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::widgetUnfocused()
     {
         // If there is a selection then undo it now
         if (m_selChars)
             setCaretPosition(m_selEnd);
+
+    #ifdef SFML_SYSTEM_ANDROID
+        displayKeyboard(false);
+    #endif
 
         Widget::widgetUnfocused();
     }

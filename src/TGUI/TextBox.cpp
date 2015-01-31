@@ -1033,6 +1033,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::widgetFocused()
+    {
+    #ifdef SFML_SYSTEM_ANDROID
+        displayKeyboard(true);
+    #endif
+
+        Widget::widgetFocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::widgetUnfocused()
     {
         // If there is a selection then undo it now
@@ -1041,6 +1052,10 @@ namespace tgui
             m_selStart = m_selEnd;
             updateSelectionTexts();
         }
+
+    #ifdef SFML_SYSTEM_ANDROID
+        displayKeyboard(false);
+    #endif
 
         Widget::widgetUnfocused();
     }
