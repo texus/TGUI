@@ -1,5 +1,6 @@
 #include <TGUI/TGUI.hpp>
 
+// The background image will rotate with the screen
 void setBackground(tgui::Gui& gui, sf::View view)
 {
     gui.get("Landscape")->setSize(view.getSize().x, view.getSize().y);
@@ -30,13 +31,15 @@ int main(int argc, char *argv[])
     auto picPortrait = tgui::Picture::create("Background-Portrait.png");
     gui.add(picPortrait, "Portrait");
 
+    // The button will quit the program
     auto button = tgui::Button::create("widgets/Black.conf");
     button->setText("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
     button->connect("clicked", [&](){ window.close(); });
     gui.add(button);
-    
+
+    // Clicking on this edit box will open the keyboard and allow you to type in it
     auto editBox = tgui::EditBox::create("widgets/Black.conf");
     editBox->setPosition(50, 150);
     editBox->setSize(400, 40);
@@ -68,7 +71,7 @@ int main(int argc, char *argv[])
             gui.handleEvent(event);
         }
 
-        window.clear(sf::Color::Blue);
+        window.clear();
         gui.draw();
         window.display();
     }
