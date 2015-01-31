@@ -7,6 +7,8 @@
 {% include head.ext %}
 
     <title>Android</title>
+
+    <link rel="canonical" href="{{site.url}}/tutorials/v07/android/" />
 </head>
 
 <body>
@@ -14,110 +16,10 @@
 {% include navigation.ext %}
 
 <div id="contents" class="NoMargin">
-  <h2>Android (experimental)</h2>
+  <h2>Android</h2>
   <div>
-    <p>Make sure you downloaded the file from the <a href="/download">download page</a> that mentioned android support!</p>
-
-    <p>Please note that support for android is still in an early stage. Building for android has so far only been tested on linux, altough it should be very similar on other systems.</p>
-  </div>
-
-  <div>
-    <h3>Requirements</h3>
-    <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly.</p>
-
-    <p>You will need to use CMake in order to build TGUI. You can download the latest version <a href="www.cmake.org/cmake/resources/software.html">here</a>.</p>
-  </div>
-
-  <div>
-    <h3>CMake</h3>
-    <ol>
-      <li>Set the pathname to the TGUI folder that you downloaded.</li>
-      <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
-      <li>Press this button to start configuring.</li>
-    </ol>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeBuildDirectory.jpg"><img alt="CMake Build Directory" src="{{site.url}}/resources/AndroidTutorial/CMakeBuildDirectory.jpg" width="783" height="359" /></a>
-
-    <p class="SmallBottomMargin">In the window that pops up, you must change the selected option to "Specify toolchain file for cross-compiling". On linux you can leave the generator on "Unix Makefiles", on windows you probably want to use "MinGW Makefiles".</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeSelectGenerator.jpg"><img alt="CMake Select Generator" src="{{site.url}}/resources/AndroidTutorial/CMakeSelectGenerator.jpg" width="502" height="384" /></a>
-
-    <p class="SmallBottomMargin">In the next screen, point it to the toolchain file that can be found in TGUI/cmake/toolchains.</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeSelectToolchain.jpg"><img alt="CMake Select Toolchain" src="{{site.url}}/resources/AndroidTutorial/CMakeSelectToolchain.jpg" width="526" height="204" /></a>
-
-    <p class="SmallBottomMargin">You may see some warnings about the toolchain file not being able to uniquely determine machine name for the compiler, you can just ignore them. If all goes well you will see the "Found SFML 2.2 in ..." and "Configuring done" outputs at the bottom.</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg"><img alt="CMake Configure" src="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg" width="783" height="633" /></a>
-
-    <p class="SmallBottomMargin">You can now change some of the options:</p>
-    <ul>
-      <li>ANDROID_ABI: One of the following: armeabi, armeabi-v7a, x86, mips</li>
-      <li>ANDROID_NATIVE_API_LEVEL: API level (9 for android 2.3, 14 for android 4.0, ...)</li>
-      <li>CMAKE_BUILD_TYPE: Release or Debug (only Release has been tested so far)</li>
-    </ul>
-
-    <p>Once you are done setting the options, press Configure again and then press Generate.</p>
-  </div>
-
-  <div>
-    <h3>Building the library</h3>
-    <p>CMake will have generated makefiles or project files. You now have to execute these to build the library.</p>
-    <p class="SmallBottomMargin">On linux you would have to run the following command inside the build folder:</p>
-{% highlight bash %}
-make -j4 && make install
-{% endhighlight %}
-    <p>This will build the library and install it inside your NDK folder. If writing to this folder requires root access, then you must of course use "sude make install" instead.</p>
-  </div>
-
-  <div>
-    <h3>Running the demo</h3>
-    <p>To test if everything is working, you can build the example code.</p>
-    <p class="SmallBottomMargin">First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following</p>
-{% highlight bash %}
-$ANDROID_NDK/ndk-build
-{% endhighlight %}
-    <p>This should build the main.cpp file and copy the sfml and tgui libraries to that folder.</p>
-    <p class="SmallBottomMargin">Next you have to build the apk file. I uses Android Studio instead of eclipse for this. In the main screen select "Import Non-Android Studio project".</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg" width="799" height="602" /></a>
-
-    <p class="SmallBottomMargin">Next, select the folder to import. Here this will be the TGUI/example/android folder.</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioImportProjectFolder.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioImportProjectFolder.jpg" width="476" height="514" /></a>
-
-    <p>After that you get to a screen where you can just leave "Create project from existing sources" checked and click Next. In the next screen can give the project a name, just click Next again. It will tell you it found source files, click Next once more. Then hit Finish on the screen where it says that it detected frameworks.</p>
-
-    <p class="SmallBottomMargin">All you got to do now is hit the green play button. This will build the apk file and depending on the configurations start an emulator or run on a USB connected device.</p>
-    <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioRun.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioRun.jpg" width="159" height="45" /></a>
-  </div>
-
-  <div>
-    <h3>Using TGUI</h3>
-    <p>If you don't have much experience with android then your can just use the tgui demo code as a starting point. But below I will explain some settings that you need in order to use tgui if you have your own project set up.</p>
-
-    <p class="SmallBottomMargin">In the Android.mk file you must add the tgui library</p>
-{% highlight bash %}
-LOCAL_SHARED_LIBRARIES += tgui
-{% endhighlight %}
-
-    <p class="SmallBottomMargin">You also have to import tgui in that file. Importing sfml is not needed as tgui will already do that for you.</p>
-{% highlight bash %}
-$(call import-module,tgui)
-{% endhighlight %}
-
-    <p class="SmallBottomMargin">In Application.mk you must add the tgui activity</p>
-{% highlight bash %}
-APP_MODULES := sfml-activity tgui-activity your-program
-{% endhighlight %}
-
-    <p class="SmallBottomMargin">Finally you have to load the tgui-activity so that it can load the tgui library. You do that by having this in your AndroidManifest.xml file</p>
-{% highlight xml %}
-<meta-data android:name="android.app.lib_name" android:value="sfml-activity" />
-<meta-data android:name="sfml.app.lib_name" android:value="tgui-activity" />
-<meta-data android:name="tgui.app.lib_name" android:value="your-program" />
-{% endhighlight %}
-
-    <p class="SmallBottomMargin">If you would be using TGUI v0.7-dev then you must also enable exceptions in Application.mk</p>
-{% highlight bash %}
-APP_CPPFLAGS += -fexceptions
-{% endhighlight %}
-
-    <p>That's it. You should now know enough to use tgui in your project.</p>
+    <p>Support for TGUI v0.6 was dropped as a serious issue was found that could not be worked around.</p>
+    <p>Please check out <a href="../../v07/android/">TGUI v0.7</a> instead.</p>
   </div>
 </div>
 
