@@ -421,7 +421,7 @@ namespace tgui
 
         // Calculate the height of one line
         if (m_font)
-            m_lineHeight = m_font->getLineSpacing(m_textSize);
+            m_lineHeight = static_cast<unsigned int>(m_font->getLineSpacing(m_textSize));
         else
             m_lineHeight = 0;
 
