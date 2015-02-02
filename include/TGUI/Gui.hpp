@@ -452,8 +452,8 @@ namespace tgui
         bool m_accessToWindow;
 
         // Internal container to store all widgets
-        GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();
-
+        GuiContainer::Ptr m_container;
+        
         std::shared_ptr<Tooltip> m_visibleTooltip = nullptr;
         sf::Time m_tooltipTime;
         bool m_tooltipPossible = false;

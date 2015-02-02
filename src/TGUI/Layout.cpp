@@ -469,28 +469,28 @@ namespace tgui
 
     TGUI_API Layout operator+(const Layout& left, const Layout& right)
     {
-        return {left.x + right.x, left.y + right.y};
+       return Layout( left.x + right.x, left.y + right.y );
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Layout operator-(const Layout& left, const Layout& right)
     {
-        return {left.x - right.x, left.y - right.y};
+       return Layout(left.x - right.x, left.y - right.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Layout operator*(const Layout& left, const Layout1d& right)
     {
-        return {left.x * right, left.y * right};
+       return Layout(left.x * right, left.y * right);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Layout operator/(const Layout& left, const Layout1d& right)
     {
-        return {left.x / right, left.y / right};
+       return Layout(left.x / right, left.y / right);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,28 +585,28 @@ namespace tgui
 
     Layout bindPosition(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
-        return {bindLeft(widget, fraction.x), bindTop(widget, fraction.y)};
+       return Layout{ bindLeft(widget, fraction.x), bindTop(widget, fraction.y) };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout bindSize(const Widget::Ptr& widget, const sf::Vector2f& fraction)
     {
-        return {bindWidth(widget, fraction.x), bindHeight(widget, fraction.y)};
+       return Layout(bindWidth(widget, fraction.x), bindHeight(widget, fraction.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout bindPosition(const Gui& gui, const sf::Vector2f& fraction)
     {
-        return {bindLeft(gui.getContainer(), fraction.x), bindTop(gui.getContainer(), fraction.y)};
+       return Layout(bindLeft(gui.getContainer(), fraction.x), bindTop(gui.getContainer(), fraction.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout bindSize(const Gui& gui, const sf::Vector2f& fraction)
     {
-        return {bindWidth(gui.getContainer(), fraction.x), bindHeight(gui.getContainer(), fraction.y)};
+       return Layout(bindWidth(gui.getContainer(), fraction.x), bindHeight(gui.getContainer(), fraction.y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -145,8 +145,8 @@ namespace tgui
 
     sf::Vector2f SpinButton::getFullSize() const
     {
-        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+       return sf::Vector2f(getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
