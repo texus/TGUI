@@ -87,6 +87,7 @@ namespace tgui
                             strcpy_s(pchData, sizeof(pchData), m_contents.toAnsiString().c_str());
                         #else
                             strcpy(pchData, m_contents.toAnsiString().c_str());
+                        #endif
 						
                         SetClipboardData(CF_TEXT, hGlobal);
 
