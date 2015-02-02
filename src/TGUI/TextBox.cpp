@@ -381,8 +381,8 @@ namespace tgui
 
     sf::Vector2f TextBox::getFullSize() const
     {
-        return {getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom};
+       return sf::Vector2f(getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

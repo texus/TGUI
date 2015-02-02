@@ -39,7 +39,8 @@ namespace tgui
 
     Gui::Gui() :
         m_window        (nullptr),
-        m_accessToWindow(false)
+        m_accessToWindow(false),
+        m_container(std::make_shared<GuiContainer>())
     {
         m_container->m_focused = true;
     }
@@ -48,7 +49,8 @@ namespace tgui
 
     Gui::Gui(sf::RenderWindow& window) :
         m_window        (&window),
-        m_accessToWindow(true)
+        m_accessToWindow(true),
+        m_container(std::make_shared<GuiContainer>())
     {
         m_container->m_window = &window;
         m_container->m_focused = true;
@@ -62,7 +64,8 @@ namespace tgui
 
     Gui::Gui(sf::RenderTarget& window) :
         m_window        (&window),
-        m_accessToWindow(false)
+        m_accessToWindow(false),
+        m_container(std::make_shared<GuiContainer>())
     {
         m_container->m_window = &window;
         m_container->m_focused = true;

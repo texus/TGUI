@@ -205,8 +205,8 @@ namespace tgui
 
     sf::Vector2f ComboBox::getFullSize() const
     {
-        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+       return sf::Vector2f(getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -639,7 +639,7 @@ namespace tgui
         if (filename != "")
             m_comboBox->getRenderer()->m_textureArrowUpNormal.load(filename, partRect, middlePart, repeated);
         else
-            m_comboBox->getRenderer()->m_textureArrowUpNormal = {};
+            m_comboBox->getRenderer()->m_textureArrowUpNormal = tgui::Texture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -649,7 +649,7 @@ namespace tgui
         if (filename != "")
             m_comboBox->getRenderer()->m_textureArrowDownNormal.load(filename, partRect, middlePart, repeated);
         else
-            m_comboBox->getRenderer()->m_textureArrowDownNormal = {};
+            m_comboBox->getRenderer()->m_textureArrowDownNormal = tgui::Texture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -659,7 +659,7 @@ namespace tgui
         if (filename != "")
             m_comboBox->getRenderer()->m_textureArrowUpHover.load(filename, partRect, middlePart, repeated);
         else
-            m_comboBox->getRenderer()->m_textureArrowUpHover = {};
+            m_comboBox->getRenderer()->m_textureArrowUpHover =  tgui::Texture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -669,7 +669,7 @@ namespace tgui
         if (filename != "")
             m_comboBox->getRenderer()->m_textureArrowDownHover.load(filename, partRect, middlePart, repeated);
         else
-            m_comboBox->getRenderer()->m_textureArrowDownHover = {};
+            m_comboBox->getRenderer()->m_textureArrowDownHover =  tgui::Texture();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

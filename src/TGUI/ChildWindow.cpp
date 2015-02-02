@@ -158,8 +158,8 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getFullSize() const
     {
-        return {getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight};
+       return sf::Vector2f(getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getWidgetsOffset() const
     {
-        return {getRenderer()->m_borders.left, getRenderer()->m_borders.top + getRenderer()->m_titleBarHeight};
+       return sf::Vector2f(getRenderer()->m_borders.left, getRenderer()->m_borders.top + getRenderer()->m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

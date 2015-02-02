@@ -353,6 +353,34 @@ namespace tgui
         /// @return Id of this connection, which you need if you want to disconnect it later
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func>
+        unsigned int connect(const std::string& signalNames, Func func) {
+           for (auto& signalName : extractSignalNames(signalNames))
+           {
+              if (m_signals.find(toLower(signalName)) == m_signals.end())
+                 throw Exception{ "Cannot connect to unknown signal '" + signalName + "'." };
+
+              try {
+                 m_signals[toLower(signalName)]->connect(++m_lastId, func);
+              }
+              catch (const Exception& e) {
+                 throw Exception{ e.what() + (" The parameters are not valid for the '" + signalName + "' signal.") };
+              }
+           }
+
+           return m_lastId;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler function to one or more signals
+        ///
+        /// @param signalNames Name of the signal, or multiple names split by spaces
+        /// @param func        The function to connect
+        /// @param args        The arguments that should be bound to the function
+        ///
+        /// @return Id of this connection, which you need if you want to disconnect it later
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
         unsigned int connect(const std::string& signalNames, Func func, Args... args)
         {
