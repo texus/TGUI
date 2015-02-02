@@ -466,6 +466,8 @@ namespace tgui
             m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
             m_menus[m_visibleMenu].selectedMenuItem = -1;
         }
+
+        Widget::mouseLeftWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
