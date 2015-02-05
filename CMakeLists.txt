@@ -89,10 +89,35 @@ if(SFML_OS_WINDOWS)
     endif()
 endif()
 
-# Set the correct architecture on mac
-if ( SFML_OS_MACOSX )
-    if( NOT CMAKE_OSX_ARCHITECTURES )
-        set( CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE )
+# Mac OS X specific options
+if (SFML_OS_MACOSX)
+
+    # Add an option to build framework instead of dylib (release only)
+    tgui_set_option(TGUI_BUILD_FRAMEWORK FALSE BOOL "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS")
+
+    # Add an option to let the user specify a custom directory for framework installation
+    tgui_set_option(CMAKE_INSTALL_FRAMEWORK_PREFIX "/Library/Frameworks" STRING "Frameworks installation directory")
+
+    # Set the architecture when none was given
+    if (NOT CMAKE_OSX_ARCHITECTURES)
+        set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+    endif()
+
+    # Enable to use of rpath according to CMake Policy CMP0042
+    set(CMAKE_MACOSX_RPATH 1)
+
+    if (TGUI_BUILD_FRAMEWORK)
+        # Frameworks are only available for release (because cmake currently doesn't allow specifying a custom framework name so XXX-d is not possible)
+        if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+            message(FATAL_ERROR "CMAKE_BUILD_TYPE should be \"Release\" when TGUI_BUILD_FRAMEWORK is TRUE")
+            return()
+        endif()
+
+        # Frameworks only work with TGUI_SHARED_LIBS enabled
+        if (NOT TGUI_SHARED_LIBS)
+            message(FATAL_ERROR "TGUI_SHARED_LIBS should be TRUE when TGUI_BUILD_FRAMEWORK is TRUE")
+            return()
+        endif()
     endif()
 endif()
 
@@ -156,7 +181,12 @@ if (TGUI_BUILD_DOC)
 endif()
 
 # Install include files
-install(DIRECTORY include DESTINATION .)
+if (NOT TGUI_BUILD_FRAMEWORK)
+    install(DIRECTORY include
+            DESTINATION .
+            COMPONENT devel
+            FILES_MATCHING PATTERN "*.hpp" PATTERN "*.inl")
+endif()
 
 # Install FindTGUI.cmake file
 if(NOT SFML_OS_ANDROID)
