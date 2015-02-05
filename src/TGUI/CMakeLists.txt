@@ -71,18 +71,41 @@ if(NOT SFML_OS_WINDOWS AND ((SFML_COMPILER_GCC AND NOT SFML_GCC_VERSION VERSION_
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS -fvisibility=hidden)
 endif()
 
-# Install library (use "bin" folder for DLL, "lib" for SO files)
-if(SFML_OS_WINDOWS)
-    install( TARGETS ${PROJECT_NAME}
-             RUNTIME DESTINATION bin
-             LIBRARY DESTINATION lib
-             ARCHIVE DESTINATION lib 
-             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
-else()
-    install( TARGETS ${PROJECT_NAME}
-             DESTINATION lib${LIB_SUFFIX}
-             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
+# Build frameworks or dylibs
+if(SFML_OS_MACOSX AND TGUI_SHARED_LIBS)
+    if(TGUI_BUILD_FRAMEWORK)
+        # Adapt target to build frameworks instead of dylibs
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+                              FRAMEWORK TRUE
+                              FRAMEWORK_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}
+                              MACOSX_FRAMEWORK_IDENTIFIER org.tgui.${PROJECT_NAME}
+                              MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}
+                              MACOSX_FRAMEWORK_BUNDLE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
+
+        # Install the header files to the framework
+        add_custom_command(TARGET ${PROJECT_NAME}
+                           POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
+                           COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include/TGUI $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
+                           COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers $<TARGET_FILE_DIR:${PROJECT_NAME}>/../../Headers)
+
+        # The framework has to be with a capital letter (because it includes the header files which must be found in a "TGUI" directory)
+        set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME TGUI)
+    endif()
+
+    # Adapt install directory to allow distributing dylibs/frameworks in user’s frameworks/application bundle
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+                          BUILD_WITH_INSTALL_RPATH 1
+                          INSTALL_NAME_DIR "@rpath")
 endif()
+
+# Install library
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin COMPONENT bin
+        LIBRARY DESTINATION lib${LIB_SUFFIX} COMPONENT bin
+        ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT devel
+        FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX} COMPONENT bin
+)
 
 # Build tgui-activity on android
 if (SFML_OS_ANDROID)
