@@ -332,7 +332,12 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
         tgui::Panel::Ptr formPanel = activeForm->window->get("Panel");
 
         formPanel->removeAllWidgets();
+
+    #ifdef __APPLE__
+        formPanel->loadWidgetsFromFile("../../../" + activeForm->window->getTitle());
+    #else
         formPanel->loadWidgetsFromFile(activeForm->window->getTitle());
+    #endif
 
         activeForm->widgets.clear();
         activeForm->activeWidget = &widgetsData[""];
@@ -380,7 +385,11 @@ void FormBuilder::menuBarCallback(const tgui::Callback& callback)
     }
     else if (callback.text == "Save")
     {
+    #ifdef __APPLE__
+        tgui::Panel::Ptr(activeForm->window->get("Panel"))->saveWidgetsToFile("../../../" + activeForm->window->getTitle());
+    #else
         tgui::Panel::Ptr(activeForm->window->get("Panel"))->saveWidgetsToFile(activeForm->window->getTitle());
+    #endif
     }
     else if (callback.text == "Exit")
     {
