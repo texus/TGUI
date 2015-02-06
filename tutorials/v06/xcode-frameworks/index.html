@@ -1,0 +1,75 @@
+---
+---
+<!DOCTYPE html>
+
+<head>
+{% include head.ext %}
+
+    <title>XCode</title>
+</head>
+
+<body>
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+
+<div id="contents" class="NoMargin">
+    <h2>XCode (using frameworks)</h2>
+    <p>If you want to use dylibs instead of frameworks, then check out the <a href="../xcode-dylibs/">XCode dylib tutorial</a>.</p>
+    <div>
+        <h3>CMake</h3>
+        <ul>
+          <li>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/cmake/resources/software.html">here</a>.</li>
+          <li>In order to use CMake, you will need to install the Command Line Tools in Xcode.<br>
+              Go to Preferences > Downloads and click on the Install button next to the Command Line Tools.<br>
+              If you do not find it there then you should lookup how to download it for your XCode version.
+
+          <li>Also make sure that you already have sfml on your computer.
+              It would be even better to make sure you have sfml working before trying to use TGUI.
+              If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
+        </ul>
+
+        <ol>
+          <li>Set the pathname to the TGUI folder that you downloaded.</li>
+          <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
+          <li>Press this button to start configuring.</li>
+        </ol>
+        <a class="img" href="{{site.url}}/resources/CMakeBuildDirectoryMac.jpg"><img alt="CMake Build Directory" src="{{site.url}}/resources/CMakeBuildDirectoryMac.jpg" width="790" height="546" /></a>
+
+        <p class="SmallBottomMargin">
+            Next select your compiler.<br>
+            Just keep the “Use default native compilers” option checked and ignore the other three options.
+        </p>
+        <a class="img" href="{{site.url}}/resources/CMakeSelectCompilerMac.jpg"><img alt="CMake Select Compiler" src="{{site.url}}/resources/CMakeSelectCompilerMac.jpg" width="790" height="546" /></a>
+
+        <p class="SmallBottomMargin">You can now change some of the options if you want. In order to build the framework, keep TGUI_SHARED_LIBS checked and check TGUI_BUILD_FRAMEWORK. After setting the options like you want them you need to press Configure again. Now you should have reached the message “Configuring done” at the bottom. All you have to do now is press Generate.
+        </p>
+        <a class="img" href="{{site.url}}/resources/CMakeGenerateMacFramework.jpg"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateMacFramework.jpg" width="796" height="593" /></a>
+    </div>
+
+    <div>
+        <h3>Make</h3>
+
+        <p>You are not done yet.<br>
+           CMake made a Makefile in the build directory that will build the library.<br>
+           Open the terminal, go to the directory were the Makefile is and type “make -j4”.<br>
+           When this is done, type “sudo make install” and enter your password.
+        </p>
+    </div>
+
+    <div>
+        <h3>Using TGUI</h3>
+        <p class="SmallBottomMargin">In the previous step, the framework was installed to /Library/Frameworks by default. All you need to do to use it is dragging the TGUI framework into your project.</p>
+        <a class="img" href="{{site.url}}/resources/XCodeDragFramework.jpg"><img alt="XCode drag framework" src="{{site.url}}/resources/XCodeDragFramework.jpg" width="397" height="214" /></a>
+
+        <p class="SmallBottomMargin">A screen like below will appear where you normally don't need to change anything, just hit "Finish". The "Copy items if needed" can remain unchecked, but it doesn't matter if it is checked.</p>
+        <a class="img" href="{{site.url}}/resources/XCodeAddFramework.jpg"><img alt="XCode add framework" src="{{site.url}}/resources/XCodeAddFramework.jpg" width="732" height="431" /></a>
+
+        <p>You should now be able to use TGUI.</p>
+        
+        <p>Tip: The sfml example comes with a resourcePath() function which you must set before the paths to load resources. You can use tgui::setResourcePath(resourcePath()) at the beginning of your program so that everything tgui loads starts with that folder.</p>
+    </div>
+</div>
+
+{% include footer.ext %}
+</div>
+</body>
