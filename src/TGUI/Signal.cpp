@@ -35,11 +35,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    template <> TGUI_API std::string convertTypeToString<int>() { return "int"; };
-    template <> TGUI_API std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; };
-    template <> TGUI_API std::string convertTypeToString<sf::String>() { return "sf::String"; };
-    template <> TGUI_API std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; };
-    template <> TGUI_API std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; };
+    template <> TGUI_API std::string convertTypeToString<int>() { return "int"; }
+    template <> TGUI_API std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
+    template <> TGUI_API std::string convertTypeToString<sf::String>() { return "sf::String"; }
+    template <> TGUI_API std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
+    template <> TGUI_API std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
