@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.6</span>
+   &#160;<span id="projectnumber">v0.6.7</span>
    </div>
   </td>
  </tr>
@@ -89,7 +89,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// TGUI - Texus&#39;s Graphical User Interface</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Copyright (C) 2012-2014 Bruno Van de Velde (vdv_b@tgui.eu)</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Copyright (C) 2012-2015 Bruno Van de Velde (vdv_b@tgui.eu)</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">// This software is provided &#39;as-is&#39;, without any express or implied warranty.</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">// In no event will the authors be held liable for any damages arising from the use of this software.</span></div>
@@ -130,79 +130,85 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"></span>        ~<a class="code" href="classtgui_1_1ConfigFile.html">ConfigFile</a>();</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="comment">// Open a given file. If a file is already open then it will be closed first.</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="comment">// Open a given file</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">// return:  true when the file was opened</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">//          false when it couldn&#39;t be opened</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> open(<span class="keyword">const</span> std::string&amp; filename);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="comment">// Reads a specific section from the file and returns the corresponding properties and values.</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="comment">// return:  true when a section was found</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">//          false when there was no section with the given name</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> read(<span class="keyword">const</span> std::string&amp; section, std::vector&lt;std::string&gt;&amp; properties, std::vector&lt;std::string&gt;&amp; values);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="comment">// Reads a bool from a string value.</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readBool(<span class="keyword">const</span> std::string&amp; value, <span class="keywordtype">bool</span> defaultValue) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="comment">// Reads a color from a string value.</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"></span>        sf::Color readColor(<span class="keyword">const</span> std::string&amp; value) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="comment">// Reads an int rectangle from a string value.</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readIntRect(std::string value, sf::IntRect&amp; rect) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="comment">// Loads a texture based on the contents of the string value.</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readTexture(<span class="keyword">const</span> std::string&amp; value, <span class="keyword">const</span> std::string&amp; rootPath, <a class="code" href="structtgui_1_1Texture.html">Texture</a>&amp; texture) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="comment">// Close the file that was opened by the open function.</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment"></span>        <span class="keywordtype">void</span> close();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="comment">// Empty the caches and force files to be reloaded.</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment"></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> flushCache();</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;      <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="comment">// Remove the whitespace from the line, starting from the character c.</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> removeWhitespace(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator&amp; c) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="comment">// Reads the next word, starting from character c.</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment"></span>        std::string readWord(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator&amp; c) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="comment">// Check if line is a section header.</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> isSection(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator c, std::string&amp; sectionName) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        std::ifstream m_File;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        std::string m_Filename;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">// Nothing will happen if file is already cached.</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="comment">// return:  true when the file was opened or already cached</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="comment">//          false when it couldn&#39;t be opened</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> open(<span class="keyword">const</span> std::string&amp; filename);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="comment">// Reads a specific section from the file and returns the corresponding properties and values.</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="comment">// return:  true when a section was found</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="comment">//          false when there was no section with the given name</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> read(<span class="keyword">const</span> std::string&amp; section, std::vector&lt;std::string&gt;&amp; properties, std::vector&lt;std::string&gt;&amp; values);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">// Reads a bool from a string value.</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readBool(<span class="keyword">const</span> std::string&amp; value, <span class="keywordtype">bool</span> defaultValue) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="comment">// Reads a color from a string value.</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"></span>        sf::Color readColor(<span class="keyword">const</span> std::string&amp; value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="comment">// Reads an int rectangle from a string value.</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readIntRect(std::string value, sf::IntRect&amp; rect) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="comment">// Loads a texture based on the contents of the string value.</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readTexture(<span class="keyword">const</span> std::string&amp; value, <span class="keyword">const</span> std::string&amp; rootPath, <a class="code" href="structtgui_1_1Texture.html">Texture</a>&amp; texture) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="comment">// Close the file that was opened by the open function.</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span>        <span class="keywordtype">void</span> close();</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="comment">// Empty the caches and force files to be reloaded.</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment"></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> flushCache();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="comment">// Read the entire config file and cache its contents</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> readAndCache();</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="comment">// Remove the whitespace from the line, starting from the character c.</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> removeWhitespace(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator&amp; c) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="comment">// Reads the next word, starting from character c.</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment"></span>        std::string readWord(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator&amp; c) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="comment">// Check if line is a section header.</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> isSection(<span class="keyword">const</span> std::string&amp; line, std::string::const_iterator c, std::string&amp; sectionName) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keyword">static</span> std::map&lt;std::pair&lt;std::string, std::string&gt;, std::pair&lt;std::vector&lt;std::string&gt;, std::vector&lt;std::string&gt;&gt;&gt; m_Cache;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    };</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;}</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="preprocessor">#endif // TGUI_CONFIG_FILE_HPP</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        std::ifstream m_File;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        std::string m_Filename;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">static</span> std::map&lt;std::string, std::map&lt;std::string, std::pair&lt;std::vector&lt;std::string&gt;, std::vector&lt;std::string&gt;&gt;&gt;&gt; m_Cache;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    };</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor">#endif // TGUI_CONFIG_FILE_HPP</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="structtgui_1_1Texture_html"><div class="ttname"><a href="structtgui_1_1Texture.html">tgui::Texture</a></div><div class="ttdef"><b>Definition:</b> TextureManager.hpp:52</div></div>
 <div class="ttc" id="classtgui_1_1ConfigFile_html"><div class="ttname"><a href="classtgui_1_1ConfigFile.html">tgui::ConfigFile</a></div><div class="ttdef"><b>Definition:</b> ConfigFile.hpp:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 17 2014 11:45:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 7 2015 17:23:08 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

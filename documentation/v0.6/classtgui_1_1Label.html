@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.6</span>
+   &#160;<span id="projectnumber">v0.6.7</span>
    </div>
   </td>
  </tr>
@@ -171,6 +171,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a18f7b7412ca2d37eae8212fc68bcd027"><td class="memItemLeft" align="right" valign="top">const sf::Color &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a18f7b7412ca2d37eae8212fc68bcd027">getTextColor</a> () const </td></tr>
 <tr class="memdesc:a18f7b7412ca2d37eae8212fc68bcd027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the color of the text.  <a href="#a18f7b7412ca2d37eae8212fc68bcd027">More...</a><br/></td></tr>
 <tr class="separator:a18f7b7412ca2d37eae8212fc68bcd027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a403423f8eb52e54e7a3d3e13e7b86370"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a403423f8eb52e54e7a3d3e13e7b86370">setTextStyle</a> (sf::Uint32 style)</td></tr>
+<tr class="memdesc:a403423f8eb52e54e7a3d3e13e7b86370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the style of the text.  <a href="#a403423f8eb52e54e7a3d3e13e7b86370">More...</a><br/></td></tr>
+<tr class="separator:a403423f8eb52e54e7a3d3e13e7b86370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2da9c8e374f786b3406551273e4cf86e"><td class="memItemLeft" align="right" valign="top">sf::Uint32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a2da9c8e374f786b3406551273e4cf86e">getTextStyle</a> () const </td></tr>
+<tr class="memdesc:a2da9c8e374f786b3406551273e4cf86e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the style of the text.  <a href="#a2da9c8e374f786b3406551273e4cf86e">More...</a><br/></td></tr>
+<tr class="separator:a2da9c8e374f786b3406551273e4cf86e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8aa2e6e1af5edb78f97cc30d954009de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Label.html#a8aa2e6e1af5edb78f97cc30d954009de">setTextSize</a> (unsigned int size)</td></tr>
 <tr class="memdesc:a8aa2e6e1af5edb78f97cc30d954009de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the character size of the text.  <a href="#a8aa2e6e1af5edb78f97cc30d954009de">More...</a><br/></td></tr>
 <tr class="separator:a8aa2e6e1af5edb78f97cc30d954009de"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -530,6 +536,24 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a2da9c8e374f786b3406551273e4cf86e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sf::Uint32 tgui::Label::getTextStyle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the style of the text. </p>
+<dl class="section return"><dt>Returns</dt><dd>The current text style </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="af8e17ece7611c16d57a38193c3c656d2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -810,13 +834,38 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a403423f8eb52e54e7a3d3e13e7b86370"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Label::setTextStyle </td>
+          <td>(</td>
+          <td class="paramtype">sf::Uint32&#160;</td>
+          <td class="paramname"><em>style</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the style of the text. </p>
+<p>The possible styles can be found in the sf::Text::Style enum. You can pass a combination of one or more styles, for example sf::Text::Bold | sf::Text::Italic. The default style is sf::Text::Regular.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">style</td><td>New text style </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/<a class="el" href="Label_8hpp_source.html">Label.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 17 2014 11:45:07 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 7 2015 17:23:08 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
