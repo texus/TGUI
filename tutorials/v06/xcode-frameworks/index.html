@@ -41,6 +41,8 @@
         </p>
         <a class="img" href="{{site.url}}/resources/CMakeSelectCompilerMac.jpg"><img alt="CMake Select Compiler" src="{{site.url}}/resources/CMakeSelectCompilerMac.jpg" width="790" height="546" /></a>
 
+        <p>Watch out for which SFML version is found. If you are planning on using the SFML frameworks in your project, then don't let CMake find the SFML dylibs because your program will simply not work.</p>
+
         <p class="SmallBottomMargin">You can now change some of the options if you want. In order to build the framework, keep TGUI_SHARED_LIBS checked and check TGUI_BUILD_FRAMEWORK. After setting the options like you want them you need to press Configure again. Now you should have reached the message “Configuring done” at the bottom. All you have to do now is press Generate.
         </p>
         <a class="img" href="{{site.url}}/resources/CMakeGenerateMacFramework.jpg"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateMacFramework.jpg" width="796" height="593" /></a>
