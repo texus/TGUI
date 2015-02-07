@@ -481,7 +481,7 @@ namespace tgui
 
         // Shrink the list size
         if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+            m_ListBox->setSize(m_ListBox->getSize().x, static_cast<float>(m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
 
         return ret;
     }
@@ -494,7 +494,7 @@ namespace tgui
 
         // Shrink the list size
         if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+            m_ListBox->setSize(m_ListBox->getSize().x, static_cast<float>(m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
 
         return ret;
     }
@@ -507,7 +507,7 @@ namespace tgui
 
         // Shrink the list size
         if ((m_NrOfItemsToDisplay == 0) || (m_ListBox->getItems().size() < m_NrOfItemsToDisplay))
-            m_ListBox->setSize(m_ListBox->getSize().x, (m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
+            m_ListBox->setSize(m_ListBox->getSize().x, static_cast<float>(m_ListBox->getItemHeight() * TGUI_MAXIMUM(m_ListBox->getItems().size(), 1)));
 
         return ret;
     }
@@ -517,7 +517,7 @@ namespace tgui
     void ComboBox::removeAllItems()
     {
         m_ListBox->removeAllItems();
-        m_ListBox->setSize(m_ListBox->getSize().x, m_ListBox->getItemHeight());
+        m_ListBox->setSize(m_ListBox->getSize().x, static_cast<float>(m_ListBox->getItemHeight()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

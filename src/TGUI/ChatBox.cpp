@@ -970,7 +970,7 @@ namespace tgui
         if (m_LineSpacing > 0)
             return m_LineSpacing * linesOfText;
 
-        unsigned int lineSpacing = m_Panel->getGlobalFont().getLineSpacing(line->getTextSize());
+        unsigned int lineSpacing = static_cast<unsigned int>(m_Panel->getGlobalFont().getLineSpacing(line->getTextSize()));
         if (lineSpacing > line->getTextSize())
             return lineSpacing * linesOfText;
         else

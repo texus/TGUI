@@ -453,7 +453,7 @@ namespace tgui
             return;
 
         // Calculate the height of one line
-        m_LineHeight = m_TextBeforeSelection.getFont()->getLineSpacing(m_TextSize);
+        m_LineHeight = static_cast<unsigned int>(m_TextBeforeSelection.getFont()->getLineSpacing(m_TextSize));
 
         // There is also a minimum height
         if (m_Size.y < m_LineHeight)
