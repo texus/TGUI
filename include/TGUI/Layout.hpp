@@ -28,6 +28,7 @@
 
 #include <functional>
 #include <memory>
+#include <vector>
 #include <list>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +145,7 @@ namespace tgui
         float m_value = 0;
         float m_constant = 0;
 
-        std::list<LayoutGroup> m_groups;
+        std::vector<LayoutGroup> m_groups;
 
         friend class Layout;
     };
