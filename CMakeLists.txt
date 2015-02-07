@@ -51,19 +51,6 @@ tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES imple
 # Add an option to build the documentation
 tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
-# Add options to build the form builder if not on android
-if (NOT SFML_OS_ANDROID)
-    if (SFML_OS_WINDOWS)
-        tgui_set_option( TGUI_BUILD_FORM_BUILDER FALSE BOOL "Build the TGUI Form Builder" )
-    else()
-        tgui_set_option( TGUI_BUILD_FORM_BUILDER TRUE BOOL "Build the TGUI Form Builder" )
-    endif()
-
-    if (SFML_OS_LINUX)
-        tgui_set_option( TGUI_FORM_BUILDER_USE_LOCAL_FILES FALSE BOOL "Use resources from current directory instead of from installed files." )
-    endif()
-endif()
-
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
     set(TGUI_ACTIVITY_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
