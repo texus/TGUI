@@ -168,6 +168,7 @@ namespace tgui
         LayoutGroup& operator=(const LayoutGroup&) = delete;
 
         LayoutGroup(LayoutGroup&& group);
+        LayoutGroup& operator=(LayoutGroup&&);
 
         LayoutGroup clone(Layout1d& layout) const;
 
@@ -184,7 +185,7 @@ namespace tgui
         }
 
     private:
-        Layout1d& m_first;
+        Layout1d* m_first;
         Layout1d m_second;
 
         Layout1d* m_active = nullptr;

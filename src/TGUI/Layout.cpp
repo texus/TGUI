@@ -276,7 +276,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LayoutGroup::LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector) :
-        m_first   (first), // Did not compile on gcc 4.8 when using braces
+        m_first   {&first},
         m_second  {second},
         m_selector{selector}
     {
@@ -286,11 +286,28 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LayoutGroup::LayoutGroup(LayoutGroup&& group) :
-        m_first   (group.m_first), // Did not compile on gcc 4.8 when using braces
+        m_first   {group.m_first},
         m_second  {group.m_second},
         m_selector{group.m_selector}
     {
         determineActiveLayout();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LayoutGroup& LayoutGroup::operator=(LayoutGroup&& group)
+    {
+        if (this != &group)
+        {
+            m_first     = group.m_first;
+            m_second    = group.m_second;
+            m_selector  = group.m_selector;
+            m_active    = nullptr;
+            m_nonActive = nullptr;
+
+            determineActiveLayout();
+        }
+        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,8 +327,8 @@ namespace tgui
         {
             case Selector::Minimum:
             {
-                if (m_first.getValue() < m_second.getValue())
-                    m_active = &m_first;
+                if (m_first->getValue() < m_second.getValue())
+                    m_active = m_first;
                 else
                     m_active = &m_second;
 
@@ -319,8 +336,8 @@ namespace tgui
             }
             case Selector::Maximum:
             {
-                if (m_first.getValue() > m_second.getValue())
-                    m_active = &m_first;
+                if (m_first->getValue() > m_second.getValue())
+                    m_active = m_first;
                 else
                     m_active = &m_second;
 
@@ -328,10 +345,10 @@ namespace tgui
             }
         }
 
-        if (m_active == &m_first)
+        if (m_active == m_first)
             m_nonActive = &m_second;
         else if (m_active == &m_second)
-            m_nonActive = &m_first;
+            m_nonActive = m_first;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
