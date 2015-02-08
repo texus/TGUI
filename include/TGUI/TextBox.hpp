@@ -380,6 +380,9 @@ namespace tgui
         ///
         /// Normally you will not need this function.
         ///
+        /// If the selection point is outside the visible area, the text box will scroll to show the part where the selection
+        /// point is located. So calling setSelectionPointPosition(0) will always make the scrollbar go completely to the top.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectionPointPosition(unsigned int charactersBeforeSelectionPoint);
 
