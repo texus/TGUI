@@ -893,8 +893,8 @@ namespace tgui
 
     void EditBox::widgetFocused()
     {
-    #ifdef SFML_SYSTEM_ANDROID
-        displayKeyboard(true);
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(true);
     #endif
 
         Widget::widgetFocused();
@@ -908,8 +908,8 @@ namespace tgui
         if (m_selChars)
             setCaretPosition(m_selEnd);
 
-    #ifdef SFML_SYSTEM_ANDROID
-        displayKeyboard(false);
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(false);
     #endif
 
         Widget::widgetUnfocused();

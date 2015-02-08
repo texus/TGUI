@@ -1035,8 +1035,8 @@ namespace tgui
 
     void TextBox::widgetFocused()
     {
-    #ifdef SFML_SYSTEM_ANDROID
-        displayKeyboard(true);
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(true);
     #endif
 
         Widget::widgetFocused();
@@ -1053,8 +1053,8 @@ namespace tgui
             updateSelectionTexts();
         }
 
-    #ifdef SFML_SYSTEM_ANDROID
-        displayKeyboard(false);
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(false);
     #endif
 
         Widget::widgetUnfocused();
