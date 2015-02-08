@@ -56,6 +56,11 @@ else()
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
 endif()
 
+# Enable automatic reference counting on iOS
+if (SFML_OS_IOS)
+    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)
+endif()
+
 # for gcc >= 4.0 on Windows, apply the TGUI_USE_STATIC_STD_LIBS option if it is enabled
 if(SFML_OS_WINDOWS AND SFML_COMPILER_GCC AND NOT SFML_GCC_VERSION VERSION_LESS "4")
     if(TGUI_USE_STATIC_STD_LIBS AND NOT SFML_COMPILER_GCC_TDM)

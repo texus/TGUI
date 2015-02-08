@@ -270,8 +270,11 @@ if(SFML_STATIC_LIBRARIES)
     
         # find libraries
         find_sfml_dependency(FREETYPE_LIBRARY "FreeType" freetype)
-        find_sfml_dependency(GLEW_LIBRARY "GLEW" glew GLEW glew32 glew32s glew64 glew64s)
         find_sfml_dependency(JPEG_LIBRARY "libjpeg" jpeg)
+
+        if (NOT IOS)
+            find_sfml_dependency(GLEW_LIBRARY "GLEW" glew GLEW glew32 glew32s glew64 glew64s)
+        endif()
 
         # update the list
         set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${GLEW_LIBRARY} ${JPEG_LIBRARY})
