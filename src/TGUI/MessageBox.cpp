@@ -62,7 +62,7 @@ namespace tgui
         {
             Button::Ptr button = Button::copy(*it);
             button->disconnectAll();
-            button->connect("Pressed", [=]() { m_callback.text = button->getText(); sendSignal("ButtonClicked", button->getText()); });
+            button->connect("Pressed", [=]() { m_callback.text = button->getText(); sendSignal("ButtonPressed", button->getText()); });
 
             m_buttons.push_back(button);
         }
@@ -192,7 +192,7 @@ namespace tgui
         auto button = Button::create(m_loadedThemeFile, m_buttonSectionName);
         button->setTextSize(m_textSize);
         button->setText(caption);
-        button->connect("Pressed", [=](){ m_callback.text = caption; sendSignal("ButtonClicked", caption); });
+        button->connect("Pressed", [=](){ m_callback.text = caption; sendSignal("ButtonPressed", caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton$" + caption + "#");
         m_buttons.push_back(button);
