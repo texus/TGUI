@@ -204,9 +204,11 @@ namespace tgui
 
     void MessageBox::initialize(Container *const parent)
     {
+        std::shared_ptr<sf::Font> font = m_font;
+
         ChildWindow::initialize(parent);
 
-        if (!m_font && m_parent->getGlobalFont())
+        if (!font && m_parent->getGlobalFont())
             getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
