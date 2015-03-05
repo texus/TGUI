@@ -146,11 +146,25 @@ namespace tgui
     {
     }
 
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int Tab::add(const sf::String& name, bool selectTab)
     {
+        // Use the insert function to put the tab in the right place
+        insert(m_tabNames.size(), name, selectTab);
+
+        // Return the index of the new tab
+        return m_tabNames.size()-1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::insert(unsigned int index, const sf::String& name, bool selectTab)
+    {
+        // If the index is too high then just insert at the end
+        if (index > m_tabWidth.size())
+            index = m_tabWidth.size();
+
         // Create the new tab
         Label newTab;
         newTab.setTextFont(m_font);
@@ -159,22 +173,22 @@ namespace tgui
         newTab.setText(name);
 
         // Calculate the width of the tab
-        if (m_maximumTabWidth)
-            m_tabWidth.push_back(std::min(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth));
-        else
-            m_tabWidth.push_back(newTab.getSize().x + (2 * m_distanceToSide));
+        auto tabWidthIt = m_tabWidth.insert(m_tabWidth.begin(),
+                                            m_maximumTabWidth ? (std::min(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth))
+                                                              : (newTab.getSize().x + (2 * m_distanceToSide))
+                                           );
 
         // Add the new tab sprite
         if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
         {
-            getRenderer()->m_texturesNormal.push_back(getRenderer()->m_textureNormal);
-            getRenderer()->m_texturesSelected.push_back(getRenderer()->m_textureSelected);
+            auto normalIt = getRenderer()->m_texturesNormal.insert(getRenderer()->m_texturesNormal.begin() + index, getRenderer()->m_textureNormal);
+            auto selectedIt = getRenderer()->m_texturesSelected.insert(getRenderer()->m_texturesSelected.begin() + index, getRenderer()->m_textureSelected);
 
-            getRenderer()->m_texturesNormal.back().setSize({m_tabWidth.back(), getRenderer()->m_texturesNormal.back().getSize().y});
-            getRenderer()->m_texturesSelected.back().setSize({m_tabWidth.back(), getRenderer()->m_texturesSelected.back().getSize().y});
+            normalIt->setSize({*tabWidthIt, normalIt->getSize().y});
+            selectedIt->setSize({*tabWidthIt, selectedIt->getSize().y});
 
-            getRenderer()->m_texturesNormal.back().setPosition({getPosition().x + getSize().x, getPosition().y});
-            getRenderer()->m_texturesSelected.back().setPosition({getPosition().x + getSize().x, getPosition().y});
+            normalIt->setPosition({getPosition().x + getSize().x, getPosition().y});
+            selectedIt->setPosition({getPosition().x + getSize().x, getPosition().y});
         }
 
         float textHeight;
@@ -184,7 +198,7 @@ namespace tgui
             textHeight = 0;
 
         // Set the correct size of the tab text
-        newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((m_tabWidth.back() - (2 * m_distanceToSide) - newTab.getSize().x) / 2.0f),
+        newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((*tabWidthIt - (2 * m_distanceToSide) - newTab.getSize().x) / 2.0f),
                             getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
 
         // If the tab has to be selected then do so
@@ -193,17 +207,48 @@ namespace tgui
             if (m_selectedTab >= 0)
                 m_tabNames[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
-            m_selectedTab = m_tabNames.size();
+            m_selectedTab = index;
             newTab.setTextColor(getRenderer()->m_selectedTextColor);
         }
+        else if (m_selectedTab >= static_cast<int>(index))
+            m_selectedTab++;
 
         // Add the tab
-        m_tabNames.push_back(std::move(newTab));
+        m_tabNames.insert(m_tabNames.begin() + index, std::move(newTab));
 
-        m_width += m_tabWidth.back() + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+        m_width += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+    }
 
-        // Return the index of the new tab
-        return m_tabNames.size()-1;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Tab::changeName(unsigned int index, const sf::String& name)
+    {
+        if (index >= m_tabNames.size())
+            return false;
+
+        // Update the width
+        {
+            m_width -= m_tabWidth[index];
+
+            m_tabNames[index].setText(name);
+            if (m_maximumTabWidth)
+                m_tabWidth[index] = std::min(m_tabNames[index].getSize().x + (2 * m_distanceToSide), m_maximumTabWidth);
+            else
+                m_tabWidth[index] = m_tabNames[index].getSize().x + (2 * m_distanceToSide);
+
+            m_width += m_tabWidth[index];
+        }
+
+        // Update the image sizes
+        if (getRenderer()->m_textureNormal.getData() && getRenderer()->m_textureSelected.getData())
+        {
+            getRenderer()->m_texturesNormal[index].setSize({m_tabWidth[index], getRenderer()->m_texturesNormal[index].getSize().y});
+            getRenderer()->m_texturesSelected[index].setSize({m_tabWidth[index], getRenderer()->m_texturesSelected[index].getSize().y});
+        }
+
+        // Recalculate the positions of the tabs
+        updatePosition();
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,6 +413,17 @@ namespace tgui
         m_maximumTabWidth = std::abs(maximumWidth);
 
         recalculateTabsWidth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String> Tab::getTabs() const
+    {
+        std::vector<sf::String> tabs;
+        for (auto& label : m_tabNames)
+            tabs.push_back(label.getText());
+
+        return tabs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

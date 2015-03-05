@@ -164,6 +164,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Insert a new tab somewhere between the other tabs.
+        ///
+        /// @param index   The index where the tab gets inserted. 0 means before the first tab, 1 means behind the first tab.
+        /// @param name    The name of the tab (this is the text that will be drawn on top of the tab).
+        /// @param select  Do you want the new tab to be selected immediately?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void insert(unsigned int index, const sf::String& name, bool select = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the name (text that is drawn on top of the tab) of one of the tabs
+        ///
+        /// @param index   The index of the tab to be changed. The first tab has index 0.
+        /// @param name    The new name of the tab (this is the text that will be drawn on top of the tab).
+        ///
+        /// @return True when name was successfully changed, false when index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeName(unsigned int index, const sf::String& name);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Selects the tab with a given name.
         ///
         /// @param name  The name of the tab to select.
@@ -325,6 +348,15 @@ namespace tgui
         {
             return m_maximumTabWidth;
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a read-only list of the tabs
+        ///
+        /// @return List of names on the tabs
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::vector<sf::String> getTabs() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,10 +616,10 @@ namespace tgui
 
         Tab* m_tab;
 
-        Texture            m_textureNormal;
-        Texture            m_textureSelected;
-        std::list<Texture> m_texturesNormal;
-        std::list<Texture> m_texturesSelected;
+        Texture              m_textureNormal;
+        Texture              m_textureSelected;
+        std::vector<Texture> m_texturesNormal;
+        std::vector<Texture> m_texturesSelected;
 
         sf::Color m_textColor         = {  0,   0,   0};
         sf::Color m_selectedTextColor = {255, 255, 255};
