@@ -40,7 +40,7 @@ namespace tgui
     ///
     /// Signals:
     ///     - TabChanged (Another tab has been selected)
-    ///         * Optional parameter sf::String: New name of the newly selected tab
+    ///         * Optional parameter sf::String: New text on the newly selected tab
     ///         * Uses Callback member 'text'
     ///
     ///     - Inherited signals from Widget
@@ -152,7 +152,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a new tab.
         ///
-        /// @param name    The name of the tab (this is the text that will be drawn on top of the tab).
+        /// @param text    The text of the tab that will be drawn on top of it.
         /// @param select  Do you want the new tab to be selected immediately?
         ///
         /// @return  The index of the tab in the list.
@@ -160,44 +160,55 @@ namespace tgui
         /// @warning The index returned by this function may no longer be correct when a tab is removed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int add(const sf::String& name, bool select = true);
+        unsigned int add(const sf::String& text, bool select = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Insert a new tab somewhere between the other tabs.
         ///
         /// @param index   The index where the tab gets inserted. 0 means before the first tab, 1 means behind the first tab.
-        /// @param name    The name of the tab (this is the text that will be drawn on top of the tab).
+        /// @param text    The text of the tab that will be drawn on top of it.
         /// @param select  Do you want the new tab to be selected immediately?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void insert(unsigned int index, const sf::String& name, bool select = true);
+        void insert(unsigned int index, const sf::String& text, bool select = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the name (text that is drawn on top of the tab) of one of the tabs
+        /// @brief Get the text of one of the tabs
         ///
-        /// @param index   The index of the tab to be changed. The first tab has index 0.
-        /// @param name    The new name of the tab (this is the text that will be drawn on top of the tab).
+        /// @param index  The index of the tab. The first tab has index 0.
         ///
-        /// @return True when name was successfully changed, false when index was too high
+        /// @return The text on the tab or an empty string when index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool changeName(unsigned int index, const sf::String& name);
+        sf::String getText(unsigned int index) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects the tab with a given name.
+        /// @brief Change the text of one of the tabs
         ///
-        /// @param name  The name of the tab to select.
+        /// @param index  The index of the tab to be changed. The first tab has index 0.
+        /// @param text   The new text of the tab that will be drawn on top of it.
         ///
-        /// When the name doen't match any tab then nothing will be changed.
-        /// If there are multiple tabs with the same name then the first one will be selected.
+        /// @return True when text was successfully changed, false when index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeText(unsigned int index, const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Selects the tab with a given text.
+        ///
+        /// @param text  The text of the tab to select.
+        ///
+        /// When the text doen't match any tab then nothing will be changed.
+        /// If there are multiple tabs with the same text then the first one will be selected.
         ///
         /// @see select(int)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void select(const sf::String& name);
+        void select(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,16 +232,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a tab with a given name.
+        /// @brief Removes a tab with a given text.
         ///
-        /// @param name  The name of the tab to remove.
+        /// @param text  The text on the tab to remove.
         ///
-        /// When multiple tabs have the same name, only the first will be removed.
+        /// When multiple tabs have the same text, only the first will be removed.
         ///
         /// @see remove(unsigned int)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(const sf::String& name);
+        void remove(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,15 +265,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the name of the currently selected tab.
+        /// @brief Get the text that is drawn on the currently selected tab.
         ///
-        /// @return The name of the tab.
+        /// @return The text on the tab.
         ///         When no tab is selected then this function returns an empty string.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelected() const
         {
-            return (m_selectedTab >= 0) ? m_tabNames[m_selectedTab].getText() : "";
+            return (m_selectedTab >= 0) ? m_tabTexts[m_selectedTab].getText() : "";
         }
 
 
@@ -351,12 +362,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a read-only list of the tabs
+        /// @brief Returns the amount of tabs
         ///
-        /// @return List of names on the tabs
+        /// @return Number of tabs
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<sf::String> getTabs() const;
+        unsigned int getTabsCount() const
+        {
+            return m_tabTexts.size();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,7 +442,7 @@ namespace tgui
         float              m_tabHeight = 0;
         std::vector<float> m_tabWidth;
 
-        std::vector<Label> m_tabNames;
+        std::vector<Label> m_tabTexts;
 
         friend class TabRenderer;
 
