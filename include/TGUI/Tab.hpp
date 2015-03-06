@@ -39,7 +39,7 @@ namespace tgui
     /// @brief Tab widget
     ///
     /// Signals:
-    ///     - TabChanged (Another tab has been selected)
+    ///     - TabSelected (Another tab has been selected)
     ///         * Optional parameter sf::String: New text on the newly selected tab
     ///         * Uses Callback member 'text'
     ///

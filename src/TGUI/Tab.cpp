@@ -40,7 +40,7 @@ namespace tgui
     {
         m_callback.widgetType = WidgetType::Tab;
 
-        addSignal<sf::String>("TabChanged");
+        addSignal<sf::String>("TabSelected");
 
         m_renderer = std::make_shared<TabRenderer>(this);
 
@@ -201,22 +201,18 @@ namespace tgui
         newTab.setPosition({getPosition().x + getSize().x + m_distanceToSide + ((*tabWidthIt - (2 * m_distanceToSide) - newTab.getSize().x) / 2.0f),
                             getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
 
-        // If the tab has to be selected then do so
-        if (selectTab)
-        {
-            if (m_selectedTab >= 0)
-                m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
-
-            m_selectedTab = index;
-            newTab.setTextColor(getRenderer()->m_selectedTextColor);
-        }
-        else if (m_selectedTab >= static_cast<int>(index))
-            m_selectedTab++;
-
         // Add the tab
         m_tabTexts.insert(m_tabTexts.begin() + index, std::move(newTab));
 
+        // Update the cached width of the widget
         m_width += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+
+        if (m_selectedTab >= static_cast<int>(index))
+            m_selectedTab++;
+
+        // If the tab has to be selected then do so
+        if (selectTab)
+            select(index);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,18 +261,11 @@ namespace tgui
 
     void Tab::select(const sf::String& text)
     {
-        if (m_selectedTab >= 0)
-            m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
-
-        // Loop through all tabs
         for (unsigned int i = 0; i < m_tabTexts.size(); ++i)
         {
-            // Find the tab that should be selected
             if (m_tabTexts[i].getText() == text)
             {
-                // Select the tab
-                m_selectedTab = i;
-                m_tabTexts[i].setTextColor(getRenderer()->m_selectedTextColor);
+                select(i);
                 return;
             }
         }
@@ -290,12 +279,20 @@ namespace tgui
         if (index > m_tabTexts.size() - 1)
             return;
 
+        // Don't select a tab that is already selected
+        if (m_selectedTab == static_cast<int>(index))
+            return;
+
         if (m_selectedTab >= 0)
             m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         // Select the tab
         m_selectedTab = index;
         m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
+
+        // Send the callback
+        m_callback.text = m_tabTexts[index].getText();
+        sendSignal("TabSelected", m_tabTexts[index].getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,24 +466,10 @@ namespace tgui
             // Append the width of the tab
             width += m_tabWidth[i] + (getRenderer()->getBorders().left / 2.0f);
 
-            // Check if the mouse went down on the tab
+            // If the mouse went down on a tab then select it
             if (x < width)
             {
-                // We don't have to select the tab if it is already selected
-                if (m_selectedTab != static_cast<int>(i))
-                {
-                    if (m_selectedTab >= 0)
-                        m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
-
-                    // Select this tab
-                    m_selectedTab = static_cast<int>(i);
-                    m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
-
-                    m_callback.text = m_tabTexts[i].getText();
-                    sendSignal("TabChanged", m_tabTexts[i].getText());
-                }
-
-                // The tab was found
+                select(i);
                 break;
             }
 
