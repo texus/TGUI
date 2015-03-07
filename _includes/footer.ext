@@ -7,20 +7,6 @@
   </p>
 </div>
 
-<!-- Start of Browser-Update code -->
-<script type="text/javascript">
-var $buoop = {};
-$buoop.ol = window.onload;
-window.onload=function(){
- try {if ($buoop.ol) $buoop.ol();}catch (e) {}
- var e = document.createElement("script");
- e.setAttribute("type", "text/javascript");
- e.setAttribute("src", "//browser-update.org/update.js");
- document.body.appendChild(e);
-}
-</script>
-<!-- End of Browser-Update code -->
-
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
