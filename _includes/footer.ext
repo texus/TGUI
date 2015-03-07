@@ -1,6 +1,6 @@
 <div id="footer" class="NoMargin clear">
   <p>
-    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=SLMFNRVX4UF6S">Donate</a>
+    <a href="{{site.url}}/donate/">Donate</a>
     <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
     <a href="{{site.url}}/sitemap.xml">Sitemap</a>
     <a href="https://www.facebook.com/feeds/page.php?format=rss20&id=213243868883901">Blog RSS</a>

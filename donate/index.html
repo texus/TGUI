@@ -1,0 +1,34 @@
+---
+---
+<!DOCTYPE html>
+
+<head>
+{% include head.ext %}
+
+    <title>TGUI Donate</title>
+</head>
+
+<body>
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+
+<div id="contents" class="NoMargin">
+    <h2>Donate</h2>
+
+    <div>
+    <p>If you really like this library then feel free to donate a bit of money, no matter how little.</p>
+
+    <p>My yearly cost on domain names and hosting is just over 25 euros which is extremely cheap (especially for what I have), so I have no problem paying them with my own money. But if you want to help paying some of the costs, you are welcome.</p>
+    </div>
+
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="RDW3C3PMAWVMU">
+    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>
+</div>
+
+{% include footer.ext %}
+</div>
+</body>
