@@ -446,8 +446,6 @@ namespace tgui
             }
         }
 
-        TGUI_OUTPUT("TGUI warning: Failed to select the item in the list box. The name didn't match any item.");
-
         // No match was found
         m_SelectedItem = -1;
         return false;
@@ -466,7 +464,6 @@ namespace tgui
         // If the index is too high then deselect the items
         if (index > int(m_Items.size()-1))
         {
-            TGUI_OUTPUT("TGUI warning: Failed to select the item in the list box. The index was too high.");
             m_SelectedItem = -1;
             return false;
         }
@@ -499,10 +496,7 @@ namespace tgui
     {
         // The index can't be too high
         if (index > m_Items.size()-1)
-        {
-            TGUI_OUTPUT("TGUI warning: Failed to remove the item from the list box. The index was too high.");
             return false;
-        }
 
         // Remove the item
         m_Items.erase(m_Items.begin() + index);
@@ -548,7 +542,6 @@ namespace tgui
             }
         }
 
-        TGUI_OUTPUT("TGUI warning: Failed to remove the item from the list box. The name didn't match any item.");
         return false;
     }
 
@@ -596,10 +589,7 @@ namespace tgui
     {
         // The index can't be too high
         if (index > m_Items.size()-1)
-        {
-            TGUI_OUTPUT("TGUI warning: The index of the item was too high. Returning an empty string.");
             return "";
-        }
 
         // Return the item
         return m_Items[index];
@@ -618,7 +608,6 @@ namespace tgui
         }
 
         // No match was found
-        TGUI_OUTPUT("TGUI warning: The name didn't match any item. Returning -1 as item index.");
         return -1;
     }
 
