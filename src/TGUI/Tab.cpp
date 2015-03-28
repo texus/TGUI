@@ -173,7 +173,7 @@ namespace tgui
         newTab.setText(text);
 
         // Calculate the width of the tab
-        auto tabWidthIt = m_tabWidth.insert(m_tabWidth.begin(),
+        auto tabWidthIt = m_tabWidth.insert(m_tabWidth.begin() + index,
                                             m_maximumTabWidth ? (std::min(newTab.getSize().x + (2 * m_distanceToSide), m_maximumTabWidth))
                                                               : (newTab.getSize().x + (2 * m_distanceToSide))
                                            );
