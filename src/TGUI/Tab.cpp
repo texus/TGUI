@@ -205,7 +205,10 @@ namespace tgui
         m_tabTexts.insert(m_tabTexts.begin() + index, std::move(newTab));
 
         // Update the cached width of the widget
-        m_width += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+        if (m_tabTexts.size() > 1)
+            m_width += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
+        else
+            m_width += *tabWidthIt;
 
         if (m_selectedTab >= static_cast<int>(index))
             m_selectedTab++;
