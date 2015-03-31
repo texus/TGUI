@@ -552,8 +552,8 @@ namespace tgui
         std::vector<Widget::Ptr> m_Widgets;
         std::vector<sf::String>  m_ObjName;
 
-        // The id of the focused widget
-        unsigned int m_FocusedWidget;
+        // The focused widget
+        Widget* m_FocusedWidget;
 
         sf::Font m_GlobalFont;
 
