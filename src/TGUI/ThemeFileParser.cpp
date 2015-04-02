@@ -50,6 +50,7 @@
 namespace tgui
 {
     std::map<std::string, std::map<std::string, std::vector<std::pair<std::string, std::string>>>> ThemeFileParser::m_cache;
+	std::shared_ptr<ThemeFileLoader> ThemeFileParser::m_themeFileLoader = std::make_shared<ThemeFileLoader>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +68,7 @@ namespace tgui
 
             return false;
         }
-    }
+	}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,53 +82,9 @@ namespace tgui
         // The file may be cached
         if (m_cache.find(m_filename) == m_cache.end())
         {
-        #ifdef SFML_SYSTEM_ANDROID
-            // If the file does not start with a slash then load it from the assets
-            if (!filename.empty() && (filename[0] != '/'))
-            {
-                /// TODO: Workaround until SFML makes native activity publically accessible
-                /// When this happens, extra SFML folder in include can be removed as well.
-                ANativeActivity* activity = sf::priv::getActivity(NULL)->activity;
+			m_themeFileLoader->load(filename, fileContents);
 
-                JNIEnv* env = 0;
-                activity->vm->AttachCurrentThread(&env, NULL);
-                jclass clazz = env->GetObjectClass(activity->clazz);
-
-                jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
-                jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
-                jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
-                AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
-                assert(assetManager);
-
-                AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
-                if (!asset)
-                    throw Exception{"Failed to open theme file '" + filename + "' from assets."};
-
-                off_t assetLength = AAsset_getLength(asset);
-
-                char* buffer = new char[assetLength + 1];
-                AAsset_read(asset, buffer, assetLength);
-                buffer[assetLength] = 0;
-
-                fileContents << buffer;
-
-                AAsset_close(asset);
-                delete[] buffer;
-
-                activity->vm->DetachCurrentThread();
-            }
-            else
-        #endif
-            {
-                std::ifstream file{filename};
-                if (!file.is_open())
-                    throw Exception{"Failed to open theme file '" + filename + "'."};
-
-                fileContents << file.rdbuf();
-                file.close();
-            }
-
-            std::string sectionName;
+			std::string sectionName;
             unsigned int lineNumber = 0;
 
             // Stop reading when we reach the end of the file
@@ -236,7 +193,66 @@ namespace tgui
         m_cache.clear();
     }
 
+	void ThemeFileParser::setFileLoader(std::shared_ptr<ThemeFileLoader> fileloader)
+	{
+		if (fileloader != nullptr)
+			m_themeFileLoader = fileloader;
+	}
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void ThemeFileLoader::load(const std::string& filename, std::stringstream& content)
+	{
+		content.clear();
+
+#ifdef SFML_SYSTEM_ANDROID
+		// If the file does not start with a slash then load it from the assets
+		if (!filename.empty() && (filename[0] != '/'))
+		{
+			/// TODO: Workaround until SFML makes native activity publically accessible
+			/// When this happens, extra SFML folder in include can be removed as well.
+			ANativeActivity* activity = sf::priv::getActivity(NULL)->activity;
+
+			JNIEnv* env = 0;
+			activity->vm->AttachCurrentThread(&env, NULL);
+			jclass clazz = env->GetObjectClass(activity->clazz);
+
+			jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
+			jobject assetManagerObject = env->CallObjectMethod(activity->clazz, methodID);
+			jobject globalAssetManagerRef = env->NewGlobalRef(assetManagerObject);
+			AAssetManager* assetManager = AAssetManager_fromJava(env, globalAssetManagerRef);
+			assert(assetManager);
+
+			AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
+			if (!asset)
+				throw Exception{ "Failed to open theme file '" + filename + "' from assets." };
+
+			off_t assetLength = AAsset_getLength(asset);
+
+			char* buffer = new char[assetLength + 1];
+			AAsset_read(asset, buffer, assetLength);
+			buffer[assetLength] = 0;
+
+			content << buffer;
+
+			AAsset_close(asset);
+			delete[] buffer;
+
+			activity->vm->DetachCurrentThread();
+		}
+		else
+#endif
+		{
+			std::ifstream file{ filename };
+			if (!file.is_open())
+				throw Exception{ "Failed to open theme file '" + filename + "'." };
+
+			content << file.rdbuf();
+			file.close();
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
