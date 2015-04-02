@@ -759,8 +759,8 @@ namespace tgui
         m_File << tabs << "{" << std::endl;
         tabs += "\t";
 
-        std::function< void (std::vector<sf::String>&, std::vector<Widget::Ptr>&) > saveWidgets;
-        saveWidgets = [this, &m_File, &tabs, &saveWidgets] (std::vector<sf::String>& widgetName, std::vector<Widget::Ptr>& widgets)
+        std::function< void (const std::vector<sf::String>&, const std::vector<Widget::Ptr>&) > saveWidgets;
+        saveWidgets = [this, &m_File, &tabs, &saveWidgets] (const std::vector<sf::String>& widgetName, const std::vector<Widget::Ptr>& widgets)
         {
             auto nameIt = widgetName.cbegin();
             for (auto widgetIt = widgets.cbegin(); widgetIt != widgets.cend(); ++widgetIt, ++nameIt)

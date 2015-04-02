@@ -926,7 +926,7 @@ namespace tgui
         else if (property == "lines")
         {
             std::vector<sf::String> lines;
-            std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
+            const std::vector<Widget::Ptr>& labels = m_Panel->getWidgets();
 
             for (auto it = labels.cbegin(); it != labels.cend(); ++it)
                 lines.push_back("(" + Label::Ptr(*it)->getText() + "," + convertColorToString(Label::Ptr(*it)->getTextColor()) + ")");
