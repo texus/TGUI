@@ -265,14 +265,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector< Widget::Ptr >& Gui::getWidgets()
+    const std::vector< Widget::Ptr >& Gui::getWidgets()
     {
         return m_Container.getWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String>& Gui::getWidgetNames()
+    const std::vector<sf::String>& Gui::getWidgetNames()
     {
         return m_Container.getWidgetNames();
     }
