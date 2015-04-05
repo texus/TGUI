@@ -38,7 +38,7 @@ namespace tgui
 
     Tab::Tab()
     {
-        m_callback.widgetType = WidgetType::Tab;
+        m_callback.widgetType = "Tab";
 
         addSignal<sf::String>("TabSelected");
 

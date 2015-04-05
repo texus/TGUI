@@ -34,7 +34,7 @@ namespace tgui
 
     SpinButton::SpinButton()
     {
-        m_callback.widgetType = WidgetType::SpinButton;
+        m_callback.widgetType = "SpinButton";
 
         addSignal<int>("ValueChanged");
 

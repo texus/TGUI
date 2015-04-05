@@ -267,7 +267,7 @@ namespace tgui
         /// @return Type of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        WidgetType getWidgetType() const
+        const std::string& getWidgetType() const
         {
             return m_callback.widgetType;
         }

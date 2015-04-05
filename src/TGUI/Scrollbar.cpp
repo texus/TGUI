@@ -33,7 +33,7 @@ namespace tgui
 
     Scrollbar::Scrollbar()
     {
-        m_callback.widgetType = WidgetType::Scrollbar;
+        m_callback.widgetType = "Scrollbar";
         m_draggableWidget = true;
 
         addSignal<int>("ValueChanged");

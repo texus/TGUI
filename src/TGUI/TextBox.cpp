@@ -41,7 +41,7 @@ namespace tgui
 
     TextBox::TextBox()
     {
-        m_callback.widgetType = WidgetType::TextBox;
+        m_callback.widgetType = "TextBox";
         m_animatedWidget = true;
         m_draggableWidget = true;
 

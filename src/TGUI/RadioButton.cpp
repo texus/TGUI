@@ -34,7 +34,7 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_callback.widgetType = WidgetType::RadioButton;
+        m_callback.widgetType = "RadioButton";
 
         addSignal<int>("Checked");
         addSignal<int>("Unchecked");

@@ -34,7 +34,7 @@ namespace tgui
 
     Slider::Slider()
     {
-        m_callback.widgetType = WidgetType::Slider;
+        m_callback.widgetType = "Slider";
         m_draggableWidget = true;
 
         addSignal<int>("ValueChanged");

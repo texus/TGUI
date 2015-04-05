@@ -38,7 +38,7 @@ namespace ext
 
     Slider2d::Slider2d()
     {
-        m_callback.widgetType = WidgetType::Slider2d;
+        m_callback.widgetType = "Slider2d";
         m_draggableWidget = true;
 
         addSignal<sf::Vector2f>("ValueChanged");

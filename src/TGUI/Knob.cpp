@@ -36,7 +36,7 @@ namespace tgui
 
     Knob::Knob()
     {
-        m_callback.widgetType = WidgetType::Knob;
+        m_callback.widgetType = "Knob";
         m_draggableWidget = true;
 
         addSignal<int>("ValueChanged");

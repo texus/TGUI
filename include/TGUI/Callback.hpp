@@ -53,7 +53,7 @@ namespace tgui
         Widget* widget = nullptr;
 
         // The type of the widget
-        WidgetType widgetType = WidgetType::Unknown;
+        std::string widgetType = "Unknown";
 
         // When the mouse has something to do with the callback then this data will be filled
         sf::Vector2i mouse;

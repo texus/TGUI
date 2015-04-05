@@ -40,7 +40,7 @@ namespace tgui
 
     ListBox::ListBox()
     {
-        m_callback.widgetType = WidgetType::ListBox;
+        m_callback.widgetType = "ListBox";
         m_draggableWidget = true;
         m_animatedWidget = true;
 

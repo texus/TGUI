@@ -375,7 +375,7 @@ namespace tgui
         // Loop through all radio buttons and uncheck them
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_widgets[i]->m_callback.widgetType == WidgetType::RadioButton)
+            if (m_widgets[i]->m_callback.widgetType == "RadioButton")
                 std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
     }

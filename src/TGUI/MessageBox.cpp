@@ -33,7 +33,7 @@ namespace tgui
 
     MessageBox::MessageBox()
     {
-        m_callback.widgetType = WidgetType::MessageBox;
+        m_callback.widgetType = "MessageBox";
 
         addSignal<sf::String>("ButtonPressed");
 

@@ -33,7 +33,7 @@ namespace tgui
 
     ClickableWidget::ClickableWidget()
     {
-        m_callback.widgetType = WidgetType::ClickableWidget;
+        m_callback.widgetType = "ClickableWidget";
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<sf::Vector2f>("MouseReleased");

@@ -38,7 +38,7 @@ namespace tgui
 
     Label::Label()
     {
-        m_callback.widgetType = WidgetType::Label;
+        m_callback.widgetType = "Label";
         m_animatedWidget = true;
 
         addSignal<sf::String>("DoubleClicked");

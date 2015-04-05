@@ -36,7 +36,7 @@ namespace tgui
 
     MenuBar::MenuBar()
     {
-        m_callback.widgetType = WidgetType::MenuBar;
+        m_callback.widgetType = "MenuBar";
 
         addSignal<std::vector<sf::String>, sf::String>("MenuItemClicked");
 

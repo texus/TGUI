@@ -35,7 +35,7 @@ namespace ext
 
     AnimatedPicture::AnimatedPicture()
     {
-        m_callback.widgetType = WidgetType::AnimatedPicture;
+        m_callback.widgetType = "AnimatedPicture";
         m_animatedWidget = true;
 
         addSignal("AnimationFinished");

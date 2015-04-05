@@ -57,45 +57,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief A list of all widget types.
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    enum class WidgetType
-    {
-        Unknown,
-        ClickableWidget,
-        Picture,
-        Button,
-        Checkbox,
-        RadioButton,
-        Label,
-        EditBox,
-        ListBox,
-        ComboBox,
-        Slider,
-        Scrollbar,
-        ProgressBar,
-        TextBox,
-        SpriteSheet,
-        AnimatedPicture,
-        SpinButton,
-        Slider2d,
-        Tab,
-        MenuBar,
-        ChatBox,
-        Knob,
-        Tooltip,
-        Canvas,
-        Panel,
-        ChildWindow,
-        Grid,
-        MessageBox
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     template <typename T>
     std::string to_string(T value)
     {

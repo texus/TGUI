@@ -36,7 +36,7 @@ namespace tgui
 
     ProgressBar::ProgressBar()
     {
-        m_callback.widgetType = WidgetType::ProgressBar;
+        m_callback.widgetType = "ProgressBar";
 
         addSignal<int>("ValueChanged");
         addSignal<int>("Full");

@@ -35,7 +35,7 @@ namespace tgui
 
     ChildWindow::ChildWindow()
     {
-        m_callback.widgetType = WidgetType::ChildWindow;
+        m_callback.widgetType = "ChildWindow";
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<ChildWindow::Ptr>("Closed");

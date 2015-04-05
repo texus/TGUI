@@ -33,7 +33,7 @@ namespace tgui
 
     Picture::Picture()
     {
-        m_callback.widgetType = WidgetType::Picture;
+        m_callback.widgetType = "Picture";
         m_animatedWidget = true;
 
         addSignal("DoubleClicked");

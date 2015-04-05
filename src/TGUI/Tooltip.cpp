@@ -37,7 +37,7 @@ namespace tgui
 
     Tooltip::Tooltip()
     {
-        m_callback.widgetType = WidgetType::Tooltip;
+        m_callback.widgetType = "Tooltip";
 
         setPosition(5, 20);
 
