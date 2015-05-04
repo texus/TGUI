@@ -255,16 +255,8 @@ a#navbar-title:hover h1 {
   }
 }
 
-@media only screen and (min-width: 950px) and (min-height: 400px) {
-  #navbar {
-    position: fixed;
-  }
-}
-
 @media only screen and (min-width: 1060px) and (min-height: 500px) {
   #navbar {
-    position: fixed;
-    
     left: -moz-calc((100% - 1060px) / 2);
     width: -moz-calc(1060px);
     
