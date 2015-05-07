@@ -168,6 +168,7 @@ namespace tgui
         template <typename Func>
         void connect(unsigned int id, Func func)
         {
+#if __GNUC__ < 5
             #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
             using DoubleString = TypeSet<sf::String, sf::String>;
@@ -191,13 +192,17 @@ namespace tgui
                 );
             #undef TGUI_CONDITINAL_0
             #undef TGUI_CONDITINAL
-
+#else
+            // Temporary disable parameter detection to make GCC 5 work
+            using Type = TypeSet<>;
+#endif
             m_functions[id] = connectInternal(Type{}, func);
         }
 
         template <typename Func, typename... Args>
         void connect(unsigned int id, Func func, Args... args)
         {
+#if __GNUC__ < 5
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<decltype(std::bind(func, __VA_ARGS__)), std::function<void()>>::value, TypeA, TypeB>::type
             using DoubleString = TypeSet<sf::String, sf::String>;
             using Type = TGUI_CONDITINAL(
@@ -219,7 +224,10 @@ namespace tgui
                     args..., std::declval<int>()),
                 args...);
             #undef TGUI_CONDITINAL
-
+#else
+            // Temporary disable parameter detection to make GCC 5 work
+            using Type = TypeSet<>;
+#endif
             m_functions[id] = connectInternal(Type{}, func, args...);
         }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
