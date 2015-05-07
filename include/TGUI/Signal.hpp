@@ -168,7 +168,6 @@ namespace tgui
         template <typename Func>
         void connect(unsigned int id, Func func)
         {
-#if __GNUC__ < 5
             #define TGUI_CONDITINAL_0(TypeA, TypeB) typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeA, TypeB>::type
             #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
             using DoubleString = TypeSet<sf::String, sf::String>;
@@ -192,18 +191,14 @@ namespace tgui
                 );
             #undef TGUI_CONDITINAL_0
             #undef TGUI_CONDITINAL
-#else
-            // Temporary disable parameter detection to make GCC 5 work
-            using Type = TypeSet<>;
-#endif
+
             m_functions[id] = connectInternal(Type{}, func);
         }
 
         template <typename Func, typename... Args>
         void connect(unsigned int id, Func func, Args... args)
         {
-#if __GNUC__ < 5
-            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<decltype(std::bind(func, __VA_ARGS__)), std::function<void()>>::value, TypeA, TypeB>::type
+            #define TGUI_CONDITINAL(TypeA, TypeB, ...) typename std::conditional<std::is_convertible<Func, std::function<void(__VA_ARGS__)>>::value, TypeA, TypeB>::type
             using DoubleString = TypeSet<sf::String, sf::String>;
             using Type = TGUI_CONDITINAL(
                 TypeSet<>,
@@ -216,18 +211,15 @@ namespace tgui
                             TGUI_CONDITINAL(
                                 DoubleString,
                                     TGUI_CONDITINAL(TypeSet<std::vector<sf::String>>,
-                                        TGUI_CONDITINAL(TypeSet<std::shared_ptr<ChildWindow>>, TypeSet<void>, args..., std::declval<std::shared_ptr<ChildWindow>>()),
-                                    args..., std::declval<std::vector<sf::String>>()),
-                                args..., std::declval<sf::String>(), std::declval<sf::String>()),
-                            args..., std::declval<sf::String>()),
-                        args..., std::declval<sf::Vector2f>()),
-                    args..., std::declval<int>()),
-                args...);
+                                        TGUI_CONDITINAL(TypeSet<std::shared_ptr<ChildWindow>>, TypeSet<void>, Args..., std::shared_ptr<ChildWindow>),
+                                    Args..., std::vector<sf::String>),
+                                Args..., sf::String, sf::String),
+                            Args..., sf::String),
+                        Args..., sf::Vector2f),
+                    Args..., int),
+                Args...);
             #undef TGUI_CONDITINAL
-#else
-            // Temporary disable parameter detection to make GCC 5 work
-            using Type = TypeSet<>;
-#endif
+
             m_functions[id] = connectInternal(Type{}, func, args...);
         }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
