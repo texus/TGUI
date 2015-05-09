@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.7</span>
+   &#160;<span id="projectnumber">v0.6.8</span>
    </div>
   </td>
  </tr>
@@ -177,26 +177,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator ==(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> U* right)</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator ==(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> U* right)</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        {</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="keywordflow">return</span> left.m_WidgetPtr == right;</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        }</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator ==(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> T* right)</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator ==(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> T* right)</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        {</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            <span class="keywordflow">return</span> left.m_WidgetPtr == right;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        }</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator ==(<span class="keyword">const</span> U* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator ==(<span class="keyword">const</span> U* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        {</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordflow">return</span> left == right.m_WidgetPtr;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        }</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator ==(<span class="keyword">const</span> T* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator ==(<span class="keyword">const</span> T* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        {</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            <span class="keywordflow">return</span> left == right.m_WidgetPtr;</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        }</div>
@@ -210,26 +210,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator !=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> U* right)</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator !=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> U* right)</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        {</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keywordflow">return</span> left.m_WidgetPtr != right;</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator !=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> T* right)</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator !=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; left, <span class="keyword">const</span> T* right)</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        {</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <span class="keywordflow">return</span> left.m_WidgetPtr != right;</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        }</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator !=(<span class="keyword">const</span> U* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator !=(<span class="keyword">const</span> U* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        {</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <span class="keywordflow">return</span> left != right.m_WidgetPtr;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keywordtype">bool</span> <span class="keyword">friend</span> operator !=(<span class="keyword">const</span> T* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator !=(<span class="keyword">const</span> T* left, <span class="keyword">const</span> <a class="code" href="classtgui_1_1SharedWidgetPtr.html">SharedWidgetPtr&lt;T&gt;</a>&amp; right)</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        {</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <span class="keywordflow">return</span> left != right.m_WidgetPtr;</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        }</div>
@@ -266,7 +266,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 7 2015 17:23:08 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
