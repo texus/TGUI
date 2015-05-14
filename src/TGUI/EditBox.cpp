@@ -749,6 +749,7 @@ namespace tgui
     void EditBox::setAlignment(Alignment::Alignments alignment)
     {
         m_TextAlignment = alignment;
+        setText(m_Text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1610,6 +1611,17 @@ namespace tgui
         {
             setMaximumCharacters(atoi(value.c_str()));
         }
+        else if (property == "alignment")
+        {
+            if ((value == "left") || (value == "Left"))
+                setAlignment(Alignment::Left);
+            else if ((value == "center") || (value == "Center"))
+                setAlignment(Alignment::Center);
+            else if ((value == "right") || (value == "Right"))
+                setAlignment(Alignment::Right);
+            else
+                TGUI_OUTPUT("TGUI error: Failed to parse 'Alignment' property.");
+        }
         else if (property == "borders")
         {
             Borders borders;
@@ -1699,6 +1711,15 @@ namespace tgui
         }
         else if (property == "maximumcharacters")
             value = to_string(getMaximumCharacters());
+        else if (property == "alignment")
+        {
+            if (m_TextAlignment == Alignment::Left)
+                value = "Left";
+            else if (m_TextAlignment == Alignment::Center)
+                value = "Center";
+            else
+                value = "Right";
+        }
         else if (property == "borders")
             value = "(" + to_string(getBorders().left) + "," + to_string(getBorders().top) + "," + to_string(getBorders().right) + "," + to_string(getBorders().bottom) + ")";
         else if (property == "textcolor")
@@ -1754,6 +1775,7 @@ namespace tgui
         list.push_back(std::pair<std::string, std::string>("TextSize", "uint"));
         list.push_back(std::pair<std::string, std::string>("PasswordCharacter", "char"));
         list.push_back(std::pair<std::string, std::string>("MaximumCharacters", "uint"));
+        list.push_back(std::pair<std::string, std::string>("Alignment", "string"));
         list.push_back(std::pair<std::string, std::string>("Borders", "borders"));
         list.push_back(std::pair<std::string, std::string>("TextColor", "color"));
         list.push_back(std::pair<std::string, std::string>("SelectedTextColor", "color"));
