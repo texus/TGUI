@@ -55,6 +55,7 @@ else()
     add_library(${PROJECT_NAME} STATIC ${TGUI_SRC})
     set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -s-d)
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
+    set_target_properties(${PROJECT_NAME} PROPERTIES MINSIZEREL_POSTFIX -s)
 endif()
 
 # Enable automatic reference counting on iOS
