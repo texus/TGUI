@@ -62,11 +62,9 @@ namespace tgui
 
     Canvas::Ptr Canvas::create(const sf::Vector2f& size)
     {
-        auto picture = std::make_shared<Canvas>();
-
-        picture->setSize(size);
-
-        return picture;
+        auto canvas = std::make_shared<Canvas>();
+        canvas->setSize(size);
+        return canvas;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
