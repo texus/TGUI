@@ -389,7 +389,7 @@ namespace tgui
 
         // Calculate the size and the available space which will be distributed when widgets will be positionned.
         sf::Vector2f availableSpace;
-        m_realSize = getSize();
+        m_realSize = m_size.getValue();
         sf::Vector2f minSize = getMinSize();
 
         if (getSize().x > minSize.x)
