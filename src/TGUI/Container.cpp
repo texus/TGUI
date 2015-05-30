@@ -49,12 +49,7 @@ namespace tgui
     {
         // Copy all the widgets
         for (unsigned int i = 0; i < containerToCopy.m_widgets.size(); ++i)
-        {
-            m_widgets.push_back(containerToCopy.m_widgets[i]->clone());
-            m_objName.push_back(containerToCopy.m_objName[i]);
-
-            m_widgets.back()->initialize(this);
-        }
+            add(containerToCopy.m_widgets[i]->clone(), containerToCopy.m_objName[i]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +69,7 @@ namespace tgui
 
             // Copy all the widgets
             for (unsigned int i = 0; i < right.m_widgets.size(); ++i)
-            {
-                m_widgets.push_back(right.m_widgets[i]->clone());
-                m_objName.push_back(right.m_objName[i]);
-
-                m_widgets.back()->initialize(this);
-            }
+                add(right.m_widgets[i]->clone(), right.m_objName[i]);
         }
 
         return *this;
